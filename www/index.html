@@ -12,6 +12,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <title>Tangram Play</title>
+
+    <!-- CodeMirror -->
+    <link type='text/css' rel='stylesheet' href="src/codemirror/css/codemirror.css">
+    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css"> 
+    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/dialog/dialog.css">
+    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/hint/show-hint.css">
+    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/scroll/simplescrollbars.css">
+  
+    <link type='text/css' rel="stylesheet" href="src/codemirror/theme/monokai.css">
+
+    <script type="text/javascript" src="src/codemirror.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/search/searchcursor.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/search/search.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/dialog/dialog.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/edit/matchbrackets.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/edit/closebrackets.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/comment/comment.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/wrap/hardwrap.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/fold/foldcode.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/fold/brace-fold.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/fold/indent-fold.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/scroll/simplescrollbars.js"></script>
+    <script type="text/javascript" src="src/codemirror/keymap/sublime.js"></script>
+    <script type="text/javascript" src="src/codemirror/addon/hint/show-hint.js"></script>
+    <script type="text/javascript" src="src/codemirror/mode/yaml.js"></script>
     
     <style>
         body {
@@ -25,7 +50,7 @@
             background: #272822;
             position: fixed;
             left: 0px;
-            top: 0px;
+            top: 100px;
             z-index: 1;
             opacity: 0.9;
             border-top-right-radius: 8px;
@@ -74,9 +99,8 @@
     <script src="src/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
     <script src="src/leaflet-hash.js"></script> <!-- bog-standard leaflet URL hash -->
     <script src="https://mapzen.com/tangram/0.1/tangram.min.js"></script> <!-- Main tangram library -->
-    <!-- // <script src='//s3.amazonaws.com/assets-staging.mapzen.com/ui/mapzen-ui.min.js'></script> <!-- Mapzen bug & search bar --> -->
+    <script src='//s3.amazonaws.com/assets-staging.mapzen.com/ui/mapzen-ui.min.js'></script>
 
-    <!-- CodeMirror -->
     <div id="content">
         <ul class="menu" >
             <li class="menu" onclick="newContent()"> New |</li>
@@ -85,29 +109,7 @@
         </ul>
         <div id="editor"></div>
     </div>
-    <link type='text/css' rel='stylesheet' href="src/codemirror/css/codemirror.css">
-    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css"> 
-    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/dialog/dialog.css">
-    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/hint/show-hint.css">
-    <link type='text/css' rel="stylesheet" href="src/codemirror/addon/scroll/simplescrollbars.css">
-  
-    <link type='text/css' rel="stylesheet" href="src/codemirror/theme/monokai.css">
 
-    <script type="text/javascript" src="src/codemirror.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/search/searchcursor.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/search/search.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/dialog/dialog.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/edit/matchbrackets.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/edit/closebrackets.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/comment/comment.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/wrap/hardwrap.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/fold/foldcode.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/fold/brace-fold.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/fold/indent-fold.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/scroll/simplescrollbars.js"></script>
-    <script type="text/javascript" src="src/codemirror/keymap/sublime.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/hint/show-hint.js"></script>
-    <script type="text/javascript" src="src/codemirror/mode/yaml.js"></script>
 
     <script type="text/javascript">
 
@@ -185,7 +187,8 @@
             document.getElementById('map').style.width = window.innerWidth + 'px';
             document.getElementById('map').style.height = window.innerHeight + 'px';
 
-            var elements = document.getElementsByClassName(".CodeMirror");
+            // TODO
+            var elements = document.getElementsByClassName("CodeMirror");
             for (var i = 0; i < elements.length; i++) {
                 elements[i].style.height = (window.innerHeight - 100).toString() + 'px';
             }
@@ -209,11 +212,11 @@
         return map;
     }());
 
-    // MPZN.bug({
-    //     name: 'Tangram',
-    //     tweet: 'WebGL map insanity from @mapzen!',
-    //     repo: 'https://github.com/tangrams/tangram/'
-    // });
+    MPZN.bug({
+        name: 'Tangram',
+        tweet: 'WebGL map insanity from @mapzen!',
+        repo: 'https://github.com/tangrams/tangram/'
+    });
 
     var editor;
     var demoEditor = document.getElementById("editor");
@@ -232,6 +235,10 @@
             lineWrapping: true,
             autofocus: true,
             indentUnit: 4
+        });
+
+        editor.on("change", function(cm) {
+            
         });
     }
 
@@ -263,6 +270,12 @@
         if (editor) {
             save( editor.getValue() );
         }
+    }
+
+    var elements = document.getElementsByClassName("CodeMirror");
+    for (var i = 0; i < elements.length; i++) {
+        // elements[i].style.width = '800px';
+        elements[i].style.height = (window.innerHeight - 150).toString() + 'px';
     }
 
     </script>

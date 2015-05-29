@@ -1,6 +1,6 @@
-# Tangram-Play
+![](imgs/v0.0.1.png)
 
-A coding tool to edit Tangram Styles on the fly
+Style Editor for Tangram Styles
 
 ## Install
 
@@ -13,3 +13,5 @@ git clone https://github.com/tangrams/tangram-play.git
 cd tangram-play
 node server.js
 ```
+
+On your browser go to [http://localhost:8080](http://localhost:8080)

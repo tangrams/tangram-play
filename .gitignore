@@ -1,4 +1,5 @@
 .DS_Store
+www/styles/*.yaml
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
