@@ -138,7 +138,6 @@ if(demoEditor){
         extraKeys: {"Ctrl-Space": "autocomplete"},
         showCursorWhenSelecting: true,
         theme: "monokai",
-        scrollbarStyle: "simple",
         lineWrapping: true,
         autofocus: true,
         indentUnit: 4
