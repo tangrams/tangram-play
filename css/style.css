@@ -6,12 +6,16 @@ body {
 }
 
 #map {
-    float: left;
+    position: fixed;
+    height: 100%;
+    width: 50%;
 }
 
 #content {
     background: #272822;
-    float: left;
+    position: absolute;
+    margin-left: 50%;
+    width: 50%;
 }
 
 .menu {

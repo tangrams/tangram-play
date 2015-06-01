@@ -14,17 +14,6 @@ function fetchHTTP(url, methood){
     return response;
 }
 
-function fixCodemirror() {
-    var elements = document.getElementsByClassName("CodeMirror");
-    for (var i = 0; i < elements.length; i++) {
-
-        var offsets = elements[i].getBoundingClientRect()
-
-        elements[i].style.width = (window.innerWidth-offsets.left-15) + 'px';
-        elements[i].style.height = (window.innerHeight-offsets.top) + 'px';
-    } 
-}
-
 var map = (function () {
     'use strict';
     var map_start_location = [40.70531887544228, -74.00976419448853, 16];
@@ -77,20 +66,6 @@ var map = (function () {
 
     map.setView(map_start_location.slice(0, 2), map_start_location[2]);
     var hash = new L.Hash(map);
-
-    // Resize map to window
-    function resizeMap() {
-        document.getElementById('map').style.width = (window.innerWidth/2) + 'px';
-        document.getElementById('map').style.height = window.innerHeight + 'px';
-        document.getElementById('map').style.y = 0 + 'px';
-
-        map.invalidateSize(false);   
-
-        fixCodemirror();    
-    }
-
-    window.addEventListener('resize', resizeMap);
-    resizeMap();
 
     window.addEventListener('load', function () {
         // Scene initialized
@@ -173,5 +148,3 @@ if(demoEditor){
         saveDebounced();
     });
 }
-
-fixCodemirror();
