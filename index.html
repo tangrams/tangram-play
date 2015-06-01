@@ -19,7 +19,7 @@
     <link type='text/css' rel="stylesheet" href="src/codemirror/addon/dialog/dialog.css">
     <link type='text/css' rel="stylesheet" href="src/codemirror/addon/hint/show-hint.css">
   
-    <link type='text/css' rel="stylesheet" href="src/codemirror/theme/monokai.css">
+    <link type='text/css' rel="stylesheet" href="css/style.css" />
 
     <script type="text/javascript" src="src/codemirror.js"></script>
     <script type="text/javascript" src="src/codemirror/addon/search/searchcursor.js"></script>
@@ -35,8 +35,6 @@
     <script type="text/javascript" src="src/codemirror/keymap/sublime.js"></script>
     <script type="text/javascript" src="src/codemirror/addon/hint/show-hint.js"></script>
     <script type="text/javascript" src="src/codemirror/mode/yaml.js"></script>
-    
-    <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body><!-- CodeMirror -->
@@ -52,8 +50,8 @@
 
         <div id="content">
             <ul class="menu" >
-                <li class="menu" onclick="newContent()"> New |</li>
-                <li class="menu" onclick="saveContent()"> Save |</li>
+                <li class="menu" onclick="newContent()"> New </li>
+                <!-- <li class="menu" onclick="saveContent()"> Save |</li> -->
                 <li class="menu"><input type="file" onchange="openContent(this)"></li>
             </ul>
             <div id="editor"></div>

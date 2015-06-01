@@ -137,7 +137,7 @@ if(demoEditor){
         autoCloseBrackets: true,
         extraKeys: {"Ctrl-Space": "autocomplete"},
         showCursorWhenSelecting: true,
-        theme: "monokai",
+        theme: "tangram",
         lineWrapping: true,
         autofocus: true,
         indentUnit: 4
