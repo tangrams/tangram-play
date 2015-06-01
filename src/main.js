@@ -14,6 +14,17 @@ function fetchHTTP(url, methood){
     return response;
 }
 
+function fixCodemirror() {
+    var elements = document.getElementsByClassName("CodeMirror");
+    for (var i = 0; i < elements.length; i++) {
+
+        var offsets = elements[i].getBoundingClientRect()
+
+        elements[i].style.width = (window.innerWidth-offsets.left-15) + 'px';
+        elements[i].style.height = (window.innerHeight-offsets.top) + 'px';
+    } 
+}
+
 var map = (function () {
     'use strict';
     var map_start_location = [40.70531887544228, -74.00976419448853, 16];
@@ -69,16 +80,13 @@ var map = (function () {
 
     // Resize map to window
     function resizeMap() {
-        document.getElementById('map').style.width = window.innerWidth + 'px';
+        document.getElementById('map').style.width = (window.innerWidth/2) + 'px';
         document.getElementById('map').style.height = window.innerHeight + 'px';
+        document.getElementById('map').style.y = 0 + 'px';
 
-        // TODO
-        var elements = document.getElementsByClassName("CodeMirror");
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].style.height = (window.innerHeight - 100).toString() + 'px';
-        }
+        map.invalidateSize(false);   
 
-        map.invalidateSize(false);
+        fixCodemirror();    
     }
 
     window.addEventListener('resize', resizeMap);
@@ -97,11 +105,50 @@ var map = (function () {
     return map;
 }());
 
-MPZN.bug({
-    name: 'Tangram',
-    tweet: 'WebGL map insanity from @mapzen!',
-    repo: 'https://github.com/tangrams/tangram/'
-});
+function newContent(){
+    console.log("New Content");
+    window.location.href = ".";
+}
+
+function openContent(input){
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        editor.setValue(e.target.result);
+    }
+    reader.readAsText(input.files[0]);
+}
+
+function saveContent(){
+    if (editor) {
+        var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
+        var url = createObjectURL(new Blob([ editor.getValue() ]));
+        scene.reload(url);
+        console.log("Content reloaded");
+    }
+}
+
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+
+var saveDebounced = debounce(function(){
+    saveContent();
+}, 500);
 
 var editor;
 var demoEditor = document.getElementById("editor");
@@ -123,42 +170,8 @@ if(demoEditor){
     });
 
     editor.on("change", function(cm) {
-        
+        saveDebounced();
     });
 }
 
-function newContent(){
-    console.log("New Content");
-    window.location.href = ".";
-}
-
-function openContent(input){
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        editor.setValue(e.target.result);
-    }
-    reader.readAsText(input.files[0]);
-}
-
-function save( _string) {
-    var url = '/save';
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    xhr.onload = function () {
-        window.location.href = "index.html?"+this.responseText;
-    };
-    xhr.send(_string);
-}
-
-function saveContent(){
-    if (editor) {
-        save( editor.getValue() );
-    }
-}
-
-var elements = document.getElementsByClassName("CodeMirror");
-for (var i = 0; i < elements.length; i++) {
-    // elements[i].style.width = '800px';
-    elements[i].style.height = (window.innerHeight - 150).toString() + 'px';
-}
+fixCodemirror();
