@@ -58,7 +58,7 @@ pre {
 div.cm-s-tangram .CodeMirror-cursor { border-left: 2px solid #222; }
 
 .cm-s-tangram .cm-keyword {  color: #6262FF; }
-.cm-s-tangram .cm-atom { color: #F90; }
+.cm-s-tangram .cm-atom { color: #D16768; }
 .cm-s-tangram .cm-number { color:  #ca7841; }
 .cm-s-tangram .cm-def { color: #8DA6CE; }
 .cm-s-tangram span.cm-variable-2, .cm-s-tangram span.cm-tag { color: #690; }

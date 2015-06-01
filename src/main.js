@@ -1,6 +1,9 @@
-var style_file = "styles/default.yaml";
-var style_content = ""; 
+var editor;
 
+var style_file = "styles/default.yaml";
+var style_content = "";
+
+// TOOLS
 function fetchHTTP(url, methood){
     var request = new XMLHttpRequest(), response;
 
@@ -14,6 +17,108 @@ function fetchHTTP(url, methood){
     return response;
 }
 
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+
+function parseQuery(qstr){
+  var query = {};
+  var a = qstr.split('&');
+  for (var i in a){
+    var b = a[i].split('=');
+    query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
+  }
+
+  return query;
+}
+
+// CODE EDITOR
+function newContent(){
+    console.log("New Content");
+    window.location.href = ".";
+}
+
+function openContent(input){
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        editor.setValue(e.target.result);
+    }
+    reader.readAsText(input.files[0]);
+}
+
+var updateContet = debounce(function(){
+    if (editor) {
+        var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
+        var url = createObjectURL(new Blob([ editor.getValue() ]));
+        scene.reload(url);
+    }
+}, 500);
+
+function saveContent(){
+    if (editor) {
+        var blob = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "style.yaml");
+    }
+}
+
+function initEditor(){
+
+    var querry = window.location.search.slice(1);
+
+    var values = parseQuery(querry);
+    console.log(values);
+
+    if (values['location']){
+        style_file = values['location'];
+    }
+
+    // Load style_file into style content
+    style_content = fetchHTTP(style_file);
+
+    var demoEditor = document.getElementById("editor");
+    if(demoEditor){
+        editor = CodeMirror(demoEditor,{
+            value: style_content,
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: "text/x-yaml",
+            keyMap: "sublime",
+            autoCloseBrackets: true,
+            extraKeys: {"Ctrl-Space": "autocomplete"},
+            showCursorWhenSelecting: true,
+            theme: "tangram",
+            lineWrapping: true,
+            autofocus: true,
+            indentUnit: 4
+        });
+
+        editor.on("change", function(cm) {
+            updateContet();
+        });
+    }
+
+    if (values['line']){
+        editor.setSelection( {line:values['line'],ch:0},{line:values['line'],ch:100},{scroll:true} );
+    }
+    
+}
+
+// Parse Querry string to LOAD options
+
+
+// TANGRAM
+initEditor();
 var map = (function () {
     'use strict';
     var map_start_location = [40.70531887544228, -74.00976419448853, 16];
@@ -29,24 +134,7 @@ var map = (function () {
         map_start_location = map_start_location.map(Number);
     }
 
-    var style_file = 'styles/default.yaml';
-    var url_search = window.location.search.slice(1);
-    if (url_search.length > 0) {
-        console.log(url_search);
-        var ext = url_search.substr(url_search.lastIndexOf('.') + 1);
-        if (ext == "yaml" || ext == "yaml/") {
-            style_file = 'styles/'+url_search;
-            console.log('LOADING' + url_search + ' STYLE');
-        } else {
-            style_file = 'styles/'+url_search+'.yaml';
-            console.log('LOADING' + url_search + ' STYLE and INFO');
-        }
-    }
-
-    style_content = fetchHTTP(style_file);
-
     /*** Map ***/
-
     var map = L.map('map',
         { zoomControl: false },
         {'keyboardZoomOffset': .05}
@@ -79,71 +167,3 @@ var map = (function () {
 
     return map;
 }());
-
-function newContent(){
-    console.log("New Content");
-    window.location.href = ".";
-}
-
-function openContent(input){
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        editor.setValue(e.target.result);
-    }
-    reader.readAsText(input.files[0]);
-}
-
-function saveContent(){
-    if (editor) {
-        var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
-        var url = createObjectURL(new Blob([ editor.getValue() ]));
-        scene.reload(url);
-        console.log("Content reloaded");
-    }
-}
-
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
-var saveDebounced = debounce(function(){
-    saveContent();
-}, 500);
-
-var editor;
-var demoEditor = document.getElementById("editor");
-if(demoEditor){
-    editor = CodeMirror(demoEditor,{
-        value: style_content,
-        lineNumbers: true,
-        matchBrackets: true,
-        mode: "text/x-yaml",
-        keyMap: "sublime",
-        autoCloseBrackets: true,
-        extraKeys: {"Ctrl-Space": "autocomplete"},
-        showCursorWhenSelecting: true,
-        theme: "tangram",
-        lineWrapping: true,
-        autofocus: true,
-        indentUnit: 4
-    });
-
-    editor.on("change", function(cm) {
-        saveDebounced();
-    });
-}
