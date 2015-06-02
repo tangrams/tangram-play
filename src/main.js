@@ -1,9 +1,9 @@
-var editor;
-
+var querry, editor, map;
 var style_file = "styles/default.yaml";
 var style_content = "";
 
 // TOOLS
+//----------------------------------------------
 function fetchHTTP(url, methood){
     var request = new XMLHttpRequest(), response;
 
@@ -43,6 +43,14 @@ function parseQuery(qstr){
   return query;
 }
 
+function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
+
+function jumpToLine(i) { 
+    var t = editor.charCoords({line: i, ch: 0}, "local").top; 
+    var middleHeight = editor.getScrollerElement().offsetHeight / 2; 
+    editor.scrollTo(null, t - middleHeight - 5); 
+} 
+
 function selectLine( nLine ){
     if (editor) {
         editor.setSelection({ line: nLine, ch:0},
@@ -54,6 +62,7 @@ function selectLines( _string ){
     if (editor) {
         if ( isNumber(_string) ){
             selectLine(parseInt(_string)-1);
+            jumpToLine(parseInt(_string)-1);
         } else {
             var lines = _string.split('-');
             var from = parseInt(lines[0])-1;
@@ -61,13 +70,13 @@ function selectLines( _string ){
 
             editor.setSelection({ line: from, ch:0},
                                 { line: to, ch:editor.lineInfo(to).text.length } );
+            jumpToLine(from);
         }
     }
 }
 
-function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
-
 // CODE EDITOR
+//----------------------------------------------
 function newContent(){
     console.log("New Content");
     window.location.href = ".";
@@ -97,14 +106,11 @@ function saveContent(){
 }
 
 function initEditor(){
+    querry = parseQuery(window.location.search.slice(1));
+    console.log(querry);
 
-    var querry = window.location.search.slice(1);
-
-    var values = parseQuery(querry);
-    console.log(values);
-
-    if (values['location']){
-        style_file = values['location'];
+    if (querry['location']){
+        style_file = querry['location'];
     }
 
     // Load style_file into style content
@@ -130,17 +136,18 @@ function initEditor(){
         editor.on("change", function(cm) {
             updateContet();
         });
-    }
+    }  
+}
 
-    if (values['lines']){
-        selectLines(values['lines']);
-    }
-    
+function setupEditor(){
+    if (querry['lines']){
+        selectLines(querry['lines']);
+    } 
 }
 
 // TANGRAM
-initEditor();
-var map = (function () {
+//----------------------------------------------
+function initMap() {
     'use strict';
     var map_start_location = [40.70531887544228, -74.00976419448853, 16];
 
@@ -156,7 +163,7 @@ var map = (function () {
     }
 
     /*** Map ***/
-    var map = L.map('map',
+    map = L.map('map',
         { zoomControl: false },
         {'keyboardZoomOffset': .05}
     );
@@ -185,6 +192,26 @@ var map = (function () {
     if (window.self !== window.top) {
       map.scrollWheelZoom.disable();
     }
+}
 
-    return map;
-}());
+// Events
+//----------------------------------------------
+function resizeMap() {
+    var menu = document.getElementById("menu");
+    var elements = document.getElementsByClassName("CodeMirror-scroll");
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.height = (window.innerHeight) + 'px';
+        console.log("resize " + i + " to " + elements[i].style.height)
+    }
+}
+
+window.addEventListener('resize', resizeMap);
+
+// MAIN
+//----------------------------------------------
+initEditor();
+
+initMap();
+resizeMap();
+
+setupEditor();
