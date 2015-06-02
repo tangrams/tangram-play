@@ -166,8 +166,8 @@ function saveContent(){
 function initEditor(){
     querry = parseQuery(window.location.search.slice(1));
 
-    if (querry['location']){
-        style_file = querry['location'];
+    if (querry['style']){
+        style_file = querry['style'];
     }
 
     // Load style_file into style content
