@@ -43,6 +43,30 @@ function parseQuery(qstr){
   return query;
 }
 
+function selectLine( nLine ){
+    if (editor) {
+        editor.setSelection({ line: nLine, ch:0},
+                            { line: nLine, ch:editor.lineInfo(nLine).text.length } );
+    }
+}
+
+function selectLines( _string ){
+    if (editor) {
+        if ( isNumber(_string) ){
+            selectLine(parseInt(_string)-1);
+        } else {
+            var lines = _string.split('-');
+            var from = parseInt(lines[0])-1;
+            var to = parseInt(lines[1])-1;
+
+            editor.setSelection({ line: from, ch:0},
+                                { line: to, ch:editor.lineInfo(to).text.length } );
+        }
+    }
+}
+
+function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
+
 // CODE EDITOR
 function newContent(){
     console.log("New Content");
@@ -108,14 +132,11 @@ function initEditor(){
         });
     }
 
-    if (values['line']){
-        editor.setSelection( {line:values['line'],ch:0},{line:values['line'],ch:100},{scroll:true} );
+    if (values['lines']){
+        selectLines(values['lines']);
     }
     
 }
-
-// Parse Querry string to LOAD options
-
 
 // TANGRAM
 initEditor();
