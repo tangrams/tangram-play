@@ -75,64 +75,50 @@ function selectLines( _string ){
     }
 }
 
-// function foldByLevel(cm, level) {
-//     foldByNodeOrder(cm, 0);
-//     // initialize vars
-//     var cursor = cm.getCursor();
-//     cursor.ch = 0;
-//     cursor.line = 0;
-//     var range = cm.getViewport();
-//     foldByLevelRec(cm, cursor, range, level);
-// };
+function unfoldAll() {
+    var opts = editor.state.foldGutter.options;
+    for (var i = 0; i < editor.lineCount() ; i++) {
+        editor.foldCode({ line: i }, opts.rangeFinder, "unfold");
+    }
+}
 
-// function foldByLevelRec(cm, cursor, range, level) {
-//     if (level > 0) {
-//         var searcher = cm.getSearchCursor("<", cursor, false);
-//         while (searcher.findNext() && searcher.pos.from.line < range.to) {
-//             // unfold the tag
-//             cm.foldCode(searcher.pos.from, null, "unfold");
-//             // move the cursor into the tag
-//             cursor = searcher.pos.from;
-//             cursor.ch = searcher.pos.from.ch + 1;
-//             // find the closing tag
-//             var match = CodeMirror.findMatchingTag(cm, cursor, range);
-//             if (match) {
-//                 if (match.close) {
-//                     // create the inner-range and jump the searcher after the ending tag
-//                     var innerrange = { from: range.from, to: range.to };
-//                     innerrange.from = cursor.line + 1;
-//                     innerrange.to = match.close.to.line;
-//                     // the recursive call
-//                     foldByLevelRec(cm, cursor, innerrange, level - 1);
-//                 }
-//                 // move to the next element in the same tag of this function scope
-//                 var nextcursor = { line: cursor.line, to: cursor.ch };
-//                 if (match.close) {
-//                     nextcursor.line = match.close.to.line;
-//                 }
-//                 nextcursor.ch = 0;
-//                 nextcursor.line = nextcursor.line + 1;
-//                 searcher = cm.getSearchCursor("\t", nextcursor, false);
-//             }
-//         }
-//     }
-// }
+function foldByNodeOrder(node) {
+    var opts = editor.state.foldGutter.options;
 
-// function foldByNodeOrder(cm, node) {
-//     // 0 - fold all
-//     unfoldAll(cm);
-//     node++;
-//     for (var l = cm.firstLine() ; l <= cm.lastLine() ; ++l)
-//         if (node == 0)
-//             cm.foldCode({ line: l, ch: 0 }, null, "fold");
-//         else node--;
-// }
+    unfoldAll(editor);
+    node++;
+    for (var l = editor.firstLine() ; l <= editor.lastLine() ; ++l)
+        if (node == 0)
+            editor.foldCode({ line: l, ch: 0 }, opts.rangeFinder, "fold");
+        else node--;
+}
 
-// function unfoldAll() {
-//     for (var i = 0; i < editor.lineCount() ; i++) {
-//         editor.foldCode({ line: i }, null, "unfold");
-//     }
-// }
+function getLevel(nLine){
+    return Math.floor( (editor.lineInfo(nLine).text.match(/\s/g) || []).length / editor.getOption("tabSize"));
+}
+
+function isFolder(nLine){
+    if ( editor.lineInfo(nLine).gutterMarkers ){
+        return editor.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
+    } else {
+        return false;
+    }
+}
+
+function foldByLevel(level) {    
+    var opts = editor.state.foldGutter.options;
+
+    var actualLine = 0;
+    var lastLine = editor.getDoc().size;
+    while ( actualLine < lastLine) {
+        if ( isFolder(actualLine) ){
+            if (getLevel(actualLine) === level){
+                editor.foldCode({line:actualLine,ch:0}, opts.rangeFinder);
+            }
+        }
+        actualLine++;
+    }
+};
 
 // CODE EDITOR
 //----------------------------------------------
@@ -149,11 +135,9 @@ function openContent(input){
 }
 
 var updateContet = debounce(function(){
-    if (editor) {
-        var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
-        var url = createObjectURL(new Blob([ editor.getValue() ]));
-        scene.reload(url);
-    }
+    var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
+    var url = createObjectURL(new Blob([ editor.getValue() ]));
+    scene.reload(url);
 }, 500);
 
 function saveContent(){
@@ -182,7 +166,21 @@ function initEditor(){
             mode: "text/x-yaml",
             keyMap: "sublime",
             autoCloseBrackets: true,
-            extraKeys: { },
+            extraKeys: {"Alt-F" : function(cm) {
+                                        var pos = cm.getCursor();
+                                        var opts = cm.state.foldGutter.options;
+                                        cm.foldCode(pos, opts.rangeFinder);
+                                    } ,
+                        "Ctrl-0" : function(cm){unfoldAll()},
+                        "Ctrl-1" : function(cm){unfoldAll(); foldByLevel(0)},
+                        "Ctrl-2" : function(cm){unfoldAll(); foldByLevel(1)},
+                        "Ctrl-3" : function(cm){unfoldAll(); foldByLevel(2)},
+                        "Ctrl-4" : function(cm){unfoldAll(); foldByLevel(3)},
+                        "Ctrl-5" : function(cm){unfoldAll(); foldByLevel(4)},
+                        "Ctrl-6" : function(cm){unfoldAll(); foldByLevel(5)},
+                        "Ctrl-7" : function(cm){unfoldAll(); foldByLevel(6)},
+                        "Ctrl-8" : function(cm){unfoldAll(); foldByLevel(7)}
+            },
             foldGutter: { 
                 rangeFinder: CodeMirror.fold.indent
             },
@@ -271,3 +269,12 @@ initMap();
 resizeMap();
 
 setupEditor();
+
+if (querry['foldLevel']){
+    setTimeout(function () {
+        console.log("folding level " + querry['foldLevel']);
+        unfoldAll();
+        foldByLevel(parseInt(querry['foldLevel']));
+    }, 1000);
+    
+}
