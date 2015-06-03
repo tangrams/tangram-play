@@ -45,6 +45,29 @@ function parseQuery(qstr){
 
 function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
 
+function getLevel(nLine){
+    return Math.floor( (editor.lineInfo(nLine).text.match(/\s/g) || []).length / editor.getOption("tabSize"));
+}
+
+function isFolder(nLine){
+    if ( editor.lineInfo(nLine).gutterMarkers ){
+        return editor.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
+    } else {
+        return false;
+    }
+}
+
+function isFold(nLine){
+    if (nLine >= 0){
+
+    }
+    if ( isFolder(nLine) ){
+        return editor.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
+    } else {
+        return false;
+    }
+}
+
 function jumpToLine(i) { 
     var t = editor.charCoords({line: i-1, ch: 0}, "local").top; 
     // var middleHeight = editor.getScrollerElement().offsetHeight / 2; 
@@ -60,17 +83,76 @@ function selectLine( nLine ){
 
 function selectLines( _string ){
     if (editor) {
+        var from, to;
+
         if ( isNumber(_string) ){
-            selectLine(parseInt(_string)-1);
-            jumpToLine(parseInt(_string)-1);
+            from = parseInt(_string)-1;
+            to = from; 
         } else {
             var lines = _string.split('-');
-            var from = parseInt(lines[0])-1;
-            var to = parseInt(lines[1])-1;
+            from = parseInt(lines[0])-1;
+            to = parseInt(lines[1])-1;
+        }
 
-            editor.setSelection({ line: from, ch:0},
-                                { line: to, ch:editor.lineInfo(to).text.length } );
-            jumpToLine(from);
+        if (querry['foldLevel']){
+            foldAllBut(from,to,querry['foldLevel']);
+        }
+        
+        editor.setSelection({ line: from, ch:0},
+                            { line: to, ch:editor.lineInfo(to).text.length } );
+        jumpToLine(from);
+    }
+}
+
+function foldAllBut(From, To, querryLevel) {
+    foldByLevel(querryLevel);
+
+    // get minimum indentation
+    var minLevel = 10;
+    var startOn = To;
+    var onBlock = true;
+
+    for (var i = From-1; i >= 0; i--) {
+
+        var level = getLevel(i);
+
+        if (level === 0){
+            break;
+        }
+
+        if (level < minLevel ){
+            minLevel = level;
+        } else if (onBlock) {
+            startOn = i;
+            onBlock = false;
+        }
+    }
+
+    minLevel = 10;
+    for (var i = To; i >= From; i--) {
+        var level = getLevel(i);
+        var chars = editor.lineInfo(i).text.length;
+        if (level < minLevel && chars > 0){
+            minLevel = level;
+        }
+    }
+    var opts = editor.state.foldGutter.options;
+
+    for (var i = startOn; i >= 0; i--) {
+        var level = getLevel(i);
+
+        if (level === 0 && editor.lineInfo(i).text.length > 0){
+            break;
+        }
+
+        if ( level <= minLevel ){
+            editor.foldCode({ line: i }, opts.rangeFinder, "fold");
+        }
+    }
+
+    for (var i = To; i < editor.lineCount() ; i++) {
+        if (getLevel(i) >= querryLevel){
+            editor.foldCode({ line: i }, opts.rangeFinder, "fold");
         }
     }
 }
@@ -79,29 +161,6 @@ function unfoldAll() {
     var opts = editor.state.foldGutter.options;
     for (var i = 0; i < editor.lineCount() ; i++) {
         editor.foldCode({ line: i }, opts.rangeFinder, "unfold");
-    }
-}
-
-function foldByNodeOrder(node) {
-    var opts = editor.state.foldGutter.options;
-
-    unfoldAll(editor);
-    node++;
-    for (var l = editor.firstLine() ; l <= editor.lastLine() ; ++l)
-        if (node == 0)
-            editor.foldCode({ line: l, ch: 0 }, opts.rangeFinder, "fold");
-        else node--;
-}
-
-function getLevel(nLine){
-    return Math.floor( (editor.lineInfo(nLine).text.match(/\s/g) || []).length / editor.getOption("tabSize"));
-}
-
-function isFolder(nLine){
-    if ( editor.lineInfo(nLine).gutterMarkers ){
-        return editor.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
-    } else {
-        return false;
     }
 }
 
@@ -199,6 +258,11 @@ function initEditor(){
 }
 
 function setupEditor(){
+    if (querry['foldLevel']){
+        unfoldAll();
+        foldByLevel(parseInt(querry['foldLevel']));
+    }
+
     if (querry['lines']){
         selectLines(querry['lines']);
     } 
@@ -268,13 +332,6 @@ initEditor();
 initMap();
 resizeMap();
 
-setupEditor();
-
-if (querry['foldLevel']){
-    setTimeout(function () {
-        console.log("folding level " + querry['foldLevel']);
-        unfoldAll();
-        foldByLevel(parseInt(querry['foldLevel']));
-    }, 1000);
-    
-}
+setTimeout(function () {
+    setupEditor();
+}, 1000);
