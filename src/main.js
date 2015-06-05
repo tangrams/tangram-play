@@ -34,7 +34,11 @@ function initEditor(){
             mode: "text/x-yaml",
             keyMap: "sublime",
             autoCloseBrackets: true,
-            extraKeys: {"Alt-F" : function(cm) {
+            extraKeys: {'Tab': function(cm) { 
+                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                            cm.replaceSelection(spaces);
+                        },
+                        "Alt-F" : function(cm) {
                                         var pos = cm.getCursor();
                                         var opts = cm.state.foldGutter.options;
                                         cm.foldCode(pos, opts.rangeFinder);
