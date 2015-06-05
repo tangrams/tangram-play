@@ -1,210 +1,16 @@
 var querry, editor, map;
-var style_file = "styles/default.yaml";
-var style_content = "";
-
-// TOOLS
-//----------------------------------------------
-function fetchHTTP(url, methood){
-    var request = new XMLHttpRequest(), response;
-
-    request.onreadystatechange = function () {
-        if (request.readyState === 4 && request.status === 200) {
-            response = request.responseText;
-        }
-    }
-    request.open(methood ? methood : 'GET', url, false);
-    request.send();
-    return response;
-}
-
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
-function parseQuery(qstr){
-  var query = {};
-  var a = qstr.split('&');
-  for (var i in a){
-    var b = a[i].split('=');
-    query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
-  }
-
-  return query;
-}
-
-function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
-
-function getLevel(nLine){
-    return Math.floor( (editor.lineInfo(nLine).text.match(/\s/g) || []).length / editor.getOption("tabSize"));
-}
-
-function isFolder(nLine){
-    if ( editor.lineInfo(nLine).gutterMarkers ){
-        return editor.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
-    } else {
-        return false;
-    }
-}
-
-function isFold(nLine){
-    if (nLine >= 0){
-
-    }
-    if ( isFolder(nLine) ){
-        return editor.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
-    } else {
-        return false;
-    }
-}
-
-function jumpToLine(i) { 
-    var t = editor.charCoords({line: i-1, ch: 0}, "local").top; 
-    // var middleHeight = editor.getScrollerElement().offsetHeight / 2; 
-    editor.scrollTo(null, t);// - middleHeight - 5); 
-} 
-
-function selectLine( nLine ){
-    if (editor) {
-        editor.setSelection({ line: nLine, ch:0},
-                            { line: nLine, ch:editor.lineInfo(nLine).text.length } );
-    }
-}
-
-function selectLines( _string ){
-    if (editor) {
-        var from, to;
-
-        if ( isNumber(_string) ){
-            from = parseInt(_string)-1;
-            to = from; 
-        } else {
-            var lines = _string.split('-');
-            from = parseInt(lines[0])-1;
-            to = parseInt(lines[1])-1;
-        }
-
-        if (querry['foldLevel']){
-            foldAllBut(from,to,querry['foldLevel']);
-        }
-        
-        editor.setSelection({ line: from, ch:0},
-                            { line: to, ch:editor.lineInfo(to).text.length } );
-        jumpToLine(from);
-    }
-}
-
-function foldAllBut(From, To, querryLevel) {
-    foldByLevel(querryLevel);
-
-    // get minimum indentation
-    var minLevel = 10;
-    var startOn = To;
-    var onBlock = true;
-
-    for (var i = From-1; i >= 0; i--) {
-
-        var level = getLevel(i);
-
-        if (level === 0){
-            break;
-        }
-
-        if (level < minLevel ){
-            minLevel = level;
-        } else if (onBlock) {
-            startOn = i;
-            onBlock = false;
-        }
-    }
-
-    minLevel = 10;
-    for (var i = To; i >= From; i--) {
-        var level = getLevel(i);
-        var chars = editor.lineInfo(i).text.length;
-        if (level < minLevel && chars > 0){
-            minLevel = level;
-        }
-    }
-    var opts = editor.state.foldGutter.options;
-
-    for (var i = startOn; i >= 0; i--) {
-        var level = getLevel(i);
-
-        if (level === 0 && editor.lineInfo(i).text.length > 0){
-            break;
-        }
-
-        if ( level <= minLevel ){
-            editor.foldCode({ line: i }, opts.rangeFinder, "fold");
-        }
-    }
-
-    for (var i = To; i < editor.lineCount() ; i++) {
-        if (getLevel(i) >= querryLevel){
-            editor.foldCode({ line: i }, opts.rangeFinder, "fold");
-        }
-    }
-}
-
-function unfoldAll() {
-    var opts = editor.state.foldGutter.options;
-    for (var i = 0; i < editor.lineCount() ; i++) {
-        editor.foldCode({ line: i }, opts.rangeFinder, "unfold");
-    }
-}
-
-function foldByLevel(level) {    
-    var opts = editor.state.foldGutter.options;
-
-    var actualLine = 0;
-    var lastLine = editor.getDoc().size;
-    while ( actualLine < lastLine) {
-        if ( isFolder(actualLine) ){
-            if (getLevel(actualLine) === level){
-                editor.foldCode({line:actualLine,ch:0}, opts.rangeFinder);
-            }
-        }
-        actualLine++;
-    }
-};
+var examples_file = "data/examples.json";
+var examples_data;
+var style_file = "data/default.yaml";
+var style_data = "";
 
 // CODE EDITOR
 //----------------------------------------------
-function newContent(){
-    window.location.href = ".";
-}
-
-function openContent(input){
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        editor.setValue(e.target.result);
-    }
-    reader.readAsText(input.files[0]);
-}
-
 var updateContet = debounce(function(){
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
     var url = createObjectURL(new Blob([ editor.getValue() ]));
     scene.reload(url);
 }, 500);
-
-function saveContent(){
-    if (editor) {
-        var blob = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "style.yaml");
-    }
-}
 
 function initEditor(){
     querry = parseQuery(window.location.search.slice(1));
@@ -214,12 +20,12 @@ function initEditor(){
     }
 
     // Load style_file into style content
-    style_content = fetchHTTP(style_file);
+    style_data = fetchHTTP(style_file);
 
     var demoEditor = document.getElementById("editor");
     if(demoEditor){
         editor = CodeMirror(demoEditor,{
-            value: style_content,
+            value: style_data,
             lineNumbers: true,
             matchBrackets: true,
             mode: "text/x-yaml",
@@ -230,15 +36,15 @@ function initEditor(){
                                         var opts = cm.state.foldGutter.options;
                                         cm.foldCode(pos, opts.rangeFinder);
                                     } ,
-                        "Ctrl-0" : function(cm){unfoldAll()},
-                        "Ctrl-1" : function(cm){unfoldAll(); foldByLevel(0)},
-                        "Ctrl-2" : function(cm){unfoldAll(); foldByLevel(1)},
-                        "Ctrl-3" : function(cm){unfoldAll(); foldByLevel(2)},
-                        "Ctrl-4" : function(cm){unfoldAll(); foldByLevel(3)},
-                        "Ctrl-5" : function(cm){unfoldAll(); foldByLevel(4)},
-                        "Ctrl-6" : function(cm){unfoldAll(); foldByLevel(5)},
-                        "Ctrl-7" : function(cm){unfoldAll(); foldByLevel(6)},
-                        "Ctrl-8" : function(cm){unfoldAll(); foldByLevel(7)}
+                        "Ctrl-0" : function(cm){unfoldAll(cm)},
+                        "Ctrl-1" : function(cm){unfoldAll(cm); foldByLevel(cm,0)},
+                        "Ctrl-2" : function(cm){unfoldAll(cm); foldByLevel(cm,1)},
+                        "Ctrl-3" : function(cm){unfoldAll(cm); foldByLevel(cm,2)},
+                        "Ctrl-4" : function(cm){unfoldAll(cm); foldByLevel(cm,3)},
+                        "Ctrl-5" : function(cm){unfoldAll(cm); foldByLevel(cm,4)},
+                        "Ctrl-6" : function(cm){unfoldAll(cm); foldByLevel(cm,5)},
+                        "Ctrl-7" : function(cm){unfoldAll(cm); foldByLevel(cm,6)},
+                        "Ctrl-8" : function(cm){unfoldAll(cm); foldByLevel(cm,7)}
             },
             foldGutter: { 
                 rangeFinder: CodeMirror.fold.indent
@@ -257,15 +63,23 @@ function initEditor(){
     }  
 }
 
-function setupEditor(){
-    if (querry['foldLevel']){
-        unfoldAll();
-        foldByLevel(parseInt(querry['foldLevel']));
-    }
+function loadExamples() {
 
-    if (querry['lines']){
-        selectLines(querry['lines']);
-    } 
+    examples_data = JSON.parse(fetchHTTP("data/examples.json"));
+    var examplesList = document.getElementById("examples");
+
+    examplesList.onkeydown = function(){
+        blur();
+    };
+
+    for (var i = 0; i < examples_data['all'].length; i++ ){
+        var example = examples_data[ examples_data['all'][i] ];
+        // console.log(example);
+        var newOption = document.createElement("option");
+        newOption.value = example['url'];
+        newOption.innerHTML= example['name'];
+        examplesList.appendChild(newOption);
+    }
 }
 
 // TANGRAM
@@ -319,6 +133,30 @@ function initMap() {
 
 // Events
 //----------------------------------------------
+function newContent(){
+    window.location.href = ".";
+}
+
+function openExample(select){
+    var option = select.options[select.selectedIndex].value;
+    window.location.href = ".?style="+option;
+}
+
+function openContent(input){
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        editor.setValue(e.target.result);
+    }
+    reader.readAsText(input.files[0]);
+}
+
+function saveContent(){
+    if (editor) {
+        var blob = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "style.yaml");
+    }
+}
+
 function resizeMap() {
     editor.setSize('100%',(window.innerHeight-31) + 'px');
 }
@@ -328,10 +166,22 @@ window.addEventListener('resize', resizeMap);
 // MAIN
 //----------------------------------------------
 initEditor();
-
 initMap();
+
 resizeMap();
 
+loadExamples();
+
+// Once everything is loaded
 setTimeout(function () {
-    setupEditor();
+
+    if (querry['foldLevel']){
+        unfoldAll(editor);
+        foldByLevel(editor,parseInt(querry['foldLevel']));
+    }
+
+    if (querry['lines']){
+        selectLines(editor,querry['lines']);
+    } 
+
 }, 1000);
