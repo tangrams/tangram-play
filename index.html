@@ -13,6 +13,13 @@
 
     <title>Tangram Play</title>
 
+    <!-- Tangram -->
+    <link rel="stylesheet" href="src/leaflet/leaflet.css" />
+    <script src="src/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
+    <script src="src/leaflet-hash.js"></script>     <!-- bog-standard leaflet URL hash -->
+    <!-- // <script src="https://mapzen.com/tangram/0.1/tangram.min.js"></script>  -->
+    <script src="src/tangram.min.js"></script>
+
     <!-- CodeMirror -->
     <link type='text/css' rel='stylesheet' href="src/codemirror/css/codemirror.css">
     <link type='text/css' rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css"> 
@@ -33,25 +40,17 @@
     <script type="text/javascript" src="src/codemirror/addon/hint/show-hint.js"></script>
     <script type="text/javascript" src="src/codemirror/mode/yaml.js"></script>
 
-    <!-- Other tools -->
-    <script type="text/javascript" src="src/FileSaver.min.js"></script>
-
     <!-- Main style -->
     <link type='text/css' rel="stylesheet" href="css/style.css" />
-
-
   </head>
 
-  <body><!-- CodeMirror -->
-
-    <!-- Tangram -->
-    <div>
+  <body>
+    <div id="wrapper">
         <div id="map"></div>
-        <link rel="stylesheet" href="src/leaflet/leaflet.css" />
-        <script src="src/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
-        <script src="src/leaflet-hash.js"></script> <!-- bog-standard leaflet URL hash -->
-        <!-- // <script src="https://mapzen.com/tangram/0.1/tangram.min.js"></script>  -->
-        <script src="src/tangram.min.js"></script>
+
+        <div id="divider"   onmousedown="dragStart(event); return false;" 
+                            onmousemove="drag(event);" 
+                            onmouseout="dragRelease();" onmouseup="dragRelease();"> </div>
 
         <div id="content">
             <ul id="menu-holder" class="menu" >
@@ -62,19 +61,18 @@
             </ul>
             <div id="editor"></div>
         </div>
-
-        <div style="clear:both;">
     </div>
 
-    <!-- Brains -->
-    <script src='src/tools.js'></script>
-    <script src='src/cm-tools.js'></script>
-    <script src='src/main.js'></script>
+    <!-- IDE -->
+    <script type="text/javascript" src="src/FileSaver.min.js"></script>
+    <script type="text/javascript" src='src/tools.js'></script>
+    <script type="text/javascript" src='src/cm-tools.js'></script>
+    <script type="text/javascript" src='src/main.js'></script>
 
     <!-- Adding a script block to post message to the parent container (think iframed demos) -->
     <script type="text/javascript">
       window.addEventListener("hashchange",function(){parent.postMessage(window.location.hash, "*")});
     </script>
-
   </body>
+
 </html>

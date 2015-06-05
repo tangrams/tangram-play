@@ -157,8 +157,33 @@ function saveContent(){
     }
 }
 
+var dragX = window.innerWidth/2.;
+
 function resizeMap() {
+    var width = document.getElementById('divider').offsetWidth;
+    document.getElementById('map').style.width = (dragX) + "px";
+    document.getElementById('divider').style.left = (dragX-width/2) + "px";
+    document.getElementById('content').style.marginLeft = document.getElementById('map').offsetWidth + "px";
     editor.setSize('100%',(window.innerHeight-31) + 'px');
+    map.invalidateSize(false);
+}
+
+function dragStart(event){
+    mousedown = true;
+    x = event.clientX;
+} 
+
+function drag(event){
+    if (!mousedown) {
+        return
+    }
+    dragX = event.clientX;
+    resizeMap();
+}
+
+function dragRelease(){
+    resizeMap()
+    mousedown = false;
 }
 
 window.addEventListener('resize', resizeMap);
@@ -169,6 +194,8 @@ initEditor();
 initMap();
 
 resizeMap();
+// document.getElementById('panemover').style.left = window.innerWidth/2.0;
+
 
 loadExamples();
 

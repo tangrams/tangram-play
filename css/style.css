@@ -2,13 +2,26 @@ body {
     margin: 0px;
     border: 0px;
     padding: 0px;
-    background: #272822;
 }
 
+/* TANGRAM */
 #map {
     position: fixed;
     height: 100%;
     width: 50%;
+}
+
+/* DRAGABLE LINE */
+
+#divider {
+    position: absolute;
+    width : 30px;
+    height : 100%;
+    vertical-align : top;
+    opacity: 0;
+    color: red;
+    background-color: red;
+    z-index: 10;
 }
 
 /* EDITOR */
@@ -17,7 +30,7 @@ body {
     background: #272822;
     position: absolute;
     margin-left: 50%;
-    width: 50%;
+    vertical-align : top;
 }
 
 .menu {
