@@ -4,6 +4,9 @@ var examples_data;
 var style_file = "data/default.yaml";
 var style_data = "";
 
+var mousedown = false,
+    dragX = window.innerWidth/2.;
+
 // CODE EDITOR
 //----------------------------------------------
 var updateContet = debounce(function(){
@@ -157,8 +160,6 @@ function saveContent(){
     }
 }
 
-var dragX = window.innerWidth/2.;
-
 function resizeMap() {
     var width = document.getElementById('divider').offsetWidth;
     document.getElementById('map').style.width = (dragX) + "px";
@@ -170,20 +171,17 @@ function resizeMap() {
 
 function dragStart(event){
     mousedown = true;
-    x = event.clientX;
 } 
 
 function drag(event){
-    if (!mousedown) {
-        return
-    }
+    if (!mousedown) return;
     dragX = event.clientX;
     resizeMap();
 }
 
 function dragRelease(){
-    resizeMap()
     mousedown = false;
+    resizeMap();
 }
 
 window.addEventListener('resize', resizeMap);
@@ -194,9 +192,6 @@ initEditor();
 initMap();
 
 resizeMap();
-// document.getElementById('panemover').style.left = window.innerWidth/2.0;
-
-
 loadExamples();
 
 // Once everything is loaded
