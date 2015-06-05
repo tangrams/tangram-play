@@ -63,6 +63,8 @@ function initEditor(){
         editor.on("change", function(cm) {
             updateContet();
         });
+
+        var inlet = Inlet(editor);
     }  
 }
 
