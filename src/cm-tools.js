@@ -115,7 +115,8 @@ function unfoldAll(cm) {
 
 //  Fold all lines above a specific indentation level
 //
-function foldByLevel(cm, level) {    
+function foldByLevel(cm, level) {  
+    unfoldAll(cm);  
     var opts = cm.state.foldGutter.options;
 
     var actualLine = cm.getDoc().size-1;

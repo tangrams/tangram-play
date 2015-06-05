@@ -44,14 +44,14 @@ function initEditor(){
                                         cm.foldCode(pos, opts.rangeFinder);
                                     } ,
                         "Ctrl-0" : function(cm){unfoldAll(cm)},
-                        "Ctrl-1" : function(cm){unfoldAll(cm); foldByLevel(cm,0)},
-                        "Ctrl-2" : function(cm){unfoldAll(cm); foldByLevel(cm,1)},
-                        "Ctrl-3" : function(cm){unfoldAll(cm); foldByLevel(cm,2)},
-                        "Ctrl-4" : function(cm){unfoldAll(cm); foldByLevel(cm,3)},
-                        "Ctrl-5" : function(cm){unfoldAll(cm); foldByLevel(cm,4)},
-                        "Ctrl-6" : function(cm){unfoldAll(cm); foldByLevel(cm,5)},
-                        "Ctrl-7" : function(cm){unfoldAll(cm); foldByLevel(cm,6)},
-                        "Ctrl-8" : function(cm){unfoldAll(cm); foldByLevel(cm,7)}
+                        "Ctrl-1" : function(cm){foldByLevel(cm,0)},
+                        "Ctrl-2" : function(cm){foldByLevel(cm,1)},
+                        "Ctrl-3" : function(cm){foldByLevel(cm,2)},
+                        "Ctrl-4" : function(cm){foldByLevel(cm,3)},
+                        "Ctrl-5" : function(cm){foldByLevel(cm,4)},
+                        "Ctrl-6" : function(cm){foldByLevel(cm,5)},
+                        "Ctrl-7" : function(cm){foldByLevel(cm,6)},
+                        "Ctrl-8" : function(cm){foldByLevel(cm,7)}
             },
             foldGutter: { 
                 rangeFinder: CodeMirror.fold.indent
