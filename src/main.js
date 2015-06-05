@@ -167,6 +167,7 @@ function resizeMap() {
     document.getElementById('map').style.width = (dragX) + "px";
     document.getElementById('divider').style.left = (dragX-width/2) + "px";
     document.getElementById('content').style.marginLeft = document.getElementById('map').offsetWidth + "px";
+    document.getElementById('content').style.width =  (window.innerWidth - dragX) + "px"
     editor.setSize('100%',(window.innerHeight-31) + 'px');
     map.invalidateSize(false);
 }
