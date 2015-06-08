@@ -23,16 +23,19 @@ function isEmpty(cm, nLine){
 //  Check if the line is commented YAML style 
 //
 function isCommented(cm, nLine){
-    return (cm.lineInfo(nLine).text.match(/\#\s*\w+/g) || []).length > 0;
+    var regex = /^\s*[\#||\/\/]/gm;
+    return (regex.exec(cm.lineInfo(nLine).text) || []).length > 0;
 }
 
 // Check if a line is commented
 //
 function getLineTag(cm, nLine){
     if (nLine >= 0){
-        var tags = (cm.lineInfo(nLine).text.match(/(\w+):/g) || []);
+        var regex = /^\s*(\w+):/gm;
+        var tags = ( regex.exec(cm.lineInfo(nLine).text) || []);
+        console.log(tags);
         if (tags.length > 0){
-            return { 'line': nLine, 'name' : tags[0].slice(0,-1) };
+            return { 'line': nLine, 'name' : tags[1] };
         } else {
             return getLineTag(cm, nLine-1);
         }
@@ -75,7 +78,7 @@ function getInverseTags(cm, nLine){
 
 // Get array of YAML tags parent tree of a particular line
 //
-function getTags(cm, nLine){
+function getTags(cm, nLine) {
     var invTags = getInverseTags(cm, nLine);
     var tags = [];
     for (var i = invTags.length-1; i >= 0; i--){
@@ -106,6 +109,28 @@ function tagsToAddress(tags){
         address += "/" + tags[i] ;
     }
     return address;
+}
+
+//  Function that check if a line is inside a Color Shader Block
+//
+function getColorBlockShader(cm, nLine) {
+    var invTags = getInverseTags(cm, nLine)
+    var address = tagsToAddress( invTags );
+
+    // console.log(address); 
+    // console.log(address.indexOf("/color/blocks/shaders/"));
+    if (address.indexOf("/color/blocks/shaders/") === 0){
+        var styleName = invTags[3];
+        console.log(styleName);
+        var style = scene.styles[styleName];
+        if (style){
+            return style["shaders"];
+        } else {
+            return {};
+        }
+    } else {
+        return {};
+    }
 }
 
 //  Is posible to fold
