@@ -51,9 +51,9 @@ function getParentLine(cm, nLine){
     return nLine;
 }
 
-//  Reconstruct YAML address Array
+//  Get array of YAML tags parent tree of a particular line in inverse order 
 //
-function getTagsArray(cm, nLine){
+function getInverseTags(cm, nLine){
     var tags = [];
     var line = nLine;
     var level = 1;
@@ -73,28 +73,40 @@ function getTagsArray(cm, nLine){
     return tags;
 }
 
-// Reconstruct YAML address string in reverse order
+// Get array of YAML tags parent tree of a particular line
 //
-function getInvertTagsAddress(cm, nLine){
-    var tags = getTagsArray(cm, nLine);
-    var address = "";
-    for ( i in tags ){
-        address += tags[i] + "/";
+function getTags(cm, nLine){
+    var invTags = getInverseTags(cm, nLine);
+    var tags = [];
+    for (var i = invTags.length-1; i >= 0; i--){
+        tags.push(invTags[i]);
     }
-    return address;
+    return tags;
 }
 
-// Reconstruct YAML address string
+// Get the YAML content a specific series of tags (array of strings)
 //
-function getTagsAddress(cm, nLine){
-    var tags = getTagsArray(cm, nLine);
+function getYAMLContent(sceneConfig, tags){
+    var tmp = sceneConfig[ tags[0] ];
+    for (var i = 1; i < tags.length; i++){
+        if (tmp[ tags[i] ]){
+            tmp = tmp[ tags[i] ];
+        } else {
+            return tmp;
+        }
+    }
+    return tmp;
+}
+
+// Make an folder style address from an array of tags
+//
+function tagsToAddress(tags){
     var address = "";
-    for ( var i = tags.length-1; i >= 0; i--){
+    for ( var i = 0; i < tags.length; i++){
         address += "/" + tags[i] ;
     }
     return address;
 }
-
 
 //  Is posible to fold
 //

@@ -194,7 +194,9 @@ function dragRelease(){
 function onClick(event) {
     var cursor = editor.getCursor(true);
     if (!isCommented(editor,cursor.line)){
-        console.log( getTagsAddress(editor, cursor.line ) );
+        var tags = getTags(editor, cursor.line )
+        console.log( tagsToAddress( getInverseTags(editor, cursor.line) ) );
+        console.log( getYAMLContent(scene.config,tags) );
     } else {
         console.log("Comented line");
     }
