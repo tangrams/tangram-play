@@ -68,7 +68,7 @@ function initEditor(){
             updateContet();
         });
 
-        var inlet = Inlet(editor);
+        demoEditor.addEventListener("mousedown", onClick);
     }  
 }
 
@@ -189,6 +189,16 @@ function drag(event){
 function dragRelease(){
     mousedown = false;
     resizeMap();
+}
+
+function onClick(event) {
+    var cursor = editor.getCursor(true);
+    if (!isCommented(editor,cursor.line)){
+        console.log( getTagsAddress(editor, cursor.line ) );
+    } else {
+        console.log("Comented line");
+    }
+    
 }
 
 window.addEventListener('resize', resizeMap);

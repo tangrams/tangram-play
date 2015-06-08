@@ -5,6 +5,97 @@ function getIndLevel(cm, nLine){
     return Math.floor( (cm.lineInfo(nLine).text.match(/\s/g) || []).length / cm.getOption("tabSize"));
 }
 
+//  Check if a line is empty
+//
+function isEmpty(cm, nLine){
+    var chars = cm.lineInfo(nLine).text;
+    if (chars.length > 0){
+        if ((cm.lineInfo(nLine).text.match(/\w/g) || []).length > 0){
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return true;
+    }
+}
+
+//  Check if the line is commented YAML style 
+//
+function isCommented(cm, nLine){
+    return (cm.lineInfo(nLine).text.match(/\#\s*\w+/g) || []).length > 0;
+}
+
+// Check if a line is commented
+//
+function getLineTag(cm, nLine){
+    if (nLine >= 0){
+        var tags = (cm.lineInfo(nLine).text.match(/(\w+):/g) || []);
+        if (tags.length > 0){
+            return { 'line': nLine, 'name' : tags[0].slice(0,-1) };
+        } else {
+            return getLineTag(cm, nLine-1);
+        }
+    }  
+}
+
+//  Get Parent line according to indentation
+//
+function getParentLine(cm, nLine){
+    var level = getIndLevel(cm,nLine);
+    for (var i = nLine-1; i >= 0; i--){
+        if ( !isEmpty(cm, i) && getIndLevel(cm,i) === level-1 ){
+            return i;
+        }
+    }
+    return nLine;
+}
+
+//  Reconstruct YAML address Array
+//
+function getTagsArray(cm, nLine){
+    var tags = [];
+    var line = nLine;
+    var level = 1;
+    while (level > 0){
+        var tag = getLineTag(cm,line);
+
+        // Prevent errors
+        if (tag.name){
+            tags.push(tag.name);
+            level = getIndLevel(cm,tag.line);
+            var parentLine = getParentLine(cm,tag.line);
+            line = parentLine;
+        } else {
+            return tags;
+        }
+    }
+    return tags;
+}
+
+// Reconstruct YAML address string in reverse order
+//
+function getInvertTagsAddress(cm, nLine){
+    var tags = getTagsArray(cm, nLine);
+    var address = "";
+    for ( i in tags ){
+        address += tags[i] + "/";
+    }
+    return address;
+}
+
+// Reconstruct YAML address string
+//
+function getTagsAddress(cm, nLine){
+    var tags = getTagsArray(cm, nLine);
+    var address = "";
+    for ( var i = tags.length-1; i >= 0; i--){
+        address += "/" + tags[i] ;
+    }
+    return address;
+}
+
+
 //  Is posible to fold
 //
 function isFolder(cm, nLine){
