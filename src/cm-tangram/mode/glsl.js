@@ -274,7 +274,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       CodeMirror.defineMIME(mimes[i], mode);
   }
 
-  def(["x-shader/x-vertex", "x-shader/x-fragment"], {
+  def(["glsl","x-shader/x-vertex", "x-shader/x-fragment"], {
     name: "clike",
     keywords: words("float int bool void " +
                     "vec2 vec3 vec4 ivec2 ivec3 ivec4 bvec2 bvec3 bvec4 " +
