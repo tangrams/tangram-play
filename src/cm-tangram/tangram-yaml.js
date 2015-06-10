@@ -108,7 +108,7 @@ function isShader(address){
 })(function(CodeMirror) {
     "use strict";
 
-    CodeMirror.defineMode("yaml", function() {
+    CodeMirror.defineMode("yaml", function(config, parserConfig) {
         var cons = ['true', 'false', 'on', 'off', 'yes', 'no'];
         var keywordRegex = new RegExp("\\b(("+cons.join(")|(")+"))$", 'i');
 
@@ -245,6 +245,16 @@ function isShader(address){
             lineComment: "#"
         };
     });
+
+    var keywords = "cameras lights scene sources styles layers " +
+                    "type url draw data background " +
+                    "direction position origin diffuse ambient specular emission radius " +
+                    "source texcoords base material lighting animated mix " +
+                    "shaders uniforms blocks global position normal color filter " +
+                    "order color layer width kind is_tunnel outline lines polygons " +
+                    "fill stroke typeface text font name extrude visible";
+
+    CodeMirror.registerHelper("hintWords", "yaml", keywords.split(" ") );
 
     CodeMirror.defineMIME("text/x-yaml", "yaml");
 
