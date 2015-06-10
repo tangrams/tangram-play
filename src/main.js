@@ -193,9 +193,12 @@ function dragRelease(){
 
 function onClick(event) {
     var cursor = editor.getCursor(true);
+    
+
     if (!isCommented(editor,cursor.line)){
-        var tags = getTags(editor, cursor.line );
-        console.log( tagsToAddress( getTags(editor, cursor.line) ) );
+        console.log( editor.lineInfo(cursor.line).handle.stateAfter.tagAddress );
+        // var tags = getTags(editor, cursor.line );
+        // console.log( tagsToAddress( getTags(editor, cursor.line) ) );
         // console.log( getYAMLContent(scene.config,tags) );
         // var colorShade = getColorBlockShader(editor, cursor.line);
         // console.log( colorShade );

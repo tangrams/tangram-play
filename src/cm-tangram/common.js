@@ -1,49 +1,38 @@
 //  TOOLS
 //  ===============================================================================
 
-//  Get the indentation level of a line
-//
-function getIndLevel(cm, nLine){
-    return Math.floor( (cm.lineInfo(nLine).text.match(/\s/g) || []).length / cm.getOption("tabSize"));
-}
-
 //  Check if a line is empty
-//
-function isEmpty(cm, nLine){
-    var chars = cm.lineInfo(nLine).text;
-    if (chars.length > 0){
-        if ((cm.lineInfo(nLine).text.match(/\w/g) || []).length > 0){
-            return false;
-        } else {
-            return true;
-        }
-    } else {
-        return true;
-    }
-}
+function isStrEmpty(str) { return (!str || 0 === str.length || /^\s*$/.test(str));}
+function isEmpty(cm, nLine) { return isStrEmpty( cm.lineInfo(nLine).text ); }
 
 //  Check if the line is commented YAML style 
-//
-function isCommented(cm, nLine){
-    var regex = /^\s*[\#||\/\/]/gm;
-    return (regex.exec(cm.lineInfo(nLine).text) || []).length > 0;
+function isStrCommented(str) { var regex = /^\s*[\#||\/\/]/gm; return (regex.exec( str ) || []).length > 0; }
+function isCommented(cm, nLine) { return isStrCommented( cm.lineInfo(nLine).text ); }
+
+//  Get the spaces of a string
+function getSpaces(str) {
+    var regex = /^(\s+)/gm;
+    var space = regex.exec(str);
+    if (space)
+        return (space[1].match(/\s/g) || []).length;
+    else 
+        return 0;
 }
+//  Get the indentation level of a line
+function getIndLevel(cm, nLine) { return getSpaces( cm.lineInfo(nLine).text ) / cm.getOption("tabSize"); }
 
 //  Jump to a specific line
-//
-function jumpToLine(cm, nLine) { 
-    cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top );
-} 
+function jumpToLine(cm, nLine) { cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top ); } 
 
 //  SELECT
 //  ===============================================================================
 
 //  Select a line or a range of lines
 //
-function selectLines(cm, rangeString ){
+function selectLines(cm, rangeString) {
     var from, to;
 
-    if ( isNumber(rangeString) ){
+    if ( isNumber(rangeString) ) {
         from = parseInt(rangeString)-1;
         to = from; 
     } else {
@@ -53,7 +42,7 @@ function selectLines(cm, rangeString ){
     }
 
     // If folding level is on un fold the lines selected
-    if (querry['foldLevel']){
+    if (querry['foldLevel']) {
         foldAllBut(cm, from,to,querry['foldLevel']);
     }
     
@@ -67,7 +56,7 @@ function selectLines(cm, rangeString ){
 
 //  Is posible to fold
 //
-function isFolder(cm, nLine){
+function isFolder(cm, nLine) {
     if ( cm.lineInfo(nLine).gutterMarkers ){
         return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
     } else {
