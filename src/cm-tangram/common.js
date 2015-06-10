@@ -21,6 +21,9 @@ function getSpaces(str) {
 //  Get the indentation level of a line
 function getIndLevel(cm, nLine) { return getSpaces( cm.lineInfo(nLine).text ) / cm.getOption("tabSize"); }
 
+//  Check if a str ends with a suffix
+function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1;}
+
 //  Jump to a specific line
 function jumpToLine(cm, nLine) { cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top ); } 
 

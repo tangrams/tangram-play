@@ -31,7 +31,8 @@ function initEditor(){
             value: style_data,
             lineNumbers: true,
             matchBrackets: true,
-            mode: "text/x-yaml",
+            // mode: "text/x-yaml",
+            mode: "text/x-yaml-tangram",
             keyMap: "sublime",
             autoCloseBrackets: true,
             extraKeys: {'Tab': function(cm) { 
@@ -192,21 +193,27 @@ function dragRelease(){
 }
 
 function onClick(event) {
-    var cursor = editor.getCursor(true);
+    // var cursor = editor.getCursor(true);
     
+    // console.log( ">>> " + getTagAddress(editor, cursor.line) );
 
-    if (!isCommented(editor,cursor.line)){
-        console.log( editor.lineInfo(cursor.line).handle.stateAfter.tagAddress );
-        // var tags = getTags(editor, cursor.line );
-        // console.log( tagsToAddress( getTags(editor, cursor.line) ) );
-        // console.log( getYAMLContent(scene.config,tags) );
-        // var colorShade = getColorBlockShader(editor, cursor.line);
-        // console.log( colorShade );
+    // if ( isCommented(editor,cursor.line) ){
+    //     console.log("Comented line");
+    // }
 
-    } else {
-        console.log("Comented line");
-    }
-    
+    // var address = getTagAddress(editor, cursor.line);
+
+    // if ( isGlobalBlock(address) ){
+    //     console.log("GLOBAL Shader Block");
+    // } else if ( isColorBlock(address) ){
+    //     console.log("COLOR Shader Block");
+    // } else if ( isNormalBlock(address) ){
+    //     console.log("NORMAL Shader Block");
+    // } else if ( isFilterBlock(address) ){
+    //     console.log("FILTER Shader Block");
+    // } 
+
+    // console.log( getTagCompleteContent(scene, editor, cursor.line) );
 }
 
 window.addEventListener('resize', resizeMap);
@@ -221,14 +228,11 @@ loadExamples();
 
 // Once everything is loaded
 setTimeout(function () {
-
     if (querry['foldLevel']){
         unfoldAll(editor);
         foldByLevel(editor,parseInt(querry['foldLevel']));
     }
-
     if (querry['lines']){
         selectLines(editor,querry['lines']);
     } 
-
 }, 1000);
