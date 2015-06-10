@@ -279,7 +279,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
     keywords: words("float int bool void " +
                     "vec2 vec3 vec4 ivec2 ivec3 ivec4 bvec2 bvec3 bvec4 " +
                     "mat2 mat3 mat4 " +
-                    "sampler2D sampler3D samplerCube " +
+                    "sampler2D samplerCube " +
                     "const attribute uniform varying " +
                     "break continue discard return " +
                     "for while do if else struct " +
@@ -292,19 +292,13 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
                     "reflect refract matrixCompMult " +
                     "lessThan lessThanEqual greaterThan greaterThanEqual " +
                     "equal notEqual any all not " +
-                    "texture2D texture2DLod texture2DProjLod " +
-                    "textureCube textureCubeLod "),
+                    "texture2D textureCube"),
     atoms: words("true false " +
-                "gl_FragColor " +
-                "gl_PointCoord " +
-                "gl_Position gl_PointSize " +
-                "gl_FragCoord gl_FrontFacing " +
-                "gl_FragData " +
-                "gl_DepthRangeParameters " +
-                "gl_MaxVertexAttribs gl_MaxVaryingVectors gl_MaxVertexUniformVectors" +
-                "gl_MaxVertexTextureImageUnits gl_MaxTextureImageUnits " +
-                "gl_MaxFragmentUniformVectors " +
-                "gl_MaxDrawBuffers"),
+                 "u_time u_meters_per_pixel u_device_pixel_ratio u_map_position " + 
+                 "v_world_position v_texcoord " +
+                 "position v_color color v_normal normal material " +
+                 "light_accumulator_ambient light_accumulator_diffuse light_accumulator_specular " +
+                 "gl_FragColor gl_Position gl_PointSize gl_FragCoord "),
     hooks: {"#": cppHook},
     modeProps: {fold: ["brace", "include"]}
   });

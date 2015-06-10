@@ -35,7 +35,8 @@ function initEditor(){
             mode: "text/x-yaml-tangram",
             keyMap: "sublime",
             autoCloseBrackets: true,
-            extraKeys: {'Tab': function(cm) { 
+            extraKeys: {"Ctrl-Space": "autocomplete",
+                        "Tab": function(cm) { 
                             var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
                             cm.replaceSelection(spaces);
                         },
