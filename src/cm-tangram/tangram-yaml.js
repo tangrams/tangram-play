@@ -251,7 +251,7 @@ function isShader(address){
                     "direction position origin diffuse ambient specular emission radius " +
                     "source texcoords base material lighting animated mix " +
                     "shaders uniforms blocks global position normal color filter " +
-                    "order color layer width kind is_tunnel outline lines polygons " +
+                    "order color layer width kind outline lines polygons " +
                     "fill stroke typeface text font name extrude visible";
 
     CodeMirror.registerHelper("hintWords", "yaml", keywords.split(" ") );
