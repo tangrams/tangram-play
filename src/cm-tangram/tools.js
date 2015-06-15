@@ -37,4 +37,6 @@ function parseQuery(qstr){
   return query;
 }
 
-function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
+function isNumber(n) { 
+    return /^-?[\d.]+(?:e-?\d+)?$/.test(n); 
+} 

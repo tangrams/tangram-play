@@ -17,14 +17,14 @@
     <link rel="stylesheet" href="src/leaflet/leaflet.css" />
     <script type="text/javascript" src="src/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
     <script type="text/javascript" src="src/leaflet-hash.js"></script>     <!-- bog-standard leaflet URL hash -->
-    <!-- // <script type="text/javascript" src="https://mapzen.com/tangram/0.1/tangram.min.js"></script>  -->
-    <script type="text/javascript" src="src/tangram.min.js"></script>
+    <script type="text/javascript" src="https://mapzen.com/tangram/0.1/tangram.min.js"></script>
 
     <!-- CodeMirror -->
     <link type="text/css" rel="stylesheet" href="src/codemirror/css/codemirror.css">
-    <link type="text/css" rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css"> 
+    <link type="text/css" rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css">
     <link type="text/css" rel="stylesheet" href="src/codemirror/addon/dialog/dialog.css">
     <link type="text/css" rel="stylesheet" href="src/codemirror/addon/hint/show-hint.css">
+
     <script type="text/javascript" src="src/codemirror.js"></script>
     <script type="text/javascript" src="src/codemirror/addon/search/searchcursor.js"></script>
     <script type="text/javascript" src="src/codemirror/addon/search/search.js"></script>
@@ -38,11 +38,16 @@
     <script type="text/javascript" src="src/codemirror/addon/fold/indent-fold.js"></script>
     <script type="text/javascript" src="src/codemirror/keymap/sublime.js"></script>
     <script type="text/javascript" src="src/codemirror/addon/hint/show-hint.js"></script>
-    <script type="text/javascript" src="src/codemirror/mode/yaml.js"></script>
+    <script type="text/javascript" src="src/codemirror/mode/javascript.js"></script>
 
-    <!-- Inlet -->
-    <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
-    <script type="text/javascript" src="src/inlet.min.js"></script>
+    <!-- CodeMirror - Tangram specific -->
+    <script type="text/javascript" src="src/cm-tangram/common.js"></script>
+    <script type="text/javascript" src="src/cm-tangram/tools.js"></script>
+    <script type="text/javascript" src="src/cm-tangram/mode/glsl.js"></script>
+    <script type="text/javascript" src="src/cm-tangram/mode/yaml-tangram.js"></script>
+
+    <!-- Others -->
+    <script type="text/javascript" src="src/FileSaver.min.js"></script>
 
     <!-- Main style -->
     <link type="text/css" rel="stylesheet" href="css/style.css" />
@@ -52,9 +57,7 @@
     <div id="wrapper">
         <div id="map"></div>
 
-        <div id="divider"   onmousedown="dragStart(event); return false;" 
-                            onmousemove="drag(event);" 
-                            onmouseout="dragRelease();" onmouseup="dragRelease();"> </div>
+        <div id="divider"></div>
 
         <div id="content">
             <ul id="menu-holder" class="menu" >
@@ -67,11 +70,12 @@
         </div>
     </div>
 
-    <!-- IDE -->
-    <script type="text/javascript" src="src/FileSaver.min.js"></script>
-    <script type="text/javascript" src="src/tools.js"></script>
-    <script type="text/javascript" src="src/cm-tools.js"></script>
+    <!-- Divider UI -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/TweenLite.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/utils/Draggable.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/plugins/CSSPlugin.min.js"></script>
 
+    <!-- IDE -->
     <script type="text/javascript" src="src/main.js"></script>
 
     <!-- Adding a script block to post message to the parent container (think iframed demos) -->

@@ -1,11 +1,11 @@
 var querry, editor, map;
 var examples_file = "data/examples.json";
-var examples_data;
 var style_file = "data/default.yaml";
 var style_data = "";
+var widget_colorPickers = [];
+var widgets = [];
 
-var mousedown = false,
-    dragX = window.innerWidth/2.;
+var dragX = window.innerWidth/2.;
 
 // CODE EDITOR
 //----------------------------------------------
@@ -13,6 +13,8 @@ var updateContet = debounce(function(){
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
     var url = createObjectURL(new Blob([ editor.getValue() ]));
     scene.reload(url);
+
+    updateWidgets()
 }, 500);
 
 function initEditor(){
@@ -31,25 +33,31 @@ function initEditor(){
             value: style_data,
             lineNumbers: true,
             matchBrackets: true,
-            mode: "text/x-yaml",
+            // mode: "text/x-yaml",
+            mode: "text/x-yaml-tangram",
             keyMap: "sublime",
             autoCloseBrackets: true,
-            extraKeys: {"Alt-F" : function(cm) {
+            extraKeys: {"Ctrl-Space": "autocomplete",
+                        "Tab": function(cm) {
+                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                            cm.replaceSelection(spaces);
+                        },
+                        "Alt-F" : function(cm) {
                                         var pos = cm.getCursor();
                                         var opts = cm.state.foldGutter.options;
                                         cm.foldCode(pos, opts.rangeFinder);
                                     } ,
                         "Ctrl-0" : function(cm){unfoldAll(cm)},
-                        "Ctrl-1" : function(cm){unfoldAll(cm); foldByLevel(cm,0)},
-                        "Ctrl-2" : function(cm){unfoldAll(cm); foldByLevel(cm,1)},
-                        "Ctrl-3" : function(cm){unfoldAll(cm); foldByLevel(cm,2)},
-                        "Ctrl-4" : function(cm){unfoldAll(cm); foldByLevel(cm,3)},
-                        "Ctrl-5" : function(cm){unfoldAll(cm); foldByLevel(cm,4)},
-                        "Ctrl-6" : function(cm){unfoldAll(cm); foldByLevel(cm,5)},
-                        "Ctrl-7" : function(cm){unfoldAll(cm); foldByLevel(cm,6)},
-                        "Ctrl-8" : function(cm){unfoldAll(cm); foldByLevel(cm,7)}
+                        "Ctrl-1" : function(cm){foldByLevel(cm,0)},
+                        "Ctrl-2" : function(cm){foldByLevel(cm,1)},
+                        "Ctrl-3" : function(cm){foldByLevel(cm,2)},
+                        "Ctrl-4" : function(cm){foldByLevel(cm,3)},
+                        "Ctrl-5" : function(cm){foldByLevel(cm,4)},
+                        "Ctrl-6" : function(cm){foldByLevel(cm,5)},
+                        "Ctrl-7" : function(cm){foldByLevel(cm,6)},
+                        "Ctrl-8" : function(cm){foldByLevel(cm,7)}
             },
-            foldGutter: { 
+            foldGutter: {
                 rangeFinder: CodeMirror.fold.indent
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
@@ -64,26 +72,71 @@ function initEditor(){
             updateContet();
         });
 
-        var inlet = Inlet(editor);
-    }  
+        demoEditor.addEventListener("mousedown", onClick);
+    }
+
+    Draggable.create("#divider", {
+        type: "x",
+        bounds: document.getElementById("wrapper"),
+        onDrag: function (pointerEvent) {
+            console.log(pointerEvent);
+            dragX = pointerEvent.clientX;
+            var width = document.getElementById('divider').offsetWidth;
+            document.getElementById('map').style.width = (dragX) + "px";
+            document.getElementById('content').style.marginLeft = document.getElementById('map').offsetWidth + "px";
+            document.getElementById('content').style.width =  (window.innerWidth - dragX) + "px"
+            editor.setSize('100%',(window.innerHeight-31) + 'px');
+            map.invalidateSize(false);
+        }
+    });
 }
 
 function loadExamples() {
-
-    examples_data = JSON.parse(fetchHTTP("data/examples.json"));
+    var examples_data = JSON.parse(fetchHTTP("data/examples.json"));
     var examplesList = document.getElementById("examples");
 
-    examplesList.onkeydown = function(){
-        blur();
-    };
-
-    for (var i = 0; i < examples_data['all'].length; i++ ){
-        var example = examples_data[ examples_data['all'][i] ];
-        // console.log(example);
+    for (var i = 0; i < examples_data['examples'].length; i++ ){
+        var example = examples_data['examples'][i];
         var newOption = document.createElement("option");
         newOption.value = example['url'];
         newOption.innerHTML= example['name'];
         examplesList.appendChild(newOption);
+    }
+}
+
+function loadWidgets(){
+    var widgets_data = JSON.parse(fetchHTTP("data/widgets.json"));
+
+    for (var i = 0; i < widgets_data["colorpickers"].length; i++){
+        var regex = new RegExp( widgets_data["colorpickers"][i].pattern );
+        widget_colorPickers.push(regex);
+    }
+}
+
+function updateWidgets(){
+    var colorpickers = document.getElementsByClassName("color-picker");
+
+    for (var i = colorpickers.length-1; i >=0 ; i--){
+        colorpickers[i].parentNode.removeChild(colorpickers[i]);
+    }
+    widgets.length = 0;
+
+    for (var nline = 0; nline < editor.doc.size; nline++){
+        // Color Pickers
+        for (var i = 0; i < widget_colorPickers.length; i++){
+            if (widget_colorPickers[i].test( getTagAddress(editor, nline) ) ){
+                var msg = document.createElement("div");
+                msg.className = "color-picker";
+                msg.style.background = getTagCompleteContent(scene, editor, nline);
+                msg.style.border = "1px solid #A8ABAA";
+                msg.style.borderRadius = "4px";
+                widgets.push( editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, msg) );
+                msg.style.top = (parseInt(msg.style.top, 10) - 17)+"px";
+                msg.style.left = (parseInt(msg.style.left, 10) + 5)+"px";
+                msg.style.width = "17px";
+                msg.style.height = "17px";
+            }
+        }
     }
 }
 
@@ -172,19 +225,28 @@ function resizeMap() {
     map.invalidateSize(false);
 }
 
-function dragStart(event){
-    mousedown = true;
-} 
+function onClick(event) {
+    // var cursor = editor.getCursor(true);
 
-function drag(event){
-    if (!mousedown) return;
-    dragX = event.clientX;
-    resizeMap();
-}
+    // console.log( ">>> " + getTagAddress(editor, cursor.line) );
 
-function dragRelease(){
-    mousedown = false;
-    resizeMap();
+    // if ( isCommented(editor,cursor.line) ){
+    //     console.log("Comented line");
+    // }
+
+    // var address = getTagAddress(editor, cursor.line);
+
+    // if ( isGlobalBlock(address) ){
+    //     console.log("GLOBAL Shader Block");
+    // } else if ( isColorBlock(address) ){
+    //     console.log("COLOR Shader Block");
+    // } else if ( isNormalBlock(address) ){
+    //     console.log("NORMAL Shader Block");
+    // } else if ( isFilterBlock(address) ){
+    //     console.log("FILTER Shader Block");
+    // }
+
+    // console.log( getTagCompleteContent(scene, editor, cursor.line) );
 }
 
 window.addEventListener('resize', resizeMap);
@@ -196,17 +258,16 @@ initMap();
 
 resizeMap();
 loadExamples();
+loadWidgets();
 
 // Once everything is loaded
 setTimeout(function () {
-
     if (querry['foldLevel']){
         unfoldAll(editor);
         foldByLevel(editor,parseInt(querry['foldLevel']));
     }
-
     if (querry['lines']){
         selectLines(editor,querry['lines']);
-    } 
-
+    }
+    updateWidgets();
 }, 1000);

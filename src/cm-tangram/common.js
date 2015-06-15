@@ -1,32 +1,42 @@
+//  TOOLS
+//  ===============================================================================
 
+//  Check if a line is empty
+function isStrEmpty(str) { return (!str || 0 === str.length || /^\s*$/.test(str));}
+function isEmpty(cm, nLine) { return isStrEmpty( cm.lineInfo(nLine).text ); }
+
+//  Check if the line is commented YAML style 
+function isStrCommented(str) { var regex = /^\s*[\#||\/\/]/gm; return (regex.exec( str ) || []).length > 0; }
+function isCommented(cm, nLine) { return isStrCommented( cm.lineInfo(nLine).text ); }
+
+//  Get the spaces of a string
+function getSpaces(str) {
+    var regex = /^(\s+)/gm;
+    var space = regex.exec(str);
+    if (space)
+        return (space[1].match(/\s/g) || []).length;
+    else 
+        return 0;
+}
 //  Get the indentation level of a line
-//
-function getIndLevel(cm, nLine){
-    return Math.floor( (cm.lineInfo(nLine).text.match(/\s/g) || []).length / cm.getOption("tabSize"));
-}
+function getInd(string) { return getSpaces( string ) / 4;}
+function getIndLevel(cm, nLine) { return getSpaces( cm.lineInfo(nLine).text ) / cm.getOption("tabSize"); }
 
-//  Is posible to fold
-//
-function isFolder(cm, nLine){
-    if ( cm.lineInfo(nLine).gutterMarkers ){
-        return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
-    } else {
-        return false;
-    }
-}
+//  Check if a str ends with a suffix
+function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1;}
 
 //  Jump to a specific line
-//
-function jumpToLine(cm, nLine) { 
-    cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top );
-} 
+function jumpToLine(cm, nLine) { cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top ); } 
+
+//  SELECT
+//  ===============================================================================
 
 //  Select a line or a range of lines
 //
-function selectLines(cm, rangeString ){
+function selectLines(cm, rangeString) {
     var from, to;
 
-    if ( isNumber(rangeString) ){
+    if ( isNumber(rangeString) ) {
         from = parseInt(rangeString)-1;
         to = from; 
     } else {
@@ -36,13 +46,26 @@ function selectLines(cm, rangeString ){
     }
 
     // If folding level is on un fold the lines selected
-    if (querry['foldLevel']){
+    if (querry['foldLevel']) {
         foldAllBut(cm, from,to,querry['foldLevel']);
     }
     
     cm.setSelection({ line: from, ch:0},
                     { line: to, ch:cm.lineInfo(to).text.length } );
     jumpToLine(cm,from);
+}
+
+//  FOLD
+//  ===============================================================================
+
+//  Is posible to fold
+//
+function isFolder(cm, nLine) {
+    if ( cm.lineInfo(nLine).gutterMarkers ){
+        return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
+    } else {
+        return false;
+    }
 }
 
 //  Select everything except for a range of lines
@@ -115,7 +138,8 @@ function unfoldAll(cm) {
 
 //  Fold all lines above a specific indentation level
 //
-function foldByLevel(cm, level) {    
+function foldByLevel(cm, level) {  
+    unfoldAll(cm);  
     var opts = cm.state.foldGutter.options;
 
     var actualLine = cm.getDoc().size-1;
