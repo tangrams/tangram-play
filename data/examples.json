@@ -1,35 +1,48 @@
 {
-	"all" : ["default","tron","matrix","lego","patterns","pericoli","crosshatch","sandbox"],
-	"default" : {
-		"name" : "Open example ...",
-		"url" : "data/default.yaml"
-	},
-	"tron" : {
-		"name" : "tron.yaml",
-		"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.yaml"
-	},
-	"matrix" : {
-		"name" : "matrix.yaml",
-		"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.yaml"
-	},
-	"lego" : {
-		"name" : "lego.yaml",
-		"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
-	},
-	"patterns" : {
-		"name" : "patterns.yaml",
-		"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
-	},
-	"pericoli" : {
-		"name" : "pericoli.yaml",
-		"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml"
-	},
-	"crosshatch" : {
-		"name" : "crosshatch.yaml",
-		"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml"
-	},
-	"sandbox" : {
-		"name" : "sandbox.yaml",
-		"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/sandbox.yaml"
-	}
+	"examples" : [
+		{
+			"name" : "Open example ...",
+			"url" : "data/default.yaml"
+		},
+		{
+			"name" : "simple.yaml",
+			"url" : "https://rawgit.com/tangrams/simple-demo/gh-pages/scene.yaml"
+		},
+		{
+			"name" : "highways.yaml",
+			"url" : "https://rawgit.com/tangrams/highways-demo/gh-pages/scene.yaml"
+		},
+		{
+			"name" : "specular-dust.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/specular-dust.yaml"
+		},
+		{
+			"name" : "patterns.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
+		},
+		{
+			"name" : "lego.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
+		},
+		{
+			"name" : "tron.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.yaml"
+		},
+		{
+			"name" : "matrix.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.yaml"
+		},
+		{
+			"name" : "crosshatch.yaml",
+			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml"
+		},
+		{
+			"name" : "pericoli.yaml",
+			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml"
+		},
+		{
+			"name" : "sandbox.yaml",
+			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/sandbox.yaml"
+		}
+	]
 }

@@ -82,8 +82,8 @@ function loadExamples() {
         blur();
     };
 
-    for (var i = 0; i < examples_data['all'].length; i++ ){
-        var example = examples_data[ examples_data['all'][i] ];
+    for (var i = 0; i < examples_data['examples'].length; i++ ){
+        var example = examples_data['examples'][i];
         // console.log(example);
         var newOption = document.createElement("option");
         newOption.value = example['url'];

@@ -296,7 +296,7 @@ function isShader(address){
 
                     return glsl(stream, state);
                 } else if ( /\s*function\s*\(\)\s*/g.test(stream.string) &&
-                            stream.string.charAt(stream.pos) === '{' ) {
+                            stream.string.substring(stream.pos,stream.pos+8) === "function" ) {
 
                     state.token = js;
                     state.localMode = jsMode;
