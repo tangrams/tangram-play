@@ -5,8 +5,7 @@ var style_data = "";
 var widget_colorPickers = [];
 var widgets = [];
 
-var mousedown = false,
-    dragX = window.innerWidth/2.;
+var dragX = window.innerWidth/2.;
 
 // CODE EDITOR
 //----------------------------------------------
@@ -39,7 +38,7 @@ function initEditor(){
             keyMap: "sublime",
             autoCloseBrackets: true,
             extraKeys: {"Ctrl-Space": "autocomplete",
-                        "Tab": function(cm) { 
+                        "Tab": function(cm) {
                             var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
                             cm.replaceSelection(spaces);
                         },
@@ -58,7 +57,7 @@ function initEditor(){
                         "Ctrl-7" : function(cm){foldByLevel(cm,6)},
                         "Ctrl-8" : function(cm){foldByLevel(cm,7)}
             },
-            foldGutter: { 
+            foldGutter: {
                 rangeFinder: CodeMirror.fold.indent
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
@@ -74,7 +73,22 @@ function initEditor(){
         });
 
         demoEditor.addEventListener("mousedown", onClick);
-    }  
+    }
+
+    Draggable.create("#divider", {
+        type: "x",
+        bounds: document.getElementById("wrapper"),
+        onDrag: function (pointerEvent) {
+            console.log(pointerEvent);
+            dragX = pointerEvent.clientX;
+            var width = document.getElementById('divider').offsetWidth;
+            document.getElementById('map').style.width = (dragX) + "px";
+            document.getElementById('content').style.marginLeft = document.getElementById('map').offsetWidth + "px";
+            document.getElementById('content').style.width =  (window.innerWidth - dragX) + "px"
+            editor.setSize('100%',(window.innerHeight-31) + 'px');
+            map.invalidateSize(false);
+        }
+    });
 }
 
 function loadExamples() {
@@ -211,24 +225,9 @@ function resizeMap() {
     map.invalidateSize(false);
 }
 
-function dragStart(event){
-    mousedown = true;
-} 
-
-function drag(event){
-    if (!mousedown) return;
-    dragX = event.clientX;
-    resizeMap();
-}
-
-function dragRelease(){
-    mousedown = false;
-    resizeMap();
-}
-
 function onClick(event) {
     // var cursor = editor.getCursor(true);
-    
+
     // console.log( ">>> " + getTagAddress(editor, cursor.line) );
 
     // if ( isCommented(editor,cursor.line) ){
@@ -245,7 +244,7 @@ function onClick(event) {
     //     console.log("NORMAL Shader Block");
     // } else if ( isFilterBlock(address) ){
     //     console.log("FILTER Shader Block");
-    // } 
+    // }
 
     // console.log( getTagCompleteContent(scene, editor, cursor.line) );
 }
