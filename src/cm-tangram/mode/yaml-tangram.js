@@ -100,9 +100,9 @@ function isShader(address){
 //  ===============================================================================
 (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
-        mod(require("../../lib/codemirror"));
+        mod(require("src/codemirror"));
     else if (typeof define == "function" && define.amd) // AMD
-        define(["../../lib/codemirror"], mod);
+        define(["src/codemirror"], mod);
     else // Plain browser env
         mod(CodeMirror);
 })(function(CodeMirror) {
@@ -230,7 +230,6 @@ function isShader(address){
                 stream.next();
                 return null;
             },
-
             startState: function() {
                 return {
                     pair: false,
@@ -264,9 +263,9 @@ function isShader(address){
 //  ===============================================================================
 (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
-        mod(require("../../lib/codemirror"), require("src/codemirror/mode/yaml"), require("src/codemirror/mode/clike"));
+        mod(require("src/codemirror"), require("src/cm-tangram/mode/glsl", require("src/codemirror/mode/javascript")));
     else if (typeof define == "function" && define.amd) // AMD
-        define(["../../lib/codemirror", "src/codemirror/mode/yaml", "src/codemirror/mode/clike" ], mod);
+        define(["src/codemirror", "src/cm-tangram/mode/glsl", "src/codemirror/mode/javascript" ], mod);
     else // Plain browser env
         mod(CodeMirror);
 })(function(CodeMirror) {
@@ -274,7 +273,8 @@ function isShader(address){
 
     CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
         var yamlMode = CodeMirror.getMode(config, "yaml");
-        var glslMode = CodeMirror.getMode(config, "x-shader/x-fragment");
+        var glslMode = CodeMirror.getMode(config, "glsl");
+        var jsMode = CodeMirror.getMode(config, "javascript");
 
         function yaml(stream, state) {
             var address = state.yamlState.tagAddress;
@@ -292,10 +292,18 @@ function isShader(address){
 
                     state.token = glsl;
                     state.localMode = glslMode;
-                    state.localState = glslMode.startState(getSpaces(stream.string));
+                    state.localState = glslMode.startState( getInd(stream.string) );
+
                     return glsl(stream, state);
+                } else if ( /\s*function\s*\(\)\s*/g.test(stream.string) &&
+                            stream.string.charAt(stream.pos) === '{' ) {
+
+                    state.token = js;
+                    state.localMode = jsMode;
+                    state.localState = jsMode.startState( getInd(stream.string) );
+                    return js(stream, state);
                 }
-            }
+            } 
             return yamlMode.token(stream, state.yamlState);
         }
 
@@ -317,6 +325,17 @@ function isShader(address){
                 return null;
             }
             return glslMode.token(stream, state.localState);
+        }
+
+        function js(stream, state) {
+
+            // if (stream.match(/\}/i, false)) {
+            if (stream.string.charAt(stream.pos) === '}'){
+                state.token = yaml;
+                state.localState = state.localMode = null;
+                return null;
+            }
+            return jsMode.token(stream, state.localState);
         }
 
         return {
@@ -341,14 +360,6 @@ function isShader(address){
                         localState: local,
                         yamlState: CodeMirror.copyState(yamlMode, state.yamlState), 
                     };
-            },
-            indent: function(state, textAfter) {
-                if (!state.localMode)
-                    return yamlMode.indent(state.yamlState, textAfter);
-                else if (state.localMode.indent)
-                    return state.localMode.indent(state.localState, textAfter);
-                else
-                    return CodeMirror.Pass;
             },
             innerMode: function(state) {
                 return {state: state.localState || state.yamlState, 

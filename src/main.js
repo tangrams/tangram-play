@@ -75,7 +75,6 @@ function initEditor(){
 }
 
 function loadExamples() {
-
     examples_data = JSON.parse(fetchHTTP("data/examples.json"));
     var examplesList = document.getElementById("examples");
 
