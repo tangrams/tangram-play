@@ -1,0 +1,35 @@
+{
+    "colorpickers" : [
+        {
+            "pattern": "/draw/polygons/color$"
+        },
+        {
+            "pattern": "/draw/lines/color$"
+        },
+        {
+            "pattern": "/draw/text/font/fill$"
+        }
+    ],
+    "dropmenu" : [
+        {
+            "pattern": "/ambient/mapping$",
+            "options": ["uv","shereamp", "planar", "triplanar"]
+        },
+        {
+            "pattern": "/diffuse/mapping$",
+            "options": ["uv","shereamp", "planar", "triplanar"]
+        },
+        {
+            "pattern": "/specular/mapping$",
+            "options": ["uv","shereamp", "planar", "triplanar"]
+        },
+        {
+            "pattern": "/emission/mapping$",
+            "options": ["uv","shereamp", "planar", "triplanar"]
+        },
+        {
+            "pattern": "/normal/mapping$",
+            "options": ["uv", "planar", "triplanar" ]
+        }
+    ]
+}

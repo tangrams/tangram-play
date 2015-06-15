@@ -16,9 +16,9 @@ body {
 
 #divider {
     position: absolute;
-    width : 30px;
-    height : 100%;
-    vertical-align : top;
+    width: 30px;
+    height: 100%;
+    vertical-align: top;
     opacity: 0;
     color: red;
     background-color: red;
@@ -106,6 +106,3 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 .CodeMirror-foldgutter-folded { color: #555; /*cursor: pointer;*/ }
 .CodeMirror-foldgutter-open:after { content: "\25BE"; }
 .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
-
-
-

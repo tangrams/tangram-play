@@ -1,8 +1,9 @@
 var querry, editor, map;
 var examples_file = "data/examples.json";
-var examples_data;
 var style_file = "data/default.yaml";
 var style_data = "";
+var widget_colorPickers = [];
+var widgets = [];
 
 var mousedown = false,
     dragX = window.innerWidth/2.;
@@ -13,6 +14,8 @@ var updateContet = debounce(function(){
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
     var url = createObjectURL(new Blob([ editor.getValue() ]));
     scene.reload(url);
+
+    updateWidgets()
 }, 500);
 
 function initEditor(){
@@ -75,20 +78,51 @@ function initEditor(){
 }
 
 function loadExamples() {
-    examples_data = JSON.parse(fetchHTTP("data/examples.json"));
+    var examples_data = JSON.parse(fetchHTTP("data/examples.json"));
     var examplesList = document.getElementById("examples");
-
-    examplesList.onkeydown = function(){
-        blur();
-    };
 
     for (var i = 0; i < examples_data['examples'].length; i++ ){
         var example = examples_data['examples'][i];
-        // console.log(example);
         var newOption = document.createElement("option");
         newOption.value = example['url'];
         newOption.innerHTML= example['name'];
         examplesList.appendChild(newOption);
+    }
+}
+
+function loadWidgets(){
+    var widgets_data = JSON.parse(fetchHTTP("data/widgets.json"));
+
+    for (var i = 0; i < widgets_data["colorpickers"].length; i++){
+        var regex = new RegExp( widgets_data["colorpickers"][i].pattern );
+        widget_colorPickers.push(regex);
+    }
+}
+
+function updateWidgets(){
+    var colorpickers = document.getElementsByClassName("color-picker");
+
+    for (var i = colorpickers.length-1; i >=0 ; i--){
+        colorpickers[i].parentNode.removeChild(colorpickers[i]);
+    }
+    widgets.length = 0;
+
+    for (var nline = 0; nline < editor.doc.size; nline++){
+        // Color Pickers
+        for (var i = 0; i < widget_colorPickers.length; i++){
+            if (widget_colorPickers[i].test( getTagAddress(editor, nline) ) ){
+                var msg = document.createElement("div");
+                msg.className = "color-picker";
+                msg.style.background = getTagCompleteContent(scene, editor, nline);
+                msg.style.border = "1px solid #A8ABAA";
+                msg.style.borderRadius = "4px";
+                widgets.push( editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, msg) );
+                msg.style.top = (parseInt(msg.style.top, 10) - 17)+"px";
+                msg.style.left = (parseInt(msg.style.left, 10) + 5)+"px";
+                msg.style.width = "17px";
+                msg.style.height = "17px";
+            }
+        }
     }
 }
 
@@ -225,6 +259,7 @@ initMap();
 
 resizeMap();
 loadExamples();
+loadWidgets();
 
 // Once everything is loaded
 setTimeout(function () {
@@ -234,5 +269,6 @@ setTimeout(function () {
     }
     if (querry['lines']){
         selectLines(editor,querry['lines']);
-    } 
+    }
+    updateWidgets();
 }, 1000);
