@@ -14,11 +14,7 @@
 		},
 		{
 			"name" : "highways.yaml",
-			"url" : "https://rawgit.com/tangrams/highways-demo/gh-pages/scene.yaml"
-		},
-		{
-			"name" : "specular-dust.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/specular-dust.yaml"
+			"url" : "data/highways.yaml"
 		},
 		{
 			"name" : "patterns.yaml",
