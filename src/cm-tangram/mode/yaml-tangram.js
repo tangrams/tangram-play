@@ -52,6 +52,24 @@ function yamlAddressing(stream, state) {
     }
 }
 
+function getTag(cm, nLine){
+    var tag = /^\s*(\w+):/gm.exec( cm.lineInfo(nLine).text );
+    return tag ? tag[1] : "" ;
+}
+
+function getValue(cm, nLine){
+    var value = /^\s*\w+:\s*[\'|\"]*([\w|\#|\[|\]|\,|\.|\-|\.|\s]+)[\'|\"]*$/gm.exec( cm.lineInfo(nLine).text );
+    return value ? value[1] : "" ;
+}
+
+function setValue(cm, nLine, string){
+    var line = cm.lineInfo(nLine).text;
+    var tag = /^\s*(\w+):\s*/gm.exec( line );
+    if (tag){
+        cm.replaceRange(string, {line: nLine, ch:tag[0].length}, {line: nLine, ch:line.length});
+    }
+}
+
 // Get array of YAML tags parent tree of a particular line
 function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
 // Get string of YAML tags in a folder style
@@ -94,6 +112,11 @@ function isFilterBlock(address) {
 
 function isShader(address){
     return (isGlobalBlock(address) || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address));
+}
+
+function isContentJS(scene,cm,nLine){
+    var content = getTagCompleteContent(scene,cm,nLine);
+    return /\s*function\s*\(\)\s*/g.test(content);
 }
 
 //  YAML

@@ -2,21 +2,12 @@ var querry, editor, map;
 var examples_file = "data/examples.json";
 var style_file = "data/default.yaml";
 var style_data = "";
-var widget_colorPickers = [];
 var widgets = [];
 
 var dragX = window.innerWidth/2.;
 
 // CODE EDITOR
 //----------------------------------------------
-var updateContet = debounce(function(){
-    var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
-    var url = createObjectURL(new Blob([ editor.getValue() ]));
-    scene.reload(url);
-
-    updateWidgets()
-}, 500);
-
 function initEditor(){
     querry = parseQuery(window.location.search.slice(1));
 
@@ -68,8 +59,22 @@ function initEditor(){
             indentUnit: 4
         });
 
-        editor.on("change", function(cm) {
+        editor.on("change", function(cm){
+            var updateContet = debounce( function(){
+                var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
+                var url = createObjectURL(new Blob([ editor.getValue() ]));
+                scene.reload(url);
+
+                updateWidgets();
+            }, 500);
             updateContet();
+        });
+
+        editor.on("viewportChange", function(cm){
+            var updateViewPort = debounce( function(){
+                updateWidgets();
+            },100);
+            updateViewPort();
         });
 
         demoEditor.addEventListener("mousedown", onClick);
@@ -107,34 +112,111 @@ function loadExamples() {
 function loadWidgets(){
     var widgets_data = JSON.parse(fetchHTTP("data/widgets.json"));
 
-    for (var i = 0; i < widgets_data["colorpickers"].length; i++){
-        var regex = new RegExp( widgets_data["colorpickers"][i].pattern );
-        widget_colorPickers.push(regex);
+    for (var i = 0; i < widgets_data["widgets"].length; i++){
+        var obj = {};
+        obj.type = widgets_data["widgets"][i].type;
+        obj.token = addWidgetToken(widgets_data["widgets"][i]);
+
+        if ( obj.type === "dropdownmenu" ){
+            obj.options = widgets_data["widgets"][i].options;
+        }
+
+        widgets.push( obj );
     }
 }
 
-function updateWidgets(){
-    var colorpickers = document.getElementsByClassName("color-picker");
+function addWidgetToken( widgetOBJ ){
+    var token;
+    if ( widgetOBJ['address'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['address'] ).test( getTagAddress(cm, nLine) );
+        };
+    } else if ( widgetOBJ['tag'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['tag'] ).test( getTag(cm, nLine) );
+        };
+    } else if ( widgetOBJ['value'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['value'] ).test( getValue(cm, nLine) );
+        };
+    } else if ( widgetOBJ['content'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['content'] ).test( getTagCompleteContent(scene, cm, nLine) );
+        };
+    } else {
+        token = function(scene, cm, nLine) {
+            return false;
+        };
+    }
+    return token;
+}
 
+function updateWidgets(){
+    var colorpickers = document.getElementsByClassName("widget");
     for (var i = colorpickers.length-1; i >=0 ; i--){
         colorpickers[i].parentNode.removeChild(colorpickers[i]);
     }
-    widgets.length = 0;
 
-    for (var nline = 0; nline < editor.doc.size; nline++){
-        // Color Pickers
-        for (var i = 0; i < widget_colorPickers.length; i++){
-            if (widget_colorPickers[i].test( getTagAddress(editor, nline) ) ){
-                var msg = document.createElement("div");
-                msg.className = "color-picker";
-                msg.style.background = getTagCompleteContent(scene, editor, nline);
-                msg.style.border = "1px solid #A8ABAA";
-                msg.style.borderRadius = "4px";
-                widgets.push( editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, msg) );
-                msg.style.top = (parseInt(msg.style.top, 10) - 17)+"px";
-                msg.style.left = (parseInt(msg.style.left, 10) + 5)+"px";
-                msg.style.width = "17px";
-                msg.style.height = "17px";
+    for (var nline = 0; nline < editor.doc.size; nline++){    
+        var val = getValue(editor,nline);
+
+        // If Line is significative
+        if (getTag(editor,nline) !== "" && val !== "|" && val !== "" ){
+            // Chech for Colors
+            for (var i = 0; i < widgets.length; i++){
+                if ( widgets[i].token(scene,editor,nline) ){
+                    var content = getValue(editor, nline);
+
+                    if (widgets[i].type === "colorpicker"){
+                        var btn = document.createElement("div");
+                        btn.style.zIndex = "10";
+                        btn.style.background = toCSS(content);   
+                        btn.className = "widget";
+                        btn.style.border = "1px solid #A8ABAA";
+                        btn.style.borderRadius = "4px";
+                        editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, btn);
+                        btn.style.top = (parseInt(btn.style.top, 10) - 17)+"px";
+                        btn.style.left = (parseInt(btn.style.left, 10) + 5)+"px";
+                        btn.style.width = "17px";
+                        btn.style.height = "17px";
+                        break;
+                    } else if (widgets[i].type === "dropdownmenu"){
+
+                        var list = document.createElement('Select');
+                        list.className = "widget";
+                        list.style.zIndex = "10";
+
+                        var selected = -1;
+                        for (var j = 0; j < widgets[i].options.length ; j++ ){
+                            var newOption = document.createElement("option");
+                            newOption.value = nline;
+                            if (content === widgets[i].options[j]) {
+                                newOption.selected = true;
+                            }
+                            newOption.innerHTML= widgets[i].options[j];
+                            list.appendChild(newOption);
+                        }
+
+                        editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, list);
+                        list.style.top = (parseInt(list.style.top, 10) - 17)+"px";
+                        list.style.left = (parseInt(list.style.left, 10) + 5)+"px";
+                        list.setAttribute('onchange','dropdownMenuChange(this)');
+                        break;
+                    } else if (widgets[i].type === "togglebutton"){
+                        var check = document.createElement('Input');
+                        check.type = 'checkbox';
+                        check.className = "widget";
+                        check.style.zIndex = "10";
+                        check.value = nline;
+                        check.checked = getValue(editor,nline) === "true" ? true : false;
+                        editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, check);
+                        check.style.top = (parseInt(check.style.top, 10) - 17)+"px";
+                        check.style.left = (parseInt(check.style.left, 10) + 5)+"px";
+                        check.setAttribute('onchange','toggleButton(this)');
+                        break;
+                    }
+
+                }
             }
         }
     }
@@ -200,6 +282,18 @@ function openExample(select){
     window.location.href = ".?style="+option;
 }
 
+function dropdownMenuChange(select) {
+    setValue(   editor,
+                parseInt(select.options[select.selectedIndex].value), 
+                select.options[select.selectedIndex].innerHTML );
+}
+
+function toggleButton(check) {
+    setValue(   editor,
+                parseInt(check.value), 
+                check.checked?"true":"false" );
+}
+
 function openContent(input){
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -223,6 +317,7 @@ function resizeMap() {
     document.getElementById('content').style.width =  (window.innerWidth - dragX) + "px"
     editor.setSize('100%',(window.innerHeight-31) + 'px');
     map.invalidateSize(false);
+    updateWidgets()
 }
 
 function onClick(event) {
@@ -269,5 +364,6 @@ setTimeout(function () {
     if (querry['lines']){
         selectLines(editor,querry['lines']);
     }
+
     updateWidgets();
 }, 1000);

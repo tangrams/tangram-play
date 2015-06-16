@@ -5,16 +5,16 @@
 			"url" : "data/default.yaml"
 		},
 		{
-			"name" : "simple.yaml",
+			"name" : "plane.yaml",
 			"url" : "https://rawgit.com/tangrams/simple-demo/gh-pages/scene.yaml"
 		},
 		{
-			"name" : "highways.yaml",
-			"url" : "https://rawgit.com/tangrams/highways-demo/gh-pages/scene.yaml"
+			"name" : "simple.yaml",
+			"url" : "data/simple.yaml"
 		},
 		{
-			"name" : "specular-dust.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/specular-dust.yaml"
+			"name" : "highways.yaml",
+			"url" : "data/highways.yaml"
 		},
 		{
 			"name" : "patterns.yaml",

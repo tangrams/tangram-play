@@ -18,6 +18,7 @@ function getSpaces(str) {
     else 
         return 0;
 }
+
 //  Get the indentation level of a line
 function getInd(string) { return getSpaces( string ) / 4;}
 function getIndLevel(cm, nLine) { return getSpaces( cm.lineInfo(nLine).text ) / cm.getOption("tabSize"); }

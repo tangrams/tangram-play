@@ -1,35 +1,106 @@
 {
-    "colorpickers" : [
+    "widgets" : [
         {
-            "pattern": "/draw/polygons/color$"
+            "tag" : "^color$",
+            "type" : "colorpicker"
         },
         {
-            "pattern": "/draw/lines/color$"
+            "tag" : "^fill$",
+            "type" : "colorpicker"
         },
         {
-            "pattern": "/draw/text/font/fill$"
-        }
-    ],
-    "dropmenu" : [
-        {
-            "pattern": "/ambient/mapping$",
-            "options": ["uv","shereamp", "planar", "triplanar"]
+            "tag": "^ambient$",
+            "type" : "colorpicker"
         },
         {
-            "pattern": "/diffuse/mapping$",
-            "options": ["uv","shereamp", "planar", "triplanar"]
+            "tag": "^diffuse$",
+            "type" : "colorpicker"
         },
         {
-            "pattern": "/specular/mapping$",
-            "options": ["uv","shereamp", "planar", "triplanar"]
+            "tag": "^specular$",
+            "type" : "colorpicker"
         },
         {
-            "pattern": "/emission/mapping$",
-            "options": ["uv","shereamp", "planar", "triplanar"]
+            "tag": "^emission$",
+            "type" : "colorpicker"
         },
         {
-            "pattern": "/normal/mapping$",
+            "tag": "^extrude$",
+            "type" : "togglebutton" 
+        },
+        {
+            "tag": "^tile_edges$",
+            "type" : "togglebutton" 
+        },
+        {
+            "tag": "^tile_edges$",
+            "type" : "togglebutton" 
+        },
+        {
+            "tag": "^texcoords$",
+            "type" : "togglebutton" 
+        },
+        {
+            "tag": "^lighting$",
+            "type" : "togglebutton" 
+        },
+        {
+            "tag": "^animated$",
+            "type" : "togglebutton" 
+        },
+        {
+            "tag": "^visible$",
+            "type" : "togglebutton" 
+        },
+        {
+            "address": "/ambient/mapping$",
+            "type" : "dropdownmenu",
+            "options": ["uv","spheremap", "planar", "triplanar"]
+        },
+        {
+            "address": "/diffuse/mapping$",
+            "type" : "dropdownmenu",
+            "options": ["uv","spheremap", "planar", "triplanar"]
+        },
+        {
+            "address": "/specular/mapping$",
+            "type" : "dropdownmenu",
+            "options": ["uv","spheremap", "planar", "triplanar"]
+        },
+        {
+            "address": "/emission/mapping$",
+            "type" : "dropdownmenu",
+            "options": ["uv","spheremap", "planar", "triplanar"]
+        },
+        {
+            "address": "/normal/mapping$",
+            "type" : "dropdownmenu",
             "options": ["uv", "planar", "triplanar" ]
+        },
+        {
+            "address": "^/lights/\\w+/type$",
+            "type" : "dropdownmenu",
+            "options": ["ambient","directional", "point", "spotlight"]
+        },
+        {
+            "address": "^/lights/\\w+/origin$",
+            "type" : "dropdownmenu",
+            "options": ["camera", "world","ground"]
+        },
+        {
+            "address": "^/styles/\\w+/base$",
+            "type" : "dropdownmenu",
+            "options": ["points","lines", "polygons", "text"]
+        },
+        {
+            "address": "^/cameras/\\w+/type$",
+            "type" : "dropdownmenu",
+            "options": ["flat","perspective", "isometric"]
+        },
+        {
+            "address": "^/sources/\\w+/type$",
+            "type" : "dropdownmenu",
+            "options": ["GeoJSONTiles","TopoJSONTiles", "MVT"]
         }
     ]
 }
