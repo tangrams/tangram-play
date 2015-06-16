@@ -83,6 +83,11 @@
             "options": ["ambient","directional", "point", "spotlight"]
         },
         {
+            "address": "^/lights/\\w+/origin$",
+            "type" : "dropdownmenu",
+            "options": ["camera", "world","ground"]
+        },
+        {
             "address": "^/styles/\\w+/base$",
             "type" : "dropdownmenu",
             "options": ["points","lines", "polygons", "text"]
@@ -97,6 +102,5 @@
             "type" : "dropdownmenu",
             "options": ["GeoJSONTiles","TopoJSONTiles", "MVT"]
         }
-
     ]
 }
