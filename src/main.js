@@ -4,8 +4,6 @@ var style_file = "data/default.yaml";
 var style_data = "";
 var widgets = [];
 
-var dragX = window.innerWidth/2.;
-
 // CODE EDITOR
 //----------------------------------------------
 function initEditor(){
@@ -84,13 +82,19 @@ function initEditor(){
         type: "x",
         bounds: document.getElementById("wrapper"),
         onDrag: function (pointerEvent) {
-            console.log(pointerEvent);
-            dragX = pointerEvent.clientX;
-            var width = document.getElementById('divider').offsetWidth;
-            document.getElementById('map').style.width = (dragX) + "px";
-            document.getElementById('content').style.marginLeft = document.getElementById('map').offsetWidth + "px";
-            document.getElementById('content').style.width =  (window.innerWidth - dragX) + "px"
-            editor.setSize('100%',(window.innerHeight-31) + 'px');
+            var mapEl = document.getElementById('map');
+            var contentEl = document.getElementById('content');
+            var dividerEl = document.getElementById('divider');
+            var positionX = dividerEl.getBoundingClientRect().left;
+
+            mapEl.style.width = positionX + "px";
+            contentEl.style.marginLeft = mapEl.offsetWidth + "px";
+            contentEl.style.width = (window.innerWidth - positionX) + "px";
+
+            editor.setSize('100%', (window.innerHeight - 31) + 'px');
+            //map.invalidateSize(false);
+        },
+        onDragEnd: function () {
             map.invalidateSize(false);
         }
     });
@@ -309,13 +313,22 @@ function saveContent(){
     }
 }
 
-function resizeMap() {
-    var width = document.getElementById('divider').offsetWidth;
-    document.getElementById('map').style.width = (dragX) + "px";
-    document.getElementById('divider').style.left = (dragX-width/2) + "px";
-    document.getElementById('content').style.marginLeft = document.getElementById('map').offsetWidth + "px";
-    document.getElementById('content').style.width =  (window.innerWidth - dragX) + "px"
-    editor.setSize('100%',(window.innerHeight-31) + 'px');
+function resizeMap (event) {
+    var mapEl = document.getElementById('map');
+    var contentEl = document.getElementById('content');
+    var dividerEl = document.getElementById('divider');
+
+    if (!event) {
+        dividerEl.style.left = Math.floor(window.innerWidth / 2) + "px";
+    }
+
+    var positionX = dividerEl.getBoundingClientRect().left;
+
+    mapEl.style.width = positionX + "px";
+    contentEl.style.marginLeft = mapEl.offsetWidth + "px";
+    contentEl.style.width = (window.innerWidth - positionX) + "px";
+
+    editor.setSize('100%', (window.innerHeight - 31) + 'px');
     map.invalidateSize(false);
     updateWidgets()
 }
