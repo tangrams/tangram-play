@@ -5,12 +5,12 @@
 			"url" : "data/default.yaml"
 		},
 		{
-			"name" : "simple.yaml",
-			"url" : "data/simple.yaml"
+			"name" : "plane.yaml",
+			"url" : "https://rawgit.com/tangrams/simple-demo/gh-pages/scene.yaml"
 		},
 		{
-			"name" : "simple-two.yaml",
-			"url" : "https://rawgit.com/tangrams/simple-demo/gh-pages/scene.yaml"
+			"name" : "simple.yaml",
+			"url" : "data/simple.yaml"
 		},
 		{
 			"name" : "highways.yaml",
