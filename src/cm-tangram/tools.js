@@ -40,3 +40,17 @@ function parseQuery(qstr){
 function isNumber(n) { 
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n); 
 } 
+
+function toCSS(str){
+    var match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
+    if (match) {
+        str = 'rgb(' + Math.round(match[1]*255)+","+
+                        Math.round(match[2]*255)+","+
+                        Math.round(match[3]*255)+")";
+
+        console.log(str);
+        return str;
+    } else {
+        return str;
+    }
+}

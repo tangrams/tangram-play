@@ -1,34 +1,31 @@
 {
     "colorpickers" : [
         {
-            "pattern": "/draw/polygons/color$"
+            "tag": "color$"
         },
         {
-            "pattern": "/draw/lines/color$"
-        },
-        {
-            "pattern": "/draw/text/font/fill$"
+            "tag": "fill$"
         }
     ],
     "dropmenu" : [
         {
-            "pattern": "/ambient/mapping$",
+            "address": "/ambient/mapping$",
             "options": ["uv","shereamp", "planar", "triplanar"]
         },
         {
-            "pattern": "/diffuse/mapping$",
+            "address": "/diffuse/mapping$",
             "options": ["uv","shereamp", "planar", "triplanar"]
         },
         {
-            "pattern": "/specular/mapping$",
+            "address": "/specular/mapping$",
             "options": ["uv","shereamp", "planar", "triplanar"]
         },
         {
-            "pattern": "/emission/mapping$",
+            "address": "/emission/mapping$",
             "options": ["uv","shereamp", "planar", "triplanar"]
         },
         {
-            "pattern": "/normal/mapping$",
+            "address": "/normal/mapping$",
             "options": ["uv", "planar", "triplanar" ]
         }
     ]

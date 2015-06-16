@@ -2,7 +2,7 @@ var querry, editor, map;
 var examples_file = "data/examples.json";
 var style_file = "data/default.yaml";
 var style_data = "";
-var widget_colorPickers = [];
+var widget_tokens_colorPickers = [];
 var widgets = [];
 
 var mousedown = false,
@@ -15,7 +15,8 @@ var updateContet = debounce(function(){
     var url = createObjectURL(new Blob([ editor.getValue() ]));
     scene.reload(url);
 
-    updateWidgets()
+    updateWidgets();
+    
 }, 500);
 
 function initEditor(){
@@ -94,9 +95,34 @@ function loadWidgets(){
     var widgets_data = JSON.parse(fetchHTTP("data/widgets.json"));
 
     for (var i = 0; i < widgets_data["colorpickers"].length; i++){
-        var regex = new RegExp( widgets_data["colorpickers"][i].pattern );
-        widget_colorPickers.push(regex);
+        widget_tokens_colorPickers.push( addWidgetToken(widgets_data["colorpickers"][i]) );
     }
+}
+
+function addWidgetToken( widgetOBJ ){
+    var token;
+    if ( widgetOBJ['address'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['address'] ).test( getTagAddress(cm, nLine) );
+        };
+    } else if ( widgetOBJ['tag'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['tag'] ).test( getTag(cm, nLine) );
+        };
+    } else if ( widgetOBJ['value'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['value'] ).test( getValue(cm, nLine) );
+        };
+    } else if ( widgetOBJ['content'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( widgetOBJ['content'] ).test( getTagCompleteContent(scene, cm, nLine) );
+        };
+    } else {
+        token = function(scene, cm, nLine) {
+            return false;
+        };
+    }
+    return token;
 }
 
 function updateWidgets(){
@@ -108,19 +134,34 @@ function updateWidgets(){
     widgets.length = 0;
 
     for (var nline = 0; nline < editor.doc.size; nline++){
-        // Color Pickers
-        for (var i = 0; i < widget_colorPickers.length; i++){
-            if (widget_colorPickers[i].test( getTagAddress(editor, nline) ) ){
-                var msg = document.createElement("div");
-                msg.className = "color-picker";
-                msg.style.background = getTagCompleteContent(scene, editor, nline);
-                msg.style.border = "1px solid #A8ABAA";
-                msg.style.borderRadius = "4px";
-                widgets.push( editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, msg) );
-                msg.style.top = (parseInt(msg.style.top, 10) - 17)+"px";
-                msg.style.left = (parseInt(msg.style.left, 10) + 5)+"px";
-                msg.style.width = "17px";
-                msg.style.height = "17px";
+        
+        // If Line is significative
+        if (!isEmpty(editor,nline) && 
+            getTag(editor,nline) !== "" &&
+            getValue(editor,nline) !== "|" ){
+
+
+            // Chech for Colors
+            for (var i = 0; i < widget_tokens_colorPickers.length; i++){
+
+
+                if (widget_tokens_colorPickers[i](scene,editor,nline) ){
+
+                    var msg = document.createElement("div");
+                    var content = getValue(editor, nline);
+
+                    msg.style.background = toCSS(content);   
+                    msg.className = "color-picker";
+                    msg.style.border = "1px solid #A8ABAA";
+                    msg.style.borderRadius = "4px";
+                    widgets.push( editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, msg) );
+                    msg.style.top = (parseInt(msg.style.top, 10) - 17)+"px";
+                    msg.style.left = (parseInt(msg.style.left, 10) + 5)+"px";
+                    msg.style.width = "17px";
+                    msg.style.height = "17px";
+                    break;
+
+                }
             }
         }
     }
@@ -270,5 +311,6 @@ setTimeout(function () {
     if (querry['lines']){
         selectLines(editor,querry['lines']);
     }
+
     updateWidgets();
 }, 1000);
