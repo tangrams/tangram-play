@@ -47,10 +47,10 @@ function toCSS(str){
         str = 'rgb(' + Math.round(match[1]*255)+","+
                         Math.round(match[2]*255)+","+
                         Math.round(match[3]*255)+")";
-
-        console.log(str);
-        return str;
-    } else {
-        return str;
+    } else if (isNumber(str)){
+        var val = Math.round( parseFloat(str)*255 );
+        str = 'rgb('+val+","+val+","+val+")";
     }
+
+    return str;
 }
