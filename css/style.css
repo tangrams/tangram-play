@@ -15,7 +15,9 @@ body {
 /* DRAGABLE LINE */
 
 #divider {
-    position: absolute;
+    position: fixed;
+    left: 0;
+    bottom: 0;
     width: 10px;
     height: 100%;
     vertical-align: top;
@@ -28,10 +30,12 @@ body {
 /* EDITOR */
 
 #content {
-    background: #303030;
     position: absolute;
-    margin-left: 50%;
-    vertical-align : top;
+    right: 0;
+    width: 50%;
+    min-width: 200px;
+    vertical-align: top;
+    background: #303030;
 }
 
 .menu {
@@ -40,9 +44,10 @@ body {
     color: white;
     font-family: Verdana, Geneva, sans-serif;
     font-size: 12px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 10px;
+    margin: 0;
 }
 
 li.menu {
