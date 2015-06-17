@@ -15,12 +15,14 @@ body {
 /* DRAGABLE LINE */
 
 #divider {
-    position: absolute;
-    width: 10px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 6px;
     height: 100%;
     vertical-align: top;
     opacity: 1;
-    background-color: darkgray;
+    background-color: #ccc;
     z-index: 10;
     cursor: col-resize;
 }
@@ -28,27 +30,44 @@ body {
 /* EDITOR */
 
 #content {
-    background: #303030;
     position: absolute;
-    margin-left: 50%;
-    vertical-align : top;
+    right: 0;
+    width: 50%;
+    min-width: 200px;
+    vertical-align: top;
 }
 
-.menu {
+.menu-bar {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    background: #303030;
+}
+
+.menu-bar h1 {
+    color: white;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0;
+}
+
+.menu-items {
+    display: inline-block;
     cursor: pointer;
     cursor: hand;
     color: white;
-    font-family: Verdana, Geneva, sans-serif;
-    font-size: 12px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    padding-left: 10px;
+    padding: 0;
+    margin: 0;
+    margin-left: 30px;
 }
 
-li.menu {
+.menu-item {
     list-style-type: none;
-    display: inline;
+    display: inline-block;
     text-align: center;
+    margin-right: 20px;
 }
 
 .CodeMirror {

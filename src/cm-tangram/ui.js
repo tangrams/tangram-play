@@ -3,7 +3,11 @@ function initUI(cm, tangram) {
 
     Draggable.create("#divider", {
         type: "x",
-        bounds: document.getElementById("wrapper"),
+        bounds: {
+            left: 200,
+            width: window.innerWidth - 200
+        },
+        cursor: 'col-resize',
         onDrag: reflowUI,
         onDragEnd: function () {
             updateUI(cm, tangram);
@@ -12,7 +16,6 @@ function initUI(cm, tangram) {
 
     loadExamples("data/examples.json");
     window.addEventListener('resize', onWindowResize);
-
     reflowUI();
 };
 
@@ -62,13 +65,15 @@ function reflowUI() {
     var mapEl = document.getElementById('map');
     var contentEl = document.getElementById('content');
     var dividerEl = document.getElementById('divider');
+    var menuEl = document.getElementById('menu-container');
+    var menuHeight = menuEl.getBoundingClientRect().height;
     var positionX = dividerEl.getBoundingClientRect().left;
 
     mapEl.style.width = positionX + "px";
-    contentEl.style.marginLeft = mapEl.offsetWidth + "px";
     contentEl.style.width = (window.innerWidth - positionX) + "px";
 
-    editor.setSize('100%', (window.innerHeight - 31) + 'px');
+    editor.setSize('100%', (window.innerHeight - menuHeight) + 'px');
+    dividerEl.style.height = (window.innerHeight - menuHeight) + 'px';
 }
 
 function updateUI(editor, map) {
