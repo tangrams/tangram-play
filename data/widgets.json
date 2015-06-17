@@ -101,6 +101,11 @@
             "address": "^/sources/\\w+/type$",
             "type" : "dropdownmenu",
             "options": ["GeoJSONTiles","TopoJSONTiles", "MVT"]
+        },
+        {
+            "address": "^/styles/\\w+/blend$",
+            "type" : "dropdownmenu",
+            "options": ["add","multiply", "overlay"]
         }
     ]
 }

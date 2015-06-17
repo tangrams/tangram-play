@@ -65,12 +65,15 @@ function updateWidgets(cm){
                         btn.className = "widget";
                         btn.style.border = "1px solid #A8ABAA";
                         btn.style.borderRadius = "4px";
+                        btn.value = nline;
+                        btn.setAttribute('onclick','colorPickerClicked(this)');
                         cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, btn);
                         btn.style.top = (parseInt(btn.style.top, 10) - 17)+"px";
                         btn.style.left = (parseInt(btn.style.left, 10) + 5)+"px";
                         btn.style.width = "17px";
                         btn.style.height = "17px";
                         break;
+
                     } else if (widgets[i].type === "dropdownmenu"){
 
                         var list = document.createElement('Select');
@@ -93,6 +96,7 @@ function updateWidgets(cm){
                         list.style.left = (parseInt(list.style.left, 10) + 5)+"px";
                         list.setAttribute('onchange','dropdownMenuChange(this)');
                         break;
+
                     } else if (widgets[i].type === "togglebutton"){
                         var check = document.createElement('Input');
                         check.type = 'checkbox';
@@ -111,6 +115,19 @@ function updateWidgets(cm){
             }
         }
     }
+}
+
+function colorPickerClicked(div){
+    var cpicker = '<div id="colorpicker" style="font-family:Arial,Helvetica,sans-serif;border:solid 1px #cccccc;position:absolute;width:240px;height:326px;background: #ffffff;-moz-box-shadow:0 0 6px rgba(0,0,0,.25);-webkit-box-shadow: 0 0 6px rgba(0,0,0,.25);box-shadow:0 0 6px rgba(0,0,0,.25);-moz-border-radius: 5px;-webkit-border-radius:5px;border-radius:5px;"><div style="background-color:#2d6ab4;position:absolute;top:0px;left:0px; width:100%; height:22px;text-align:center;padding-top:2px;font-weight:bold;border-top-right-radius:5px;border-top-left-radius:5px;">HTML Color Picker</div><script src="http://widget.colorcodehex.com/color-picker/abcdef.html" type="text/javascript"></script></div>';
+    var input = '<input type="text" style="width: 10em" class="CodeMirror-search-field"/>';
+    editor.openDialog(  cpicker, 
+                        function(){
+                            console.log("hi");
+                        },
+                        {   value: getValue(editor, parseInt(div.value)),
+                            closeOnEnter:true 
+                        } 
+                    );
 }
 
 function dropdownMenuChange(select) {

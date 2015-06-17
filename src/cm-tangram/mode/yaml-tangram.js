@@ -73,7 +73,13 @@ function setValue(cm, nLine, string){
 // Get array of YAML tags parent tree of a particular line
 function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
 // Get string of YAML tags in a folder style
-function getTagAddress(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress; }
+function getTagAddress(cm, nLine) { 
+    if (cm.lineInfo(nLine).handle.stateAfter){
+        return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress;
+    } else {
+        return "";
+    }
+}
 
 // Get the YAML content a specific series of tags (array of strings)
 function getTagCompleteContent(scene, cm, nLine){
