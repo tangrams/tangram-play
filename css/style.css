@@ -18,11 +18,11 @@ body {
     position: fixed;
     left: 0;
     bottom: 0;
-    width: 10px;
+    width: 6px;
     height: 100%;
     vertical-align: top;
     opacity: 1;
-    background-color: darkgray;
+    background-color: #ccc;
     z-index: 10;
     cursor: col-resize;
 }

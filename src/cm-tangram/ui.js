@@ -7,6 +7,7 @@ function initUI(cm, tangram) {
             left: 200,
             width: window.innerWidth - 200
         },
+        cursor: 'col-resize',
         onDrag: reflowUI,
         onDragEnd: function () {
             updateUI(cm, tangram);
