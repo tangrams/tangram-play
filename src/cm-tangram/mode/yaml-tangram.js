@@ -74,7 +74,7 @@ function setValue(cm, nLine, string){
 function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
 // Get string of YAML tags in a folder style
 function getTagAddress(cm, nLine) { 
-    if (cm.lineInfo(nLine).handle.stateAfter.yamlState){
+    if (cm.lineInfo(nLine).handle.stateAfter){
         return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress;
     } else {
         return "";
