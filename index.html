@@ -17,11 +17,11 @@
     <link rel="stylesheet" href="src/leaflet/leaflet.css" />
     <script type="text/javascript" src="src/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
     <script type="text/javascript" src="src/leaflet-hash.js"></script>     <!-- bog-standard leaflet URL hash -->
-    <script type="text/javascript" src="https://mapzen.com/tangram/0.1/tangram.min.js"></script> 
+    <script type="text/javascript" src="https://mapzen.com/tangram/0.1/tangram.min.js"></script>
 
     <!-- CodeMirror -->
     <link type="text/css" rel="stylesheet" href="src/codemirror/css/codemirror.css">
-    <link type="text/css" rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css"> 
+    <link type="text/css" rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css">
     <link type="text/css" rel="stylesheet" href="src/codemirror/addon/dialog/dialog.css">
     <link type="text/css" rel="stylesheet" href="src/codemirror/addon/hint/show-hint.css">
 
@@ -57,9 +57,7 @@
     <div id="wrapper">
         <div id="map"></div>
 
-        <div id="divider"   onmousedown="dragStart(event); return false;" 
-                            onmousemove="drag(event);" 
-                            onmouseout="dragRelease();" onmouseup="dragRelease();"> </div>
+        <div id="divider"></div>
 
         <div id="content">
             <ul id="menu-holder" class="menu" >
@@ -71,6 +69,11 @@
             <div id="editor"></div>
         </div>
     </div>
+
+    <!-- Divider UI -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/TweenLite.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/utils/Draggable.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/plugins/CSSPlugin.min.js"></script>
 
     <!-- IDE -->
     <script type="text/javascript" src="src/main.js"></script>

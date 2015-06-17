@@ -4,9 +4,6 @@ var style_file = "data/default.yaml";
 var style_data = "";
 var widgets = [];
 
-var mousedown = false,
-    dragX = window.innerWidth/2.;
-
 // CODE EDITOR
 //----------------------------------------------
 function initEditor(){
@@ -30,7 +27,7 @@ function initEditor(){
             keyMap: "sublime",
             autoCloseBrackets: true,
             extraKeys: {"Ctrl-Space": "autocomplete",
-                        "Tab": function(cm) { 
+                        "Tab": function(cm) {
                             var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
                             cm.replaceSelection(spaces);
                         },
@@ -49,7 +46,7 @@ function initEditor(){
                         "Ctrl-7" : function(cm){foldByLevel(cm,6)},
                         "Ctrl-8" : function(cm){foldByLevel(cm,7)}
             },
-            foldGutter: { 
+            foldGutter: {
                 rangeFinder: CodeMirror.fold.indent
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
@@ -79,7 +76,28 @@ function initEditor(){
         });
 
         demoEditor.addEventListener("mousedown", onClick);
-    }  
+    }
+
+    Draggable.create("#divider", {
+        type: "x",
+        bounds: document.getElementById("wrapper"),
+        onDrag: function (pointerEvent) {
+            var mapEl = document.getElementById('map');
+            var contentEl = document.getElementById('content');
+            var dividerEl = document.getElementById('divider');
+            var positionX = dividerEl.getBoundingClientRect().left;
+
+            mapEl.style.width = positionX + "px";
+            contentEl.style.marginLeft = mapEl.offsetWidth + "px";
+            contentEl.style.width = (window.innerWidth - positionX) + "px";
+
+            editor.setSize('100%', (window.innerHeight - 31) + 'px');
+            //map.invalidateSize(false);
+        },
+        onDragEnd: function () {
+            map.invalidateSize(false);
+        }
+    });
 }
 
 function loadExamples() {
@@ -295,35 +313,29 @@ function saveContent(){
     }
 }
 
-function resizeMap() {
-    var width = document.getElementById('divider').offsetWidth;
-    document.getElementById('map').style.width = (dragX) + "px";
-    document.getElementById('divider').style.left = (dragX-width/2) + "px";
-    document.getElementById('content').style.marginLeft = document.getElementById('map').offsetWidth + "px";
-    document.getElementById('content').style.width =  (window.innerWidth - dragX) + "px"
-    editor.setSize('100%',(window.innerHeight-31) + 'px');
+function resizeMap (event) {
+    var mapEl = document.getElementById('map');
+    var contentEl = document.getElementById('content');
+    var dividerEl = document.getElementById('divider');
+
+    if (!event) {
+        dividerEl.style.left = Math.floor(window.innerWidth / 2) + "px";
+    }
+
+    var positionX = dividerEl.getBoundingClientRect().left;
+
+    mapEl.style.width = positionX + "px";
+    contentEl.style.marginLeft = mapEl.offsetWidth + "px";
+    contentEl.style.width = (window.innerWidth - positionX) + "px";
+
+    editor.setSize('100%', (window.innerHeight - 31) + 'px');
     map.invalidateSize(false);
     updateWidgets()
 }
 
-function dragStart(event){
-    mousedown = true;
-} 
-
-function drag(event){
-    if (!mousedown) return;
-    dragX = event.clientX;
-    resizeMap();
-}
-
-function dragRelease(){
-    mousedown = false;
-    resizeMap();
-}
-
 function onClick(event) {
     // var cursor = editor.getCursor(true);
-    
+
     // console.log( ">>> " + getTagAddress(editor, cursor.line) );
 
     // if ( isCommented(editor,cursor.line) ){
@@ -340,7 +352,7 @@ function onClick(event) {
     //     console.log("NORMAL Shader Block");
     // } else if ( isFilterBlock(address) ){
     //     console.log("FILTER Shader Block");
-    // } 
+    // }
 
     // console.log( getTagCompleteContent(scene, editor, cursor.line) );
 }

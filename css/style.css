@@ -16,13 +16,13 @@ body {
 
 #divider {
     position: absolute;
-    width: 30px;
+    width: 10px;
     height: 100%;
     vertical-align: top;
-    opacity: 0;
-    color: red;
-    background-color: red;
+    opacity: 1;
+    background-color: darkgray;
     z-index: 10;
+    cursor: col-resize;
 }
 
 /* EDITOR */
