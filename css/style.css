@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'montserratultra_light';
+    src: url('../fonts/montserrat-ultralight-webfont.woff2') format('woff2'),
+         url('../fonts/montserrat-ultralight-webfont.woff') format('woff'),
+         url('../fonts/montserrat-ultralight-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     margin: 0px;
     border: 0px;
@@ -38,36 +47,54 @@ body {
 }
 
 .menu-bar {
-    font-family: Verdana, Geneva, sans-serif;
+    font-family: 'montserratultra_light';
     font-size: 12px;
-    padding-top: 5px;
-    padding-bottom: 5px;
     padding-left: 10px;
     background: #303030;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 .menu-bar h1 {
     color: white;
     display: inline-block;
     font-size: 16px;
+    font-weight: 300;
+    line-height: 44px;
     margin: 0;
+    margin-right: 30px;
 }
 
 .menu-items {
     display: inline-block;
+    height: 100%;
+    padding: 0;
+    margin: 0;
     cursor: pointer;
     cursor: hand;
     color: white;
-    padding: 0;
-    margin: 0;
-    margin-left: 30px;
+}
+
+.menu-right {
+    position: absolute;
+    right: 20px;
 }
 
 .menu-item {
-    list-style-type: none;
     display: inline-block;
+    min-width: 44px;
+    height: 100%;
     text-align: center;
-    margin-right: 20px;
+    font-size: 16px;
+    line-height: 44px;
+    list-style-type: none;
+}
+
+.menu-item:hover {
+    color: yellow;
+    background-color: rgba(255,255,255,0.10);
 }
 
 .CodeMirror {
