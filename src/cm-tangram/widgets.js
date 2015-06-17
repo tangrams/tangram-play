@@ -42,21 +42,21 @@ function addWidgetToken( widgetOBJ ){
     return token;
 }
 
-function updateWidgets(){
+function updateWidgets(cm){
     var colorpickers = document.getElementsByClassName("widget");
     for (var i = colorpickers.length-1; i >=0 ; i--){
         colorpickers[i].parentNode.removeChild(colorpickers[i]);
     }
 
-    for (var nline = 0; nline < editor.doc.size; nline++){    
-        var val = getValue(editor,nline);
+    for (var nline = 0; nline < cm.doc.size; nline++){    
+        var val = getValue(cm,nline);
 
         // If Line is significative
-        if (getTag(editor,nline) !== "" && val !== "|" && val !== "" ){
+        if (getTag(cm,nline) !== "" && val !== "|" && val !== "" ){
             // Chech for Colors
             for (var i = 0; i < widgets.length; i++){
-                if ( widgets[i].token(scene,editor,nline) ){
-                    var content = getValue(editor, nline);
+                if ( widgets[i].token(scene,cm,nline) ){
+                    var content = getValue(cm, nline);
 
                     if (widgets[i].type === "colorpicker"){
                         var btn = document.createElement("div");
@@ -65,7 +65,7 @@ function updateWidgets(){
                         btn.className = "widget";
                         btn.style.border = "1px solid #A8ABAA";
                         btn.style.borderRadius = "4px";
-                        editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, btn);
+                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, btn);
                         btn.style.top = (parseInt(btn.style.top, 10) - 17)+"px";
                         btn.style.left = (parseInt(btn.style.left, 10) + 5)+"px";
                         btn.style.width = "17px";
@@ -88,7 +88,7 @@ function updateWidgets(){
                             list.appendChild(newOption);
                         }
 
-                        editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, list);
+                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, list);
                         list.style.top = (parseInt(list.style.top, 10) - 17)+"px";
                         list.style.left = (parseInt(list.style.left, 10) + 5)+"px";
                         list.setAttribute('onchange','dropdownMenuChange(this)');
@@ -99,8 +99,8 @@ function updateWidgets(){
                         check.className = "widget";
                         check.style.zIndex = "10";
                         check.value = nline;
-                        check.checked = getValue(editor,nline) === "true" ? true : false;
-                        editor.addWidget({line:nline, ch:editor.lineInfo(nline).handle.text.length }, check);
+                        check.checked = getValue(cm,nline) === "true" ? true : false;
+                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, check);
                         check.style.top = (parseInt(check.style.top, 10) - 17)+"px";
                         check.style.left = (parseInt(check.style.left, 10) + 5)+"px";
                         check.setAttribute('onchange','toggleButton(this)');

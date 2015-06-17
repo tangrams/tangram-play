@@ -6,7 +6,7 @@ lights:
     directional1:
         type: directional
         direction: [.1, .5, -1]
-        diffuse: .5
+        diffuse: .7
         ambient: .5
 styles:
     buildings:

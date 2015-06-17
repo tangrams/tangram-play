@@ -1,9 +1,20 @@
+
+//  Initialize the editor in a specific DOM and with the context of a style_file
+//
 function initEditor( dom, style_file ){
+
+    var rulers = [];
+    for (var i = 1; i < 50; i++) {
+        rulers.push({   color: '#eee', 
+                        column: i * 4, 
+                        lineStyle: "dashed"});
+    }
+
     var cm = CodeMirror( dom ,{
         value: fetchHTTP(style_file),
+        rulers: rulers,
         lineNumbers: true,
         matchBrackets: true,
-        // mode: "text/x-yaml",
         mode: "text/x-yaml-tangram",
         keyMap: "sublime",
         autoCloseBrackets: true,
@@ -38,25 +49,31 @@ function initEditor( dom, style_file ){
         indentUnit: 4
     });
 
+    //  Hook events
+
+    //  Update Tangram Map when stop typing
     cm.on("change", function(cm){
         var updateContet = debounce( function(){
             var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
             var url = createObjectURL(new Blob([ cm.getValue() ]));
             scene.reload(url);
 
-            updateWidgets();
+            updateWidgets(cm);
         }, 500);
         updateContet();
     });
 
-    cm.on("viewportChange", function(cm){
-        var updateViewPort = debounce( function(){
-            updateWidgets();
-        },100);
-        updateViewPort();
+    //  When the viewport change (lines are add or erased)
+    cm.on("viewportChange", function(cm, from, to){
+        updateWidgets(cm);
     });
 
-    dom.addEventListener("mousedown", onClick);
+    // cm.on("mousedown", function(event){
+    //     // var cursor = editor.getCursor(true);
+    // });
+
+    // cm.on("cursorActivity", function(cm){
+    // });
         
     return cm;
 }

@@ -14,4 +14,10 @@ Style Editor for Tangram Styles
 
 * ```Ctrl``` + ```[number]```: Fold indentation level ```[number]```
 * ```Alt``` + ```F```: fold/unfold line
+
+Sublime-like hotkeys
 * ```Ctrl``` + ```F```: Search
+* ```Ctrl``` + ```D```: Select next occurrence
+* ```Alt``` + ```ArrowKeys```: move word by word
+* ```Shift``` + ```ArrowKeys```: Select character by character
+* ```Shift``` + ```Alt``` + ```ArrowKeys```: Select word by word

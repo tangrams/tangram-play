@@ -1,3 +1,4 @@
+// Get Querry string and parse it
 var querry = parseQuery(window.location.search.slice(1));
 
 // Tangram Map
@@ -12,21 +13,12 @@ initUI(editor, map);
 // Editor Widgets
 loadWidgets("data/widgets.json");
 
-
-function onClick(event) {
-    // var cursor = editor.getCursor(true);
-}
-
 // Once everything is loaded
 setTimeout(function () {
 
-    if (querry['foldLevel']){
-        unfoldAll(editor);
-        foldByLevel(editor,parseInt(querry['foldLevel']));
-    }
-    if (querry['lines']){
-        selectLines(editor,querry['lines']);
-    }
+    if (querry['foldLevel']) unfoldAll(editor); foldByLevel(editor,parseInt(querry['foldLevel']));
+    if (querry['lines']) selectLines(editor,querry['lines']);
 
-    updateWidgets();
+    updateWidgets(editor);
+
 }, 1000);

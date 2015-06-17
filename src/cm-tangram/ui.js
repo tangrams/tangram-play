@@ -13,16 +13,16 @@ function initUI(cm, tangram) {
             contentEl.style.width = (window.innerWidth - positionX) + "px";
 
             cm.setSize('100%', (window.innerHeight - 31) + 'px');
-            //tangram.invalidateSize(false);
+            // tangram.invalidateSize(false);
         },
 
         onDragEnd: function () {
             tangram.invalidateSize(false);
+            updateWidgets(cm);
         }
     });
 
     loadExamples("data/examples.json");
-
     window.addEventListener('resize', resize);
     resize();
 };
@@ -81,5 +81,6 @@ function resize( event ) {
 
     editor.setSize('100%', (window.innerHeight - 31) + 'px');
     map.invalidateSize(false);
-    updateWidgets();
+
+    updateWidgets(editor);
 }
