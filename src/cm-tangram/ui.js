@@ -12,6 +12,8 @@ function initUI(cm, tangram) {
 
     loadExamples("data/examples.json");
     window.addEventListener('resize', onWindowResize);
+
+    reflowUI();
 };
 
 function newContent(){

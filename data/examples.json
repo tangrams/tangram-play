@@ -2,19 +2,27 @@
 	"examples" : [
 		{
 			"name" : "Open example ...",
+			"url" : "data/basic.yaml#2/0/0"
+		},
+		{
+			"name" : "basic.yaml",
+			"url" : "data/basic.yaml#2/0/0"
+		},
+		{
+			"name" : "highways.yaml",
+			"url" : "data/highways.yaml#7/41.890/12.492"
+		},
+		{
+			"name" : "default.yaml",
 			"url" : "data/default.yaml"
 		},
 		{
-			"name" : "plane.yaml",
-			"url" : "https://rawgit.com/tangrams/simple-demo/gh-pages/scene.yaml"
+			"name" : "buildings.yaml",
+			"url" : "data/buildings.yaml#16/40.7053/-74.0098"
 		},
 		{
 			"name" : "simple.yaml",
 			"url" : "data/simple.yaml"
-		},
-		{
-			"name" : "highways.yaml",
-			"url" : "data/highways.yaml"
 		},
 		{
 			"name" : "patterns.yaml",

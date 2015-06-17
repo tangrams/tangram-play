@@ -2,10 +2,10 @@
 var querry = parseQuery(window.location.search.slice(1));
 
 // Tangram Map
-var map = initMap( querry['style']? querry['style'] : "data/default.yaml" );
+var map = initMap( querry['style']? querry['style'] : "data/basic.yaml" );
 
 // Editor
-var editor = initEditor(document.getElementById("editor"), querry['style']? querry['style'] : "data/default.yaml" );
+var editor = initEditor(document.getElementById("editor"), querry['style']? querry['style'] : "data/basic.yaml" );
 
 //  UI
 initUI(editor, map);

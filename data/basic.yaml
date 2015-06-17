@@ -1,0 +1,20 @@
+cameras:
+    perspective:
+        type: flat
+sources:
+    osm:
+        type: TopoJSONTiles
+        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-HqUVidw
+layers:
+    earth:
+        data: { source: osm }
+        draw:
+            polygons:
+                order: 0
+                color: '#555'
+    water:
+        data: { source: osm }
+        draw:
+            polygons:
+                order: 1
+                color: '#ddd'
