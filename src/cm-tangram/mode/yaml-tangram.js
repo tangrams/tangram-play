@@ -74,7 +74,7 @@ function setValue(cm, nLine, string){
 function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
 // Get string of YAML tags in a folder style
 function getTagAddress(cm, nLine) { 
-    if (cm.lineInfo(nLine).handle.stateAfter){
+    if (cm.lineInfo(nLine).handle.stateAfter.yamlState){
         return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress;
     } else {
         return "";
@@ -274,17 +274,23 @@ function isContentJS(scene,cm,nLine){
         };
     });
 
+    function words(str) {
+        var obj = {}, words = str.split(" ");
+        for (var i = 0; i < words.length; ++i) obj[words[i]] = true;
+        return obj;
+    }
+
     var keywords = "cameras lights scene sources styles layers " +
                     "type url draw data background " +
                     "direction position origin diffuse ambient specular emission radius " +
                     "source texcoords base material lighting animated mix " +
                     "shaders uniforms blocks global position normal color filter " +
-                    "order color layer width kind outline lines polygons " +
+                    "order color layer width outline lines polygons " +
                     "fill stroke typeface text font name extrude visible";
 
     CodeMirror.registerHelper("hintWords", "yaml", keywords.split(" ") );
-
-    CodeMirror.defineMIME("text/x-yaml", "yaml");
+    CodeMirror.defineMIME("text/x-yaml", { name: "yaml",
+                                           keywords: words(keywords) });
 
 });
 

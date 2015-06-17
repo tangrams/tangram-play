@@ -59,19 +59,19 @@ function updateWidgets(cm){
                     var content = getValue(cm, nline);
 
                     if (widgets[i].type === "colorpicker"){
-                        var btn = document.createElement("div");
-                        btn.style.zIndex = "10";
-                        btn.style.background = toCSS(content);   
-                        btn.className = "widget";
-                        btn.style.border = "1px solid #A8ABAA";
-                        btn.style.borderRadius = "4px";
-                        btn.value = nline;
-                        btn.setAttribute('onclick','colorPickerClicked(this)');
-                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, btn);
-                        btn.style.top = (parseInt(btn.style.top, 10) - 17)+"px";
-                        btn.style.left = (parseInt(btn.style.left, 10) + 5)+"px";
-                        btn.style.width = "17px";
-                        btn.style.height = "17px";
+                        var colorBtn = document.createElement("div");
+                        colorBtn.style.zIndex = "10";
+                        colorBtn.style.background = toCSS(content);   
+                        colorBtn.className = "widget";
+                        colorBtn.style.border = "1px solid #A8ABAA";
+                        colorBtn.style.borderRadius = "4px";
+                        colorBtn.value = nline;
+                        colorBtn.setAttribute('onclick','colorPickerClicked(this)');
+                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, colorBtn);
+                        colorBtn.style.top = (parseInt(colorBtn.style.top, 10) - 17)+"px";
+                        colorBtn.style.left = (parseInt(colorBtn.style.left, 10) + 5)+"px";
+                        colorBtn.style.width = "17px";
+                        colorBtn.style.height = "17px";
                         break;
 
                     } else if (widgets[i].type === "dropdownmenu"){
@@ -118,7 +118,17 @@ function updateWidgets(cm){
 }
 
 function colorPickerClicked(div){
+    var pos = getPosition(div);
+    var picker = new thistle.Picker( div.style.background );
+    // document.body.appendChild(picker.el);
 
+    picker.presentModal(pos.x+20,pos.y+20);
+    picker.on('changed', function() {
+        div.style.background = picker.getCSS();
+        var color = picker.getRGB();
+        var str = "["+ color.r.toFixed(3) + "," + color.g.toFixed(3) + "," + color.b.toFixed(3) + "]";
+        setValue( editor, parseInt(div.value), str );
+    });
 }
 
 function dropdownMenuChange(select) {

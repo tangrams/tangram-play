@@ -37,6 +37,20 @@ function parseQuery(qstr){
   return query;
 }
 
+function getPosition(dom) {
+    var y = 0, x = 0;
+    do {
+        y += dom.offsetTop  || 0;
+        x += dom.offsetLeft || 0;
+        dom = dom.offsetParent;
+    } while(dom);
+
+    return {
+        y: y,
+        x: x
+    };
+};
+
 function isNumber(n) { 
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n); 
 } 
