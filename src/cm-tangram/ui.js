@@ -1,30 +1,17 @@
 function initUI(cm, tangram) {
+    document.getElementById('divider').style.left = Math.floor(window.innerWidth / 2) + "px";
+
     Draggable.create("#divider", {
         type: "x",
         bounds: document.getElementById("wrapper"),
-        onDrag: function (pointerEvent) {
-            var mapEl = document.getElementById('map');
-            var contentEl = document.getElementById('content');
-            var dividerEl = document.getElementById('divider');
-            var positionX = dividerEl.getBoundingClientRect().left;
-
-            mapEl.style.width = positionX + "px";
-            contentEl.style.marginLeft = mapEl.offsetWidth + "px";
-            contentEl.style.width = (window.innerWidth - positionX) + "px";
-
-            cm.setSize('100%', (window.innerHeight - 31) + 'px');
-            // tangram.invalidateSize(false);
-        },
-
+        onDrag: reflowUI,
         onDragEnd: function () {
-            tangram.invalidateSize(false);
-            updateWidgets(cm);
+            updateUI(cm, tangram);
         }
     });
 
     loadExamples("data/examples.json");
-    window.addEventListener('resize', resize);
-    resize();
+    window.addEventListener('resize', onWindowResize);
 };
 
 function newContent(){
@@ -64,15 +51,15 @@ function saveContent(){
     }
 }
 
-function resize( event ) {
+function onWindowResize( event ) {
+    reflowUI();
+    updateUI(editor, map);
+}
+
+function reflowUI() {
     var mapEl = document.getElementById('map');
     var contentEl = document.getElementById('content');
     var dividerEl = document.getElementById('divider');
-
-    if (!event) {
-        dividerEl.style.left = Math.floor(window.innerWidth / 2) + "px";
-    }
-
     var positionX = dividerEl.getBoundingClientRect().left;
 
     mapEl.style.width = positionX + "px";
@@ -80,7 +67,9 @@ function resize( event ) {
     contentEl.style.width = (window.innerWidth - positionX) + "px";
 
     editor.setSize('100%', (window.innerHeight - 31) + 'px');
-    map.invalidateSize(false);
+}
 
+function updateUI(editor, map) {
+    map.invalidateSize(false);
     updateWidgets(editor);
 }
