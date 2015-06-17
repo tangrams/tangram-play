@@ -17,10 +17,6 @@
 			"url" : "data/default.yaml"
 		},
 		{
-			"name" : "buildings.yaml",
-			"url" : "data/buildings.yaml#16/40.7053/-74.0098"
-		},
-		{
 			"name" : "simple.yaml",
 			"url" : "data/simple.yaml"
 		},

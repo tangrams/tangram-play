@@ -8,6 +8,13 @@ lights:
         direction: [.1, .5, -1]
         diffuse: .7
         ambient: .5
+styles:
+    buildings:
+        base: polygons
+        shaders:
+            blocks:
+                color: |
+                    color.rgb *= vec3(min((v_world_position.z*.001 + .5),1.));
 sources:
     osm:
         type: TopoJSONTiles
@@ -50,7 +57,7 @@ layers:
             filter: { $zoom: { min: 15 } }
             draw:
                 polygons:
-                    style: polygons
+                    style: buildings
                     extrude: function () { return feature.height > 0 || $zoom >= 16; }
     road_labels:
         data: { source: osm, layer: roads }
