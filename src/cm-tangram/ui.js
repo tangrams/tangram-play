@@ -65,7 +65,7 @@ function reflowUI() {
     var mapEl = document.getElementById('map');
     var contentEl = document.getElementById('content');
     var dividerEl = document.getElementById('divider');
-    var menuEl = document.getElementById('menu-holder');
+    var menuEl = document.getElementById('menu-container');
     var menuHeight = menuEl.getBoundingClientRect().height;
     var positionX = dividerEl.getBoundingClientRect().left;
 
