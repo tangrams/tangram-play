@@ -1,6 +1,12 @@
 // Get Querry string and parse it
 var querry = parseQuery(window.location.search.slice(1));
 
+var flags = parseFeatureFlags(querry);
+
+if (flags['full-menu'] === true) {
+    document.querySelector('html').classList.add('full-menu');
+}
+
 // Tangram Map
 var map = initMap( querry['style']? querry['style'] : "data/default.yaml" );
 

@@ -37,6 +37,17 @@ function parseQuery(qstr){
   return query;
 }
 
+function parseFeatureFlags(query) {
+    var qstr = query['featureFlags'];
+    var flags = {};
+    if (!qstr) return flags;
+    var values = qstr.split(',');
+    for (var i in values) {
+        flags[values[i]] = true;
+    }
+    return flags;
+}
+
 function getPosition(dom) {
     var y = 0, x = 0;
     do {
@@ -51,9 +62,9 @@ function getPosition(dom) {
     };
 };
 
-function isNumber(n) { 
-    return /^-?[\d.]+(?:e-?\d+)?$/.test(n); 
-} 
+function isNumber(n) {
+    return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
+}
 
 function toCSS(str){
     var match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
