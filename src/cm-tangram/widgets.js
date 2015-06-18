@@ -118,11 +118,9 @@ function updateWidgets(cm){
 }
 
 function colorPickerClicked(div){
-    var pos = getPosition(div);
     var picker = new thistle.Picker( div.style.background );
-    // document.body.appendChild(picker.el);
-
-    picker.presentModal(pos.x+20,pos.y+20);
+    picker.presentModal(getPosition(div).x+20,
+                        editor.heightAtLine(parseInt(div.value))+20);
     picker.on('changed', function() {
         div.style.background = picker.getCSS();
         var color = picker.getRGB();

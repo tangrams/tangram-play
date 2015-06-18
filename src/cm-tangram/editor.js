@@ -4,8 +4,9 @@
 function initEditor( dom, style_file ){
 
     var rulers = [];
-    for (var i = 1; i < 50; i++) {
-        rulers.push({   color: '#eee', 
+    for (var i = 1; i < 10; i++) {
+        var b = Math.round((0.88 + i/90)*255);
+        rulers.push({   color: 'rgb('+b+','+b+','+b+')', 
                         column: i * 4, 
                         lineStyle: "dashed"});
     }
