@@ -72,24 +72,23 @@
         <div id="menu-container" class="menu-bar">
             <h1>Tangram Play</h1>
             <ul id="menu-holder" class="menu-items">
-                <li class="menu-item" onclick="newContent()" data-title="New style"><i class="btm bt-file"></i></li>
-                <li class="menu-item" onclick="saveContent()" data-title="Export style"><i class="btm bt-download"></i></li>
-                <li class="menu-item" data-title="Open file"><label for="menu-file-input"><i class="btm bt-plus-square"></i></label><input type="file" id="menu-file-input" onchange="openContent(this)" accept="text/x-yaml" style="display: none;"></li>
+                <li class="menu-item" onclick="newContent()" data-title="New style"><i class="btl bt-file"></i></li>
+                <li class="menu-item" data-title="Open file"><label for="menu-file-input"><i class="btl bt-plus-square"></i></label><input type="file" id="menu-file-input" onchange="openContent(this)" accept="text/x-yaml" style="display: none;"></li>
+                <li class="menu-item" onclick="saveContent()" data-title="Export style"><i class="btl bt-download"></i></li>
+                <li class="menu-item menu-item-private" data-title="Share"><i class="btl bt-share"></i></li>
                 <li class="menu-item"> <select id="examples" onchange="openExample(this)"></select> </li>
             </ul>
             <ul id="menu-holder" class="menu-items menu-right">
-                <li class="menu-item menu-item-disabled" data-title="Refresh map"><i class="btm bt-sync"></i></li>
-                <li class="menu-item menu-item-disabled" data-title="Share"><i class="btm bt-share"></i></li>
-                <li class="menu-item menu-item-disabled" data-title="Settings"><i class="btm bt-gear"></i></li>
-                <li class="menu-item" data-title="Documentation and help"><i class="btm bt-question-circle"></i></li>
-                <li class="menu-item menu-item-disabled" data-title="Sign in"><i class="btm bt-sign-in"></i></li>
+                <li class="menu-item menu-item-private" data-title="Refresh map"><i class="btl bt-sync"></i></li>
+                <li class="menu-item menu-item-private" data-title="Settings"><i class="btl bt-gear"></i></li>
+                <li class="menu-item" data-title="Documentation and help"><a href="https://github.com/tangrams/tangram-docs#tangram-documentation" target="_blank"><i class="btl bt-question-circle"></i></a></li>
+                <li class="menu-item menu-item-private menu-sign-in" data-title="Sign in"><span class="menu-sign-in-label">Sign in</span><i class="btm bt-sign-in"></i></li>
             </ul>
         </div>
 
         <div id="map"></div>
-
+        <div id="divider"></div>
         <div id="content">
-            <div id="divider"></div>
             <div id="editor"></div>
         </div>
     </div>
