@@ -1,12 +1,13 @@
-function initUI(cm, tangram) {
-    document.getElementById('divider').style.left = Math.floor(window.innerWidth / 2) + "px";
+var CM_MINIMUM_WIDTH = 160 // integer, in pixels
 
-    Draggable.create("#divider", {
+var draggable;
+
+function initUI(cm, tangram) {
+    document.getElementById('divider').style.transform = 'translate3d(' + getDividerStartingPosition() + 'px, 0px, 0px)';
+    var count = 0;
+    draggable = Draggable.create("#divider", {
         type: "x",
-        bounds: {
-            left: 100,
-            width: window.innerWidth - 160
-        },
+        bounds: getDraggableBounds(),
         cursor: 'col-resize',
         onDrag: reflowUI,
         onDragEnd: function () {
@@ -18,6 +19,14 @@ function initUI(cm, tangram) {
     window.addEventListener('resize', onWindowResize);
     reflowUI();
 };
+
+function getDividerStartingPosition () {
+    if (window.innerWidth > 1024) {
+        return Math.floor(window.innerWidth * 0.6)
+    } else {
+        return Math.floor(window.innerWidth / 2)
+    }
+}
 
 function newContent(){
     window.location.href = ".";
@@ -58,6 +67,7 @@ function saveContent(){
 
 function onWindowResize( event ) {
     reflowUI();
+    applyNewDraggableBounds(draggable[0]);
     updateUI(editor, map);
 }
 
@@ -79,4 +89,15 @@ function reflowUI() {
 function updateUI(editor, map) {
     map.invalidateSize(false);
     updateWidgets(editor);
+}
+
+function applyNewDraggableBounds (draggable) {
+    draggable.applyBounds(getDraggableBounds())
+}
+
+function getDraggableBounds () {
+    return {
+        minX: 100,
+        maxX: window.innerWidth - CM_MINIMUM_WIDTH
+    }
 }
