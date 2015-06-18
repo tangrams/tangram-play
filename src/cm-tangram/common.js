@@ -75,6 +75,10 @@ function toCSS(str){
     } else if (isNumber(str)){
         var val = Math.round( parseFloat(str)*255 );
         str = 'rgb('+val+","+val+","+val+")";
+    } else if ( /^\s*[\'|\"]#[0-9a-f]{3}(?:[0-9a-f]{3})?[\'|\"]\s*$/i.test(str) ){
+        var value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec( str );
+        return value ? value[1] : "" ;
+
     }
 
     return str;

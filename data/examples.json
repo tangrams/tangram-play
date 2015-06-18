@@ -21,6 +21,10 @@
 			"url" : "data/simple.yaml"
 		},
 		{
+			"name" : "blueprint.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.yaml"
+		},
+		{
 			"name" : "patterns.yaml",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
 		},

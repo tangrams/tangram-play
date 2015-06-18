@@ -58,7 +58,7 @@ function getTag(cm, nLine){
 }
 
 function getValue(cm, nLine){
-    var value = /^\s*\w+:\s*[\'|\"]*([\w|\#|\[|\]|\,|\.|\-|\.|\s]+)[\'|\"]*$/gm.exec( cm.lineInfo(nLine).text );
+    var value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec( cm.lineInfo(nLine).text );
     return value ? value[1] : "" ;
 }
 
@@ -96,33 +96,33 @@ function getTagCompleteContent(scene, cm, nLine){
 }
 
 //  Function that check if a line is inside a Color Shader Block
-function isGlobalBlock(address) {
-    return endsWith(address,"shaders/blocks/global");
-}
+function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); }
+function isPositionBlock(address) { return endsWith(address,"shaders/blocks/position"); }
+function isNormalBlock(address) { return endsWith(address,"shaders/blocks/normal"); }
+function isColorBlock(address) { return endsWith(address,"shaders/blocks/color"); }
+function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); }
+function isShader(address){ return (isGlobalBlock(address) || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address));}
 
-function isPositionBlock(address) {
-    return endsWith(address,"shaders/blocks/position");
-}
-
-function isNormalBlock(address) {
-    return endsWith(address,"shaders/blocks/normal");
-}
-
-function isColorBlock(address) {
-    return endsWith(address,"shaders/blocks/color");
-}
-
-function isFilterBlock(address) {
-    return endsWith(address,"shaders/blocks/filter");
-}
-
-function isShader(address){
-    return (isGlobalBlock(address) || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address));
-}
-
-function isContentJS(scene,cm,nLine){
-    var content = getTagCompleteContent(scene,cm,nLine);
-    return /\s*function\s*\(\)\s*/g.test(content);
+function isContentJS(scene, address) {
+    if (address && scene && scene.config){
+        var tags = address.split("/");
+        tags.shift();
+        if (tags && tags.length > 0){
+            var content = scene.config[ tags[0] ];
+            for (var i = 1; i < tags.length; i++){
+                if (content[ tags[i] ]){
+                    content = content[ tags[i] ];
+                } else {
+                    break;
+                }
+            }
+            return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(content);
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
 //  YAML
@@ -314,24 +314,22 @@ function isContentJS(scene,cm,nLine){
         function yaml(stream, state) {
             var address = state.yamlState.tagAddress;
             if ( address !== undefined){
-                var regex = /^\s+(\w*)\:\s+\|/gm;
-                var header = regex.exec(stream.string);
-                header = header ? header[1] : "";
+
+                var tag = /^\s+(\w*)\:\s+\|/gm.exec(stream.string);
+                tag = tag ? tag[1] : "";
 
                 if (isShader(address) && 
-                    header !== "global" &&
-                    header !== "position" &&
-                    header !== "normal" &&
-                    header !== "color" &&
-                    header !== "filter" ) {
+                    !(/\|/g.test(stream.string)) ) {
 
                     state.token = glsl;
                     state.localMode = glslMode;
                     state.localState = glslMode.startState( getInd(stream.string) );
 
                     return glsl(stream, state);
-                } else if ( /\s*function\s*\(\)\s*/g.test(stream.string) &&
-                            stream.string.substring(stream.pos,stream.pos+8) === "function" ) {
+                } else if ( isContentJS(scene, address) &&
+                            ( !/\|/g.test(stream.string) ||
+                             /\s*function\s*\(\)\s*/g.test(stream.string) &&
+                             stream.string.substring(stream.pos,stream.pos+8) === "function" ) ){
 
                     state.token = js;
                     state.localMode = jsMode;
@@ -344,28 +342,24 @@ function isContentJS(scene,cm,nLine){
 
         function glsl(stream, state) {
             var address = state.yamlState.tagAddress
-            var regex = /^\s+(\w*)\:\s+\|/gm;
-            var header = regex.exec(stream.string);
-            header = header ? header[1] : "";
-            if (!isShader(address) || 
-                header === "global" ||
-                header === "position" ||
-                header === "normal" ||
-                header === "color" ||
-                header === "filter" ) {
-
+            var tag = /^\s+(\w*)\:\s+\|/gm.exec(stream.string);
+            tag = tag ? tag[1] : "";
+            
+            if ( !isShader(address) || (/\|/g.test(stream.string)) ) {
                 state.token = yaml;
                 state.localState = state.localMode = null;
-
                 return null;
-            }
+            } 
             return glslMode.token(stream, state.localState);
         }
 
         function js(stream, state) {
+            var address = state.yamlState.tagAddress;
+            var value = /^\s*\w+:\s*[\'|\"]*([\w|\#|\[|\]|\,|\.|\-|\.|\s]+)[\'|\"]*$/gm.exec( stream );
+            value = value ? value[1] : "" ;
 
-            // if (stream.match(/\}/i, false)) {
-            if (stream.string.charAt(stream.pos) === '}'){
+            if ( (!isContentJS(scene, address) || 
+                 /\|/g.test(stream.string) ) ){
                 state.token = yaml;
                 state.localState = state.localMode = null;
                 return null;
