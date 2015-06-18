@@ -4,8 +4,8 @@ function initUI(cm, tangram) {
     Draggable.create("#divider", {
         type: "x",
         bounds: {
-            left: 200,
-            width: window.innerWidth - 200
+            left: 100,
+            width: window.innerWidth - 160
         },
         cursor: 'col-resize',
         onDrag: reflowUI,
