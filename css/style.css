@@ -14,30 +14,7 @@ body {
     overflow: hidden;
 }
 
-/* TANGRAM */
-#map {
-    position: fixed;
-    height: 100%;
-    width: 50%;
-}
-
-/* DRAGABLE LINE */
-
-#divider {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 6px;
-    height: 100%;
-    vertical-align: top;
-    opacity: 1;
-    background-color: #ccc;
-    z-index: 10;
-    cursor: col-resize;
-}
-
-/* EDITOR */
-
+/* MENU */
 #content {
     position: absolute;
     right: 0;
@@ -96,6 +73,30 @@ body {
     color: yellow;
     background-color: rgba(255,255,255,0.10);
 }
+
+/* DRAGABLE LINE */
+
+#divider {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 6px;
+    height: 100%;
+    vertical-align: top;
+    opacity: 1;
+    background-color: #ccc;
+    z-index: 10;
+    cursor: col-resize;
+}
+
+/* TANGRAM */
+#map {
+    position: fixed;
+    height: 100%;
+    width: 50%;
+}
+
+/* EDITOR */
 
 .CodeMirror {
     font-size: 110%;
