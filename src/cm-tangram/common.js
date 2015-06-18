@@ -38,7 +38,7 @@ function parseQuery(qstr){
 }
 
 function parseFeatureFlags(query) {
-    var qstr = query['featureFlags'];
+    var qstr = query['flags'];
     var flags = {};
     if (!qstr) return flags;
     var values = qstr.split(',');

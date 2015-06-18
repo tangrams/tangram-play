@@ -3,7 +3,7 @@ var querry = parseQuery(window.location.search.slice(1));
 
 var flags = parseFeatureFlags(querry);
 
-if (flags['full-menu'] === true) {
+if (flags['fullmenu'] === true) {
     document.querySelector('html').classList.add('full-menu');
 }
 
