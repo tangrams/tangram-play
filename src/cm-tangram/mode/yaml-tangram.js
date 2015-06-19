@@ -26,7 +26,7 @@ function getInd(string) { return getSpaces( string ) / 4;}
 function getLineInd(cm, nLine) { return getSpaces( cm.lineInfo(nLine).text ) / cm.getOption("tabSize"); }
 
 function getTag(cm, nLine){
-    var tag = /^\s*(\w+):/gm.exec( cm.lineInfo(nLine).text );
+    var tag = /^\s*([\w|\-|\_]+):/gm.exec( cm.lineInfo(nLine).text );
     return tag ? tag[1] : "" ;
 }
 
@@ -278,7 +278,7 @@ function yamlAddressing(stream, state) {
 
     // Once per line compute the TAGS tree, NAME, ADDRESS and LEVEL.
     if (stream.pos === 0) {
-        var regex = /(^\s*)(\w+):/gm;
+        var regex = /(^\s*)([\w|\-|\_]+):/gm;
         var tag = regex.exec(stream.string);
         if ( tag ){
 
