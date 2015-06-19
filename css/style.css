@@ -28,6 +28,7 @@ body {
     font-family: 'montserratultra_light';
     font-size: 12px;
     background: #303030;
+    height: 44px;
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
@@ -62,7 +63,7 @@ body {
     min-width: 44px;
     height: 100%;
     text-align: center;
-    font-size: 16px;
+    font-size: 17px;
     line-height: 44px;
     list-style-type: none;
     color: #e1e1e1;
