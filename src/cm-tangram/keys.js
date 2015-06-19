@@ -10,14 +10,20 @@ function loadKeys( configFile ){
 }
 
 function suggestKeys(cm){
+    // Erase previus keys
+    if (keyPanel){
+        keyPanel.clear();
+        editor.focus();
+    }
+    
+    // Get line address
     cursor = cm.getCursor(true);
     var nline = cursor.line;
     var address = getTagAddress(cm,nline);
 
-    // Chech for Colors
+    // Search for matches
     for (var i = 0; i < keys.length; i++){
         if ( keys[i].token(scene,cm,nline) ){
-            console.log(keys[i].options);
             addKeyPanel(keys[i].options,cm,nline);
             break;
         }
@@ -62,6 +68,7 @@ function addKeyPanel( keys, cm, nLine ) {
 
     var node = makeKeyPanel( keys, cm, nLine  );
     keyPanel = editor.addPanel( node, options );
+    editor.focus();
 }
 
 function addKey(div){

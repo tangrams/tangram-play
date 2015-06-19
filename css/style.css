@@ -227,6 +227,7 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
     font-family: 'montserratultra_light';
     font-size: 14px;
     color: black;
+    cursor: pointer;
 }
 
 .cm-panel {
