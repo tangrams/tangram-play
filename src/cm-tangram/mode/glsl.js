@@ -294,9 +294,9 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
                     "equal notEqual any all not " +
                     "texture2D textureCube"),
     atoms: words("true false " +
-                 "u_time u_meters_per_pixel u_device_pixel_ratio u_map_position " + 
+                 "u_time u_meters_per_pixel u_device_pixel_ratio u_map_position u_tile_origin " + 
                  "v_world_position v_texcoord " +
-                 "position v_color color v_normal normal material " +
+                 "v_position position width v_color color v_normal normal material " +
                  "light_accumulator_ambient light_accumulator_diffuse light_accumulator_specular " +
                  "gl_FragColor gl_Position gl_PointSize gl_FragCoord "),
     hooks: {"#": cppHook},
