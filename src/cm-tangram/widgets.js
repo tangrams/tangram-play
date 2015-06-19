@@ -12,6 +12,9 @@ function loadWidgets( configFile ){
             obj.options = widgets_data["widgets"][i].options;
         } else if ( obj.type === "dropdownmenu-dynamic" ){
             obj.source = widgets_data["widgets"][i].source;
+            if ( widgets_data["widgets"][i].options ){
+                obj.options = widgets_data["widgets"][i].options;
+            }
         } 
 
         widgets.push( obj );
@@ -94,7 +97,6 @@ function updateWidgets(cm){
                         list.className = "widget";
                         list.style.zIndex = "10";
 
-                        var selected = -1;
                         for (var j = 0; j < widgets[i].options.length ; j++ ){
                             var newOption = document.createElement("option");
                             newOption.value = nline;
@@ -119,7 +121,19 @@ function updateWidgets(cm){
 
                         var obj = getAddressSceneContent(scene,widgets[i].source);
                         var keys = obj? Object.keys(obj) : {};
-                        var selected = -1;
+
+                        if (widgets[i].options){
+                            for (var j = 0; j < widgets[i].options.length ; j++ ){
+                                var newOption = document.createElement("option");
+                                newOption.value = nline;
+                                if (content === widgets[i].options[j]) {
+                                    newOption.selected = true;
+                                }
+                                newOption.innerHTML= widgets[i].options[j];
+                                list.appendChild(newOption);
+                            }
+                        }
+                        
                         for (var j = 0; j < keys.length ; j++ ){
                             var newOption = document.createElement("option");
                             newOption.value = nline;

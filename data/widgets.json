@@ -42,44 +42,50 @@
             "options": ["uv", "planar", "triplanar" ]
         },
         {
-            "address": "^/lights/\\w+/type$",
+            "address": "^/lights/(\\w|\\_|\\-)+/type$",
             "type" : "dropdownmenu",
             "options": ["ambient","directional", "point", "spotlight"]
         },
         {
-            "address": "^/lights/\\w+/origin$",
+            "address": "^/lights/(\\w|\\_|\\-)+/origin$",
             "type" : "dropdownmenu",
             "options": ["camera", "world","ground"]
         },
         {
-            "address": "^(/styles/\\w+/base)|(/layers/\\w+/draw/\\w+/style)$",
+            "address": "^(/styles/(\\w|\\_|\\-)+/base)",
             "type" : "dropdownmenu",
             "options": ["points", "lines", "polygons", "text"]
         },
         {
-            "address": "^/cameras/\\w+/type$",
+            "address": "^/cameras/(\\w|\\_|\\-)+/type$",
             "type" : "dropdownmenu",
             "options": ["flat","perspective", "isometric"]
         },
         {
-            "address": "^/sources/\\w+/type$",
+            "address": "^/sources/(\\w|\\_|\\-)+/type$",
             "type" : "dropdownmenu",
             "options": ["GeoJSONTiles","TopoJSONTiles", "MVT"]
         },
         {
-            "address": "^/styles/\\w+/blend$",
+            "address": "^/styles/(\\w|\\_|\\-)+/blend$",
             "type" : "dropdownmenu",
             "options": ["add","multiply", "overlay"]
         },
         {
-            "address": "^/layers/\\w+/data/source$",
+            "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
             "type" : "dropdownmenu-dynamic",
             "source": "/sources"
         },
         {
-            "address": "^(/styles/\\w+/mix)|(/layers/\\w+/extruded/draw/(polygons|lines)/style)$",
+            "address": "^/styles/(\\w|\\_|\\-)+/mix$",
             "type" : "dropdownmenu-dynamic",
             "source": "/styles"
+        },
+        {
+            "address": "^/layers/(\\w+|\\_|\\-)(/extruded)?/draw/(\\w|\\_|\\-)+/style$",
+            "type" : "dropdownmenu-dynamic",
+            "source": "/styles",
+            "options": ["points", "lines", "polygons", "text"]
         }
     ]
 }
