@@ -18,6 +18,7 @@ initUI(editor, map);
 
 // Editor Widgets
 loadWidgets("data/widgets.json");
+loadKeys("data/keys.json");
 
 // Once everything is loaded
 setTimeout(function () {
@@ -27,4 +28,4 @@ setTimeout(function () {
 
     updateWidgets(editor);
 
-}, 1000);
+}, 500);

@@ -161,7 +161,6 @@ html.full-menu .menu-item-private {
 }
 
 /* EDITOR */
-
 .CodeMirror {
     font-size: 110%;
     line-height: 1.4;
@@ -217,3 +216,24 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 .CodeMirror-foldgutter-folded { color: #555; /*cursor: pointer;*/ }
 .CodeMirror-foldgutter-open:after { content: "\25BE"; }
 .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
+
+/* KEY PANELS */
+.cm-panel-remove {
+    float: right;
+    cursor: pointer;
+}
+
+.cm-panel-btn {
+    font-family: 'montserratultra_light';
+    font-size: 14px;
+    color: black;
+}
+
+.cm-panel {
+    font-family: 'montserratultra_light';
+    font-size: 14px;
+    background: #494949;
+    color: white;
+    height: 20px;
+    padding: 3px 7px;
+}
