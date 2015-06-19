@@ -80,7 +80,7 @@
             "address": "^/styles/(\\w|\\_|\\-)+/mix$",
             "type" : "dropdownmenu-dynamic",
             "source": "/styles"
-        }
+        },
         {
             "address": "^/layers/(\\w+|\\_|\\-)(/extruded)?/draw/(\\w|\\_|\\-)+/style$",
             "type" : "dropdownmenu-dynamic",
