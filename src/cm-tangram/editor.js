@@ -29,6 +29,9 @@ function initEditor( dom, style_file ){
                                     var opts = cm.state.foldGutter.options;
                                     cm.foldCode(pos, opts.rangeFinder);
                                 } ,
+                    "Alt-P" : function(cm) {
+                        takeScreenshot();
+                    } ,
                     "Ctrl-0" : function(cm){unfoldAll(cm)},
                     "Ctrl-1" : function(cm){foldByLevel(cm,0)},
                     "Ctrl-2" : function(cm){foldByLevel(cm,1)},

@@ -101,3 +101,10 @@ function getDraggableBounds () {
         maxX: window.innerWidth - CM_MINIMUM_WIDTH
     }
 }
+
+function takeScreenshot() {
+    if (take_screenshot == false){
+        take_screenshot = true;
+        scene.requestRedraw();
+    }
+}

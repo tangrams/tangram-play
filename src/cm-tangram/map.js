@@ -1,3 +1,5 @@
+var take_screenshot = false;
+
 function initMap( style_file ) {
     'use strict';
     var map_start_location = [40.70531887544228, -74.00976419448853, 16];
@@ -24,6 +26,7 @@ function initMap( style_file ) {
     map.attributionControl.setPrefix('<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>')
     var layer = Tangram.leafletLayer({
         scene: style_file,
+        postUpdate: postUpdate,
         attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
     });
 
@@ -46,3 +49,19 @@ function initMap( style_file ) {
 
     return map;
 }
+
+function postUpdate(){
+    if (take_screenshot == true) {
+        // Adapted from: https://gist.github.com/unconed/4370822
+        var image = scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
+        var data = atob(image); // convert base64 to binary without UTF-8 mangling
+        var buf = new Uint8Array(data.length);
+        for (var i = 0; i < data.length; ++i) {
+            buf[i] = data.charCodeAt(i);
+        }
+        var blob = new Blob([buf], { type: 'image/png' });
+        saveAs(blob, 'tangram-' + (+new Date()) + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
+
+        take_screenshot = false;
+    }
+};
