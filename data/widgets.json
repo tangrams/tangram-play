@@ -1,57 +1,21 @@
 {
     "widgets" : [
-        {
-            "tag" : "^color$",
-            "type" : "colorpicker"
-        },
-        {
-            "tag" : "^fill$",
-            "type" : "colorpicker"
-        },
-        {
-            "tag": "^ambient$",
-            "type" : "colorpicker"
-        },
-        {
-            "tag": "^diffuse$",
-            "type" : "colorpicker"
-        },
-        {
-            "tag": "^specular$",
-            "type" : "colorpicker"
-        },
-        {
-            "tag": "^emission$",
-            "type" : "colorpicker"
-        },
-        {
-            "tag": "^extrude$",
-            "type" : "togglebutton" 
-        },
-        {
-            "tag": "^tile_edges$",
-            "type" : "togglebutton" 
-        },
-        {
-            "tag": "^tile_edges$",
-            "type" : "togglebutton" 
-        },
-        {
-            "tag": "^texcoords$",
-            "type" : "togglebutton" 
-        },
-        {
-            "tag": "^lighting$",
-            "type" : "togglebutton" 
-        },
-        {
-            "tag": "^animated$",
-            "type" : "togglebutton" 
-        },
-        {
-            "tag": "^visible$",
-            "type" : "togglebutton" 
-        },
+
+        { "tag" : "^color$",    "type" : "colorpicker" },
+        { "tag" : "^fill$",     "type" : "colorpicker" },
+        { "tag": "^ambient$",   "type" : "colorpicker" },
+        { "tag": "^diffuse$",   "type" : "colorpicker" },
+        { "tag": "^specular$",  "type" : "colorpicker" },
+        { "tag": "^emission$",  "type" : "colorpicker" },
+
+        { "tag": "^extrude$",   "type" : "togglebutton" },
+        { "tag": "^tile_edges$","type" : "togglebutton" },
+        { "tag": "^tile_edges$","type" : "togglebutton" },
+        { "tag": "^texcoords$", "type" : "togglebutton" },
+        { "tag": "^lighting$",  "type" : "togglebutton" },
+        { "tag": "^animated$",  "type" : "togglebutton" },
+        { "tag": "^visible$",   "type" : "togglebutton" },
+
         {
             "address": "/ambient/mapping$",
             "type" : "dropdownmenu",
@@ -88,9 +52,9 @@
             "options": ["camera", "world","ground"]
         },
         {
-            "address": "^/styles/\\w+/base$",
+            "address": "^(/styles/\\w+/base)|(/layers/\\w+/draw/\\w+/style)$",
             "type" : "dropdownmenu",
-            "options": ["points","lines", "polygons", "text"]
+            "options": ["points", "lines", "polygons", "text"]
         },
         {
             "address": "^/cameras/\\w+/type$",
@@ -106,6 +70,16 @@
             "address": "^/styles/\\w+/blend$",
             "type" : "dropdownmenu",
             "options": ["add","multiply", "overlay"]
+        },
+        {
+            "address": "^/layers/\\w+/data/source$",
+            "type" : "dropdownmenu-dynamic",
+            "source": "/sources"
+        },
+        {
+            "address": "^(/styles/\\w+/mix)|(/layers/\\w+/extruded/draw/(polygons|lines)/style)$",
+            "type" : "dropdownmenu-dynamic",
+            "source": "/styles"
         }
     ]
 }

@@ -1,5 +1,127 @@
+//  SET Functions
+//  ===============================================================================
+function setValue(cm, nLine, string){
+    var line = cm.lineInfo(nLine).text;
+    var tag = /^\s*(\w+):\s*/gm.exec( line );
+    if (tag){
+        cm.replaceRange(string, {line: nLine, ch:tag[0].length}, {line: nLine, ch:line.length});
+    }
+}
 
-//  COMMON FUNCTIONS 
+//  GET Functions
+//  ===============================================================================
+
+//  Get the spaces of a string
+function getSpaces(str) {
+    var regex = /^(\s+)/gm;
+    var space = regex.exec(str);
+    if (space)
+        return (space[1].match(/\s/g) || []).length;
+    else 
+        return 0;
+}
+
+//  Get the indentation level of a line
+function getInd(string) { return getSpaces( string ) / 4;}
+function getLineInd(cm, nLine) { return getSpaces( cm.lineInfo(nLine).text ) / cm.getOption("tabSize"); }
+
+function getTag(cm, nLine){
+    var tag = /^\s*(\w+):/gm.exec( cm.lineInfo(nLine).text );
+    return tag ? tag[1] : "" ;
+}
+
+// Get array of YAML tags parent tree of a particular line
+function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
+// Get string of YAML tags in a folder style
+function getTagAddress(cm, nLine) { 
+    if (cm.lineInfo(nLine).handle.stateAfter){
+        return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress;
+    } else {
+        return "";
+    }
+}
+
+//  Get value of a key pair 
+function getValue(cm, nLine){
+    var value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec( cm.lineInfo(nLine).text );
+    return value ? value[1] : "" ;
+}
+
+// Get the YAML content a specific series of tags (array of strings)
+function getTagSceneContent(scene, cm, nLine){
+    var tags = getTags(cm, nLine);
+    var tmp = scene.config[ tags[0] ];
+    for (var i = 1; i < tags.length; i++){
+        if (tmp[ tags[i] ]){
+            tmp = tmp[ tags[i] ];
+        } else {
+            return tmp;
+        }
+    }
+    return tmp;
+}
+
+function getAddressSceneContent(scene, address){
+    if (scene && scene.config){
+        var tags = address.split("/");
+        tags.shift();
+        if (tags && tags.length > 0){
+            var content = scene.config[ tags[0] ];
+            for (var i = 1; i < tags.length; i++){
+                if (content[ tags[i] ]){
+                    content = content[ tags[i] ];
+                } else {
+                    return content;
+                }
+            }
+            return content;
+        } else {
+            return "";
+        }
+    } else {
+        return "";
+    }
+    
+}
+
+//  CHECK
+//  ===============================================================================
+
+//  Check if a line is empty
+function isStrEmpty(str) { return (!str || 0 === str.length || /^\s*$/.test(str));}
+function isEmpty(cm, nLine) { return isStrEmpty( cm.lineInfo(nLine).text ); }
+
+//  Check if the line is commented YAML style 
+function isStrCommented(str) { var regex = /^\s*[\#||\/\/]/gm; return (regex.exec( str ) || []).length > 0; }
+function isCommented(cm, nLine) { return isStrCommented( cm.lineInfo(nLine).text ); }
+
+//  Function that check if a line is inside a Color Shader Block
+function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); }
+function isWidthBlock(address) { return endsWith(address,"shaders/blocks/width"); }
+function isPositionBlock(address) { return endsWith(address,"shaders/blocks/position"); }
+function isNormalBlock(address) { return endsWith(address,"shaders/blocks/normal"); }
+function isColorBlock(address) { return endsWith(address,"shaders/blocks/color"); }
+function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); }
+function isShader(address){ return (isGlobalBlock(address) || isWidthBlock(address)  || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address));}
+
+function isContentJS(scene, address) {
+    if ( scene && scene.config ){
+        return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(getAddressSceneContent(scene, address));
+    } else {
+        return false;
+    }
+}
+
+function isAfterTag(str,pos){
+    var tag = /^\s*(\w+):/gm.exec(str);
+    if (tag === undefined){
+        return true;
+    } else {
+        return [0].length < pos;
+    }
+}
+
+//  CONVERT
 //  ===============================================================================
 
 // Make an folder style address from an array of tags
@@ -14,6 +136,140 @@ function tags2Address(tags){
         return "/"
     }
 }
+
+//  NAVIGATION
+//  ===============================================================================
+
+//  Jump to a specific line
+function jumpToLine(cm, nLine) { cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top ); } 
+
+//  SELECT
+//  ===============================================================================
+
+//  Select a line or a range of lines
+//
+function selectLines(cm, rangeString) {
+    var from, to;
+
+    if ( isNumber(rangeString) ) {
+        from = parseInt(rangeString)-1;
+        to = from; 
+    } else {
+        var lines = rangeString.split('-');
+        from = parseInt(lines[0])-1;
+        to = parseInt(lines[1])-1;
+    }
+
+    // If folding level is on un fold the lines selected
+    if (querry['foldLevel']) {
+        foldAllBut(cm, from,to,querry['foldLevel']);
+    }
+    
+    cm.setSelection({ line: from, ch:0},
+                    { line: to, ch:cm.lineInfo(to).text.length } );
+    jumpToLine(cm,from);
+}
+
+//  FOLD
+//  ===============================================================================
+
+//  Is posible to fold
+//
+function isFolder(cm, nLine) {
+    if ( cm.lineInfo(nLine).gutterMarkers ){
+        return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
+    } else {
+        return false;
+    }
+}
+
+//  Select everything except for a range of lines
+//
+function foldAllBut(cm, From, To, querryLevel) {
+    // default level is 0
+    querryLevel = typeof querryLevel !== 'undefined' ? querryLevel : 0;
+
+    // fold everything
+    foldByLevel(cm, querryLevel);
+
+    // get minimum indentation
+    var minLevel = 10;
+    var startOn = To;
+    var onBlock = true;
+
+    for (var i = From-1; i >= 0; i--) {
+
+        var level = getLineInd(cm, i);
+
+        if (level === 0){
+            break;
+        }
+
+        if (level < minLevel ){
+            minLevel = level;
+        } else if (onBlock) {
+            startOn = i;
+            onBlock = false;
+        }
+    }
+
+    minLevel = 10;
+    for (var i = To; i >= From; i--) {
+        var level = getLineInd(cm, i);
+        var chars = cm.lineInfo(i).text.length;
+        if (level < minLevel && chars > 0){
+            minLevel = level;
+        }
+    }
+    var opts = cm.state.foldGutter.options;
+
+    for (var i = startOn; i >= 0; i--) {
+        var level = getLineInd(cm, i);
+
+        if (level === 0 && cm.lineInfo(i).text.length > 0){
+            break;
+        }
+
+        if ( level <= minLevel ){
+            cm.foldCode({ line: i }, opts.rangeFinder, "fold");
+        }
+    }
+
+    for (var i = To; i < cm.lineCount() ; i++) {
+        if (getLineInd(cm, i) >= querryLevel){
+            cm.foldCode({ line: i }, opts.rangeFinder, "fold");
+        }
+    }
+}
+
+//  Unfold all lines
+//
+function unfoldAll(cm) {
+    var opts = cm.state.foldGutter.options;
+    for (var i = 0; i < cm.lineCount() ; i++) {
+        cm.foldCode({ line: i }, opts.rangeFinder, "unfold");
+    }
+}
+
+//  Fold all lines above a specific indentation level
+//
+function foldByLevel(cm, level) {  
+    unfoldAll(cm);  
+    var opts = cm.state.foldGutter.options;
+
+    var actualLine = cm.getDoc().size-1;
+    while ( actualLine >= 0) {
+        if ( isFolder(cm, actualLine) ){
+            if (getLineInd(cm, actualLine) >= level){
+                cm.foldCode({line:actualLine,ch:0}, opts.rangeFinder);
+            }
+        }
+        actualLine--;
+    }
+};
+
+//  YAML
+//  ===============================================================================
 
 // Add Address to token states
 function yamlAddressing(stream, state) {
@@ -52,92 +308,6 @@ function yamlAddressing(stream, state) {
     }
 }
 
-function getTag(cm, nLine){
-    var tag = /^\s*(\w+):/gm.exec( cm.lineInfo(nLine).text );
-    return tag ? tag[1] : "" ;
-}
-
-function getValue(cm, nLine){
-    var value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec( cm.lineInfo(nLine).text );
-    return value ? value[1] : "" ;
-}
-
-function setValue(cm, nLine, string){
-    var line = cm.lineInfo(nLine).text;
-    var tag = /^\s*(\w+):\s*/gm.exec( line );
-    if (tag){
-        cm.replaceRange(string, {line: nLine, ch:tag[0].length}, {line: nLine, ch:line.length});
-    }
-}
-
-// Get array of YAML tags parent tree of a particular line
-function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
-// Get string of YAML tags in a folder style
-function getTagAddress(cm, nLine) { 
-    if (cm.lineInfo(nLine).handle.stateAfter){
-        return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress;
-    } else {
-        return "";
-    }
-}
-
-// Get the YAML content a specific series of tags (array of strings)
-function getTagCompleteContent(scene, cm, nLine){
-    var tags = getTags(cm, nLine);
-    var tmp = scene.config[ tags[0] ];
-    for (var i = 1; i < tags.length; i++){
-        if (tmp[ tags[i] ]){
-            tmp = tmp[ tags[i] ];
-        } else {
-            return tmp;
-        }
-    }
-    return tmp;
-}
-
-//  Function that check if a line is inside a Color Shader Block
-function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); }
-function isWidthBlock(address) { return endsWith(address,"shaders/blocks/width"); }
-function isPositionBlock(address) { return endsWith(address,"shaders/blocks/position"); }
-function isNormalBlock(address) { return endsWith(address,"shaders/blocks/normal"); }
-function isColorBlock(address) { return endsWith(address,"shaders/blocks/color"); }
-function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); }
-function isShader(address){ return (isGlobalBlock(address) || isWidthBlock(address)  || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address));}
-
-function isContentJS(scene, address) {
-    if (address && scene && scene.config){
-        var tags = address.split("/");
-        tags.shift();
-        if (tags && tags.length > 0){
-            var content = scene.config[ tags[0] ];
-            for (var i = 1; i < tags.length; i++){
-                if (content[ tags[i] ]){
-                    content = content[ tags[i] ];
-                } else {
-                    break;
-                }
-            }
-            return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(content);
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
-
-function isAfterTag(str,pos){
-    var tag = /^\s*(\w+):/gm.exec(str);
-    if (tag === undefined){
-        return true;
-    } else {
-        return [0].length < pos;
-    }
-}
-
-
-//  YAML
-//  ===============================================================================
 (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
         mod(require("src/codemirror"));
@@ -330,14 +500,15 @@ function isAfterTag(str,pos){
                 tag = tag ? tag[1] : "";
 
                 if ( isShader(address) && 
-                     !/^\s*\|\s*$/g.test(stream.string) ) {
+                     !/^\|$/g.test(stream.string) && 
+                     isAfterTag(stream.string,stream.pos)) {
                     state.token = glsl;
                     state.localMode = glslMode;
                     state.localState = glslMode.startState( getInd(stream.string) );
                     return glsl(stream, state);
 
                 } else if ( isContentJS(scene, address) && 
-                            !/^\s*\|\s*$/g.test(stream.string) && 
+                            !/^\|$/g.test(stream.string) && 
                             isAfterTag(stream.string,stream.pos) ){
                     state.token = js;
                     state.localMode = jsMode;
@@ -350,7 +521,7 @@ function isAfterTag(str,pos){
 
         function glsl(stream, state) {
             var address = state.yamlState.tagAddress            
-            if ( !isShader(address) || (/^\s*\|\s*$/g.test(stream.string)) ) {
+            if ( !isShader(address) || (/^\|$/g.test(stream.string)) ) {
                 state.token = yaml;
                 state.localState = state.localMode = null;
                 return null;
@@ -360,7 +531,7 @@ function isAfterTag(str,pos){
 
         function js(stream, state) {
             var address = state.yamlState.tagAddress;
-            if ( (!isContentJS(scene, address) || /^\s*\|\s*$/g.test(stream.string) ) ){
+            if ( (!isContentJS(scene, address) || /^\|$/g.test(stream.string) ) ){
                 state.token = yaml;
                 state.localState = state.localMode = null;
                 return null;

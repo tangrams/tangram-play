@@ -10,7 +10,9 @@ function loadWidgets( configFile ){
 
         if ( obj.type === "dropdownmenu" ){
             obj.options = widgets_data["widgets"][i].options;
-        }
+        } else if ( obj.type === "dropdownmenu-dynamic" ){
+            obj.source = widgets_data["widgets"][i].source;
+        } 
 
         widgets.push( obj );
     }
@@ -74,6 +76,18 @@ function updateWidgets(cm){
                         colorBtn.style.height = "17px";
                         break;
 
+                    } else if (widgets[i].type === "togglebutton"){
+                        var check = document.createElement('Input');
+                        check.type = 'checkbox';
+                        check.className = "widget";
+                        check.style.zIndex = "10";
+                        check.value = nline;
+                        check.checked = getValue(cm,nline) === "true" ? true : false;
+                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, check);
+                        check.style.top = (parseInt(check.style.top, 10) - 17)+"px";
+                        check.style.left = (parseInt(check.style.left, 10) + 5)+"px";
+                        check.setAttribute('onchange','toggleButton(this)');
+                        break;
                     } else if (widgets[i].type === "dropdownmenu"){
 
                         var list = document.createElement('Select');
@@ -97,19 +111,30 @@ function updateWidgets(cm){
                         list.setAttribute('onchange','dropdownMenuChange(this)');
                         break;
 
-                    } else if (widgets[i].type === "togglebutton"){
-                        var check = document.createElement('Input');
-                        check.type = 'checkbox';
-                        check.className = "widget";
-                        check.style.zIndex = "10";
-                        check.value = nline;
-                        check.checked = getValue(cm,nline) === "true" ? true : false;
-                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, check);
-                        check.style.top = (parseInt(check.style.top, 10) - 17)+"px";
-                        check.style.left = (parseInt(check.style.left, 10) + 5)+"px";
-                        check.setAttribute('onchange','toggleButton(this)');
+                    } else if (widgets[i].type === "dropdownmenu-dynamic"){
+
+                        var list = document.createElement('Select');
+                        list.className = "widget";
+                        list.style.zIndex = "10";
+
+                        var obj = getAddressSceneContent(scene,widgets[i].source);
+                        var keys = obj? Object.keys(obj) : {};
+                        var selected = -1;
+                        for (var j = 0; j < keys.length ; j++ ){
+                            var newOption = document.createElement("option");
+                            newOption.value = nline;
+                            if (content === keys[j]) newOption.selected = true;
+                            newOption.innerHTML= keys[j];
+                            list.appendChild(newOption);
+                        }
+
+                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, list);
+                        list.style.top = (parseInt(list.style.top, 10) - 17)+"px";
+                        list.style.left = (parseInt(list.style.left, 10) + 5)+"px";
+                        list.setAttribute('onchange','dropdownMenuChange(this)');
                         break;
-                    }
+
+                    } 
 
                 }
             }

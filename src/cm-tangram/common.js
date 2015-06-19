@@ -62,9 +62,11 @@ function getPosition(dom) {
     };
 };
 
-function isNumber(n) {
-    return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
-}
+//  Check if a variable is a number
+function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); }
+
+//  Check if a str ends with a suffix
+function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1;}
 
 function toCSS(str){
     var match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
