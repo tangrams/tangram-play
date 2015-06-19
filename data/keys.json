@@ -1,0 +1,28 @@
+{
+	"keys" : [
+        {
+            "address": "^/$",
+            "tags": ["cameras","lights","styles","sources","layers","scene"]
+        },
+        {
+            "address": "^/cameras/(\\w|\\_|\\-)+$",
+            "options": ["type","vanishing_point", "focal_length", "active"]
+        },
+        {
+            "address": "^/lights/(\\w|\\_|\\-)+$",
+            "options": ["type","diffuse", "ambient","specular","emission","direction", "position", "origin", "radius"]
+        },
+        {
+            "address": "^/scene$",
+            "options": ["background"]
+        },
+        {
+            "address": "^/scene/background$",
+            "options": ["color"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+$",
+            "options": ["base", "mix", "blend", "lighting", "texcoords", "animated", "material", "shaders"]
+        }
+	]   
+}
