@@ -8,10 +8,10 @@ if (flags['fullmenu'] === true) {
 }
 
 // Tangram Map
-var map = initMap( querry['style']? querry['style'] : "data/default.yaml" );
+var map = initMap( querry['style']? querry['style'] : "data/styles/default.yaml" );
 
 // Editor
-var editor = initEditor(document.getElementById("editor"), querry['style']? querry['style'] : "data/default.yaml" );
+var editor = initEditor(document.getElementById("editor"), querry['style']? querry['style'] : "data/styles/default.yaml" );
 
 //  UI
 initUI(editor, map);

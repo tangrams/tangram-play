@@ -51,6 +51,8 @@ function initMap( style_file ) {
 }
 
 function postUpdate(){
+
+
     if (take_screenshot == true) {
         // Adapted from: https://gist.github.com/unconed/4370822
         var image = scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
@@ -64,4 +66,4 @@ function postUpdate(){
 
         take_screenshot = false;
     }
-};
+}

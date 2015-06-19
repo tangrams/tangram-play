@@ -20,18 +20,9 @@ function initEditor( dom, style_file ){
         keyMap: "sublime",
         autoCloseBrackets: true,
         extraKeys: {"Ctrl-Space": "autocomplete",
-                    "Tab": function(cm) {
-                        var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-                        cm.replaceSelection(spaces);
-                    },
-                    "Alt-F" : function(cm) {
-                                    var pos = cm.getCursor();
-                                    var opts = cm.state.foldGutter.options;
-                                    cm.foldCode(pos, opts.rangeFinder);
-                                } ,
-                    "Alt-P" : function(cm) {
-                        takeScreenshot();
-                    } ,
+                    "Tab": function(cm) { cm.replaceSelection(Array(cm.getOption("indentUnit") + 1).join(" ")); },
+                    "Alt-F" : function(cm) { cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder); },
+                    "Alt-P" : function(cm) {takeScreenshot();},
                     "Ctrl-0" : function(cm){unfoldAll(cm)},
                     "Ctrl-1" : function(cm){foldByLevel(cm,0)},
                     "Ctrl-2" : function(cm){foldByLevel(cm,1)},

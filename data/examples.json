@@ -2,23 +2,23 @@
 	"examples" : [
 		{
 			"name" : "Open example ...",
-			"url" : "data/basic.yaml#2/0/0"
+			"url" : "data/styles/basic.yaml#2/0/0"
 		},
 		{
 			"name" : "basic.yaml",
-			"url" : "data/basic.yaml#2/0/0"
+			"url" : "data/styles/basic.yaml#2/0/0"
 		},
 		{
 			"name" : "highways.yaml",
-			"url" : "data/highways.yaml#7/41.890/12.492"
+			"url" : "data/styles/highways.yaml#7/41.890/12.492"
 		},
 		{
 			"name" : "default.yaml",
-			"url" : "data/default.yaml"
+			"url" : "data/styles/default.yaml"
 		},
 		{
 			"name" : "simple.yaml",
-			"url" : "data/simple.yaml"
+			"url" : "data/styles/simple.yaml"
 		},
 		{
 			"name" : "blueprint.yaml",
