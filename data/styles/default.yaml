@@ -9,12 +9,67 @@ lights:
         diffuse: .7
         ambient: .5
 styles:
+    tools:
+        base: polygons
+        shaders:
+            blocks:
+                global: |
+                    float fade(float z) { return smoothstep(.0,.5,z) - smoothstep(.5,1.,z); }
+                    float grid(vec2 pos, float zoom, float lineWidth){
+                        pos = fract(pos*zoom);
+                        pos += .5;
+                        vec2 g = smoothstep(vec2(0.5-lineWidth),vec2(0.5),pos)-smoothstep(vec2(0.5),vec2(0.5+lineWidth),pos);
+                        return clamp(g.x+g.y,0.0,1.);
+                    }
+                    float infinitGrid(vec2 st, float zoom){
+                        float grid1 = grid(st,.0000005*pow(2.,floor(zoom/2.)*2.),.05);
+                        float grid2 = grid(st,.0000005*pow(2.,floor((zoom+1.)/2.)*2.),.05);
+                        return  grid1 * fade(fract(zoom/2.)) + grid2 * fade(fract((zoom+1.)/2.));
+                    }
+                    float hash(vec2 p) { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x)))); }
+                    float noise(vec2 x) {
+                        vec2 i = floor(x);
+                        vec2 f = fract(x);
+                        float a = hash(i);
+                        float b = hash(i + vec2(1.0, 0.0));
+                        float c = hash(i + vec2(0.0, 1.0));
+                        float d = hash(i + vec2(1.0, 1.0));
+                        vec2 u = f * f * (3.0 - 2.0 * f);
+                        return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+                    }
+                    float fbm( in vec2 p ){
+                        float s = 0.0;
+                        float m = 0.0;
+                        float a = 0.5;
+                        for(int i=0; i<2; i++ ){
+                            s += a * noise(p);
+                            m += a;
+                            a *= 0.5;
+                            p *= 2.0;
+                        }
+                        return s/m;
+                    }
+                    float grain(vec2 pos){
+                        vec2 st = pos/u_resolution.xy-vec2(.5);
+                        return dot(st,st)+(fbm(pos*0.6)*0.1);
+                    }
+    grid:
+        base: polygons
+        mix: tools
+        shaders:
+            blocks:
+                filter: |
+                    color.rgb += infinitGrid(v_world_position.xy, u_map_position.z)*0.05;
+                    color.rgb -= grain(gl_FragCoord.xy)*0.3;
+                    
     buildings:
         base: polygons
+        mix: tools
         shaders:
             blocks:
                 color: |
                     color.rgb *= vec3(min((v_world_position.z*.001 + .5),1.));
+                    color.rgb -= grain(gl_FragCoord.xy)*0.3;
 sources:
     osm:
         type: TopoJSONTiles
@@ -23,19 +78,19 @@ layers:
     water:
         data: { source: osm }
         draw:
-            polygons:
+            grid:
                 order: 2
                 color: '#353535'
     earth:
         data: { source: osm }
         draw:
-            polygons:
+            grid:
                 order: 0
                 color: '#555'
     landuse:
         data: { source: osm }
         draw:
-            polygons:
+            grid:
                 order: 1
                 color: '#666'
     roads:
@@ -48,13 +103,13 @@ layers:
                 width: 5
     buildings:
         data: { source: osm }
-        filter: { $zoom: { min: 14 } }
+        filter: { $zoom: { min: 10 } }
         draw:
             polygons:
                 order: 50
                 color: '#999'
         extruded:
-            filter: { $zoom: { min: 15 } }
+            filter: { $zoom: { min: 10 } }
             draw:
                 polygons:
                     style: buildings
