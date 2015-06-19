@@ -14,6 +14,7 @@ Style Editor for Tangram Styles
 
 * ```Ctrl``` + ```[number]```: Fold indentation level ```[number]```
 * ```Alt``` + ```F```: fold/unfold line
+* ```Alt``` + ```P```: screenshot of the map
 
 Sublime-like hotkeys
 * ```Ctrl``` + ```F```: Search
