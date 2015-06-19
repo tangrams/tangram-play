@@ -2,7 +2,7 @@ var take_screenshot = false;
 
 function initMap( style_file ) {
     'use strict';
-    var map_start_location = [40.70531887544228, -74.00976419448853, 16];
+    var map_start_location = [40.70531887544228, -74.00976419448853, 16.64645];
 
     /*** URL parsing ***/
 

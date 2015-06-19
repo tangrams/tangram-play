@@ -1,43 +1,29 @@
 var widgets = [];
 
 function loadWidgets( configFile ){
-    var widgets_data = JSON.parse(fetchHTTP(configFile));
-
-    for (var i = 0; i < widgets_data["widgets"].length; i++){
-        var obj = {};
-        obj.type = widgets_data["widgets"][i].type;
-        obj.token = addWidgetToken(widgets_data["widgets"][i]);
-
-        if ( obj.type === "dropdownmenu" ){
-            obj.options = widgets_data["widgets"][i].options;
-        } else if ( obj.type === "dropdownmenu-dynamic" ){
-            obj.source = widgets_data["widgets"][i].source;
-            if ( widgets_data["widgets"][i].options ){
-                obj.options = widgets_data["widgets"][i].options;
-            }
-        } 
-
-        widgets.push( obj );
+    widgets = JSON.parse(fetchHTTP(configFile))["widgets"];
+    for (var i = 0; i < widgets.length; i++){
+        widgets[i].token = addToken(widgets[i]);
     }
 }
 
-function addWidgetToken( widgetOBJ ){
+function addToken( tokenOBJ ){
     var token;
-    if ( widgetOBJ['address'] ){
+    if ( tokenOBJ['address'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( widgetOBJ['address'] ).test( getTagAddress(cm, nLine) );
+            return RegExp( tokenOBJ['address'] ).test( getTagAddress(cm, nLine) );
         };
-    } else if ( widgetOBJ['tag'] ){
+    } else if ( tokenOBJ['tag'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( widgetOBJ['tag'] ).test( getTag(cm, nLine) );
+            return RegExp( tokenOBJ['tag'] ).test( getTag(cm, nLine) );
         };
-    } else if ( widgetOBJ['value'] ){
+    } else if ( tokenOBJ['value'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( widgetOBJ['value'] ).test( getValue(cm, nLine) );
+            return RegExp( tokenOBJ['value'] ).test( getValue(cm, nLine) );
         };
-    } else if ( widgetOBJ['content'] ){
+    } else if ( tokenOBJ['content'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( widgetOBJ['content'] ).test( getTagCompleteContent(scene, cm, nLine) );
+            return RegExp( tokenOBJ['content'] ).test( getTagCompleteContent(scene, cm, nLine) );
         };
     } else {
         token = function(scene, cm, nLine) {
@@ -58,7 +44,8 @@ function updateWidgets(cm){
 
         // If Line is significative
         if (getTag(cm,nline) !== "" && val !== "|" && val !== "" ){
-            // Chech for Colors
+
+            // Chech for widgets to add
             for (var i = 0; i < widgets.length; i++){
                 if ( widgets[i].token(scene,cm,nline) ){
                     var content = getValue(cm, nline);
