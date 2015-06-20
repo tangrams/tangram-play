@@ -21,10 +21,39 @@ function suggestKeys(cm){
     var nline = cursor.line;
     var address = getTagAddress(cm,nline);
 
+    var presentKeys = [];
+
+    if (scene){
+        var obj = getAddressSceneContent(scene,address);
+        presentKeys = obj? Object.keys(obj) : [];
+    }
+    
     // Search for matches
     for (var i = 0; i < keys.length; i++){
         if ( keys[i].token(scene,cm,nline) ){
-            addKeyPanel(keys[i].options,cm,nline);
+
+            var suggestedKeys = [];
+
+            if (keys[i].options){
+                Array.prototype.push.apply(suggestedKeys, keys[i].options);
+            }
+
+            if (keys[i].source){
+                var obj = getAddressSceneContent(scene,keys[i].source);
+                var keyFromSource = obj? Object.keys(obj) : [];
+                Array.prototype.push.apply(suggestedKeys, keyFromSource);
+            }
+
+
+            for (var j = suggestedKeys.length-1; j >= 0; j--){
+                if ( presentKeys.indexOf(suggestedKeys[j]) > -1 ){
+                    suggestedKeys.splice(j, 1);
+                }
+            }
+
+            if ( suggestedKeys.length > 0 ) {
+                addKeyPanel(suggestedKeys,cm,nline);
+            }
             break;
         }
     }
@@ -50,13 +79,16 @@ function makeKeyPanel( keys, cm, nLine ) {
         btn.innerText = keys[i];
         btn.className = "cm-panel-btn";
         btn.setAttribute('onclick','addKey(this)');
-        node.appendChild(btn);
+        node.appendChild(btn);   
     }
 
     return node;
 }
 
 function addKeyPanel( keys, cm, nLine ) {
+    var doc = editor.getDoc();
+    var cursor = doc.getCursor();
+
     var options = { 
         position: "top" 
     }
@@ -68,7 +100,10 @@ function addKeyPanel( keys, cm, nLine ) {
 
     var node = makeKeyPanel( keys, cm, nLine  );
     keyPanel = editor.addPanel( node, options );
+
     editor.focus();
+    jumpToLine(editor,cursor.line);
+    doc.setCursor(cursor);
 }
 
 function addKey(div){

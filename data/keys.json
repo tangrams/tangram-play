@@ -23,6 +23,45 @@
         {
             "address": "^/styles/(\\w|\\_|\\-)+$",
             "options": ["base", "mix", "blend", "lighting", "texcoords", "animated", "material", "shaders"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/shaders$",
+            "options": ["blocks"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/shaders/blocks$",
+            "options": ["global","position","width","normal","color","filter"]
+        },
+        {
+            "address": "^/sources/(\\w|\\_|\\-)+$",
+            "options": ["type", "url"]
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+$",
+            "options": ["data", "draw", "properties", "filter", "extruded"]
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/data$",
+            "options": ["source"]
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/draw$",
+            "options": ["points", "lines", "polygons", "text"],
+            "source": "/styles"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/draw/(\\w|\\_|\\-)+$",
+            "options": ["style", "extrude", "color", "order", "width", "font"],
+            "source": "/styles"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/draw/text/font/$",
+            "options": ["fill", "typeface"],
+            "source": "/styles"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/properties$",
+            "options": ["width"]
         }
 	]   
 }

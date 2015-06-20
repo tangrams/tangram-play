@@ -34,10 +34,12 @@ function getTag(cm, nLine){
 function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
 // Get string of YAML tags in a folder style
 function getTagAddress(cm, nLine) { 
-    if (cm.lineInfo(nLine).handle.stateAfter){
+    if (cm.lineInfo(nLine).handle.stateAfter &&
+        cm.lineInfo(nLine).handle.stateAfter.yamlState && 
+        cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress ){
         return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress;
     } else {
-        return "";
+        return "/";
     }
 }
 
