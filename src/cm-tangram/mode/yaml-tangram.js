@@ -145,6 +145,12 @@ function tags2Address(tags){
 //  Jump to a specific line
 function jumpToLine(cm, nLine) { cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top ); } 
 
+//  Jump to a specific line
+function jumpToLineAt(cm, nLine, offset) { 
+    var t = cm.charCoords({line: nLine-1, ch: 0}, "local").top;
+    cm.scrollTo( null, t ); 
+} 
+
 //  SELECT
 //  ===============================================================================
 

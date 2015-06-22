@@ -10,6 +10,8 @@ function loadKeys( configFile ){
 }
 
 function suggestKeys(cm){
+    var top = editor.getScrollInfo().top;
+
     // Erase previus keys
     if (keyPanel){
         keyPanel.clear();
@@ -57,6 +59,9 @@ function suggestKeys(cm){
             break;
         }
     }
+
+    editor.focus();
+    editor.scrollTo(null,top);
 }
 
 function makeKeyPanel( keys, cm, nLine ) {
@@ -86,9 +91,6 @@ function makeKeyPanel( keys, cm, nLine ) {
 }
 
 function addKeyPanel( keys, cm, nLine ) {
-    var doc = editor.getDoc();
-    var cursor = doc.getCursor();
-
     var options = { 
         position: "top" 
     }
@@ -100,10 +102,6 @@ function addKeyPanel( keys, cm, nLine ) {
 
     var node = makeKeyPanel( keys, cm, nLine  );
     keyPanel = editor.addPanel( node, options );
-
-    editor.focus();
-    jumpToLine(editor,cursor.line);
-    doc.setCursor(cursor);
 }
 
 function addKey(div){
