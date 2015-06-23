@@ -5,28 +5,28 @@
 			"url" : "data/styles/basic.yaml#2/0/0"
 		},
 		{
-			"name" : "basic.yaml",
-			"url" : "data/styles/basic.yaml#2/0/0"
+			"name"	: "default.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
-			"name" : "highways.yaml",
-			"url" : "data/styles/highways.yaml#7/41.890/12.492"
+			"name"	: "grain.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
-			"name" : "default.yaml",
-			"url" : "data/styles/default.yaml"
+			"name"	: "grain-roads.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-roads.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
-			"name" : "simple.yaml",
-			"url" : "data/styles/simple.yaml"
+			"name"	: "grain-area.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-area.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
 			"name" : "blueprint.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.yaml"
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
 			"name" : "patterns.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
 			"name" : "lego.yaml",
@@ -34,23 +34,23 @@
 		},
 		{
 			"name" : "tron.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.yaml"
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
 			"name" : "matrix.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.yaml"
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
 			"name" : "crosshatch.yaml",
-			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml"
+			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
 			"name" : "pericoli.yaml",
-			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml"
+			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml#14.99104/40.7088/-74.0056"
 		},
 		{
 			"name" : "sandbox.yaml",
-			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/sandbox.yaml"
+			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/sandbox.yaml#14.99104/40.7088/-74.0056"
 		}
 	]
 }
