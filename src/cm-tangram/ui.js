@@ -26,9 +26,16 @@ function initUI(cm, tangram) {
         var posX = document.getElementById('menu-button-open').getBoundingClientRect().left
         menuEl.style.left = posX + 'px'
         menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block'
-    })
+    }, false)
 
-    document.getElementById('menu-button-new').addEventListener('click', onClickNewButton)
+    document.getElementById('menu-button-new').addEventListener('click', onClickNewButton, false)
+    document.body.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('menu-item') && !e.target.parentNode.classList.contains('menu-item') ) {
+            loseMenuFocus()
+        }
+    }, false)
+    document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
+    document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
 };
 
 function getDividerStartingPosition () {
@@ -71,17 +78,40 @@ function newContent () {
     window.location.href = ".";
 }
 
-function loadExamples( configFile ) {
+function loadExamples (configFile) {
     var examples_data = JSON.parse(fetchHTTP(configFile));
     var examplesList = document.getElementById("examples");
 
-    for (var i = 0; i < examples_data['examples'].length; i++ ){
+    // TEMP: Skip item at index 0
+    for (var i = 1; i < examples_data['examples'].length; i++) {
         var example = examples_data['examples'][i];
-        var newOption = document.createElement("option");
-        newOption.value = example['url'];
-        newOption.innerHTML= example['name'];
+        var newOption = document.createElement('div');
+        var nameEl = document.createElement('div');
+        var name = example['name'].split('.')[0];
+        var imgEl = document.createElement('img');
+        newOption.className = 'example-option';
+        newOption.setAttribute('data-value', example['url']);
+        nameEl.className = 'example-option-name';
+        nameEl.innerText = name.replace(/-/g, ' ');
+        imgEl.src = 'imgs/placeholder.png'; //'imgs/' + name + '.png';
+        newOption.appendChild(nameEl);
+        newOption.appendChild(imgEl);
+        newOption.addEventListener('click', selectExample);
         examplesList.appendChild(newOption);
     }
+}
+
+function selectExample (event) {
+    var all = document.querySelectorAll('.example-option');
+    for (var i = 0, j = all.length; i < j; i++) {
+        all[i].classList.remove('example-selected');
+    }
+    var target = event.target;
+    while (!target.classList.contains('example-option')) {
+        target = target.parentNode;
+    }
+    target.classList.add('example-selected');
+    document.getElementById('example-confirm').disabled = false;
 }
 
 function openExample(select){
@@ -184,5 +214,42 @@ function showUnsavedModal (confirmCallback, cancelCallback) {
         modalEl.querySelector('#modal-confirm').removeEventListener('click', handleConfirm, false)
         modalEl.querySelector('#modal-cancel').removeEventListener('click', handleCancel, false)
     }
+}
+
+function hideMenus () {
+    var els = document.querySelectorAll('.menu-dropdown');
+    for (var i = 0, j = els.length; i < j; i++) {
+        els[i].style.display = 'none';
+    }
+}
+
+function loseMenuFocus () {
+    hideMenus();
+}
+
+function onClickOpenExample () {
+    if (isEditorSaved() === false) {
+        showUnsavedModal(handleContinue, handleCancel);
+    } else {
+        handleContinue();
+    }
+
+    function handleContinue () {
+        showExamplesModal();
+    }
+
+    function handleCancel () {
+        return;
+    }
+}
+
+function showExamplesModal () {
+    showShield();
+    document.getElementById('choose-example').style.display = 'block';
+}
+
+function hideExamplesModal () {
+    hideShield();
+    document.getElementById('choose-example').style.display = 'none';
 }
 

@@ -79,7 +79,6 @@
                     <li class="menu-item" id="menu-button-open" data-title="Open file"><i class="btl bt-plus-square"></i></li>
                     <li class="menu-item" onclick="saveContent()" data-title="Export style"><i class="btl bt-download"></i></li>
                     <li class="menu-item menu-item-private" data-title="Share"><i class="btl bt-share"></i></li>
-                    <li class="menu-item"> <select id="examples" onchange="openExample(this)"></select> </li>
                 </ul>
                 <ul id="menu-holder" class="menu-items menu-right">
                     <li class="menu-item menu-item-private" data-title="Refresh map"><i class="btl bt-sync"></i></li>
@@ -92,10 +91,11 @@
                 <div class="menu-dropdown menu-dropdown-open" id="menu-open">
                     <ul>
                         <li>
-                            <label for="menu-file-input">Open a file</label>
+                            <i class="btl bt-folder"></i> Open a file
+                            <label for="menu-file-input"></label>
                             <input type="file" id="menu-file-input" onchange="openContent(this)" accept="text/x-yaml" style="display: none;">
                         </li>
-                        <li>Choose example</li>
+                        <li id="menu-open-example"><i class="btl bt-map"></i> Choose example</li>
                     </ul>
                 </div>
             </div>
@@ -116,6 +116,22 @@
                 <button id="modal-cancel"><i class="btl bt-times"></i> Cancel</button>
             </div>
         </div>
+
+        <div id="choose-example" class="modal example-modal">
+            <p class="modal-text">Choose example to open</p>
+
+            <div class="examples-container">
+                <div id="examples">
+                    
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="example-cancel"><i class="btl bt-times"></i> Cancel</button>
+                <button id="example-confirm" disabled><i class="btl bt-check"></i> Open</button>
+            </div>
+        </div>
+
     </div>
 
     <!-- IDE -->
