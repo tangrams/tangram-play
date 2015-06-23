@@ -14,14 +14,7 @@ body {
     overflow: hidden;
 }
 
-/* MENU */
-#content {
-    position: absolute;
-    right: 0;
-    width: 50%;
-    min-width: 160px;
-    vertical-align: top;
-}
+/* MENU BAR */
 
 .menu-bar {
     position: relative;
@@ -129,6 +122,21 @@ html.full-menu .menu-item-private {
     margin-right: 0.5em;
 }
 
+/* MENU DROPDOWNS */
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    width: 300px;
+    height: 450px;
+    background: lightgray;
+    z-index: 1000; /* TODO don't guess z hierarchy */
+}
+
+.menu-dropdown-new {
+    
+}
+
 .bts, .btb, .btm, .btl, .fab {
     -webkit-font-smoothing: auto;
 }
@@ -192,6 +200,15 @@ html.full-menu .menu-item-private {
 }
 
 /* EDITOR */
+
+#content {
+    position: absolute;
+    right: 0;
+    width: 50%;
+    min-width: 160px;
+    vertical-align: top;
+}
+
 .CodeMirror {
     font-size: 110%;
     line-height: 1.4;

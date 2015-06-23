@@ -20,14 +20,21 @@ function initUI(cm, tangram) {
     loadExamples("data/examples.json");
     window.addEventListener('resize', onWindowResize);
     reflowUI();
+
+    document.getElementById('menu-button-open').addEventListener('click', function (e) {
+        var menuEl = document.getElementById('menu-open')
+        var posX = document.getElementById('menu-button-open').getBoundingClientRect().left
+        menuEl.style.left = posX + 'px'
+        menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block'
+    })
+
+    document.getElementById('menu-button-new').addEventListener('click', newContent)
 };
 
 function getDividerStartingPosition () {
-    if (window.localStorage) {
-        var storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
-        if (storedPosition) {
-            return storedPosition
-        }
+    var storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
+    if (storedPosition) {
+        return storedPosition
     }
 
     if (window.innerWidth > 1024) {
@@ -38,15 +45,14 @@ function getDividerStartingPosition () {
 }
 
 function saveDividerPosition () {
-    if (window.localStorage) {
-        var posX = document.getElementById('divider').getBoundingClientRect().left
-        if (posX) {
-            window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX)
-        }
+    var posX = document.getElementById('divider').getBoundingClientRect().left
+    if (posX) {
+        window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX)
     }
 }
 
-function newContent(){
+function newContent (e) {
+    
     window.location.href = ".";
 }
 
