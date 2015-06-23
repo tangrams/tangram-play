@@ -1,4 +1,5 @@
 var CM_MINIMUM_WIDTH = 160 // integer, in pixels
+var LOCAL_STORAGE_PREFIX = 'tangram-play-'
 
 var draggable;
 
@@ -12,6 +13,7 @@ function initUI(cm, tangram) {
         onDrag: reflowUI,
         onDragEnd: function () {
             updateUI(cm, tangram);
+            saveDividerPosition();
         }
     });
 
@@ -21,10 +23,26 @@ function initUI(cm, tangram) {
 };
 
 function getDividerStartingPosition () {
+    if (window.localStorage) {
+        var storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
+        if (storedPosition) {
+            return storedPosition
+        }
+    }
+
     if (window.innerWidth > 1024) {
         return Math.floor(window.innerWidth * 0.6)
     } else {
         return Math.floor(window.innerWidth / 2)
+    }
+}
+
+function saveDividerPosition () {
+    if (window.localStorage) {
+        var posX = document.getElementById('divider').getBoundingClientRect().left
+        if (posX) {
+            window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX)
+        }
     }
 }
 
