@@ -28,7 +28,7 @@ function initUI(cm, tangram) {
         menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block'
     })
 
-    document.getElementById('menu-button-new').addEventListener('click', newContent)
+    document.getElementById('menu-button-new').addEventListener('click', onClickNewButton)
 };
 
 function getDividerStartingPosition () {
@@ -51,8 +51,23 @@ function saveDividerPosition () {
     }
 }
 
-function newContent (e) {
-    
+function onClickNewButton (event) {
+    if (isEditorSaved() === false) {
+        showUnsavedModal(handleContinue, handleCancel)
+    } else {
+        handleContinue()
+    }
+
+    function handleContinue () {
+        newContent();
+    }
+
+    function handleCancel () {
+        return;
+    }
+}
+
+function newContent () {
     window.location.href = ".";
 }
 
@@ -88,6 +103,10 @@ function saveContent(){
         saveAs(blob, "style.yaml");
         isSaved = true;
     }
+}
+
+function isEditorSaved () {
+    return isSaved;
 }
 
 function onWindowResize( event ) {
@@ -133,3 +152,37 @@ function takeScreenshot() {
         scene.requestRedraw();
     }
 }
+
+function showShield () {
+    document.getElementById('shield').style.display = 'block'
+}
+
+function hideShield () {
+    document.getElementById('shield').style.display = 'none'
+}
+
+function showUnsavedModal (confirmCallback, cancelCallback) {
+    showShield()
+    var modalEl = document.getElementById('confirm-unsaved')
+    modalEl.style.display = 'block'
+    modalEl.querySelector('#modal-confirm').addEventListener('click', handleConfirm, false)
+    modalEl.querySelector('#modal-cancel').addEventListener('click', handleCancel, false)
+
+    function handleConfirm () {
+        hideUnsavedModal()
+        confirmCallback()
+    }
+
+    function handleCancel () {
+        hideUnsavedModal()
+        cancelCallback()
+    }
+
+    function hideUnsavedModal () {
+        hideShield();
+        document.getElementById('confirm-unsaved').style.display = 'none'
+        modalEl.querySelector('#modal-confirm').removeEventListener('click', handleConfirm, false)
+        modalEl.querySelector('#modal-cancel').removeEventListener('click', handleCancel, false)
+    }
+}
+

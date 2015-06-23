@@ -137,6 +137,98 @@ html.full-menu .menu-item-private {
     
 }
 
+/* SHIELD */
+
+.shield {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1200;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+/* MODALS */
+
+.modal {
+    display: none;
+    position: fixed;
+    box-sizing: border-box;
+    width: 400px;
+    height: 160px;
+    left: 50%;
+    margin-left: -200px;
+    top: 50%;
+    margin-top: -80px;
+    background-color: #303030;
+    font-family: 'montserratultra_light';
+    font-size: 16px;
+    z-index: 1300;
+    padding: 30px;
+    text-align: center;
+    color: white;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.modal-text {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: auto;
+       -moz-user-select: auto;
+        -ms-user-select: auto;
+            user-select: auto;
+}
+
+.modal-buttons {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.modal-buttons > button {
+    padding: 16px;
+    background-color: rgba(255,255,255,0.10);
+    color: white;
+    border: 0;
+    margin: 0 05px;
+    font-family: 'montserratultra_light';
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.modal-buttons > button:hover {
+    background-color: rgba(255,255,255,0.20);
+    color: yellow;
+}
+
+.modal-buttons > button > i {
+    margin-right: 0.5em;
+}
+
+.modal-buttons > button > i.bt-check {
+    color: green;
+}
+
+.modal-buttons > button > i.bt-times {
+    color: red;
+}
+
+/* TYPOGRAPHY */
+
 .bts, .btb, .btm, .btl, .fab {
     -webkit-font-smoothing: auto;
 }
