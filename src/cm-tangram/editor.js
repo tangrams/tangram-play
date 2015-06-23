@@ -1,7 +1,11 @@
+var isSaved = true;
+
 var updateContet = debounce(function(cm){
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
     var url = createObjectURL(new Blob([ cm.getValue() ]));
     scene.reload(url);
+
+    isSaved = false;
 
     updateWidgets(cm);
 }, 500);

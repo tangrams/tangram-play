@@ -80,6 +80,7 @@ function saveContent(){
     if (editor) {
         var blob = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "style.yaml");
+        isSaved = true;
     }
 }
 
