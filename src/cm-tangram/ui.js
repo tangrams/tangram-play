@@ -64,6 +64,7 @@ function setupFileSelector () {
     fileSelector.setAttribute('accept', 'text/x-yaml');
     fileSelector.style.display = 'none';
     fileSelector.id = 'file-selector';
+    fileSelector.setAttribute('onchange','openContent(this)');
     document.body.appendChild(fileSelector);
 }
 
@@ -134,7 +135,7 @@ function loadExamples (configFile) {
     }
 }
 
-function selectExample (event) {
+function selectExample(event) {
     var all = document.querySelectorAll('.example-option');
     for (var i = 0, j = all.length; i < j; i++) {
         all[i].classList.remove('example-selected');
@@ -147,7 +148,7 @@ function selectExample (event) {
     document.getElementById('example-confirm').disabled = false;
 }
 
-function openExample (value) {
+function openExample(value) {
     window.location.href = '.?style=' + value;
 }
 
@@ -156,7 +157,7 @@ function openContent(input){
     reader.onload = function(e) {
         editor.setValue(e.target.result);
     }
-    reader.readAsText(input.files[0]);
+    reader.readAsText( input.files[0] );
 }
 
 function saveContent(){
