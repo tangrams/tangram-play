@@ -138,7 +138,7 @@ function loadExamples (configFile) {
         newOption.className = 'example-option';
         newOption.setAttribute('data-value', example['url']);
         nameEl.className = 'example-option-name';
-        nameEl.innerText = name.replace(/-/g, ' ');
+        nameEl.textContent = name.replace(/-/g, ' ');
         //imgEl.src = 'data/imgs/' + name + '.png';
         thumbnailEl.className = 'example-thumbnail';
         thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
