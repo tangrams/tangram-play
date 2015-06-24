@@ -10,7 +10,7 @@
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+$",
-            "options": ["type","diffuse", "ambient","specular","emission","direction", "position", "origin", "radius"]
+            "options": ["type","diffuse", "ambient","specular","emission","direction", "position", "origin", "radius", "attenuation"]
         },
         {
             "address": "^/scene$",
