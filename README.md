@@ -1,4 +1,4 @@
-![](imgs/screenshot.png)
+![](data/imgs/screenshot.png)
 
 Style Editor for Tangram Styles
 

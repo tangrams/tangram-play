@@ -25,6 +25,14 @@
             "options": ["base", "mix", "blend", "lighting", "texcoords", "animated", "material", "shaders"]
         },
         {
+            "address": "^/styles/(\\w|\\_|\\-)+/material$",
+            "options": ["normal","emission","ambient","diffuse","specular","shininess"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/material/(normal|emission|ambient|diffuse|specular)$",
+            "options": ["texture","mapping","scale","amount"]
+        },
+        {
             "address": "^/styles/(\\w|\\_|\\-)+/shaders$",
             "options": ["blocks"]
         },
