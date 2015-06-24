@@ -4,7 +4,15 @@ var LOCAL_STORAGE_PREFIX = 'tangram-play-'
 var draggable;
 
 function initUI(cm, tangram) {
-    document.getElementById('divider').style.transform = 'translate3d(' + getDividerStartingPosition() + 'px, 0px, 0px)';
+    var transformStyle = 'translate3d(' + getDividerStartingPosition() + 'px, 0px, 0px)';
+    var dividerEl = document.getElementById('divider');
+    if (dividerEl.style.hasOwnProperty('transform')) {
+        dividerEl.style.transform = transformStyle;
+    } else {
+        // For Safari
+        dividerEl.style.webkitTransform = transformStyle;
+    }
+
     var count = 0;
     draggable = Draggable.create("#divider", {
         type: "x",
@@ -82,8 +90,7 @@ function loadExamples (configFile) {
     var examples_data = JSON.parse(fetchHTTP(configFile));
     var examplesList = document.getElementById("examples");
 
-    // TEMP: Skip item at index 0
-    for (var i = 1; i < examples_data['examples'].length; i++) {
+    for (var i = 0; i < examples_data['examples'].length; i++) {
         var example = examples_data['examples'][i];
         var newOption = document.createElement('div');
         var nameEl = document.createElement('div');

@@ -1,10 +1,6 @@
 {
 	"examples" : [
 		{
-			"name" : "Open example ...",
-			"url" : "data/styles/basic.yaml#2/0/0"
-		},
-		{
 			"name"	: "default.yaml",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.yaml#14.99104/40.7088/-74.0056"
 		},

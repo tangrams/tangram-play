@@ -317,8 +317,7 @@ button:disabled > i {
 
 .example-option-name {
     font-size: 14px;
-    font-weight: bold;
-    color: #aaa;
+    color: #bbb;
     margin-bottom: 4px;
     text-transform: capitalize;
 }
@@ -344,7 +343,7 @@ button:disabled > i {
     height: 100%;
     vertical-align: top;
     opacity: 1;
-    background-color: rgba(0,0,0,0.1);
+    background-color: rgba(0,0,0,0.15);
     z-index: 10;
     cursor: col-resize;
 
