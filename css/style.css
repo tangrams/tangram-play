@@ -394,6 +394,39 @@ button:disabled > i {
     margin-top: 1.5em;
     font-family: 'montserratultra_light';
     font-size: 2.5em;
+
+/* MOBILE MESSAGE */
+
+.mobile-message,
+.mobile-message * {
+    box-sizing: border-box;
+}
+
+.mobile-message {
+    display: none;
+    position: relative;
+    padding: 10px;
+    padding-right: 48px;
+    font-size: 16px;
+    font-family: 'montserratregular';
+    background-color: lightyellow;
+}
+
+.mobile-message strong {
+    font-weight: normal;
+    color: darkred;
+}
+
+.mobile-message-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 48px;
+    height: 48px;
+    padding-top: 8px;
+    font-size: 20px;
+    text-align: center;
+    color: darkred;
 }
 
 /* TYPOGRAPHY */

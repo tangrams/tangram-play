@@ -85,3 +85,10 @@ function toCSS(str){
 
     return str;
 }
+
+function isMobile () {
+  if (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(navigator.userAgent.toLowerCase()))
+    return true;
+  else
+    return false;
+}
