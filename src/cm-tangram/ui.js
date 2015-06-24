@@ -96,14 +96,19 @@ function loadExamples (configFile) {
         var newOption = document.createElement('div');
         var nameEl = document.createElement('div');
         var name = example['name'].split('.')[0];
-        var imgEl = document.createElement('img');
+        var thumbnailEl = document.createElement('div');
+        //var imgEl = document.createElement('img');
         newOption.className = 'example-option';
         newOption.setAttribute('data-value', example['url']);
         nameEl.className = 'example-option-name';
         nameEl.innerText = name.replace(/-/g, ' ');
-        imgEl.src = 'data/imgs/placeholder.png'; //'imgs/' + name + '.png';
+        //imgEl.src = 'data/imgs/' + name + '.png';
+        thumbnailEl.className = 'example-thumbnail';
+        thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
+        thumbnailEl.style.backgroundImage = 'url(https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/' + name + '.png)';
         newOption.appendChild(nameEl);
-        newOption.appendChild(imgEl);
+        newOption.appendChild(thumbnailEl);
+        //newOption.appendChild(imgEl);
         newOption.addEventListener('click', selectExample);
         examplesList.appendChild(newOption);
     }

@@ -331,9 +331,16 @@ button:disabled > i {
     text-transform: capitalize;
 }
 
-.example-option img {
+.example-option img,
+.example-option .example-thumbnail {
     width: 100%;
     height: 60px;
+}
+
+.example-option .example-thumbnail {
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 /* TYPOGRAPHY */
