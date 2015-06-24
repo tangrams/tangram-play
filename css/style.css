@@ -3,7 +3,16 @@
     src: url('../data/fonts/montserrat-ultralight-webfont.woff2') format('woff2'),
          url('../data/fonts/montserrat-ultralight-webfont.woff') format('woff'),
          url('../data/fonts/montserrat-ultralight-webfont.ttf') format('truetype');
-    font-weight: normal;
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'montserratregular';
+    src: url('../data/fonts/montserrat-regular-webfont.woff2') format('woff2'),
+         url('../data/fonts/montserrat-regular-webfont.woff') format('woff'),
+         url('../data/fonts/montserrat-regular-webfont.ttf') format('truetype');
+    font-weight: 400;
     font-style: normal;
 }
 
@@ -14,14 +23,7 @@ body {
     overflow: hidden;
 }
 
-/* MENU */
-#content {
-    position: absolute;
-    right: 0;
-    width: 50%;
-    min-width: 160px;
-    vertical-align: top;
-}
+/* MENU BAR */
 
 .menu-bar {
     position: relative;
@@ -75,13 +77,6 @@ body {
     background-color: rgba(255,255,255,0.10);
 }
 
-.menu-item > label {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-}
-
 .menu-item > a {
     display: inline-block;
     width: 100%;
@@ -129,6 +124,232 @@ html.full-menu .menu-item-private {
     margin-right: 0.5em;
 }
 
+/* MENU DROPDOWNS */
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    width: 200px;
+    background: #303030;
+    z-index: 1000; /* TODO don't guess z hierarchy */
+    font-family: 'montserratultra_light';
+    color: white;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.menu-dropdown > ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-dropdown > ul > li {
+    position: relative;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 14px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 14px;
+    line-height: 24px;
+    cursor: pointer;
+}
+
+.menu-dropdown > ul > li:hover {
+    background-color: rgba(255,255,255,0.10);
+    color: yellow;
+}
+
+.menu-dropdown > ul > li > i {
+    margin-right: 0.5em;
+}
+
+/* SHIELD */
+
+.shield {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1200;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+/* MODALS */
+
+.modal {
+    display: none;
+    position: fixed;
+    box-sizing: border-box;
+    width: 400px;
+    height: 160px;
+    left: 50%;
+    margin-left: -200px;
+    top: 50%;
+    margin-top: -80px;
+    background-color: #303030;
+    font-family: 'montserratultra_light';
+    font-size: 16px;
+    z-index: 1300;
+    padding: 30px;
+    text-align: center;
+    color: white;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.modal-text {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: auto;
+       -moz-user-select: auto;
+        -ms-user-select: auto;
+            user-select: auto;
+}
+
+.modal-buttons {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.modal-buttons > button {
+    padding: 16px;
+    background-color: rgba(255,255,255,0.10);
+    color: white;
+    border: 0;
+    margin: 0 5px;
+    font-family: 'montserratultra_light';
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.modal-buttons > button:last-of-type {
+    margin-right: 0;
+}
+
+.modal-buttons > button:first-of-type {
+    margin-left: 0;
+}
+
+.modal-buttons > button:hover {
+    background-color: rgba(255,255,255,0.15);
+    color: yellow;
+}
+
+.modal-buttons > button > i {
+    margin-right: 0.5em;
+}
+
+.modal-buttons > button > i.bt-check {
+    color: green;
+}
+
+.modal-buttons > button > i.bt-times {
+    color: red;
+}
+
+button:disabled {
+    color: gray;
+    background-color: rgba(0,0,0,0.10);
+    cursor: default;
+}
+
+button:disabled:hover {
+    color: gray;
+    background-color: rgba(0,0,0,0.10);
+}
+
+button:disabled > i {
+    color: gray !important;
+}
+
+.example-modal {
+    width: 600px;
+    margin-left: -300px;
+    height: 600px;
+    margin-top: -300px;
+    text-align: left;
+}
+
+.example-modal .modal-text {
+    display: block;
+    box-sizing: border-box;
+    padding-left: 10px;
+}
+
+.example-modal .modal-buttons {
+    text-align: right;
+    width: auto;
+    right: 30px;
+}
+
+.examples-container {
+    margin-top: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    right: 30px;
+    left: 30px;
+    top: 50px;
+    bottom: 100px;
+}
+
+.example-option {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 50%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.example-option:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.example-option.example-selected {
+    box-shadow: 0 0 1px whitesmoke inset;
+    background-color: rgba(255,255,255,0.1);
+}
+
+.example-option-name {
+    font-family: 'montserratregular';
+    font-size: 14px;
+    color: #bbb;
+    margin-bottom: 4px;
+    text-transform: capitalize;
+}
+
+.example-option img,
+.example-option .example-thumbnail {
+    width: 100%;
+    height: 60px;
+}
+
+.example-option .example-thumbnail {
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+/* TYPOGRAPHY */
+
 .bts, .btb, .btm, .btl, .fab {
     -webkit-font-smoothing: auto;
 }
@@ -143,7 +364,7 @@ html.full-menu .menu-item-private {
     height: 100%;
     vertical-align: top;
     opacity: 1;
-    background-color: rgba(0,0,0,0.1);
+    background-color: rgba(0,0,0,0.15);
     z-index: 10;
     cursor: col-resize;
 
@@ -192,6 +413,15 @@ html.full-menu .menu-item-private {
 }
 
 /* EDITOR */
+
+#content {
+    position: absolute;
+    right: 0;
+    width: 50%;
+    min-width: 160px;
+    vertical-align: top;
+}
+
 .CodeMirror {
     font-size: 110%;
     line-height: 1.4;
