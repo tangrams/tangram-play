@@ -56,6 +56,29 @@ function initUI(cm, tangram) {
         }
     })
     setupFileSelector();
+
+    // Set up drag/drop file listeners
+    document.body.addEventListener('dragenter', function (e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        showFileDropArea();
+    }, true)
+    document.getElementById('file-drop').addEventListener('dragover', function (e) {
+        e.preventDefault();
+        showFileDropArea();
+    }, false)
+    document.getElementById('file-drop').addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        hideFileDropArea();
+    }, true)
+    document.getElementById('file-drop').addEventListener('drop', function (e) {
+        e.preventDefault();
+        hideFileDropArea();
+        var dataTransfer = e.dataTransfer;
+        if (dataTransfer.files.length > 0) {
+            openContent(dataTransfer);
+        }
+    }, false)
 };
 
 function setupFileSelector () {
@@ -307,4 +330,12 @@ function onClickOpenExampleFromDialog () {
     var selected = document.querySelectorAll('.example-option.example-selected')[0];
     var value = selected.getAttribute('data-value');
     openExample(value);
+}
+
+function showFileDropArea () {
+    document.getElementById('file-drop').style.display = 'block';
+}
+
+function hideFileDropArea () {
+    document.getElementById('file-drop').style.display = 'none';
 }

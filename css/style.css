@@ -348,6 +348,54 @@ button:disabled > i {
     background-position: center center;
 }
 
+/* DRAG & DROP FILE LOADER */
+
+.file-drop-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1300;
+    background-color: rgba(0,0,0,0.8);
+    cursor: copy;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.file-drop-indicator {
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    height: 600px;
+    top: 50%;
+    margin-top: -300px;
+    color: white;
+    text-align: center;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
+    -webkit-flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.file-drop-icon {
+    font-size: 14em;
+}
+
+.file-drop-label {
+    margin-top: 1.5em;
+    font-family: 'montserratultra_light';
+    font-size: 2.5em;
+}
+
 /* TYPOGRAPHY */
 
 .bts, .btb, .btm, .btl, .fab {
