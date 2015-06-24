@@ -230,10 +230,18 @@ html.full-menu .menu-item-private {
     background-color: rgba(255,255,255,0.10);
     color: white;
     border: 0;
-    margin: 0 05px;
+    margin: 0 5px;
     font-family: 'montserratultra_light';
     font-size: 14px;
     cursor: pointer;
+}
+
+.modal-buttons > button:last-of-type {
+    margin-right: 0;
+}
+
+.modal-buttons > button:first-of-type {
+    margin-left: 0;
 }
 
 .modal-buttons > button:hover {
@@ -256,6 +264,7 @@ html.full-menu .menu-item-private {
 button:disabled {
     color: gray;
     background-color: rgba(0,0,0,0.10);
+    cursor: default;
 }
 
 button:disabled:hover {

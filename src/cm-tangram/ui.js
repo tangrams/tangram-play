@@ -44,6 +44,7 @@ function initUI(cm, tangram) {
     }, false)
     document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
     document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
+    document.getElementById('example-confirm').addEventListener('click', onClickOpenExampleFromDialog, false)
 };
 
 function getDividerStartingPosition () {
@@ -100,7 +101,7 @@ function loadExamples (configFile) {
         newOption.setAttribute('data-value', example['url']);
         nameEl.className = 'example-option-name';
         nameEl.innerText = name.replace(/-/g, ' ');
-        imgEl.src = 'imgs/placeholder.png'; //'imgs/' + name + '.png';
+        imgEl.src = 'data/imgs/placeholder.png'; //'imgs/' + name + '.png';
         newOption.appendChild(nameEl);
         newOption.appendChild(imgEl);
         newOption.addEventListener('click', selectExample);
@@ -121,9 +122,8 @@ function selectExample (event) {
     document.getElementById('example-confirm').disabled = false;
 }
 
-function openExample(select){
-    var option = select.options[select.selectedIndex].value;
-    window.location.href = ".?style="+option;
+function openExample (value) {
+    window.location.href = '.?style=' + value;
 }
 
 function openContent(input){
@@ -260,3 +260,8 @@ function hideExamplesModal () {
     document.getElementById('choose-example').style.display = 'none';
 }
 
+function onClickOpenExampleFromDialog () {
+    var selected = document.querySelectorAll('.example-option.example-selected')[0];
+    var value = selected.getAttribute('data-value');
+    openExample(value);
+}
