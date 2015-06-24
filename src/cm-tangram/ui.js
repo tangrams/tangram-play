@@ -71,14 +71,7 @@ function initUI(cm, tangram) {
         e.preventDefault();
         hideFileDropArea();
     }, true)
-    document.getElementById('file-drop').addEventListener('drop', function (e) {
-        e.preventDefault();
-        hideFileDropArea();
-        var dataTransfer = e.dataTransfer;
-        if (dataTransfer.files.length > 0) {
-            openContent(dataTransfer);
-        }
-    }, false)
+    document.getElementById('file-drop').addEventListener('drop', onDropFile, false)
 };
 
 function setupFileSelector () {
@@ -87,7 +80,7 @@ function setupFileSelector () {
     fileSelector.setAttribute('accept', 'text/x-yaml');
     fileSelector.style.display = 'none';
     fileSelector.id = 'file-selector';
-    fileSelector.setAttribute('onchange','openContent(this)');
+    fileSelector.addEventListener('change', onFileSelectorChange);
     document.body.appendChild(fileSelector);
 }
 
@@ -145,7 +138,7 @@ function loadExamples (configFile) {
         newOption.className = 'example-option';
         newOption.setAttribute('data-value', example['url']);
         nameEl.className = 'example-option-name';
-        nameEl.innerText = name.replace(/-/g, ' ');
+        nameEl.textContent = name.replace(/-/g, ' ');
         //imgEl.src = 'data/imgs/' + name + '.png';
         thumbnailEl.className = 'example-thumbnail';
         thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
@@ -175,12 +168,17 @@ function openExample(value) {
     window.location.href = '.?style=' + value + window.location.hash;
 }
 
-function openContent(input){
+function onFileSelectorChange (event) {
+    var files = event.target.files;
+    openContent(files[0]);
+}
+
+function openContent (content) {
     var reader = new FileReader();
     reader.onload = function(e) {
         editor.setValue(e.target.result);
     }
-    reader.readAsText( input.files[0] );
+    reader.readAsText(content);
 }
 
 function saveContent(){
@@ -338,4 +336,26 @@ function showFileDropArea () {
 
 function hideFileDropArea () {
     document.getElementById('file-drop').style.display = 'none';
+}
+
+function onDropFile (event) {
+    event.preventDefault();
+    hideFileDropArea();
+    var dataTransfer = event.dataTransfer;
+    if (dataTransfer.files.length > 0) {
+        var file = dataTransfer.files[0];
+        if (isEditorSaved() === false) {
+            showUnsavedModal(handleContinue, handleCancel);
+        } else {
+            handleContinue();
+        }
+    }
+
+    function handleContinue () {
+        openContent(file);
+    }
+
+    function handleCancel () {
+        return;
+    }
 }
