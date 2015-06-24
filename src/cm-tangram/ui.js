@@ -42,10 +42,27 @@ function initUI(cm, tangram) {
             loseMenuFocus()
         }
     }, false)
+    document.getElementById('menu-open-file').addEventListener('click', onClickOpenFile, false)
     document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
     document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
     document.getElementById('example-confirm').addEventListener('click', onClickOpenExampleFromDialog, false)
+    document.body.addEventListener('keyup', function (e) {
+        // esc key
+        if (e.keyCode === 27) {
+            // TODO. Implement after UI elements handle / remember state better
+        }
+    })
+    setupFileSelector();
 };
+
+function setupFileSelector () {
+    var fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('accept', 'text/x-yaml');
+    fileSelector.style.display = 'none';
+    fileSelector.id = 'file-selector';
+    document.body.appendChild(fileSelector);
+}
 
 function getDividerStartingPosition () {
     var storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
@@ -239,7 +256,24 @@ function loseMenuFocus () {
     hideMenus();
 }
 
-function onClickOpenExample () {
+function onClickOpenFile (event) {
+    if (isEditorSaved() === false) {
+        showUnsavedModal(handleContinue, handleCancel);
+    } else {
+        handleContinue();
+    }
+
+    function handleContinue () {
+        var input = document.getElementById('file-selector');
+        input.click();
+    }
+
+    function handleCancel () {
+        return;
+    }
+}
+
+function onClickOpenExample (event) {
     if (isEditorSaved() === false) {
         showUnsavedModal(handleContinue, handleCancel);
     } else {

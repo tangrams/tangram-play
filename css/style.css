@@ -3,7 +3,16 @@
     src: url('../data/fonts/montserrat-ultralight-webfont.woff2') format('woff2'),
          url('../data/fonts/montserrat-ultralight-webfont.woff') format('woff'),
          url('../data/fonts/montserrat-ultralight-webfont.ttf') format('truetype');
-    font-weight: normal;
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'montserratregular';
+    src: url('../data/fonts/montserrat-regular-webfont.woff2') format('woff2'),
+         url('../data/fonts/montserrat-regular-webfont.woff') format('woff'),
+         url('../data/fonts/montserrat-regular-webfont.ttf') format('truetype');
+    font-weight: 400;
     font-style: normal;
 }
 
@@ -125,6 +134,11 @@ html.full-menu .menu-item-private {
     z-index: 1000; /* TODO don't guess z hierarchy */
     font-family: 'montserratultra_light';
     color: white;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 .menu-dropdown > ul {
@@ -141,16 +155,6 @@ html.full-menu .menu-item-private {
     border-top: 1px solid rgba(255,255,255,0.2);
     font-size: 14px;
     line-height: 24px;
-    cursor: pointer;
-}
-
-.menu-dropdown label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
     cursor: pointer;
 }
 
@@ -325,6 +329,7 @@ button:disabled > i {
 }
 
 .example-option-name {
+    font-family: 'montserratregular';
     font-size: 14px;
     color: #bbb;
     margin-bottom: 4px;
