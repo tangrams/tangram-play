@@ -8,9 +8,12 @@ function initUI(cm, tangram) {
     var dividerEl = document.getElementById('divider');
     if (dividerEl.style.hasOwnProperty('transform')) {
         dividerEl.style.transform = transformStyle;
-    } else {
+    } else if (dividerEl.style.hasOwnProperty('webkitTransform')) {
         // For Safari
         dividerEl.style.webkitTransform = transformStyle;
+    } else {
+        // For Firefox
+        dividerEl.style.transform = transformStyle;
     }
 
     var count = 0;
