@@ -149,7 +149,7 @@ function selectExample(event) {
 }
 
 function openExample(value) {
-    window.location.href = '.?style=' + value;
+    window.location.href = '.?style=' + value + window.location.hash;
 }
 
 function openContent(input){
