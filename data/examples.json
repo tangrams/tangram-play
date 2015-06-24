@@ -5,6 +5,10 @@
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.yaml"
 		},
 		{
+			"name"	: "gotham.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/gotham.yaml"
+		},
+		{
 			"name"	: "grain.yaml",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain.yaml"
 		},
