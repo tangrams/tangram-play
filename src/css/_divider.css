@@ -1,0 +1,45 @@
+/* DRAGGABLE LINE */
+
+#divider {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 9px;
+    height: 100%;
+    vertical-align: top;
+    opacity: 1;
+    background-color: rgba(0,0,0,0.15);
+    z-index: 10;
+    cursor: col-resize;
+    user-select: none;
+}
+
+.divider-affordance,
+.divider-affordance::after,
+.divider-affordance::before {
+    display: inline-block;
+    position: absolute;
+    width: 1px;
+    height: 30px;
+    top: 50%;
+    margin-top: -15px;
+    background-color: rgba(0,0,0,0.2);
+    box-shadow: 1px 0 0 rgba(255,255,255,0.5);
+}
+
+.divider-affordance {
+    left: 4px;
+}
+
+.divider-affordance::after,
+.divider-affordance::before {
+    content: '';
+}
+
+.divider-affordance::after {
+    left: 2px;
+}
+
+.divider-affordance::before {
+    left: -2px;
+}

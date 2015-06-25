@@ -1,0 +1,96 @@
+/* MENU BAR */
+
+.menu-bar {
+    position: relative;
+    font-family: 'montserratultra_light';
+    font-size: 12px;
+    background: #303030;
+    height: 44px;
+}
+
+.menu-bar h1 {
+    color: white;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 44px;
+    margin: 0 30px;
+}
+
+.menu-items {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    color: white;
+    font-size: 0;
+}
+
+.menu-right {
+    position: absolute;
+    right: 0;
+}
+
+.menu-item {
+    display: inline-block;
+    min-width: 44px;
+    height: 100%;
+    text-align: center;
+    font-size: 17px;
+    line-height: 44px;
+    list-style-type: none;
+    color: #e1e1e1;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    color: yellow;
+    background-color: rgba(255,255,255,0.10);
+}
+
+.menu-item > a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    color: #e1e1e1;
+}
+
+.menu-item > a:hover {
+    color: yellow;
+}
+
+.menu-item-disabled {
+    color: #888;
+    cursor: default;
+}
+
+.menu-item-disabled:hover {
+    color: #888;
+    background-color: transparent;
+}
+
+.menu-item-private {
+    display: none;
+}
+
+html.full-menu .menu-item-private {
+    display: inline-block;
+}
+
+.menu-sign-in {
+    background-color: #7a0000;
+    padding-left: 1em;
+    padding-right: 1em;
+    color: #f1f1f1;
+}
+
+.menu-sign-in:hover {
+    background-color: #8d0000;
+    color: white;
+}
+
+.menu-sign-in-label {
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-right: 0.5em;
+}
