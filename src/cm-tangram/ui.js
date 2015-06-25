@@ -72,6 +72,10 @@ function initUI(cm, tangram) {
         hideFileDropArea();
     }, true)
     document.getElementById('file-drop').addEventListener('drop', onDropFile, false)
+
+    window.onpopstate = function (e) {
+        loadFromQueryString();
+    }
 };
 
 function setupFileSelector () {
@@ -152,20 +156,34 @@ function loadExamples (configFile) {
 }
 
 function selectExample(event) {
-    var all = document.querySelectorAll('.example-option');
-    for (var i = 0, j = all.length; i < j; i++) {
-        all[i].classList.remove('example-selected');
-    }
     var target = event.target;
     while (!target.classList.contains('example-option')) {
         target = target.parentNode;
     }
+    resetExamples();
     target.classList.add('example-selected');
     document.getElementById('example-confirm').disabled = false;
 }
 
-function openExample(value) {
-    window.location.href = '.?style=' + value + window.location.hash;
+function resetExamples () {
+    var all = document.querySelectorAll('.example-option');
+    for (var i = 0, j = all.length; i < j; i++) {
+        all[i].classList.remove('example-selected');
+    }
+}
+
+function openExample (value) {
+    window.history.pushState(null, null, '.?style=' + value + window.location.hash);
+    loadFromQueryString();
+}
+
+function loadFromQueryString () {
+    /* global querry, editor */
+    querry = parseQuery(window.location.search.slice(1));
+    var source = querry['style'] ? querry['style'] : "data/styles/basic.yaml";
+    var contents = fetchHTTP(source);
+    editor.setValue(contents);
+    editor.isSaved = true;
 }
 
 function onFileSelectorChange (event) {
@@ -325,12 +343,15 @@ function showExamplesModal () {
 
 function hideExamplesModal () {
     hideShield();
+    resetExamples();
+    document.getElementById('example-confirm').disabled = true;
     document.getElementById('choose-example').style.display = 'none';
 }
 
 function onClickOpenExampleFromDialog () {
     var selected = document.querySelectorAll('.example-option.example-selected')[0];
     var value = selected.getAttribute('data-value');
+    hideExamplesModal();
     openExample(value);
 }
 
