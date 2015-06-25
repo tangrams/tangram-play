@@ -1,12 +1,27 @@
-var widgets = [];
+function loadWidgets(cm, configFile ){
 
-function loadWidgets( configFile ){
-    widgets = JSON.parse(fetchHTTP(configFile))["widgets"];
-    for (var i = 0; i < widgets.length; i++){
-        widgets[i].token = addToken(widgets[i]);
+    // Initialize array
+    if (cm.widgets){
+        // Clean widgets list
+        while(cm.widgets.length > 0) {
+            cm.widgets.pop();
+        }
+    } else {
+        cm.widgets = [];
+    }
+    
+    // Load JSON
+    cm.widgets = JSON.parse(fetchHTTP(configFile))["widgets"];
+
+    // Initialize tokens
+    for (var i = 0; i < cm.widgets.length; i++){
+        cm.widgets[i].token = addToken(cm.widgets[i]);
     }
 }
 
+//  TODO:
+//          -- Replace global scene by a local
+//
 function addToken( tokenOBJ ){
     var token;
     if ( tokenOBJ['address'] ){
@@ -46,11 +61,11 @@ function updateWidgets(cm){
         if (getTag(cm,nline) !== "" && val !== "|" && val !== "" ){
 
             // Chech for widgets to add
-            for (var i = 0; i < widgets.length; i++){
-                if ( widgets[i].token(scene,cm,nline) ){
+            for (var i = 0; i < cm.widgets.length; i++){
+                if ( cm.widgets[i].token(scene,cm,nline) ){
                     var content = getValue(cm, nline);
 
-                    if (widgets[i].type === "colorpicker"){
+                    if (cm.widgets[i].type === "colorpicker"){
                         var colorBtn = document.createElement("div");
                         colorBtn.style.zIndex = "10";
                         colorBtn.style.background = toCSS(content);   
@@ -66,7 +81,7 @@ function updateWidgets(cm){
                         colorBtn.style.height = "17px";
                         break;
 
-                    } else if (widgets[i].type === "togglebutton"){
+                    } else if (cm.widgets[i].type === "togglebutton"){
                         var check = document.createElement('Input');
                         check.type = 'checkbox';
                         check.className = "widget";
@@ -78,19 +93,19 @@ function updateWidgets(cm){
                         check.style.left = (parseInt(check.style.left, 10) + 5)+"px";
                         check.setAttribute('onchange','toggleButton(this)');
                         break;
-                    } else if (widgets[i].type === "dropdownmenu"){
+                    } else if (cm.widgets[i].type === "dropdownmenu"){
 
                         var list = document.createElement('Select');
                         list.className = "widget";
                         list.style.zIndex = "10";
 
-                        for (var j = 0; j < widgets[i].options.length ; j++ ){
+                        for (var j = 0; j < cm.widgets[i].options.length ; j++ ){
                             var newOption = document.createElement("option");
                             newOption.value = nline;
-                            if (content === widgets[i].options[j]) {
+                            if (content === cm.widgets[i].options[j]) {
                                 newOption.selected = true;
                             }
-                            newOption.innerHTML= widgets[i].options[j];
+                            newOption.innerHTML= cm.widgets[i].options[j];
                             list.appendChild(newOption);
                         }
 
@@ -100,23 +115,23 @@ function updateWidgets(cm){
                         list.setAttribute('onchange','dropdownMenuChange(this)');
                         break;
 
-                    } else if (widgets[i].type === "dropdownmenu-dynamic"){
+                    } else if (cm.widgets[i].type === "dropdownmenu-dynamic"){
 
                         var list = document.createElement('Select');
                         list.className = "widget";
                         list.style.zIndex = "10";
 
-                        var obj = getAddressSceneContent(scene,widgets[i].source);
+                        var obj = getAddressSceneContent(scene,cm.widgets[i].source);
                         var keys = obj? Object.keys(obj) : {};
 
-                        if (widgets[i].options){
-                            for (var j = 0; j < widgets[i].options.length ; j++ ){
+                        if (cm.widgets[i].options){
+                            for (var j = 0; j < cm.widgets[i].options.length ; j++ ){
                                 var newOption = document.createElement("option");
                                 newOption.value = nline;
-                                if (content === widgets[i].options[j]) {
+                                if (content === cm.widgets[i].options[j]) {
                                     newOption.selected = true;
                                 }
-                                newOption.innerHTML= widgets[i].options[j];
+                                newOption.innerHTML= cm.widgets[i].options[j];
                                 list.appendChild(newOption);
                             }
                         }
@@ -143,6 +158,9 @@ function updateWidgets(cm){
     }
 }
 
+//  TODO:
+//          -- Replace global editor by local
+//
 function colorPickerClicked(div){
     var picker = new thistle.Picker(div.style.background);
 

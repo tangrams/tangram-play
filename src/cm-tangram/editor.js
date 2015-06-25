@@ -1,12 +1,10 @@
-var isSaved = true;
-
+//  TODO:
+//          -- Replace global scene by a local
+//
 var updateContet = debounce(function(cm){
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
     var url = createObjectURL(new Blob([ cm.getValue() ]));
     scene.reload(url);
-
-    isSaved = false;
-
     updateWidgets(cm);
 }, 500);
 
@@ -63,6 +61,9 @@ function initEditor( dom, style_file ){
 
     //  Update Tangram Map when stop typing
     cm.on("change", function(cm){
+        if(cm.isSaved){
+            cm.isSaved = false;
+        }
         updateContet(cm);
     });
 
@@ -78,6 +79,7 @@ function initEditor( dom, style_file ){
     cm.on("cursorActivity", function(cm){
         updateKeys(cm);
     });
-        
+
+    cm.isSaved = true;
     return cm;
 }

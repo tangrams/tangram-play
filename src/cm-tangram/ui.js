@@ -185,12 +185,16 @@ function saveContent(){
     if (editor) {
         var blob = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "style.yaml");
-        isSaved = true;
+        editor.isSaved = true;
     }
 }
 
 function isEditorSaved () {
-    return isSaved;
+    if (editor) {
+        return editor.isSaved;
+    } else {
+        return false;
+    }
 }
 
 function onWindowResize( event ) {

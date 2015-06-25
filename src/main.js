@@ -17,11 +17,11 @@ var editor = initEditor(document.getElementById("editor"), querry['style']? quer
 initUI(editor, map);
 
 // Editor Widgets
-loadWidgets("data/widgets.json");
-loadKeys("data/keys.json");
+loadWidgets(editor, "data/widgets.json");
+loadKeys(editor, "data/keys.json");
 
 // Once everything is loaded
-setTimeout(function () {
+setTimeout( function (){
 
     if (querry['foldLevel']) unfoldAll(editor); foldByLevel(editor,parseInt(querry['foldLevel']));
     if (querry['lines']) selectLines(editor,querry['lines']);

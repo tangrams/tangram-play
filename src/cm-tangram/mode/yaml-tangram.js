@@ -50,9 +50,9 @@ function getValue(cm, nLine){
 }
 
 // Get the YAML content a specific series of tags (array of strings)
-function getTagSceneContent(scene, cm, nLine){
+function getTagSceneContent(tangramScene, cm, nLine){
     var tags = getTags(cm, nLine);
-    var tmp = scene.config[ tags[0] ];
+    var tmp = tangramScene.config[ tags[0] ];
     for (var i = 1; i < tags.length; i++){
         if (tmp[ tags[i] ]){
             tmp = tmp[ tags[i] ];
@@ -63,12 +63,12 @@ function getTagSceneContent(scene, cm, nLine){
     return tmp;
 }
 
-function getAddressSceneContent(scene, address){
-    if (scene && scene.config){
+function getAddressSceneContent(tangramScene, address){
+    if (tangramScene && tangramScene.config){
         var tags = address.split("/");
         tags.shift();
         if (tags && tags.length > 0){
-            var content = scene.config[ tags[0] ];
+            var content = tangramScene.config[ tags[0] ];
             for (var i = 1; i < tags.length; i++){
                 if (content[ tags[i] ]){
                     content = content[ tags[i] ];
@@ -106,9 +106,9 @@ function isColorBlock(address) { return endsWith(address,"shaders/blocks/color")
 function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); }
 function isShader(address){ return (isGlobalBlock(address) || isWidthBlock(address)  || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address));}
 
-function isContentJS(scene, address) {
-    if ( scene && scene.config ){
-        return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(getAddressSceneContent(scene, address));
+function isContentJS(tangramScene, address) {
+    if ( tangramScene && tangramScene.config ){
+        return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(getAddressSceneContent(tangramScene, address));
     } else {
         return false;
     }
@@ -515,6 +515,9 @@ function yamlAddressing(stream, state) {
                     state.localState = glslMode.startState( getInd(stream.string) );
                     return glsl(stream, state);
 
+                    //  TODO:
+                    //        Replace global scene by a local
+                    //
                 } else if ( isContentJS(scene, address) && 
                             !/^\|$/g.test(stream.string) && 
                             isAfterTag(stream.string,stream.pos) ){
@@ -537,6 +540,9 @@ function yamlAddressing(stream, state) {
             return glslMode.token(stream, state.localState);
         }
 
+        //  TODO:
+        //        Replace global scene by a local
+        //
         function js(stream, state) {
             var address = state.yamlState.tagAddress;
             if ( (!isContentJS(scene, address) || /^\|$/g.test(stream.string) ) ){
