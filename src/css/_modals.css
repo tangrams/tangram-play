@@ -1,0 +1,155 @@
+/* MODALS */
+
+.modal {
+    display: none;
+    position: fixed;
+    box-sizing: border-box;
+    width: 400px;
+    height: 160px;
+    left: 50%;
+    margin-left: -200px;
+    top: 50%;
+    margin-top: -80px;
+    background-color: #303030;
+    font-family: 'montserratultra_light';
+    font-size: 16px;
+    z-index: 1300;
+    padding: 30px;
+    text-align: center;
+    color: white;
+    user-select: none;
+}
+
+.modal-text {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+.modal-buttons {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.modal-buttons > button {
+    padding: 16px;
+    background-color: rgba(255,255,255,0.10);
+    color: white;
+    border: 0;
+    margin: 0 5px;
+    font-family: 'montserratultra_light';
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.modal-buttons > button:last-of-type {
+    margin-right: 0;
+}
+
+.modal-buttons > button:first-of-type {
+    margin-left: 0;
+}
+
+.modal-buttons > button:hover {
+    background-color: rgba(255,255,255,0.15);
+    color: yellow;
+}
+
+.modal-buttons > button > i {
+    margin-right: 0.5em;
+}
+
+.modal-buttons > button > i.bt-check {
+    color: green;
+}
+
+.modal-buttons > button > i.bt-times {
+    color: red;
+}
+
+button:disabled {
+    color: gray;
+    background-color: rgba(0,0,0,0.10);
+    cursor: default;
+}
+
+button:disabled:hover {
+    color: gray;
+    background-color: rgba(0,0,0,0.10);
+}
+
+button:disabled > i {
+    color: gray !important;
+}
+
+.example-modal {
+    width: 600px;
+    margin-left: -300px;
+    height: 600px;
+    margin-top: -300px;
+    text-align: left;
+}
+
+.example-modal .modal-text {
+    display: block;
+    box-sizing: border-box;
+    padding-left: 10px;
+}
+
+.example-modal .modal-buttons {
+    text-align: right;
+    width: auto;
+    right: 30px;
+}
+
+.examples-container {
+    margin-top: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    right: 30px;
+    left: 30px;
+    top: 50px;
+    bottom: 100px;
+}
+
+.example-option {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 50%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.example-option:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.example-option.example-selected {
+    box-shadow: 0 0 1px whitesmoke inset;
+    background-color: rgba(255,255,255,0.1);
+}
+
+.example-option-name {
+    font-family: 'montserratregular';
+    font-size: 14px;
+    color: #bbb;
+    margin-bottom: 4px;
+    text-transform: capitalize;
+}
+
+.example-option img,
+.example-option .example-thumbnail {
+    width: 100%;
+    height: 60px;
+}
+
+.example-option .example-thumbnail {
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}

@@ -1,0 +1,38 @@
+/* MENU DROPDOWNS */
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    width: 200px;
+    background: #303030;
+    z-index: 1000; /* TODO don't guess z hierarchy */
+    font-family: 'montserratultra_light';
+    color: white;
+    user-select: none;
+}
+
+.menu-dropdown > ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-dropdown > ul > li {
+    position: relative;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 14px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 14px;
+    line-height: 24px;
+    cursor: pointer;
+}
+
+.menu-dropdown > ul > li:hover {
+    background-color: rgba(255,255,255,0.10);
+    color: yellow;
+}
+
+.menu-dropdown > ul > li > i {
+    margin-right: 0.5em;
+}
