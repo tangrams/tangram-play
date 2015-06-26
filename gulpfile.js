@@ -1,25 +1,35 @@
 'use strict'
 
 var gulp = require('gulp')
+var livereload = require('gulp-livereload')
+
+var paths = {
+  styles: 'src/css/**/*'
+}
 
 gulp.task('css', function () {
   var postcss = require('gulp-postcss')
-  var sourcemaps = require('gulp-sourcemaps')
-  var cssnano = require('cssnano')
-  var autoprefixer = require('autoprefixer-core')
-  //var cssnext = require('cssnext')
-  var cssImport = require('postcss-import')
+  var cssnext = require('cssnext')
   var nested = require('postcss-nested')
-  var reporter = require('postcss-reporter')
   var simplevars = require('postcss-simple-vars')
+  var sourcemaps = require('gulp-sourcemaps')
+  var reporter = require('postcss-reporter')
+
+  var options = {
+    browsers: ['last 2 versions', 'IE >= 11'],
+    compress: {
+      comments: { removeAll: true },
+      zindex: false
+    },
+    url: false, // TODO: Figure this out
+    plugins: [
+      nested,
+      simplevars
+    ]
+  }
 
   var plugins = [
-    //cssnext(),
-    cssImport,
-    nested,
-    simplevars,
-    autoprefixer({ browsers: ['last 2 versions', 'IE >= 11'] }),
-    cssnano({ comments: { removeAll: true }, zindex: false }),
+    cssnext(options),
     reporter()
   ]
 
@@ -28,4 +38,11 @@ gulp.task('css', function () {
     .pipe(postcss(plugins))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./css'))
+    .pipe(livereload())
+})
+
+// Rerun the task when a file changes
+gulp.task('watch', function () {
+  livereload.listen()
+  gulp.watch(paths.styles, ['css'])
 })

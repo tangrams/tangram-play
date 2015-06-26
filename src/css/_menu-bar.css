@@ -2,9 +2,10 @@
 
 .menu-bar {
     position: relative;
-    font-family: 'montserratultra_light';
+    font-family: var(--font-family);
+    font-weight: 200;
     font-size: 12px;
-    background: #303030;
+    background: var(--ui-base-color);
     height: 44px;
 }
 

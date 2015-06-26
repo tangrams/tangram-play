@@ -6,7 +6,8 @@
     width: 200px;
     background: #303030;
     z-index: 1000; /* TODO don't guess z hierarchy */
-    font-family: 'montserratultra_light';
+    font-family: var(--font-family);
+    font-weight: 200;
     color: white;
     user-select: none;
 }

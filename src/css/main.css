@@ -2,14 +2,19 @@
 
 @import 'vendor/black-tie.css';
 
-@import '_editor.css';
-@import '_divider.css';
-@import '_file-drop.css';
-@import '_layout.css';
-@import '_menu-bar.css';
-@import '_menu-dropdown.css';
-@import '_mobile-message.css';
-@import '_modals.css';
-@import '_shield.css';
-@import '_tangram.css';
-@import '_typography.css';
+:root {
+    --font-family: 'Montserrat';
+    --ui-base-color: #303030;
+}
+
+@import '_editor';
+@import '_divider';
+@import '_file-drop';
+@import '_layout';
+@import '_menu-bar';
+@import '_menu-dropdown';
+@import '_mobile-message';
+@import '_modals';
+@import '_shield';
+@import '_tangram';
+@import '_typography';
