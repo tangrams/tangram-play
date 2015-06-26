@@ -73,9 +73,11 @@ function initUI(cm, tangram) {
     }, true)
     document.getElementById('file-drop').addEventListener('drop', onDropFile, false)
 
-    // window.onpopstate = function (e) {
-    //     loadFromQueryString();
-    // }
+    window.onpopstate = function (e) {
+        if (e.state && e.state.loadStyleURL) {
+            loadFromQueryString();
+        }
+    }
 };
 
 function setupFileSelector () {
@@ -173,7 +175,9 @@ function resetExamples () {
 }
 
 function openExample (value) {
-    window.history.pushState(null, null, '.?style=' + value + window.location.hash);
+    window.history.pushState({
+        loadStyleURL: value
+    }, null, '.?style=' + value + window.location.hash);
     loadFromQueryString();
 }
 
