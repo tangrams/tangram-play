@@ -7,6 +7,14 @@ if (flags['fullmenu'] === true) {
     document.querySelector('html').classList.add('full-menu');
 }
 
+if (isMobile()) {
+  document.getElementById('mobile-message').style.display = 'block';
+  document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
+    document.getElementById('mobile-message').style.display = 'none';
+    reflowUI();
+  })
+}
+
 // Tangram Map
 var map = initMap( query['style']? query['style'] : "data/styles/basic.yaml" );
 

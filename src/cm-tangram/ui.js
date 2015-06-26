@@ -226,14 +226,14 @@ function reflowUI() {
     var contentEl = document.getElementById('content');
     var dividerEl = document.getElementById('divider');
     var menuEl = document.getElementById('menu-container');
-    var menuHeight = menuEl.getBoundingClientRect().height;
+    var menuBottom = menuEl.getBoundingClientRect().bottom;
     var positionX = dividerEl.getBoundingClientRect().left;
 
     mapEl.style.width = positionX + "px";
     contentEl.style.width = (window.innerWidth - positionX) + "px";
 
-    editor.setSize('100%', (window.innerHeight - menuHeight) + 'px');
-    dividerEl.style.height = (window.innerHeight - menuHeight) + 'px';
+    editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
+    dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
 }
 
 function updateUI(editor, map) {
