@@ -21,7 +21,11 @@ function initUI(cm, tangram) {
         type: "x",
         bounds: getDraggableBounds(),
         cursor: 'col-resize',
-        onDrag: reflowUI,
+        onDrag: function () {
+            reflowUI();
+            updateWidgets(cm);
+            //setWidgetPositions(cm);
+        },
         onDragEnd: function () {
             updateUI(cm, tangram);
             saveDividerPosition();

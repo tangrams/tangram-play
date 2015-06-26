@@ -41,5 +41,6 @@ setTimeout(function () {
         selectLines(editor, query['lines']);
     }
 
-    updateWidgets(editor);
+    createWidgets(editor);
+    //updateWidgets(editor);
 }, 500);

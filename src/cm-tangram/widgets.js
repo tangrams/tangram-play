@@ -9,7 +9,7 @@ function loadWidgets(cm, configFile ){
     } else {
         cm.widgets = [];
     }
-    
+
     // Load JSON
     cm.widgets = JSON.parse(fetchHTTP(configFile))["widgets"];
 
@@ -48,114 +48,141 @@ function addToken( tokenOBJ ){
     return token;
 }
 
-function updateWidgets(cm){
-    var colorpickers = document.getElementsByClassName("widget");
-    for (var i = colorpickers.length-1; i >=0 ; i--){
-        colorpickers[i].parentNode.removeChild(colorpickers[i]);
-    }
+/* TODO: don't global */
+var widgets = [];
 
-    for (var nline = 0; nline < cm.doc.size; nline++){    
-        var val = getValue(cm,nline);
+function createWidgets (cm) {
+    for (var nline = 0, size = cm.doc.size; nline < size; nline++) {
+        var val = getValue(cm, nline);
 
         // If Line is significative
-        if (getKey(cm,nline) !== "" && val !== "|" && val !== "" ){
+        if (getTag(cm, nline) !== "" && val !== "|" && val !== "" ) {
 
-            // Chech for widgets to add
-            for (var i = 0; i < cm.widgets.length; i++){
-                if ( cm.widgets[i].token(scene,cm,nline) ){
+            // Check for widgets to add
+            for (var i = 0; i < cm.widgets.length; i++) {
+                var proto = cm.widgets[i];
+
+                if (proto.token(scene, cm, nline)) {
                     var content = getValue(cm, nline);
+                    var el;
 
-                    if (cm.widgets[i].type === "colorpicker"){
-                        var colorBtn = document.createElement("div");
-                        colorBtn.style.zIndex = "10";
-                        colorBtn.style.background = toCSS(content);   
-                        colorBtn.className = "widget";
-                        colorBtn.style.border = "1px solid #A8ABAA";
-                        colorBtn.style.borderRadius = "4px";
-                        colorBtn.value = nline;
-                        colorBtn.setAttribute('onclick','colorPickerClicked(this)');
-                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, colorBtn);
-                        colorBtn.style.top = (parseInt(colorBtn.style.top, 10) - 17)+"px";
-                        colorBtn.style.left = (parseInt(colorBtn.style.left, 10) + 5)+"px";
-                        colorBtn.style.width = "17px";
-                        colorBtn.style.height = "17px";
-                        break;
+                    switch(proto.type) {
+                        case 'colorpicker':
+                            el = createColorpickerWidget(proto, content, nline);
+                            break;
+                        case 'togglebutton':
+                            el = createToggleWidget(proto, content, nline);
+                            break;
+                        case 'dropdownmenu':
+                            el = createDropdownWidget(proto, content, nline);
+                            break;
+                        case 'dropdownmenu-dynamic':
+                            el = createDropdownDynamicWidget(proto, content, nline);
+                            break;
+                        default:
+                            // Nothing
+                            break;
+                    }
 
-                    } else if (cm.widgets[i].type === "togglebutton"){
-                        var check = document.createElement('Input');
-                        check.type = 'checkbox';
-                        check.className = "widget";
-                        check.style.zIndex = "10";
-                        check.value = nline;
-                        check.checked = getValue(cm,nline) === "true" ? true : false;
-                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, check);
-                        check.style.top = (parseInt(check.style.top, 10) - 17)+"px";
-                        check.style.left = (parseInt(check.style.left, 10) + 5)+"px";
-                        check.setAttribute('onchange','toggleButton(this)');
-                        break;
-                    } else if (cm.widgets[i].type === "dropdownmenu"){
-
-                        var list = document.createElement('Select');
-                        list.className = "widget";
-                        list.style.zIndex = "10";
-
-                        for (var j = 0; j < cm.widgets[i].options.length ; j++ ){
-                            var newOption = document.createElement("option");
-                            newOption.value = nline;
-                            if (content === cm.widgets[i].options[j]) {
-                                newOption.selected = true;
-                            }
-                            newOption.innerHTML= cm.widgets[i].options[j];
-                            list.appendChild(newOption);
-                        }
-
-                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, list);
-                        list.style.top = (parseInt(list.style.top, 10) - 17)+"px";
-                        list.style.left = (parseInt(list.style.left, 10) + 5)+"px";
-                        list.setAttribute('onchange','dropdownMenuChange(this)');
-                        break;
-
-                    } else if (cm.widgets[i].type === "dropdownmenu-dynamic"){
-
-                        var list = document.createElement('Select');
-                        list.className = "widget";
-                        list.style.zIndex = "10";
-
-                        var obj = getAddressSceneContent(scene,cm.widgets[i].source);
-                        var keys = obj? Object.keys(obj) : {};
-
-                        if (cm.widgets[i].options){
-                            for (var j = 0; j < cm.widgets[i].options.length ; j++ ){
-                                var newOption = document.createElement("option");
-                                newOption.value = nline;
-                                if (content === cm.widgets[i].options[j]) {
-                                    newOption.selected = true;
-                                }
-                                newOption.innerHTML= cm.widgets[i].options[j];
-                                list.appendChild(newOption);
-                            }
-                        }
-                        
-                        for (var j = 0; j < keys.length ; j++ ){
-                            var newOption = document.createElement("option");
-                            newOption.value = nline;
-                            if (content === keys[j]) newOption.selected = true;
-                            newOption.innerHTML= keys[j];
-                            list.appendChild(newOption);
-                        }
-
-                        cm.addWidget({line:nline, ch:cm.lineInfo(nline).handle.text.length }, list);
-                        list.style.top = (parseInt(list.style.top, 10) - 17)+"px";
-                        list.style.left = (parseInt(list.style.left, 10) + 5)+"px";
-                        list.setAttribute('onchange','dropdownMenuChange(this)');
-                        break;
-
-                    } 
-
+                    el.setAttribute('data-nline', nline); /* TODO: change */
+                    widgets.push(el);
                 }
             }
         }
     }
+
+    setWidgetPositions(cm);
+}
+
+function createColorpickerWidget (proto, content, nline) {
+    var el = document.createElement('div');
+    el.className = 'widget widget-colorpicker';
+    el.value = nline;
+    el.style.background = toCSS(content);
+    el.setAttribute('onclick','colorPickerClicked(this)');
+    return el;
+}
+
+function createToggleWidget (proto, content, nline) {
+    var el = document.createElement('input');
+    el.type = 'checkbox';
+    el.className = 'widget widget-toggle';
+    el.checked = (content === 'true') ? true : false;
+    el.value = nline;
+    el.setAttribute('onchange','toggleButton(this)');
+    return el;
+}
+
+function createDropdownWidget (proto, content, nline) {
+    var el = document.createElement('select');
+    el.className = 'widget widget-dropdown';
+
+    for (var i = 0; i < proto.options.length; i++ ) {
+        var newOption = document.createElement('option');
+        newOption.value = nline;
+        if (content === proto.options[i]) {
+            newOption.selected = true;
+        }
+        newOption.innerHTML = proto.options[i];
+        el.appendChild(newOption);
+    }
+
+    el.setAttribute('onchange','dropdownMenuChange(this)');
+    return el;
+}
+
+function createDropdownDynamicWidget (proto, content, nline) {
+    var el = document.createElement('select');
+    var obj = getAddressSceneContent(scene, proto.source);
+    var keys = (obj) ? Object.keys(obj) : {};
+
+    el.className = 'widget widget-dropdown-dynamic';
+
+    if (proto.options) {
+        for (var i = 0; i < proto.options.length; i++) {
+            var newOption = document.createElement('option');
+            newOption.value = nline;
+            if (content === proto.options[i]) {
+                newOption.selected = true;
+            }
+            newOption.innerHTML= proto.options[i];
+            el.appendChild(newOption);
+        }
+    }
+
+    for (var j = 0; j < keys.length; j++) {
+        var newOption = document.createElement('option');
+        newOption.value = nline;
+        if (content === keys[j]) {
+            newOption.selected = true;
+        }
+        newOption.innerHTML= keys[j];
+        el.appendChild(newOption);
+    }
+
+    el.setAttribute('onchange','dropdownMenuChange(this)');
+    return el;
+}
+
+function setWidgetPositions (cm) {
+    for (var i = 0, j = widgets.length; i < j; i++) {
+        var el = widgets[i];
+        var nline = parseInt(el.getAttribute('data-nline'), 10);
+        var chrpos = cm.lineInfo(nline).handle.text.length;
+        cm.addWidget({line: nline, ch: chrpos }, el);
+    }
+}
+
+function clearWidgets () {
+    var widgets = document.getElementsByClassName('widget');
+    while (widgets[0]) {
+        widgets[0].parentNode.removeChild(widgets[0]);
+    }
+}
+
+function updateWidgets (cm) {
+    clearWidgets();
+    setWidgetPositions(cm);
 }
 
 //  TODO:
@@ -178,12 +205,12 @@ function colorPickerClicked(div){
 
 function dropdownMenuChange(select) {
     setValue(   editor,
-                parseInt(select.options[select.selectedIndex].value), 
+                parseInt(select.options[select.selectedIndex].value),
                 select.options[select.selectedIndex].innerHTML );
 }
 
 function toggleButton(check) {
     setValue(   editor,
-                parseInt(check.value), 
+                parseInt(check.value),
                 check.checked?"true":"false" );
 }

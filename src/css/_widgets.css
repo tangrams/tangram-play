@@ -1,0 +1,21 @@
+/* EDITOR WIDGETS */
+
+.widget {
+  z-index: 10;
+  user-select: none;
+
+  /* Codemirror positioning override */
+  margin-top: -18px;
+  margin-left: 5px;
+}
+
+.widget-colorpicker {
+  border: 1px solid #aaa;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0px 2px white;
+  cursor: pointer;
+  background-color: white;
+}
