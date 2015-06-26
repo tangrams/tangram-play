@@ -1,6 +1,11 @@
 'use strict'
 
 var gulp = require('gulp')
+var livereload = require('gulp-livereload')
+
+var paths = {
+  styles: 'src/css/**/*'
+}
 
 gulp.task('css', function () {
   var postcss = require('gulp-postcss')
@@ -16,6 +21,7 @@ gulp.task('css', function () {
       comments: { removeAll: true },
       zindex: false
     },
+    url: false, // TODO: Figure this out
     plugins: [
       nested,
       simplevars
@@ -32,4 +38,11 @@ gulp.task('css', function () {
     .pipe(postcss(plugins))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./css'))
+    .pipe(livereload())
+})
+
+// Rerun the task when a file changes
+gulp.task('watch', function () {
+  livereload.listen()
+  gulp.watch(paths.styles, ['css'])
 })

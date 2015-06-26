@@ -19,6 +19,7 @@
   "devDependencies": {
     "cssnext": "^1.7.1",
     "gulp": "^3.9.0",
+    "gulp-livereload": "^3.8.0",
     "gulp-postcss": "^5.1.9",
     "gulp-sourcemaps": "^1.5.2",
     "postcss-nested": "^0.3.2",

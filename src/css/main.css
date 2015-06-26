@@ -4,6 +4,7 @@
 
 :root {
     --font-family: 'Montserrat';
+    --ui-base-color: #303030;
 }
 
 @import '_editor';
