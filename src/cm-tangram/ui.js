@@ -73,9 +73,9 @@ function initUI(cm, tangram) {
     }, true)
     document.getElementById('file-drop').addEventListener('drop', onDropFile, false)
 
-    window.onpopstate = function (e) {
-        loadFromQueryString();
-    }
+    // window.onpopstate = function (e) {
+    //     loadFromQueryString();
+    // }
 };
 
 function setupFileSelector () {
