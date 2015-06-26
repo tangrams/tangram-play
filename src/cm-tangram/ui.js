@@ -178,9 +178,9 @@ function openExample (value) {
 }
 
 function loadFromQueryString () {
-    /* global querry, editor */
-    querry = parseQuery(window.location.search.slice(1));
-    var source = querry['style'] ? querry['style'] : "data/styles/basic.yaml";
+    /* global query, editor */
+    query = parseQuery(window.location.search.slice(1));
+    var source = query['style'] ? query['style'] : "data/styles/basic.yaml";
     var contents = fetchHTTP(source);
     editor.setValue(contents);
     editor.isSaved = true;

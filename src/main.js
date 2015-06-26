@@ -1,17 +1,17 @@
-// Get Querry string and parse it
-var querry = parseQuery(window.location.search.slice(1));
+// Get query string and parse it
+var query = parseQuery(window.location.search.slice(1));
 
-var flags = parseFeatureFlags(querry);
+var flags = parseFeatureFlags(query);
 
 if (flags['fullmenu'] === true) {
     document.querySelector('html').classList.add('full-menu');
 }
 
 // Tangram Map
-var map = initMap( querry['style']? querry['style'] : "data/styles/basic.yaml" );
+var map = initMap( query['style']? query['style'] : "data/styles/basic.yaml" );
 
 // Editor
-var editor = initEditor(document.getElementById("editor"), querry['style']? querry['style'] : "data/styles/basic.yaml" );
+var editor = initEditor(document.getElementById("editor"), query['style']? query['style'] : "data/styles/basic.yaml" );
 
 //  UI
 initUI(editor, map);
@@ -23,8 +23,8 @@ loadKeys(editor, "data/keys.json");
 // Once everything is loaded
 setTimeout( function (){
 
-    if (querry['foldLevel']) unfoldAll(editor); foldByLevel(editor,parseInt(querry['foldLevel']));
-    if (querry['lines']) selectLines(editor,querry['lines']);
+    if (query['foldLevel']) unfoldAll(editor); foldByLevel(editor,parseInt(query['foldLevel']));
+    if (query['lines']) selectLines(editor,query['lines']);
 
     updateWidgets(editor);
 
