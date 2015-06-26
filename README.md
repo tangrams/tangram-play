@@ -2,7 +2,7 @@
 
 Style Editor for Tangram Styles
 
-## Querry string API
+## Query string API
 
 * ```lines=[number]/[number-number]```: you highlight a line or a range of lines. Example ```lines=10-12```.
 

@@ -1,7 +1,7 @@
 //  TODO:
 //          -- Replace global scene by a local
 //
-var updateContet = debounce(function(cm){
+var updateContent = debounce(function(cm){
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
     var url = createObjectURL(new Blob([ cm.getValue() ]));
     scene.reload(url);
@@ -19,8 +19,8 @@ function initEditor( dom, style_file ){
     var rulers = [];
     for (var i = 1; i < 10; i++) {
         var b = Math.round((0.88 + i/90)*255);
-        rulers.push({   color: 'rgb('+b+','+b+','+b+')', 
-                        column: i * 4, 
+        rulers.push({   color: 'rgb('+b+','+b+','+b+')',
+                        column: i * 4,
                         lineStyle: "dashed"});
     }
 
@@ -64,7 +64,7 @@ function initEditor( dom, style_file ){
         if(cm.isSaved){
             cm.isSaved = false;
         }
-        updateContet(cm);
+        updateContent(cm);
     });
 
     //  When the viewport change (lines are add or erased)

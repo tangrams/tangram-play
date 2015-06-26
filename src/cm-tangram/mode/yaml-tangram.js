@@ -17,7 +17,7 @@ function getSpaces(str) {
     var space = regex.exec(str);
     if (space)
         return (space[1].match(/\s/g) || []).length;
-    else 
+    else
         return 0;
 }
 
@@ -33,9 +33,9 @@ function getTag(cm, nLine){
 // Get array of YAML tags parent tree of a particular line
 function getTags(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.tags; }
 // Get string of YAML tags in a folder style
-function getTagAddress(cm, nLine) { 
+function getTagAddress(cm, nLine) {
     if (cm.lineInfo(nLine).handle.stateAfter &&
-        cm.lineInfo(nLine).handle.stateAfter.yamlState && 
+        cm.lineInfo(nLine).handle.stateAfter.yamlState &&
         cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress ){
         return cm.lineInfo(nLine).handle.stateAfter.yamlState.tagAddress;
     } else {
@@ -43,7 +43,7 @@ function getTagAddress(cm, nLine) {
     }
 }
 
-//  Get value of a key pair 
+//  Get value of a key pair
 function getValue(cm, nLine){
     var value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec( cm.lineInfo(nLine).text );
     return value ? value[1] : "" ;
@@ -83,7 +83,7 @@ function getAddressSceneContent(tangramScene, address){
     } else {
         return "";
     }
-    
+
 }
 
 //  CHECK
@@ -93,7 +93,7 @@ function getAddressSceneContent(tangramScene, address){
 function isStrEmpty(str) { return (!str || 0 === str.length || /^\s*$/.test(str));}
 function isEmpty(cm, nLine) { return isStrEmpty( cm.lineInfo(nLine).text ); }
 
-//  Check if the line is commented YAML style 
+//  Check if the line is commented YAML style
 function isStrCommented(str) { var regex = /^\s*[\#||\/\/]/gm; return (regex.exec( str ) || []).length > 0; }
 function isCommented(cm, nLine) { return isStrCommented( cm.lineInfo(nLine).text ); }
 
@@ -143,13 +143,13 @@ function tags2Address(tags){
 //  ===============================================================================
 
 //  Jump to a specific line
-function jumpToLine(cm, nLine) { cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top ); } 
+function jumpToLine(cm, nLine) { cm.scrollTo( null, cm.charCoords({line: nLine-1, ch: 0}, "local").top ); }
 
 //  Jump to a specific line
-function jumpToLineAt(cm, nLine, offset) { 
+function jumpToLineAt(cm, nLine, offset) {
     var t = cm.charCoords({line: nLine-1, ch: 0}, "local").top;
-    cm.scrollTo( null, t ); 
-} 
+    cm.scrollTo( null, t );
+}
 
 //  SELECT
 //  ===============================================================================
@@ -161,7 +161,7 @@ function selectLines(cm, rangeString) {
 
     if ( isNumber(rangeString) ) {
         from = parseInt(rangeString)-1;
-        to = from; 
+        to = from;
     } else {
         var lines = rangeString.split('-');
         from = parseInt(lines[0])-1;
@@ -169,10 +169,10 @@ function selectLines(cm, rangeString) {
     }
 
     // If folding level is on un fold the lines selected
-    if (querry['foldLevel']) {
-        foldAllBut(cm, from,to,querry['foldLevel']);
+    if (query['foldLevel']) {
+        foldAllBut(cm, from,to,query['foldLevel']);
     }
-    
+
     cm.setSelection({ line: from, ch:0},
                     { line: to, ch:cm.lineInfo(to).text.length } );
     jumpToLine(cm,from);
@@ -193,12 +193,12 @@ function isFolder(cm, nLine) {
 
 //  Select everything except for a range of lines
 //
-function foldAllBut(cm, From, To, querryLevel) {
+function foldAllBut(cm, From, To, queryLevel) {
     // default level is 0
-    querryLevel = typeof querryLevel !== 'undefined' ? querryLevel : 0;
+    queryLevel = typeof queryLevel !== 'undefined' ? queryLevel : 0;
 
     // fold everything
-    foldByLevel(cm, querryLevel);
+    foldByLevel(cm, queryLevel);
 
     // get minimum indentation
     var minLevel = 10;
@@ -244,7 +244,7 @@ function foldAllBut(cm, From, To, querryLevel) {
     }
 
     for (var i = To; i < cm.lineCount() ; i++) {
-        if (getLineInd(cm, i) >= querryLevel){
+        if (getLineInd(cm, i) >= queryLevel){
             cm.foldCode({ line: i }, opts.rangeFinder, "fold");
         }
     }
@@ -261,8 +261,8 @@ function unfoldAll(cm) {
 
 //  Fold all lines above a specific indentation level
 //
-function foldByLevel(cm, level) {  
-    unfoldAll(cm);  
+function foldByLevel(cm, level) {
+    unfoldAll(cm);
     var opts = cm.state.foldGutter.options;
 
     var actualLine = cm.getDoc().size-1;
@@ -301,7 +301,7 @@ function yamlAddressing(stream, state) {
             } else if (level === state.tagLevel ) {
                 state.tags[level] = tag[2];
             } if ( level < state.tagLevel ) {
-                var diff = state.tagLevel - level; 
+                var diff = state.tagLevel - level;
                 for (var i = 0; i < diff; i++){
                     state.tags.pop();
                 }
@@ -348,30 +348,30 @@ function yamlAddressing(stream, state) {
                 }
 
                 if (state.literal && stream.indentation() > state.keyCol) {
-                    stream.skipToEnd(); 
+                    stream.skipToEnd();
                     return "string";
-                } else if (state.literal) { 
-                    state.literal = false; 
+                } else if (state.literal) {
+                    state.literal = false;
                 }
 
                 if (stream.sol()) {
                     state.keyCol = 0;
                     state.pair = false;
                     state.pairStart = false;
-                
+
                     /* document start */
-                    if(stream.match(/---/)) { 
+                    if(stream.match(/---/)) {
                         return "def";
                     }
 
                     /* document end */
-                    if (stream.match(/\.\.\./)) { 
-                        return "def"; 
+                    if (stream.match(/\.\.\./)) {
+                        return "def";
                     }
 
                     /* array list item */
-                    if (stream.match(/\s*-\s+/)) { 
-                        return 'meta'; 
+                    if (stream.match(/\s*-\s+/)) {
+                        return 'meta';
                     }
                 }
 
@@ -406,28 +406,28 @@ function yamlAddressing(stream, state) {
                 /* start of value of a pair */
                 if (state.pairStart) {
                     /* block literals */
-                    if (stream.match(/^\s*(\||\>)\s*/)) { 
-                        state.literal = true; 
+                    if (stream.match(/^\s*(\||\>)\s*/)) {
+                        state.literal = true;
                         return 'meta';
                     };
 
                     /* references */
-                    if (stream.match(/^\s*(\&|\*)[a-z0-9\._-]+\b/i)) { 
-                        return 'variable-2'; 
+                    if (stream.match(/^\s*(\&|\*)[a-z0-9\._-]+\b/i)) {
+                        return 'variable-2';
                     }
 
                     /* numbers */
-                    if (state.inlinePairs == 0 && stream.match(/^\s*-?[0-9\.\,]+\s?$/)) { 
+                    if (state.inlinePairs == 0 && stream.match(/^\s*-?[0-9\.\,]+\s?$/)) {
                         return 'number';
                     }
 
-                    if (state.inlinePairs > 0 && stream.match(/^\s*-?[0-9\.\,]+\s?(?=(,|}))/)) { 
-                        return 'number'; 
+                    if (state.inlinePairs > 0 && stream.match(/^\s*-?[0-9\.\,]+\s?(?=(,|}))/)) {
+                        return 'number';
                     }
 
                     /* keywords */
-                    if (stream.match(keywordRegex)) { 
-                        return 'keyword'; 
+                    if (stream.match(keywordRegex)) {
+                        return 'keyword';
                     }
                 }
 
@@ -438,8 +438,8 @@ function yamlAddressing(stream, state) {
                     return "atom";
                 }
 
-                if (state.pair && stream.match(/^:\s*/)) { 
-                    state.pairStart = true; return 'meta'; 
+                if (state.pair && stream.match(/^:\s*/)) {
+                    state.pairStart = true; return 'meta';
                 }
 
                 /* nothing found, continue */
@@ -507,8 +507,8 @@ function yamlAddressing(stream, state) {
                 var tag = /^\s+(\w*)\:\s+\|/gm.exec(stream.string);
                 tag = tag ? tag[1] : "";
 
-                if ( isShader(address) && 
-                     !/^\|$/g.test(stream.string) && 
+                if ( isShader(address) &&
+                     !/^\|$/g.test(stream.string) &&
                      isAfterTag(stream.string,stream.pos)) {
                     state.token = glsl;
                     state.localMode = glslMode;
@@ -518,25 +518,25 @@ function yamlAddressing(stream, state) {
                     //  TODO:
                     //        Replace global scene by a local
                     //
-                } else if ( isContentJS(scene, address) && 
-                            !/^\|$/g.test(stream.string) && 
+                } else if ( isContentJS(scene, address) &&
+                            !/^\|$/g.test(stream.string) &&
                             isAfterTag(stream.string,stream.pos) ){
                     state.token = js;
                     state.localMode = jsMode;
                     state.localState = jsMode.startState( getInd(stream.string) );
                     return js(stream, state);
                 }
-            } 
+            }
             return yamlMode.token(stream, state.yamlState);
         }
 
         function glsl(stream, state) {
-            var address = state.yamlState.tagAddress            
+            var address = state.yamlState.tagAddress
             if ( !isShader(address) || (/^\|$/g.test(stream.string)) ) {
                 state.token = yaml;
                 state.localState = state.localMode = null;
                 return null;
-            } 
+            }
             return glslMode.token(stream, state.localState);
         }
 
@@ -559,8 +559,8 @@ function yamlAddressing(stream, state) {
                 state.tags = [];
                 state.tagLevel = -1;
                 return {
-                        token: yaml, 
-                        localMode: null, 
+                        token: yaml,
+                        localMode: null,
                         localState: null,
                         yamlState: state
                     };
@@ -570,14 +570,14 @@ function yamlAddressing(stream, state) {
                     var local = CodeMirror.copyState(state.localMode, state.localState);
 
                 return {
-                        token: state.token, 
-                        localMode: state.localMode, 
+                        token: state.token,
+                        localMode: state.localMode,
                         localState: local,
-                        yamlState: CodeMirror.copyState(yamlMode, state.yamlState), 
+                        yamlState: CodeMirror.copyState(yamlMode, state.yamlState),
                     };
             },
             innerMode: function(state) {
-                return {state: state.localState || state.yamlState, 
+                return {state: state.localState || state.yamlState,
                         mode: state.localMode || yamlMode };
             },
             token: function(stream, state) {
