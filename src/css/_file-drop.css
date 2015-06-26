@@ -22,11 +22,7 @@
     margin-top: -300px;
     color: white;
     text-align: center;
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
-    -webkit-justify-content: center;
-    -webkit-flex-direction: column;
     align-items: center;
     justify-content: center;
     flex-direction: column;
