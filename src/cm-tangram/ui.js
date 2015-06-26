@@ -226,7 +226,7 @@ function reflowUI() {
     var contentEl = document.getElementById('content');
     var dividerEl = document.getElementById('divider');
     var menuEl = document.getElementById('menu-container');
-    var menuBottom = menuEl.getBoundingClientRect().top + menuEl.getBoundingClientRect().height;
+    var menuBottom = menuEl.getBoundingClientRect().bottom;
     var positionX = dividerEl.getBoundingClientRect().left;
 
     mapEl.style.width = positionX + "px";

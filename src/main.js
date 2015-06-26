@@ -11,6 +11,7 @@ if (isMobile()) {
   document.getElementById('mobile-message').style.display = 'block';
   document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
     document.getElementById('mobile-message').style.display = 'none';
+    reflowUI();
   })
 }
 
