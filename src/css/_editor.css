@@ -1,5 +1,9 @@
 /* EDITOR */
 
+:root {
+    --editor-font-family: var(--font-family);
+}
+
 #content {
     position: absolute;
     right: 0;
@@ -71,14 +75,14 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 }
 
 .cm-panel-btn {
-    font-family: 'montserratultra_light';
+    font-family: var(--editor-font-family);
     font-size: 14px;
     color: black;
     cursor: pointer;
 }
 
 .cm-panel {
-    font-family: 'montserratultra_light';
+    font-family: var(--editor-font-family);
     font-size: 14px;
     background: #494949;
     color: white;

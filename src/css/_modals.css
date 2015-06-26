@@ -1,9 +1,5 @@
 /* MODALS */
 
-:root {
-    --modal-font-family: 'montserratultra_light';
-}
-
 .modal {
     display: none;
     position: fixed;
@@ -15,7 +11,8 @@
     top: 50%;
     margin-top: -80px;
     background-color: #303030;
-    font-family: var(--modal-font-family);
+    font-family: var(--font-family);
+    font-weight: 200;
     font-size: 16px;
     z-index: 1300;
     padding: 30px;
@@ -45,7 +42,8 @@
     color: white;
     border: 0;
     margin: 0 5px;
-    font-family: var(--modal-font-family);
+    font-family: var(--font-family);
+    font-weight: 200;
     font-size: 14px;
     cursor: pointer;
 }
@@ -139,7 +137,8 @@ button:disabled > i {
 }
 
 .example-option-name {
-    font-family: 'montserratregular';
+    font-family: var(--font-family);
+    font-weight: 400;
     font-size: 14px;
     color: #bbb;
     margin-bottom: 4px;

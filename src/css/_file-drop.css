@@ -38,6 +38,7 @@
 
 .file-drop-label {
     margin-top: 1.5em;
-    font-family: 'montserratultra_light';
+    font-family: var(--font-family);
+    font-weight: 200;
     font-size: 2.5em;
 }
