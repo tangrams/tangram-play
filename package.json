@@ -17,12 +17,10 @@
   },
   "homepage": "https://github.com/tangrams/tangram-play",
   "devDependencies": {
-    "autoprefixer-core": "^5.2.1",
-    "cssnano": "^1.4.3",
+    "cssnext": "^1.7.1",
     "gulp": "^3.9.0",
     "gulp-postcss": "^5.1.9",
     "gulp-sourcemaps": "^1.5.2",
-    "postcss-import": "^6.0.0",
     "postcss-nested": "^0.3.2",
     "postcss-reporter": "^0.1.0",
     "postcss-simple-vars": "^0.3.0"

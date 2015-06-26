@@ -1,5 +1,9 @@
 /* MODALS */
 
+:root {
+    --modal-font-family: 'montserratultra_light';
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -11,7 +15,7 @@
     top: 50%;
     margin-top: -80px;
     background-color: #303030;
-    font-family: 'montserratultra_light';
+    font-family: var(--modal-font-family);
     font-size: 16px;
     z-index: 1300;
     padding: 30px;
@@ -41,7 +45,7 @@
     color: white;
     border: 0;
     margin: 0 5px;
-    font-family: 'montserratultra_light';
+    font-family: var(--modal-font-family);
     font-size: 14px;
     cursor: pointer;
 }

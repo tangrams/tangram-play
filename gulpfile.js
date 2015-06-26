@@ -4,22 +4,26 @@ var gulp = require('gulp')
 
 gulp.task('css', function () {
   var postcss = require('gulp-postcss')
-  var sourcemaps = require('gulp-sourcemaps')
-  var cssnano = require('cssnano')
-  var autoprefixer = require('autoprefixer-core')
-  //var cssnext = require('cssnext')
-  var cssImport = require('postcss-import')
+  var cssnext = require('cssnext')
   var nested = require('postcss-nested')
-  var reporter = require('postcss-reporter')
   var simplevars = require('postcss-simple-vars')
+  var sourcemaps = require('gulp-sourcemaps')
+  var reporter = require('postcss-reporter')
+
+  var options = {
+    browsers: ['last 2 versions', 'IE >= 11'],
+    compress: {
+      comments: { removeAll: true },
+      zindex: false
+    },
+    plugins: [
+      nested,
+      simplevars
+    ]
+  }
 
   var plugins = [
-    //cssnext(),
-    cssImport,
-    nested,
-    simplevars,
-    autoprefixer({ browsers: ['last 2 versions', 'IE >= 11'] }),
-    cssnano({ comments: { removeAll: true }, zindex: false }),
+    cssnext(options),
     reporter()
   ]
 
