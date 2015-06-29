@@ -1,3 +1,5 @@
+'use strict';
+
 // Get query string and parse it
 var query = parseQuery(window.location.search.slice(1));
 

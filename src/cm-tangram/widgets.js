@@ -54,6 +54,7 @@ var widgets = [];
 function createWidgets (cm) {
     for (var nline = 0, size = cm.doc.size; nline < size; nline++) {
         var val = getValue(cm, nline);
+        console.log(val);
 
         // If Line is significative
         if (getTag(cm, nline) !== "" && val !== "|" && val !== "" ) {
@@ -99,7 +100,7 @@ function createColorpickerWidget (proto, content, nline) {
     el.className = 'widget widget-colorpicker';
     el.value = nline;
     el.style.background = toCSS(content);
-    el.setAttribute('onclick','colorPickerClicked(this)');
+    el.setAttribute('onclick', 'colorPickerClicked(this)');
     return el;
 }
 
@@ -109,7 +110,7 @@ function createToggleWidget (proto, content, nline) {
     el.className = 'widget widget-toggle';
     el.checked = (content === 'true') ? true : false;
     el.value = nline;
-    el.setAttribute('onchange','toggleButton(this)');
+    el.setAttribute('onchange', 'toggleButton(this)');
     return el;
 }
 
@@ -127,7 +128,7 @@ function createDropdownWidget (proto, content, nline) {
         el.appendChild(newOption);
     }
 
-    el.setAttribute('onchange','dropdownMenuChange(this)');
+    el.setAttribute('onchange', 'dropdownMenuChange(this)');
     return el;
 }
 
@@ -160,7 +161,7 @@ function createDropdownDynamicWidget (proto, content, nline) {
         el.appendChild(newOption);
     }
 
-    el.setAttribute('onchange','dropdownMenuChange(this)');
+    el.setAttribute('onchange', 'dropdownMenuChange(this)');
     return el;
 }
 
@@ -169,7 +170,7 @@ function setWidgetPositions (cm) {
         var el = widgets[i];
         var nline = parseInt(el.getAttribute('data-nline'), 10);
         var chrpos = cm.lineInfo(nline).handle.text.length;
-        cm.addWidget({line: nline, ch: chrpos }, el);
+        cm.addWidget({ line: nline, ch: chrpos }, el);
     }
 }
 
@@ -180,9 +181,23 @@ function clearWidgets () {
     }
 }
 
+function clearWidget (widgetId) {
+
+}
+
 function updateWidgets (cm) {
     clearWidgets();
     setWidgetPositions(cm);
+}
+
+/**
+ * @param {array} changes - An array of changes in a batch operation from CodeMirror.
+ */
+function updateWidgetsOnEditorChanges (changes) {
+    // Given changed lines in CodeMirror
+    // We need to rebuild some widgets because data may have changed in them.
+    console.log(changes);
+    // TODO.
 }
 
 //  TODO:

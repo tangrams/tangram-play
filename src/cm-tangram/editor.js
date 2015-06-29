@@ -74,11 +74,16 @@ function initEditor(dom, style_file) {
     //  Hook events
 
     //  Update Tangram Map when stop typing
-    cm.on("change", function(cm) {
-        if(cm.isSaved) {
+    cm.on('change', function (cm, changeObj) {
+        if (cm.isSaved) {
             cm.isSaved = false;
         }
+    });
+
+    // Update widgets & content after a batch of changes
+    cm.on('changes', function (cm, changes) {
         updateWidgets(cm);
+        //updateWidgetsOnEditorChanges(changes);
         updateContent(cm);
     });
 
