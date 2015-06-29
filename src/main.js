@@ -15,13 +15,15 @@ if (isMobile()) {
     });
 }
 
+var style = query['style'] ? query['style'] : 'data/styles/basic.yaml';
+
 // Tangram Map
-var map = initMap(query['style'] ? query['style'] : 'data/styles/basic.yaml');
+var map = initMap(style);
 
 // Editor
-var editor = initEditor(document.getElementById('editor'), query['style'] ? query['style'] : 'data/styles/basic.yaml');
+var editor = initEditor(document.getElementById('editor'), style);
 
-//  UI
+// UI
 initUI(editor, map);
 
 // Editor Widgets
@@ -31,7 +33,8 @@ loadKeys(editor, 'data/keys.json');
 // Once everything is loaded
 setTimeout(function () {
     if (query['foldLevel']) {
-        unfoldAll(editor); foldByLevel(editor, parseInt(query['foldLevel']));
+        unfoldAll(editor);
+        foldByLevel(editor, parseInt(query['foldLevel']));
     }
     if (query['lines']) {
         selectLines(editor, query['lines']);
