@@ -5,7 +5,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "jshint *.js src/ || true; jscs *.js src/ || true"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
     "gulp-livereload": "^3.8.0",
     "gulp-postcss": "^5.1.9",
     "gulp-sourcemaps": "^1.5.2",
+    "jscs": "^1.13.1",
+    "jshint": "^2.8.0",
     "postcss-nested": "^0.3.2",
     "postcss-reporter": "^0.1.0",
     "postcss-simple-vars": "^0.3.0"
