@@ -1,0 +1,5 @@
+src/**/*.min.js
+src/codemirror/
+src/codemirror.js
+src/leaflet/
+src/leaflet-hash.js
