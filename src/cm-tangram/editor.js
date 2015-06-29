@@ -3,7 +3,15 @@
 //
 var updateContent = debounce(function(cm){
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
-    var url = createObjectURL(new Blob([ cm.getValue() ]));
+
+    //  If doesn't have a API key 
+    //  inject a Tangram-Play one: vector-tiles-x4i7gmA ( Patricio is the owner )
+    var content = cm.getValue();
+    var pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
+    var result = "$1??api_key=vector-tiles-x4i7gmA"
+    content = content.replace(pattern, result);
+
+    var url = createObjectURL(new Blob([  ]));
     scene.reload(url);
     updateWidgets(cm);
 }, 500);
@@ -25,7 +33,7 @@ function initEditor( dom, style_file ){
     }
 
     var cm = CodeMirror( dom ,{
-        value: fetchHTTP(style_file),
+        value: "Loading...",
         rulers: rulers,
         lineNumbers: true,
         matchBrackets: true,
@@ -80,6 +88,28 @@ function initEditor( dom, style_file ){
         updateKeys(cm);
     });
 
-    cm.isSaved = true;
+    loadStyle(cm, fetchHTTP(style_file));
+
     return cm;
+}
+
+function loadStyle(cm, contents){
+    if (contents){
+
+        contents = contents.replace(/\?api_key\=(\w|\-)*$/gm,"");
+        
+        //  Delete API Key
+        cm.setValue(contents);
+        cm.isSaved = true;
+
+        // TODO:
+        //      - instead of deleting the key if should check if 
+        //      this user owns the key. If it doesn't delete it
+
+    }
+}
+
+function getContent(cm){
+    var content = cm.getValue();
+    return content;
 }

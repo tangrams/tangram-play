@@ -185,9 +185,7 @@ function loadFromQueryString () {
     /* global query, editor */
     query = parseQuery(window.location.search.slice(1));
     var source = query['style'] ? query['style'] : "data/styles/basic.yaml";
-    var contents = fetchHTTP(source);
-    editor.setValue(contents);
-    editor.isSaved = true;
+    loadStyle(editor,fetchHTTP(source));
 }
 
 function onFileSelectorChange (event) {
@@ -198,14 +196,14 @@ function onFileSelectorChange (event) {
 function openContent (content) {
     var reader = new FileReader();
     reader.onload = function(e) {
-        editor.setValue(e.target.result);
+        loadStyle(editor, e.target.result);
     }
     reader.readAsText(content);
 }
 
 function saveContent(){
     if (editor) {
-        var blob = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
+        var blob = new Blob([getContent(editor)], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "style.yaml");
         editor.isSaved = true;
     }

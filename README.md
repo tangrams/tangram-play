@@ -6,8 +6,6 @@ Style Editor for Tangram Styles
 
 * ```lines=[number]/[number-number]```: you highlight a line or a range of lines. Example ```lines=10-12```.
 
-* ```foldLevel=[indentation-level]```: fold the code acording to the indentation level. Example ```foldLevel=0```.
-
 * ```style=[url.yaml]```: load a specific ```.yaml``` file using a valid url
 
 ## Keys

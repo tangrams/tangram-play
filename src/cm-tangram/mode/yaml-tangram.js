@@ -274,6 +274,7 @@ function foldByLevel(cm, level) {
         }
         actualLine--;
     }
+    
 };
 
 //  YAML

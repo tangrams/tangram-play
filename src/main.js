@@ -8,11 +8,11 @@ if (flags['fullmenu'] === true) {
 }
 
 if (isMobile()) {
-  document.getElementById('mobile-message').style.display = 'block';
-  document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
-    document.getElementById('mobile-message').style.display = 'none';
-    reflowUI();
-  })
+	document.getElementById('mobile-message').style.display = 'block';
+	document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
+    	document.getElementById('mobile-message').style.display = 'none';
+    	reflowUI();
+  	})
 }
 
 // Tangram Map
@@ -31,7 +31,7 @@ loadKeys(editor, "data/keys.json");
 // Once everything is loaded
 setTimeout( function (){
 
-    if (query['foldLevel']) unfoldAll(editor); foldByLevel(editor,parseInt(query['foldLevel']));
+    //if (query['foldLevel']) unfoldAll(editor); foldByLevel(editor,parseInt(query['foldLevel']));
     if (query['lines']) selectLines(editor,query['lines']);
 
     updateWidgets(editor);
