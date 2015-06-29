@@ -11,9 +11,12 @@ var updateContent = debounce(function(cm){
     var result = "$1??api_key=vector-tiles-x4i7gmA"
     content = content.replace(pattern, result);
 
-    var url = createObjectURL(new Blob([  ]));
-    scene.reload(url);
-    updateWidgets(cm);
+    if (scene) {
+        var url = createObjectURL(new Blob([content]));
+        scene.reload(url);
+        updateWidgets(cm);
+    }
+    
 }, 500);
 
 var updateKeys = debounce(function(cm){
@@ -110,6 +113,5 @@ function loadStyle(cm, contents){
 }
 
 function getContent(cm){
-    var content = cm.getValue();
-    return content;
+    return cm.getValue();
 }

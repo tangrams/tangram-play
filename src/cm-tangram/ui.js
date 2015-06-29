@@ -203,7 +203,7 @@ function openContent (content) {
 
 function saveContent(){
     if (editor) {
-        var blob = new Blob([getContent(editor)], {type: "text/plain;charset=utf-8"});
+        var blob = new Blob([ getContent(editor)], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "style.yaml");
         editor.isSaved = true;
     }
