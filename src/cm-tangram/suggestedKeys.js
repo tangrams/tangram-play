@@ -26,11 +26,11 @@ function suggestKeys(cm) {
     var top = cm.getScrollInfo().top;
 
     // Erase previus keys
-    if (cm.keyPanel) {
-        cm.keyPanel.clear();
+    if (cm.suggestedKeysMenu) {
+        cm.suggestedKeysMenu.clear();
         cm.focus();
     }
-    
+
     // Get line address
     cursor = cm.getCursor(true);
     var nline = cursor.line;
@@ -42,7 +42,7 @@ function suggestKeys(cm) {
         var obj = getAddressSceneContent(scene,address);
         presentKeys = obj? Object.keys(obj) : [];
     }
-    
+
     // Search for matches
     for (var i = 0; i < cm.suggestedKeys.length; i++) {
         if (cm.suggestedKeys[i].token(scene,cm,nline)) {
@@ -67,7 +67,7 @@ function suggestKeys(cm) {
             }
 
             if (suggestedKeysList.length > 0) {
-                addKeyPanel(suggestedKeysList,cm,nline);
+                addSuggestedKeysList(suggestedKeysList,cm,nline);
             }
             break;
         }
@@ -77,41 +77,44 @@ function suggestKeys(cm) {
     cm.scrollTo(null,top);
 }
 
-function addKeyPanel( suggestedKeysList, cm, nLine ) {
-    var options = { 
-        position: "top" 
+function addSuggestedKeysList( suggestedKeysList, cm, nLine ) {
+    var options = {
+        position: "top"
     }
 
-    if (cm.keyPanel) {
-        cm.keyPanel.clear();
-        options.replace = cm.keyPanel;
+    if (cm.suggestedKeysMenu) {
+        cm.suggestedKeysMenu.clear();
+        options.replace = cm.suggestedKeysMenu;
     }
 
-    var node = makeKeyPanel(suggestedKeysList, nLine);
-    cm.keyPanel = cm.addPanel(node, options);
+    var node = makeSuggestedKeyMenu(suggestedKeysList, nLine);
+    // cm.suggestedKeysMenu = cm.addPanel(node, options);
+    cm.suggestedKeysMenu = cm.addLineWidget(nLine, node, {coverGutter: false, noHScroll: true});
+    updateWidgets(cm);
 }
 
-function makeKeyPanel(suggestedKeysList, nLine) {
+function makeSuggestedKeyMenu(suggestedKeysList, nLine) {
     var node = document.createElement("div");
-    node.className = "cm-panel";
+    node.className = "cm-suggested-keys-menu";
 
     var widget, label;
 
     var close = node.appendChild(document.createElement("a"));
-    close.className =  "cm-panel-remove";
+    close.className =  "cm-suggested-keys-menu-remove";
     close.textContent = "✖";
 
     CodeMirror.on(close, "click", function() {
-        cm.keyPanel.clear();
+        editor.suggestedKeysMenu.clear();
     });
 
     for (var i = 0; i < suggestedKeysList.length; i++) {
-        var btn = document.createElement("button");
+        var btn = document.createElement('button');
+        var text = document.createTextNode(suggestedKeysList[i]);
         btn.value = nLine;
-        btn.innerText = suggestedKeysList[i];
-        btn.className = "cm-panel-btn";
-        btn.setAttribute('onclick','addKey(this)');
-        node.appendChild(btn);   
+        btn.className = 'cm-suggested-keys-menu-btn';
+        btn.setAttribute('onclick', 'addKey(this)');
+        btn.appendChild(text);
+        node.appendChild(btn);
     }
 
     return node;
@@ -121,8 +124,8 @@ function makeKeyPanel(suggestedKeysList, nLine) {
 //          -- Replace global editor by local
 //
 function addKey(div) {
-    editor.keyPanel.clear();
-    
+    editor.suggestedKeysMenu.clear();
+
     var tabs = getLineInd( editor, parseInt(div.value) )+1;
     var text = '\n';
     for (var i = 0; i < tabs; i++) {
