@@ -1,3 +1,5 @@
+'use strict';
+
 //  SET Functions
 //  ===============================================================================
 function setValue(cm, nLine, string) {
@@ -84,6 +86,9 @@ function getAddressSceneContent(tangramScene, address) {
 //  CHECK
 //  ===============================================================================
 
+//  Check if a str ends with a suffix
+function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1;};
+
 //  Function that check if a line is inside a Color Shader Block
 function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); };
 function isWidthBlock(address) { return endsWith(address,"shaders/blocks/width"); };
@@ -165,9 +170,9 @@ function yamlAddressing(stream, state) {
 
 (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
-        mod(require("src/codemirror"));
+        mod(require("codemirror"));
     else if (typeof define == "function" && define.amd) // AMD
-        define(["src/codemirror"], mod);
+        define(["codemirror"], mod);
     else // Plain browser env
         mod(CodeMirror);
 })(function(CodeMirror) {
@@ -334,9 +339,7 @@ function yamlAddressing(stream, state) {
 //  ===============================================================================
 (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
-        mod(require("src/codemirror"), require("src/cm-tangram/mode/glsl", require("src/codemirror/mode/javascript")));
-    else if (typeof define == "function" && define.amd) // AMD
-        define(["src/codemirror", "src/cm-tangram/mode/glsl", "src/codemirror/mode/javascript" ], mod);
+        mod(require("codemirror"));
     else // Plain browser env
         mod(CodeMirror);
 })(function(CodeMirror) {

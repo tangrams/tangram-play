@@ -7,7 +7,7 @@ var sourcemaps = require('gulp-sourcemaps');
 
 var paths = {
     styles: 'src/css/**/*.css',
-    scripts: 'src/**/*.js'
+    scripts: 'src/js/**/*.js'
 };
 
 // Build stylesheets
@@ -20,6 +20,9 @@ gulp.task('css', function () {
 
     var options = {
         browsers: ['last 2 versions', 'IE >= 11'],
+        features: {
+            customSelectors: false // bugged. see https://github.com/cssnext/cssnext/issues/171
+        },
         compress: {
             comments: { removeAll: true },
             zindex: false
@@ -40,7 +43,7 @@ gulp.task('css', function () {
         .pipe(sourcemaps.init())
         .pipe(postcss(plugins))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./css'))
+        .pipe(gulp.dest('./build/css'))
         .pipe(livereload());
 });
 
@@ -53,20 +56,20 @@ gulp.task('js', function () {
     var uglify = require('gulp-uglify');
 
     var bundle = browserify({
-        entries: 'src/main.js',
+        entries: 'src/js/main.js',
         debug: true,
         transform: [babelify]
     });
 
     return bundle.bundle()
-        .pipe(source('main.js'))
+        .pipe(source('tangram-play.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
             // Add transformation tasks to the pipeline here.
             .pipe(uglify())
             .on('error', gutil.log)
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./js'));
+        .pipe(gulp.dest('./build/js'));
 });
 
 // Rerun the task when a file changes

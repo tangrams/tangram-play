@@ -2,10 +2,7 @@
     "excludeFiles": [
         "node_modules/**",
         "src/**/*.min.js",
-        "src/codemirror/**",
-        "src/codemirror.js",
-        "src/leaflet/**",
-        "src/leaflet-hash.js"
+        "src/js/vendor/**"
     ],
     "disallowMultipleSpaces": true,
     "disallowEmptyBlocks": true,

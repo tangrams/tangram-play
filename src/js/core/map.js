@@ -1,7 +1,13 @@
+'use strict';
+
 var take_screenshot = false;
 
-function initMap(style_file) {
-    'use strict';
+module.exports = {
+    init,
+    postUpdate
+}
+
+function init (style_file) {
     var map_start_location = [0.0, 0.0, 3];
 
     /*** URL parsing ***/

@@ -1,9 +1,15 @@
+'use strict';
+
 var CM_MINIMUM_WIDTH = 160 // integer, in pixels
 var LOCAL_STORAGE_PREFIX = 'tangram-play-'
 
 var draggable;
 
-function initUI(cm, tangram) {
+module.exports = {
+    init
+}
+
+function init (cm, tangram) {
     var transformStyle = 'translate3d(' + getDividerStartingPosition() + 'px, 0px, 0px)';
     var dividerEl = document.getElementById('divider');
     if (dividerEl.style.hasOwnProperty('transform')) {

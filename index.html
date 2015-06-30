@@ -14,33 +14,33 @@
     <title>Tangram Play</title>
 
     <!-- Tangram -->
-    <link rel="stylesheet" href="src/leaflet/leaflet.css" />
-    <script type="text/javascript" src="src/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
-    <script type="text/javascript" src="src/leaflet-hash.js"></script>     <!-- bog-standard leaflet URL hash -->
+    <link rel="stylesheet" href="src/js/vendor/leaflet/leaflet.css" />
+    <script type="text/javascript" src="src/js/vendor/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
+    <script type="text/javascript" src="src/js/vendor/leaflet-hash.js"></script>     <!-- bog-standard leaflet URL hash -->
     <script type="text/javascript" src="https://mapzen.com/tangram/0.1/tangram.min.js"></script>
 
     <!-- CodeMirror -->
-    <link type="text/css" rel="stylesheet" href="src/codemirror/css/codemirror.css">
-    <link type="text/css" rel="stylesheet" href="src/codemirror/addon/fold/foldgutter.css">
-    <link type="text/css" rel="stylesheet" href="src/codemirror/addon/dialog/dialog.css">
-    <link type="text/css" rel="stylesheet" href="src/codemirror/addon/hint/show-hint.css">
+    <link type="text/css" rel="stylesheet" href="src/js/vendor/codemirror/css/codemirror.css">
+    <link type="text/css" rel="stylesheet" href="src/js/vendor/codemirror/addon/fold/foldgutter.css">
+    <link type="text/css" rel="stylesheet" href="src/js/vendor/codemirror/addon/dialog/dialog.css">
+    <link type="text/css" rel="stylesheet" href="src/js/vendor/codemirror/addon/hint/show-hint.css">
 
-    <script type="text/javascript" src="src/codemirror.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/search/searchcursor.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/search/search.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/dialog/dialog.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/edit/matchbrackets.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/edit/closebrackets.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/comment/comment.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/wrap/hardwrap.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/fold/foldcode.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/fold/foldgutter.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/fold/indent-fold.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/hint/show-hint.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/display/rulers.js"></script>
-    <script type="text/javascript" src="src/codemirror/addon/display/panel.js"></script>
-    <script type="text/javascript" src="src/codemirror/keymap/sublime.js"></script>
-    <script type="text/javascript" src="src/codemirror/mode/javascript.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/search/searchcursor.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/search/search.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/dialog/dialog.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/edit/matchbrackets.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/edit/closebrackets.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/comment/comment.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/wrap/hardwrap.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/fold/foldcode.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/fold/foldgutter.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/fold/indent-fold.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/hint/show-hint.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/display/rulers.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/addon/display/panel.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/keymap/sublime.js"></script>
+    <script type="text/javascript" src="src/js/vendor/codemirror/mode/javascript.js"></script>
 
     <!-- Divider UI -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/TweenLite.min.js"></script>
@@ -48,21 +48,16 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/plugins/CSSPlugin.min.js"></script>
 
     <!-- Save File locally -->
-    <script type="text/javascript" src="src/FileSaver.min.js"></script>
+    <script type="text/javascript" src="src/js/vendor/FileSaver.min.js"></script>
 
     <!-- Color Picker -->
     <script src='http://nornagon.github.com/thistle/thistle.js'></script>
 
     <!-- CodeMirror-Tangram specific -->
-    <link type="text/css" rel="stylesheet" href="css/main.css">
-    <script type="text/javascript" src="src/cm-tangram/common.js"></script>
-    <script type="text/javascript" src="src/cm-tangram/map.js"></script>
-    <script type="text/javascript" src="src/cm-tangram/mode/glsl.js"></script>
-    <script type="text/javascript" src="src/cm-tangram/mode/yaml-tangram.js"></script>
-    <script type="text/javascript" src="src/cm-tangram/editor.js"></script>
-    <script type="text/javascript" src="src/cm-tangram/widgets.js"></script>
-    <script type="text/javascript" src="src/cm-tangram/suggestedKeys.js"></script>
-    <script type="text/javascript" src="src/cm-tangram/ui.js"></script>
+    <link type="text/css" rel="stylesheet" href="build/css/main.css">
+
+    <script type="text/javascript" src="src/js/parsers/glsl-tangram.js"></script>
+    <script type="text/javascript" src="src/js/parsers/yaml-tangram.js"></script>
 
   </head>
 
@@ -137,7 +132,7 @@
     </div>
 
     <!-- IDE -->
-    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="build/js/tangram-play.js"></script>
 
     <!-- Adding a script block to post message to the parent container (think iframed demos) -->
     <script type="text/javascript">

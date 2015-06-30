@@ -1,15 +1,22 @@
 'use strict';
 
-// Get query string and parse it
-var query = parseQuery(window.location.search.slice(1));
+// Imports
+const Utils = require('./core/common.js');
+const Map = require('./core/map.js');
+const Editor = require('./core/editor.js');
+const UI = require('./core/ui.js');
+const Widgets = require('./addons/widgets.js');
+const SuggestedKeys = require('./addons/suggestedKeys.js');
 
-var flags = parseFeatureFlags(query);
+// Get query string and parse it
+const query = Utils.parseQuery(window.location.search.slice(1));
+const flags = Utils.parseFeatureFlags(query);
 
 if (flags['fullmenu'] === true) {
     document.querySelector('html').classList.add('full-menu');
 }
 
-if (isMobile()) {
+if (Utils.isMobile() === true) {
     document.getElementById('mobile-message').style.display = 'block';
     document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
         document.getElementById('mobile-message').style.display = 'none';
@@ -18,16 +25,16 @@ if (isMobile()) {
 }
 
 // Initial style when it loads
-var style = query['style'] ? query['style'] : 'data/styles/basic.yaml';
+const style = query['style'] ? query['style'] : 'data/styles/basic.yaml';
 
 // Tangram Map
-var map = initMap(style);
+const map = Map.init(style);
 
 // Editor
-var editor = initEditor(document.getElementById('editor'), style);
+const editor = Editor.init(document.getElementById('editor'), style);
 
 // UI
-initUI(editor, map);
+UI.init(editor, map);
 
 // Editor Widgets
 loadWidgets(editor, 'data/widgets.json');

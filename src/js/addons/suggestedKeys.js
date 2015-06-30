@@ -1,3 +1,10 @@
+'use strict';
+
+module.exports = {
+    loadKeys,
+    suggestKeys
+}
+
 function loadKeys(cm, configFile) {
 
     // Initialize array

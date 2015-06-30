@@ -1,7 +1,18 @@
 //  TODO:
 //       - Replace global scene by a local
 //
+'use strict';
 
+const Utils = require('./common.js');
+const SuggestedKeys = require('../addons/suggestedKeys.js');
+const YAMLTangram = require('../parsers/yaml-tangram.js');
+
+const CodeMirror = require('codemirror');
+
+// Temp remap all utility functions to local vars
+const debounce = Utils.debounce;
+const fetchHTTP = Utils.fetchHTTP;
+const suggestKeys = SuggestedKeys.suggestKeys;
 
 //  Main CM functions
 //  ===============================================================================
@@ -26,9 +37,16 @@ var updateKeys = debounce(function(cm) {
     suggestKeys(cm);
 }, 1000);
 
+
+module.exports = {
+    init,
+    updateContent,
+    updateKeys
+}
+
 //  Initialize the editor in a specific DOM and with the context of a style_file
 //
-function initEditor(dom, style_file) {
+function init (dom, style_file) {
 
     var rulers = [];
     for (var i = 1; i < 10; i++) {
