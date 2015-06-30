@@ -34,7 +34,7 @@ function suggestKeys(cm) {
     // Get line address
     cursor = cm.getCursor(true);
     var nline = cursor.line;
-    var address = getTagAddress(cm,nline);
+    var address = getKeyAddress(cm,nline);
 
     var presentKeys = [];
 

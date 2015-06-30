@@ -26,11 +26,11 @@ function addToken( tokenOBJ ){
     var token;
     if ( tokenOBJ['address'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['address'] ).test( getTagAddress(cm, nLine) );
+            return RegExp( tokenOBJ['address'] ).test( getKeyAddress(cm, nLine) );
         };
-    } else if ( tokenOBJ['tag'] ){
+    } else if ( tokenOBJ['key'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['tag'] ).test( getTag(cm, nLine) );
+            return RegExp( tokenOBJ['key'] ).test( getKey(cm, nLine) );
         };
     } else if ( tokenOBJ['value'] ){
         token = function(scene, cm, nLine) {
@@ -38,7 +38,7 @@ function addToken( tokenOBJ ){
         };
     } else if ( tokenOBJ['content'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['content'] ).test( getTagCompleteContent(scene, cm, nLine) );
+            return RegExp( tokenOBJ['content'] ).test( getKeySceneContent(scene, cm, nLine) );
         };
     } else {
         token = function(scene, cm, nLine) {
@@ -58,7 +58,7 @@ function updateWidgets(cm){
         var val = getValue(cm,nline);
 
         // If Line is significative
-        if (getTag(cm,nline) !== "" && val !== "|" && val !== "" ){
+        if (getKey(cm,nline) !== "" && val !== "|" && val !== "" ){
 
             // Chech for widgets to add
             for (var i = 0; i < cm.widgets.length; i++){

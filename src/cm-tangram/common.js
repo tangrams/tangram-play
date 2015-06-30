@@ -1,3 +1,5 @@
+//
+// 
 function fetchHTTP(url, methood) {
     var request = new XMLHttpRequest(), response;
 

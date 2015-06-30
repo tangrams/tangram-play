@@ -1,20 +1,20 @@
 {
     "widgets" : [
 
-        { "tag" : "^color$",    "type" : "colorpicker" },
-        { "tag" : "^fill$",     "type" : "colorpicker" },
-        { "tag": "^ambient$",   "type" : "colorpicker" },
-        { "tag": "^diffuse$",   "type" : "colorpicker" },
-        { "tag": "^specular$",  "type" : "colorpicker" },
-        { "tag": "^emission$",  "type" : "colorpicker" },
+        { "key" : "^color$",    "type" : "colorpicker" },
+        { "key" : "^fill$",     "type" : "colorpicker" },
+        { "key": "^ambient$",   "type" : "colorpicker" },
+        { "key": "^diffuse$",   "type" : "colorpicker" },
+        { "key": "^specular$",  "type" : "colorpicker" },
+        { "key": "^emission$",  "type" : "colorpicker" },
 
-        { "tag": "^extrude$",   "type" : "togglebutton" },
-        { "tag": "^tile_edges$","type" : "togglebutton" },
-        { "tag": "^tile_edges$","type" : "togglebutton" },
-        { "tag": "^texcoords$", "type" : "togglebutton" },
-        { "tag": "^lighting$",  "type" : "togglebutton" },
-        { "tag": "^animated$",  "type" : "togglebutton" },
-        { "tag": "^visible$",   "type" : "togglebutton" },
+        { "key": "^extrude$",   "type" : "togglebutton" },
+        { "key": "^tile_edges$","type" : "togglebutton" },
+        { "key": "^tile_edges$","type" : "togglebutton" },
+        { "key": "^texcoords$", "type" : "togglebutton" },
+        { "key": "^lighting$",  "type" : "togglebutton" },
+        { "key": "^animated$",  "type" : "togglebutton" },
+        { "key": "^visible$",   "type" : "togglebutton" },
 
         {
             "address": "/ambient/mapping$",
