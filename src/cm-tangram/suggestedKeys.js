@@ -90,6 +90,7 @@ function addSuggestedKeysList( suggestedKeysList, cm, nLine ) {
     var node = makeSuggestedKeyMenu(suggestedKeysList, nLine);
     // cm.suggestedKeysMenu = cm.addPanel(node, options);
     cm.suggestedKeysMenu = cm.addLineWidget(nLine, node, {coverGutter: false, noHScroll: true});
+    updateWidgets(cm);
 }
 
 function makeSuggestedKeyMenu(suggestedKeysList, nLine) {
