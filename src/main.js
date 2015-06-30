@@ -15,6 +15,7 @@ if (isMobile()) {
     });
 }
 
+// Initial style when it loads
 var style = query['style'] ? query['style'] : 'data/styles/basic.yaml';
 
 // Tangram Map

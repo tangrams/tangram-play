@@ -1,32 +1,32 @@
-function loadKeys(cm, configFile ){
+function loadKeys(cm, configFile) {
 
     // Initialize array
-    if (cm.keys){
+    if (cm.suggestedKeys) {
         // Clean key list
-        while(cm.keys.length > 0) {
-            cm.keys.pop();
+        while (cm.suggestedKeys.length > 0) {
+            cm.suggestedKeys.pop();
         }
     } else {
-        cm.keys = [];
+        cm.suggestedKeys = [];
     }
 
     // Load Json
-    cm.keys = JSON.parse(fetchHTTP(configFile))["keys"];
+    cm.suggestedKeys = JSON.parse(fetchHTTP(configFile))["keys"];
 
     //  Initialize tokens
-    for (var i = 0; i < cm.keys.length; i++){
-        cm.keys[i].token = addToken(cm.keys[i]);
+    for (var i = 0; i < cm.suggestedKeys.length; i++) {
+        cm.suggestedKeys[i].token = addToken(cm.suggestedKeys[i]);
     }
 }
 
 //  TODO:
 //          -- Replace global scene by a local
 //
-function suggestKeys(cm){
+function suggestKeys(cm) {
     var top = cm.getScrollInfo().top;
 
     // Erase previus keys
-    if (cm.keyPanel){
+    if (cm.keyPanel) {
         cm.keyPanel.clear();
         cm.focus();
     }
@@ -38,36 +38,36 @@ function suggestKeys(cm){
 
     var presentKeys = [];
 
-    if (scene){
+    if (scene) {
         var obj = getAddressSceneContent(scene,address);
         presentKeys = obj? Object.keys(obj) : [];
     }
     
     // Search for matches
-    for (var i = 0; i < cm.keys.length; i++){
-        if ( cm.keys[i].token(scene,cm,nline) ){
+    for (var i = 0; i < cm.suggestedKeys.length; i++) {
+        if (cm.suggestedKeys[i].token(scene,cm,nline)) {
 
-            var suggestedKeys = [];
+            var suggestedKeysList = [];
 
-            if (cm.keys[i].options){
-                Array.prototype.push.apply(suggestedKeys, cm.keys[i].options);
+            if (cm.suggestedKeys[i].options) {
+                Array.prototype.push.apply(suggestedKeysList, cm.suggestedKeys[i].options);
             }
 
-            if (cm.keys[i].source){
-                var obj = getAddressSceneContent(scene, cm.keys[i].source);
+            if (cm.suggestedKeys[i].source) {
+                var obj = getAddressSceneContent(scene, cm.suggestedKeys[i].source);
                 var keyFromSource = obj? Object.keys(obj) : [];
-                Array.prototype.push.apply(suggestedKeys, keyFromSource);
+                Array.prototype.push.apply(suggestedKeysList, keyFromSource);
             }
 
 
-            for (var j = suggestedKeys.length-1; j >= 0; j--){
-                if ( presentKeys.indexOf(suggestedKeys[j]) > -1 ){
-                    suggestedKeys.splice(j, 1);
+            for (var j = suggestedKeysList.length-1; j >= 0; j--) {
+                if (presentKeys.indexOf(suggestedKeysList[j]) > -1) {
+                    suggestedKeysList.splice(j, 1);
                 }
             }
 
-            if ( suggestedKeys.length > 0 ) {
-                addKeyPanel(suggestedKeys,cm,nline);
+            if (suggestedKeysList.length > 0) {
+                addKeyPanel(suggestedKeysList,cm,nline);
             }
             break;
         }
@@ -77,21 +77,21 @@ function suggestKeys(cm){
     cm.scrollTo(null,top);
 }
 
-function addKeyPanel( suggestedKeys, cm, nLine ) {
+function addKeyPanel( suggestedKeysList, cm, nLine ) {
     var options = { 
         position: "top" 
     }
 
-    if ( cm.keyPanel ){
+    if (cm.keyPanel) {
         cm.keyPanel.clear();
         options.replace = cm.keyPanel;
     }
 
-    var node = makeKeyPanel( suggestedKeys, nLine  );
-    cm.keyPanel = cm.addPanel( node, options );
+    var node = makeKeyPanel(suggestedKeysList, nLine);
+    cm.keyPanel = cm.addPanel(node, options);
 }
 
-function makeKeyPanel( suggestedKeys, nLine ) {
+function makeKeyPanel(suggestedKeysList, nLine) {
     var node = document.createElement("div");
     node.className = "cm-panel";
 
@@ -105,10 +105,10 @@ function makeKeyPanel( suggestedKeys, nLine ) {
         cm.keyPanel.clear();
     });
 
-    for (var i = 0; i < suggestedKeys.length; i++){
+    for (var i = 0; i < suggestedKeysList.length; i++) {
         var btn = document.createElement("button");
         btn.value = nLine;
-        btn.innerText = suggestedKeys[i];
+        btn.innerText = suggestedKeysList[i];
         btn.className = "cm-panel-btn";
         btn.setAttribute('onclick','addKey(this)');
         node.appendChild(btn);   
@@ -120,13 +120,13 @@ function makeKeyPanel( suggestedKeys, nLine ) {
 //  TODO:
 //          -- Replace global editor by local
 //
-function addKey(div){
+function addKey(div) {
     editor.keyPanel.clear();
     
     var tabs = getLineInd( editor, parseInt(div.value) )+1;
     var text = '\n';
-    for(var i = 0; i < tabs; i++){
-        text += Array(editor.getOption("indentUnit") + 1).join(" ") ;
+    for (var i = 0; i < tabs; i++) {
+        text += Array(editor.getOption("indentUnit") + 1).join(" ");
     }
     text += div.innerText+": ";
 

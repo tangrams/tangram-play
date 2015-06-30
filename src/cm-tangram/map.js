@@ -1,6 +1,6 @@
 var take_screenshot = false;
 
-function initMap( style_file ) {
+function initMap(style_file) {
     'use strict';
     var map_start_location = [0.0, 0.0, 3];
 
@@ -21,7 +21,7 @@ function initMap( style_file ) {
         {'keyboardZoomOffset': .05}
     );
 
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    L.control.zoom({position: 'topright'}).addTo(map);
 
     map.attributionControl.setPrefix('<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>')
     var layer = Tangram.leafletLayer({
@@ -50,9 +50,7 @@ function initMap( style_file ) {
     return map;
 }
 
-function postUpdate(){
-
-
+function postUpdate() {
     if (take_screenshot == true) {
         // Adapted from: https://gist.github.com/unconed/4370822
         var image = scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
