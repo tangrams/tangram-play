@@ -20,6 +20,12 @@ If you'd like to contribute to the project or just make changes to the source co
 npm install
 ```
 
+Building the stylesheets:
+
+```shell
+gulp css
+```
+
 ### Testing
 
 TODO
