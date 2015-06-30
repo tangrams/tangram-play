@@ -1,3 +1,15 @@
+'use strict';
+
+const Utils = require('../core/common.js');
+const YAMLTangram = require('../parsers/yaml-tangram.js');
+
+module.exports = {
+    loadWidgets,
+    updateWidgets,
+    addToken,
+    createWidgets,
+}
+
 function loadWidgets(cm, configFile ){
 
     // Initialize array
@@ -11,7 +23,7 @@ function loadWidgets(cm, configFile ){
     }
 
     // Load JSON
-    cm.widgets = JSON.parse(fetchHTTP(configFile))["widgets"];
+    cm.widgets = JSON.parse(Utils.fetchHTTP(configFile))["widgets"];
 
     // Initialize tokens
     for (var i = 0; i < cm.widgets.length; i++){
@@ -26,19 +38,19 @@ function addToken( tokenOBJ ){
     var token;
     if ( tokenOBJ['address'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['address'] ).test( getKeyAddress(cm, nLine) );
+            return RegExp( tokenOBJ['address'] ).test( YAMLTangram.getKeyAddress(cm, nLine) );
         };
     } else if ( tokenOBJ['key'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['key'] ).test( getKey(cm, nLine) );
+            return RegExp( tokenOBJ['key'] ).test( YAMLTangram.getKey(cm, nLine) );
         };
     } else if ( tokenOBJ['value'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['value'] ).test( getValue(cm, nLine) );
+            return RegExp( tokenOBJ['value'] ).test( YAMLTangram.getValue(cm, nLine) );
         };
     } else if ( tokenOBJ['content'] ){
         token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['content'] ).test( getKeySceneContent(scene, cm, nLine) );
+            return RegExp( tokenOBJ['content'] ).test( YAMLTangram.getKeySceneContent(scene, cm, nLine) );
         };
     } else {
         token = function(scene, cm, nLine) {
@@ -53,18 +65,17 @@ var widgets = [];
 
 function createWidgets (cm) {
     for (var nline = 0, size = cm.doc.size; nline < size; nline++) {
-        var val = getValue(cm, nline);
-        console.log(val);
+        var val = YAMLTangram.getValue(cm, nline);
 
         // If Line is significative
-        if (getTag(cm, nline) !== "" && val !== "|" && val !== "" ) {
+        if (/*getTag(cm, nline) !== "" &&*/ val !== "|" && val !== "" ) {
 
             // Check for widgets to add
             for (var i = 0; i < cm.widgets.length; i++) {
                 var proto = cm.widgets[i];
 
                 if (proto.token(scene, cm, nline)) {
-                    var content = getValue(cm, nline);
+                    var content = YAMLTangram.getValue(cm, nline);
                     var el;
 
                     switch(proto.type) {
@@ -99,8 +110,10 @@ function createColorpickerWidget (proto, content, nline) {
     var el = document.createElement('div');
     el.className = 'widget widget-colorpicker';
     el.value = nline;
-    el.style.background = toCSS(content);
-    el.setAttribute('onclick', 'colorPickerClicked(this)');
+    el.style.background = Utils.toCSS(content);
+    el.addEventListener('click', function (e) {
+        colorPickerClicked(el);
+    });
     return el;
 }
 
@@ -110,7 +123,9 @@ function createToggleWidget (proto, content, nline) {
     el.className = 'widget widget-toggle';
     el.checked = (content === 'true') ? true : false;
     el.value = nline;
-    el.setAttribute('onchange', 'toggleButton(this)');
+    el.addEventListener('change', function (e) {
+        toggleButton(el);
+    });
     return el;
 }
 
@@ -128,13 +143,15 @@ function createDropdownWidget (proto, content, nline) {
         el.appendChild(newOption);
     }
 
-    el.setAttribute('onchange', 'dropdownMenuChange(this)');
+    el.addEventListener('change', function (e) {
+        dropdownMenuChange(el);
+    });
     return el;
 }
 
 function createDropdownDynamicWidget (proto, content, nline) {
     var el = document.createElement('select');
-    var obj = getAddressSceneContent(scene, proto.source);
+    var obj = YAMLTangram.getAddressSceneContent(scene, proto.source);
     var keys = (obj) ? Object.keys(obj) : {};
 
     el.className = 'widget widget-dropdown-dynamic';
@@ -161,7 +178,9 @@ function createDropdownDynamicWidget (proto, content, nline) {
         el.appendChild(newOption);
     }
 
-    el.setAttribute('onchange', 'dropdownMenuChange(this)');
+    el.addEventListener('change', function (e) {
+        dropdownMenuChange(el);
+    });
     return el;
 }
 
@@ -206,7 +225,7 @@ function updateWidgetsOnEditorChanges (changes) {
 function colorPickerClicked(div){
     var picker = new thistle.Picker(div.style.background);
 
-    var pos = getPosition(div);
+    var pos = Utils.getPosition(div);
     picker.presentModal(pos.x+20,
                         editor.heightAtLine(parseInt(div.value))+20);
 
@@ -214,18 +233,18 @@ function colorPickerClicked(div){
         div.style.background = picker.getCSS();
         var color = picker.getRGB();
         var str = "["+ color.r.toFixed(3) + "," + color.g.toFixed(3) + "," + color.b.toFixed(3) + "]";
-        setValue( editor, parseInt(div.value), str );
+        YAMLTangram.setValue( editor, parseInt(div.value), str );
     });
 }
 
 function dropdownMenuChange(select) {
-    setValue(   editor,
+    YAMLTangram.setValue(   editor,
                 parseInt(select.options[select.selectedIndex].value),
                 select.options[select.selectedIndex].innerHTML );
 }
 
 function toggleButton(check) {
-    setValue(   editor,
+    YAMLTangram.setValue(   editor,
                 parseInt(check.value),
                 check.checked?"true":"false" );
 }

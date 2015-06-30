@@ -1,5 +1,9 @@
 'use strict';
 
+var Utils = require('./common.js');
+var Editor = require('./editor.js');
+var Widgets = require('../addons/widgets.js');
+
 var CM_MINIMUM_WIDTH = 160 // integer, in pixels
 var LOCAL_STORAGE_PREFIX = 'tangram-play-'
 
@@ -29,7 +33,7 @@ function init (cm, tangram) {
         cursor: 'col-resize',
         onDrag: function () {
             reflowUI();
-            updateWidgets(cm);
+            Widgets.updateWidgets(cm);
             //setWidgetPositions(cm);
         },
         onDragEnd: function () {
@@ -55,6 +59,7 @@ function init (cm, tangram) {
             loseMenuFocus()
         }
     }, false)
+    document.getElementById('menu-button-export').addEventListener('click', saveContent, false);
     document.getElementById('menu-open-file').addEventListener('click', onClickOpenFile, false)
     document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
     document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
@@ -141,7 +146,7 @@ function newContent () {
 }
 
 function loadExamples (configFile) {
-    var examples_data = JSON.parse(fetchHTTP(configFile));
+    var examples_data = JSON.parse(Utils.fetchHTTP(configFile));
     var examplesList = document.getElementById("examples");
 
     for (var i = 0; i < examples_data['examples'].length; i++) {
@@ -192,10 +197,9 @@ function openExample (value) {
 }
 
 function loadFromQueryString () {
-    /* global query, editor */
-    query = parseQuery(window.location.search.slice(1));
-    var source = query['style'] ? query['style'] : "data/styles/basic.yaml";
-    loadStyle(editor,fetchHTTP(source));
+    let query = Utils.parseQuery(window.location.search.slice(1));
+    let source = query['style'] ? query['style'] : "data/styles/basic.yaml";
+    Editor.loadStyle(editor, Utils.fetchHTTP(source));
 }
 
 function onFileSelectorChange (event) {
@@ -206,14 +210,14 @@ function onFileSelectorChange (event) {
 function openContent (content) {
     var reader = new FileReader();
     reader.onload = function(e) {
-        loadStyle(editor, e.target.result);
+        Editor.loadStyle(editor, e.target.result);
     }
     reader.readAsText(content);
 }
 
-function saveContent(){
+function saveContent () {
     if (editor) {
-        var blob = new Blob([ getContent(editor)], {type: "text/plain;charset=utf-8"});
+        var blob = new Blob([ Editor.getContent(editor)], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "style.yaml");
         editor.isSaved = true;
     }
@@ -250,7 +254,7 @@ function reflowUI() {
 
 function updateUI(editor, map) {
     map.invalidateSize(false);
-    updateWidgets(editor);
+    Widgets.updateWidgets(editor);
 }
 
 function applyNewDraggableBounds (draggable) {

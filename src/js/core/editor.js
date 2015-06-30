@@ -4,10 +4,32 @@
 'use strict';
 
 const Utils = require('./common.js');
+const Widgets = require('../addons/widgets.js');
 const SuggestedKeys = require('../addons/suggestedKeys.js');
-const YAMLTangram = require('../parsers/yaml-tangram.js');
 
+// Import CodeMirror
 const CodeMirror = require('codemirror');
+
+// Import CodeMirror addons and modules
+require('codemirror/addon/search/searchcursor');
+require('codemirror/addon/search/search');
+require('codemirror/addon/dialog/dialog');
+require('codemirror/addon/edit/matchbrackets');
+require('codemirror/addon/edit/closebrackets');
+require('codemirror/addon/comment/comment');
+require('codemirror/addon/wrap/hardwrap');
+require('codemirror/addon/fold/foldcode');
+require('codemirror/addon/fold/foldgutter');
+require('codemirror/addon/fold/indent-fold');
+require('codemirror/addon/hint/show-hint');
+require('codemirror/addon/display/rulers');
+require('codemirror/addon/display/panel');
+require('codemirror/keymap/sublime');
+require('codemirror/mode/javascript/javascript');
+
+// Import additional parsers
+const GLSLTangram = require('../parsers/glsl-tangram.js');
+const YAMLTangram = require('../parsers/yaml-tangram.js');
 
 // Temp remap all utility functions to local vars
 const debounce = Utils.debounce;
@@ -29,7 +51,7 @@ var updateContent = debounce(function(cm) {
     if (scene) {
         var url = createObjectURL(new Blob([content]));
         scene.reload(url);
-        updateWidgets(cm);
+        Widgets.updateWidgets(cm);
     }
 }, 500);
 
@@ -37,11 +59,16 @@ var updateKeys = debounce(function(cm) {
     suggestKeys(cm);
 }, 1000);
 
-
 module.exports = {
     init,
     updateContent,
-    updateKeys
+    updateKeys,
+    unfoldAll,
+    foldByLevel,
+    selectLines,
+    loadStyle,
+    getContent,
+    getInd
 }
 
 //  Initialize the editor in a specific DOM and with the context of a style_file
@@ -100,14 +127,14 @@ function init (dom, style_file) {
 
     // Update widgets & content after a batch of changes
     cm.on('changes', function (cm, changes) {
-        updateWidgets(cm);
-        //updateWidgetsOnEditorChanges(changes);
+        Widgets.updateWidgets(cm);
+        //Widgets.updateWidgetsOnEditorChanges(changes);
         updateContent(cm);
     });
 
     //  When the viewport change (lines are add or erased)
     cm.on("viewportChange", function(cm, from, to) {
-        updateWidgets(cm);
+        Widgets.updateWidgets(cm);
     });
 
     // cm.on("mousedown", function(event) {
@@ -149,8 +176,8 @@ function getContent(cm) {
 //  ===============================================================================
 
 //  Get the indentation level of a line
-function getInd(string) { return getSpaces(string) / 4;};
-function getLineInd(cm, nLine) { return getSpaces(cm.lineInfo(nLine).text) / cm.getOption("tabSize"); };
+function getInd(string) { return YAMLTangram.getSpaces(string) / 4;};
+function getLineInd(cm, nLine) { return YAMLTangram.getSpaces(cm.lineInfo(nLine).text) / cm.getOption("tabSize"); };
 
 //  Check if a line is empty
 function isStrEmpty(str) { return (!str || 0 === str.length || /^\s*$/.test(str)); };

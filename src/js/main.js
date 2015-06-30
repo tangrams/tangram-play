@@ -33,23 +33,27 @@ const map = Map.init(style);
 // Editor
 const editor = Editor.init(document.getElementById('editor'), style);
 
+// Temp expose editor & map globally
+window.editor = editor;
+window.map = map;
+
 // UI
 UI.init(editor, map);
 
 // Editor Widgets
-loadWidgets(editor, 'data/widgets.json');
-loadKeys(editor, 'data/keys.json');
+Widgets.loadWidgets(editor, 'data/widgets.json');
+SuggestedKeys.loadKeys(editor, 'data/keys.json');
 
 // Once everything is loaded
 setTimeout(function () {
     if (query['foldLevel']) {
-        unfoldAll(editor);
-        foldByLevel(editor, parseInt(query['foldLevel']));
+        Editor.unfoldAll(editor);
+        Editor.foldByLevel(editor, parseInt(query['foldLevel']));
     }
     if (query['lines']) {
-        selectLines(editor, query['lines']);
+        Editor.selectLines(editor, query['lines']);
     }
 
-    createWidgets(editor);
-    //updateWidgets(editor);
+    Widgets.createWidgets(editor);
+    //Widgets.updateWidgets(editor);
 }, 500);

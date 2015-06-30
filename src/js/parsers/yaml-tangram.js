@@ -1,5 +1,17 @@
 'use strict';
 
+const CodeMirror = require('codemirror');
+
+module.exports = {
+    setValue,
+    getKey,
+    getKeyAddress,
+    getValue,
+    getKeySceneContent,
+    getAddressSceneContent,
+    getSpaces
+}
+
 //  SET Functions
 //  ===============================================================================
 function setValue(cm, nLine, string) {
@@ -337,6 +349,7 @@ function yamlAddressing(stream, state) {
 
 //  YAML-TANGRAM
 //  ===============================================================================
+/*
 (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
         mod(require("codemirror"));
@@ -344,11 +357,16 @@ function yamlAddressing(stream, state) {
         mod(CodeMirror);
 })(function(CodeMirror) {
     "use strict";
+*/
 
     CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
         var yamlMode = CodeMirror.getMode(config, "yaml");
         var glslMode = CodeMirror.getMode(config, "glsl");
         var jsMode = CodeMirror.getMode(config, "javascript");
+
+        // Don't require at top of this js file, it creates a circular dependency
+        const Editor = require('../core/editor.js');
+        const getInd = Editor.getInd;
 
         function yaml(stream, state) {
             var address = state.yamlState.keyAddress;
@@ -438,4 +456,6 @@ function yamlAddressing(stream, state) {
     }, "yaml", "x-shader/x-fragment");
 
     CodeMirror.defineMIME("text/x-yaml-tangram", "yaml-tangram");
+/*
 });
+*/

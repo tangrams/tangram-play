@@ -1,5 +1,9 @@
 'use strict';
 
+const Utils = require('../core/common.js');
+const YAMLTangram = require('../parsers/yaml-tangram.js');
+const Widgets = require('./widgets.js');
+
 module.exports = {
     loadKeys,
     suggestKeys
@@ -18,11 +22,11 @@ function loadKeys(cm, configFile) {
     }
 
     // Load Json
-    cm.suggestedKeys = JSON.parse(fetchHTTP(configFile))["keys"];
+    cm.suggestedKeys = JSON.parse(Utils.fetchHTTP(configFile))["keys"];
 
     //  Initialize tokens
     for (var i = 0; i < cm.suggestedKeys.length; i++) {
-        cm.suggestedKeys[i].token = addToken(cm.suggestedKeys[i]);
+        cm.suggestedKeys[i].token = Widgets.addToken(cm.suggestedKeys[i]);
     }
 }
 
@@ -39,14 +43,14 @@ function suggestKeys(cm) {
     }
 
     // Get line address
-    cursor = cm.getCursor(true);
+    let cursor = cm.getCursor(true);
     var nline = cursor.line;
-    var address = getKeyAddress(cm,nline);
+    var address = YAMLTangram.getKeyAddress(cm,nline);
 
     var presentKeys = [];
 
     if (scene) {
-        var obj = getAddressSceneContent(scene,address);
+        var obj = YAMLTangram.getAddressSceneContent(scene,address);
         presentKeys = obj? Object.keys(obj) : [];
     }
 
