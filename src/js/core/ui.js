@@ -4,10 +4,15 @@ var Utils = require('./common.js');
 var Editor = require('./editor.js');
 var Widgets = require('../addons/widgets.js');
 
-var CM_MINIMUM_WIDTH = 160 // integer, in pixels
-var LOCAL_STORAGE_PREFIX = 'tangram-play-'
+// Import Greensock (GSAP)
+require('gsap/src/uncompressed/Tweenlite.js');
+require('gsap/src/uncompressed/plugins/CSSPlugin.js');
+const Draggable = require('gsap/src/uncompressed/utils/Draggable.js');
 
-var draggable;
+const CM_MINIMUM_WIDTH = 160; // integer, in pixels
+const LOCAL_STORAGE_PREFIX = 'tangram-play-';
+
+let draggable;
 
 module.exports = {
     init
