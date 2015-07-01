@@ -7,6 +7,11 @@
     --ui-base-color: #303030;
 }
 
+@import '../../node_modules/codemirror/lib/codemirror.css';
+@import '../../node_modules/codemirror/addon/dialog/dialog.css';
+@import '../../node_modules/codemirror/addon/fold/foldgutter.css';
+@import '../../node_modules/codemirror/addon/hint/show-hint.css';
+
 @import '_editor';
 @import '_divider';
 @import '_file-drop';
