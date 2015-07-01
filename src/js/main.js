@@ -77,12 +77,10 @@ class TangramPlay {
             </div>\n\
         ";
 
-        //  style to load
+        //  Load main elements 
         if (options.style === undefined) {
             options.style = "data/styles/basic.yaml";
         }
-
-        //  Load main elements 
         this.map = Map.init('map',options.style);
         this.editor = Editor.init('editor',options.style);
 

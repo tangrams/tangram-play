@@ -1,7 +1,7 @@
 'use strict';
 
-const Utils = require('../core/common.js');
-const YAMLTangram = require('../parsers/yaml-tangram.js');
+import Utils from '../core/common.js';
+import YAMLTangram from '../parsers/yaml-tangram.js';
 
 module.exports = {
     load,

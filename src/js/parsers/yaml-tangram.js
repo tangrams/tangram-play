@@ -1,6 +1,6 @@
 'use strict';
 
-const CodeMirror = require('codemirror');
+import CodeMirror from 'codemirror';
 
 module.exports = {
     setValue,
