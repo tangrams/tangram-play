@@ -7,10 +7,10 @@
     --ui-base-color: #303030;
 }
 
-@import '../../node_modules/codemirror/lib/codemirror.css';
-@import '../../node_modules/codemirror/addon/dialog/dialog.css';
-@import '../../node_modules/codemirror/addon/fold/foldgutter.css';
-@import '../../node_modules/codemirror/addon/hint/show-hint.css';
+@import 'codemirror/lib/codemirror.css';
+@import 'codemirror/addon/dialog/dialog.css';
+@import 'codemirror/addon/fold/foldgutter.css';
+@import 'codemirror/addon/hint/show-hint.css';
 
 @import '_editor';
 @import '_divider';

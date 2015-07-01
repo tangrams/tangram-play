@@ -11,7 +11,7 @@ module.exports = {
 
 var widgets = [];
 
-function load(cm, configFile ){
+function load (cm, configFile ){
 
     // Initialize array
     if (cm.widgets){
@@ -32,7 +32,7 @@ function load(cm, configFile ){
     }
 }
 
-function create(cm) {
+function create (cm) {
     for (var nline = 0, size = cm.doc.size; nline < size; nline++) {
         var val = YAMLTangram.getValue(cm, nline);
 
@@ -49,16 +49,16 @@ function create(cm) {
 
                     switch(proto.type) {
                         case 'colorpicker':
-                            el = createColorpickerWidget(proto, content, nline);
+                            el = createColorpickerWidget(cm, proto, content, nline);
                             break;
                         case 'togglebutton':
-                            el = createToggleWidget(proto, content, nline);
+                            el = createToggleWidget(cm, proto, content, nline);
                             break;
                         case 'dropdownmenu':
-                            el = createDropdownWidget(proto, content, nline);
+                            el = createDropdownWidget(cm, proto, content, nline);
                             break;
                         case 'dropdownmenu-dynamic':
-                            el = createDropdownDynamicWidget(proto, content, nline);
+                            el = createDropdownDynamicWidget(cm, proto, content, nline);
                             break;
                         default:
                             // Nothing
@@ -72,33 +72,44 @@ function create(cm) {
         }
     }
 
-    setWidgetPositions(cm);
+    setPositions(cm);
 }
 
-function createColorpickerWidget (proto, content, nline) {
-    var el = document.createElement('div');
-    el.className = 'widget widget-colorpicker';
-    el.value = nline;
-    el.style.background = Utils.toCSS(content);
-    el.addEventListener('click', function (e) {
-        colorPickerClicked(el);
+function createColorpickerWidget (cm, proto, content, nline) {
+    var btn = document.createElement('div');
+    btn.className = 'widget widget-colorpicker';
+    btn.value = nline;
+    btn.style.background = Utils.toCSS(content);
+    btn.addEventListener('click', function (e) {
+        var picker = new thistle.Picker(btn.style.background);
+
+        var pos = Utils.getPosition(btn);
+        picker.presentModal(pos.x+20,
+                            cm.heightAtLine(parseInt(btn.value))+20);
+
+        picker.on('changed', function() {
+            btn.style.background = picker.getCSS();
+            var color = picker.getRGB();
+            var str = "["+ color.r.toFixed(3) + "," + color.g.toFixed(3) + "," + color.b.toFixed(3) + "]";
+            YAMLTangram.setValue( cm, parseInt(btn.value), str );
+        });
     });
-    return el;
+    return btn;
 }
 
-function createToggleWidget (proto, content, nline) {
-    var el = document.createElement('input');
-    el.type = 'checkbox';
-    el.className = 'widget widget-toggle';
-    el.checked = (content === 'true') ? true : false;
-    el.value = nline;
-    el.addEventListener('change', function (e) {
-        toggleButton(el);
+function createToggleWidget (cm, proto, content, nline) {
+    var check = document.createElement('input');
+    check.type = 'checkbox';
+    check.className = 'widget widget-toggle';
+    check.checked = (content === 'true') ? true : false;
+    check.value = nline;
+    check.addEventListener('change', function (e) {
+        YAMLTangram.setValue(cm, parseInt(check.value), check.checked?"true":"false" );
     });
-    return el;
+    return check;
 }
 
-function createDropdownWidget (proto, content, nline) {
+function createDropdownWidget (cm, proto, content, nline) {
     var el = document.createElement('select');
     el.className = 'widget widget-dropdown';
 
@@ -113,12 +124,12 @@ function createDropdownWidget (proto, content, nline) {
     }
 
     el.addEventListener('change', function (e) {
-        dropdownMenuChange(el);
+        YAMLTangram.setValue( cm, parseInt(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
     });
     return el;
 }
 
-function createDropdownDynamicWidget (proto, content, nline) {
+function createDropdownDynamicWidget (cm, proto, content, nline) {
     var el = document.createElement('select');
     var obj = YAMLTangram.getAddressSceneContent(scene, proto.source);
     var keys = (obj) ? Object.keys(obj) : {};
@@ -148,12 +159,12 @@ function createDropdownDynamicWidget (proto, content, nline) {
     }
 
     el.addEventListener('change', function (e) {
-        dropdownMenuChange(el);
+        YAMLTangram.setValue( cm, parseInt(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
     });
     return el;
 }
 
-function setWidgetPositions (cm) {
+function setPositions (cm) {
     for (var i = 0, j = widgets.length; i < j; i++) {
         var el = widgets[i];
         var nline = parseInt(el.getAttribute('data-nline'), 10);
@@ -164,7 +175,7 @@ function setWidgetPositions (cm) {
     }
 }
 
-function clearWidgets () {
+function clear () {
     var widgets = document.getElementsByClassName('widget');
     while (widgets[0]) {
         widgets[0].parentNode.removeChild(widgets[0]);
@@ -176,8 +187,8 @@ function clearWidget (widgetId) {
 }
 
 function update (cm) {
-    clearWidgets();
-    setWidgetPositions(cm);
+    clear();
+    setPositions(cm);
 }
 
 /**
@@ -188,34 +199,4 @@ function updateWidgetsOnEditorChanges (changes) {
     // We need to rebuild some widgets because data may have changed in them.
     console.log(changes);
     // TODO.
-}
-
-//  TODO:
-//          -- Replace global editor by local
-//
-function colorPickerClicked(div){
-    var picker = new thistle.Picker(div.style.background);
-
-    var pos = Utils.getPosition(div);
-    picker.presentModal(pos.x+20,
-                        editor.heightAtLine(parseInt(div.value))+20);
-
-    picker.on('changed', function() {
-        div.style.background = picker.getCSS();
-        var color = picker.getRGB();
-        var str = "["+ color.r.toFixed(3) + "," + color.g.toFixed(3) + "," + color.b.toFixed(3) + "]";
-        YAMLTangram.setValue( editor, parseInt(div.value), str );
-    });
-}
-
-function dropdownMenuChange(select) {
-    YAMLTangram.setValue(   editor,
-                parseInt(select.options[select.selectedIndex].value),
-                select.options[select.selectedIndex].innerHTML );
-}
-
-function toggleButton(check) {
-    YAMLTangram.setValue(   editor,
-                parseInt(check.value),
-                check.checked?"true":"false" );
 }
