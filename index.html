@@ -35,70 +35,8 @@
         <div id="dismiss-mobile-message" class="mobile-message-close">&#215;</div>
         <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
     </div>
-    <div id="wrapper">
-        <div id="menu-container">
-            <div class="menu-bar">
-                <h1>Tangram Play</h1>
-                <ul id="menu-holder" class="menu-items">
-                    <li class="menu-item" id="menu-button-new" data-title="New style"><i class="btm bt-file"></i></li>
-                    <li class="menu-item" id="menu-button-open" data-title="Open file"><i class="btm bt-plus-square"></i></li>
-                    <li class="menu-item" id="menu-button-export" data-title="Export style"><i class="btm bt-download"></i></li>
-                    <li class="menu-item menu-item-private" data-title="Share"><i class="btm bt-share"></i></li>
-                </ul>
-                <ul id="menu-holder" class="menu-items menu-right">
-                    <li class="menu-item menu-item-private" data-title="Refresh map"><i class="btm bt-sync"></i></li>
-                    <li class="menu-item menu-item-private" data-title="Settings"><i class="btm bt-gear"></i></li>
-                    <li class="menu-item" data-title="Documentation and help"><a href="https://github.com/tangrams/tangram-docs#tangram-documentation" target="_blank"><i class="btm bt-question-circle"></i></a></li>
-                    <li class="menu-item menu-item-private menu-sign-in" data-title="Sign in"><span class="menu-sign-in-label">Sign in</span><i class="btm bt-sign-in"></i></li>
-                </ul>
-            </div>
-            <div class="menu-dropdowns">
-                <div class="menu-dropdown menu-dropdown-open" id="menu-open">
-                    <ul>
-                        <li id="menu-open-file"><i class="btm bt-folder"></i> Open a file</li>
-                        <li id="menu-open-example"><i class="btm bt-map"></i> Choose example</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
-        <div id="map"></div>
-        <div id="divider"><span class="divider-affordance"></span></div>
-        <div id="content">
-            <div id="editor"></div>
-        </div>
-
-        <div id="shield" class="shield"></div>
-        <div id="confirm-unsaved" class="modal">
-            <p class="modal-text">Your style has not been saved. Continue?</p>
-
-            <div class="modal-buttons">
-                <button id="modal-cancel"><i class="btm bt-times"></i> Cancel</button>
-                <button id="modal-confirm"><i class="btm bt-check"></i> Continue</button>
-            </div>
-        </div>
-
-        <div id="choose-example" class="modal example-modal">
-            <p class="modal-text">Choose example to open</p>
-
-            <div class="examples-container">
-                <div id="examples"></div>
-            </div>
-
-            <div class="modal-buttons">
-                <button id="example-cancel"><i class="btm bt-times"></i> Cancel</button>
-                <button id="example-confirm" disabled><i class="btm bt-check"></i> Open</button>
-            </div>
-        </div>
-
-        <div id="file-drop" class="file-drop-container">
-            <div class="file-drop-indicator">
-                <div class="file-drop-icon"><i class="btm bt-upload"></i></div>
-                <div class="file-drop-label">Drop a file here to open</div>
-            </div>
-        </div>
-
-    </div>
+    <div id="tangram_play_dom"></div>
 
     <!-- IDE -->
     <script type="text/javascript" src="build/js/tangram-play.js"></script>
@@ -111,9 +49,9 @@
             document.querySelector('html').classList.add('full-menu');
         }
 
-        var tangramPlay = TangramPlay.create("dom",{
-            widgets: "/data/widgets.js",
-            suggestedKeys: "data/suggestedKeys.js"
+        var tangramPlay = TangramPlay.create("tangram_play_dom",{
+            widgets: 'data/widgets.json',
+            suggestedKeys: 'data/keys.json'
         });
 
         //  This need to be clean

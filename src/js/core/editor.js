@@ -61,10 +61,8 @@ var updateKeys = debounce(function(cm) {
 module.exports = {
     init,
     updateContent,
-    // updateKeys,
     unfoldAll,
     foldByLevel,
-    // selectLines,
     loadStyle,
     getContent,
     getInd
@@ -127,14 +125,19 @@ function init (place, style_file) {
 
     // Update widgets & content after a batch of changes
     cm.on('changes', function (cm, changes) {
-        Widgets.update(cm);
-        //Widgets.updateWidgetsOnEditorChanges(changes);
+        if (cm.widgets) {
+            Widgets.update(cm);
+            //Widgets.updateWidgetsOnEditorChanges(changes);
+        }
+        
         updateContent(cm);
     });
 
     //  When the viewport change (lines are add or erased)
     cm.on("viewportChange", function(cm, from, to) {
-        Widgets.update(cm);
+        if (cm.widgets) {
+            Widgets.update(cm);
+        }
     });
 
     // cm.on("mousedown", function(event) {
@@ -142,7 +145,9 @@ function init (place, style_file) {
     // });
 
     cm.on("cursorActivity", function(cm) {
-        updateKeys(cm);
+        if (cm.suggestedKeys){
+            updateKeys(cm);
+        }
     });
 
     cm.getLineInd = function(nLine){
@@ -173,7 +178,9 @@ function loadStyle(cm, contents) {
         //      - instead of deleting the key if should check if
         //      this user owns the key. If it doesn't delete it
 
-        Widgets.update(cm);
+        if (cm.widgets) {
+            Widgets.update(cm);
+        }
     }
 }
 

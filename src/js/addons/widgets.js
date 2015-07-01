@@ -14,7 +14,7 @@ var widgets = [];
 function load (cm, configFile ){
 
     // Initialize array
-    if (cm.widgets){
+    if (cm.widgets) {
         // Clean widgets list
         while(cm.widgets.length > 0) {
             cm.widgets.pop();

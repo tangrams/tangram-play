@@ -65,7 +65,7 @@ function suggest (cm) {
             }
 
             if (cm.suggestedKeys[i].source) {
-                var obj = getAddressSceneContent(scene, cm.suggestedKeys[i].source);
+                var obj = YAMLTangram.getAddressSceneContent(scene, cm.suggestedKeys[i].source);
                 var keyFromSource = obj? Object.keys(obj) : [];
                 Array.prototype.push.apply(suggestedKeysList, keyFromSource);
             }
