@@ -7,6 +7,7 @@
     font-size: 12px;
     background: var(--ui-base-color);
     height: 44px;
+    user-select: none;
 }
 
 .menu-bar h1 {
