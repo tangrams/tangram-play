@@ -3,41 +3,40 @@
 //
 'use strict';
 
-const Utils = require('./common.js');
-const Widgets = require('../addons/widgets.js');
-const SuggestedKeys = require('../addons/suggestedKeys.js');
+// Import Utils
+import Utils from './common.js';
 
 // Import CodeMirror
-const CodeMirror = require('codemirror');
+import CodeMirror from 'codemirror';
 
 // Import CodeMirror addons and modules
-require('codemirror/addon/search/searchcursor');
-require('codemirror/addon/search/search');
-require('codemirror/addon/dialog/dialog');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/edit/closebrackets');
-require('codemirror/addon/comment/comment');
-require('codemirror/addon/wrap/hardwrap');
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/indent-fold');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/display/rulers');
-require('codemirror/addon/display/panel');
-require('codemirror/keymap/sublime');
-require('codemirror/mode/javascript/javascript');
+import 'codemirror/addon/search/searchcursor';
+import 'codemirror/addon/search/search';
+import 'codemirror/addon/dialog/dialog';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/comment/comment';
+import 'codemirror/addon/wrap/hardwrap';
+import 'codemirror/addon/fold/foldcode';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/indent-fold';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/display/rulers';
+import 'codemirror/addon/display/panel';
+import 'codemirror/keymap/sublime';
+import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
-const GLSLTangram = require('../parsers/glsl-tangram.js');
-const YAMLTangram = require('../parsers/yaml-tangram.js');
+import GLSLTangram from '../parsers/glsl-tangram.js';
+import YAMLTangram from '../parsers/yaml-tangram.js';
 
-// Temp remap all utility functions to local vars
-const debounce = Utils.debounce;
-const fetchHTTP = Utils.fetchHTTP;
+// Import addons
+import Widgets from '../addons/widgets.js';
+import SuggestedKeys from '../addons/suggestedKeys.js';
 
 //  Main CM functions
 //  ===============================================================================
-var updateContent = debounce(function(cm) {
+var updateContent = Utils.debounce(function(cm) {
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
 
     //  If doesn't have a API key
@@ -54,7 +53,7 @@ var updateContent = debounce(function(cm) {
     }
 }, 500);
 
-var updateKeys = debounce(function(cm) {
+var updateKeys = Utils.debounce(function(cm) {
     SuggestedKeys.suggest(cm);
 }, 1000);
 
@@ -71,7 +70,6 @@ module.exports = {
 //  Initialize the editor in a specific DOM and with the context of a style_file
 //
 function init (place, style_file) {
-
     var rulers = [];
     for (var i = 1; i < 10; i++) {
         var b = Math.round((0.88 + i/90)*255);
@@ -158,7 +156,7 @@ function init (place, style_file) {
         return rangeString(this,rangeStr);
     }
 
-    loadStyle(cm, fetchHTTP(style_file));
+    loadStyle(cm, Utils.fetchHTTP(style_file));
 
     return cm;
 };

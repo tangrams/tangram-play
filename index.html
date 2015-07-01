@@ -36,7 +36,7 @@
         <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
     </div>
 
-    <div id="tangram_play_dom"></div>
+    <div id="tangram_play_wrapper"></div>
 
     <!-- IDE -->
     <script type="text/javascript" src="build/js/tangram-play.js"></script>
@@ -49,12 +49,11 @@
             document.querySelector('html').classList.add('full-menu');
         }
 
-        var tangramPlay = TangramPlay.create("tangram_play_dom",{
-            widgets: 'data/widgets.json',
-            suggestedKeys: 'data/keys.json'
-        });
+        var tangramPlay = TangramPlay.create("tangram_play_wrapper",{   widgets: 'data/widgets.json',
+                                                                        suggestedKeys: 'data/keys.json' });
 
-        //  This need to be clean
+        //  TODO: 
+        //       - ui call should be per event, maybe?
         //  
         window.addEventListener('resize', function(){
             tangramPlay.reflowUI();
@@ -71,8 +70,6 @@
                 tangramPlay.editor.selectLines(query['lines']);
                 // Editor.selectLines(editor, query['lines']);
             }
-
-            // Widgets.create(editor);
         }, 500);
 
         if (isMobile() === true) {
