@@ -41,8 +41,8 @@ window.map = map;
 UI.init(editor, map);
 
 // Editor Widgets
-Widgets.loadWidgets(editor, 'data/widgets.json');
-SuggestedKeys.loadKeys(editor, 'data/keys.json');
+Widgets.load(editor, 'data/widgets.json');
+SuggestedKeys.load(editor, 'data/keys.json');
 
 // Once everything is loaded
 setTimeout(function () {
@@ -54,6 +54,5 @@ setTimeout(function () {
         Editor.selectLines(editor, query['lines']);
     }
 
-    Widgets.createWidgets(editor);
-    //Widgets.updateWidgets(editor);
+    Widgets.create(editor);
 }, 500);

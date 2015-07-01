@@ -34,7 +34,6 @@ const YAMLTangram = require('../parsers/yaml-tangram.js');
 // Temp remap all utility functions to local vars
 const debounce = Utils.debounce;
 const fetchHTTP = Utils.fetchHTTP;
-const suggestKeys = SuggestedKeys.suggestKeys;
 
 //  Main CM functions
 //  ===============================================================================
@@ -51,12 +50,12 @@ var updateContent = debounce(function(cm) {
     if (scene) {
         var url = createObjectURL(new Blob([content]));
         scene.reload(url);
-        Widgets.updateWidgets(cm);
+        Widgets.update(cm);
     }
 }, 500);
 
 var updateKeys = debounce(function(cm) {
-    suggestKeys(cm);
+    SuggestedKeys.suggest(cm);
 }, 1000);
 
 module.exports = {
@@ -127,14 +126,14 @@ function init (dom, style_file) {
 
     // Update widgets & content after a batch of changes
     cm.on('changes', function (cm, changes) {
-        Widgets.updateWidgets(cm);
+        Widgets.update(cm);
         //Widgets.updateWidgetsOnEditorChanges(changes);
         updateContent(cm);
     });
 
     //  When the viewport change (lines are add or erased)
     cm.on("viewportChange", function(cm, from, to) {
-        Widgets.updateWidgets(cm);
+        Widgets.update(cm);
     });
 
     // cm.on("mousedown", function(event) {
@@ -144,6 +143,10 @@ function init (dom, style_file) {
     cm.on("cursorActivity", function(cm) {
         updateKeys(cm);
     });
+
+    cm.getLineInd = function(nLine){
+        return getLineInd(this,nLine);
+    }
 
     loadStyle(cm, fetchHTTP(style_file));
 
@@ -178,6 +181,7 @@ function getContent(cm) {
 //  Get the indentation level of a line
 function getInd(string) { return YAMLTangram.getSpaces(string) / 4;};
 function getLineInd(cm, nLine) { return YAMLTangram.getSpaces(cm.lineInfo(nLine).text) / cm.getOption("tabSize"); };
+
 
 //  Check if a line is empty
 function isStrEmpty(str) { return (!str || 0 === str.length || /^\s*$/.test(str)); };

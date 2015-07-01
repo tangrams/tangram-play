@@ -4,13 +4,14 @@ const Utils = require('../core/common.js');
 const YAMLTangram = require('../parsers/yaml-tangram.js');
 
 module.exports = {
-    loadWidgets,
-    updateWidgets,
-    addToken,
-    createWidgets,
+    load,
+    create,
+    update
 }
 
-function loadWidgets(cm, configFile ){
+var widgets = [];
+
+function load(cm, configFile ){
 
     // Initialize array
     if (cm.widgets){
@@ -27,43 +28,11 @@ function loadWidgets(cm, configFile ){
 
     // Initialize tokens
     for (var i = 0; i < cm.widgets.length; i++){
-        cm.widgets[i].token = addToken(cm.widgets[i]);
+        cm.widgets[i].token = YAMLTangram.addToken(cm.widgets[i]);
     }
 }
 
-//  TODO:
-//          -- Replace global scene by a local
-//
-function addToken( tokenOBJ ){
-    var token;
-    if ( tokenOBJ['address'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['address'] ).test( YAMLTangram.getKeyAddress(cm, nLine) );
-        };
-    } else if ( tokenOBJ['key'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['key'] ).test( YAMLTangram.getKey(cm, nLine) );
-        };
-    } else if ( tokenOBJ['value'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['value'] ).test( YAMLTangram.getValue(cm, nLine) );
-        };
-    } else if ( tokenOBJ['content'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['content'] ).test( YAMLTangram.getKeySceneContent(scene, cm, nLine) );
-        };
-    } else {
-        token = function(scene, cm, nLine) {
-            return false;
-        };
-    }
-    return token;
-}
-
-/* TODO: don't global */
-var widgets = [];
-
-function createWidgets (cm) {
+function create(cm) {
     for (var nline = 0, size = cm.doc.size; nline < size; nline++) {
         var val = YAMLTangram.getValue(cm, nline);
 
@@ -188,8 +157,10 @@ function setWidgetPositions (cm) {
     for (var i = 0, j = widgets.length; i < j; i++) {
         var el = widgets[i];
         var nline = parseInt(el.getAttribute('data-nline'), 10);
-        var chrpos = cm.lineInfo(nline).handle.text.length;
-        cm.addWidget({ line: nline, ch: chrpos }, el);
+        if (cm.lineInfo(nline).handle){
+            var chrpos = cm.lineInfo(nline).handle.text.length;
+            cm.addWidget({ line: nline, ch: chrpos }, el);
+        }
     }
 }
 
@@ -204,7 +175,7 @@ function clearWidget (widgetId) {
 
 }
 
-function updateWidgets (cm) {
+function update (cm) {
     clearWidgets();
     setWidgetPositions(cm);
 }

@@ -9,7 +9,8 @@ module.exports = {
     getValue,
     getKeySceneContent,
     getAddressSceneContent,
-    getSpaces
+    getSpaces,
+    addToken
 }
 
 //  SET Functions
@@ -126,6 +127,33 @@ function isAfterKey(str,pos) {
         return [0].length < pos;
     }
 };
+
+//  Generate a token functions using RegEx
+function addToken( tokenOBJ ){
+    var token;
+    if ( tokenOBJ['address'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( tokenOBJ['address'] ).test( getKeyAddress(cm, nLine) );
+        };
+    } else if ( tokenOBJ['key'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( tokenOBJ['key'] ).test( getKey(cm, nLine) );
+        };
+    } else if ( tokenOBJ['value'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( tokenOBJ['value'] ).test( getValue(cm, nLine) );
+        };
+    } else if ( tokenOBJ['content'] ){
+        token = function(scene, cm, nLine) {
+            return RegExp( tokenOBJ['content'] ).test( getKeySceneContent(scene, cm, nLine) );
+        };
+    } else {
+        token = function(scene, cm, nLine) {
+            return false;
+        };
+    }
+    return token;
+}
 
 //  CONVERT
 //  ===============================================================================

@@ -5,11 +5,11 @@ const YAMLTangram = require('../parsers/yaml-tangram.js');
 const Widgets = require('./widgets.js');
 
 module.exports = {
-    loadKeys,
-    suggestKeys
+    load,
+    suggest
 }
 
-function loadKeys(cm, configFile) {
+function load(cm, configFile) {
 
     // Initialize array
     if (cm.suggestedKeys) {
@@ -26,14 +26,14 @@ function loadKeys(cm, configFile) {
 
     //  Initialize tokens
     for (var i = 0; i < cm.suggestedKeys.length; i++) {
-        cm.suggestedKeys[i].token = Widgets.addToken(cm.suggestedKeys[i]);
+        cm.suggestedKeys[i].token = YAMLTangram.addToken(cm.suggestedKeys[i]);
     }
 }
 
 //  TODO:
 //          -- Replace global scene by a local
 //
-function suggestKeys(cm) {
+function suggest(cm) {
     var top = cm.getScrollInfo().top;
 
     // Erase previus keys
@@ -98,13 +98,13 @@ function addSuggestedKeysList( suggestedKeysList, cm, nLine ) {
         options.replace = cm.suggestedKeysMenu;
     }
 
-    var node = makeSuggestedKeyMenu(suggestedKeysList, nLine);
+    var node = makeSuggestedKeyMenu(suggestedKeysList, cm, nLine);
     // cm.suggestedKeysMenu = cm.addPanel(node, options);
     cm.suggestedKeysMenu = cm.addLineWidget(nLine, node, {coverGutter: false, noHScroll: true});
-    updateWidgets(cm);
+    Widgets.update(cm);
 }
 
-function makeSuggestedKeyMenu(suggestedKeysList, nLine) {
+function makeSuggestedKeyMenu(suggestedKeysList, cm, nLine) {
     var node = document.createElement("div");
     node.className = "cm-suggested-keys-menu";
 
@@ -114,8 +114,8 @@ function makeSuggestedKeyMenu(suggestedKeysList, nLine) {
     close.className =  "cm-suggested-keys-menu-remove";
     close.textContent = "✖";
 
-    CodeMirror.on(close, "click", function() {
-        editor.suggestedKeysMenu.clear();
+    cm.on(close, "click", function() {
+        cm.suggestedKeysMenu.clear();
     });
 
     for (var i = 0; i < suggestedKeysList.length; i++) {
@@ -123,35 +123,32 @@ function makeSuggestedKeyMenu(suggestedKeysList, nLine) {
         var text = document.createTextNode(suggestedKeysList[i]);
         btn.value = nLine;
         btn.className = 'cm-suggested-keys-menu-btn';
-        btn.setAttribute('onclick', 'addKey(this)');
+        // btn.setAttribute('onclick', 'addKey(this)');
+        btn.onclick = function() {
+            cm.suggestedKeysMenu.clear();
+
+            var tabs = cm.getLineInd(parseInt(this.value) )+1;
+            var text = '\n';
+            for (var i = 0; i < tabs; i++) {
+                text += Array(cm.getOption("indentUnit") + 1).join(" ");
+            }
+            text += this.innerText+": ";
+
+            var doc = cm.getDoc();
+            var cursor = doc.getCursor();           // gets the line number in the cursor position
+            var line = doc.getLine(cursor.line);    // get the line contents
+            var pos = {                             // create a new object to avoid mutation of the original selection
+                line: cursor.line,
+                ch: line.length                     // set the character position to the end of the line
+            }
+            doc.replaceRange(text, pos);            // adds a new line
+
+            Widgets.update(cm);
+        } 
+
         btn.appendChild(text);
         node.appendChild(btn);
-    }
+    }(cm);
 
     return node;
-}
-
-//  TODO:
-//          -- Replace global editor by local
-//
-function addKey(div) {
-    editor.suggestedKeysMenu.clear();
-
-    var tabs = getLineInd( editor, parseInt(div.value) )+1;
-    var text = '\n';
-    for (var i = 0; i < tabs; i++) {
-        text += Array(editor.getOption("indentUnit") + 1).join(" ");
-    }
-    text += div.innerText+": ";
-
-    var doc = editor.getDoc();
-    var cursor = doc.getCursor();           // gets the line number in the cursor position
-    var line = doc.getLine(cursor.line);    // get the line contents
-    var pos = {                             // create a new object to avoid mutation of the original selection
-        line: cursor.line,
-        ch: line.length                     // set the character position to the end of the line
-    }
-    doc.replaceRange(text, pos);            // adds a new line
-
-    updateWidgets(editor);
 }
