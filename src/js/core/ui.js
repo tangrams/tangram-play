@@ -4,10 +4,15 @@ var Utils = require('./common.js');
 var Editor = require('./editor.js');
 var Widgets = require('../addons/widgets.js');
 
-var CM_MINIMUM_WIDTH = 160 // integer, in pixels
-var LOCAL_STORAGE_PREFIX = 'tangram-play-'
+// Import Greensock (GSAP)
+require('gsap/src/uncompressed/Tweenlite.js');
+require('gsap/src/uncompressed/plugins/CSSPlugin.js');
+const Draggable = require('gsap/src/uncompressed/utils/Draggable.js');
 
-var draggable;
+const CM_MINIMUM_WIDTH = 160; // integer, in pixels
+const LOCAL_STORAGE_PREFIX = 'tangram-play-';
+
+let draggable;
 
 module.exports = {
     reflowUI,
@@ -54,14 +59,10 @@ function init (cm, tangram) {
         var posX = document.getElementById('menu-button-open').getBoundingClientRect().left
         menuEl.style.left = posX + 'px'
         menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block'
+        document.body.addEventListener('click', onClickOutsideDropdown, false)
     }, false)
 
     document.getElementById('menu-button-new').addEventListener('click', onClickNewButton, false)
-    document.body.addEventListener('click', function (e) {
-        if (!e.target.classList.contains('menu-item') && !e.target.parentNode.classList.contains('menu-item') ) {
-            loseMenuFocus()
-        }
-    }, false)
     document.getElementById('menu-button-export').addEventListener('click', saveContent, false);
     document.getElementById('menu-open-file').addEventListener('click', onClickOpenFile, false)
     document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
@@ -327,10 +328,24 @@ function hideMenus () {
     for (var i = 0, j = els.length; i < j; i++) {
         els[i].style.display = 'none';
     }
+    document.body.removeEventListener('click', onClickOutsideDropdown, false);
 }
 
 function loseMenuFocus () {
     hideMenus();
+}
+
+function onClickOutsideDropdown (event) {
+    let target = event.target;
+
+    while (target !== document.documentElement && !target.classList.contains('menu-item')) {
+        target = target.parentNode;
+    }
+
+    if (!target.classList.contains('menu-item')) {
+        loseMenuFocus();
+        document.body.removeEventListener('click', onClickOutsideDropdown, false);
+    }
 }
 
 function onClickOpenFile (event) {
