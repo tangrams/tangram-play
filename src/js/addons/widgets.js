@@ -175,19 +175,19 @@ function setPositions (cm) {
     }
 }
 
-function clear () {
+function clearAll () {
     var widgets = document.getElementsByClassName('widget');
     while (widgets[0]) {
         widgets[0].parentNode.removeChild(widgets[0]);
     }
 }
 
-function clearWidget (widgetId) {
+function clear (widgetId) {
 
 }
 
 function update (cm) {
-    clear();
+    clearAll();
     setPositions(cm);
 }
 

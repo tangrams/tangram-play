@@ -78,7 +78,7 @@ function suggest(cm) {
             }
 
             if (suggestedKeysList.length > 0) {
-                addSuggestedKeysList(suggestedKeysList,cm,nline);
+                addList(suggestedKeysList,cm,nline);
             }
             break;
         }
@@ -88,7 +88,7 @@ function suggest(cm) {
     cm.scrollTo(null,top);
 }
 
-function addSuggestedKeysList( suggestedKeysList, cm, nLine ) {
+function addList( suggestedKeysList, cm, nLine ) {
     var options = {
         position: "top"
     }
@@ -98,13 +98,19 @@ function addSuggestedKeysList( suggestedKeysList, cm, nLine ) {
         options.replace = cm.suggestedKeysMenu;
     }
 
-    var node = makeSuggestedKeyMenu(suggestedKeysList, cm, nLine);
+    var node = makeMenu(suggestedKeysList, cm, nLine);
+
+    // Add as a panel on top of codemirror
     // cm.suggestedKeysMenu = cm.addPanel(node, options);
+
+    // Add in line after the cursors position
     cm.suggestedKeysMenu = cm.addLineWidget(nLine, node, {coverGutter: false, noHScroll: true});
+
+    // Update widgets position, because this will displace a new line
     Widgets.update(cm);
 }
 
-function makeSuggestedKeyMenu(suggestedKeysList, cm, nLine) {
+function makeMenu(suggestedKeysList, cm, nLine) {
     var node = document.createElement("div");
     node.className = "cm-suggested-keys-menu";
 
