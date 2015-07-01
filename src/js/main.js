@@ -8,51 +8,57 @@ const UI = require('./core/ui.js');
 const Widgets = require('./addons/widgets.js');
 const SuggestedKeys = require('./addons/suggestedKeys.js');
 
-// Get query string and parse it
-const query = Utils.parseQuery(window.location.search.slice(1));
-const flags = Utils.parseFeatureFlags(query);
+function create (place, options) {
 
-if (flags['fullmenu'] === true) {
-    document.querySelector('html').classList.add('full-menu');
-}
-
-if (Utils.isMobile() === true) {
-    document.getElementById('mobile-message').style.display = 'block';
-    document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
-        document.getElementById('mobile-message').style.display = 'none';
-        reflowUI();
-    });
-}
-
-// Initial style when it loads
-const style = query['style'] ? query['style'] : 'data/styles/basic.yaml';
-
-// Tangram Map
-const map = Map.init(style);
-
-// Editor
-const editor = Editor.init(document.getElementById('editor'), style);
-
-// Temp expose editor & map globally
-window.editor = editor;
-window.map = map;
-
-// UI
-UI.init(editor, map);
-
-// Editor Widgets
-Widgets.load(editor, 'data/widgets.json');
-SuggestedKeys.load(editor, 'data/keys.json');
-
-// Once everything is loaded
-setTimeout(function () {
-    if (query['foldLevel']) {
-        Editor.unfoldAll(editor);
-        Editor.foldByLevel(editor, parseInt(query['foldLevel']));
+    if (options.style === undefined){
+        options.style = "data/styles/basic.yaml";
     }
-    if (query['lines']) {
-        Editor.selectLines(editor, query['lines']);
+
+    // Create DOMs
+    //
+
+    //  Load main elements 
+    //
+    const map = Map.init('map',options.style);
+    const editor = Editor.init('editor',options.style);
+    UI.init(editor, map);
+
+    // Temp expose editor & map globally
+    window.editor = editor;
+    // window.map = map;
+
+    // TODO: 
+    //       - dereference the editor as a global
+
+    // Editor Widgets
+    Widgets.load(editor, 'data/widgets.json');
+    SuggestedKeys.load(editor, 'data/keys.json');
+
+    // Construct the OBJ
+    //
+    this.editor = editor;
+    this.map = map;
+    var tangram_play = this;
+
+    // public methots
+    //
+    this.reflowUI = function() {
+        UI.reflowUI(editor);
+    }
+
+    this.updateUI = function() {
+        UI.updateUI(editor,map);
+    }
+
+    this.loadFromQueryString = function (){
+        UI.loadFromQueryString(editor);
     }
 
     Widgets.create(editor);
-}, 500);
+    
+    return tangram_play;
+};
+
+window.TangramPlay = module.exports = {
+    create
+};

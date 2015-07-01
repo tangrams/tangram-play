@@ -10,6 +10,9 @@ var LOCAL_STORAGE_PREFIX = 'tangram-play-'
 var draggable;
 
 module.exports = {
+    reflowUI,
+    updateUI,
+    loadFromQueryString,
     init
 }
 
@@ -32,8 +35,8 @@ function init (cm, tangram) {
         bounds: getDraggableBounds(),
         cursor: 'col-resize',
         onDrag: function () {
-            reflowUI();
-            Widgets.updateWidgets(cm);
+            reflowUI(cm);
+            Widgets.update(cm);
             //setWidgetPositions(cm);
         },
         onDragEnd: function () {
@@ -43,8 +46,8 @@ function init (cm, tangram) {
     });
 
     loadExamples("data/examples.json");
-    window.addEventListener('resize', onWindowResize);
-    reflowUI();
+    // window.addEventListener('resize', onWindowResize);
+    reflowUI(cm);
 
     document.getElementById('menu-button-open').addEventListener('click', function (e) {
         var menuEl = document.getElementById('menu-open')
@@ -196,10 +199,20 @@ function openExample (value) {
     loadFromQueryString();
 }
 
+function parseQuery(qstr) {
+    var query = {};
+    var a = qstr.split('&');
+    for (var i in a) {
+        var b = a[i].split('=');
+        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
+    }
+    return query;
+};
+
 function loadFromQueryString () {
-    let query = Utils.parseQuery(window.location.search.slice(1));
+    let query = parseQuery(window.location.search.slice(1));
     let source = query['style'] ? query['style'] : "data/styles/basic.yaml";
-    Editor.loadStyle(editor, Utils.fetchHTTP(source));
+    Editor.loadStyle(editor,Utils.fetchHTTP(source));
 }
 
 function onFileSelectorChange (event) {
@@ -231,13 +244,13 @@ function isEditorSaved () {
     }
 }
 
-function onWindowResize( event ) {
-    reflowUI();
-    applyNewDraggableBounds(draggable[0]);
-    updateUI(editor, map);
-}
+// function onWindowResize (event) {
+//     reflowUI(editor);
+//     applyNewDraggableBounds(draggable[0]);
+//     updateUI(editor, map);
+// }
 
-function reflowUI() {
+function reflowUI( cm ) {
     var mapEl = document.getElementById('map');
     var contentEl = document.getElementById('content');
     var dividerEl = document.getElementById('divider');
@@ -248,13 +261,14 @@ function reflowUI() {
     mapEl.style.width = positionX + "px";
     contentEl.style.width = (window.innerWidth - positionX) + "px";
 
-    editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
+    cm.setSize('100%', (window.innerHeight - menuBottom) + 'px');
     dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
 }
 
-function updateUI(editor, map) {
+function updateUI (cm, map) {
     map.invalidateSize(false);
-    Widgets.updateWidgets(editor);
+    Widgets.update(cm);
+    applyNewDraggableBounds(draggable[0]);
 }
 
 function applyNewDraggableBounds (draggable) {

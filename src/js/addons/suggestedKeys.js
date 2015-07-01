@@ -9,7 +9,7 @@ module.exports = {
     suggest
 }
 
-function load(cm, configFile) {
+function load (cm, configFile) {
 
     // Initialize array
     if (cm.suggestedKeys) {
@@ -33,7 +33,7 @@ function load(cm, configFile) {
 //  TODO:
 //          -- Replace global scene by a local
 //
-function suggest(cm) {
+function suggest (cm) {
     var top = cm.getScrollInfo().top;
 
     // Erase previus keys

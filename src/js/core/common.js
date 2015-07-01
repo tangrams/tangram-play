@@ -4,10 +4,7 @@ module.exports = {
     debounce,
     fetchHTTP,
     getPosition,
-    isMobile,
     isNumber,
-    parseFeatureFlags,
-    parseQuery,
     toCSS
 };
 
@@ -37,27 +34,6 @@ function debounce(func, wait, immediate) {
         timeout = setTimeout(later, wait);
         if (callNow) func.apply(context, args);
     };
-};
-
-function parseQuery(qstr) {
-    var query = {};
-    var a = qstr.split('&');
-    for (var i in a) {
-        var b = a[i].split('=');
-        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
-    }
-    return query;
-};
-
-function parseFeatureFlags(query) {
-    var qstr = query['flags'];
-    var flags = {};
-    if (!qstr) return flags;
-    var values = qstr.split(',');
-    for (var i in values) {
-        flags[values[i]] = true;
-    }
-    return flags;
 };
 
 function getPosition(dom) {
@@ -93,11 +69,4 @@ function toCSS(str) {
     }
 
     return str;
-};
-
-function isMobile () {
-  if (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(navigator.userAgent.toLowerCase()))
-    return true;
-  else
-    return false;
 };

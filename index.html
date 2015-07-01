@@ -18,7 +18,7 @@
     <script type="text/javascript" src="src/js/vendor/leaflet/leaflet.js"></script>  <!-- 3rd party libraries -->
     <script type="text/javascript" src="src/js/vendor/leaflet-hash.js"></script>     <!-- bog-standard leaflet URL hash -->
     <script type="text/javascript" src="https://mapzen.com/tangram/0.1/tangram.min.js"></script>
-    
+
     <!-- Divider UI -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/TweenLite.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/utils/Draggable.min.js"></script>
@@ -107,6 +107,78 @@
 
     <!-- IDE -->
     <script type="text/javascript" src="build/js/tangram-play.js"></script>
+    <script>
+
+        const query = parseQuery(window.location.search.slice(1));
+        const flags = parseFeatureFlags(query);
+
+        if (flags['fullmenu'] === true) {
+            document.querySelector('html').classList.add('full-menu');
+        }
+
+        var tangramPlay = TangramPlay.create("dom",{
+            widgets: "/data/widgets.js",
+            suggestedKeys: "data/suggestedKeys.js"
+        });
+
+        //  This need to be clean
+        //  
+        window.addEventListener('resize', function(){
+            tangramPlay.reflowUI();
+            tangramPlay.updateUI();
+        });
+
+        // Once everything is loaded
+        setTimeout(function () {
+            // if (query['foldLevel']) {
+                // Editor.unfoldAll(editor);
+                // Editor.foldByLevel(editor, parseInt(query['foldLevel']));
+            // }
+            if (query['lines']) {
+                tangramPlay.editor.selectLines(query['lines']);
+                // Editor.selectLines(editor, query['lines']);
+            }
+
+            // Widgets.create(editor);
+        }, 500);
+
+        if (isMobile() === true) {
+            document.getElementById('mobile-message').style.display = 'block';
+            document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
+                document.getElementById('mobile-message').style.display = 'none';
+                tangramPlay.reflowUI();
+            });
+        }
+
+        function parseQuery(qstr) {
+            var query = {};
+            var a = qstr.split('&');
+            for (var i in a) {
+                var b = a[i].split('=');
+                query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
+            }
+            return query;
+        };
+
+        function parseFeatureFlags(query) {
+            var qstr = query['flags'];
+            var flags = {};
+            if (!qstr) return flags;
+            var values = qstr.split(',');
+            for (var i in values) {
+                flags[values[i]] = true;
+            }
+            return flags;
+        };
+
+        function isMobile () {
+          if (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(navigator.userAgent.toLowerCase()))
+            return true;
+          else
+            return false;
+        };
+
+    </script>
 
     <!-- Adding a script block to post message to the parent container (think iframed demos) -->
     <script type="text/javascript">

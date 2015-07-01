@@ -61,10 +61,10 @@ var updateKeys = debounce(function(cm) {
 module.exports = {
     init,
     updateContent,
-    updateKeys,
+    // updateKeys,
     unfoldAll,
     foldByLevel,
-    selectLines,
+    // selectLines,
     loadStyle,
     getContent,
     getInd
@@ -72,7 +72,7 @@ module.exports = {
 
 //  Initialize the editor in a specific DOM and with the context of a style_file
 //
-function init (dom, style_file) {
+function init (place, style_file) {
 
     var rulers = [];
     for (var i = 1; i < 10; i++) {
@@ -82,6 +82,7 @@ function init (dom, style_file) {
                         lineStyle: "dashed"     });
     }
 
+    var dom = document.getElementById(place);
     var cm = CodeMirror(dom ,{
         value: "Loading...",
         rulers: rulers,
@@ -148,6 +149,10 @@ function init (dom, style_file) {
         return getLineInd(this,nLine);
     }
 
+    cm.selectLines = function( rangeStr ){
+        return rangeString(this,rangeStr);
+    }
+
     loadStyle(cm, fetchHTTP(style_file));
 
     return cm;
@@ -168,6 +173,7 @@ function loadStyle(cm, contents) {
         //      - instead of deleting the key if should check if
         //      this user owns the key. If it doesn't delete it
 
+        Widgets.update(cm);
     }
 }
 

@@ -7,7 +7,7 @@ module.exports = {
     postUpdate
 }
 
-function init (style_file) {
+function init (place, style_file) {
     var map_start_location = [0.0, 0.0, 3];
 
     /*** URL parsing ***/
@@ -22,7 +22,7 @@ function init (style_file) {
     }
 
     /*** Map ***/
-    var map = L.map('map',
+    var map = L.map(place,
         { zoomControl: false },
         {'keyboardZoomOffset': .05}
     );
