@@ -79,7 +79,7 @@ function getAddressSceneContent(tangramScene, address) {
     if (tangramScene && tangramScene.config) {
         let keys = address.split("/");
         keys.shift();
-        if (keys && keys.length > 0) {
+        if (keys && keys.length) {
             let content = tangramScene.config[keys[0]];
             for (let i = 1; i < keys.length; i++) {
                 if (content[keys[i]]) {

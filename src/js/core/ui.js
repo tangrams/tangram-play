@@ -1,13 +1,13 @@
 'use strict';
 
-var Utils = require('./common.js');
-var Editor = require('./editor.js');
-var Widgets = require('../addons/widgets.js');
+import Utils from './common.js';
+import Editor from './editor.js';
+import Widgets from '../addons/widgets.js';
 
 // Import Greensock (GSAP)
-require('gsap/src/uncompressed/Tweenlite.js');
-require('gsap/src/uncompressed/plugins/CSSPlugin.js');
-const Draggable = require('gsap/src/uncompressed/utils/Draggable.js');
+import 'gsap/src/uncompressed/Tweenlite.js';
+import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
+import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
 
 const CM_MINIMUM_WIDTH = 160; // integer, in pixels
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
@@ -21,7 +21,8 @@ module.exports = {
     init
 }
 
-function init (cm, tangram) {
+function init (tp, configFile) {
+
     var transformStyle = 'translate3d(' + getDividerStartingPosition() + 'px, 0px, 0px)';
     var dividerEl = document.getElementById('divider');
     if (dividerEl.style.hasOwnProperty('transform')) {
@@ -40,19 +41,19 @@ function init (cm, tangram) {
         bounds: getDraggableBounds(),
         cursor: 'col-resize',
         onDrag: function () {
-            reflowUI(cm);
-            Widgets.update(cm);
-            //setWidgetPositions(cm);
+            reflowUI(tp.editor);
+            Widgets.update(tp.editor);
+            //setWidgetPositions(tp.editor);
         },
         onDragEnd: function () {
-            updateUI(cm, tangram);
+            updateUI(tp);
             saveDividerPosition();
         }
     });
 
-    loadExamples("data/examples.json");
+    loadExamples(configFile);
     // window.addEventListener('resize', onWindowResize);
-    reflowUI(cm);
+    reflowUI(tp.editor);
 
     document.getElementById('menu-button-open').addEventListener('click', function (e) {
         var menuEl = document.getElementById('menu-open')
@@ -200,7 +201,7 @@ function openExample (value) {
     loadFromQueryString();
 }
 
-function parseQuery(qstr) {
+function parseQuery (qstr) {
     var query = {};
     var a = qstr.split('&');
     for (var i in a) {
@@ -245,13 +246,7 @@ function isEditorSaved () {
     }
 }
 
-// function onWindowResize (event) {
-//     reflowUI(editor);
-//     applyNewDraggableBounds(draggable[0]);
-//     updateUI(editor, map);
-// }
-
-function reflowUI( cm ) {
+function reflowUI (cm) {
     var mapEl = document.getElementById('map');
     var contentEl = document.getElementById('content');
     var dividerEl = document.getElementById('divider');
@@ -266,9 +261,9 @@ function reflowUI( cm ) {
     dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
 }
 
-function updateUI (cm, map) {
-    map.invalidateSize(false);
-    Widgets.update(cm);
+function updateUI (tp) {
+    tp.map.invalidateSize(false);
+    Widgets.update(tp.editor);
     applyNewDraggableBounds(draggable[0]);
 }
 

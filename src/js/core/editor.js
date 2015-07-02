@@ -64,7 +64,8 @@ module.exports = {
     foldByLevel,
     loadStyle,
     getContent,
-    getInd
+    getInd,
+    selectLines
 }
 
 //  Initialize the editor in a specific DOM and with the context of a style_file
@@ -152,9 +153,9 @@ function init (place, style_file) {
         return getLineInd(this,nLine);
     }
 
-    cm.selectLines = function( rangeStr ){
-        return rangeString(this,rangeStr);
-    }
+    // cm.selectLines = function( rangeStr ){
+    //     return rangeString(this,rangeStr);
+    // }
 
     loadStyle(cm, Utils.fetchHTTP(style_file));
 
@@ -222,7 +223,7 @@ function jumpToLineAt(cm, nLine, offset) {
 function selectLines(cm, rangeString) {
     var from, to;
 
-    if (isNumber(rangeString)) {
+    if (Utils.isNumber(rangeString)) {
         from = parseInt(rangeString)-1;
         to = from;
     } else {
@@ -297,7 +298,7 @@ function foldAllBut(cm, From, To, queryLevel) {
     for (var i = startOn; i >= 0; i--) {
         var level = getLineInd(cm, i);
 
-        if (level === 0 && cm.lineInfo(i).text.length > 0) {
+        if (level === 0 && cm.lineInfo(i).text.length) {
             break;
         }
 
