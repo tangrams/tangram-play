@@ -14,7 +14,7 @@ export default class TangramPlay {
         // TODO:
         //      - Create DOMs: constructor(place, options){...}
 
-        //  Load main elements 
+        //  Load main elements
         if (options.style === undefined) {
             options.style = "data/styles/basic.yaml";
         }
@@ -22,10 +22,14 @@ export default class TangramPlay {
         this.map = Map.init('map',options.style);
         this.editor = Editor.init('editor',options.style);
 
+        //  TODO:
+        //       - dereference the "editor" variable as a global
+        //       - simplify the ui.js calls (init, update, events ??)
+        window.editor = this.editor; // Temp expose editor & map globally
+
         //  Load options
         if (options.widgets) {
-            Widgets.load(this.editor, options.widgets);
-            Widgets.create(this.editor);
+            Widgets.load(options.widgets);
         }
 
         if (options.suggestedKeys) {
@@ -36,16 +40,16 @@ export default class TangramPlay {
             UI.init(this,options.ui);
         } else {
             // TODO:
-            //      - Only the draggable panel divider 
+            //      - Only the draggable panel divider
         }
 
         //  TOOD:
-        //      - make TangramPlay a proper class obj 
-        //      - The constructor should recive a DOM to construct the 
+        //      - make TangramPlay a proper class obj
+        //      - The constructor should recive a DOM to construct the
         //          HTML structure and options of how to load (with or with out UI, widgets and key suggestion)
         //      - review ui.js to:
         //              - dereference the "editor" variable as a global
-        //              - simplify the ui.js calls (init, update, events ??)        
+        //              - simplify the ui.js calls (init, update, events ??)
         window.editor = this.editor; // Temp expose editor & map globally (need by ui.js)
     }
 

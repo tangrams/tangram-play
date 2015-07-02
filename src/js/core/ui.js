@@ -1,7 +1,7 @@
 'use strict';
 
 import Editor from './editor.js';
-import Widgets from '../addons/widgets.js';
+import {Widgets} from '../addons/widgets.js';
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/Tweenlite.js';

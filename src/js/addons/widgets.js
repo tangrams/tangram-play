@@ -1,80 +1,115 @@
 'use strict';
 
 import YAMLTangram from '../parsers/yaml-tangram.js';
+//import {Widget} from './widgets/widget';
 
 // Load some common functions
 import {fetchHTTP, toCSS, getPosition} from '../core/common.js';
 
-module.exports = {
+let widgets = [];
+let data = [];
+
+let WidgetManager = {
     load,
     create,
     update
 }
 
-var widgets = [];
+// Placeholders for global editor
+let cm;
+let editor;
 
-function load (cm, configFile ){
+export default WidgetManager;
 
-    // Initialize array
-    if (cm.widgets) {
-        // Clean widgets list
-        while(cm.widgets.length > 0) {
-            cm.widgets.pop();
-        }
-    } else {
-        cm.widgets = [];
-    }
+function load (configFile) {
+    // Set reference to global object
+    cm = window.editor;
+    editor = window.editor;
 
-    // Load JSON
-    cm.widgets = JSON.parse(fetchHTTP(configFile))["widgets"];
+    // Load data file
+    data = JSON.parse(fetchHTTP(configFile))['widgets'];
 
     // Initialize tokens
-    for (var i = 0; i < cm.widgets.length; i++){
-        cm.widgets[i].token = YAMLTangram.addToken(cm.widgets[i]);
+    for (let datum of data) {
+        datum.token = YAMLTangram.addToken(datum);
     }
+
+    // Create and append all widgets
+    create();
 }
 
-function create (cm) {
-    for (var nline = 0, size = cm.doc.size; nline < size; nline++) {
-        var val = YAMLTangram.getValue(cm, nline);
+function create () {
+    for (let line = 0, size = editor.doc.size; line < size; line++) {
+        let val = YAMLTangram.getValue(editor, line);
 
-        // If Line is significative
-        if (/*getTag(cm, nline) !== "" &&*/ val !== "|" && val !== "" ) {
+        // Skip line if not significant
+        if (val === '|' || val === '') continue;
 
-            // Check for widgets to add
-            for (var i = 0; i < cm.widgets.length; i++) {
-                var proto = cm.widgets[i];
+        // Check for widgets to add
+        for (let datum of data) {
+            if (datum.token(scene, editor, line)) {
+                let content = YAMLTangram.getValue(editor, line);
+                let el;
 
-                if (proto.token(scene, cm, nline)) {
-                    var content = YAMLTangram.getValue(cm, nline);
-                    var el;
-
-                    switch(proto.type) {
-                        case 'colorpicker':
-                            el = createColorpickerWidget(cm, proto, content, nline);
-                            break;
-                        case 'togglebutton':
-                            el = createToggleWidget(cm, proto, content, nline);
-                            break;
-                        case 'dropdownmenu':
-                            el = createDropdownWidget(cm, proto, content, nline);
-                            break;
-                        case 'dropdownmenu-dynamic':
-                            el = createDropdownDynamicWidget(cm, proto, content, nline);
-                            break;
-                        default:
-                            // Nothing
-                            break;
-                    }
-
-                    el.setAttribute('data-nline', nline); /* TODO: change */
-                    widgets.push(el);
+                switch (datum.type) {
+                    case 'colorpicker':
+                        el = createColorpickerWidget(editor, datum, content, line);
+                        break;
+                    case 'togglebutton':
+                        el = createToggleWidget(editor, datum, content, line);
+                        break;
+                    case 'dropdownmenu':
+                        el = createDropdownWidget(editor, datum, content, line);
+                        break;
+                    case 'dropdownmenu-dynamic':
+                        el = createDropdownDynamicWidget(editor, datum, content, line);
+                        break;
+                    default:
+                        // Nothing
+                        break;
                 }
+
+                el.setAttribute('data-line', line); // TODO: change
+                widgets.push(el);
             }
         }
     }
 
+    setPositions();
+}
+
+function setPositions () {
+    for (let el of widgets) {
+        let line = parseInt(el.getAttribute('data-line'), 10);
+        let ch = editor.lineInfo(line).handle.text.length;
+        editor.addWidget({ line, ch }, el);
+    }
+}
+
+function clearAll () {
+    var widgets = document.getElementsByClassName('widget');
+    while (widgets[0]) {
+        widgets[0].parentNode.removeChild(widgets[0]);
+    }
+}
+
+function clear (widgetId) {
+
+}
+
+function update (cm) {
+    clearAll();
     setPositions(cm);
+}
+
+/**
+ * @param {array} changes - An array of changes in a batch operation from CodeMirror.
+ */
+function updateWidgetsOnEditorChanges (changes) {
+    // Given changed lines in CodeMirror
+    // We need to rebuild some widgets because data may have changed in them.
+    console.log(changes);
+    // TODO.
 }
 
 function createColorpickerWidget (cm, proto, content, nline) {
@@ -166,39 +201,3 @@ function createDropdownDynamicWidget (cm, proto, content, nline) {
     return el;
 }
 
-function setPositions (cm) {
-    for (var i = 0, j = widgets.length; i < j; i++) {
-        var el = widgets[i];
-        var nline = parseInt(el.getAttribute('data-nline'), 10);
-        if (cm.lineInfo(nline).handle){
-            var chrpos = cm.lineInfo(nline).handle.text.length;
-            cm.addWidget({ line: nline, ch: chrpos }, el);
-        }
-    }
-}
-
-function clearAll () {
-    var widgets = document.getElementsByClassName('widget');
-    while (widgets[0]) {
-        widgets[0].parentNode.removeChild(widgets[0]);
-    }
-}
-
-function clear (widgetId) {
-
-}
-
-function update (cm) {
-    clearAll();
-    setPositions(cm);
-}
-
-/**
- * @param {array} changes - An array of changes in a batch operation from CodeMirror.
- */
-function updateWidgetsOnEditorChanges (changes) {
-    // Given changed lines in CodeMirror
-    // We need to rebuild some widgets because data may have changed in them.
-    console.log(changes);
-    // TODO.
-}
