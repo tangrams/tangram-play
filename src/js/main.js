@@ -32,34 +32,23 @@ class TangramPlay {
         }
 
         //  TOOD:
-        //      - Reveiw and optimize this
+        //      - make TangramPlay a proper class obj 
+        //      - The constructor should recive a DOM to construct the 
+        //          HTML structure and options of how to load (with or with out UI, widgets and key suggestion)
+        //      - review ui.js to:
+        //              - dereference the "editor" variable as a global
+        //              - simplify the ui.js calls (init, update, events ??)
         UI.init(this.editor, this.map);
-
-        //  TODO: 
-        //       - dereference the "editor" variable as a global
-        //       - simplify the ui.js calls (init, update, events ??)
-        window.editor = this.editor; // Temp expose editor & map globally
-
-        // public methots from UI ( TODO: simplify this calls )
-        //
-        this.reflowUI = function() {
-            UI.reflowUI(this.editor);
-        }
-
-        this.updateUI = function() {
-            UI.updateUI(this.editor,map);
-        }
-
-        this.loadFromQueryString = function (){
-            UI.loadFromQueryString(this.editor);
-        }
+        window.editor = this.editor; // Temp expose editor & map globally (need by ui.js)
+        this.reflowUI = function() { UI.reflowUI(this.editor); }
+        this.updateUI = function() { UI.updateUI(this.editor,map); }
+        this.loadFromQueryString = function () { UI.loadFromQueryString(this.editor);}
     }
 };
 
-// TODO:
-//      - there should be a better way to do this
-function create (place, options) {
-    return new TangramPlay(place, options);
+// Temporal
+function create (options) {
+    return new TangramPlay(options);
 }
 
 window.TangramPlay = module.exports = {

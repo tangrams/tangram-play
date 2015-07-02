@@ -111,7 +111,8 @@
             document.querySelector('html').classList.add('full-menu');
         }
 
-        var tangramPlay = TangramPlay.create({  widgets: 'data/widgets.json',
+        var tangramPlay = TangramPlay.create({  style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
+                                                widgets: 'data/widgets.json',
                                                 suggestedKeys: 'data/keys.json' });
 
         //  TODO: 
