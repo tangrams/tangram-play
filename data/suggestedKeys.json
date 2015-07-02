@@ -1,0 +1,71 @@
+{
+	"keys" : [
+        {
+            "address": "^/cameras/(\\w|\\_|\\-)+$",
+            "options": ["type","vanishing_point", "focal_length", "active"]
+        },
+        {
+            "address": "^/lights/(\\w|\\_|\\-)+$",
+            "options": ["type","diffuse", "ambient","specular","direction", "position", "origin", "radius", "attenuation", "exponent"]
+        },
+        {
+            "address": "^/scene$",
+            "options": ["background"]
+        },
+        {
+            "address": "^/scene/background$",
+            "options": ["color"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+$",
+            "options": ["base", "mix", "blend", "lighting", "texcoords", "animated", "material", "shaders"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/material$",
+            "options": ["normal","emission","ambient","diffuse","specular","shininess"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/material/(normal|emission|ambient|diffuse|specular)$",
+            "options": ["texture","mapping","scale","amount"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/shaders$",
+            "options": ["blocks"]
+        },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/shaders/blocks$",
+            "options": ["global","position","width","normal","color","filter"]
+        },
+        {
+            "address": "^/sources/(\\w|\\_|\\-)+$",
+            "options": ["type", "url"]
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+$",
+            "options": ["data", "draw", "properties", "filter", "extruded"]
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/data$",
+            "options": ["source"]
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/draw$",
+            "options": ["points", "lines", "polygons", "text"],
+            "source": "/styles"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/draw/(\\w|\\_|\\-)+$",
+            "options": ["style", "extrude", "color", "order", "width", "font"],
+            "source": "/styles"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/draw/text/font/$",
+            "options": ["fill", "typeface"],
+            "source": "/styles"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-)+/properties$",
+            "options": ["width"]
+        }
+	]   
+}
