@@ -1,7 +1,9 @@
 'use strict';
 
-import Utils from '../core/common.js';
 import YAMLTangram from '../parsers/yaml-tangram.js';
+
+// Load some common functions
+import {fetchHTTP, toCSS, getPosition} from '../core/common.js';
 
 module.exports = {
     load,
@@ -24,7 +26,7 @@ function load (cm, configFile ){
     }
 
     // Load JSON
-    cm.widgets = JSON.parse(Utils.fetchHTTP(configFile))["widgets"];
+    cm.widgets = JSON.parse(fetchHTTP(configFile))["widgets"];
 
     // Initialize tokens
     for (var i = 0; i < cm.widgets.length; i++){
@@ -79,11 +81,11 @@ function createColorpickerWidget (cm, proto, content, nline) {
     var btn = document.createElement('div');
     btn.className = 'widget widget-colorpicker';
     btn.value = nline;
-    btn.style.background = Utils.toCSS(content);
+    btn.style.background = toCSS(content);
     btn.addEventListener('click', function (e) {
         var picker = new thistle.Picker(btn.style.background);
 
-        var pos = Utils.getPosition(btn);
+        var pos = getPosition(btn);
         picker.presentModal(pos.x+20,
                             cm.heightAtLine(parseInt(btn.value))+20);
 

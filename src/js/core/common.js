@@ -1,14 +1,6 @@
 'use strict';
 
-module.exports = {
-    debounce,
-    fetchHTTP,
-    getPosition,
-    isNumber,
-    toCSS
-};
-
-function fetchHTTP(url, methood) {
+export function fetchHTTP(url, methood) {
     var request = new XMLHttpRequest(), response;
 
     request.onreadystatechange = function () {
@@ -21,22 +13,7 @@ function fetchHTTP(url, methood) {
     return response;
 };
 
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
-function getPosition(dom) {
+export function getPosition(dom) {
     var y = 0, x = 0;
     do {
         y += dom.offsetTop  || 0;
@@ -51,9 +28,11 @@ function getPosition(dom) {
 };
 
 //  Check if a variable is a number
-function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n);};
+export function isNumber(n) { 
+    return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
+};
 
-function toCSS(str) {
+export function toCSS(str) {
     var match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
     if (match) {
         str = 'rgb(' + Math.round(match[1]*255)+","+
@@ -67,6 +46,5 @@ function toCSS(str) {
         return value ? value[1] : "";
 
     }
-
     return str;
 };

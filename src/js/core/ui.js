@@ -1,6 +1,5 @@
 'use strict';
 
-import Utils from './common.js';
 import Editor from './editor.js';
 import Widgets from '../addons/widgets.js';
 
@@ -8,6 +7,9 @@ import Widgets from '../addons/widgets.js';
 import 'gsap/src/uncompressed/Tweenlite.js';
 import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
 import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
+
+// Load some common functions
+import { fetchHTTP } from './common.js';
 
 const CM_MINIMUM_WIDTH = 160; // integer, in pixels
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
@@ -151,7 +153,7 @@ function newContent () {
 }
 
 function loadExamples (configFile) {
-    var examples_data = JSON.parse(Utils.fetchHTTP(configFile));
+    var examples_data = JSON.parse(fetchHTTP(configFile));
     var examplesList = document.getElementById("examples");
 
     for (var i = 0; i < examples_data['examples'].length; i++) {
@@ -214,7 +216,7 @@ function parseQuery (qstr) {
 function loadFromQueryString () {
     let query = parseQuery(window.location.search.slice(1));
     let source = query['style'] ? query['style'] : "data/styles/basic.yaml";
-    Editor.loadStyle(editor,Utils.fetchHTTP(source));
+    Editor.loadStyle(editor,fetchHTTP(source));
 }
 
 function onFileSelectorChange (event) {

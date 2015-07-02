@@ -1,10 +1,4 @@
-//  TODO:
-//       - Replace global scene by a local
-//
 'use strict';
-
-// Import Utils
-import Utils from './common.js';
 
 // Import CodeMirror
 import CodeMirror from 'codemirror';
@@ -34,9 +28,27 @@ import YAMLTangram from '../parsers/yaml-tangram.js';
 import Widgets from '../addons/widgets.js';
 import SuggestedKeys from '../addons/suggestedKeys.js';
 
+// Import Utils
+import { fetchHTTP, isNumber } from './common.js';
+
 //  Main CM functions
 //  ===============================================================================
-var updateContent = Utils.debounce(function(cm) {
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+
+var updateContent = debounce(function(cm) {
     var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
 
     //  If doesn't have a API key
@@ -53,7 +65,7 @@ var updateContent = Utils.debounce(function(cm) {
     }
 }, 500);
 
-var updateKeys = Utils.debounce(function(cm) {
+var updateKeys = debounce(function(cm) {
     SuggestedKeys.suggest(cm);
 }, 1000);
 
@@ -157,7 +169,7 @@ function init (place, style_file) {
     //     return rangeString(this,rangeStr);
     // }
 
-    loadStyle(cm, Utils.fetchHTTP(style_file));
+    loadStyle(cm, fetchHTTP(style_file));
 
     return cm;
 };
@@ -223,7 +235,7 @@ function jumpToLineAt(cm, nLine, offset) {
 function selectLines(cm, rangeString) {
     var from, to;
 
-    if (Utils.isNumber(rangeString)) {
+    if (isNumber(rangeString)) {
         from = parseInt(rangeString)-1;
         to = from;
     } else {

@@ -1,8 +1,10 @@
 'use strict';
 
-import Utils from '../core/common.js';
 import YAMLTangram from '../parsers/yaml-tangram.js';
 import Widgets from './widgets.js';
+
+// Load some common functions
+import { fetchHTTP } from '../core/common.js';
 
 module.exports = {
     load,
@@ -22,7 +24,7 @@ function load (cm, configFile) {
     }
 
     // Load Json
-    cm.suggestedKeys = JSON.parse(Utils.fetchHTTP(configFile))["keys"];
+    cm.suggestedKeys = JSON.parse(fetchHTTP(configFile))["keys"];
 
     //  Initialize tokens
     for (let i = 0; i < cm.suggestedKeys.length; i++) {
