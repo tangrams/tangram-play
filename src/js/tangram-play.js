@@ -13,9 +13,9 @@ export default class TangramPlay {
     constructor (options) {
 
         // TODO:
-        //      - Create DOMs: constructor(place, options){...}
+        //      - Create DOM for map, divider and editor
 
-        //  Load main elements
+        // CORE
         if (options.style === undefined) {
             options.style = "data/styles/basic.yaml";
         }
@@ -24,37 +24,21 @@ export default class TangramPlay {
         this.editor = new Editor('editor', options.style);
         this.divider = new Divider(this);
 
-        //  Load options
-        if (options.widgets) {
-            this.widgets_manager = new WidgetsManager(this, options.widgets);
-        }
+        //  ADDONS
+        if (options.widgets) this.widgets_manager = new WidgetsManager(this, options.widgets);
+        if (options.suggest) this.sugest_manager = new SuggestManager(this, options.suggest);
+        if (options.menu) this.menu = new Menu(this, options.menu);
 
-        if (options.suggest) {
-            this.sugest_manager = new SuggestManager(this, options.suggest);
-        }
-
-        if (options.menu) {
-            this.menu = new Menu(this, options.menu);
-        } else {
-            // TODO:
-            //      - Only the draggable panel divider
-        }
-
+        //  EVENTS
         let tangram_play = this;
-
         window.addEventListener('resize', function(){
-            tangram_play.updateSize();
+            tangram_play.divider.reflow();
+            tangram_play.divider.update();
         });
-
     };
 
     selectLines (rangeStr) {
         return this.editor.selectLines(rangeStr);
-    };
-
-    updateSize () {
-        this.divider.reflow();
-        this.divider.update();
     };
 
     loadFromQueryString () {

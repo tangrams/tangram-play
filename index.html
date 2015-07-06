@@ -119,11 +119,7 @@
                                             widgets: 'data/widgets.json',
                                             suggest: 'data/suggest.json' 
                                         });
-
-        window.addEventListener('resize', function(){
-            tangramPlay.updateSize();
-        });
-
+        
         // Once everything is loaded
         setTimeout(function () {
             if (query['lines']) {
