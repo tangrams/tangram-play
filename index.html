@@ -37,6 +37,7 @@
     </div>
 
     <div id="tangram_play_wrapper">
+
         <div id='menu-container'>
             <div class='menu-bar'>
                 <h1>Tangram Play</h1>
@@ -114,14 +115,11 @@
         // Create an instance of TangramPlay with the following modules
         var tangramPlay = new TangramPlay({ 
                                             style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
-                                            ui: 'data/ui.json',
+                                            menu: 'data/menu.json',
                                             widgets: 'data/widgets.json',
-                                            suggestedKeys: 'data/suggestedKeys.json' 
+                                            suggest: 'data/suggest.json' 
                                         });
 
-        //  TODO: 
-        //       - ui call should be per event, maybe?
-        //  
         window.addEventListener('resize', function(){
             tangramPlay.updateSize();
         });
@@ -176,10 +174,6 @@
 
     </script>
 
-    <!-- Adding a script block to post message to the parent container (think iframed demos) -->
-    <script type="text/javascript">
-      window.addEventListener("hashchange",function(){parent.postMessage(window.location.hash, "*")});
-    </script>
   </body>
 
 </html>

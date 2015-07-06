@@ -1,116 +1,115 @@
-'use strict';
-
-import YAMLTangram from '../parsers/yaml-tangram.js';
+import { setValue, getValue } from '../core/codemirror/tools.js';
+import { addToken, getAddressSceneContent } from '../core/codemirror/yaml-tangram.js';
 //import {Widget} from './widgets/widget';
 
 // Load some common functions
 import {fetchHTTP, toCSS, getPosition} from '../core/common.js';
 
-let widgets = [];
-let data = [];
+export default class WidgetsManager {
+    constructor (tangram_play, configFile ) {
+        this.tangram_play = tangram_play;
 
-let WidgetManager = {
-    load,
-    create,
-    update
-}
+        // Load data file
+        this.data = JSON.parse(fetchHTTP(configFile))['widgets'];
+        this.active = [];
 
-// Placeholders for global editor
-let cm;
-let editor;
+        // Initialize tokens
+        for (let datum of this.data) {
+            datum.token = addToken(datum);
+        }
 
-export default WidgetManager;
+        let wm = this;
 
-function load (configFile) {
-    // Set reference to global object
-    cm = window.editor;
-    editor = window.editor;
+        // Update widgets & content after a batch of changes
+        tangram_play.editor.codemirror.on('changes', function (cm, changes) {
+            wm.clearAll();
+            wm.createAll();
+            wm.update();
+        }(wm));
 
-    // Load data file
-    data = JSON.parse(fetchHTTP(configFile))['widgets'];
+        //  When the viewport change (lines are add or erased)
+        tangram_play.editor.codemirror.on("viewportChange", function(cm, from, to) {
+            wm.clearAll();
+            wm.createAll();
+            wm.update();
+        }(wm));
 
-    // Initialize tokens
-    for (let datum of data) {
-        datum.token = YAMLTangram.addToken(datum);
+        this.createAll();
+        this.update();        
     }
 
-    // Create and append all widgets
-    create();
-}
+    update () {
+        for (let el of this.active) {
+            let line = parseInt(el.getAttribute('data-line'), 10);
+            let ch = this.tangram_play.editor.codemirror.lineInfo(line).handle.text.length;
+            this.tangram_play.editor.codemirror.addWidget({ line, ch }, el);
+        }
+    }
 
-function create () {
-    for (let line = 0, size = editor.doc.size; line < size; line++) {
-        let val = YAMLTangram.getValue(editor, line);
+    create (nLine) {
+        let val = getValue(this.tangram_play.editor.codemirror, nLine);
 
         // Skip line if not significant
-        if (val === '|' || val === '') continue;
+        if (val === '|' || val === '') return;
 
         // Check for widgets to add
-        for (let datum of data) {
-            if (datum.token(scene, editor, line)) {
-                let content = YAMLTangram.getValue(editor, line);
+        for (let datum of this.data) {
+            if (datum.token(scene, this.tangram_play.editor.codemirror, nLine)) {
+                let content = getValue(this.tangram_play.editor.codemirror, nLine);
                 let el;
 
                 switch (datum.type) {
                     case 'colorpicker':
-                        el = createColorpickerWidget(editor, datum, content, line);
+                        el = createColorpickerWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
                         break;
                     case 'togglebutton':
-                        el = createToggleWidget(editor, datum, content, line);
+                        el = createToggleWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
                         break;
                     case 'dropdownmenu':
-                        el = createDropdownWidget(editor, datum, content, line);
+                        el = createDropdownWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
                         break;
                     case 'dropdownmenu-dynamic':
-                        el = createDropdownDynamicWidget(editor, datum, content, line);
+                        el = createDropdownDynamicWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
                         break;
                     default:
                         // Nothing
                         break;
                 }
 
-                el.setAttribute('data-line', line); // TODO: change
-                widgets.push(el);
+                el.setAttribute('data-line', nLine); // TODO: change
+                this.active.push(el);
             }
         }
     }
 
-    setPositions();
-}
-
-function setPositions () {
-    for (let el of widgets) {
-        let line = parseInt(el.getAttribute('data-line'), 10);
-        let ch = editor.lineInfo(line).handle.text.length;
-        editor.addWidget({ line, ch }, el);
+    createAll () {
+        for (let line = 0, size = this.tangram_play.editor.codemirror.doc.size; line < size; line++) {
+            this.create(line);
+        }
+        this.update();
     }
-}
 
-function clearAll () {
-    var widgets = document.getElementsByClassName('widget');
-    while (widgets[0]) {
-        widgets[0].parentNode.removeChild(widgets[0]);
+    clear (nLine) {
+
+        // NOTE:
+        //      - use map?
+
+        for (let el of this.active) {
+            let line = parseInt(el.getAttribute('data-line'), 10);
+            if (line === nLine){
+                el.parentNode.removeChild(el);
+                break;
+            }
+        }
     }
-}
 
-function clear (widgetId) {
-
-}
-
-function update (cm) {
-    clearAll();
-    setPositions(cm);
-}
-
-/**
- * @param {array} changes - An array of changes in a batch operation from CodeMirror.
- */
-function updateWidgetsOnEditorChanges (changes) {
-    // Given changed lines in CodeMirror
-    // We need to rebuild some widgets because data may have changed in them.
-    console.log(changes);
-    // TODO.
-}
+    clearAll () {
+        var widgets = document.getElementsByClassName('widget');
+        while (widgets[0]) {
+            widgets[0].parentNode.removeChild(widgets[0]);
+        }
+    }
+};
 
 function createColorpickerWidget (cm, proto, content, nline) {
     var btn = document.createElement('div');
@@ -128,7 +127,7 @@ function createColorpickerWidget (cm, proto, content, nline) {
             btn.style.background = picker.getCSS();
             var color = picker.getRGB();
             var str = "["+ color.r.toFixed(3) + "," + color.g.toFixed(3) + "," + color.b.toFixed(3) + "]";
-            YAMLTangram.setValue( cm, parseInt(btn.value), str );
+            setValue( cm, parseInt(btn.value), str );
         });
     });
     return btn;
@@ -141,7 +140,7 @@ function createToggleWidget (cm, proto, content, nline) {
     check.checked = (content === 'true') ? true : false;
     check.value = nline;
     check.addEventListener('change', function (e) {
-        YAMLTangram.setValue(cm, parseInt(check.value), check.checked?"true":"false" );
+        setValue(cm, parseInt(check.value), check.checked?"true":"false" );
     });
     return check;
 }
@@ -161,14 +160,14 @@ function createDropdownWidget (cm, proto, content, nline) {
     }
 
     el.addEventListener('change', function (e) {
-        YAMLTangram.setValue( cm, parseInt(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
+        setValue( cm, parseInt(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
     });
     return el;
 }
 
 function createDropdownDynamicWidget (cm, proto, content, nline) {
     var el = document.createElement('select');
-    var obj = YAMLTangram.getAddressSceneContent(scene, proto.source);
+    var obj = getAddressSceneContent(scene, proto.source);
     var keys = (obj) ? Object.keys(obj) : {};
 
     el.className = 'widget widget-dropdown-dynamic';
@@ -196,7 +195,7 @@ function createDropdownDynamicWidget (cm, proto, content, nline) {
     }
 
     el.addEventListener('change', function (e) {
-        YAMLTangram.setValue( cm, parseInt(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
+        setValue( cm, parseInt(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
     });
     return el;
 }
