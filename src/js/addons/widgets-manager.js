@@ -3,7 +3,14 @@ import { addToken, getAddressSceneContent } from '../core/codemirror/yaml-tangra
 //import {Widget} from './widgets/widget';
 
 // Load some common functions
-import {fetchHTTP, toCSS, getPosition} from '../core/common.js';
+import { fetchHTTP, debounce, toCSS, getPosition} from '../core/common.js';
+
+let wm;
+
+var updateWidgets = debounce(function(sm) {
+    wm.clearAll();
+    wm.createAll();
+}, 1000);
 
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
@@ -18,21 +25,12 @@ export default class WidgetsManager {
             datum.token = addToken(datum);
         }
 
-        let wm = this;
-
-        // Update widgets & content after a batch of changes
-        tangram_play.editor.codemirror.on('changes', function (cm, changes) {
-            wm.clearAll();
-            wm.createAll();
-            wm.update();
-        }(wm));
+        wm = this;
 
         //  When the viewport change (lines are add or erased)
         tangram_play.editor.codemirror.on("viewportChange", function(cm, from, to) {
-            wm.clearAll();
-            wm.createAll();
-            wm.update();
-        }(wm));
+            updateWidgets();
+        });
 
         this.createAll();
         this.update();        
@@ -90,10 +88,6 @@ export default class WidgetsManager {
     }
 
     clear (nLine) {
-
-        // NOTE:
-        //      - use map?
-
         for (let el of this.active) {
             let line = parseInt(el.getAttribute('data-line'), 10);
             if (line === nLine){
@@ -104,9 +98,13 @@ export default class WidgetsManager {
     }
 
     clearAll () {
+        while(this.active.length > 0) {
+            this.active.pop();
+        }
+
         var widgets = document.getElementsByClassName('widget');
-        while (widgets[0]) {
-            widgets[0].parentNode.removeChild(widgets[0]);
+        for (var i = widgets.length-1; i >=0 ; i--){
+            widgets[i].parentNode.removeChild(widgets[i]);
         }
     }
 };

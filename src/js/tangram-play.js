@@ -49,7 +49,7 @@ export default class TangramPlay {
     };
 
     selectLines (rangeStr) {
-        return Editor.selectLines(this.editor,rangeStr);
+        return this.editor.selectLines(rangeStr);
     };
 
     updateSize () {

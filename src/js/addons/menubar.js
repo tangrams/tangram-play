@@ -103,7 +103,7 @@ export default class Menu {
 function openContent (content) {
     var reader = new FileReader();
     reader.onload = function(e) {
-        editor.loadStyle( e.target.result );
+        editor.load( e.target.result );
     }
     reader.readAsText(content);
 }

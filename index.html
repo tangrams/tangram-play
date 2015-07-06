@@ -126,13 +126,8 @@
 
         // Once everything is loaded
         setTimeout(function () {
-            // if (query['foldLevel']) {
-                // Editor.unfoldAll(editor);
-                // Editor.foldByLevel(editor, parseInt(query['foldLevel']));
-            // }
             if (query['lines']) {
                 tangramPlay.selectLines(query['lines']);
-                // Editor.selectLines(editor, query['lines']);
             }
         }, 500);
 
@@ -140,7 +135,7 @@
             document.getElementById('mobile-message').style.display = 'block';
             document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
                 document.getElementById('mobile-message').style.display = 'none';
-                tangramPlay.reflowUI();
+                tangramPlay.divider.reflow();
             });
         }
 

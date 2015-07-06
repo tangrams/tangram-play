@@ -24,6 +24,7 @@ import YAMLTangram from './codemirror/yaml-tangram.js';
 
 // Import Utils
 import { fetchHTTP, debounce } from './common.js';
+import { selectLines } from './codemirror/tools.js';
 
 //  Main CM functions
 //  ===============================================================================
@@ -110,10 +111,6 @@ export default class Editor {
             updateContent(cm);
         });
 
-        // cm.on("mousedown", function(event) {
-        //     // var cursor = editor.getCursor(true);
-        // });
-
         if (style_file){
             this.loadStyle(style_file);
         }
@@ -131,6 +128,10 @@ export default class Editor {
         this.load( fetchHTTP(style_file) );
     };
 
+    selectLines (strRange) {
+        selectLines(this.codemirror, strRange);
+    }
+
     getContent () {
         return this.codemirror.getValue();
     };
@@ -138,4 +139,5 @@ export default class Editor {
     getLineInd (nLine) {
         return getLineInd(this.codemirror,nLine);
     };
+
 };
