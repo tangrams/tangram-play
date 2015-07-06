@@ -44,8 +44,7 @@ function init (tp, configFile) {
         cursor: 'col-resize',
         onDrag: function () {
             reflowUI(tp.editor);
-            Widgets.update(tp.editor);
-            //setWidgetPositions(tp.editor);
+            Widgets.update();
         },
         onDragEnd: function () {
             updateUI(tp);
@@ -265,7 +264,7 @@ function reflowUI (cm) {
 
 function updateUI (tp) {
     tp.map.invalidateSize(false);
-    Widgets.update(tp.editor);
+    Widgets.update();
     applyNewDraggableBounds(draggable[0]);
 }
 

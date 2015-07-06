@@ -140,7 +140,7 @@ function init (place, style_file) {
             Widgets.update(cm);
             //Widgets.updateWidgetsOnEditorChanges(changes);
         }
-        
+
         updateContent(cm);
     });
 
