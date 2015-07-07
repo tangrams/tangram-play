@@ -94,6 +94,9 @@ export default class Editor {
             indentUnit: 4
         });
 
+        // for debug
+        window.editor = this.codemirror;
+
         //  Create a saving state on codemirror
         this.codemirror.isSaved = true;
 

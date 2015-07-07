@@ -39,6 +39,10 @@ export default class TangramPlay {
         if (options.menu) this.addons.menu = new Menu(this, options.menu);
     };
 
+    getCodeMirror() {
+        return this.editor.codemirror;
+    }
+
     selectLines(rangeStr) {
         return this.editor.selectLines(rangeStr);
     };
