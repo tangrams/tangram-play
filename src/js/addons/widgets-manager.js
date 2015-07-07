@@ -1,6 +1,5 @@
 import { setValue, getValue } from '../core/codemirror/tools.js';
 import { addToken, getAddressSceneContent } from '../core/codemirror/yaml-tangram.js';
-// import { Widget } from './widgets/widget';
 
 // Load some common functions
 import { fetchHTTP, toCSS, getPosition} from '../core/common.js';
