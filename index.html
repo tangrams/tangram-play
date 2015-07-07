@@ -113,11 +113,12 @@
         }
 
         // Create an instance of TangramPlay with the following modules
-        var tangramPlay = new TangramPlay({ 
+        var tangramPlay = new TangramPlay("tangram_play_wrapper", { 
                                             style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
                                             menu: 'data/menu.json',
-                                            widgets: 'data/widgets.json',
-                                            suggest: 'data/suggest.json' 
+                                            // suggest: 'data/suggest.json',
+                                            widgets: 'data/widgets.json'
+                                            
                                         });
         
         // Once everything is loaded

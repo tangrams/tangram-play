@@ -1,8 +1,3 @@
-'use strict';
-
-import Editor from './editor.js';
-// import Widgets from '../addons/widgets.js';
-
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/Tweenlite.js';
 import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
@@ -16,7 +11,7 @@ export default class Divider {
 
         this.tangram_play = tangram_play;
 
-        var transformStyle = 'translate3d(' + this.getStartingPosition() + 'px, 0px, 0px)';
+        var transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
         var dividerEl = document.getElementById('divider');
         if (dividerEl.style.hasOwnProperty('transform')) {
             dividerEl.style.transform = transformStyle;
@@ -31,14 +26,14 @@ export default class Divider {
         let divider = this;
         this.draggable = Draggable.create("#divider", {
             type: "x",
-            bounds: this.getBounds(),
+            bounds: getBounds(),
             cursor: 'col-resize',
             onDrag: function () {
                 divider.reflow();
             },
             onDragEnd: function () {
                 divider.update();
-                divider.savePosition();
+                savePosition();
             }
         });
         
@@ -67,39 +62,35 @@ export default class Divider {
 
     update () {
         this.tangram_play.map.leaflet.invalidateSize(false);
-        this.applyBounds(this.draggable[0]);
-    };
+        this.draggable[0].applyBounds( getBounds() );
+    };  
+};
 
-// Private
+// Private functions for dragable panel divider
 
-    getStartingPosition () {
-        var storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
-        if (storedPosition) {
-            return storedPosition
-        }
+function getStartingPosition () {
+    var storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
+    if (storedPosition) {
+        return storedPosition
+    }
 
-        if (window.innerWidth > 1024) {
-            return Math.floor(window.innerWidth * 0.6)
-        } else {
-            return Math.floor(window.innerWidth / 2)
-        }
-    };
+    if (window.innerWidth > 1024) {
+        return Math.floor(window.innerWidth * 0.6)
+    } else {
+        return Math.floor(window.innerWidth / 2)
+    }
+};
 
-    savePosition () {
-        var posX = document.getElementById('divider').getBoundingClientRect().left
-        if (posX) {
-            window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX)
-        }
-    };
+function savePosition () {
+    var posX = document.getElementById('divider').getBoundingClientRect().left
+    if (posX) {
+        window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX)
+    }
+};
 
-    applyBounds (draggable) {
-        draggable.applyBounds(this.getBounds())
-    };
-
-    getBounds () {
-        return {
-            minX: 100,
-            maxX: window.innerWidth - CM_MINIMUM_WIDTH
-        }
-    };
+function getBounds () {
+    return {
+        minX: 100,
+        maxX: window.innerWidth - CM_MINIMUM_WIDTH
+    }
 };

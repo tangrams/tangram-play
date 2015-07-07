@@ -1,16 +1,9 @@
 import { setValue, getValue } from '../core/codemirror/tools.js';
 import { addToken, getAddressSceneContent } from '../core/codemirror/yaml-tangram.js';
-//import {Widget} from './widgets/widget';
+// import { Widget } from './widgets/widget';
 
 // Load some common functions
-import { fetchHTTP, debounce, toCSS, getPosition} from '../core/common.js';
-
-let wm;
-
-var updateWidgets = debounce(function(sm) {
-    wm.clearAll();
-    wm.createAll();
-}, 1000);
+import { fetchHTTP, toCSS, getPosition} from '../core/common.js';
 
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
@@ -25,15 +18,24 @@ export default class WidgetsManager {
             datum.token = addToken(datum);
         }
 
-        wm = this;
+        //  When the viewport change (lines are add or erased)
+        tangram_play.editor.codemirror.on("change", function(cm, changeObj) {
+            if (changeObj.from.line === changeObj.to.line){
+                cm.widgets_manager.update();
+            }
+        });
 
         //  When the viewport change (lines are add or erased)
         tangram_play.editor.codemirror.on("viewportChange", function(cm, from, to) {
-            updateWidgets();
+            cm.widgets_manager.clearAll();
+            cm.widgets_manager.createAll();
         });
 
+        //  Make link to this manager inside codemirror obj to be excecuted from CM events
+        this.tangram_play.editor.codemirror.widgets_manager = this;
+
         this.createAll();
-        this.update();        
+        this.update();
     }
 
     update () {
@@ -102,29 +104,29 @@ export default class WidgetsManager {
             this.active.pop();
         }
 
-        var widgets = document.getElementsByClassName('widget');
-        for (var i = widgets.length-1; i >=0 ; i--){
+        let widgets = document.getElementsByClassName('widget');
+        for (let i = widgets.length-1; i >=0 ; i--){
             widgets[i].parentNode.removeChild(widgets[i]);
         }
     }
 };
 
 function createColorpickerWidget (cm, proto, content, nline) {
-    var btn = document.createElement('div');
+    let btn = document.createElement('div');
     btn.className = 'widget widget-colorpicker';
     btn.value = nline;
     btn.style.background = toCSS(content);
     btn.addEventListener('click', function (e) {
-        var picker = new thistle.Picker(btn.style.background);
+        let picker = new thistle.Picker(btn.style.background);
 
-        var pos = getPosition(btn);
+        let pos = getPosition(btn);
         picker.presentModal(pos.x+20,
                             cm.heightAtLine(parseInt(btn.value))+20);
 
         picker.on('changed', function() {
             btn.style.background = picker.getCSS();
-            var color = picker.getRGB();
-            var str = "["+ color.r.toFixed(3) + "," + color.g.toFixed(3) + "," + color.b.toFixed(3) + "]";
+            let color = picker.getRGB();
+            let str = "["+ color.r.toFixed(3) + "," + color.g.toFixed(3) + "," + color.b.toFixed(3) + "]";
             setValue( cm, parseInt(btn.value), str );
         });
     });
@@ -132,7 +134,7 @@ function createColorpickerWidget (cm, proto, content, nline) {
 }
 
 function createToggleWidget (cm, proto, content, nline) {
-    var check = document.createElement('input');
+    let check = document.createElement('input');
     check.type = 'checkbox';
     check.className = 'widget widget-toggle';
     check.checked = (content === 'true') ? true : false;
@@ -144,11 +146,11 @@ function createToggleWidget (cm, proto, content, nline) {
 }
 
 function createDropdownWidget (cm, proto, content, nline) {
-    var el = document.createElement('select');
+    let el = document.createElement('select');
     el.className = 'widget widget-dropdown';
 
-    for (var i = 0; i < proto.options.length; i++ ) {
-        var newOption = document.createElement('option');
+    for (let i = 0; i < proto.options.length; i++ ) {
+        let newOption = document.createElement('option');
         newOption.value = nline;
         if (content === proto.options[i]) {
             newOption.selected = true;
@@ -164,15 +166,15 @@ function createDropdownWidget (cm, proto, content, nline) {
 }
 
 function createDropdownDynamicWidget (cm, proto, content, nline) {
-    var el = document.createElement('select');
-    var obj = getAddressSceneContent(scene, proto.source);
-    var keys = (obj) ? Object.keys(obj) : {};
+    let el = document.createElement('select');
+    let obj = getAddressSceneContent(scene, proto.source);
+    let keys = (obj) ? Object.keys(obj) : {};
 
     el.className = 'widget widget-dropdown-dynamic';
 
     if (proto.options) {
-        for (var i = 0; i < proto.options.length; i++) {
-            var newOption = document.createElement('option');
+        for (let i = 0; i < proto.options.length; i++) {
+            let newOption = document.createElement('option');
             newOption.value = nline;
             if (content === proto.options[i]) {
                 newOption.selected = true;
@@ -182,8 +184,8 @@ function createDropdownDynamicWidget (cm, proto, content, nline) {
         }
     }
 
-    for (var j = 0; j < keys.length; j++) {
-        var newOption = document.createElement('option');
+    for (let j = 0; j < keys.length; j++) {
+        let newOption = document.createElement('option');
         newOption.value = nline;
         if (content === keys[j]) {
             newOption.selected = true;

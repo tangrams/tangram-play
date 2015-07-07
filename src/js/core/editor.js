@@ -24,28 +24,29 @@ import YAMLTangram from './codemirror/yaml-tangram.js';
 
 // Import Utils
 import { fetchHTTP, debounce } from './common.js';
-import { selectLines } from './codemirror/tools.js';
+import { selectLines, unfoldAll, foldByLevel } from './codemirror/tools.js';
 
 //  Main CM functions
 //  ===============================================================================
 var updateContent = debounce( function(cm) {
-    var createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
+    let createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
 
     //  If doesn't have a API key
     //  inject a Tangram-Play one: vector-tiles-x4i7gmA ( Patricio is the owner )
-    var content = cm.getValue();
-    var pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-    var result = "$1??api_key=vector-tiles-x4i7gmA"
+    let content = cm.getValue();
+    let pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
+    let result = "$1??api_key=vector-tiles-x4i7gmA"
     content = content.replace(pattern, result);
 
     if (scene) {
-        var url = createObjectURL(new Blob([content]));
+        let url = createObjectURL(new Blob([content]));
         scene.reload(url);
     }
 }, 500);
 
 export default class Editor {
-    constructor (place, style_file) {
+
+    constructor(place, style_file) {
 
         // Add rulers
         let rulers = [];
@@ -71,16 +72,16 @@ export default class Editor {
             extraKeys: {"Ctrl-Space": "autocomplete",
                         "Tab": function(cm) { cm.replaceSelection(Array(cm.getOption("indentUnit") + 1).join(" ")); },
                         "Alt-F" : function(cm) { cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder); } ,
-                        "Alt-P" : function(cm) {takeScreenshot();},
-                        "Ctrl-0" : function(cm) {unfoldAll(cm)},
-                        "Ctrl-1" : function(cm) {foldByLevel(cm,0)},
-                        "Ctrl-2" : function(cm) {foldByLevel(cm,1)},
-                        "Ctrl-3" : function(cm) {foldByLevel(cm,2)},
-                        "Ctrl-4" : function(cm) {foldByLevel(cm,3)},
-                        "Ctrl-5" : function(cm) {foldByLevel(cm,4)},
-                        "Ctrl-6" : function(cm) {foldByLevel(cm,5)},
-                        "Ctrl-7" : function(cm) {foldByLevel(cm,6)},
-                        "Ctrl-8" : function(cm) {foldByLevel(cm,7)}
+                        "Alt-P" : function(cm) { takeScreenshot(); },
+                        "Ctrl-0" : function(cm) { unfoldAll(cm) },
+                        "Ctrl-1" : function(cm) { foldByLevel(cm,0) },
+                        "Ctrl-2" : function(cm) { foldByLevel(cm,1) },
+                        "Ctrl-3" : function(cm) { foldByLevel(cm,2) },
+                        "Ctrl-4" : function(cm) { foldByLevel(cm,3) },
+                        "Ctrl-5" : function(cm) { foldByLevel(cm,4) },
+                        "Ctrl-6" : function(cm) { foldByLevel(cm,5) },
+                        "Ctrl-7" : function(cm) { foldByLevel(cm,6) },
+                        "Ctrl-8" : function(cm) { foldByLevel(cm,7) }
             },
             foldGutter: {
                 rangeFinder: CodeMirror.fold.indent
@@ -116,7 +117,7 @@ export default class Editor {
         }
     };
 
-    load (content) {
+    load(content) {
         //  Delete API Key
         content = content.replace(/\?api_key\=(\w|\-)*$/gm,"");
 
@@ -124,19 +125,19 @@ export default class Editor {
         this.codemirror.isSaved = true;
     };
 
-    loadStyle (style_file) {
-        this.load( fetchHTTP(style_file) );
+    loadStyle(style_file) {
+        this.load(fetchHTTP(style_file));
     };
 
-    selectLines (strRange) {
+    selectLines(strRange) {
         selectLines(this.codemirror, strRange);
     }
 
-    getContent () {
+    getContent() {
         return this.codemirror.getValue();
     };
 
-    getLineInd (nLine) {
+    getLineInd(nLine) {
         return getLineInd(this.codemirror,nLine);
     };
 

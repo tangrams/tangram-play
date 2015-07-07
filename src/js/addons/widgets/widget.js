@@ -1,7 +1,7 @@
 'use strict';
 
 export default class Widget {
-    constructor () {
+    constructor (cm, proto, content, nline) {
         this.type = what.type;
     }
 }

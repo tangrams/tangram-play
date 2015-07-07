@@ -5,7 +5,6 @@ import { setValue, getInd, getValue  } from './tools.js';
 
 //  GET Functions
 //  ===============================================================================
-
 export function getKey(cm, nLine) {
     let key = /^\s*([\w|\-|\_]+):/gm.exec(cm.lineInfo(nLine).text);
     return key ? key[1] : "" ;
