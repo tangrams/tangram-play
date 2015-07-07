@@ -1,51 +1,19 @@
-'use strict';
-
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js'
 
-module.exports = {
-    setValue,
-    getKey,
-    getKeyAddress,
-    getValue,
-    getKeySceneContent,
-    getAddressSceneContent,
-    getSpaces,
-    addToken
-}
-
-//  SET Functions
-//  ===============================================================================
-function setValue(cm, nLine, string) {
-    let line = cm.lineInfo(nLine).text;
-    let key = /^\s*(\w+):\s*/gm.exec( line );
-    if (key) {
-        cm.replaceRange(string, {line: nLine, ch:key[0].length}, {line: nLine, ch:line.length});
-    }
-};
+import { setValue, getInd, getValue  } from './tools.js';
 
 //  GET Functions
 //  ===============================================================================
-
-//  Get the spaces of a string
-function getSpaces(str) {
-    let regex = /^(\s+)/gm;
-    let space = regex.exec(str);
-    if (space)
-        return (space[1].match(/\s/g) || []).length;
-    else
-        return 0;
-};
-
-function getKey(cm, nLine) {
+export function getKey(cm, nLine) {
     let key = /^\s*([\w|\-|\_]+):/gm.exec(cm.lineInfo(nLine).text);
     return key ? key[1] : "" ;
 };
 
 // Get array of YAML keys parent tree of a particular line
-function getKeys(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.keys; };
+export function getKeys(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.keys; };
 // Get string of YAML keys in a folder style
-function getKeyAddress(cm, nLine) {
+export function getKeyAddress(cm, nLine) {
     if (cm.lineInfo(nLine).handle.stateAfter &&
         cm.lineInfo(nLine).handle.stateAfter.yamlState &&
         cm.lineInfo(nLine).handle.stateAfter.yamlState.keyAddress) {
@@ -55,14 +23,8 @@ function getKeyAddress(cm, nLine) {
     }
 };
 
-//  Get value of a key pair
-function getValue(cm, nLine) {
-    let value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec( cm.lineInfo(nLine).text );
-    return value ? value[1] : "" ;
-};
-
 // Get the YAML content a specific series of keys (array of strings)
-function getKeySceneContent(tangramScene, cm, nLine) {
+export function getKeySceneContent(tangramScene, cm, nLine) {
     let keys = getKeys(cm, nLine);
     let tmp = tangramScene.config[keys[0]];
     for (let i = 1; i < keys.length; i++) {
@@ -75,7 +37,7 @@ function getKeySceneContent(tangramScene, cm, nLine) {
     return tmp;
 };
 
-function getAddressSceneContent(tangramScene, address) {
+export function getAddressSceneContent(tangramScene, address) {
     if (tangramScene && tangramScene.config) {
         let keys = address.split("/");
         keys.shift();
@@ -101,18 +63,18 @@ function getAddressSceneContent(tangramScene, address) {
 //  ===============================================================================
 
 //  Check if a str ends with a suffix
-function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1;};
+export function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1;};
 
 //  Function that check if a line is inside a Color Shader Block
-function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); };
-function isWidthBlock(address) { return endsWith(address,"shaders/blocks/width"); };
-function isPositionBlock(address) { return endsWith(address,"shaders/blocks/position"); };
-function isNormalBlock(address) { return endsWith(address,"shaders/blocks/normal"); };
-function isColorBlock(address) { return endsWith(address,"shaders/blocks/color"); };
-function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); };
-function isShader(address) { return (isGlobalBlock(address) || isWidthBlock(address)  || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address)); };
+export function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); };
+export function isWidthBlock(address) { return endsWith(address,"shaders/blocks/width"); };
+export function isPositionBlock(address) { return endsWith(address,"shaders/blocks/position"); };
+export function isNormalBlock(address) { return endsWith(address,"shaders/blocks/normal"); };
+export function isColorBlock(address) { return endsWith(address,"shaders/blocks/color"); };
+export function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); };
+export function isShader(address) { return (isGlobalBlock(address) || isWidthBlock(address)  || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address)); };
 
-function isContentJS(tangramScene, address) {
+export function isContentJS(tangramScene, address) {
     if (tangramScene && tangramScene.config) {
         return /\s*[\|]*\s*function\s+\(\s+\)\s*\{/gm.test(getAddressSceneContent(tangramScene, address));
     } else {
@@ -120,7 +82,7 @@ function isContentJS(tangramScene, address) {
     }
 };
 
-function isAfterKey(str,pos) {
+export function isAfterKey(str,pos) {
     let key = /^\s*(\w+):/gm.exec(str);
     if (key === undefined) {
         return true;
@@ -130,7 +92,7 @@ function isAfterKey(str,pos) {
 };
 
 //  Generate a token functions using RegEx
-function addToken( tokenOBJ ){
+export function addToken( tokenOBJ ) {
     let token;
     if ( tokenOBJ['address'] ){
         token = function(scene, cm, nLine) {
@@ -154,13 +116,13 @@ function addToken( tokenOBJ ){
         };
     }
     return token;
-}
+};
 
 //  CONVERT
 //  ===============================================================================
 
 // Make an folder style address from an array of keys
-function keys2Address(keys) {
+export function keys2Address(keys) {
     if (keys) {
          let address = "";
         for ( let i = 0; i < keys.length; i++) {
@@ -215,10 +177,6 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
     let yamlMode = CodeMirror.getMode(config, "yaml");
     let glslMode = CodeMirror.getMode(config, "glsl");
     let jsMode = CodeMirror.getMode(config, "javascript");
-
-    // Don't require at top of this js file, it creates a circular dependency
-    const Editor = require('../core/editor.js');
-    const getInd = Editor.getInd;
 
     function yaml(stream, state) {
         let address = state.yamlState.keyAddress;

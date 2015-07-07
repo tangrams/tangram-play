@@ -37,6 +37,7 @@
     </div>
 
     <div id="tangram_play_wrapper">
+
         <div id='menu-container'>
             <div class='menu-bar'>
                 <h1>Tangram Play</h1>
@@ -112,29 +113,18 @@
         }
 
         // Create an instance of TangramPlay with the following modules
-        var tangramPlay = new TangramPlay({ 
+        var tangramPlay = new TangramPlay("tangram_play_wrapper", { 
                                             style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
-                                            ui: 'data/ui.json',
-                                            widgets: 'data/widgets.json',
-                                            suggestedKeys: 'data/suggestedKeys.json' 
+                                            menu: 'data/menu.json',
+                                            // suggest: 'data/suggest.json',
+                                            widgets: 'data/widgets.json'
+                                            
                                         });
-
-        //  TODO: 
-        //       - ui call should be per event, maybe?
-        //  
-        window.addEventListener('resize', function(){
-            tangramPlay.updateSize();
-        });
-
+        
         // Once everything is loaded
         setTimeout(function () {
-            // if (query['foldLevel']) {
-                // Editor.unfoldAll(editor);
-                // Editor.foldByLevel(editor, parseInt(query['foldLevel']));
-            // }
             if (query['lines']) {
                 tangramPlay.selectLines(query['lines']);
-                // Editor.selectLines(editor, query['lines']);
             }
         }, 500);
 
@@ -142,7 +132,7 @@
             document.getElementById('mobile-message').style.display = 'block';
             document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
                 document.getElementById('mobile-message').style.display = 'none';
-                tangramPlay.reflowUI();
+                tangramPlay.divider.reflow();
             });
         }
 
@@ -176,10 +166,6 @@
 
     </script>
 
-    <!-- Adding a script block to post message to the parent container (think iframed demos) -->
-    <script type="text/javascript">
-      window.addEventListener("hashchange",function(){parent.postMessage(window.location.hash, "*")});
-    </script>
   </body>
 
 </html>
