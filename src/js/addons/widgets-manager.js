@@ -18,20 +18,20 @@ export default class WidgetsManager {
         }
 
         //  When the viewport change (lines are add or erased)
-        tangram_play.editor.codemirror.on("change", function(cm, changeObj) {
+        tangram_play.editor.on("change", function(cm, changeObj) {
             if (changeObj.from.line === changeObj.to.line){
                 cm.widgets_manager.update();
             }
         });
 
         //  When the viewport change (lines are add or erased)
-        tangram_play.editor.codemirror.on("viewportChange", function(cm, from, to) {
+        tangram_play.editor.on("viewportChange", function(cm, from, to) {
             cm.widgets_manager.clearAll();
             cm.widgets_manager.createAll();
         });
 
         //  Make link to this manager inside codemirror obj to be excecuted from CM events
-        this.tangram_play.editor.codemirror.widgets_manager = this;
+        this.tangram_play.editor.widgets_manager = this;
 
         this.createAll();
         this.update();
@@ -40,35 +40,35 @@ export default class WidgetsManager {
     update () {
         for (let el of this.active) {
             let line = parseInt(el.getAttribute('data-line'), 10);
-            let ch = this.tangram_play.editor.codemirror.lineInfo(line).handle.text.length;
-            this.tangram_play.editor.codemirror.addWidget({ line, ch }, el);
+            let ch = this.tangram_play.editor.lineInfo(line).handle.text.length;
+            this.tangram_play.editor.addWidget({ line, ch }, el);
         }
     }
 
     create (nLine) {
-        let val = getValue(this.tangram_play.editor.codemirror, nLine);
+        let val = getValue(this.tangram_play.editor, nLine);
 
         // Skip line if not significant
         if (val === '|' || val === '') return;
 
         // Check for widgets to add
         for (let datum of this.data) {
-            if (datum.token(scene, this.tangram_play.editor.codemirror, nLine)) {
-                let content = getValue(this.tangram_play.editor.codemirror, nLine);
+            if (datum.token(scene, this.tangram_play.editor, nLine)) {
+                let content = getValue(this.tangram_play.editor, nLine);
                 let el;
 
                 switch (datum.type) {
                     case 'colorpicker':
-                        el = createColorpickerWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
+                        el = createColorpickerWidget(this.tangram_play.editor, datum, content, nLine);
                         break;
                     case 'togglebutton':
-                        el = createToggleWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
+                        el = createToggleWidget(this.tangram_play.editor, datum, content, nLine);
                         break;
                     case 'dropdownmenu':
-                        el = createDropdownWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
+                        el = createDropdownWidget(this.tangram_play.editor, datum, content, nLine);
                         break;
                     case 'dropdownmenu-dynamic':
-                        el = createDropdownDynamicWidget(this.tangram_play.editor.codemirror, datum, content, nLine);
+                        el = createDropdownDynamicWidget(this.tangram_play.editor, datum, content, nLine);
                         break;
                     default:
                         // Nothing
@@ -82,7 +82,7 @@ export default class WidgetsManager {
     }
 
     createAll () {
-        for (let line = 0, size = this.tangram_play.editor.codemirror.doc.size; line < size; line++) {
+        for (let line = 0, size = this.tangram_play.editor.doc.size; line < size; line++) {
             this.create(line);
         }
         this.update();

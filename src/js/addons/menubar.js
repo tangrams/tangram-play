@@ -67,7 +67,7 @@ export default class Menu {
 
         window.onpopstate = function (e) {
             if (e.state && e.state.loadStyleURL) {
-                this.tangram_play.loadFromQueryString();
+                this.tangram_play.loadQuery();
             }
         }
     };
@@ -149,7 +149,7 @@ function openExample (value) {
     window.history.pushState({
         loadStyleURL: value
     }, null, '.?style=' + value + window.location.hash);
-    tp.loadFromQueryString();
+    tp.loadQuery();
 }
 
 function parseQuery (qstr) {
@@ -166,13 +166,13 @@ function saveContent () {
     if (editor) {
         var blob = new Blob([ editor.getContent()], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "style.yaml");
-        editor.codemirror.isSaved = true;
+        editor.isSaved = true;
     }
 }
 
 function isEditorSaved () {
     if (editor) {
-        return editor.codemirror.isSaved;
+        return editor.isSaved;
     } else {
         return false;
     }

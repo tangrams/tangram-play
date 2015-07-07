@@ -56,7 +56,7 @@ export default class Divider {
         mapEl.style.width = positionX + "px";
         contentEl.style.width = (window.innerWidth - positionX) + "px";
 
-        this.tangram_play.editor.codemirror.setSize('100%', (window.innerHeight - menuBottom) + 'px');
+        this.tangram_play.editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
         dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
     };
 

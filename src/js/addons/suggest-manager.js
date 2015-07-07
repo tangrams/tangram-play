@@ -23,14 +23,14 @@ export default class SuggestManager {
             this.data[i].token = addToken(this.data[i]);
         }
 
-        this.tangram_play.editor.codemirror.on("cursorActivity", function(cm) {
+        this.tangram_play.editor.on("cursorActivity", function(cm) {
             updateKeys();
         });
     }
 
     suggest (nLine) {
 
-        let cm = this.tangram_play.editor.codemirror;
+        let cm = this.tangram_play.editor;
         let scene = this.tangram_play.map.scene;
 
         let top = cm.getScrollInfo().top;
@@ -101,7 +101,7 @@ export default class SuggestManager {
 
         let node = makeMenu(list, nLine);
 
-        let cm = this.tangram_play.editor.codemirror;
+        let cm = this.tangram_play.editor;
         // Add as a panel on top of codemirror
         // this.active = cm.addPanel(node, options);
 
@@ -110,7 +110,7 @@ export default class SuggestManager {
     };
 
     makeMenu(list, nLine) {
-        let cm = this.tangram_play.editor.codemirror;
+        let cm = this.tangram_play.editor;
         let sm = this;
         let active = this.active;
 
