@@ -43,7 +43,7 @@ export default class WidgetsManager {
         //  When the viewport change (lines are add or erased)
         tangram_play.editor.on("change", function(cm, changeObj) {
             // if (changeObj.from.line === changeObj.to.line) {
-                // cm.widgets_manager.update();
+            //     cm.widgets_manager.update();
             // }
 
             cm.widgets_manager.clearAll();
@@ -69,6 +69,11 @@ export default class WidgetsManager {
             // Check on every key of the line
             for (let key of keys) {
                 let val = key.value;
+                
+                // TODO: 
+                //      - replace this hardcore fix
+                key.pos.line = nLine;
+
                 if (val === '|' || val === '') {
                     continue;
                 }
