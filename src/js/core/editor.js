@@ -44,7 +44,7 @@ var updateContent = debounce( function(cm, changes) {
     }
 }, 500);
 
-export function init(tangram_play, place) {
+export function initEditor(tangram_play, place) {
 
     // Add rulers
     var rulers = [];
@@ -112,105 +112,3 @@ export function init(tangram_play, place) {
 
     return cm;
 };
-
-// export default class Editor {
-
-//     constructor(place, style_file) {
-
-//         // Add rulers
-//         let rulers = [];
-//         for (let i = 1; i < 10; i++) {
-//             let b = Math.round((0.88 + i/90)*255);
-//             rulers.push({   color: 'rgb('+b+','+b+','+b+')',
-//                             column: i * 4,
-//                             lineStyle: "dashed"     });
-//         }
-
-//         // Create DOM (TODO)
-//         let dom = document.getElementById(place);
-
-//         // Initialize CodeMirror
-//         this.codemirror = CodeMirror(dom ,{
-//             value: "Loading...",
-//             rulers: rulers,
-//             lineNumbers: true,
-//             matchBrackets: true,
-//             mode: "text/x-yaml-tangram",
-//             keyMap: "sublime",
-//             autoCloseBrackets: true,
-//             extraKeys: {"Ctrl-Space": "autocomplete",
-//                         "Tab": function(cm) { cm.replaceSelection(Array(cm.getOption("indentUnit") + 1).join(" ")); },
-//                         "Alt-F" : function(cm) { cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder); } ,
-//                         "Alt-P" : function(cm) { takeScreenshot(); },
-//                         "Ctrl-0" : function(cm) { unfoldAll(cm) },
-//                         "Ctrl-1" : function(cm) { foldByLevel(cm,0) },
-//                         "Ctrl-2" : function(cm) { foldByLevel(cm,1) },
-//                         "Ctrl-3" : function(cm) { foldByLevel(cm,2) },
-//                         "Ctrl-4" : function(cm) { foldByLevel(cm,3) },
-//                         "Ctrl-5" : function(cm) { foldByLevel(cm,4) },
-//                         "Ctrl-6" : function(cm) { foldByLevel(cm,5) },
-//                         "Ctrl-7" : function(cm) { foldByLevel(cm,6) },
-//                         "Ctrl-8" : function(cm) { foldByLevel(cm,7) }
-//             },
-//             foldGutter: {
-//                 rangeFinder: CodeMirror.fold.indent
-//             },
-//             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-//             showCursorWhenSelecting: true,
-//             theme: "tangram",
-//             lineWrapping: true,
-//             autofocus: true,
-//             indentUnit: 4
-//         });
-
-//         // for debug
-//         window.editor = this.codemirror;
-
-//         //  Create a saving state on codemirror
-//         this.codemirror.isSaved = true;
-
-//         //  Hook events
-//         //----------------------------
-
-//         //  Update Tangram Map when stop typing
-//         this.codemirror.on('change', function (cm, changeObj) {
-//             if (cm.isSaved) {
-//                 cm.isSaved = false;
-//             }
-//         });
-
-//         // Update content after a batch of changes
-//         this.codemirror.on('changes', function (cm, changes) {
-//             updateContent(cm);
-//         });
-
-//         if (style_file){
-//             this.loadFile(style_file);
-//         }
-//     };
-
-//     loadContent(content) {
-//         //  Delete API Key
-//         content = content.replace(/\?api_key\=(\w|\-)*$/gm,"");
-
-//         this.codemirror.setValue(content);
-//         this.codemirror.isSaved = true;
-//     };
-
-//     loadFile(style_file) {
-//         this.loadContent(fetchHTTP(style_file));
-//     };
-
-//     selectLines(strRange) {
-//         selectLines(this.codemirror, strRange);
-//     }
-
-//     getContent() {
-//         return this.codemirror.getValue();
-//     };
-
-//     getLineInd(nLine) {
-//         return getLineInd(this.codemirror,nLine);
-//     };
-
-// };

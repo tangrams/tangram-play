@@ -1,12 +1,12 @@
 // Core elements
-import Map from './core/map.js';
-import {init} from './core/editor.js';
-import Divider from './core/divider.js';
+import Map from './core/Map.js';
+import {initEditor} from './core/editor.js';
+import Divider from './core/Divider.js';
 
 // Addons
-import Menu from './addons/menubar.js';
-import WidgetsManager from './addons/widgets-manager.js';
-import SuggestManager from './addons/suggest-manager.js';
+import Menu from './addons/Menu.js';
+import WidgetsManager from './addons/WidgetsManager.js';
+import SuggestManager from './addons/SuggestManager.js';
 
 // Import Utils
 import { fetchHTTP, debounce } from './core/common.js';
@@ -26,10 +26,13 @@ export default class TangramPlay {
         // TODO:
         //      - Create DOM for map, divider and editor
 
-        this.map = new Map('map',options.style);
-        this.editor = init(tangram_play, 'editor');
-        this.divider = new Divider(this);
+        this.map = new Map(this,'map',options.style);
+        this.editor = initEditor(this, 'editor');
+        this.divider = new Divider(this, 'divider');
 
+        // for debug
+        window.editor = this.editor;
+        
         //  EVENTS
         let tangram_play = this;
         window.addEventListener('resize', function(){

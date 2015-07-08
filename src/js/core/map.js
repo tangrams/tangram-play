@@ -1,11 +1,10 @@
 export default class Map {
-    constructor(place, style_file){
+    constructor(tangram_play, place, style_file){
         let map_start_location = [0.0, 0.0, 3];
 
         // URL Parsing
 
-        // leaflet-style URL hash pattern:
-        // ?style.yaml#[zoom],[lat],[lng]
+        // leaflet-style URL hash pattern: ?style.yaml#[zoom],[lat],[lng]
         let url_hash = window.location.hash.slice(1).split('/');
         if (url_hash.length == 3) {
             map_start_location = [url_hash[1],url_hash[2], url_hash[0]];
@@ -31,7 +30,6 @@ export default class Map {
         }); 
         this.take_screenshot = false;
 
-
         window.layer = layer;
         window.scene = layer.scene;
 
@@ -41,7 +39,7 @@ export default class Map {
 
         this.leaflet = map;
         this.layer = layer;
-        this.scene = layer.scene;
+        tangram_play.scene = layer.scene;
     };
 
     postUpdate() {

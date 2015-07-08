@@ -7,12 +7,12 @@ const CM_MINIMUM_WIDTH = 160; // integer, in pixels
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 
 export default class Divider {
-    constructor (tangram_play) {
+    constructor (tangram_play, place) {
 
         this.tangram_play = tangram_play;
 
         var transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
-        var dividerEl = document.getElementById('divider');
+        var dividerEl = document.getElementById(place);
         if (dividerEl.style.hasOwnProperty('transform')) {
             dividerEl.style.transform = transformStyle;
         } else if (dividerEl.style.hasOwnProperty('webkitTransform')) {

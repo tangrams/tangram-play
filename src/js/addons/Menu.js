@@ -16,8 +16,8 @@ export default class Menu {
         this.loadExamples(configFile);
 
         document.getElementById('menu-button-open').addEventListener('click', function (e) {
-            var menuEl = document.getElementById('menu-open')
-            var posX = document.getElementById('menu-button-open').getBoundingClientRect().left
+            let menuEl = document.getElementById('menu-open')
+            let posX = document.getElementById('menu-button-open').getBoundingClientRect().left
             menuEl.style.left = posX + 'px'
             menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block'
             document.body.addEventListener('click', onClickOutsideDropdown, false)
@@ -82,7 +82,7 @@ export default class Menu {
             let nameEl = document.createElement('div');
             let name = example['name'].split('.')[0];
             let thumbnailEl = document.createElement('div');
-            //var imgEl = document.createElement('img');
+            //let imgEl = document.createElement('img');
             newOption.className = 'example-option';
             newOption.setAttribute('data-value', example['url']);
             nameEl.className = 'example-option-name';
@@ -101,9 +101,9 @@ export default class Menu {
 };
 
 function openContent (content) {
-    var reader = new FileReader();
+    let reader = new FileReader();
     reader.onload = function(e) {
-        editor.load( e.target.result );
+        tangramPlay.loadContent( e.target.result );
     }
     reader.readAsText(content);
 }
@@ -129,7 +129,7 @@ function newContent () {
 }
 
 function selectExample(event) {
-    var target = event.target;
+    let target = event.target;
     while (!target.classList.contains('example-option')) {
         target = target.parentNode;
     }
@@ -139,8 +139,8 @@ function selectExample(event) {
 }
 
 function resetExamples () {
-    var all = document.querySelectorAll('.example-option');
-    for (var i = 0, j = all.length; i < j; i++) {
+    let all = document.querySelectorAll('.example-option');
+    for (let i = 0, j = all.length; i < j; i++) {
         all[i].classList.remove('example-selected');
     }
 }
@@ -153,10 +153,10 @@ function openExample (value) {
 }
 
 function parseQuery (qstr) {
-    var query = {};
-    var a = qstr.split('&');
-    for (var i in a) {
-        var b = a[i].split('=');
+    let query = {};
+    let a = qstr.split('&');
+    for (let i in a) {
+        let b = a[i].split('=');
         query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
     }
     return query;
@@ -164,7 +164,7 @@ function parseQuery (qstr) {
 
 function saveContent () {
     if (editor) {
-        var blob = new Blob([ editor.getContent()], {type: "text/plain;charset=utf-8"});
+        let blob = new Blob([ tp.getContent()], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "style.yaml");
         editor.isSaved = true;
     }
@@ -195,7 +195,7 @@ function hideShield () {
 
 function showUnsavedModal (confirmCallback, cancelCallback) {
     showShield()
-    var modalEl = document.getElementById('confirm-unsaved')
+    let modalEl = document.getElementById('confirm-unsaved')
     modalEl.style.display = 'block'
     modalEl.querySelector('#modal-confirm').addEventListener('click', handleConfirm, false)
     modalEl.querySelector('#modal-cancel').addEventListener('click', handleCancel, false)
@@ -219,8 +219,8 @@ function showUnsavedModal (confirmCallback, cancelCallback) {
 }
 
 function hideMenus () {
-    var els = document.querySelectorAll('.menu-dropdown');
-    for (var i = 0, j = els.length; i < j; i++) {
+    let els = document.querySelectorAll('.menu-dropdown');
+    for (let i = 0, j = els.length; i < j; i++) {
         els[i].style.display = 'none';
     }
     document.body.removeEventListener('click', onClickOutsideDropdown, false);
@@ -251,7 +251,7 @@ function onClickOpenFile (event) {
     }
 
     function handleContinue () {
-        var input = document.getElementById('file-selector');
+        let input = document.getElementById('file-selector');
         input.click();
     }
 
@@ -289,8 +289,8 @@ function hideExamplesModal () {
 }
 
 function onClickOpenExampleFromDialog () {
-    var selected = document.querySelectorAll('.example-option.example-selected')[0];
-    var value = selected.getAttribute('data-value');
+    let selected = document.querySelectorAll('.example-option.example-selected')[0];
+    let value = selected.getAttribute('data-value');
     hideExamplesModal();
     openExample(value);
 }
@@ -306,9 +306,9 @@ function hideFileDropArea () {
 function onDropFile (event) {
     event.preventDefault();
     hideFileDropArea();
-    var dataTransfer = event.dataTransfer;
+    let dataTransfer = event.dataTransfer;
     if (dataTransfer.files.length > 0) {
-        var file = dataTransfer.files[0];
+        let file = dataTransfer.files[0];
         if (isEditorSaved() === false) {
             showUnsavedModal(handleContinue, handleCancel);
         } else {
