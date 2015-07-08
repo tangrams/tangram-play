@@ -73,17 +73,17 @@
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
-            "type" : "dropdownmenu-dynamic",
+            "type" : "dropdownmenu",
             "source": "/sources"
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/mix$",
-            "type" : "dropdownmenu-dynamic",
+            "type" : "dropdownmenu",
             "source": "/styles"
         },
         {
             "address": "^/layers/(\\w+|\\_|\\-)(/extruded)?/draw/(\\w|\\_|\\-)+/style$",
-            "type" : "dropdownmenu-dynamic",
+            "type" : "dropdownmenu",
             "source": "/styles",
             "options": ["points", "lines", "polygons", "text"]
         }

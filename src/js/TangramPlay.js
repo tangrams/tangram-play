@@ -52,7 +52,6 @@ export default class TangramPlay {
 
 //  SET
     loadContent(str) {
-
         //  Delete API Key (TODO: check with the actual user and take out the onces that don't belong to the user)
         str = str.replace(/\?api_key\=(\w|\-)*$/gm,"");
 

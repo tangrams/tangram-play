@@ -1,17 +1,27 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js'
 
-import { setValue, getInd, getValue  } from './tools.js';
+// Load some common functions
+import { setValue, getInd, getValue } from './tools.js';
 
 //  GET Functions
 //  ===============================================================================
-function getKey(cm, nLine) {
-    let key = /^\s*([\w|\-|\_]+):/gm.exec(cm.lineInfo(nLine).text);
-    return key ? key[1] : "" ;
-};
 
 // Get array of YAML keys parent tree of a particular line
-function getKeys(cm, nLine) { return cm.lineInfo(nLine).handle.stateAfter.yamlState.keys; };
+export function getKeyPairs(cm, nLine) { 
+    if (cm.lineInfo(nLine).handle.stateAfter &&
+        cm.lineInfo(nLine).handle.stateAfter.yamlState && 
+        cm.lineInfo(nLine).handle.stateAfter.yamlState.keys ){
+        return cm.lineInfo(nLine).handle.stateAfter.yamlState.keys;
+    } else {
+        return [];
+    }
+};
+
+export function getValueRange(keyPair) {
+    return {    from: { line: keyPair.pos.line, ch: keyPair.pos.ch + 2 },
+                to: {   line: keyPair.pos.line, ch: keyPair.pos.ch + 2 + keyPair.value.length } };
+}
 
 function getKeyAddressFromState( state ) {
     if ( state.keyAddress ) {
@@ -35,20 +45,6 @@ function getKeyAddress(cm, nLine) {
     } else {
         return "/";
     }
-};
-
-// Get the YAML content a specific series of keys (array of strings)
-function getKeySceneContent(tangramScene, cm, nLine) {
-    let keys = getKeys(cm, nLine);
-    let tmp = tangramScene.config[keys[0]];
-    for (let i = 1; i < keys.length; i++) {
-        if (tmp[ keys[i] ]) {
-            tmp = tmp[ keys[i] ];
-        } else {
-            return tmp;
-        }
-    }
-    return tmp;
 };
 
 export function getAddressSceneContent(tangramScene, address) {
@@ -90,7 +86,7 @@ function isShader(address) { return (isGlobalBlock(address) || isWidthBlock(addr
 
 function isContentJS(tangramScene, address) {
     if (tangramScene && tangramScene.config) {
-        return /\s*[\|]*\s*function\s+\(\s+\)\s*\{/gm.test(getAddressSceneContent(tangramScene, address));
+        return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(getAddressSceneContent(tangramScene, address));
     } else {
         return false;
     }
@@ -105,34 +101,7 @@ function isAfterKey(str,pos) {
     }
 };
 
-//  Generate a token functions using RegEx
-export function addToken( tokenOBJ ) {
-    let token;
-    if ( tokenOBJ['address'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['address'] ).test( getKeyAddress(cm, nLine) );
-        };
-    } else if ( tokenOBJ['key'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['key'] ).test( getKey(cm, nLine) );
-        };
-    } else if ( tokenOBJ['value'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['value'] ).test( getValue(cm, nLine) );
-        };
-    } else if ( tokenOBJ['content'] ){
-        token = function(scene, cm, nLine) {
-            return RegExp( tokenOBJ['content'] ).test( getKeySceneContent(scene, cm, nLine) );
-        };
-    } else {
-        token = function(scene, cm, nLine) {
-            return false;
-        };
-    }
-    return token;
-};
-
-//  CONVERT
+//  Special Tangram YAML Parser
 //  ===============================================================================
 
 // Make an folder style address from an array of keys
@@ -148,7 +117,8 @@ function keys2Address(keys) {
     }
 };
 
-function getInlineKeys(str) {
+// Given a YAML string return an array of keys
+function getInlineKeys(str, nLine) {
     let rta = [];
     let keys = [];
     let i = 0;
@@ -170,7 +140,7 @@ function getInlineKeys(str) {
             if (isKey) {
                 keys[level] = isKey[1];
                 i += isKey[1].length;
-                rta.push( { address: keys2Address(keys), key: isKey[1], value: isKey[2] });
+                rta.push( { address: keys2Address(keys), key: isKey[1], value: isKey[2], pos: { line: nLine, ch: i+1 } } );
             }
         }
 
@@ -178,9 +148,6 @@ function getInlineKeys(str) {
     }
     return rta;
 };
-
-//  YAML
-//  ===============================================================================
 
 // Add Address to token states
 function yamlAddressing(stream, state) {
@@ -212,20 +179,24 @@ function yamlAddressing(stream, state) {
             state.keyLevel = level;
 
             let address = keys2Address(state.keyStack);
-            state.keys = [ { address : address, key: key[2], value: key[3] } ];
+            let ch = spaces+key[2].length;
 
             if ( key[3].substr(0,1) === "{" ){
-                let subKeys = getInlineKeys(key[3]);
+                state.keys = [ { address : address, key: key[2], value: "", pos: { line: state.line, ch: ch } } ];
+
+                let subKeys = getInlineKeys(key[3], state.line);
                 for (let i = 0; i < subKeys.length; i++){
                     subKeys[i].address = address + subKeys[i].address
+                    subKeys[i].pos.ch = ch + 2 + subKeys[i].pos.ch;
                     state.keys.push(subKeys[i]);
                 }
+            } else {
+                state.keys = [ { address : address, key: key[2], value: key[3], pos: { line: state.line, ch: ch } } ];
             }
         }
+        state.line++;
     }
 };
-
-
 
 //  YAML-TANGRAM
 //  ===============================================================================
@@ -243,7 +214,7 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
 
             if (isShader(address) &&
                 !/^\|$/g.test(stream.string) &&
-                isAfterKey(stream.string,stream.pos)) {
+                isAfterKey(stream.string,stream.pos) ) {
                 state.token = glsl;
                 state.localMode = glslMode;
                 state.localState = glslMode.startState(getInd(stream.string));
@@ -292,6 +263,7 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
             let state = yamlMode.startState();
             state.keyStack = [];
             state.keyLevel = -1;
+            state.line = 0;
             return {
                     token: yaml,
                     localMode: null,
@@ -302,7 +274,6 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
         copyState: function(state) {
             if (state.localState)
                 var local = CodeMirror.copyState(state.localMode, state.localState);
-
             return {
                     token: state.token,
                     localMode: state.localMode,
