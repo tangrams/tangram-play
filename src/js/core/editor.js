@@ -21,6 +21,7 @@ import 'codemirror/mode/javascript/javascript';
 // Import additional parsers
 import GLSLTangram from './codemirror/glsl-tangram.js';
 import YAMLTangram from './codemirror/yaml-tangram.js';
+import { getKeyPairs } from '../core/codemirror/yaml-tangram.js';
 
 // Import Utils
 import { fetchHTTP, debounce } from './common.js';
@@ -28,7 +29,7 @@ import { selectLines, unfoldAll, foldByLevel } from './codemirror/tools.js';
 
 //  Main CM functions
 //  ===============================================================================
-var updateContent = debounce( function(cm) {
+var updateContent = debounce( function(cm, changes) {
     let createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
 
     //  If doesn't have a API key
@@ -44,101 +45,71 @@ var updateContent = debounce( function(cm) {
     }
 }, 500);
 
-export default class Editor {
+export function initEditor(tangram_play, place) {
 
-    constructor(place, style_file) {
-
-        // Add rulers
-        let rulers = [];
-        for (let i = 1; i < 10; i++) {
-            let b = Math.round((0.88 + i/90)*255);
-            rulers.push({   color: 'rgb('+b+','+b+','+b+')',
-                            column: i * 4,
-                            lineStyle: "dashed"     });
-        }
-
-        // Create DOM (TODO)
-        let dom = document.getElementById(place);
-
-        // Initialize CodeMirror
-        this.codemirror = CodeMirror(dom ,{
-            value: "Loading...",
-            rulers: rulers,
-            lineNumbers: true,
-            matchBrackets: true,
-            mode: "text/x-yaml-tangram",
-            keyMap: "sublime",
-            autoCloseBrackets: true,
-            extraKeys: {"Ctrl-Space": "autocomplete",
-                        "Tab": function(cm) { cm.replaceSelection(Array(cm.getOption("indentUnit") + 1).join(" ")); },
-                        "Alt-F" : function(cm) { cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder); } ,
-                        "Alt-P" : function(cm) { takeScreenshot(); },
-                        "Ctrl-0" : function(cm) { unfoldAll(cm) },
-                        "Ctrl-1" : function(cm) { foldByLevel(cm,0) },
-                        "Ctrl-2" : function(cm) { foldByLevel(cm,1) },
-                        "Ctrl-3" : function(cm) { foldByLevel(cm,2) },
-                        "Ctrl-4" : function(cm) { foldByLevel(cm,3) },
-                        "Ctrl-5" : function(cm) { foldByLevel(cm,4) },
-                        "Ctrl-6" : function(cm) { foldByLevel(cm,5) },
-                        "Ctrl-7" : function(cm) { foldByLevel(cm,6) },
-                        "Ctrl-8" : function(cm) { foldByLevel(cm,7) }
-            },
-            foldGutter: {
-                rangeFinder: CodeMirror.fold.indent
-            },
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            showCursorWhenSelecting: true,
-            theme: "tangram",
-            lineWrapping: true,
-            autofocus: true,
-            indentUnit: 4
-        });
-
-        //  Create a saving state on codemirror
-        this.codemirror.isSaved = true;
-
-        //  Hook events
-        //----------------------------
-
-        //  Update Tangram Map when stop typing
-        this.codemirror.on('change', function (cm, changeObj) {
-            if (cm.isSaved) {
-                cm.isSaved = false;
-            }
-        });
-
-        // Update content after a batch of changes
-        this.codemirror.on('changes', function (cm, changes) {
-            updateContent(cm);
-        });
-
-        if (style_file){
-            this.loadStyle(style_file);
-        }
-    };
-
-    load(content) {
-        //  Delete API Key
-        content = content.replace(/\?api_key\=(\w|\-)*$/gm,"");
-
-        this.codemirror.setValue(content);
-        this.codemirror.isSaved = true;
-    };
-
-    loadStyle(style_file) {
-        this.load(fetchHTTP(style_file));
-    };
-
-    selectLines(strRange) {
-        selectLines(this.codemirror, strRange);
+    // Add rulers
+    var rulers = [];
+    for (var i = 1; i < 10; i++) {
+        var b = Math.round((0.88 + i/90)*255);
+        rulers.push({   color: 'rgb('+b+','+b+','+b+')',
+                        column: i * 4,
+                        lineStyle: "dashed"     });
     }
 
-    getContent() {
-        return this.codemirror.getValue();
-    };
+    // Create DOM (TODO)
+    var dom = document.getElementById(place);
 
-    getLineInd(nLine) {
-        return getLineInd(this.codemirror,nLine);
-    };
+    // Initialize CodeMirror
+    var cm = CodeMirror(dom ,{
+        value: "Loading...",
+        rulers: rulers,
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-yaml-tangram",
+        keyMap: "sublime",
+        autoCloseBrackets: true,
+        extraKeys: {"Ctrl-Space": "autocomplete",
+                    "Tab": function(cm) { cm.replaceSelection(Array(cm.getOption("indentUnit") + 1).join(" ")); },
+                    "Alt-F" : function(cm) { cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder); } ,
+                    "Alt-P" : function(cm) {takeScreenshot();},
+                    "Ctrl-0" : function(cm) {unfoldAll(cm)},
+                    "Ctrl-1" : function(cm) {foldByLevel(cm,0)},
+                    "Ctrl-2" : function(cm) {foldByLevel(cm,1)},
+                    "Ctrl-3" : function(cm) {foldByLevel(cm,2)},
+                    "Ctrl-4" : function(cm) {foldByLevel(cm,3)},
+                    "Ctrl-5" : function(cm) {foldByLevel(cm,4)},
+                    "Ctrl-6" : function(cm) {foldByLevel(cm,5)},
+                    "Ctrl-7" : function(cm) {foldByLevel(cm,6)},
+                    "Ctrl-8" : function(cm) {foldByLevel(cm,7)}
+        },
+        foldGutter: {
+            rangeFinder: CodeMirror.fold.indent
+        },
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        showCursorWhenSelecting: true,
+        theme: "tangram",
+        lineWrapping: true,
+        autofocus: true,
+        indentUnit: 4
+    });
 
+    cm.tangram_play = tangram_play;
+    cm.isSaved = true;
+
+    //  Hook events
+
+    // Update widgets & content after a batch of changes
+    cm.on('changes', function (cm, changes) {
+        if (cm.isSaved) {
+            cm.isSaved = false;
+        }
+        
+        updateContent(cm, changes);
+    });
+
+    cm.getLineInd = function(nLine){
+        return getLineInd(this,nLine);
+    }
+
+    return cm;
 };
