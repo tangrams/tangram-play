@@ -9,10 +9,10 @@ export default class ColorPicker extends Widget {
         super(manager,datum);
     }
 
-    create(keyPair, cm, nLine) {
+    create(keyPair, cm) {
         let el = document.createElement('div');
         el.className = 'widget widget-colorpicker';
-        el.value = nLine;//keyPair.pos.line;
+        el.value = keyPair.pos.line;
         el.style.background = toCSS(keyPair.value);
         el.addEventListener('click', function (e) {
             let picker = new thistle.Picker(el.style.background);

@@ -8,12 +8,12 @@ export default class ToggleButton extends Widget {
         super(manager,datum);
     }
 
-    create(keyPair, cm, nLine) {
+    create(keyPair, cm) {
         let el = document.createElement('input');
         el.type = 'checkbox';
         el.className = 'widget widget-toggle';
         el.checked = (keyPair.value === 'true') ? true : false;
-        el.value = nLine;
+        el.value = keyPair.pos.line;
         el.addEventListener('change', function (e) {
             setValue(cm, parseInt(el.value), el.checked?"true":"false" );
         });

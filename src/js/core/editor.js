@@ -103,9 +103,6 @@ export function initEditor(tangram_play, place) {
         if (cm.isSaved) {
             cm.isSaved = false;
         }
-
-        // TODO: temporal
-        fixKeyLines(cm);
         
         updateContent(cm, changes);
     });
@@ -116,12 +113,3 @@ export function initEditor(tangram_play, place) {
 
     return cm;
 };
-
-function fixKeyLines(cm) {
-    for (let line = 0; line < cm.doc.size; line++) {
-        let keys = getKeyPairs(cm, line);
-        for (let i = 0; i < keys.length; i++) {
-            keys[i].pos.line = line;
-        }
-    }
-}

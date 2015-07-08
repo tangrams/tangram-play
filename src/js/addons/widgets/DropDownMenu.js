@@ -16,14 +16,14 @@ export default class DropDownMenu extends Widget {
         }
     }
 
-    create(keyPair, cm, nLine) {
+    create(keyPair, cm) {
         let el = document.createElement('select');
         el.className = 'widget widget-dropdown-dynamic';
 
         if (this.options) {
             for (let i = 0; i < this.options.length; i++) {
                 let newOption = document.createElement('option');
-                newOption.value = nLine;//keyPair.pos.line;
+                newOption.value = keyPair.pos.line;
                 if (keyPair.value === this.options[i]) {
                     newOption.selected = true;
                 }
@@ -38,7 +38,7 @@ export default class DropDownMenu extends Widget {
 
             for (let j = 0; j < keys.length; j++) {
                 let newOption = document.createElement('option');
-                newOption.value = nLine;//keyPair.pos.line;
+                newOption.value = keyPair.pos.line;
                 if (keyPair.value === keys[j]) {
                     newOption.selected = true;
                 }

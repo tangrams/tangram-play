@@ -194,7 +194,6 @@ function yamlAddressing(stream, state) {
                 state.keys = [ { address : address, key: key[2], value: key[3], pos: { line: state.line, ch: ch } } ];
             }
         }
-        state.line++;
     }
 };
 
@@ -232,6 +231,11 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
                 return js(stream, state);
             }
         }
+
+        if (stream.pos === 0) {
+            state.yamlState.line++;    
+        }
+
         return yamlMode.token(stream, state.yamlState);
     };
 
@@ -241,6 +245,9 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
             state.token = yaml;
             state.localState = state.localMode = null;
             return null;
+        }
+        if (stream.pos === 0) {
+            state.yamlState.line++;    
         }
         return glslMode.token(stream, state.localState);
     };
@@ -254,6 +261,9 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
             state.token = yaml;
             state.localState = state.localMode = null;
             return null;
+        }
+        if (stream.pos === 0) {
+            state.yamlState.line++;    
         }
         return jsMode.token(stream, state.localState);
     };
@@ -272,8 +282,9 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
                 };
         },
         copyState: function(state) {
-            if (state.localState)
+            if (state.localState) {
                 var local = CodeMirror.copyState(state.localMode, state.localState);
+            }
             return {
                     token: state.token,
                     localMode: state.localMode,
