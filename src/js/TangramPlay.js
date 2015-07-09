@@ -11,7 +11,7 @@ import SuggestManager from './addons/SuggestManager.js';
 // Import Utils
 import { fetchHTTP, debounce } from './core/common.js';
 import { selectLines, unfoldAll, foldByLevel } from './core/codemirror/tools.js';
-
+import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codemirror/yaml-tangram.js';
 
 export default class TangramPlay {
 
@@ -75,6 +75,15 @@ export default class TangramPlay {
         this.loadFile(src);
     };
 
+// SET
+    setValue(KeyPair, str){
+        let range = getValueRange(KeyPair);
+        if (KeyPair.value === ""){
+            str = " " + str;
+        }
+        this.editor.doc.replaceRange(str,range.from,range.to);
+    }
+
 // GET
     getContent() {
         let content = this.editor.getValue();
@@ -83,6 +92,27 @@ export default class TangramPlay {
         content = content.replace(pattern, result);
         return content;
     }
+
+    getKeysOnLine(nLine) {
+        return getKeyPairs(this.editor, nLine);
+    }
+
+    getKeyForStr(str) {
+        let pos = str.split("-");
+        if (pos.length === 2){
+            let keys = this.getKeysOnLine(parseInt(pos[0]));
+            let index = parseInt(pos[1]);
+            if (keys && index < keys.length ){
+                return keys[index];
+            }
+        }
+    }
+
+    getAddressContent(address) {
+        return getAddressSceneContent(this.scene,address);
+    }
+
+// Check
 
 // Other actions
     selectLines(strRange) {

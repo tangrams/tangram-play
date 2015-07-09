@@ -47,8 +47,8 @@ export default class WidgetsManager {
 
         //  When there is a change
         tangram_play.editor.on("changes", function(cm, changesObj) {
-                cm.widgets_manager.update();
-                stopTyping(cm);
+            cm.widgets_manager.update();
+            stopTyping(cm);
         });
 
         // When the viewport change (lines are add or erased)
@@ -57,7 +57,6 @@ export default class WidgetsManager {
         });
 
         tangram_play.editor.on("gutterClick", function(cm, line, gutter, ev) {
-            console.log(gutter);
             if (gutter === "CodeMirror-foldgutter"){
                 cm.widgets_manager.rebuild();
             }
@@ -89,7 +88,7 @@ export default class WidgetsManager {
 
     addWidgetsTo(nLine) {
         // If is visible
-        if (this.tangram_play.editor.getLineHandle(nLine).height) {
+        if (this.tangram_play.editor.getLineHandle(nLine) && this.tangram_play.editor.getLineHandle(nLine).height) {
             // Get keys of the line
             let keys = getKeyPairs(this.tangram_play.editor, nLine);
             if (keys) {

@@ -27,7 +27,7 @@ export function getKeyPairs(cm, nLine) {
 };
 
 export function getValueRange(keyPair) {
-    return {    from: { line: keyPair.pos.line, ch: keyPair.pos.ch + 2 },
+    return {    from: { line: keyPair.pos.line, ch: keyPair.pos.ch + 2},
                 to: {   line: keyPair.pos.line, ch: keyPair.pos.ch + 2 + keyPair.value.length } };
 }
 
@@ -144,12 +144,17 @@ function getInlineKeys(str, nLine) {
             level--;
         } else {
             // check for keypair
-            let isKey = /^\s*([\w|\-|\_|\$]+):\s*([\w]*)\s*/gm.exec( str.substr(i) );
+            let isKey = /^\s*([\w|\-|\_|\$]+):\s*([\w|\'|\#]*)\s*/gm.exec( str.substr(i) );
             if (isKey) {
                 keys[level] = isKey[1];
                 i += isKey[1].length;
                 rta.push( { address: keys2Address(keys), key: isKey[1], value: isKey[2], pos: { line: nLine, ch: i+1 }, index: rta.length+1 } );
             }
+        }
+
+        var isVector = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
+        if (isVector && rta.length > 0 ){
+            rta[rta.length-1].value = isVector[0];
         }
 
         i++;
@@ -201,15 +206,7 @@ function yamlAddressing(stream, state) {
             } else {
                 state.keys = [ { address : address, key: key[2], value: key[3], pos: { line: state.line, ch: ch }, index: 0 } ];
             }
-        } 
-        // else {
-        //     if (state.address) {
-        //         state.keys = [ { address : state.address, key: state.key, value: "", pos: state.pos , index: 0 } ];
-        //     } else {
-        //         state.keys = [ { address : "/", key: "", value: "", pos: {line: 0, ch: 0} , index: 0 } ];
-        //     }
-            
-        // }
+        }
     }
 };
 //  YAML-TANGRAM

@@ -13,9 +13,10 @@ export default class ToggleButton extends Widget {
         el.type = 'checkbox';
         el.className = 'widget widget-toggle';
         el.checked = (keyPair.value === 'true') ? true : false;
-        el.value = keyPair.pos.line;
+        el.value = String(keyPair.pos.line) + "-" + String(keyPair.index);
         el.addEventListener('change', function (e) {
             setValue(cm, parseInt(el.value), el.checked?"true":"false" );
+            cm.tangram_play.setValue(cm.tangram_play.getKeyForStr(el.value), el.checked?"true":"false" );
         });
         return this.wrap(el,keyPair);
     }
