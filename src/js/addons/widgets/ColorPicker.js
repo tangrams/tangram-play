@@ -28,6 +28,6 @@ export default class ColorPicker extends Widget {
                 setValue( cm, parseInt(el.value), str );
             });
         });
-        return { dom: el, range: getValueRange(keyPair) };
+        return this.wrap(el,keyPair);
     }
 };

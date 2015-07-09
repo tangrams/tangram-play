@@ -77,7 +77,8 @@ export function selectLines(cm, rangeString) {
     }
 
     cm.setSelection({ line: from, ch:0},
-                    { line: to, ch:cm.lineInfo(to).text.length } );
+                    { line: to, ch: cm.getLine(to).length } );
+    
     jumpToLine(cm,from);
 };
 

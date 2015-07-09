@@ -40,6 +40,12 @@ export default class TangramPlay {
             tangram_play.divider.update();
         });
 
+        setTimeout(function () {
+            if (query['lines']) {
+                tangramPlay.selectLines(query['lines']);
+            }
+        }, 500);
+
         //  ADDONS
         this.addons = {};
         if (options.widgets) this.addons.widgets_manager = new WidgetsManager(this, options.widgets);
@@ -80,8 +86,20 @@ export default class TangramPlay {
 
 // Other actions
     selectLines(strRange) {
-        selectLines(this.editor.codemirror, strRange);
+        selectLines(this.editor, strRange);
     };
+
+    foldByLevel(nLevel) {
+        foldByLevel(this.editor, strRange);
+    }
+
+    unfoldAll() {
+        unfoldAll(this.editor);
+    }
+
+    takeScreenshot() {
+        this.map.takeScreenshot();
+    }
 };
 
 window.TangramPlay = TangramPlay;

@@ -20,4 +20,8 @@ export default class Widget {
             return false;
         }
     }
+
+    wrap(dom, keyPair) {
+        return { dom: dom, line: keyPair.pos.line, index: keyPair.index };
+    }
 };
