@@ -178,13 +178,6 @@ function isEditorSaved () {
     }
 }
 
-function takeScreenshot() {
-    if (take_screenshot == false){
-        take_screenshot = true;
-        scene.requestRedraw();
-    }
-}
-
 function showShield () {
     document.getElementById('shield').style.display = 'block'
 }

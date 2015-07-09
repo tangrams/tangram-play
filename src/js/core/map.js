@@ -1,3 +1,7 @@
+import { saveAS } from "../vendor/FileSaver.min.js"
+
+var take_screenshot = false;
+
 export default class Map {
     constructor(tangram_play, place, style_file){
         let map_start_location = [0.0, 0.0, 3];
@@ -25,9 +29,10 @@ export default class Map {
         // Add Tangram Layer
         let layer = Tangram.leafletLayer({
             scene: style_file,
-            postUpdate: this.postUpdate,
+            postUpdate: postUpdate,
             attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
         }); 
+
         this.take_screenshot = false;
 
         window.layer = layer;
@@ -42,20 +47,26 @@ export default class Map {
         tangram_play.scene = layer.scene;
     };
 
-    postUpdate() {
-        if (this.take_screenshot == true) {
-
-            // Adapted from: https://gist.github.com/unconed/4370822
-            let image = scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
-            let data = atob(image); // convert base64 to binary without UTF-8 mangling
-            let buf = new Uint8Array(data.length);
-            for (let i = 0; i < data.length; ++i) {
-                buf[i] = data.charCodeAt(i);
-            }
-            let blob = new Blob([buf], { type: 'image/png' });
-            saveAs(blob, 'tangram-' + (+new Date()) + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
-
-            this.take_screenshot = false;
+    takeScreenshot() {
+        if (!take_screenshot) {
+            take_screenshot = true;
+            this.layer.scene.requestRedraw();
         }
-    };
+    }
 };
+
+function postUpdate() {
+    if (take_screenshot == true) {
+        // Adapted from: https://gist.github.com/unconed/4370822
+        var image = scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
+        var data = atob(image); // convert base64 to binary without UTF-8 mangling
+        var buf = new Uint8Array(data.length);
+        for (var i = 0; i < data.length; ++i) {
+            buf[i] = data.charCodeAt(i);
+        }
+        var blob = new Blob([buf], { type: 'image/png' });
+        saveAs(blob, 'tangram-' + (+new Date()) + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
+
+        take_screenshot = false;
+    }
+}

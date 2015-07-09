@@ -17,6 +17,6 @@ export default class ToggleButton extends Widget {
         el.addEventListener('change', function (e) {
             setValue(cm, parseInt(el.value), el.checked?"true":"false" );
         });
-        return { dom: el, range: getValueRange(keyPair) };
+        return this.wrap(el,keyPair);
     }
 };

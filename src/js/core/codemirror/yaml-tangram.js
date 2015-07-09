@@ -9,10 +9,18 @@ import { setValue, getInd, getValue } from './tools.js';
 
 // Get array of YAML keys parent tree of a particular line
 export function getKeyPairs(cm, nLine) { 
-    if (cm.lineInfo(nLine).handle.stateAfter &&
-        cm.lineInfo(nLine).handle.stateAfter.yamlState && 
-        cm.lineInfo(nLine).handle.stateAfter.yamlState.keys ){
-        return cm.lineInfo(nLine).handle.stateAfter.yamlState.keys;
+    if (cm.getLineHandle(nLine) &&
+        cm.getLineHandle(nLine).stateAfter &&
+        cm.getLineHandle(nLine).stateAfter.yamlState && 
+        cm.getLineHandle(nLine).stateAfter.yamlState.keys ){
+
+        // TEMPORAL_FIX: Fix line parsing error
+        let keys = cm.getLineHandle(nLine).stateAfter.yamlState.keys;
+        for (let i = 0 ; i < keys.length; i++  ){
+            keys[i].pos.line = nLine;
+        }
+        
+        return keys;
     } else {
         return [];
     }
@@ -39,9 +47,9 @@ function getKeyAddressFromState( state ) {
 
 // Get string of YAML keys in a folder style
 function getKeyAddress(cm, nLine) {
-    if (cm.lineInfo(nLine).handle.stateAfter &&
-        cm.lineInfo(nLine).handle.stateAfter.yamlState ) {
-        return getKeyAddressFromState(cm.lineInfo(nLine).handle.stateAfter.yamlState);
+    if (cm.getLineHandle(nLine).stateAfter &&
+        cm.getLineHandle(nLine).stateAfter.yamlState ) {
+        return getKeyAddressFromState(cm.getLineHandle(nLine).stateAfter.yamlState);
     } else {
         return "/";
     }
@@ -140,7 +148,7 @@ function getInlineKeys(str, nLine) {
             if (isKey) {
                 keys[level] = isKey[1];
                 i += isKey[1].length;
-                rta.push( { address: keys2Address(keys), key: isKey[1], value: isKey[2], pos: { line: nLine, ch: i+1 } } );
+                rta.push( { address: keys2Address(keys), key: isKey[1], value: isKey[2], pos: { line: nLine, ch: i+1 }, index: rta.length+1 } );
             }
         }
 
@@ -182,7 +190,7 @@ function yamlAddressing(stream, state) {
             let ch = spaces+key[2].length;
 
             if ( key[3].substr(0,1) === "{" ){
-                state.keys = [ { address : address, key: key[2], value: "", pos: { line: state.line, ch: ch } } ];
+                state.keys = [ { address : address, key: key[2], value: "", pos: { line: state.line, ch: ch }, index: 0 } ];
 
                 let subKeys = getInlineKeys(key[3], state.line);
                 for (let i = 0; i < subKeys.length; i++){
@@ -191,12 +199,19 @@ function yamlAddressing(stream, state) {
                     state.keys.push(subKeys[i]);
                 }
             } else {
-                state.keys = [ { address : address, key: key[2], value: key[3], pos: { line: state.line, ch: ch } } ];
+                state.keys = [ { address : address, key: key[2], value: key[3], pos: { line: state.line, ch: ch }, index: 0 } ];
             }
-        }
+        } 
+        // else {
+        //     if (state.address) {
+        //         state.keys = [ { address : state.address, key: state.key, value: "", pos: state.pos , index: 0 } ];
+        //     } else {
+        //         state.keys = [ { address : "/", key: "", value: "", pos: {line: 0, ch: 0} , index: 0 } ];
+        //     }
+            
+        // }
     }
 };
-
 //  YAML-TANGRAM
 //  ===============================================================================
 CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {

@@ -18,7 +18,7 @@ export default class DropDownMenu extends Widget {
 
     create(keyPair, cm) {
         let el = document.createElement('select');
-        el.className = 'widget widget-dropdown-dynamic';
+        el.className = 'widget widget-dropdown';
 
         if (this.options) {
             for (let i = 0; i < this.options.length; i++) {
@@ -50,6 +50,6 @@ export default class DropDownMenu extends Widget {
         el.addEventListener('change', function (e) {
             setValue( cm, parseInt(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
         });
-        return { dom: el, range: getValueRange(keyPair) };;
+        return this.wrap(el,keyPair);
     }
 };
