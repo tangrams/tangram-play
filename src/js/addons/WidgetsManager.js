@@ -56,10 +56,12 @@ export default class WidgetsManager {
             cm.widgets_manager.rebuild();
         });
 
-        tangram_play.editor.on("gutterClick", function(cm, line, gutter, ev) {
-            if (gutter === "CodeMirror-foldgutter"){
-                cm.widgets_manager.rebuild();
-            }
+        tangram_play.editor.on('fold', function(cm, from, to) {
+            cm.widgets_manager.rebuild();
+        });
+
+        tangram_play.editor.on('unfold', function(cm, from, to) {
+            cm.widgets_manager.rebuild();
         });
 
         //  Make link to this manager inside codemirror obj to be excecuted from CM events

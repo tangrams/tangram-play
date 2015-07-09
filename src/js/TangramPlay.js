@@ -120,7 +120,7 @@ export default class TangramPlay {
     };
 
     foldByLevel(nLevel) {
-        foldByLevel(this.editor, strRange);
+        foldByLevel(this.editor, nLevel);
     }
 
     unfoldAll() {
