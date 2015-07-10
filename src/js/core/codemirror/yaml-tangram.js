@@ -152,7 +152,7 @@ function getInlineKeys(str, nLine) {
             }
         }
 
-        var isVector = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
+        var isVector = str.substr(i).match(/^\s*\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/gm);
         if (isVector && rta.length > 0 ){
             rta[rta.length-1].value = isVector[0];
         }

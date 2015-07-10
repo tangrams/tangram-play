@@ -1,14 +1,15 @@
+// Load some common functions
+import { fetchHTTP, debounce, uniqueId} from '../core/common.js';
+import { isStrEmpty } from '../core/codemirror/tools.js';
+import { getKeyPairs, getValueRange } from '../core/codemirror/yaml-tangram.js';
+
+// Load addons modules
 import ColorPicker from './widgets/ColorPicker.js';
 import ToggleButton from './widgets/ToggleButton.js';
 import DropDownMenu from './widgets/DropDownMenu.js';
 
-import { isStrEmpty } from '../core/codemirror/tools.js';
-import { getKeyPairs, getValueRange } from '../core/codemirror/yaml-tangram.js';
-
-// Load some common functions
-import { fetchHTTP, debounce, uniqueId} from '../core/common.js';
-
-var stopTyping = debounce(function(cm) {
+// Debounced event after user stop typing or moving 
+var stopAction = debounce(function(cm) {
     cm.widgets_manager.rebuild();
 }, 1000);
 
@@ -46,22 +47,26 @@ export default class WidgetsManager {
         }
 
         //  When there is a change
-        tangram_play.editor.on("changes", function(cm, changesObj) {
-            cm.widgets_manager.update();
-            stopTyping(cm);
-        });
+        // tangram_play.editor.on("changes", function(cm, changesObj) {
+        //     cm.widgets_manager.update();
+        //     stopAction(cm);
+        // });
 
         // When the viewport change (lines are add or erased)
         tangram_play.editor.on("viewportChange", function(cm, from, to) {
-            cm.widgets_manager.rebuild();
-        });
-
-        tangram_play.editor.on('fold', function(cm, from, to) {
+            cm.widgets_manager.fresh = false;
             cm.widgets_manager.rebuild();
         });
 
         tangram_play.editor.on('unfold', function(cm, from, to) {
+            cm.widgets_manager.fresh = false;
             cm.widgets_manager.rebuild();
+        });
+
+        tangram_play.editor.on('update', function(cm) {
+            cm.widgets_manager.fresh = false;
+            cm.widgets_manager.update();
+            stopAction(cm);
         });
 
         //  Make link to this manager inside codemirror obj to be excecuted from CM events
@@ -69,18 +74,22 @@ export default class WidgetsManager {
 
         // Build all widgets
         this.build();
+        this.fresh = true;
     }
 
     build() {
         for (let line = 0, size = this.tangram_play.editor.doc.size; line < size; line++) {
             this.addWidgetsTo(line);
         }
+        this.fresh = true;
         this.update();
     }
 
     rebuild() {
-        this.deleteAll();
-        this.build();
+        if (!this.fresh) {
+            this.deleteAll();
+            this.build();
+        }
     }
 
     rebuildLine(nLine) {
@@ -114,18 +123,27 @@ export default class WidgetsManager {
     }
 
     update() {
+        // Update widgets unles somethings is not right
         for (let widget of this.active) {
             let keys = getKeyPairs(this.tangram_play.editor, widget.line);
-            if (widget.index < keys.length){
-                this.tangram_play.editor.addWidget( getValueRange(keys[widget.index]).to , widget.dom);
+                if (this.tangram_play.editor.getLineHandle(widget.line) && this.tangram_play.editor.getLineHandle(widget.line).height) {
+                    if (widget.index < keys.length){
+                    this.tangram_play.editor.addWidget( getValueRange(keys[widget.index]).to , widget.dom);
+                } else {
+                    this.rebuildLine(widget.line);
+                    break;
+                }
             } else {
-                this.rebuildLine(widget.line);
+                this.fresh = false;
+                this.rebuild();
                 break;
             }
+            
         }
     }
 
     deleteLine(nLine) {
+        // Erase the widgets on one line
         for (let i = this.active.length-1; i >=0; i--) {
             if (this.active[i].line === nLine){
                 let dom = this.active[i].dom;
