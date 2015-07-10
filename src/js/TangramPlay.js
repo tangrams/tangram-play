@@ -110,7 +110,7 @@ export default class TangramPlay {
 
     getKeyForAddress(address) {
         for (let line = 0; line < this.editor.getDoc().size; line++ ) {
-            let keys = this.getKeysOnLine(i);
+            let keys = this.getKeysOnLine(line);
             for (let i = 0; i < keys.length; i++) {
                 if (keys[i].address == address){
                     return keys[i];
