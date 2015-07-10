@@ -9,7 +9,7 @@ export default class ColorPicker extends Widget {
 
     create(keyPair, cm) {
         let el = document.createElement('div');
-        el.className = 'widget widget-colorpicker';
+        el.className = 'tangram-play-widget tangram-play-widget-colorpicker';
         el.value = String(keyPair.pos.line) + "-" + String(keyPair.index);
 
         el.style.background = toCSS(keyPair.value);

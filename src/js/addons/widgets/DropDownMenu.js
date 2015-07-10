@@ -17,7 +17,7 @@ export default class DropDownMenu extends Widget {
 
     create(keyPair, cm) {
         let el = document.createElement('select');
-        el.className = 'widget widget-dropdown';
+        el.className = 'tangram-play-widget tangram-play-widget-dropdown';
 
         if (this.options) {
             for (let i = 0; i < this.options.length; i++) {

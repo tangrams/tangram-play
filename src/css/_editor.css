@@ -67,26 +67,3 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 .CodeMirror-foldgutter-folded { color: #555; /*cursor: pointer;*/ }
 .CodeMirror-foldgutter-open:after { content: "\25BE"; }
 .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
-
-/* SUGGESTED KEYS */
-.cm-suggested-keys-menu-remove {
-    float: right;
-    cursor: pointer;
-}
-
-.cm-suggested-keys-menu-btn {
-    font-family: var(--editor-font-family);
-    font-size: 14px;
-    color: black;
-    cursor: pointer;
-}
-
-.cm-suggested-keys-menu {
-    font-family: var(--editor-font-family);
-    font-size: 14px;
-    /*background: #494949;*/
-    background: #fff;
-    color: white;
-    height: 20px;
-    padding: 3px 7px;
-}

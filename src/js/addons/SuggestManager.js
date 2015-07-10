@@ -143,25 +143,13 @@ class Suggestion {
 
 function makeMenu(cm, nLine, list) {
         let node = document.createElement("div");
-        node.className = "cm-suggested-keys-menu";
-
-        let widget, label;
-
-        let close = node.appendChild(document.createElement("a"));
-        close.className =  "cm-suggested-keys-menu-remove";
-        close.textContent = "✖";
-
-        cm.on(close, "click", function(cm) {
-            if (cm.suggest_manager.active) {
-                cm.suggest_manager.active.clear();
-            }
-        });
+        node.className = "tangram-play-suggested-menu";
 
         for (let i = 0; i < list.length; i++) {
             let btn = document.createElement('button');
             let text = document.createTextNode(list[i]);
             cm.suggest_manager.activeLine = nLine;
-            btn.className = 'cm-suggested-keys-menu-btn';
+            btn.className = 'tangram-play-suggested-menu-btn';
 
             btn.onclick = function() {
                 if (cm.suggest_manager.active) {

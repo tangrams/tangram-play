@@ -14,6 +14,11 @@
 
 @import '_editor';
 @import '_divider';
+@import '_tangram';
+
+/* ADDONS */
+
+/* + Menu */
 @import '_file-drop';
 @import '_layout';
 @import '_menu-bar';
@@ -21,6 +26,10 @@
 @import '_mobile-message';
 @import '_modals';
 @import '_shield';
-@import '_tangram';
 @import '_typography';
+
+/* + Widgets */
 @import '_widgets';
+
+/* + Suggest */
+@import '_suggest';

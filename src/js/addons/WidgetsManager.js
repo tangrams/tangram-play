@@ -54,11 +54,11 @@ export default class WidgetsManager {
         // Suggestions are trigged by the folowing CM events
 
         //  When there is a change
-        tangram_play.editor.on("changes", function(cm, changesObj) {
-            cm.widgets_manager.fresh = false;
-            cm.widgets_manager.update();
-            stopAction(cm);
-        });
+        // tangram_play.editor.on("changes", function(cm, changesObj) {
+        //     cm.widgets_manager.fresh = false;
+        //     cm.widgets_manager.update();
+        //     stopAction(cm);
+        // });
 
         // When the viewport change (lines are add or erased)
         tangram_play.editor.on("viewportChange", function(cm, from, to) {
@@ -71,11 +71,11 @@ export default class WidgetsManager {
             cm.widgets_manager.rebuild();
         });
 
-        // tangram_play.editor.on('update', function(cm) {
-        //     cm.widgets_manager.fresh = false;
-        //     cm.widgets_manager.update();
-        //     stopAction(cm);
-        // });
+        tangram_play.editor.on('update', function(cm) {
+            cm.widgets_manager.fresh = false;
+            cm.widgets_manager.update();
+            stopAction(cm);
+        });
 
         // Build all widgets
         this.build();        

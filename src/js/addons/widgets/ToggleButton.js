@@ -8,7 +8,7 @@ export default class ToggleButton extends Widget {
     create(keyPair, cm) {
         let el = document.createElement('input');
         el.type = 'checkbox';
-        el.className = 'widget widget-toggle';
+        el.className = 'tangram-play-widget tangram-play-widget-toggle';
         el.checked = (keyPair.value === 'true') ? true : false;
         el.value = String(keyPair.pos.line) + "-" + String(keyPair.index);
         el.addEventListener('change', function (e) {

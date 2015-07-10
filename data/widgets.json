@@ -74,11 +74,13 @@
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
             "type" : "dropdownmenu",
+            "options": [""],
             "source": "/sources"
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/mix$",
             "type" : "dropdownmenu",
+            "options": [""],
             "source": "/styles"
         },
         {
