@@ -1,5 +1,5 @@
 {
-	"keys" : [
+	"suggest" : [
         {
             "address": "^/cameras/(\\w|\\_|\\-)+$",
             "options": ["type","vanishing_point", "focal_length", "active"]

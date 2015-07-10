@@ -1,15 +1,5 @@
 import { isNumber } from '../common.js';
 
-//  SET Functions
-//  ===============================================================================
-export function setValue(cm, nLine, string) {
-    let line = cm.lineInfo(nLine).text;
-    let key = /^\s*(\w+):\s*/gm.exec( line );
-    if (key) {
-        cm.replaceRange(string, {line: nLine, ch:key[0].length}, {line: nLine, ch:line.length});
-    }
-};
-
 //  GET Functions
 //  ===============================================================================
 

@@ -1,27 +1,32 @@
 // Load some common functions
 import { fetchHTTP, debounce, uniqueId} from '../core/common.js';
 import { isStrEmpty } from '../core/codemirror/tools.js';
-import { getKeyPairs, getValueRange } from '../core/codemirror/yaml-tangram.js';
+import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 
 // Load addons modules
 import ColorPicker from './widgets/ColorPicker.js';
 import ToggleButton from './widgets/ToggleButton.js';
 import DropDownMenu from './widgets/DropDownMenu.js';
 
-// Debounced event after user stop typing or moving 
+// Debounced event after user stop doing something
 var stopAction = debounce(function(cm) {
     cm.widgets_manager.rebuild();
 }, 1000);
 
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
+
+        //  Make link to this manager inside codemirror obj to be excecuted from CM events
+        tangram_play.editor.widgets_manager = this;
+
+        // Local variables
         this.tangram_play = tangram_play;
+        this.fresh = true;  // widget - key sync
+        this.data = [];     // tokens to check
+        this.active = [];   // active widgets
 
         // Load data file
         let widgets_data = JSON.parse(fetchHTTP(configFile))['widgets'];
-        
-        this.data = [];
-        this.active = [];
 
         // Initialize tokens
         for (let datum of widgets_data) {
@@ -30,13 +35,13 @@ export default class WidgetsManager {
             // TODO: I'm sure there is a better and more elegant way of doing this
             switch (datum.type) {
                 case 'colorpicker':
-                    widgetObj = new ColorPicker(tangram_play.editor,datum);
+                    widgetObj = new ColorPicker(this,datum);
                     break;
                 case 'togglebutton':
-                    widgetObj = new ToggleButton(tangram_play.editor,datum);
+                    widgetObj = new ToggleButton(this,datum);
                     break;
                 case 'dropdownmenu':
-                    widgetObj = new DropDownMenu(tangram_play.editor,datum);
+                    widgetObj = new DropDownMenu(this,datum);
                     break;
                 default:
                     // Nothing
@@ -45,6 +50,8 @@ export default class WidgetsManager {
             }
             this.data.push(widgetObj);
         }
+
+        // Suggestions are trigged by the folowing CM events
 
         //  When there is a change
         // tangram_play.editor.on("changes", function(cm, changesObj) {
@@ -69,12 +76,8 @@ export default class WidgetsManager {
             stopAction(cm);
         });
 
-        //  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangram_play.editor.widgets_manager = this;
-
         // Build all widgets
-        this.build();
-        this.fresh = true;
+        this.build();        
     }
 
     build() {
@@ -101,7 +104,7 @@ export default class WidgetsManager {
         // If is visible
         if (this.tangram_play.editor.getLineHandle(nLine) && this.tangram_play.editor.getLineHandle(nLine).height) {
             // Get keys of the line
-            let keys = getKeyPairs(this.tangram_play.editor, nLine);
+            let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys) {
                 // Check on every key of the line
                 for (let key of keys) {
@@ -125,7 +128,7 @@ export default class WidgetsManager {
     update() {
         // Update widgets unles somethings is not right
         for (let widget of this.active) {
-            let keys = getKeyPairs(this.tangram_play.editor, widget.line);
+            let keys = this.tangram_play.getKeysOnLine(widget.line);
                 if (this.tangram_play.editor.getLineHandle(widget.line) && this.tangram_play.editor.getLineHandle(widget.line).height) {
                     if (widget.index < keys.length){
                     this.tangram_play.editor.addWidget( getValueRange(keys[widget.index]).to , widget.dom);

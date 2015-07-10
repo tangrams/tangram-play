@@ -1,7 +1,6 @@
 import Widget from "./Widget.js"
 
-import { setValue } from '../../core/codemirror/tools.js';
-import { getValueRange, getAddressSceneContent } from '../../core/codemirror/yaml-tangram.js';
+import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram.js';
 
 export default class DropDownMenu extends Widget {
     constructor(manager, datum){

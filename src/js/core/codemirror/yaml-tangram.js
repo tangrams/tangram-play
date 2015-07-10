@@ -2,9 +2,9 @@ import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js'
 
 // Load some common functions
-import { setValue, getInd, getValue } from './tools.js';
+import { getInd } from './tools.js';
 
-//  GET Functions
+//  GET public functions
 //  ===============================================================================
 
 // Get array of YAML keys parent tree of a particular line
@@ -30,30 +30,6 @@ export function getValueRange(keyPair) {
     return {    from: { line: keyPair.pos.line, ch: keyPair.pos.ch + 2},
                 to: {   line: keyPair.pos.line, ch: keyPair.pos.ch + 2 + keyPair.value.length } };
 }
-
-function getKeyAddressFromState( state ) {
-    if ( state.keyAddress ) {
-        return state.keyAddress;
-    } else if ( state.keys ) {
-        if ( state.keys.length > 0){
-            return state.keys[0].address;
-        } else {
-            return "/";
-        }
-    } else {
-        return "/";
-    }
-}
-
-// Get string of YAML keys in a folder style
-function getKeyAddress(cm, nLine) {
-    if (cm.getLineHandle(nLine).stateAfter &&
-        cm.getLineHandle(nLine).stateAfter.yamlState ) {
-        return getKeyAddressFromState(cm.getLineHandle(nLine).stateAfter.yamlState);
-    } else {
-        return "/";
-    }
-};
 
 export function getAddressSceneContent(tangramScene, address) {
     if (tangramScene && tangramScene.config) {
@@ -112,18 +88,18 @@ function isAfterKey(str,pos) {
 //  Special Tangram YAML Parser
 //  ===============================================================================
 
-// Make an folder style address from an array of keys
-function keys2Address(keys) {
-    if (keys) {
-         let address = "";
-        for ( let i = 0; i < keys.length; i++) {
-            address += "/" + keys[i] ;
+//  Get the address of a line state ( usually from the first key of a line )
+function getKeyAddressFromState( state ) {
+    if ( state.keys ) {
+        if ( state.keys.length > 0){
+            return state.keys[0].address;
+        } else {
+            return "/";
         }
-        return address;
     } else {
-        return "/"
+        return "/";
     }
-};
+}
 
 // Given a YAML string return an array of keys
 function getInlineKeys(str, nLine) {
@@ -160,6 +136,19 @@ function getInlineKeys(str, nLine) {
         i++;
     }
     return rta;
+};
+
+// Make an folder style address from an array of keys
+function keys2Address(keys) {
+    if (keys) {
+         let address = "";
+        for ( let i = 0; i < keys.length; i++) {
+            address += "/" + keys[i] ;
+        }
+        return address;
+    } else {
+        return "/"
+    }
 };
 
 // Add Address to token states

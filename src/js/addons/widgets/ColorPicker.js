@@ -1,8 +1,6 @@
 import Widget from "./Widget.js"
 
 import { toCSS, getPosition } from '../../core/common.js';
-import { setValue } from '../../core/codemirror/tools.js';
-import { getKeyPairs, getValueRange, getAddressSceneContent } from '../../core/codemirror/yaml-tangram.js';
 
 export default class ColorPicker extends Widget {
     constructor(manager, datum){
