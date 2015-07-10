@@ -299,9 +299,10 @@ function hideFileDropArea () {
 function onDropFile (event) {
     event.preventDefault();
     hideFileDropArea();
+    let file = "";
     let dataTransfer = event.dataTransfer;
     if (dataTransfer.files.length > 0) {
-        let file = dataTransfer.files[0];
+        file = dataTransfer.files[0];
         if (isEditorSaved() === false) {
             showUnsavedModal(handleContinue, handleCancel);
         } else {
