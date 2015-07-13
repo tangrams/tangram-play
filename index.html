@@ -25,6 +25,59 @@
     <!-- Color Picker -->
     <script src='http://nornagon.github.com/thistle/thistle.js'></script>
 
+    <!-- Application -->
+    <style>
+        body {
+            margin: 0px;
+            border: 0px;
+            padding: 0px;
+            overflow: hidden;
+        }
+
+        .tangram-play-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* MOBILE MESSAGE */
+
+        .mobile-message,
+        .mobile-message * {
+            box-sizing: border-box;
+        }
+
+        .mobile-message {
+            display: none;
+            position: relative;
+            padding: 10px;
+            padding-right: 48px;
+            font-size: 16px;
+            font-family: var(--font-family);
+            font-weight: 400;
+            background-color: lightyellow;
+        }
+
+        .mobile-message strong {
+            font-weight: normal;
+            color: darkred;
+        }
+
+        .mobile-message-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 48px;
+            height: 48px;
+            padding-top: 8px;
+            font-size: 20px;
+            text-align: center;
+            color: darkred;
+        }
+    </style>
+
     <!-- CodeMirror-Tangram specific -->
     <link type="text/css" rel="stylesheet" href="build/css/main.css">
 
@@ -36,7 +89,7 @@
         <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
     </div>
 
-    <div id="tangram_play_wrapper">
+    <div id='tangram_play_wrapper' class='tangram-play-container'>
 
         <div id='menu-container'>
             <div class='menu-bar'>
@@ -63,36 +116,36 @@
                 </div>
             </div>
         </div>
-        
-        <div id='map'></div>
+
+        <div id='map' class='tp-map-container'></div>
         <div id='divider'><span class='divider-affordance'></span></div>
         <div id='content'>
             <div id='editor'></div>
         </div>
-        
+
         <div id='shield' class='shield'></div>
         <div id='confirm-unsaved' class='modal'>
             <p class='modal-text'>Your style has not been saved. Continue?</p>
-            
+
             <div class='modal-buttons'>
                 <button id='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
                 <button id='modal-confirm'><i class='btm bt-check'></i> Continue</button>
             </div>
         </div>
-        
+
         <div id='choose-example' class='modal example-modal'>
             <p class='modal-text'>Choose example to open</p>
-            
+
             <div class='examples-container'>
                 <div id='examples'></div>
             </div>
-            
+
             <div class='modal-buttons'>
                 <button id='example-cancel'><i class='btm bt-times'></i> Cancel</button>
                 <button id='example-confirm' disabled><i class='btm bt-check'></i> Open</button>
             </div>
         </div>
-        
+
         <div id='file-drop' class='file-drop-container'>
             <div class='file-drop-indicator'>
                 <div class='file-drop-icon'><i class='btm bt-upload'></i></div>
@@ -113,14 +166,13 @@
         }
 
         // Create an instance of TangramPlay with the following modules
-        var tangramPlay = new TangramPlay("tangram_play_wrapper", { 
+        var tangramPlay = new TangramPlay('#tangram_play_wrapper', {
                                             style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
                                             menu: 'data/menu.json',
                                             // suggest: 'data/suggest.json',
                                             widgets: 'data/widgets.json'
-                                            
                                         });
-        
+
         // Once everything is loaded
         setTimeout(function () {
             if (query['lines']) {

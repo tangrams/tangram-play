@@ -15,7 +15,7 @@ import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codem
 
 export default class TangramPlay {
 
-    constructor(placeID, options) {
+    constructor(selector, options) {
 
         if (options.style === undefined) {
             options.style = "data/styles/basic.yaml";
@@ -26,13 +26,14 @@ export default class TangramPlay {
         // TODO:
         //      - Create DOM for map, divider and editor
 
+        this.container = document.querySelector(selector);
         this.map = new Map(this,'map',options.style);
         this.editor = initEditor(this, 'editor');
         this.divider = new Divider(this, 'divider');
 
         // for debug
         window.editor = this.editor;
-        
+
         //  EVENTS
         let tangram_play = this;
         window.addEventListener('resize', function(){

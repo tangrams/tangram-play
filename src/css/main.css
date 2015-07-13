@@ -1,11 +1,17 @@
 @charset 'utf-8';
 
+/* EXTERNAL */
+
 @import 'vendor/black-tie.css';
+
+/* VARIABLES */
 
 :root {
     --font-family: 'Montserrat';
-    --ui-base-color: #303030;
+    --ui-base-color: #313030;
 }
+
+/* CORE */
 
 @import 'codemirror/lib/codemirror.css';
 @import 'codemirror/addon/dialog/dialog.css';
@@ -20,10 +26,8 @@
 
 /* + Menu */
 @import '_file-drop';
-@import '_layout';
 @import '_menu-bar';
 @import '_menu-dropdown';
-@import '_mobile-message';
 @import '_modals';
 @import '_shield';
 @import '_typography';

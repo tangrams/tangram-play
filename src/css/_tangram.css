@@ -1,6 +1,6 @@
 /* TANGRAM */
 
-#map {
+.tp-map-container {
     position: fixed;
     height: 100%;
     width: 50%;
