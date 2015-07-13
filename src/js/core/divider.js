@@ -7,12 +7,12 @@ const CM_MINIMUM_WIDTH = 160; // integer, in pixels
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 
 export default class Divider {
-    constructor (tangram_play, place) {
+    constructor(tangram_play, place) {
 
         this.tangram_play = tangram_play;
 
-        var transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
-        var dividerEl = document.getElementById(place);
+        let transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
+        let dividerEl = document.getElementById(place);
         if (dividerEl.style.hasOwnProperty('transform')) {
             dividerEl.style.transform = transformStyle;
         } else if (dividerEl.style.hasOwnProperty('webkitTransform')) {
@@ -45,13 +45,13 @@ export default class Divider {
         this.reflow();
     };
 
-    reflow () {
-        var mapEl = document.getElementById('map');
-        var contentEl = document.getElementById('content');
-        var dividerEl = document.getElementById('divider');
-        var menuEl = document.getElementById('menu-container');
-        var menuBottom = menuEl.getBoundingClientRect().bottom;
-        var positionX = dividerEl.getBoundingClientRect().left;
+    reflow() {
+        let mapEl = document.getElementById('map');
+        let contentEl = document.getElementById('content');
+        let dividerEl = document.getElementById('divider');
+        let menuEl = document.getElementById('menu-container');
+        let menuBottom = menuEl.getBoundingClientRect().bottom;
+        let positionX = dividerEl.getBoundingClientRect().left;
 
         mapEl.style.width = positionX + "px";
         contentEl.style.width = (window.innerWidth - positionX) + "px";
@@ -60,7 +60,7 @@ export default class Divider {
         dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
     };
 
-    update () {
+    update() {
         this.tangram_play.map.leaflet.invalidateSize(false);
         this.draggable[0].applyBounds( getBounds() );
     };  
@@ -68,8 +68,8 @@ export default class Divider {
 
 // Private functions for dragable panel divider
 
-function getStartingPosition () {
-    var storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
+function getStartingPosition() {
+    let storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
     if (storedPosition) {
         return storedPosition
     }
@@ -81,14 +81,14 @@ function getStartingPosition () {
     }
 };
 
-function savePosition () {
-    var posX = document.getElementById('divider').getBoundingClientRect().left
+function savePosition() {
+    let posX = document.getElementById('divider').getBoundingClientRect().left
     if (posX) {
         window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX)
     }
 };
 
-function getBounds () {
+function getBounds() {
     return {
         minX: 100,
         maxX: window.innerWidth - CM_MINIMUM_WIDTH

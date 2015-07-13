@@ -302,7 +302,6 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
             yamlAddressing(stream, state.yamlState);
             return state.token(stream, state);
         },
-        indent: true,
         fold: "indent"
     };
 }, "yaml", "x-shader/x-fragment");
