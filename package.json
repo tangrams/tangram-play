@@ -20,7 +20,7 @@
   "devDependencies": {
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
-    "cssnext": "^1.7.1",
+    "cssnext": "^1.8.0",
     "gulp": "^3.9.0",
     "gulp-livereload": "^3.8.0",
     "gulp-postcss": "^5.1.9",

@@ -20,9 +20,6 @@ gulp.task('css', function () {
 
     var options = {
         browsers: ['last 2 versions', 'IE >= 11'],
-        features: {
-            customSelectors: false // bugged. see https://github.com/cssnext/cssnext/issues/171
-        },
         compress: {
             comments: { removeAll: true },
             zindex: false
