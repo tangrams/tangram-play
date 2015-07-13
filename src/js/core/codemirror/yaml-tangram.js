@@ -204,6 +204,7 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
     let yamlMode = CodeMirror.getMode(config, "yaml");
     let glslMode = CodeMirror.getMode(config, "glsl");
     let jsMode = CodeMirror.getMode(config, "javascript");
+    yamlMode.lineComment = "#";
 
     function yaml(stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
@@ -300,7 +301,9 @@ CodeMirror.defineMode("yaml-tangram", function(config, parserConfig) {
         token: function(stream, state) {
             yamlAddressing(stream, state.yamlState);
             return state.token(stream, state);
-        }
+        },
+        indent: true,
+        fold: "indent"
     };
 }, "yaml", "x-shader/x-fragment");
 

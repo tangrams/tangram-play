@@ -161,7 +161,9 @@ export default class WidgetsManager {
         // Erase all Widgets
         while(this.active.length > 0) {
             let dom = this.active[ this.active.length-1].dom;
-            dom.parentNode.removeChild(dom);
+            if (dom && dom.parentNode){
+                dom.parentNode.removeChild(dom);
+            }
             this.active.pop();
         }
     }

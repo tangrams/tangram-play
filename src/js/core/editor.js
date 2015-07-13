@@ -7,7 +7,7 @@ import 'codemirror/addon/search/search';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/edit/closebrackets';
-import 'codemirror/addon/comment/comment';
+// import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/wrap/hardwrap';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
@@ -21,7 +21,8 @@ import 'codemirror/mode/javascript/javascript';
 // Import additional parsers
 import GLSLTangram from './codemirror/glsl-tangram.js';
 import YAMLTangram from './codemirror/yaml-tangram.js';
-import { getKeyPairs } from '../core/codemirror/yaml-tangram.js';
+import { getKeyPairs } from './codemirror/yaml-tangram.js';
+import './codemirror/comment-tangram.js';
 
 // Import Utils
 import { fetchHTTP, debounce } from './common.js';
@@ -70,7 +71,7 @@ export function initEditor(tangram_play, place) {
         autoCloseBrackets: true,
         extraKeys: {"Ctrl-Space": "autocomplete",
                     "Tab": function(cm) { cm.replaceSelection(Array(cm.getOption("indentUnit") + 1).join(" ")); },
-                    // "Alt-F" : function(cm) { cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder); } ,
+                    "Alt-F" : function(cm) { cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder); } ,
                     "Alt-P" : function(cm) { cm.tangram_play.takeScreenshot(); },
                     "Ctrl-0" : function(cm) { cm.tangram_play.unfoldAll() },
                     "Ctrl-1" : function(cm) { cm.tangram_play.foldByLevel(0) },
@@ -80,7 +81,8 @@ export function initEditor(tangram_play, place) {
                     "Ctrl-5" : function(cm) { cm.tangram_play.foldByLevel(4) },
                     "Ctrl-6" : function(cm) { cm.tangram_play.foldByLevel(5) },
                     "Ctrl-7" : function(cm) { cm.tangram_play.foldByLevel(6) },
-                    "Ctrl-8" : function(cm) { cm.tangram_play.foldByLevel(7) }
+                    "Ctrl-8" : function(cm) { cm.tangram_play.foldByLevel(7) },
+                    "Ctrl-\\" : function(cm) { console.log("comment") }
         },
         foldGutter: {
             rangeFinder: CodeMirror.fold.indent

@@ -70,5 +70,7 @@ def(["glsl","x-shader/x-vertex", "x-shader/x-fragment"], {
                  "light_accumulator_ambient light_accumulator_diffuse light_accumulator_specular " +
                  "gl_FragColor gl_Position gl_PointSize gl_FragCoord "),
     hooks: {"#": cppHook},
-    modeProps: {fold: ["brace", "include"]}
+    modeProps: {
+        fold: ["brace", "include"]
+    }
 });
