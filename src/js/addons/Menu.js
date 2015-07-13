@@ -2,9 +2,14 @@ import Editor from '../core/editor.js';
 
 // Load some common functions
 import { fetchHTTP } from '../core/common.js';
+import Shield from './ui/Shield.js';
+import FileDrop from './ui/FileDrop.js';
+import Modal from './ui/Modal.js';
 
 let tp;
 let editor;
+let shield;
+let filedrop;
 
 export default class Menu {
     constructor (tangram_play, configFile) {
@@ -12,6 +17,9 @@ export default class Menu {
 
         tp = tangram_play;
         editor = tangram_play.editor;
+
+        const container = tangram_play.container;
+        console.log(container)
 
         this.loadExamples(configFile);
 
@@ -36,7 +44,6 @@ export default class Menu {
             }
         })
 
-
         // Setup File Selector;
         let fileSelector = document.createElement('input');
         fileSelector.setAttribute('type', 'file');
@@ -49,21 +56,9 @@ export default class Menu {
         });
         document.body.appendChild(fileSelector);
 
-        // Set up drag/drop file listeners
-        document.body.addEventListener('dragenter', function (e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy';
-            showFileDropArea();
-        }, true)
-        document.getElementById('file-drop').addEventListener('dragover', function (e) {
-            e.preventDefault();
-            showFileDropArea();
-        }, false)
-        document.getElementById('file-drop').addEventListener('dragleave', function (e) {
-            e.preventDefault();
-            hideFileDropArea();
-        }, true)
-        document.getElementById('file-drop').addEventListener('drop', onDropFile, false)
+        // Set up UI components
+        this.shield = shield = new Shield();
+        this.filedrop = filedrop = new FileDrop();
 
         window.onpopstate = function (e) {
             if (e.state && e.state.loadStyleURL) {
@@ -109,18 +104,15 @@ function openContent (content) {
 }
 
 function onClickNewButton (event) {
-    if (isEditorSaved() === false) {
-        showUnsavedModal(handleContinue, handleCancel)
+    checkEditorSaveStateThenDoStuff(newContent);
+}
+
+function checkEditorSaveStateThenDoStuff (callback) {
+    if (editor && editor.isSaved === false) {
+        let unsavedModal = new Modal(tp, 'Your style has not been saved. Continue?', callback);
+        unsavedModal.show();
     } else {
-        handleContinue()
-    }
-
-    function handleContinue () {
-        newContent();
-    }
-
-    function handleCancel () {
-        return;
+        callback();
     }
 }
 
@@ -170,47 +162,6 @@ function saveContent () {
     }
 }
 
-function isEditorSaved () {
-    if (editor) {
-        return editor.isSaved;
-    } else {
-        return false;
-    }
-}
-
-function showShield () {
-    document.getElementById('shield').style.display = 'block'
-}
-
-function hideShield () {
-    document.getElementById('shield').style.display = 'none'
-}
-
-function showUnsavedModal (confirmCallback, cancelCallback) {
-    showShield()
-    let modalEl = document.getElementById('confirm-unsaved')
-    modalEl.style.display = 'block'
-    modalEl.querySelector('#modal-confirm').addEventListener('click', handleConfirm, false)
-    modalEl.querySelector('#modal-cancel').addEventListener('click', handleCancel, false)
-
-    function handleConfirm () {
-        hideUnsavedModal()
-        confirmCallback()
-    }
-
-    function handleCancel () {
-        hideUnsavedModal()
-        cancelCallback()
-    }
-
-    function hideUnsavedModal () {
-        hideShield();
-        document.getElementById('confirm-unsaved').style.display = 'none'
-        modalEl.querySelector('#modal-confirm').removeEventListener('click', handleConfirm, false)
-        modalEl.querySelector('#modal-cancel').removeEventListener('click', handleCancel, false)
-    }
-}
-
 function hideMenus () {
     let els = document.querySelectorAll('.menu-dropdown');
     for (let i = 0, j = els.length; i < j; i++) {
@@ -237,45 +188,25 @@ function onClickOutsideDropdown (event) {
 }
 
 function onClickOpenFile (event) {
-    if (isEditorSaved() === false) {
-        showUnsavedModal(handleContinue, handleCancel);
-    } else {
-        handleContinue();
-    }
-
-    function handleContinue () {
+    checkEditorSaveStateThenDoStuff(function () {
         let input = document.getElementById('file-selector');
         input.click();
-    }
-
-    function handleCancel () {
-        return;
-    }
+    })
 }
 
 function onClickOpenExample (event) {
-    if (isEditorSaved() === false) {
-        showUnsavedModal(handleContinue, handleCancel);
-    } else {
-        handleContinue();
-    }
-
-    function handleContinue () {
+    checkEditorSaveStateThenDoStuff(function () {
         showExamplesModal();
-    }
-
-    function handleCancel () {
-        return;
-    }
+    })
 }
 
 function showExamplesModal () {
-    showShield();
+    shield.show();
     document.getElementById('choose-example').style.display = 'block';
 }
 
 function hideExamplesModal () {
-    hideShield();
+    shield.hide();
     resetExamples();
     document.getElementById('example-confirm').disabled = true;
     document.getElementById('choose-example').style.display = 'none';
@@ -286,35 +217,4 @@ function onClickOpenExampleFromDialog () {
     let value = selected.getAttribute('data-value');
     hideExamplesModal();
     openExample(value);
-}
-
-function showFileDropArea () {
-    document.getElementById('file-drop').style.display = 'block';
-}
-
-function hideFileDropArea () {
-    document.getElementById('file-drop').style.display = 'none';
-}
-
-function onDropFile (event) {
-    event.preventDefault();
-    hideFileDropArea();
-    let file = "";
-    let dataTransfer = event.dataTransfer;
-    if (dataTransfer.files.length > 0) {
-        file = dataTransfer.files[0];
-        if (isEditorSaved() === false) {
-            showUnsavedModal(handleContinue, handleCancel);
-        } else {
-            handleContinue();
-        }
-    }
-
-    function handleContinue () {
-        openContent(file);
-    }
-
-    function handleCancel () {
-        return;
-    }
 }

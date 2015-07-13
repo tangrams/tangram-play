@@ -8,7 +8,7 @@
 
 :root {
     --font-family: 'Montserrat';
-    --ui-base-color: #313030;
+    --ui-base-color: #303030;
 }
 
 /* CORE */
@@ -25,7 +25,7 @@
 /* ADDONS */
 
 /* + Menu */
-@import '_file-drop';
+@import '_filedrop';
 @import '_menu-bar';
 @import '_menu-dropdown';
 @import '_modals';
