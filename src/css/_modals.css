@@ -1,6 +1,6 @@
 /* MODALS */
 
-.modal {
+.tp-modal {
     display: none;
     position: fixed;
     box-sizing: border-box;
@@ -21,71 +21,71 @@
     user-select: none;
 }
 
-.modal-text {
+.tp-modal-text {
     display: inline-block;
     margin: 0;
     padding: 0;
     user-select: none;
 }
 
-.modal-buttons {
+.tp-modal-buttons {
     position: absolute;
     bottom: 30px;
     left: 0;
     text-align: center;
     width: 100%;
-}
 
-.modal-buttons > button {
-    padding: 16px;
-    background-color: rgba(255,255,255,0.10);
-    color: white;
-    border: 0;
-    margin: 0 5px;
-    font-family: var(--font-family);
-    font-weight: 200;
-    font-size: 14px;
-    cursor: pointer;
-}
+    button {
+        padding: 16px;
+        background-color: rgba(255,255,255,0.10);
+        color: white;
+        border: 0;
+        margin: 0 5px;
+        font-family: var(--font-family);
+        font-weight: 200;
+        font-size: 14px;
+        cursor: pointer;
+    }
 
-.modal-buttons > button:last-of-type {
-    margin-right: 0;
-}
+    button:last-of-type {
+        margin-right: 0;
+    }
 
-.modal-buttons > button:first-of-type {
-    margin-left: 0;
-}
+    button:first-of-type {
+        margin-left: 0;
+    }
 
-.modal-buttons > button:hover {
-    background-color: rgba(255,255,255,0.15);
-    color: yellow;
-}
+    button:hover {
+        background-color: rgba(255,255,255,0.15);
+        color: yellow;
+    }
 
-.modal-buttons > button > i {
-    margin-right: 0.5em;
-}
+    button > i {
+        margin-right: 0.5em;
+    }
 
-.modal-buttons > button > i.bt-check {
-    color: green;
-}
+    button > i.bt-check {
+        color: green;
+    }
 
-.modal-buttons > button > i.bt-times {
-    color: red;
-}
+    button > i.bt-times {
+        color: red;
+    }
 
-button:disabled {
-    color: gray;
-    background-color: rgba(0,0,0,0.10);
-    cursor: default;
-}
+    button:disabled {
+        color: gray;
+        background-color: rgba(0,0,0,0.10);
+        cursor: default;
+    }
 
-button:disabled:hover {
-    color: gray;
-    background-color: rgba(0,0,0,0.10);
-}
+    button:disabled:hover {
+        color: gray;
+        background-color: rgba(0,0,0,0.10);
+    }
 
-button:disabled > i {
-    color: gray !important;
+    button:disabled > i {
+        color: gray !important;
+    }
 }
 
 .example-modal {

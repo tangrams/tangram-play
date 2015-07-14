@@ -123,33 +123,34 @@
             <div id='editor'></div>
         </div>
 
-        <div id='shield' class='shield'></div>
-        <div id='confirm-unsaved' class='modal'>
-            <p class='modal-text'>Your style has not been saved. Continue?</p>
+        <div id='shield' class='tp-shield'></div>
 
-            <div class='modal-buttons'>
-                <button id='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                <button id='modal-confirm'><i class='btm bt-check'></i> Continue</button>
+        <div id='confirm-unsaved' class='tp-modal'>
+            <p class='tp-modal-text'>Your style has not been saved. Continue?</p>
+
+            <div class='tp-modal-buttons'>
+                <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button class='tp-modal-confirm'><i class='btm bt-check'></i> Continue</button>
             </div>
         </div>
 
-        <div id='choose-example' class='modal example-modal'>
-            <p class='modal-text'>Choose example to open</p>
+        <div id='choose-example' class='tp-modal example-modal'>
+            <p class='tp-modal-text'>Choose example to open</p>
 
             <div class='examples-container'>
                 <div id='examples'></div>
             </div>
 
-            <div class='modal-buttons'>
+            <div class='tp-modal-buttons'>
                 <button id='example-cancel'><i class='btm bt-times'></i> Cancel</button>
                 <button id='example-confirm' disabled><i class='btm bt-check'></i> Open</button>
             </div>
         </div>
 
-        <div id='file-drop' class='file-drop-container'>
-            <div class='file-drop-indicator'>
-                <div class='file-drop-icon'><i class='btm bt-upload'></i></div>
-                <div class='file-drop-label'>Drop a file here to open</div>
+        <div id='file-drop' class='tp-filedrop-container'>
+            <div class='tp-filedrop-indicator'>
+                <div class='tp-filedrop-icon'><i class='btm bt-upload'></i></div>
+                <div class='tp-filedrop-label'>Drop a file here to open</div>
             </div>
         </div>
     </div>
