@@ -19,7 +19,6 @@ export default class Menu {
         editor = tangram_play.editor;
 
         const container = tangram_play.container;
-        console.log(container)
 
         this.loadExamples(configFile);
 

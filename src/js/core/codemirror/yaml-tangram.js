@@ -195,6 +195,9 @@ function yamlAddressing(stream, state) {
             } else {
                 state.keys = [ { address : address, key: key[2], value: key[3], pos: { line: state.line, ch: ch }, index: 0 } ];
             }
+        } else {
+            // Commented or empty lines lines 
+            state.keys = [ { address : keys2Address(state.keyStack), key: "", value: "", pos: { line: state.line, ch: 0 }, index: 0 } ];
         }
     }
 };
