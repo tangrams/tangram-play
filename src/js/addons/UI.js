@@ -11,16 +11,17 @@ let editor;
 let shield;
 let filedrop;
 
-export default class Menu {
-    constructor (tangram_play, configFile) {
+export default class UI {
+    constructor (tangram_play) {
         this.tangram_play = tangram_play;
 
         tp = tangram_play;
         editor = tangram_play.editor;
 
         const container = tangram_play.container;
+        const options = tangram_play.options;
 
-        this.loadExamples(configFile);
+        this.loadExamples(options.menu);
 
         document.getElementById('menu-button-open').addEventListener('click', function (e) {
             let menuEl = document.getElementById('menu-open')
