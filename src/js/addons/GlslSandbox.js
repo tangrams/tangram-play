@@ -49,20 +49,24 @@ export default class GlslSandbox {
 	    			let template = this._getColorTemplate();
 
 	    			let keysToShader = getKeysFromAddress(address);
-	    			keysToShader.pop();
-	    			keysToShader.pop();
-	    			keysToShader.pop();
-	    			let addressToShader = getAddressFromKeys(keysToShader);
-	    			let shaderObj = getAddressSceneContent(this.tangram_play.scene, addressToShader);
-	    			console.log(shaderObj);
+	    			let shaderObj = this.tangram_play.scene.styles[keysToShader[1]];
+	    			console.log(shaderObj.shaders);
 
-	    // 			let defines = getAddressSceneContent(this.tangram_play.scene, getAddressFromKeys);
 
-	    // 			let code = 	template.pre + 
-	    // 						getAddressSceneContent(this.tangram_play.scene,address) +
-	    // 						template.post ;
+	    			let block_global = "";
+	    			for (let i = 0; i < shaderObj.shaders.blocks.global.length; i++){
+	    				block_global += "\n" + shaderObj.shaders.blocks.global[i] + "\n";
+	    			}
+	    			
+	    			let block_color = getAddressSceneContent(this.tangram_play.scene, address);
 
-					// this.sandbox.load(code);    			
+	    			let code = 	template.header + 
+	    						block_global +
+	    						template.pre +
+	    						block_color +
+	    						template.post ;
+
+					this.sandbox.load(code); 			
 
 	    			this.sandbox.render();
 
@@ -78,7 +82,7 @@ export default class GlslSandbox {
     }
 
     _getColorTemplate() {
-    	let pre = `
+    	let header = `
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -87,15 +91,29 @@ uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
 
+varying vec2 v_texcoord;
+
 float u_meters_per_pixel = 1.0;
 float u_device_pixel_ratio = 1.0;
 vec3 u_map_position = vec3(1.0);
+vec3 u_tile_origin = vec3(1.0);
 
+vec3 v_normal = vec3(0.0,0.0,1.0);
+vec4 v_color = vec4(1.0,0.0,1.0,1.0);
 `;
 
-    	let post = "";
+	    let pre = `
+void main() {
+	vec3 normal = v_normal;
+	vec4 color = v_color;
+`;
 
-    	return {pre: pre, post: post};
+    	let post = `
+	gl_FragColor = color;
+}
+`;
+
+    	return {header: header, pre: pre, post: post};
     }
 
 
