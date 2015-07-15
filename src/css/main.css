@@ -37,3 +37,6 @@
 
 /* + Suggest */
 @import '_suggest';
+
+/* + GLSL Sandbox */
+@import '_sandbox';

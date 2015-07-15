@@ -25,6 +25,9 @@
     <!-- Color Picker -->
     <script src='http://nornagon.github.com/thistle/thistle.js'></script>
 
+    <!-- Glsl Sandbox in a canvas -->
+    <script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/build/GlslCanvas.min.js"></script>
+
     <!-- Application -->
     <style>
         body {
@@ -170,6 +173,7 @@
         var tangramPlay = new TangramPlay('#tangram_play_wrapper', {
                                             style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
                                             menu: 'data/menu.json',
+                                            sandbox: 'data/sandbox.json',
                                             // suggest: 'data/suggest.json',
                                             widgets: 'data/widgets.json'
                                         });
