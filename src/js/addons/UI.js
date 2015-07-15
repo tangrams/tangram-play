@@ -4,11 +4,13 @@ import Editor from '../core/editor.js';
 import { fetchHTTP } from '../core/common.js';
 import Shield from './ui/Shield.js';
 import FileDrop from './ui/FileDrop.js';
+import FileOpen from './ui/FileOpen.js';
 import Modal from './ui/Modal.js';
 
 let tp;
 let editor;
 let shield;
+let fileopen;
 let filedrop;
 
 export default class UI {
@@ -23,6 +25,11 @@ export default class UI {
 
         this.loadExamples(options.menu);
 
+        // Set up UI components
+        this.shield = shield = new Shield();
+        this.filedrop = filedrop = new FileDrop(container);
+        this.fileopen = fileopen = new FileOpen(container);
+
         document.getElementById('menu-button-open').addEventListener('click', function (e) {
             let menuEl = document.getElementById('menu-open')
             let posX = document.getElementById('menu-button-open').getBoundingClientRect().left
@@ -33,7 +40,7 @@ export default class UI {
 
         document.getElementById('menu-button-new').addEventListener('click', onClickNewButton, false)
         document.getElementById('menu-button-export').addEventListener('click', saveContent, false);
-        document.getElementById('menu-open-file').addEventListener('click', onClickOpenFile, false)
+        document.getElementById('menu-open-file').addEventListener('click', function () { fileopen.activate() }, false)
         document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
         document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
         document.getElementById('example-confirm').addEventListener('click', onClickOpenExampleFromDialog, false)
@@ -43,22 +50,6 @@ export default class UI {
                 // TODO. Implement after UI elements handle / remember state better
             }
         })
-
-        // Setup File Selector;
-        let fileSelector = document.createElement('input');
-        fileSelector.setAttribute('type', 'file');
-        fileSelector.setAttribute('accept', 'text/x-yaml');
-        fileSelector.style.display = 'none';
-        fileSelector.id = 'file-selector';
-        fileSelector.addEventListener('change', function (event) {
-            let files = event.target.files;
-            openContent(files[0]);
-        });
-        document.body.appendChild(fileSelector);
-
-        // Set up UI components
-        this.shield = shield = new Shield();
-        this.filedrop = filedrop = new FileDrop();
 
         window.onpopstate = function (e) {
             if (e.state && e.state.loadStyleURL) {
@@ -94,14 +85,6 @@ export default class UI {
         }
     }
 };
-
-function openContent (content) {
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        tangramPlay.loadContent( e.target.result );
-    }
-    reader.readAsText(content);
-}
 
 function onClickNewButton (event) {
     checkEditorSaveStateThenDoStuff(newContent);
@@ -185,13 +168,6 @@ function onClickOutsideDropdown (event) {
         loseMenuFocus();
         document.body.removeEventListener('click', onClickOutsideDropdown, false);
     }
-}
-
-function onClickOpenFile (event) {
-    checkEditorSaveStateThenDoStuff(function () {
-        let input = document.getElementById('file-selector');
-        input.click();
-    })
 }
 
 function onClickOpenExample (event) {

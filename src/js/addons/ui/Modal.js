@@ -1,11 +1,12 @@
 'use strict';
+// For now: assume globals
+/* global tangramPlay */
 
 import Shield from './Shield.js';
-
-const noop = function () {};
+import { noop } from './Helpers.js';
 
 export default class Modal {
-    constructor (tangramPlay, message = 'Dude.', callback = noop, abort = noop) {
+    constructor (message = 'Dude.', callback = noop, abort = noop) {
         const tp = tangramPlay;
         const container = tangramPlay.container;
 
