@@ -2,10 +2,11 @@ import Editor from '../core/editor.js';
 
 // Load some common functions
 import { fetchHTTP } from '../core/common.js';
+import EditorIO from './ui/EditorIO.js';
 import Shield from './ui/Shield.js';
+import Modal from './ui/Modal.js';
 import FileDrop from './ui/FileDrop.js';
 import FileOpen from './ui/FileOpen.js';
-import Modal from './ui/Modal.js';
 
 let tp;
 let editor;
@@ -39,7 +40,7 @@ export default class UI {
         }, false)
 
         document.getElementById('menu-button-new').addEventListener('click', onClickNewButton, false)
-        document.getElementById('menu-button-export').addEventListener('click', saveContent, false);
+        document.getElementById('menu-button-export').addEventListener('click', EditorIO.saveContent, false);
         document.getElementById('menu-open-file').addEventListener('click', function () { fileopen.activate() }, false)
         document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
         document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
@@ -87,16 +88,7 @@ export default class UI {
 };
 
 function onClickNewButton (event) {
-    checkEditorSaveStateThenDoStuff(newContent);
-}
-
-function checkEditorSaveStateThenDoStuff (callback) {
-    if (editor && editor.isSaved === false) {
-        let unsavedModal = new Modal(tp, 'Your style has not been saved. Continue?', callback);
-        unsavedModal.show();
-    } else {
-        callback();
-    }
+    EditorIO.checkSaveStateThen(newContent);
 }
 
 function newContent () {
@@ -137,14 +129,6 @@ function parseQuery (qstr) {
     return query;
 };
 
-function saveContent () {
-    if (editor) {
-        let blob = new Blob([ tp.getContent()], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "style.yaml");
-        editor.isSaved = true;
-    }
-}
-
 function hideMenus () {
     let els = document.querySelectorAll('.menu-dropdown');
     for (let i = 0, j = els.length; i < j; i++) {
@@ -171,9 +155,7 @@ function onClickOutsideDropdown (event) {
 }
 
 function onClickOpenExample (event) {
-    checkEditorSaveStateThenDoStuff(function () {
-        showExamplesModal();
-    })
+    EditorIO.checkSaveStateThen(showExamplesModal);
 }
 
 function showExamplesModal () {
