@@ -1,8 +1,9 @@
 'use strict';
+
 // For now: assume globals
 /* global tangramPlay */
 
-import { saveAs } from "../../vendor/FileSaver.min.js";
+import { saveAs } from '../../vendor/FileSaver.min.js';
 import { noop } from './Helpers.js';
 import Modal from './Modal.js';
 
@@ -27,18 +28,19 @@ const EditorIO = {
         if (tangramPlay.editor.isSaved === false) {
             const unsavedModal = new Modal('Your style has not been saved. Continue?', callback);
             unsavedModal.show();
-        } else {
+        }
+        else {
             callback();
         }
     },
     newContent () {
         // TODO: Don't hack
-        window.location.href = ".";
+        window.location.href = '.';
     },
     loadContent (content) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-            tangramPlay.loadContent(e.target.result);
+        reader.onload = function (event) {
+            tangramPlay.loadContent(event.target.result);
         };
         reader.readAsText(content);
     }

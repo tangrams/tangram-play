@@ -1,8 +1,6 @@
 'use strict';
 
 import EditorIO from './ui/EditorIO.js';
-import Shield from './ui/Shield.js';
-import Modal from './ui/Modal.js';
 import FileDrop from './ui/FileDrop.js';
 import FileOpen from './ui/FileOpen.js';
 import ExamplesModal from './ui/Modal.Examples.js';
@@ -13,7 +11,6 @@ export default class UI {
         const options = tangram_play.options;
 
         // Set up UI components
-        new Shield();
         new FileDrop(container);
         this.fileopen = new FileOpen(container);
         this.examplesModal = new ExamplesModal(options.menu);
@@ -31,13 +28,6 @@ export default class UI {
 
         document.getElementById('menu-open-file').addEventListener('click', () => { this.fileopen.activate() }, false)
         document.getElementById('menu-open-example').addEventListener('click', () => { this.examplesModal.show() }, false)
-
-        document.body.addEventListener('keyup', function (e) {
-            // esc key
-            if (e.keyCode === 27) {
-                // TODO. Implement after UI elements handle / remember state better
-            }
-        })
 
         window.onpopstate = function (e) {
             if (e.state && e.state.loadStyleURL) {
