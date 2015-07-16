@@ -38,7 +38,7 @@ export default class UI {
 };
 
 function hideMenus () {
-    let els = document.querySelectorAll('.menu-dropdown');
+    let els = document.querySelectorAll('.tp-menu-dropdown');
     for (let i = 0, j = els.length; i < j; i++) {
         els[i].style.display = 'none';
     }
@@ -52,11 +52,11 @@ function loseMenuFocus () {
 function onClickOutsideDropdown (event) {
     let target = event.target;
 
-    while (target !== document.documentElement && !target.classList.contains('menu-item')) {
+    while (target !== document.documentElement && !target.classList.contains('tp-menu-item')) {
         target = target.parentNode;
     }
 
-    if (!target.classList.contains('menu-item')) {
+    if (!target.classList.contains('tp-menu-item')) {
         loseMenuFocus();
         document.body.removeEventListener('click', onClickOutsideDropdown, false);
     }

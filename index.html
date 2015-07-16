@@ -95,19 +95,19 @@
     <div id='tangram_play_wrapper' class='tangram-play-container'>
 
         <div id='menu-container'>
-            <div class='menu-bar'>
+            <div class='tp-menu-bar'>
                 <h1>Tangram Play</h1>
-                <ul id='menu-holder' class='menu-items'>
-                    <li class='menu-item' id='menu-button-new' data-title='New style'><i class='btm bt-file'></i></li>
-                    <li class='menu-item' id='menu-button-open' data-title='Open file'><i class='btm bt-plus-square'></i></li>
-                    <li class='menu-item' id='menu-button-export' data-title='Export style'><i class='btm bt-download'></i></li>
-                    <li class='menu-item menu-item-private' data-title='Share'><i class='btm bt-share'></i></li>
+                <ul class='tp-menu-items'>
+                    <li class='tp-menu-item' id='menu-button-new' data-title='New style'><i class='btm bt-file'></i></li>
+                    <li class='tp-menu-item' id='menu-button-open' data-title='Open file'><i class='btm bt-plus-square'></i></li>
+                    <li class='tp-menu-item' id='menu-button-export' data-title='Export style'><i class='btm bt-download'></i></li>
+                    <li class='tp-menu-item tp-menu-item-private' data-title='Share'><i class='btm bt-share'></i></li>
                 </ul>
-                <ul id='menu-holder' class='menu-items menu-right'>
-                    <li class='menu-item menu-item-private' data-title='Refresh map'><i class='btm bt-sync'></i></li>
-                    <li class='menu-item menu-item-private' data-title='Settings'><i class='btm bt-gear'></i></li>
-                    <li class='menu-item' data-title='Documentation and help'><a href='https://github.com/tangrams/tangram-docs#tangram-documentation' target='_blank'><i class='btm bt-question-circle'></i></a></li>
-                    <li class='menu-item menu-item-private menu-sign-in' data-title='Sign in'><span class='menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
+                <ul class='tp-menu-items tp-menu-right'>
+                    <li class='tp-menu-item tp-menu-item-private' data-title='Refresh map'><i class='btm bt-sync'></i></li>
+                    <li class='tp-menu-item tp-menu-item-private' data-title='Settings'><i class='btm bt-gear'></i></li>
+                    <li class='tp-menu-item' data-title='Documentation and help'><a href='https://github.com/tangrams/tangram-docs#tangram-documentation' target='_blank'><i class='btm bt-question-circle'></i></a></li>
+                    <li class='tp-menu-item tp-menu-item-private tp-menu-sign-in' data-title='Sign in'><span class='tp-menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
                 </ul>
             </div>
             <div class='menu-dropdowns'>
@@ -126,17 +126,15 @@
             <div id='editor'></div>
         </div>
 
-        <div id='shield' class='tp-shield'></div>
-
-        <div id='confirm-unsaved' class='tp-modal'>
+        <div class='tp-shield'></div>
+        <div class='tp-modal'>
             <p class='tp-modal-text'></p>
             <div class='tp-modal-buttons'>
                 <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
                 <button class='tp-modal-confirm'><i class='btm bt-check'></i> Continue</button>
             </div>
         </div>
-
-        <div id='choose-example' class='tp-modal tp-example-modal'>
+        <div class='tp-modal tp-example-modal'>
             <p class='tp-modal-text'></p>
             <div class='tp-example-list'></div>
             <div class='tp-modal-buttons'>
@@ -144,8 +142,7 @@
                 <button id='example-confirm' class='tp-modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
             </div>
         </div>
-
-        <div id='file-drop' class='tp-filedrop-container'>
+        <div class='tp-filedrop-container'>
             <div class='tp-filedrop-indicator'>
                 <div class='tp-filedrop-icon'><i class='btm bt-upload'></i></div>
                 <div class='tp-filedrop-label'>Drop a file here to open</div>
@@ -161,7 +158,7 @@
         const flags = parseFeatureFlags(query);
 
         if (flags['fullmenu'] === true) {
-            document.querySelector('html').classList.add('full-menu');
+            document.getElementById('tangram_play_wrapper').querySelector('.tp-menu-bar').classList.add('tp-debug-full-menu');
         }
 
         // Create an instance of TangramPlay with the following modules
