@@ -2,25 +2,34 @@ import Editor from '../core/editor.js';
 
 // Load some common functions
 import { fetchHTTP } from '../core/common.js';
+import EditorIO from './ui/EditorIO.js';
 import Shield from './ui/Shield.js';
-import FileDrop from './ui/FileDrop.js';
 import Modal from './ui/Modal.js';
+import FileDrop from './ui/FileDrop.js';
+import FileOpen from './ui/FileOpen.js';
 
 let tp;
 let editor;
 let shield;
+let fileopen;
 let filedrop;
 
-export default class Menu {
-    constructor (tangram_play, configFile) {
+export default class UI {
+    constructor (tangram_play) {
         this.tangram_play = tangram_play;
 
         tp = tangram_play;
         editor = tangram_play.editor;
 
         const container = tangram_play.container;
+        const options = tangram_play.options;
 
-        this.loadExamples(configFile);
+        this.loadExamples(options.menu);
+
+        // Set up UI components
+        this.shield = shield = new Shield();
+        this.filedrop = filedrop = new FileDrop(container);
+        this.fileopen = fileopen = new FileOpen(container);
 
         document.getElementById('menu-button-open').addEventListener('click', function (e) {
             let menuEl = document.getElementById('menu-open')
@@ -31,8 +40,8 @@ export default class Menu {
         }, false)
 
         document.getElementById('menu-button-new').addEventListener('click', onClickNewButton, false)
-        document.getElementById('menu-button-export').addEventListener('click', saveContent, false);
-        document.getElementById('menu-open-file').addEventListener('click', onClickOpenFile, false)
+        document.getElementById('menu-button-export').addEventListener('click', EditorIO.saveContent, false);
+        document.getElementById('menu-open-file').addEventListener('click', function () { fileopen.activate() }, false)
         document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
         document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
         document.getElementById('example-confirm').addEventListener('click', onClickOpenExampleFromDialog, false)
@@ -42,22 +51,6 @@ export default class Menu {
                 // TODO. Implement after UI elements handle / remember state better
             }
         })
-
-        // Setup File Selector;
-        let fileSelector = document.createElement('input');
-        fileSelector.setAttribute('type', 'file');
-        fileSelector.setAttribute('accept', 'text/x-yaml');
-        fileSelector.style.display = 'none';
-        fileSelector.id = 'file-selector';
-        fileSelector.addEventListener('change', function (event) {
-            let files = event.target.files;
-            openContent(files[0]);
-        });
-        document.body.appendChild(fileSelector);
-
-        // Set up UI components
-        this.shield = shield = new Shield();
-        this.filedrop = filedrop = new FileDrop();
 
         window.onpopstate = function (e) {
             if (e.state && e.state.loadStyleURL) {
@@ -94,25 +87,8 @@ export default class Menu {
     }
 };
 
-function openContent (content) {
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        tangramPlay.loadContent( e.target.result );
-    }
-    reader.readAsText(content);
-}
-
 function onClickNewButton (event) {
-    checkEditorSaveStateThenDoStuff(newContent);
-}
-
-function checkEditorSaveStateThenDoStuff (callback) {
-    if (editor && editor.isSaved === false) {
-        let unsavedModal = new Modal(tp, 'Your style has not been saved. Continue?', callback);
-        unsavedModal.show();
-    } else {
-        callback();
-    }
+    EditorIO.checkSaveStateThen(newContent);
 }
 
 function newContent () {
@@ -153,14 +129,6 @@ function parseQuery (qstr) {
     return query;
 };
 
-function saveContent () {
-    if (editor) {
-        let blob = new Blob([ tp.getContent()], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "style.yaml");
-        editor.isSaved = true;
-    }
-}
-
 function hideMenus () {
     let els = document.querySelectorAll('.menu-dropdown');
     for (let i = 0, j = els.length; i < j; i++) {
@@ -186,17 +154,8 @@ function onClickOutsideDropdown (event) {
     }
 }
 
-function onClickOpenFile (event) {
-    checkEditorSaveStateThenDoStuff(function () {
-        let input = document.getElementById('file-selector');
-        input.click();
-    })
-}
-
 function onClickOpenExample (event) {
-    checkEditorSaveStateThenDoStuff(function () {
-        showExamplesModal();
-    })
+    EditorIO.checkSaveStateThen(showExamplesModal);
 }
 
 function showExamplesModal () {

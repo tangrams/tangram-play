@@ -41,14 +41,18 @@ export default class GlslSandbox {
         this.line = -1;
         this.animated = false;
 
-        this.data = JSON.parse(fetchHTTP(configFile))['sandbox'];
+        this.element = document.createElement('div');
+        this.element.id = 'tp-a-sandbox';
+        this.element.setAttribute("width","130");
+        this.element.setAttribute("height","130");
 
         this.canvas = document.createElement('canvas');
-        this.canvas.id = 'tp-a-sandbox';
+        this.canvas.id = 'tp-a-sandbox-canvas';
         this.canvas.className = 'glsl_sandbox';
         this.canvas.setAttribute("width","130");
         this.canvas.setAttribute("height","130");
-        this.canvas.setAttribute("data-fragment",this.data.defaultCode);
+        this.canvas.setAttribute("data-fragment","void main() {\ngl_FragColor = vec4(1.0,0.0,1.0,1.0);\n}");
+        this.element.appendChild(this.canvas);
 
         // Suggestions are trigged by the folowing CM events
         tangram_play.editor.on("cursorActivity", function(cm) {
@@ -78,7 +82,7 @@ export default class GlslSandbox {
     		let shaderObj = this._getShaderObj(address);
 
     		if (shaderObj===undefined) {
-    			if (this.active) this.canvas.parentNode.removeChild(this.canvas);
+    			if (this.active) this.element.parentNode.removeChild(this.element);
     			this.active = false;
     			return;
     		}
@@ -86,7 +90,7 @@ export default class GlslSandbox {
     		this.animated = shaderObj.animated;
 
     		if (isNormalBlock(address)){
-    			this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.canvas);
+    			this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
 
     			if (!this.active) {
     				this.sandbox = new GlslCanvas(this.canvas);
@@ -103,7 +107,7 @@ export default class GlslSandbox {
     				this._frame();
     			}
     		} else if (isColorBlock(address)){
-    			this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.canvas);
+    			this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
 
     			if (!this.active) {
     				this.sandbox = new GlslCanvas(this.canvas);
@@ -129,15 +133,32 @@ export default class GlslSandbox {
     			}
     		} else {
     			if (this.active) {
-    				this.canvas.parentNode.removeChild(this.canvas);
+    				this.element.parentNode.removeChild(this.element);
     			}
     			this.active = false;
+    		}
+
+    		if (this.active) {
+    			if (shaderObj.material) {
+    				for (let el in shaderObj.material) {
+    					if (!Array.isArray(shaderObj.material[el]) && shaderObj.material[el].texture ){
+    						this.sandbox.setUniform("u_material_"+el+"_texture", shaderObj.material[el].texture);
+    						this.sandbox.setUniform("u_material."+el+"Scale",shaderObj.material[el].scale);
+    					}
+    				}
+    			}
     		}
     	}
     }
 
     _frame() {
     	if (this.active) { // && this.animated) {
+			this.sandbox.setUniform("u_meters_per_pixel",this.tangram_play.scene.meters_per_pixel);
+			this.sandbox.setUniform("u_device_pixel_ratio",window.devicePixelRatio);
+			this.sandbox.setUniform("u_map_position", [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom]);
+			this.sandbox.setUniform("u_tile_origin", [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z]);
+			this.sandbox.setUniform("u_vanishing_point", this.tangram_play.scene.camera.vanishing_point);
+
 			this.sandbox.render();
 			requestAnimationFrame(function(){
 				tangramPlay.editor.glsl_sandbox._frame();
@@ -157,18 +178,22 @@ export default class GlslSandbox {
     	#endif
 
 		uniform vec2 u_resolution;
+		uniform vec2 u_mouse;
 		uniform float u_time;
+		uniform float u_meters_per_pixel;
+		uniform float u_device_pixel_ratio;
+
+		uniform vec3 u_map_position;
+		uniform vec3 u_tile_origin;
+
+		vec3 u_eye = vec3(1.0);
+		uniform vec2 u_vanishing_point;
 
 		attribute vec3 a_position;
 		attribute vec2 a_texcoord;
 
 		varying vec2 v_texcoord;
 		varying vec3 v_world_position;
-
-		float u_meters_per_pixel = 1.0;
-		float u_device_pixel_ratio = 1.0;
-		vec3 u_map_position = vec3(1.0);
-		vec3 u_tile_origin = vec3(1.0);
 		`
 
 		let shaderObj = this._getShaderObj(address);
@@ -184,8 +209,9 @@ export default class GlslSandbox {
 		void main() {
 			vec4 position = vec4(a_position.xy, 0.0, 1.0);
 		 	v_texcoord = a_texcoord;
-		 	v_world_position.xy = a_texcoord*10.0;
-		 	v_world_position.z = 0.0;
+		 	v_world_position = u_map_position*0.001;
+		 	v_world_position.xy += (a_texcoord*u_meters_per_pixel);
+		 	v_world_position.xy *= 100.;
 		 `;
 
 		let block_position = "\n";
@@ -207,10 +233,22 @@ export default class GlslSandbox {
     	let shaderObj = this._getShaderObj(address);
 
     	let defines = "\n";
+    	for(let name in shaderObj.defines){
+    		if (shaderObj.defines[name]) {
+    			defines += "#define " + name + (shaderObj.defines[name] === true ? "\n" : " " + shaderObj.defines[name] + "\n");
+    		}
+    	}
 
     	// if (shaderObj.base && shaderObj.base === "polygons"){
     	// 	defines += "#define SPHERE\n";
     	// }
+
+    	let block_material = "\n";
+		if (shaderObj.shaders.blocks.material) {
+			for (let i = 0; i < shaderObj.shaders.blocks.material.length; i++){
+				block_material += shaderObj.shaders.blocks.material[i] + "\n";
+			}
+		}
 
 		let header = `
 			#ifdef GL_ES
@@ -220,14 +258,17 @@ export default class GlslSandbox {
 			uniform vec2 u_resolution;
 			uniform vec2 u_mouse;
 			uniform float u_time;
+			uniform float u_meters_per_pixel;
+			uniform float u_device_pixel_ratio;
+
+			uniform vec3 u_map_position;
+			uniform vec3 u_tile_origin;
 
 			varying vec2 v_texcoord;
 			varying vec3 v_world_position;
 
-			float u_meters_per_pixel = 1.0;
-			float u_device_pixel_ratio = 1.0;
-			vec3 u_map_position = vec3(1.0);
-			vec3 u_tile_origin = vec3(1.0);
+			vec3 u_eye = vec3(1.0);
+			uniform vec2 u_vanishing_point;
 
 			vec3 v_normal = vec3(0.0,0.0,1.0);
 			vec4 v_color = vec4(1.0,0.0,1.0,1.0);
@@ -286,13 +327,17 @@ export default class GlslSandbox {
 
 				vec3 normal = v_normal;
 
+				#ifdef TANGRAM_MATERIAL_NORMAL_TEXTURE
+			        calculateNormal(normal);
+			    #endif
+
 				vec2 TEMPLATE_ST = v_texcoord.xy;
 
 				#ifdef SPHERE
 				TEMPLATE_ST = sphereCoords(TEMPLATE_ST,1.0);
 				#endif
 			  
-			    v_color.rgb = hsb2rgb(vec3(fract(u_time*0.25),1.,1.));
+			    v_color.rgb = hsb2rgb(vec3(fract(u_time*0.01),1.,1.));
 
 			    #ifdef SPHERE
 				v_color = mix(v_color, vec4(0.), 
@@ -302,7 +347,7 @@ export default class GlslSandbox {
 				vec4 color = v_color;
 			`;
 
-		return defines + header + block_global + pre;
+		return defines + header + block_material + block_global + pre;
     }
 
     _getNormalEnding() {
