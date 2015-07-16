@@ -1,11 +1,12 @@
 'use strict';
+// For now: assume globals
+/* global tangramPlay */
 
 import Shield from './Shield.js';
-
-const noop = function () {};
+import { noop } from './Helpers.js';
 
 export default class Modal {
-    constructor (tangramPlay, message = 'Dude.', callback = noop, abort = noop) {
+    constructor (message = 'Dude.', callback = noop, abort = noop) {
         const tp = tangramPlay;
         const container = tangramPlay.container;
 
@@ -28,9 +29,16 @@ export default class Modal {
         this._handleAbort = this._handleAbort.bind(this);
     }
 
+    get message () {
+        return this.el.querySelector('.tp-modal-text').textContent;
+    }
+
+    set message (value) {
+        this.el.querySelector('.tp-modal-text').textContent = value;
+    }
+
     show () {
         this.shield.show();
-        this.el.querySelector('.tp-modal-text').textContent = this.message;
         this.el.style.display = 'block';
         this.el.querySelector('.tp-modal-confirm').addEventListener('click', this._handleConfirm, false);
         this.el.querySelector('.tp-modal-cancel').addEventListener('click', this._handleAbort, false);
