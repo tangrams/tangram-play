@@ -7,7 +7,10 @@ import { noop } from './Helpers.js';
 
 export default class Modal {
     constructor (message = 'Dude.', callback = noop, abort = noop) {
-        const container = tangramPlay.container;
+        // Not great. TODO: Figure out how to get access to the
+        // tangramPlay instance without having to pass it in
+        // as an argument.
+        const container = (typeof tangramPlay !== 'undefined') ? tangramPlay.container : document;
 
         this.el = container.querySelector('.tp-modal');
         this.message = message;

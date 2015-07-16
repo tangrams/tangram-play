@@ -12,6 +12,17 @@ const EditorIO = {
             this.loadContent(file);
         });
     },
+    new () {
+        this.checkSaveStateThen(() => {
+            this.newContent();
+        });
+    },
+    export () {
+        const typedArray = tangramPlay.getContent();
+        const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, 'style.yaml');
+        tangramPlay.editor.isSaved = true;
+    },
     checkSaveStateThen (callback = noop) {
         if (tangramPlay.editor.isSaved === false) {
             const unsavedModal = new Modal('Your style has not been saved. Continue?', callback);
@@ -20,18 +31,16 @@ const EditorIO = {
             callback();
         }
     },
+    newContent () {
+        // TODO: Don't hack
+        window.location.href = ".";
+    },
     loadContent (content) {
         const reader = new FileReader();
         reader.onload = function(e) {
             tangramPlay.loadContent(e.target.result);
         };
         reader.readAsText(content);
-    },
-    saveContent () {
-        const typedArray = tangramPlay.getContent();
-        const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, 'style.yaml');
-        tangramPlay.editor.isSaved = true;
     }
 };
 

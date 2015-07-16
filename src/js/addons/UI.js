@@ -1,35 +1,22 @@
-import Editor from '../core/editor.js';
+'use strict';
 
-// Load some common functions
-import { fetchHTTP } from '../core/common.js';
 import EditorIO from './ui/EditorIO.js';
 import Shield from './ui/Shield.js';
 import Modal from './ui/Modal.js';
 import FileDrop from './ui/FileDrop.js';
 import FileOpen from './ui/FileOpen.js';
-
-let tp;
-let editor;
-let shield;
-let fileopen;
-let filedrop;
+import ExamplesModal from './ui/Modal.Examples.js';
 
 export default class UI {
     constructor (tangram_play) {
-        this.tangram_play = tangram_play;
-
-        tp = tangram_play;
-        editor = tangram_play.editor;
-
         const container = tangram_play.container;
         const options = tangram_play.options;
 
-        this.loadExamples(options.menu);
-
         // Set up UI components
-        this.shield = shield = new Shield();
-        this.filedrop = filedrop = new FileDrop(container);
-        this.fileopen = fileopen = new FileOpen(container);
+        new Shield();
+        new FileDrop(container);
+        this.fileopen = new FileOpen(container);
+        this.examplesModal = new ExamplesModal(options.menu);
 
         document.getElementById('menu-button-open').addEventListener('click', function (e) {
             let menuEl = document.getElementById('menu-open')
@@ -39,12 +26,12 @@ export default class UI {
             document.body.addEventListener('click', onClickOutsideDropdown, false)
         }, false)
 
-        document.getElementById('menu-button-new').addEventListener('click', onClickNewButton, false)
-        document.getElementById('menu-button-export').addEventListener('click', EditorIO.saveContent, false);
-        document.getElementById('menu-open-file').addEventListener('click', function () { fileopen.activate() }, false)
-        document.getElementById('menu-open-example').addEventListener('click', onClickOpenExample, false)
-        document.getElementById('example-cancel').addEventListener('click', hideExamplesModal, false)
-        document.getElementById('example-confirm').addEventListener('click', onClickOpenExampleFromDialog, false)
+        document.getElementById('menu-button-new').addEventListener('click', () => { EditorIO.new() }, false)
+        document.getElementById('menu-button-export').addEventListener('click', EditorIO.export, false);
+
+        document.getElementById('menu-open-file').addEventListener('click', () => { this.fileopen.activate() }, false)
+        document.getElementById('menu-open-example').addEventListener('click', () => { this.examplesModal.show() }, false)
+
         document.body.addEventListener('keyup', function (e) {
             // esc key
             if (e.keyCode === 27) {
@@ -54,79 +41,10 @@ export default class UI {
 
         window.onpopstate = function (e) {
             if (e.state && e.state.loadStyleURL) {
-                this.tangram_play.loadQuery();
+                tangram_play.loadQuery();
             }
         }
     };
-
-    loadExamples (configFile) {
-        let examples_data = JSON.parse(fetchHTTP(configFile));
-        let examplesList = document.getElementById("examples");
-
-        for (let i = 0; i < examples_data['examples'].length; i++) {
-            let example = examples_data['examples'][i];
-            let newOption = document.createElement('div');
-            let nameEl = document.createElement('div');
-            let name = example['name'].split('.')[0];
-            let thumbnailEl = document.createElement('div');
-            //let imgEl = document.createElement('img');
-            newOption.className = 'example-option';
-            newOption.setAttribute('data-value', example['url']);
-            nameEl.className = 'example-option-name';
-            nameEl.textContent = name.replace(/-/g, ' ');
-            //imgEl.src = 'data/imgs/' + name + '.png';
-            thumbnailEl.className = 'example-thumbnail';
-            thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
-            thumbnailEl.style.backgroundImage = 'url(https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/' + name + '.png)';
-            newOption.appendChild(nameEl);
-            newOption.appendChild(thumbnailEl);
-            //newOption.appendChild(imgEl);
-            newOption.addEventListener('click', selectExample);
-            examplesList.appendChild(newOption);
-        }
-    }
-};
-
-function onClickNewButton (event) {
-    EditorIO.checkSaveStateThen(newContent);
-}
-
-function newContent () {
-    window.location.href = ".";
-}
-
-function selectExample(event) {
-    let target = event.target;
-    while (!target.classList.contains('example-option')) {
-        target = target.parentNode;
-    }
-    resetExamples();
-    target.classList.add('example-selected');
-    document.getElementById('example-confirm').disabled = false;
-}
-
-function resetExamples () {
-    let all = document.querySelectorAll('.example-option');
-    for (let i = 0, j = all.length; i < j; i++) {
-        all[i].classList.remove('example-selected');
-    }
-}
-
-function openExample (value) {
-    window.history.pushState({
-        loadStyleURL: value
-    }, null, '.?style=' + value + window.location.hash);
-    tp.loadQuery();
-}
-
-function parseQuery (qstr) {
-    let query = {};
-    let a = qstr.split('&');
-    for (let i in a) {
-        let b = a[i].split('=');
-        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
-    }
-    return query;
 };
 
 function hideMenus () {
@@ -152,27 +70,4 @@ function onClickOutsideDropdown (event) {
         loseMenuFocus();
         document.body.removeEventListener('click', onClickOutsideDropdown, false);
     }
-}
-
-function onClickOpenExample (event) {
-    EditorIO.checkSaveStateThen(showExamplesModal);
-}
-
-function showExamplesModal () {
-    shield.show();
-    document.getElementById('choose-example').style.display = 'block';
-}
-
-function hideExamplesModal () {
-    shield.hide();
-    resetExamples();
-    document.getElementById('example-confirm').disabled = true;
-    document.getElementById('choose-example').style.display = 'none';
-}
-
-function onClickOpenExampleFromDialog () {
-    let selected = document.querySelectorAll('.example-option.example-selected')[0];
-    let value = selected.getAttribute('data-value');
-    hideExamplesModal();
-    openExample(value);
 }

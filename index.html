@@ -129,24 +129,19 @@
         <div id='shield' class='tp-shield'></div>
 
         <div id='confirm-unsaved' class='tp-modal'>
-            <p class='tp-modal-text'>Your style has not been saved. Continue?</p>
-
+            <p class='tp-modal-text'></p>
             <div class='tp-modal-buttons'>
                 <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
                 <button class='tp-modal-confirm'><i class='btm bt-check'></i> Continue</button>
             </div>
         </div>
 
-        <div id='choose-example' class='tp-modal example-modal'>
-            <p class='tp-modal-text'>Choose example to open</p>
-
-            <div class='examples-container'>
-                <div id='examples'></div>
-            </div>
-
+        <div id='choose-example' class='tp-modal tp-example-modal'>
+            <p class='tp-modal-text'></p>
+            <div class='tp-example-list'></div>
             <div class='tp-modal-buttons'>
-                <button id='example-cancel'><i class='btm bt-times'></i> Cancel</button>
-                <button id='example-confirm' disabled><i class='btm bt-check'></i> Open</button>
+                <button id='example-cancel' class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button id='example-confirm' class='tp-modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
             </div>
         </div>
 
