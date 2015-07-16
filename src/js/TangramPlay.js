@@ -7,6 +7,7 @@ import Divider from './core/Divider.js';
 import UI from './addons/UI.js';
 import WidgetsManager from './addons/WidgetsManager.js';
 import SuggestManager from './addons/SuggestManager.js';
+import GlslSandbox from './addons/GlslSandbox.js';
 
 // Import Utils
 import { fetchHTTP, debounce } from './core/common.js';
@@ -52,6 +53,7 @@ export default class TangramPlay {
         this.addons = {};
         if (options.widgets) this.addons.widgets_manager = new WidgetsManager(this, options.widgets);
         if (options.suggest) this.addons.suggest_manager = new SuggestManager(this, options.suggest);
+		if (options.sandbox) this.addons.glsl_sandbox = new GlslSandbox(this);
         if (options.ui) this.addons.ui = new UI(this);
 
         // LOAD STYLE

@@ -33,8 +33,7 @@ export function getValueRange(keyPair) {
 
 export function getAddressSceneContent(tangramScene, address) {
     if (tangramScene && tangramScene.config) {
-        let keys = address.split("/");
-        keys.shift();
+        let keys = getKeysFromAddress(address);
         if (keys && keys.length) {
             let content = tangramScene.config[keys[0]];
             for (let i = 1; i < keys.length; i++) {
@@ -53,6 +52,25 @@ export function getAddressSceneContent(tangramScene, address) {
     }
 };
 
+// Make an folder style address from an array of keys
+export function getAddressFromKeys(keys) {
+    if (keys) {
+         let address = "";
+        for ( let i = 0; i < keys.length; i++) {
+            address += "/" + keys[i] ;
+        }
+        return address;
+    } else {
+        return "/"
+    }
+};
+
+export function getKeysFromAddress(address) {
+    let keys = address.split('/');
+    keys.shift();
+    return keys;
+};
+
 //  CHECK
 //  ===============================================================================
 
@@ -60,13 +78,13 @@ export function getAddressSceneContent(tangramScene, address) {
 function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1;};
 
 //  Function that check if a line is inside a Color Shader Block
-function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); };
-function isWidthBlock(address) { return endsWith(address,"shaders/blocks/width"); };
-function isPositionBlock(address) { return endsWith(address,"shaders/blocks/position"); };
-function isNormalBlock(address) { return endsWith(address,"shaders/blocks/normal"); };
-function isColorBlock(address) { return endsWith(address,"shaders/blocks/color"); };
-function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); };
-function isShader(address) { return (isGlobalBlock(address) || isWidthBlock(address)  || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address)); };
+export function isGlobalBlock(address) { return endsWith(address,"shaders/blocks/global"); };
+export function isWidthBlock(address) { return endsWith(address,"shaders/blocks/width"); };
+export function isPositionBlock(address) { return endsWith(address,"shaders/blocks/position"); };
+export function isNormalBlock(address) { return endsWith(address,"shaders/blocks/normal"); };
+export function isColorBlock(address) { return endsWith(address,"shaders/blocks/color"); };
+export function isFilterBlock(address) { return endsWith(address,"shaders/blocks/filter"); };
+export function isShader(address) { return (isGlobalBlock(address) || isWidthBlock(address)  || isPositionBlock(address) || isNormalBlock(address) || isColorBlock(address) || isFilterBlock(address)); };
 
 function isContentJS(tangramScene, address) {
     if (tangramScene && tangramScene.config) {
@@ -124,7 +142,7 @@ function getInlineKeys(str, nLine) {
             if (isKey) {
                 keys[level] = isKey[1];
                 i += isKey[1].length;
-                rta.push( { address: keys2Address(keys), key: isKey[1], value: isKey[2], pos: { line: nLine, ch: i+1 }, index: rta.length+1 } );
+                rta.push( { address: getAddressFromKeys(keys), key: isKey[1], value: isKey[2], pos: { line: nLine, ch: i+1 }, index: rta.length+1 } );
             }
         }
 
@@ -136,19 +154,6 @@ function getInlineKeys(str, nLine) {
         i++;
     }
     return rta;
-};
-
-// Make an folder style address from an array of keys
-function keys2Address(keys) {
-    if (keys) {
-         let address = "";
-        for ( let i = 0; i < keys.length; i++) {
-            address += "/" + keys[i] ;
-        }
-        return address;
-    } else {
-        return "/"
-    }
 };
 
 // Add Address to token states
@@ -180,7 +185,7 @@ function yamlAddressing(stream, state) {
             //  Record all that in the state value
             state.keyLevel = level;
 
-            let address = keys2Address(state.keyStack);
+            let address = getAddressFromKeys(state.keyStack);
             let ch = spaces+key[2].length;
 
             if ( key[3].substr(0,1) === "{" ){
@@ -197,7 +202,7 @@ function yamlAddressing(stream, state) {
             }
         } else {
             // Commented or empty lines lines 
-            state.keys = [ { address : keys2Address(state.keyStack), key: "", value: "", pos: { line: state.line, ch: 0 }, index: 0 } ];
+            state.keys = [ { address : getAddressFromKeys(state.keyStack), key: "", value: "", pos: { line: state.line, ch: 0 }, index: 0 } ];
         }
     }
 };

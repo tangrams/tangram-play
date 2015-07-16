@@ -1,0 +1,34 @@
+#tp-a-sandbox {
+	margin-top: -33px;
+	position: relative;
+	width: 134px;
+	height: 134px;
+	padding: 0px;
+	background: #A7A8A0;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	box-shadow: 5px 5px 10px #B2B2B2;
+	z-index: 100;
+}
+
+#tp-a-sandbox:after {
+	content: '';
+	position: absolute;
+	border-style: solid;
+	border-width: 9px 0 9px 10px;
+	border-color: transparent #A7A8A0;
+	display: block;
+	width: 0;
+	z-index: 100;
+	right: -10px;
+	top: 14px;
+}
+
+#tp-a-sandbox-canvas {
+	margin: 2px;
+    z-index: 100;
+    overflow: hidden;
+    -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+    border-radius: 12px;
+}
