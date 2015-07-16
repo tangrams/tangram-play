@@ -90,7 +90,6 @@ export default class GlslSandbox {
 
     			if (!this.active) {
     				this.sandbox = new GlslCanvas(this.canvas);
-    				this.active = true;
     			} 
 
     			let fragmentCode = 	this._getHeaderTemplate(address) + 
@@ -98,15 +97,16 @@ export default class GlslSandbox {
     								this._getNormalEnding();
 
 				this.sandbox.load(fragmentCode, this._getVertex(address)); 			
-    			// this.sandbox.render();
 
-    			this._frame();
+    			if (!this.active) {
+    				this.active = true;
+    				this._frame();
+    			}
     		} else if (isColorBlock(address)){
     			this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.canvas);
 
     			if (!this.active) {
     				this.sandbox = new GlslCanvas(this.canvas);
-    				this.active = true;
     			} 
 
     			let block_normal = "\n"
@@ -122,9 +122,11 @@ export default class GlslSandbox {
     								this._getColorEnding();
 
 				this.sandbox.load(fragmentCode, this._getVertex(address)); 			
-    			// this.sandbox.render();
 
-    			this._frame();
+    			if (!this.active) {
+    				this.active = true;
+    				this._frame();
+    			}
     		} else {
     			if (this.active) {
     				this.canvas.parentNode.removeChild(this.canvas);
@@ -135,7 +137,7 @@ export default class GlslSandbox {
     }
 
     _frame() {
-    	if (this.active && this.animated){
+    	if (this.active) { // && this.animated) {
 			this.sandbox.render();
 			requestAnimationFrame(function(){
 				tangramPlay.editor.glsl_sandbox._frame();
@@ -290,14 +292,7 @@ export default class GlslSandbox {
 				TEMPLATE_ST = sphereCoords(TEMPLATE_ST,1.0);
 				#endif
 			  
-			    TEMPLATE_ST -= 0.5;
-			    #ifdef SPHERE
-			    TEMPLATE_ST *= 1.4;
-			    #endif
-			    TEMPLATE_ST = mat2(cos(-0.78539816339),-sin(-0.78539816339),
-			                sin(-0.78539816339),cos(-0.78539816339)) * TEMPLATE_ST;
-			    TEMPLATE_ST += 0.5;
-			    v_color.rgb = hsb2rgb(vec3(floor(TEMPLATE_ST.x*10.)*0.1,1.,1.));
+			    v_color.rgb = hsb2rgb(vec3(fract(u_time*0.25),1.,1.));
 
 			    #ifdef SPHERE
 				v_color = mix(v_color, vec4(0.), 
