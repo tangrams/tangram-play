@@ -2,15 +2,15 @@
 // For now: assume globals
 /* global tangramPlay */
 
-import { saveAs } from "../../vendor/FileSaver.min.js"
+import { saveAs } from "../../vendor/FileSaver.min.js";
 import { noop } from './Helpers.js';
 import Modal from './Modal.js';
 
-export const EditorIO = {
+const EditorIO = {
     open (file) {
         this.checkSaveStateThen(() => {
             this.loadContent(file);
-        })
+        });
     },
     checkSaveStateThen (callback = noop) {
         if (tangramPlay.editor.isSaved === false) {
@@ -24,7 +24,7 @@ export const EditorIO = {
         const reader = new FileReader();
         reader.onload = function(e) {
             tangramPlay.loadContent(e.target.result);
-        }
+        };
         reader.readAsText(content);
     },
     saveContent () {
@@ -33,4 +33,6 @@ export const EditorIO = {
         saveAs(blob, 'style.yaml');
         tangramPlay.editor.isSaved = true;
     }
-}
+};
+
+export default EditorIO;

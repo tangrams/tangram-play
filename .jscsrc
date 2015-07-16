@@ -1,4 +1,5 @@
 {
+    "esnext": true,
     "excludeFiles": [
         "node_modules/**",
         "src/**/*.min.js",

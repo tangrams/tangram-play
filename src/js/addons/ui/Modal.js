@@ -7,7 +7,6 @@ import { noop } from './Helpers.js';
 
 export default class Modal {
     constructor (message = 'Dude.', callback = noop, abort = noop) {
-        const tp = tangramPlay;
         const container = tangramPlay.container;
 
         this.el = container.querySelector('.tp-modal');
