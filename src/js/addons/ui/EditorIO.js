@@ -2,10 +2,11 @@
 // For now: assume globals
 /* global tangramPlay */
 
+import { saveAs } from "../../vendor/FileSaver.min.js"
 import { noop } from './Helpers.js';
 import Modal from './Modal.js';
 
-const EditorIO = {
+export const EditorIO = {
     open (file) {
         this.checkSaveStateThen(() => {
             this.loadContent(file);
@@ -27,10 +28,9 @@ const EditorIO = {
         reader.readAsText(content);
     },
     saveContent () {
-        const blob = new Blob([ tangramPlay.getContent() ], { type: 'text/plain;charset=utf-8' });
+        const typedArray = tangramPlay.getContent();
+        const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'style.yaml');
         tangramPlay.editor.isSaved = true;
     }
 }
-
-export default EditorIO;
