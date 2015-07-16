@@ -12,7 +12,7 @@ export default class UI {
 
         // Set up UI components
         new FileDrop(container);
-        this.fileopen = new FileOpen(container);
+        this.fileopen = new FileOpen();
         this.examplesModal = new ExamplesModal(options.menu);
 
         document.getElementById('menu-button-open').addEventListener('click', function (e) {
