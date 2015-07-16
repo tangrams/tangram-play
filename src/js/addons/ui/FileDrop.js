@@ -1,11 +1,11 @@
 'use strict';
-// For now: assume globals
-/* global tangramPlay */
 
 import EditorIO from './EditorIO.js';
 
 export default class FileDrop {
     constructor (container) {
+        // TODO: A way to refer to the parent's container without
+        // having to pass it into the constructor
         this.el = container.getElementsByClassName('tp-filedrop-container')[0];
 
         // Set up drag/drop file listeners

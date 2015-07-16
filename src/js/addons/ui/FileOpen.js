@@ -12,7 +12,7 @@ export default class FileOpen {
         const input = this.el;
         EditorIO.checkSaveStateThen(() => {
             input.click();
-        })
+        });
     }
 }
 

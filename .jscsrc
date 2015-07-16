@@ -1,4 +1,5 @@
 {
+    "esnext": true,
     "excludeFiles": [
         "node_modules/**",
         "src/**/*.min.js",
@@ -21,7 +22,6 @@
     "disallowSpacesInsideParentheses": true,
     "disallowTrailingWhitespace": true,
     "disallowYodaConditions": true,
-    "requireAnonymousFunctions": true,
     "requireBlocksOnNewline": true,
     "requireCamelCaseOrUpperCaseIdentifiers": true,
     "requireCapitalizedConstructors": true,
@@ -38,13 +38,10 @@
     "requireKeywordsOnNewLine": ["else"],
     "requireLineBreakAfterVariableAssignment": true,
     "requireLineFeedAtFileEnd": true,
-    "requirePaddingNewLinesAfterUseStrict": true,
     "requirePaddingNewLinesBeforeExport": true,
     "requireParenthesesAroundIIFE": true,
     "requireSemicolons": true,
     "requireSpaceAfterBinaryOperators": true,
-    "requireSpaceAfterKeywords": true,
-    "requireSpaceAfterLineComment": true,
     "requireSpaceBeforeBinaryOperators": true,
     "requireSpaceBeforeBlockStatements": true,
     "requireSpaceBetweenArguments": true,
