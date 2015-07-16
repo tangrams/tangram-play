@@ -2,7 +2,7 @@
 // For now: assume globals
 /* global tangramPlay */
 
-import FileHandler from './FileHandler.js';
+import EditorIO from './EditorIO.js';
 
 export default class FileDrop {
     constructor (container) {
@@ -46,6 +46,6 @@ function onDropFile (event) {
 
     if (dataTransfer.files.length > 0) {
         const file = dataTransfer.files[0];
-        FileHandler.open(file);
+        EditorIO.open(file);
     }
 }

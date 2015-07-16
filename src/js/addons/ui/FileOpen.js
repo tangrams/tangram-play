@@ -1,6 +1,6 @@
 'use strict';
 
-import FileHandler from './FileHandler.js';
+import EditorIO from './EditorIO.js';
 
 export default class FileOpen {
     constructor (container) {
@@ -10,7 +10,7 @@ export default class FileOpen {
 
     activate () {
         const input = this.el;
-        FileHandler.checkEditorSaveState(() => {
+        EditorIO.checkSaveStateThen(() => {
             input.click();
         })
     }
@@ -23,7 +23,7 @@ function constructInvisibleFileInputElement () {
     fileSelector.style.display = 'none';
     fileSelector.addEventListener('change', function (event) {
         const files = event.target.files;
-        FileHandler.open(files[0]);
+        EditorIO.open(files[0]);
     });
     return fileSelector;
 }

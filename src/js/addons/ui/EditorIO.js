@@ -5,13 +5,13 @@
 import { noop } from './Helpers.js';
 import Modal from './Modal.js';
 
-const FileHandler = {
+const EditorIO = {
     open (file) {
-        this.checkEditorSaveState(() => {
+        this.checkSaveStateThen(() => {
             this.loadContent(file);
         })
     },
-    checkEditorSaveState (callback = noop) {
+    checkSaveStateThen (callback = noop) {
         if (tangramPlay.editor.isSaved === false) {
             const unsavedModal = new Modal('Your style has not been saved. Continue?', callback);
             unsavedModal.show();
@@ -25,7 +25,12 @@ const FileHandler = {
             tangramPlay.loadContent(e.target.result);
         }
         reader.readAsText(content);
+    },
+    saveContent () {
+        const blob = new Blob([ tangramPlay.getContent() ], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, 'style.yaml');
+        tangramPlay.editor.isSaved = true;
     }
 }
 
-export default FileHandler;
+export default EditorIO;
