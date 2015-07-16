@@ -3,15 +3,13 @@
 import EditorIO from './EditorIO.js';
 
 export default class FileOpen {
-    constructor (container) {
+    constructor () {
         this.el = constructInvisibleFileInputElement();
-        container.appendChild(this.el);
     }
 
     activate () {
-        const input = this.el;
         EditorIO.checkSaveStateThen(() => {
-            input.click();
+            this.el.click();
         });
     }
 }
@@ -23,7 +21,7 @@ function constructInvisibleFileInputElement () {
     fileSelector.style.display = 'none';
     fileSelector.addEventListener('change', function (event) {
         const files = event.target.files;
-        EditorIO.open(files[0]);
+        EditorIO.loadContent(files[0]);
     });
     return fileSelector;
 }
