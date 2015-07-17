@@ -97,6 +97,7 @@ export default class GlslSandbox {
     			} 
 
     			let fragmentCode = 	this._getHeaderTemplate(address) + 
+                                    // this._getBlockUntilLine(address, nLine) +
     								getAddressSceneContent(this.tangram_play.scene, address) +
     								this._getNormalEnding();
 
@@ -122,6 +123,7 @@ export default class GlslSandbox {
 
     			let fragmentCode = 	this._getHeaderTemplate(address) + 
     								block_normal + 
+                                    // this._getBlockUntilLine(address, nLine) +
     								getAddressSceneContent(this.tangram_play.scene, address) +
     								this._getColorEnding();
 
@@ -164,6 +166,22 @@ export default class GlslSandbox {
 				tangramPlay.editor.glsl_sandbox._frame();
 			}, 1000 / 30);
     	}
+    }
+
+    _getBlockUntilLine(address, nLine) {
+        let from = this.tangram_play.getKeyForAddress(address).pos.line+1;
+        let to = nLine+1;
+
+        let block = "\n";
+        for (let i = from; i < to; i++) {
+            block += this.tangram_play.editor.getLine(i);
+        }
+
+        let nP = getNumberOfOpenParentesis(block);
+        for (let i = 0; i < nP; i++) {
+            block += "}\n";
+        }
+        return block;
     }
 
     _getShaderObj(address) {
@@ -363,6 +381,16 @@ export default class GlslSandbox {
 		}
 		`;
     }
-
-
 }
+
+function getNumberOfOpenParentesis(str) {
+    let counter = 0;
+    for (let i = 0; i < str.length; i++){
+        if ( str[i] === "{" ){
+            counter++;
+        } else if ( str[i] === "}" ){
+            counter--;
+        }
+    }
+    return counter;
+};
