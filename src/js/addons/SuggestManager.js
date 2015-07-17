@@ -1,6 +1,6 @@
 // Load some common functions
 import { fetchHTTP, debounce } from '../core/common.js';
-import { getLineInd } from '../core/codemirror/tools.js';
+import { getLineInd, isEmpty } from '../core/codemirror/tools.js';
 import { getAddressSceneContent, getValueRange } from '../core/codemirror/yaml-tangram.js';
 
 // Debounced event after user stop doing something
@@ -43,7 +43,7 @@ export default class SuggestManager {
         let keys = this.tangram_play.getKeysOnLine(nLine);
         if (keys) {
             let key = keys[0];
-            if (key.value === ""){
+            if (key && key.value === ""){
                 for (let datum of this.data) {
                     if (datum.check(key)) {
                         datum.make(this.tangram_play, key);
@@ -154,9 +154,6 @@ class Suggestion {
             // Add as a panel on top of codemirror
             // this.manager.active = cm.addPanel(dom, options);
 
-            // Add in the following line after the cursors position
-            // this.manager.active = cm.addLineWidget(keyPair.pos.line, dom, {coverGutter: false, noHScroll: true});
-
             cm.addWidget(getValueRange(keyPair).to, this.dom);
             this.manager.active = this;
         }
@@ -178,10 +175,18 @@ function makeMenu(cm, nLine, list) {
                 cm.suggest_manager.active.clear();
             }
             let tabs = getLineInd(cm, cm.suggest_manager.activeLine )+1;
-            let textToAdd = '\n';
+            let textToAdd = "";
+
+            if (isEmpty(cm, cm.getCursor().line) ) {
+                tabs -= getLineInd(cm,cm.getCursor().line);
+            } else {
+                textToAdd += '\n';
+            }
+
             for (let i = 0; i < tabs; i++) {
                 textToAdd += Array(cm.getOption("indentUnit") + 1).join(" ");
             }
+            
             textToAdd += list[i] +": ";
 
             let doc = cm.getDoc();

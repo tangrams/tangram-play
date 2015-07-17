@@ -22,6 +22,7 @@ export function getKeyPairs(cm, nLine) {
         
         return keys;
     } else {
+        // return [ {address: "/", key: "", value: "", pos: { line: 0, ch: 0 }, index: 0} ];
         return [];
     }
 };
