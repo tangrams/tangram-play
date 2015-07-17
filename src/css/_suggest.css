@@ -11,8 +11,12 @@
     color: white;
     height: 20px;
     padding: 3px 7px;
-    /*margin-top: -18px;*/
-    /*margin-left: 4px;*/
+
+    /* Codemirror positioning override */
+    margin-top: -24px;
+    margin-left: 4px;
+
+    z-index: 100;
 }
 
 .tangram-play-suggested-menu-btn {

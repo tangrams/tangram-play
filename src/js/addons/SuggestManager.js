@@ -35,22 +35,22 @@ export default class SuggestManager {
     }
 
     suggest (nLine) {
-
+        
+        this.clear();
         let top = this.tangram_play.editor.getScrollInfo().top;
-        // Erase previus keys
-        if (this.active) {
-            this.active.clear();
-            this.tangram_play.editor.focus();
-        }
 
         // What's the main key of the line?
         let keys = this.tangram_play.getKeysOnLine(nLine);
         if (keys) {
             let key = keys[0];
-            for (let datum of this.data) {
-                if(datum.check(key)){
-                    datum.make(this.tangram_play, key);
+            if (key.value === ""){
+                for (let datum of this.data) {
+                    if (datum.check(key)) {
+                        datum.make(this.tangram_play, key);
+                    }
                 }
+            } else {
+                return;
             }
         } else {
             return;
@@ -59,6 +59,16 @@ export default class SuggestManager {
         this.tangram_play.editor.focus();
         this.tangram_play.editor.scrollTo(null,top);
     };
+
+    clear() {
+        // Erase previus keys
+        if (this.active) {
+            this.active.clear();
+            this.active = undefined;
+            this.tangram_play.editor.focus();
+        }
+
+    }
 };
 
 class Suggestion {
@@ -73,13 +83,22 @@ class Suggestion {
         } else if ( datum['value'] ){
             this.checkAgainst = 'value';
         }
+
         this.checkPatern = datum[this.checkAgainst];
+        
         if (datum.options) {
             this.options = datum.options;
         }
 
         if (datum.source) {
             this.source = datum.source;
+        }
+    }
+
+    clear() {
+        if (this.dom && this.dom.parentNode) {
+            this.dom.parentNode.removeChild(this.dom);
+            this.dom = undefined;
         }
     }
 
@@ -130,50 +149,53 @@ class Suggestion {
                 options.replace = this.manager.active;
             }
 
-            let dom = makeMenu(cm, keyPair.pos.line, list);
+            this.dom = makeMenu(cm, keyPair.pos.line, list);
 
             // Add as a panel on top of codemirror
             // this.manager.active = cm.addPanel(dom, options);
 
             // Add in the following line after the cursors position
-            this.manager.active = cm.addLineWidget(keyPair.pos.line, dom, {coverGutter: false, noHScroll: true});
+            // this.manager.active = cm.addLineWidget(keyPair.pos.line, dom, {coverGutter: false, noHScroll: true});
+
+            cm.addWidget(getValueRange(keyPair).to, this.dom);
+            this.manager.active = this;
         }
     }
 };
 
 function makeMenu(cm, nLine, list) {
-        let node = document.createElement("div");
-        node.className = "tangram-play-suggested-menu";
+    let node = document.createElement("div");
+    node.className = "tangram-play-suggested-menu";
 
-        for (let i = 0; i < list.length; i++) {
-            let btn = document.createElement('button');
-            let text = document.createTextNode(list[i]);
-            cm.suggest_manager.activeLine = nLine;
-            btn.className = 'tangram-play-suggested-menu-btn';
+    for (let i = 0; i < list.length; i++) {
+        let btn = document.createElement('button');
+        let text = document.createTextNode(list[i]+": ");
+        cm.suggest_manager.activeLine = nLine;
+        btn.className = 'tangram-play-suggested-menu-btn';
 
-            btn.onclick = function() {
-                if (cm.suggest_manager.active) {
-                    cm.suggest_manager.active.clear();
-                }
-                let tabs = getLineInd(cm, cm.suggest_manager.activeLine )+1;
-                let textToAdd = '\n';
-                for (let i = 0; i < tabs; i++) {
-                    textToAdd += Array(cm.getOption("indentUnit") + 1).join(" ");
-                }
-                textToAdd += list[i] +": ";
+        btn.onclick = function() {
+            if (cm.suggest_manager.active) {
+                cm.suggest_manager.active.clear();
+            }
+            let tabs = getLineInd(cm, cm.suggest_manager.activeLine )+1;
+            let textToAdd = '\n';
+            for (let i = 0; i < tabs; i++) {
+                textToAdd += Array(cm.getOption("indentUnit") + 1).join(" ");
+            }
+            textToAdd += list[i] +": ";
 
-                let doc = cm.getDoc();
-                let cursor = doc.getCursor();           // gets the line number in the cursor position
-                let line = doc.getLine(cursor.line);    // get the line contents
-                let pos = {                             // create a new object to avoid mutation of the original selection
-                    line: cursor.line,
-                    ch: line.length                     // set the character position to the end of the line
-                }
-                doc.replaceRange(textToAdd, pos);            // adds a new line
-            };
-
-            btn.appendChild(text);
-            node.appendChild(btn);
+            let doc = cm.getDoc();
+            let cursor = doc.getCursor();           // gets the line number in the cursor position
+            let line = doc.getLine(cursor.line);    // get the line contents
+            let pos = {                             // create a new object to avoid mutation of the original selection
+                line: cursor.line,
+                ch: line.length                     // set the character position to the end of the line
+            }
+            doc.replaceRange(textToAdd, pos);            // adds a new line
         };
-        return node;
+
+        btn.appendChild(text);
+        node.appendChild(btn);
     };
+    return node;
+};
