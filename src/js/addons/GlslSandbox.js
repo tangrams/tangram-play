@@ -1,4 +1,5 @@
 import { fetchHTTP } from '../core/common.js';
+import { isEmpty } from '../core/codemirror/tools.js';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress, getAddressFromKeys } from '../core/codemirror/yaml-tangram.js';
 
 (function() {
@@ -76,81 +77,83 @@ export default class GlslSandbox {
     }
 
     update_changes(nLine) {
-    	let keys = this.tangram_play.getKeysOnLine(nLine);
-    	if (keys && keys[0]){
-    		let address = keys[0].address;
-    		let shaderObj = this._getShaderObj(address);
+        if (!isEmpty(cm,nLine)){
+            let keys = this.tangram_play.getKeysOnLine(nLine);
+            if (keys && keys[0]){
+                let address = keys[0].address;
+                let shaderObj = this._getShaderObj(address);
 
-    		if (shaderObj===undefined) {
-    			if (this.active) this.element.parentNode.removeChild(this.element);
-    			this.active = false;
-    			return;
-    		}
+                if (shaderObj===undefined) {
+                    if (this.active) this.element.parentNode.removeChild(this.element);
+                    this.active = false;
+                    return;
+                }
 
-    		this.animated = shaderObj.animated;
+                this.animated = shaderObj.animated;
 
-    		if (isNormalBlock(address)){
-    			this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
+                if (isNormalBlock(address)){
+                    this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
 
-    			if (!this.active) {
-    				this.sandbox = new GlslCanvas(this.canvas);
-    			} 
+                    if (!this.active) {
+                        this.sandbox = new GlslCanvas(this.canvas);
+                    } 
 
-    			let fragmentCode = 	this._getHeaderTemplate(address) + 
-                                    // this._getBlockUntilLine(address, nLine) +
-    								getAddressSceneContent(this.tangram_play.scene, address) +
-    								this._getNormalEnding();
+                    let fragmentCode =  this._getHeaderTemplate(address) + 
+                                        // this._getBlockUntilLine(address, nLine) +
+                                        getAddressSceneContent(this.tangram_play.scene, address) +
+                                        this._getNormalEnding();
 
-				this.sandbox.load(fragmentCode, this._getVertex(address)); 			
+                    this.sandbox.load(fragmentCode, this._getVertex(address));          
 
-    			if (!this.active) {
-    				this.active = true;
-    				this._frame();
-    			}
-    		} else if (isColorBlock(address)){
-    			this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
+                    if (!this.active) {
+                        this.active = true;
+                        this._frame();
+                    }
+                } else if (isColorBlock(address)){
+                    this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
 
-    			if (!this.active) {
-    				this.sandbox = new GlslCanvas(this.canvas);
-    			} 
+                    if (!this.active) {
+                        this.sandbox = new GlslCanvas(this.canvas);
+                    } 
 
-    			let block_normal = "\n"
-    			if (shaderObj.shaders.blocks.normal) {
-					for (let i = 0; i < shaderObj.shaders.blocks.normal.length; i++){
-						block_normal += shaderObj.shaders.blocks.normal[i] + "\n";
-					}
-    			}
+                    let block_normal = "\n"
+                    if (shaderObj.shaders.blocks.normal) {
+                        for (let i = 0; i < shaderObj.shaders.blocks.normal.length; i++){
+                            block_normal += shaderObj.shaders.blocks.normal[i] + "\n";
+                        }
+                    }
 
-    			let fragmentCode = 	this._getHeaderTemplate(address) + 
-    								block_normal + 
-                                    // this._getBlockUntilLine(address, nLine) +
-    								getAddressSceneContent(this.tangram_play.scene, address) +
-    								this._getColorEnding();
+                    let fragmentCode =  this._getHeaderTemplate(address) + 
+                                        block_normal + 
+                                        // this._getBlockUntilLine(address, nLine) +
+                                        getAddressSceneContent(this.tangram_play.scene, address) +
+                                        this._getColorEnding();
 
-				this.sandbox.load(fragmentCode, this._getVertex(address)); 			
+                    this.sandbox.load(fragmentCode, this._getVertex(address));          
 
-    			if (!this.active) {
-    				this.active = true;
-    				this._frame();
-    			}
-    		} else {
-    			if (this.active) {
-    				this.element.parentNode.removeChild(this.element);
-    			}
-    			this.active = false;
-    		}
+                    if (!this.active) {
+                        this.active = true;
+                        this._frame();
+                    }
+                } else {
+                    if (this.active) {
+                        this.element.parentNode.removeChild(this.element);
+                    }
+                    this.active = false;
+                }
 
-    		if (this.active) {
-    			if (shaderObj.material) {
-    				for (let el in shaderObj.material) {
-    					if (!Array.isArray(shaderObj.material[el]) && shaderObj.material[el].texture ){
-    						this.sandbox.setUniform("u_material_"+el+"_texture", shaderObj.material[el].texture);
-    						this.sandbox.setUniform("u_material."+el+"Scale",shaderObj.material[el].scale);
-    					}
-    				}
-    			}
-    		}
-    	}
+                if (this.active) {
+                    if (shaderObj.material) {
+                        for (let el in shaderObj.material) {
+                            if (!Array.isArray(shaderObj.material[el]) && shaderObj.material[el].texture ){
+                                this.sandbox.setUniform("u_material_"+el+"_texture", shaderObj.material[el].texture);
+                                this.sandbox.setUniform("u_material."+el+"Scale",shaderObj.material[el].scale);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     _frame() {
