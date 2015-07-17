@@ -94,13 +94,13 @@
 
     <div id='tangram_play_wrapper' class='tangram-play-container'>
 
-        <div id='menu-container'>
+        <div class='tp-menu-container'>
             <div class='tp-menu-bar'>
                 <h1>Tangram Play</h1>
                 <ul class='tp-menu-items'>
-                    <li class='tp-menu-item' id='menu-button-new' data-title='New style'><i class='btm bt-file'></i></li>
-                    <li class='tp-menu-item' id='menu-button-open' data-title='Open file'><i class='btm bt-plus-square'></i></li>
-                    <li class='tp-menu-item' id='menu-button-export' data-title='Export style'><i class='btm bt-download'></i></li>
+                    <li class='tp-menu-item tp-menu-button-new' data-title='New style'><i class='btm bt-file'></i></li>
+                    <li class='tp-menu-item tp-menu-button-open' data-title='Open file'><i class='btm bt-plus-square'></i></li>
+                    <li class='tp-menu-item tp-menu-button-export' data-title='Export style'><i class='btm bt-download'></i></li>
                     <li class='tp-menu-item tp-menu-item-private' data-title='Share'><i class='btm bt-share'></i></li>
                 </ul>
                 <ul class='tp-menu-items tp-menu-right'>
@@ -110,20 +110,22 @@
                     <li class='tp-menu-item tp-menu-item-private tp-menu-sign-in' data-title='Sign in'><span class='tp-menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
                 </ul>
             </div>
-            <div class='menu-dropdowns'>
-                <div class='menu-dropdown menu-dropdown-open' id='menu-open'>
+            <div class='tp-menu-dropdowns'>
+                <div class='tp-menu-dropdown tp-menu-dropdown-open'>
                     <ul>
-                        <li id='menu-open-file'><i class='btm bt-folder'></i> Open a file</li>
-                        <li id='menu-open-example'><i class='btm bt-map'></i> Choose example</li>
+                        <li class='tp-menu-open-file'><i class='btm bt-folder'></i> Open a file</li>
+                        <li class='tp-menu-open-example'><i class='btm bt-map'></i> Choose example</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div id='map' class='tp-map-container'></div>
-        <div id='divider'><span class='divider-affordance'></span></div>
-        <div id='content'>
-            <div id='editor'></div>
+        <div class='tp-core-container'>
+            <div id='map' class='tp-map-container'></div>
+            <div id='divider'><span class='divider-affordance'></span></div>
+            <div id='content'>
+                <div id='editor'></div>
+            </div>
         </div>
 
         <div class='tp-shield'></div>

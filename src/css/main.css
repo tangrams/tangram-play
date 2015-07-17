@@ -18,6 +18,7 @@
 @import 'codemirror/addon/fold/foldgutter.css';
 @import 'codemirror/addon/hint/show-hint.css';
 
+@import '_core';
 @import '_editor';
 @import '_divider';
 @import '_tangram';

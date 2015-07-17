@@ -36,7 +36,7 @@ export default class Divider {
                 savePosition();
             }
         });
-        
+
         window.addEventListener('resize', function() {
             divider.reflow();
             divider.update();
@@ -49,7 +49,7 @@ export default class Divider {
         let mapEl = document.getElementById('map');
         let contentEl = document.getElementById('content');
         let dividerEl = document.getElementById('divider');
-        let menuEl = document.getElementById('menu-container');
+        let menuEl = document.querySelector('.tp-menu-container');
         let menuBottom = menuEl.getBoundingClientRect().bottom;
         let positionX = dividerEl.getBoundingClientRect().left;
 
@@ -63,7 +63,7 @@ export default class Divider {
     update() {
         this.tangram_play.map.leaflet.invalidateSize(false);
         this.draggable[0].applyBounds( getBounds() );
-    };  
+    };
 };
 
 // Private functions for dragable panel divider

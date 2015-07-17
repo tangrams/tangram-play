@@ -1,0 +1,9 @@
+/* EDITOR CORE */
+
+.tp-core-container {
+  position: absolute;
+  height: calc(100% - 44px);
+  left: 0;
+  width: 100%;
+  bottom: 0;
+}
