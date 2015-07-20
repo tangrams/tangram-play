@@ -17,7 +17,7 @@ export default class DropDownMenu extends Widget {
 
     create(keyPair, cm) {
         let el = document.createElement('select');
-        el.className = 'tangram-play-widget tangram-play-widget-dropdown';
+        el.className = 'tp-widget tp-widget-dropdown';
 
         if (this.options) {
             for (let i = 0; i < this.options.length; i++) {
@@ -48,7 +48,7 @@ export default class DropDownMenu extends Widget {
                 el.appendChild(newOption);
             }
         }
-        
+
         el.addEventListener('change', function (e) {
             cm.tangram_play.setValue(cm.tangram_play.getKeyForStr(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
         });

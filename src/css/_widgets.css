@@ -1,6 +1,6 @@
 /* EDITOR WIDGETS */
 
-.tangram-play-widget {
+.tp-widget {
     z-index: 10;
     user-select: none;
 
@@ -9,7 +9,7 @@
     margin-left: 4px;
 }
 
-.tangram-play-widget-colorpicker {
+.tp-widget-colorpicker {
     border: 1px solid #aaa;
     border-radius: 50%;
     width: 17px;
@@ -20,7 +20,7 @@
     background-color: white;
 }
 
-select.tangram-play-widget-dropdown {
+select.tp-widget-dropdown {
     width: 17px;
     height: 17px;
 }
