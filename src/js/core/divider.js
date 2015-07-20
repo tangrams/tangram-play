@@ -7,11 +7,11 @@ const CM_MINIMUM_WIDTH = 160; // integer, in pixels
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 
 let dividerEl;
+let TANGRAM_PLAY;
 
 export default class Divider {
-    constructor(tangram_play, dividerId) {
-
-        this.tangram_play = tangram_play;
+    constructor(tangramPlay, dividerId) {
+        TANGRAM_PLAY = tangramPlay;
 
         let transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
 
@@ -19,10 +19,12 @@ export default class Divider {
 
         if (dividerEl.style.hasOwnProperty('transform')) {
             dividerEl.style.transform = transformStyle;
-        } else if (dividerEl.style.hasOwnProperty('webkitTransform')) {
+        }
+        else if (dividerEl.style.hasOwnProperty('webkitTransform')) {
             // For Safari
             dividerEl.style.webkitTransform = transformStyle;
-        } else {
+        }
+        else {
             // For Firefox
             dividerEl.style.transform = transformStyle;
         }
@@ -34,7 +36,6 @@ export default class Divider {
             cursor: 'col-resize',
             zIndexBoost: false,
             onPress: function () {
-                console.log(this);
                 this.target.classList.add('tp-divider-is-dragging');
             },
             onDrag: function () {
@@ -55,7 +56,7 @@ export default class Divider {
         });
 
         this.reflow();
-    };
+    }
 
     reflow() {
         let mapEl = document.getElementById('map');
@@ -64,44 +65,45 @@ export default class Divider {
         let menuBottom = menuEl.getBoundingClientRect().bottom;
         let positionX = dividerEl.getBoundingClientRect().left;
 
-        mapEl.style.width = positionX + "px";
-        contentEl.style.width = (window.innerWidth - positionX) + "px";
+        mapEl.style.width = positionX + 'px';
+        contentEl.style.width = (window.innerWidth - positionX) + 'px';
 
-        this.tangram_play.editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
+        TANGRAM_PLAY.editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
         dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
-    };
+    }
 
     update() {
-        this.tangram_play.map.leaflet.invalidateSize(false);
-        this.draggable[0].applyBounds( getBounds() );
-    };
-};
+        TANGRAM_PLAY.map.leaflet.invalidateSize(false);
+        this.draggable[0].applyBounds(getBounds());
+    }
+}
 
 // Private functions for dragable panel divider
 
 function getStartingPosition() {
-    let storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x')
+    let storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x');
     if (storedPosition) {
-        return storedPosition
+        return storedPosition;
     }
 
     if (window.innerWidth > 1024) {
-        return Math.floor(window.innerWidth * 0.6)
-    } else {
-        return Math.floor(window.innerWidth / 2)
+        return Math.floor(window.innerWidth * 0.6);
     }
-};
+    else {
+        return Math.floor(window.innerWidth / 2);
+    }
+}
 
 function savePosition() {
-    let posX = dividerEl.getBoundingClientRect().left
+    let posX = dividerEl.getBoundingClientRect().left;
     if (posX) {
-        window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX)
+        window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX);
     }
-};
+}
 
 function getBounds() {
     return {
         minX: 100,
         maxX: window.innerWidth - CM_MINIMUM_WIDTH
-    }
-};
+    };
+}
