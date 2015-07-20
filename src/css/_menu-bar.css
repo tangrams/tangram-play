@@ -70,7 +70,7 @@
         bottom: -2px;
         border: 8px solid transparent;
         border-bottom-color: black;
-        z-index: 1010;
+        z-index: 1020; /* TODO z-index hierarchy */
         user-select: none;
         pointer-events: none;
         transition: 80ms all ease-in-out;
@@ -89,7 +89,7 @@
         font-size: .75em;
         text-align: left;
         line-height: 1.2em;
-        z-index: 1010;
+        z-index: 1020; /* TODO z-index hierarchy */
         user-select: none;
         pointer-events: none;
         transition: 80ms all ease-in-out;
