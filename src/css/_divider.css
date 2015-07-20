@@ -1,6 +1,6 @@
 /* DRAGGABLE LINE */
 
-#divider {
+.tp-divider {
     position: fixed;
     left: 0;
     bottom: 0;
@@ -8,38 +8,45 @@
     height: 100%;
     vertical-align: top;
     opacity: 1;
-    background-color: rgba(0,0,0,0.15);
+    background-color: var(--ui-base-color);
     z-index: 10;
     cursor: col-resize;
     user-select: none;
 }
 
-.divider-affordance,
-.divider-affordance::after,
-.divider-affordance::before {
+.tp-divider.tp-divider-is-dragging {
+    .tp-divider-affordance,
+    .tp-divider-affordance::after,
+    .tp-divider-affordance::before {
+        background-color: var(--ui-highlight-color);
+    }
+}
+
+.tp-divider-affordance,
+.tp-divider-affordance::after,
+.tp-divider-affordance::before {
     display: inline-block;
     position: absolute;
-    width: 1px;
-    height: 30px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
     top: 50%;
-    margin-top: -15px;
-    background-color: rgba(0,0,0,0.2);
-    box-shadow: 1px 0 0 rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.65);
 }
 
-.divider-affordance {
-    left: 4px;
-}
-
-.divider-affordance::after,
-.divider-affordance::before {
-    content: '';
-}
-
-.divider-affordance::after {
+.tp-divider-affordance {
     left: 2px;
 }
 
-.divider-affordance::before {
-    left: -2px;
+.tp-divider-affordance::after,
+.tp-divider-affordance::before {
+    content: '';
+}
+
+.tp-divider-affordance::after {
+    margin-top: 7px;
+}
+
+.tp-divider-affordance::before {
+    margin-top: -12px;
 }

@@ -5,7 +5,7 @@
     position: absolute;
     width: 200px;
     background: #303030;
-    z-index: 1000; /* TODO don't guess z hierarchy */
+    z-index: 1010; /* TODO don't guess z hierarchy. min 1000; Leaflet and Draggable starts at z-index 1000 */
     font-family: var(--font-family);
     font-weight: 200;
     color: white;
