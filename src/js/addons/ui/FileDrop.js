@@ -10,14 +10,23 @@ export default class FileDrop {
 
         // Set up drag/drop file listeners
         container.addEventListener('dragenter', (event) => {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = 'copy';
-            this.show();
+            // Check to make sure that dropped items are files.
+            // This prevents other drags (e.g. text in editor)
+            // from turning on the file drop area.
+            // See here: http://stackoverflow.com/questions/6848043/how-do-i-detect-a-file-is-being-dragged-rather-than-a-draggable-element-on-my-pa
+            // Tested in Chrome, Firefox, Safari 8
+            var types = event.dataTransfer.types;
+            if (types !== null && ((types.indexOf) ? (types.indexOf('Files') !== -1) : types.contains('application/x-moz-file'))) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'copy';
+                this.show();
+            }
         }, true);
 
         this.el.addEventListener('dragover', (event) => {
+            // Required to prevent browser from navigating to a file
+            // instead of receiving a data transfer
             event.preventDefault();
-            this.show();
         }, false);
 
         this.el.addEventListener('dragleave', (event) => {
@@ -28,7 +37,7 @@ export default class FileDrop {
         this.el.addEventListener('drop', (event) => {
             event.preventDefault();
             this.hide();
-            onDropFile(event);
+            onDropFile(event.dataTransfer.files);
         }, false);
     }
 
@@ -41,11 +50,9 @@ export default class FileDrop {
     }
 }
 
-function onDropFile (event) {
-    const dataTransfer = event.dataTransfer;
-
-    if (dataTransfer.files.length > 0) {
-        const file = dataTransfer.files[0];
+function onDropFile (files) {
+    if (files.length > 0) {
+        const file = files[0];
         EditorIO.open(file);
     }
 }
