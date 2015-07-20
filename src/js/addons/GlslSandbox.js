@@ -1,4 +1,4 @@
-import { fetchHTTP } from '../core/common.js';
+import { fetchHTTP, debounce } from '../core/common.js';
 import { isEmpty } from '../core/codemirror/tools.js';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress, getAddressFromKeys } from '../core/codemirror/yaml-tangram.js';
 
@@ -26,6 +26,14 @@ import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress
             clearTimeout(id);
         };
 }());
+
+// Debounced event after user stop doing something
+var stopAction = debounce(function(cm) {
+    cm.widgets_manager.rebuild();
+    if (cm.glsl_sandbox.active) {
+        cm.glsl_sandbox.update_changes(cm.getCursor().line);
+    }
+}, 1000);
 
 export default class GlslSandbox {
     constructor (tangram_play, configFile ) {
@@ -61,10 +69,7 @@ export default class GlslSandbox {
         });
 
         tangram_play.editor.on("changes", function(cm, changesObj) {
-            if (cm.glsl_sandbox.active) {
-            	let line = cm.getCursor().line;
-            	cm.glsl_sandbox.update_changes(line);
-            }
+            stopAction(cm);
         });
     }
 
@@ -77,7 +82,7 @@ export default class GlslSandbox {
     }
 
     update_changes(nLine) {
-        if (!isEmpty(cm,nLine)){
+        if (!isEmpty(this.tangram_play.editor,nLine)){
             let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys && keys[0]){
                 let address = keys[0].address;

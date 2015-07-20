@@ -1,5 +1,5 @@
 // Load some common functions
-import { fetchHTTP, debounce, uniqueId} from '../core/common.js';
+import { fetchHTTP, debounce } from '../core/common.js';
 import { isStrEmpty } from '../core/codemirror/tools.js';
 import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 
