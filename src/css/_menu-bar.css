@@ -61,6 +61,62 @@
     & > a:hover {
         color: yellow;
     }
+
+    &::before {
+        content: '';
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        bottom: -2px;
+        border: 8px solid transparent;
+        border-bottom-color: black;
+        z-index: 1010;
+        user-select: none;
+        pointer-events: none;
+        transition: 80ms all ease-in-out;
+    }
+
+    &::after {
+        content: attr(data-title);
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        top: 46px;
+        margin-left: -30px;
+        margin-top: -4px;
+        background-color: black;
+        padding: 1em;
+        font-size: .75em;
+        text-align: left;
+        line-height: 1.2em;
+        z-index: 1010;
+        user-select: none;
+        pointer-events: none;
+        transition: 80ms all ease-in-out;
+    }
+
+    .tp-menu-right &::after {
+        right: 6px;
+        margin-left: 0;
+        text-align: right;
+    }
+
+    .tp-menu-right &::before {
+        right: 14px;
+    }
+
+    &:hover::after {
+        top: 54px;
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &:hover::before {
+        bottom: -6px;
+        visibility: visible;
+        opacity: 1;
+    }
+
 }
 
 .tp-menu-item-disabled {
