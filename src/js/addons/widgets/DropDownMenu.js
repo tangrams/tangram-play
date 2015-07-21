@@ -2,49 +2,52 @@ import Widget from "./Widget.js"
 
 import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram.js';
 
-export default class DropDownMenu extends Widget {
-    constructor (datum) {
-        super(datum);
+let cm;
 
-        this.options = datum.options || [];
-        this.source = datum.source || null;
+export default class DropDownMenu extends Widget {
+    constructor (...args) {
+        super(...args);
+        cm = editor;
     }
 
-    create(keyPair, cm) {
+    createEl () {
         let el = document.createElement('select');
+
         el.className = 'tp-widget tp-widget-dropdown';
 
-        for (let i = 0; i < this.options.length; i++) {
+        for (let value of this.definition.options) {
             let newOption = document.createElement('option');
 
-            newOption.value = String(keyPair.pos.line) + "-" + String(keyPair.index);
-
-            if (keyPair.value === this.options[i]) {
+            if (this.key.value === value) {
                 newOption.selected = true;
             }
-            newOption.innerHTML= this.options[i];
+
+            newOption.value = value;
+            newOption.textContent = value;
             el.appendChild(newOption);
         }
 
-        if (this.source) {
-            let obj = getAddressSceneContent(cm.tangram_play.scene, this.source);
+        if (this.definition.source) {
+            let obj = getAddressSceneContent(cm.tangram_play.scene, this.definition.source);
             let keys = (obj) ? Object.keys(obj) : {};
 
             for (let j = 0; j < keys.length; j++) {
                 let newOption = document.createElement('option');
-                newOption.value = String(keyPair.pos.line) + "-" + String(keyPair.index);
 
-                if (keyPair.value === keys[j]) {
+                if (this.key.value === keys[j]) {
                     newOption.selected = true;
                 }
-                newOption.innerHTML= keys[j];
+
+                newOption.value = keys[j];
+                newOption.textContent = keys[j];
                 el.appendChild(newOption);
             }
         }
 
-        el.addEventListener('change', function (e) {
-            cm.tangram_play.setValue(cm.tangram_play.getKeyForStr(el.options[el.selectedIndex].value), el.options[el.selectedIndex].innerHTML );
+        el.addEventListener('change', (event) => {
+            this.setEditorValue(el.options[el.selectedIndex].value);
         });
-        return this.wrap(el,keyPair);
+
+        return el;
     }
-};
+}
