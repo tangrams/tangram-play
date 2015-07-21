@@ -18,7 +18,6 @@
     "disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
     "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
     "disallowSpacesInCallExpression": true,
-    "disallowTrailingComma": true,
     "disallowSpacesInsideParentheses": true,
     "disallowTrailingWhitespace": true,
     "disallowYodaConditions": true,
