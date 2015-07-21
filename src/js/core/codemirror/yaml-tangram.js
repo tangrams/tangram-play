@@ -37,14 +37,18 @@ export function getAddressSceneContent(tangramScene, address) {
         let keys = getKeysFromAddress(address);
         if (keys && keys.length) {
             let content = tangramScene.config[keys[0]];
-            for (let i = 1; i < keys.length; i++) {
-                if (content[keys[i]]) {
-                    content = content[keys[i]];
-                } else {
-                    return content;
+            if (content) {
+                for (let i = 1; i < keys.length; i++) {
+                    if (content[keys[i]]) {
+                        content = content[keys[i]];
+                    } else {
+                        return content;
+                    }
                 }
+                return content;
+            } else {
+                return "";
             }
-            return content;
         } else {
             return "";
         }
