@@ -32,3 +32,18 @@
     -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
     border-radius: 12px;
 }
+
+#tp-a-sandbox-colorpicker {
+	position: relative;
+	top: -132px;
+	left: 112px;
+    border: 1px solid #aaa;
+    border-radius: 50%;
+    width: 17px;
+    height: 17px;
+    box-sizing: border-box;
+    box-shadow: inset 0 0 0px 2px white;
+    cursor: pointer;
+    background-color: white;
+    z-index: 101;
+}

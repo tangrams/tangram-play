@@ -1,4 +1,4 @@
-import { fetchHTTP, debounce } from '../core/common.js';
+import { fetchHTTP, debounce, getPosition } from '../core/common.js';
 import { isEmpty } from '../core/codemirror/tools.js';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress, getAddressFromKeys } from '../core/codemirror/yaml-tangram.js';
 
@@ -62,6 +62,24 @@ export default class GlslSandbox {
         this.canvas.setAttribute("height","130");
         this.canvas.setAttribute("data-fragment","void main() {\ngl_FragColor = vec4(1.0,0.0,1.0,1.0);\n}");
         this.element.appendChild(this.canvas);
+
+        let el = document.createElement('div');
+        el.id = 'tp-a-sandbox-colorpicker';
+        el.style.background = '#FF0000';
+        el.addEventListener('click', function (e) {
+            let picker = new thistle.Picker(el.style.background);
+            let pos = getPosition(el);
+            
+            picker.presentModal(pos.x+20,
+                                tangram_play.editor.heightAtLine( tangram_play.editor.glsl_sandbox.line )-16);
+
+            picker.on('changed', function() {
+                el.style.background = picker.getCSS();
+                let color = picker.getRGB();
+                tangram_play.editor.tangram_play.addons.glsl_sandbox.setColor([color.r,color.g,color.b]);
+            });
+        });
+        this.element.appendChild(el);
 
         // Suggestions are trigged by the folowing CM events
         tangram_play.editor.on("cursorActivity", function(cm) {
@@ -160,6 +178,10 @@ export default class GlslSandbox {
         }
     }
 
+    setColor(colorArray) {
+        this.sandbox.setUniform("u_color",colorArray);
+    }
+
     disable() {
         if (this.active) {
             this.element.parentNode.removeChild(this.element);
@@ -217,6 +239,8 @@ export default class GlslSandbox {
 
 		uniform vec3 u_map_position;
 		uniform vec3 u_tile_origin;
+
+        uniform vec3 u_color;
 
 		vec3 u_eye = vec3(1.0);
 		uniform vec2 u_vanishing_point;
@@ -296,6 +320,8 @@ export default class GlslSandbox {
 			uniform vec3 u_map_position;
 			uniform vec3 u_tile_origin;
 
+            uniform vec3 u_color;
+
 			varying vec2 v_texcoord;
 			varying vec3 v_world_position;
 
@@ -369,7 +395,8 @@ export default class GlslSandbox {
 				TEMPLATE_ST = sphereCoords(TEMPLATE_ST,1.0);
 				#endif
 			  
-			    v_color.rgb = hsb2rgb(vec3(fract(u_time*0.01),1.,1.));
+                v_color.rgb = u_color;
+			    //v_color.rgb = hsb2rgb(vec3(fract(u_time*0.01),1.,1.));
 
 			    #ifdef SPHERE
 				v_color = mix(v_color, vec4(0.), 

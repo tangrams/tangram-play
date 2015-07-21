@@ -119,6 +119,7 @@ export default class WidgetsManager {
                     for (let datum of this.data) {
                         if(datum.check(key)){
                             this.active.push(datum.create(key, this.tangram_play.editor));
+                            break;
                         }
                     }
                 }
@@ -130,8 +131,8 @@ export default class WidgetsManager {
         // Update widgets unles somethings is not right
         for (let widget of this.active) {
             let keys = this.tangram_play.getKeysOnLine(widget.line);
-                if (this.tangram_play.editor.getLineHandle(widget.line) && this.tangram_play.editor.getLineHandle(widget.line).height) {
-                    if (widget.index < keys.length){
+            if (this.tangram_play.editor.getLineHandle(widget.line) && this.tangram_play.editor.getLineHandle(widget.line).height) {
+                if (widget.index < keys.length){
                     this.tangram_play.editor.addWidget( getValueRange(keys[widget.index]).to , widget.dom);
                 } else {
                     this.rebuildLine(widget.line);
