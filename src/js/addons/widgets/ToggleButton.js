@@ -1,8 +1,8 @@
 import Widget from "./Widget.js"
 
 export default class ToggleButton extends Widget {
-    constructor(manager, datum){
-        super(manager,datum);
+    constructor (datum) {
+        super(datum);
     }
 
     create(keyPair, cm) {
@@ -16,4 +16,4 @@ export default class ToggleButton extends Widget {
         });
         return this.wrap(el,keyPair);
     }
-};
+}

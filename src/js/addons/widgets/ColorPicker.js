@@ -5,11 +5,11 @@ import Widget from './Widget.js';
 import { toCSS, getPosition } from '../../core/common.js';
 
 export default class ColorPicker extends Widget {
-    constructor(manager, datum) {
-        super(manager, datum);
+    constructor (datum) {
+        super(datum);
     }
 
-    create(keyPair, cm) {
+    create (keyPair, cm) {
         let el = document.createElement('div');
         el.className = 'tp-widget tp-widget-colorpicker';
         el.value = String(keyPair.pos.line) + '-' + String(keyPair.index);
@@ -18,6 +18,7 @@ export default class ColorPicker extends Widget {
         el.addEventListener('click', function (e) {
             let picker = new thistle.Picker(el.style.background);
             let pos = getPosition(el);
+
             picker.presentModal(pos.x + 20,
                                 cm.heightAtLine(parseInt(el.value)) + 20);
 

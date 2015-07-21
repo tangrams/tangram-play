@@ -32,20 +32,19 @@ export default class WidgetsManager {
         for (let datum of widgets_data) {
             let widgetObj;
 
-            // TODO: I'm sure there is a better and more elegant way of doing this
             switch (datum.type) {
                 case 'colorpicker':
-                    widgetObj = new ColorPicker(this,datum);
+                    widgetObj = new ColorPicker(datum);
                     break;
                 case 'togglebutton':
-                    widgetObj = new ToggleButton(this,datum);
+                    widgetObj = new ToggleButton(datum);
                     break;
                 case 'dropdownmenu':
-                    widgetObj = new DropDownMenu(this,datum);
+                    widgetObj = new DropDownMenu(datum, this);
                     break;
                 default:
                     // Nothing
-                    console.log("Error loading widget ",datum);
+                    console.log("Error loading widget ", datum);
                     break;
             }
             this.data.push(widgetObj);
@@ -78,7 +77,7 @@ export default class WidgetsManager {
         // });
 
         // Build all widgets
-        this.build();        
+        this.build();
     }
 
     build() {
@@ -143,7 +142,7 @@ export default class WidgetsManager {
                 this.rebuild();
                 break;
             }
-            
+
         }
     }
 
