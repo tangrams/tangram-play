@@ -19,7 +19,7 @@ export function getLineInd(cm, nLine) { return getSpaces(cm.lineInfo(nLine).text
 
 
 //  Check if a line is empty
-export function isStrEmpty(str) { return (!str || 0 === str.length || /^\s*$/.test(str)); };
+export function isStrEmpty(str) { return (!str || str.length === 0 || /^(\s)*$/.test(str)); };
 export function isEmpty(cm, nLine) { return isStrEmpty(cm.lineInfo(nLine).text); };
 
 //  Check if the line is commented YAML style
