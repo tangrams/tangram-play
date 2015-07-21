@@ -40,7 +40,7 @@ export default class WidgetsManager {
                     widgetObj = new ToggleButton(datum);
                     break;
                 case 'dropdownmenu':
-                    widgetObj = new DropDownMenu(datum, this);
+                    widgetObj = new DropDownMenu(datum);
                     break;
                 default:
                     // Nothing
