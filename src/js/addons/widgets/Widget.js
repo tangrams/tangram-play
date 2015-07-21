@@ -1,21 +1,23 @@
 export default class Widget {
     constructor (datum) {
-        //  TODO: must be a better way to do this
-        if ( datum['address'] ) {
-            this.checkAgainst = 'address';
+        const matchTypes = [
+            'value',
+            'key',
+            'address',
+        ];
+
+        for (const key of matchTypes) {
+            if (datum[key]) {
+                this.matchAgainst = key;
+                this.matchPattern = datum[key];
+                break;
+            }
         }
-        else if ( datum['key'] ) {
-            this.checkAgainst = 'key';
-        }
-        else if ( datum['value'] ) {
-            this.checkAgainst = 'value';
-        }
-        this.checkPattern = datum[this.checkAgainst];
     }
 
-    check (keyPair) {
-        if (this.checkAgainst) {
-            return RegExp(this.checkPattern).test(keyPair[this.checkAgainst]);
+    match (keyPair) {
+        if (this.matchAgainst) {
+            return RegExp(this.matchPattern).test(keyPair[this.matchAgainst]);
         }
         else {
             return false;
