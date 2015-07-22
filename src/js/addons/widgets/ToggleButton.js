@@ -1,14 +1,14 @@
 import Widget from "./Widget.js"
 
 export default class ToggleButton extends Widget {
-    constructor(manager, datum){
-        super(manager,datum);
+    constructor (datum) {
+        super(datum);
     }
 
     create(keyPair, cm) {
         let el = document.createElement('input');
         el.type = 'checkbox';
-        el.className = 'tangram-play-widget tangram-play-widget-toggle';
+        el.className = 'tp-widget tp-widget-toggle';
         el.checked = (keyPair.value === 'true') ? true : false;
         el.value = String(keyPair.pos.line) + "-" + String(keyPair.index);
         el.addEventListener('change', function (e) {
@@ -16,4 +16,4 @@ export default class ToggleButton extends Widget {
         });
         return this.wrap(el,keyPair);
     }
-};
+}
