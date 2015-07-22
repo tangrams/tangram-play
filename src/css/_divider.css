@@ -14,7 +14,13 @@
     user-select: none;
 }
 
+.tp-divider:hover {
+    background-color: #444;
+}
+
 .tp-divider.tp-divider-is-dragging {
+    background-color: #444;
+
     .tp-divider-affordance,
     .tp-divider-affordance::after,
     .tp-divider-affordance::before {
@@ -41,12 +47,14 @@
 .tp-divider-affordance::after,
 .tp-divider-affordance::before {
     content: '';
+    position: absolute;
+    top: 0; /* Reset position */
 }
 
 .tp-divider-affordance::after {
-    margin-top: 8px;
+    transform: translateY(10px);
 }
 
 .tp-divider-affordance::before {
-    margin-top: -14px;
+    transform: translateY(-10px);
 }

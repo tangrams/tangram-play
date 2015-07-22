@@ -66,6 +66,7 @@
         content: '';
         visibility: hidden;
         opacity: 0;
+        display: block;
         position: absolute;
         bottom: -2px;
         border: 8px solid transparent;
@@ -74,6 +75,7 @@
         user-select: none;
         pointer-events: none;
         transition: 80ms all ease-in-out;
+        transform: translateX(14px);
     }
 
     &::after {
@@ -99,10 +101,6 @@
         right: 6px;
         margin-left: 0;
         text-align: right;
-    }
-
-    .tp-menu-right &::before {
-        right: 14px;
     }
 
     &:hover::after {
