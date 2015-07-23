@@ -7,20 +7,15 @@
  *  with any additional functionality.
  *
  */
+/* global window.tangramPlay */
 
 import { getPosition } from '../../core/common.js';
 
-// Store reference to the editor on this module
-let editor;
-
 export default class Widget {
-    constructor (def, key, cm) {
+    constructor (def, key) {
         this.key = key;
         this.definition = def;
         this.el = this.createEl();
-
-        // Store a reference to the editor
-        editor = cm;
     }
 
     // Returns a widget element.
@@ -54,7 +49,8 @@ export default class Widget {
     // the Tangram Play editor.
     setEditorValue (string) {
         // Send the value to editor
-        editor.tangram_play.setValue(this.key, string);
+        // TODO: Something that doesn't rely on global
+        window.tangramPlay.setValue(this.key, string);
 
         // Change the value attached to this widget instance
         this.key.value = string;

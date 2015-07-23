@@ -93,8 +93,7 @@ export default class WidgetsManager {
                     // Check for widgets to add
                     for (let datum of this.data) {
                         if (datum.match(key)) {
-                            let createdWidget = datum.create(key, this.tangram_play.editor);
-                            this.active.push(createdWidget);
+                            this.active.push(datum.create(key));
                             break;
                         }
                     }

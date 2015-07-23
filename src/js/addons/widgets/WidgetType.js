@@ -32,18 +32,18 @@ export default class WidgetType {
         }
     }
 
-    create (keyPair, cm) {
+    create (keyPair) {
         let widgetObj;
 
         switch (this.type) {
             case 'colorpicker':
-                widgetObj = new ColorPicker(this, keyPair, cm);
+                widgetObj = new ColorPicker(this, keyPair);
                 break;
             case 'togglebutton':
-                widgetObj = new ToggleButton(this, keyPair, cm);
+                widgetObj = new ToggleButton(this, keyPair);
                 break;
             case 'dropdownmenu':
-                widgetObj = new DropDownMenu(this, keyPair, cm);
+                widgetObj = new DropDownMenu(this, keyPair);
                 break;
             default:
                 // Nothing

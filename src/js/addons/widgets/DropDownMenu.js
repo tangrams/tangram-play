@@ -1,15 +1,9 @@
-import Widget from "./Widget.js"
+/* global window.tangramPlay */
 
+import Widget from "./Widget.js"
 import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram.js';
 
-let cm;
-
 export default class DropDownMenu extends Widget {
-    constructor (...args) {
-        super(...args);
-        cm = editor;
-    }
-
     createEl () {
         let el = document.createElement('select');
 
@@ -28,7 +22,8 @@ export default class DropDownMenu extends Widget {
         }
 
         if (this.definition.source) {
-            let obj = getAddressSceneContent(cm.tangram_play.scene, this.definition.source);
+            // TODO: Refactor window.tangramPlay reference
+            let obj = getAddressSceneContent(window.tangramPlay.scene, this.definition.source);
             let keys = (obj) ? Object.keys(obj) : {};
 
             for (let j = 0; j < keys.length; j++) {
