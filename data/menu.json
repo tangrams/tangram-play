@@ -25,20 +25,24 @@
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.yaml"
 		},
 		{
-			"name" : "patterns.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
-		},
-		{
-			"name" : "lego.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
-		},
-		{
 			"name" : "tron.yaml",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.yaml"
 		},
 		{
 			"name" : "matrix.yaml",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.yaml"
+		},
+		{
+			"name" : "ikeda.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/ikeda.yaml"
+		},
+		{
+			"name" : "patterns.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
+		},
+		{
+			"name" : "lego.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
 		},
 		{
 			"name" : "crosshatch.yaml",

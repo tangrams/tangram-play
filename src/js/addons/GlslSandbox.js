@@ -49,6 +49,7 @@ export default class GlslSandbox {
         this.sandbox = undefined;
         this.line = -1;
         this.animated = false;
+        this.color = [1,0,0];
 
         this.element = document.createElement('div');
         this.element.id = 'tp-a-sandbox';
@@ -179,7 +180,7 @@ export default class GlslSandbox {
     }
 
     setColor(colorArray) {
-        this.sandbox.setUniform("u_color",colorArray);
+        this.color = colorArray;
     }
 
     disable() {
@@ -196,6 +197,7 @@ export default class GlslSandbox {
 			this.sandbox.setUniform("u_map_position", [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom]);
 			this.sandbox.setUniform("u_tile_origin", [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z]);
 			this.sandbox.setUniform("u_vanishing_point", this.tangram_play.scene.camera.vanishing_point);
+            this.sandbox.setUniform("u_color",this.color);
 
 			this.sandbox.render();
 			requestAnimationFrame(function(){
