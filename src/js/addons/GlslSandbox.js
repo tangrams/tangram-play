@@ -93,14 +93,19 @@ export default class GlslSandbox {
     }
 
     update() {
-    	let line = this.tangram_play.editor.getCursor().line;
-    	if (line !== this.line){
-    		this.line = line;
-    		this.update_changes(line);
+    	let pos = this.tangram_play.editor.getCursor();
+        if (pos.ch < 16) {
+            if (this.active) {
+                this.disable();
+            }
+        } else if (pos.line !== this.line) {
+    		this.line = pos.line;
+    		this.update_changes(pos.line);
     	}
     }
 
     update_changes(nLine) {
+
         if (!isEmpty(this.tangram_play.editor,nLine)){
             let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys && keys[0]){
@@ -149,7 +154,7 @@ export default class GlslSandbox {
 
                     let fragmentCode =  this._getHeaderTemplate(address) + 
                                         block_normal + 
-                                        // this._getBlockUntilLine(address, nLine) +
+                                        // this._getBlockUntilLine(address, line) +
                                         getAddressSceneContent(this.tangram_play.scene, address) +
                                         this._getColorEnding();
 
