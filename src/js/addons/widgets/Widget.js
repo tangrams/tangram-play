@@ -18,24 +18,30 @@ export default class Widget {
         this.el = this.createEl();
     }
 
-    // Returns a widget element.
-    // This is a simple bare-bones example.
-    // Widgets that extend from this should create
-    // their own DOM and avoid calling super()
+    /**
+     *  Returns a widget element.
+     *  This is a simple bare-bones example.
+     *  Widgets that extend from this should create
+     *  their own DOM and avoid calling super()
+     */
     createEl () {
         return document.createDocumentFragment();
     }
 
-    // Removes the widget element from DOM.
+    /**
+     *  Removes the widget element from DOM.
+     */
     destroyEl () {
         if (this.el && this.el.parentNode) {
             this.el.parentNode.removeChild(this.el);
         }
     }
 
-    // Returns x, y position of the upper left corner
-    // of the DOM element for the widget. Useful
-    // for positioning modals, etc.
+    /**
+     *  Returns x, y position of the upper left corner
+     *  of the DOM element for the widget. Useful for
+     *  positioning additional interactive UI elements, etc.
+     */
     getPosition () {
         return getPosition(this.el);
     }
@@ -45,8 +51,23 @@ export default class Widget {
 
     }
 
-    // Use this method to communicate a value back to
-    // the Tangram Play editor.
+    /**
+     *  Use this property from outside the module (usually by)
+     *  the WidgetManager to set a value inside the module.
+     *  TODO: Experimental
+     */
+    get value () {
+        return this.key.value;
+    }
+
+    set value (val) {
+        this.key.value = val;
+    }
+
+    /**
+     *  Use this method within a module to communicate a value
+     *  back to the Tangram Play editor.
+     */
     setEditorValue (string) {
         // Send the value to editor
         // TODO: Something that doesn't rely on global
