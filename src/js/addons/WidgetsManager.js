@@ -4,19 +4,12 @@ import { isStrEmpty } from '../core/codemirror/tools.js';
 import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 
 // Load addons modules
-import ColorPicker from './widgets/ColorPicker.js';
-import ToggleButton from './widgets/ToggleButton.js';
-import DropDownMenu from './widgets/DropDownMenu.js';
-
-// Debounced event after user stop doing something
-var stopAction = debounce(function(cm) {
-    cm.widgets_manager.rebuild();
-}, 1000);
+import WidgetType from './widgets/WidgetType.js';
 
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
 
-        //  Make link to this manager inside codemirror obj to be excecuted from CM events
+        // Make link to this manager inside codemirror obj to be excecuted from CM events
         tangram_play.editor.widgets_manager = this;
 
         // Local variables
@@ -30,44 +23,27 @@ export default class WidgetsManager {
 
         // Initialize tokens
         for (let datum of widgets_data) {
-            let widgetObj;
-
-            switch (datum.type) {
-                case 'colorpicker':
-                    widgetObj = new ColorPicker(datum);
-                    break;
-                case 'togglebutton':
-                    widgetObj = new ToggleButton(datum);
-                    break;
-                case 'dropdownmenu':
-                    widgetObj = new DropDownMenu(datum);
-                    break;
-                default:
-                    // Nothing
-                    console.log("Error loading widget ", datum);
-                    break;
-            }
-            this.data.push(widgetObj);
+            this.data.push(new WidgetType(datum));
         }
 
         // Suggestions are trigged by the folowing CM events
 
         //  When there is a change
-        tangram_play.editor.on("changes", function(cm, changesObj) {
-            cm.widgets_manager.fresh = false;
-            cm.widgets_manager.update();
-            stopAction(cm);
+        tangram_play.editor.on('changes', (cm, changesObj) => {
+            this.fresh = false;
+            this.update();
+            this.stopAction();
         });
 
         // When the viewport change (lines are add or erased)
-        tangram_play.editor.on("viewportChange", function(cm, from, to) {
-            cm.widgets_manager.fresh = false;
-            cm.widgets_manager.rebuild();
+        tangram_play.editor.on('viewportChange', (cm, from, to) => {
+            this.fresh = false;
+            this.rebuild();
         });
 
-        tangram_play.editor.on('unfold', function(cm, from, to) {
-            cm.widgets_manager.fresh = false;
-            cm.widgets_manager.rebuild();
+        tangram_play.editor.on('unfold', (cm, from, to) => {
+            this.fresh = false;
+            this.rebuild();
         });
 
         // tangram_play.editor.on('update', function(cm) {
@@ -117,7 +93,7 @@ export default class WidgetsManager {
                     // Check for widgets to add
                     for (let datum of this.data) {
                         if (datum.match(key)) {
-                            this.active.push(datum.create(key, this.tangram_play.editor));
+                            this.active.push(datum.create(key));
                             break;
                         }
                     }
@@ -126,18 +102,26 @@ export default class WidgetsManager {
         }
     }
 
+    // Update widgets unless something is not right
     update() {
-        // Update widgets unles somethings is not right
         for (let widget of this.active) {
-            let keys = this.tangram_play.getKeysOnLine(widget.line);
-            if (this.tangram_play.editor.getLineHandle(widget.line) && this.tangram_play.editor.getLineHandle(widget.line).height) {
-                if (widget.index < keys.length){
-                    this.tangram_play.editor.addWidget( getValueRange(keys[widget.index]).to , widget.dom);
+            let line = widget.key.pos.line;
+            let index = widget.key.index;
+            let keys = this.tangram_play.getKeysOnLine(line);
+
+            if (this.tangram_play.editor.getLineHandle(line) && this.tangram_play.editor.getLineHandle(line).height) {
+                if (index < keys.length) {
+                    let pos = getValueRange(widget.key).to;
+                    this.tangram_play.editor.addWidget(pos, widget.el);
                 } else {
-                    this.rebuildLine(widget.line);
+                    this.rebuildLine(line);
                     break;
                 }
-            } else {
+            }
+            // NOTE: If the condition above never becomes true,
+            // this can put TangramPlay into an infinite loop.
+            // TODO: Catch this, never let it happen
+            else {
                 this.fresh = false;
                 this.rebuild();
                 break;
@@ -146,25 +130,29 @@ export default class WidgetsManager {
         }
     }
 
-    deleteLine(nLine) {
-        // Erase the widgets on one line
-        for (let i = this.active.length-1; i >=0; i--) {
-            if (this.active[i].line === nLine){
-                let dom = this.active[i].dom;
-                dom.parentNode.removeChild(dom);
-                this.active.splice(i,1);
+    // Erase the widgets on one line
+    deleteLine (nLine) {
+        for (let i = this.active.length - 1; i >= 0; i--) { // Look through each of the active widgets
+            let widget = this.active[i];
+            if (widget.key.pos.line === nLine) { // If widget is on the line (passed as nLine parameter)
+                this.active.splice(i, 1); // ...then remove it from the list of active widgets
+                widget.destroyEl(); // and remove its DOM from the page
             }
         }
     }
 
-    deleteAll() {
-        // Erase all Widgets
-        while(this.active.length > 0) {
-            let dom = this.active[ this.active.length-1].dom;
-            if (dom && dom.parentNode){
-                dom.parentNode.removeChild(dom);
-            }
-            this.active.pop();
+    // Erase all widgets
+    deleteAll () {
+        while (this.active.length > 0) { // While there are still active widgets,
+            let widget = this.active.pop(); // ...take the last widget off the list of active widgets
+            widget.destroyEl(); // ...and remove its DOM from the page
         }
     }
-};
+
+    // Debounced event after user stop doing something
+    stopAction () {
+        debounce(() => {
+            this.rebuild();
+        }, 1000);
+    }
+}
