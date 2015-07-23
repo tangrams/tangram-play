@@ -39,8 +39,11 @@ export default class Widget {
 
     /**
      *  Returns x, y position of the upper left corner
-     *  of the DOM element for the widget. Useful for
-     *  positioning additional interactive UI elements, etc.
+     *  of the DOM element for the widget, relative to parent
+     *  DOM containers. Use this.el.getBoundingClientRect()
+     *  as an alternative for positioning relative to the
+     *  viewport (for positioning secondary interactive UI
+     *  elements, for example).
      */
     getPosition () {
         return getPosition(this.el);
