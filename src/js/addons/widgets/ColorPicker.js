@@ -51,12 +51,12 @@ export default class ColorPicker extends Widget {
      *  Handles when user clicks on the in-line color indicator widget
      */
     onClick (event) {
-        this.picker = new thistle.Picker(this.color);
+        this.picker = new ColorPickerModal(this.color);
         let pos = this.el.getBoundingClientRect();
 
         // Thistle modal size
-        const modalWidth = 200;
-        const modalHeight = 209;
+        const modalWidth = 260;
+        const modalHeight = 270;
 
         // Desired buffer from edge of window
         const modalBuffer = 20;
@@ -66,7 +66,7 @@ export default class ColorPicker extends Widget {
         let modalXPos = (pos.right + modalWidth < window.innerWidth) ? pos.right : (window.innerWidth - modalBuffer - modalWidth);
         let modalYPos = (pos.bottom + modalHeight < window.innerHeight) ? pos.bottom : (window.innerHeight - modalBuffer - modalHeight);
 
-        this.picker.presentModal(modalXPos, modalYPos);
+        this.picker.presentModal(modalXPos + 3, modalYPos + 3);
 
         // Note: this fires change events as a live preview of the color.
         // TODO: Store original value so we can go back to it if the
