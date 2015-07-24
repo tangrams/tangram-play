@@ -92,6 +92,17 @@ export default class GlslSandbox {
         });
     }
 
+    setColor(colorArray) {
+        this.color = colorArray;
+    }
+
+    disable() {
+        if (this.active) {
+            this.element.parentNode.removeChild(this.element);
+        }
+        this.active = false;
+    }
+
     update() {
     	let pos = this.tangram_play.editor.getCursor();
         if (pos.ch < 16) {
@@ -110,7 +121,7 @@ export default class GlslSandbox {
             let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys && keys[0]){
                 let address = keys[0].address;
-                let shaderObj = this._getShaderObj(address);
+                let shaderObj = getShaderObj(this.tangram_play.scene, address);
 
                 if (shaderObj===undefined) {
                     if (this.active) this.element.parentNode.removeChild(this.element);
@@ -127,16 +138,16 @@ export default class GlslSandbox {
                         this.sandbox = new GlslCanvas(this.canvas);
                     } 
 
-                    let fragmentCode =  this._getHeaderTemplate(address) + 
+                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, address) + 
                                         // this._getBlockUntilLine(address, nLine) +
                                         getAddressSceneContent(this.tangram_play.scene, address) +
-                                        this._getNormalEnding();
+                                        "\ngl_FragColor = vec4(normal,1.0);\n}";
 
-                    this.sandbox.load(fragmentCode, this._getVertex(address));          
+                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, address));          
 
                     if (!this.active) {
                         this.active = true;
-                        this._frame();
+                        this.render();
                     }
                 } else if (isColorBlock(address)){
                     this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
@@ -152,17 +163,17 @@ export default class GlslSandbox {
                         }
                     }
 
-                    let fragmentCode =  this._getHeaderTemplate(address) + 
+                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, address) + 
                                         block_normal + 
                                         // this._getBlockUntilLine(address, line) +
                                         getAddressSceneContent(this.tangram_play.scene, address) +
-                                        this._getColorEnding();
+                                        "\ngl_FragColor = color;\n}";
 
-                    this.sandbox.load(fragmentCode, this._getVertex(address));          
+                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, address));          
 
                     if (!this.active) {
                         this.active = true;
-                        this._frame();
+                        this.render();
                     }
                 } else {
                     this.disable();
@@ -184,18 +195,7 @@ export default class GlslSandbox {
         }
     }
 
-    setColor(colorArray) {
-        this.color = colorArray;
-    }
-
-    disable() {
-        if (this.active) {
-            this.element.parentNode.removeChild(this.element);
-        }
-        this.active = false;
-    }
-
-    _frame() {
+    render() {
     	if (this.active) { // && this.animated) {
 			this.sandbox.setUniform("u_meters_per_pixel",this.tangram_play.scene.meters_per_pixel);
 			this.sandbox.setUniform("u_device_pixel_ratio",window.devicePixelRatio);
@@ -206,230 +206,12 @@ export default class GlslSandbox {
 
 			this.sandbox.render();
 			requestAnimationFrame(function(){
-				tangramPlay.editor.glsl_sandbox._frame();
+				tangramPlay.editor.glsl_sandbox.render();
 			}, 1000 / 30);
     	}
     }
-
-    _getBlockUntilLine(address, nLine) {
-        let from = this.tangram_play.getKeyForAddress(address).pos.line+1;
-        let to = nLine+1;
-
-        let block = "\n";
-        for (let i = from; i < to; i++) {
-            block += this.tangram_play.editor.getLine(i);
-        }
-
-        let nP = getNumberOfOpenParentesis(block);
-        for (let i = 0; i < nP; i++) {
-            block += "}\n";
-        }
-        return block;
-    }
-
-    _getShaderObj(address) {
-    	let keysToShader = getKeysFromAddress(address);
-		return this.tangram_play.scene.styles[keysToShader[1]];
-    }
-
-    _getVertex(address) {
-    	let header = `
-    	#ifdef GL_ES
-    	precision mediump float;
-    	#endif
-
-		uniform vec2 u_resolution;
-		uniform vec2 u_mouse;
-		uniform float u_time;
-		uniform float u_meters_per_pixel;
-		uniform float u_device_pixel_ratio;
-
-		uniform vec3 u_map_position;
-		uniform vec3 u_tile_origin;
-
-        uniform vec3 u_color;
-
-		vec3 u_eye = vec3(1.0);
-		uniform vec2 u_vanishing_point;
-
-		attribute vec3 a_position;
-		attribute vec2 a_texcoord;
-
-		varying vec2 v_texcoord;
-		varying vec3 v_world_position;
-		`
-
-		let shaderObj = this._getShaderObj(address);
-
-		let block_global = "\n";
-		if (shaderObj.shaders.blocks.global) {
-			for (let i = 0; i < shaderObj.shaders.blocks.global.length; i++){
-				block_global += shaderObj.shaders.blocks.global[i] + "\n";
-			}
-		}
-				
-		let core = `
-		void main() {
-			vec4 position = vec4(a_position.xy, 0.0, 1.0);
-		 	v_texcoord = a_texcoord;
-		 	v_world_position = u_map_position*0.001;
-		 	v_world_position.xy += (a_texcoord*u_meters_per_pixel);
-		 	v_world_position.xy *= 100.;
-		 `;
-
-		let block_position = "\n";
-		if (shaderObj.shaders.blocks.position) {
-			for (let i = 0; i < shaderObj.shaders.blocks.position.length; i++){
-				block_position += shaderObj.shaders.blocks.position[i] + "\n";
-			}
-		}
-
-		let ending = `
-			gl_Position = position;
-		}
-    	`;
-
-    	return header + block_global + core + block_position + ending;
-    }
-
-    _getHeaderTemplate(address) {
-    	let shaderObj = this._getShaderObj(address);
-
-    	let defines = "\n";
-    	for(let name in shaderObj.defines){
-    		if (shaderObj.defines[name]) {
-    			defines += "#define " + name + (shaderObj.defines[name] === true ? "\n" : " " + shaderObj.defines[name] + "\n");
-    		}
-    	}
-
-    	// if (shaderObj.base && shaderObj.base === "polygons"){
-    	// 	defines += "#define SPHERE\n";
-    	// }
-
-    	let block_material = "\n";
-		if (shaderObj.shaders.blocks.material) {
-			for (let i = 0; i < shaderObj.shaders.blocks.material.length; i++){
-				block_material += shaderObj.shaders.blocks.material[i] + "\n";
-			}
-		}
-
-		let header = `
-			#ifdef GL_ES
-			precision mediump float;
-			#endif
-
-			uniform vec2 u_resolution;
-			uniform vec2 u_mouse;
-			uniform float u_time;
-			uniform float u_meters_per_pixel;
-			uniform float u_device_pixel_ratio;
-
-			uniform vec3 u_map_position;
-			uniform vec3 u_tile_origin;
-
-            uniform vec3 u_color;
-
-			varying vec2 v_texcoord;
-			varying vec3 v_world_position;
-
-			vec3 u_eye = vec3(1.0);
-			uniform vec2 u_vanishing_point;
-
-			vec3 v_normal = vec3(0.0,0.0,1.0);
-			vec4 v_color = vec4(1.0,0.0,1.0,1.0);
-
-			vec3 hsb2rgb( in vec3 c ){
-			    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
-			                             6.0)-3.0)-1.0, 
-			                     0.0, 
-			                     1.0 );
-			    rgb = rgb*rgb*(3.0-2.0*rgb);
-			    return c.z * mix( vec3(1.0), rgb, c.y);
-			}
-
-			#ifdef SPHERE
-			vec3 sphereNormal(vec2 uv) {
-			    uv = fract(uv)*2.0-1.0; 
-			    vec3 ret;
-			    ret.xy = sqrt(uv * uv) * sign(uv);
-			    ret.z = sqrt(abs(1.0 - dot(ret.xy,ret.xy)));
-			    return ret * 0.5 + 0.5;
-			}
-
-			vec2 sphereCoords(vec2 _st, float _scale){
-			    float maxFactor = sin(1.570796327);
-			    vec2 uv = vec2(0.0);
-			    vec2 xy = 2.0 * _st.xy - 1.0;
-			    float d = length(xy);
-			    if (d < (2.0-maxFactor)){
-			        d = length(xy * maxFactor);
-			        float z = sqrt(1.0 - d * d);
-			        float r = atan(d, z) / 3.1415926535 * _scale;
-			        float phi = atan(xy.y, xy.x);
-
-			        uv.x = r * cos(phi) + 0.5;
-			        uv.y = r * sin(phi) + 0.5;
-			    } else {
-			        uv = _st.xy;
-			    }
-			    return uv;
-			}
-			#endif
-		`;
-
-		let block_global = "\n";
-		if (shaderObj.shaders.blocks.global) {
-			for (let i = 0; i < shaderObj.shaders.blocks.global.length; i++){
-				block_global += shaderObj.shaders.blocks.global[i] + "\n";
-			}
-		}
-
-		let pre = `
-			void main() {
-				#ifdef SPHERE
-				v_normal = sphereNormal(v_texcoord);
-				#endif
-
-				vec3 normal = v_normal;
-
-				#ifdef TANGRAM_MATERIAL_NORMAL_TEXTURE
-			        calculateNormal(normal);
-			    #endif
-
-				vec2 TEMPLATE_ST = v_texcoord.xy;
-
-				#ifdef SPHERE
-				TEMPLATE_ST = sphereCoords(TEMPLATE_ST,1.0);
-				#endif
-			  
-                v_color.rgb = u_color;
-			    //v_color.rgb = hsb2rgb(vec3(fract(u_time*0.01),1.,1.));
-
-			    #ifdef SPHERE
-				v_color = mix(v_color, vec4(0.), 
-							  step(.25,dot(vec2(0.5)-v_texcoord,vec2(0.5)-v_texcoord)) );
-				#endif
-
-				vec4 color = v_color;
-			`;
-
-		return defines + header + block_material + block_global + pre;
-    }
-
-    _getNormalEnding() {
-    	return `
-			gl_FragColor = vec4(normal,1.0);
-		}
-		`;
-	}
-
-    _getColorEnding() {
-	    return `
-			gl_FragColor = color;
-		}
-		`;
-    }
 }
+
 
 function getNumberOfOpenParentesis(str) {
     let counter = 0;
@@ -442,3 +224,207 @@ function getNumberOfOpenParentesis(str) {
     }
     return counter;
 };
+
+function getShaderObj(sc, address) {
+    return sc.styles[getKeysFromAddress(address)[1]];
+}
+
+function getVertex(scene, address) {
+    let header = `
+    #ifdef GL_ES
+    precision mediump float;
+    #endif
+
+    uniform vec2 u_resolution;
+    uniform vec2 u_mouse;
+    uniform float u_time;
+    uniform float u_meters_per_pixel;
+    uniform float u_device_pixel_ratio;
+
+    uniform vec3 u_map_position;
+    uniform vec3 u_tile_origin;
+
+    uniform vec3 u_color;
+
+    vec3 u_eye = vec3(1.0);
+    uniform vec2 u_vanishing_point;
+
+    attribute vec3 a_position;
+    attribute vec2 a_texcoord;
+
+    varying vec2 v_texcoord;
+    varying vec3 v_world_position;
+    `
+
+    let shaderObj = getShaderObj(scene, address);
+
+    let block_global = "\n";
+    if (shaderObj.shaders.blocks.global) {
+        for (let i = 0; i < shaderObj.shaders.blocks.global.length; i++){
+            block_global += shaderObj.shaders.blocks.global[i] + "\n";
+        }
+    }
+            
+    let core = `
+    void main() {
+        vec4 position = vec4(a_position.xy, 0.0, 1.0);
+        v_texcoord = a_texcoord;
+        v_world_position = u_map_position*0.001;
+        v_world_position.xy += (a_texcoord*u_meters_per_pixel);
+        v_world_position.xy *= 100.;
+     `;
+
+    let block_position = "\n";
+    if (shaderObj.shaders.blocks.position) {
+        for (let i = 0; i < shaderObj.shaders.blocks.position.length; i++){
+            block_position += shaderObj.shaders.blocks.position[i] + "\n";
+        }
+    }
+
+    let ending = `
+        gl_Position = position;
+    }
+    `;
+
+    return header + block_global + core + block_position + ending;
+}
+
+function getFramgmentHeader(scene, address) {
+    let shaderObj = getShaderObj(scene, address);
+
+    let defines = "\n";
+    for(let name in shaderObj.defines){
+        if (shaderObj.defines[name]) {
+            defines += "#define " + name + (shaderObj.defines[name] === true ? "\n" : " " + shaderObj.defines[name] + "\n");
+        }
+    }
+
+    // if (shaderObj.base && shaderObj.base === "polygons"){
+    //  defines += "#define SPHERE\n";
+    // }
+
+    let block_material = "\n";
+    if (shaderObj.shaders.blocks.material) {
+        for (let i = 0; i < shaderObj.shaders.blocks.material.length; i++){
+            block_material += shaderObj.shaders.blocks.material[i] + "\n";
+        }
+    }
+
+    let header = `
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+        uniform float u_time;
+        uniform float u_meters_per_pixel;
+        uniform float u_device_pixel_ratio;
+
+        uniform vec3 u_map_position;
+        uniform vec3 u_tile_origin;
+
+        uniform vec3 u_color;
+
+        varying vec2 v_texcoord;
+        varying vec3 v_world_position;
+
+        vec3 u_eye = vec3(1.0);
+        uniform vec2 u_vanishing_point;
+
+        vec3 v_normal = vec3(0.0,0.0,1.0);
+        vec4 v_color = vec4(1.0,0.0,1.0,1.0);
+
+        vec3 hsb2rgb( in vec3 c ){
+            vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
+                                     6.0)-3.0)-1.0, 
+                             0.0, 
+                             1.0 );
+            rgb = rgb*rgb*(3.0-2.0*rgb);
+            return c.z * mix( vec3(1.0), rgb, c.y);
+        }
+
+        #ifdef SPHERE
+        vec3 sphereNormal(vec2 uv) {
+            uv = fract(uv)*2.0-1.0; 
+            vec3 ret;
+            ret.xy = sqrt(uv * uv) * sign(uv);
+            ret.z = sqrt(abs(1.0 - dot(ret.xy,ret.xy)));
+            return ret * 0.5 + 0.5;
+        }
+
+        vec2 sphereCoords(vec2 _st, float _scale){
+            float maxFactor = sin(1.570796327);
+            vec2 uv = vec2(0.0);
+            vec2 xy = 2.0 * _st.xy - 1.0;
+            float d = length(xy);
+            if (d < (2.0-maxFactor)){
+                d = length(xy * maxFactor);
+                float z = sqrt(1.0 - d * d);
+                float r = atan(d, z) / 3.1415926535 * _scale;
+                float phi = atan(xy.y, xy.x);
+
+                uv.x = r * cos(phi) + 0.5;
+                uv.y = r * sin(phi) + 0.5;
+            } else {
+                uv = _st.xy;
+            }
+            return uv;
+        }
+        #endif
+    `;
+
+    let block_global = "\n";
+    if (shaderObj.shaders.blocks.global) {
+        for (let i = 0; i < shaderObj.shaders.blocks.global.length; i++){
+            block_global += shaderObj.shaders.blocks.global[i] + "\n";
+        }
+    }
+
+    let pre = `
+        void main() {
+            #ifdef SPHERE
+            v_normal = sphereNormal(v_texcoord);
+            #endif
+
+            vec3 normal = v_normal;
+
+            #ifdef TANGRAM_MATERIAL_NORMAL_TEXTURE
+                calculateNormal(normal);
+            #endif
+
+            vec2 TEMPLATE_ST = v_texcoord.xy;
+
+            #ifdef SPHERE
+            TEMPLATE_ST = sphereCoords(TEMPLATE_ST,1.0);
+            #endif
+          
+            v_color.rgb = u_color;
+            //v_color.rgb = hsb2rgb(vec3(fract(u_time*0.01),1.,1.));
+
+            #ifdef SPHERE
+            v_color = mix(v_color, vec4(0.), 
+                          step(.25,dot(vec2(0.5)-v_texcoord,vec2(0.5)-v_texcoord)) );
+            #endif
+
+            vec4 color = v_color;
+        `;
+
+    return defines + header + block_material + block_global + pre;
+}
+
+function getBlockUntilLine(tangram_play, address, nLine) {
+        let from = tangram_play.getKeyForAddress(address).pos.line+1;
+        let to = nLine+1;
+
+        let block = "\n";
+        for (let i = from; i < to; i++) {
+            block += tangram_play.editor.getLine(i);
+        }
+
+        let nP = getNumberOfOpenParentesis(block);
+        for (let i = 0; i < nP; i++) {
+            block += "}\n";
+        }
+        return block;
+    }
