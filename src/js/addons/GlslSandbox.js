@@ -41,16 +41,9 @@ export default class GlslSandbox {
     	//  Make link to this manager inside codemirror obj to be excecuted from CM events
         tangram_play.editor.glsl_sandbox = this;
 
-        //  private variables
+        // Constant OBJ
         this.tangram_play = tangram_play;
-
-        //	used variables
-        this.active = false;
         this.sandbox = undefined;
-        this.line = -1;
-        this.animated = false;
-        this.color = [1,0,0];
-
         this.element = document.createElement('div');
         this.element.id = 'tp-a-sandbox';
         this.element.setAttribute("width","130");
@@ -82,7 +75,15 @@ export default class GlslSandbox {
         });
         this.element.appendChild(el);
 
-        // Suggestions are trigged by the folowing CM events
+        // VARIABLES
+        this.active = false;
+        this.line = -1;
+        this.address = "";
+        this.animated = false;
+        this.uniforms = {};
+        this.uniforms.u_color = { name:"u_color", method: "uniform3f", type: "vec3", value:[1,0,0] };
+
+        // EVENTS
         tangram_play.editor.on("cursorActivity", function(cm) {
             cm.glsl_sandbox.update();
         });
@@ -93,7 +94,7 @@ export default class GlslSandbox {
     }
 
     setColor(colorArray) {
-        this.color = colorArray;
+        this.uniforms.u_color.value = colorArray;
     }
 
     disable() {
@@ -101,6 +102,7 @@ export default class GlslSandbox {
             this.element.parentNode.removeChild(this.element);
         }
         this.active = false;
+        this.address = "";
     }
 
     update() {
@@ -120,36 +122,36 @@ export default class GlslSandbox {
         if (!isEmpty(this.tangram_play.editor,nLine)){
             let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys && keys[0]){
-                let address = keys[0].address;
-                let shaderObj = getShaderObj(this.tangram_play.scene, address);
+                this.address = keys[0].address;
+                let styleObj = getStyleObj(this.tangram_play.scene, this.address);
 
-                if (shaderObj===undefined) {
+                if (styleObj===undefined) {
                     if (this.active) this.element.parentNode.removeChild(this.element);
                     this.active = false;
                     return;
                 }
 
-                this.animated = shaderObj.animated;
+                this.animated = styleObj.animated;
 
-                if (isNormalBlock(address)){
-                    this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
+                if (isNormalBlock(this.address)){
+                    this.tangram_play.editor.addWidget({line: nLine, ch: 0}, this.element);
 
                     if (!this.active) {
                         this.sandbox = new GlslCanvas(this.canvas);
                     } 
 
-                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, address) + 
-                                        // this._getBlockUntilLine(address, nLine) +
-                                        getAddressSceneContent(this.tangram_play.scene, address) +
+                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.uniforms, this.address) + 
+                                        // this._getBlockUntilLine(this.address, nLine) +
+                                        getAddressSceneContent(this.tangram_play.scene, this.address) +
                                         "\ngl_FragColor = vec4(normal,1.0);\n}";
 
-                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, address));          
+                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.uniforms, this.address));          
 
                     if (!this.active) {
                         this.active = true;
                         this.render();
                     }
-                } else if (isColorBlock(address)){
+                } else if (isColorBlock(this.address)){
                     this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
 
                     if (!this.active) {
@@ -157,19 +159,19 @@ export default class GlslSandbox {
                     } 
 
                     let block_normal = "\n"
-                    if (shaderObj.shaders.blocks.normal) {
-                        for (let i = 0; i < shaderObj.shaders.blocks.normal.length; i++){
-                            block_normal += shaderObj.shaders.blocks.normal[i] + "\n";
+                    if (styleObj.shaders.blocks.normal) {
+                        for (let i = 0; i < styleObj.shaders.blocks.normal.length; i++){
+                            block_normal += styleObj.shaders.blocks.normal[i] + "\n";
                         }
                     }
 
-                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, address) + 
+                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.uniforms, this.address) + 
                                         block_normal + 
-                                        // this._getBlockUntilLine(address, line) +
-                                        getAddressSceneContent(this.tangram_play.scene, address) +
+                                        // this._getBlockUntilLine(this.address, line) +
+                                        getAddressSceneContent(this.tangram_play.scene, this.address) +
                                         "\ngl_FragColor = color;\n}";
 
-                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, address));          
+                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.uniforms, this.address));          
 
                     if (!this.active) {
                         this.active = true;
@@ -180,11 +182,11 @@ export default class GlslSandbox {
                 }
 
                 if (this.active) {
-                    if (shaderObj.material) {
-                        for (let el in shaderObj.material) {
-                            if (!Array.isArray(shaderObj.material[el]) && shaderObj.material[el].texture ){
-                                this.sandbox.setUniform("u_material_"+el+"_texture", shaderObj.material[el].texture);
-                                this.sandbox.setUniform("u_material."+el+"Scale",shaderObj.material[el].scale);
+                    if (styleObj.material) {
+                        for (let el in styleObj.material) {
+                            if (!Array.isArray(styleObj.material[el]) && styleObj.material[el].texture ){
+                                this.sandbox.setUniform("u_material_"+el+"_texture", styleObj.material[el].texture);
+                                this.sandbox.setUniform("u_material."+el+"Scale",styleObj.material[el].scale);
                             }
                         }
                     }
@@ -197,12 +199,22 @@ export default class GlslSandbox {
 
     render() {
     	if (this.active) { // && this.animated) {
-			this.sandbox.setUniform("u_meters_per_pixel",this.tangram_play.scene.meters_per_pixel);
-			this.sandbox.setUniform("u_device_pixel_ratio",window.devicePixelRatio);
-			this.sandbox.setUniform("u_map_position", [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom]);
-			this.sandbox.setUniform("u_tile_origin", [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z]);
-			this.sandbox.setUniform("u_vanishing_point", this.tangram_play.scene.camera.vanishing_point);
-            this.sandbox.setUniform("u_color",this.color);
+
+            let styleObj = getStyleObj(this.tangram_play.scene, this.address);
+
+            // Tangram uniforms
+            this.sandbox.setUniform("u_meters_per_pixel",this.tangram_play.scene.meters_per_pixel);
+            this.sandbox.setUniform("u_device_pixel_ratio",window.devicePixelRatio);
+            this.sandbox.setUniform("u_map_position", [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom]);
+            this.sandbox.setUniform("u_tile_origin", [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z]);
+            this.sandbox.setUniform("u_vanishing_point", this.tangram_play.scene.camera.vanishing_point);
+
+            // Dynamic Uniforms
+            for (let u in this.uniforms) {
+                let uniform = this.uniforms[u];
+                uniform.location = this.sandbox.gl.getUniformLocation(this.sandbox.program, uniform.name);
+                this.sandbox.gl[uniform.method].apply(this.sandbox.gl, [uniform.location].concat(uniform.value));
+            }
 
 			this.sandbox.render();
 			requestAnimationFrame(function(){
@@ -211,7 +223,6 @@ export default class GlslSandbox {
     	}
     }
 }
-
 
 function getNumberOfOpenParentesis(str) {
     let counter = 0;
@@ -225,12 +236,17 @@ function getNumberOfOpenParentesis(str) {
     return counter;
 };
 
-function getShaderObj(sc, address) {
-    return sc.styles[getKeysFromAddress(address)[1]];
+function getStyleObj(sc, address) {
+    let keys = getKeysFromAddress(address);
+    if (keys.length===0) {
+        console.log("Error: no Style on: ", address );
+        return {};
+    }
+    return sc.styles[keys[1]];
 }
 
-function getVertex(scene, address) {
-    let header = `
+function getVertex(scene, uniforms, address) {
+    let block_uniforms = `
     #ifdef GL_ES
     precision mediump float;
     #endif
@@ -244,8 +260,6 @@ function getVertex(scene, address) {
     uniform vec3 u_map_position;
     uniform vec3 u_tile_origin;
 
-    uniform vec3 u_color;
-
     vec3 u_eye = vec3(1.0);
     uniform vec2 u_vanishing_point;
 
@@ -254,14 +268,20 @@ function getVertex(scene, address) {
 
     varying vec2 v_texcoord;
     varying vec3 v_world_position;
+
     `
 
-    let shaderObj = getShaderObj(scene, address);
+    for (let u in uniforms) {
+        let uniform = uniforms[u];
+        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";";
+    }
+
+    let styleObj = getStyleObj(scene, address);
 
     let block_global = "\n";
-    if (shaderObj.shaders.blocks.global) {
-        for (let i = 0; i < shaderObj.shaders.blocks.global.length; i++){
-            block_global += shaderObj.shaders.blocks.global[i] + "\n";
+    if (styleObj.shaders.blocks.global) {
+        for (let i = 0; i < styleObj.shaders.blocks.global.length; i++){
+            block_global += styleObj.shaders.blocks.global[i] + "\n";
         }
     }
             
@@ -275,9 +295,9 @@ function getVertex(scene, address) {
      `;
 
     let block_position = "\n";
-    if (shaderObj.shaders.blocks.position) {
-        for (let i = 0; i < shaderObj.shaders.blocks.position.length; i++){
-            block_position += shaderObj.shaders.blocks.position[i] + "\n";
+    if (styleObj.shaders.blocks.position) {
+        for (let i = 0; i < styleObj.shaders.blocks.position.length; i++){
+            block_position += styleObj.shaders.blocks.position[i] + "\n";
         }
     }
 
@@ -286,31 +306,27 @@ function getVertex(scene, address) {
     }
     `;
 
-    return header + block_global + core + block_position + ending;
+    return block_uniforms + block_global + core + block_position + ending;
 }
 
-function getFramgmentHeader(scene, address) {
-    let shaderObj = getShaderObj(scene, address);
+function getFramgmentHeader(scene, uniforms, address) {
+    let styleObj = getStyleObj(scene, address);
 
     let defines = "\n";
-    for(let name in shaderObj.defines){
-        if (shaderObj.defines[name]) {
-            defines += "#define " + name + (shaderObj.defines[name] === true ? "\n" : " " + shaderObj.defines[name] + "\n");
+    for(let name in styleObj.defines){
+        if (styleObj.defines[name]) {
+            defines += "#define " + name + (styleObj.defines[name] === true ? "\n" : " " + styleObj.defines[name] + "\n");
         }
     }
-
-    // if (shaderObj.base && shaderObj.base === "polygons"){
-    //  defines += "#define SPHERE\n";
-    // }
 
     let block_material = "\n";
-    if (shaderObj.shaders.blocks.material) {
-        for (let i = 0; i < shaderObj.shaders.blocks.material.length; i++){
-            block_material += shaderObj.shaders.blocks.material[i] + "\n";
+    if (styleObj.shaders.blocks.material) {
+        for (let i = 0; i < styleObj.shaders.blocks.material.length; i++){
+            block_material += styleObj.shaders.blocks.material[i] + "\n";
         }
     }
 
-    let header = `
+    let block_uniforms = `
         #ifdef GL_ES
         precision mediump float;
         #endif
@@ -323,8 +339,6 @@ function getFramgmentHeader(scene, address) {
 
         uniform vec3 u_map_position;
         uniform vec3 u_tile_origin;
-
-        uniform vec3 u_color;
 
         varying vec2 v_texcoord;
         varying vec3 v_world_position;
@@ -374,10 +388,15 @@ function getFramgmentHeader(scene, address) {
         #endif
     `;
 
+    for (let u in uniforms) {
+        let uniform = uniforms[u];
+        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";";
+    }
+
     let block_global = "\n";
-    if (shaderObj.shaders.blocks.global) {
-        for (let i = 0; i < shaderObj.shaders.blocks.global.length; i++){
-            block_global += shaderObj.shaders.blocks.global[i] + "\n";
+    if (styleObj.shaders.blocks.global) {
+        for (let i = 0; i < styleObj.shaders.blocks.global.length; i++){
+            block_global += styleObj.shaders.blocks.global[i] + "\n";
         }
     }
 
@@ -410,21 +429,21 @@ function getFramgmentHeader(scene, address) {
             vec4 color = v_color;
         `;
 
-    return defines + header + block_material + block_global + pre;
+    return defines + block_uniforms + block_material + block_global + pre;
 }
 
 function getBlockUntilLine(tangram_play, address, nLine) {
-        let from = tangram_play.getKeyForAddress(address).pos.line+1;
-        let to = nLine+1;
+    let from = tangram_play.getKeyForAddress(address).pos.line+1;
+    let to = nLine+1;
 
-        let block = "\n";
-        for (let i = from; i < to; i++) {
-            block += tangram_play.editor.getLine(i);
-        }
-
-        let nP = getNumberOfOpenParentesis(block);
-        for (let i = 0; i < nP; i++) {
-            block += "}\n";
-        }
-        return block;
+    let block = "\n";
+    for (let i = from; i < to; i++) {
+        block += tangram_play.editor.getLine(i);
     }
+
+    let nP = getNumberOfOpenParentesis(block);
+    for (let i = 0; i < nP; i++) {
+        block += "}\n";
+    }
+    return block;
+}
