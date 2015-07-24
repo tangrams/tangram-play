@@ -432,14 +432,15 @@
         if (oneTime) {
             doRender(myColor.colors);
         } else {
-            renderTimer = window.setInterval(function () {
-                doRender(myColor.colors);
-                // http://stackoverflow.com/questions/2940054/
-            }, 13); // 1000 / 60); // ~16.666 -> 60Hz or 60fps
+            renderTimer = window.requestAnimationFrame(repeatRender);
         }
     };
+    var repeatRender = function () {
+        doRender(myColor.colors);
+        renderTimer = window.requestAnimationFrame(repeatRender);
+    };
     var stopRender = function () {
-        window.clearInterval(renderTimer);
+        window.cancelAnimationFrame(renderTimer);
     };
 
     function _onClickOutsideElement (event) {
