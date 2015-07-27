@@ -30,6 +30,8 @@
         getOrigin: getOrigin
     }
 
+    var documentFragmentCache;
+
     var listeners = {};
 
     function getOrigin(elm) {
@@ -103,6 +105,7 @@
     ColorPickerModal.prototype.init = function () {
         this.dom = this.createDom();
         this.el = this.dom.firstElementChild;
+        // Temporarily refer to this outside of the object prototype for helper functions
         modal = this.el;
 
         myColor = new Colors({
@@ -146,55 +149,62 @@
 
         */
 
-        var el = document.createDocumentFragment();
-        var modal = document.createElement('div');
-        var patch = document.createElement('div');
-        var map = document.createElement('div');
-        var disc = document.createElement('canvas');
-        var cover = document.createElement('div');
-        var cursor = document.createElement('div');
-        var barbg = document.createElement('div');
-        var barwhite = document.createElement('div');
-        var barlum = document.createElement('canvas');
-        var barcursors = document.createElement('div');
-        var leftcursor = document.createElement('div');
-        var rightcursor = document.createElement('div');
+        // Creates DOM structure for the widget.
+        // This also caches the DOM nodes in memory so that it does
+        // not need to be re-created on subsequent inits.
+        if (!documentFragmentCache) {
+            documentFragmentCache = document.createDocumentFragment();
+            var modal = document.createElement('div');
+            var patch = document.createElement('div');
+            var map = document.createElement('div');
+            var disc = document.createElement('canvas');
+            var cover = document.createElement('div');
+            var cursor = document.createElement('div');
+            var barbg = document.createElement('div');
+            var barwhite = document.createElement('div');
+            var barlum = document.createElement('canvas');
+            var barcursors = document.createElement('div');
+            var leftcursor = document.createElement('div');
+            var rightcursor = document.createElement('div');
 
-        var CSS_PREFIX = 'colorpicker' + '-';
-        modal.className = CSS_PREFIX + 'modal';
-        patch.className = CSS_PREFIX + 'patch';
-        map.className = CSS_PREFIX + 'hsv-map';
-        disc.className = CSS_PREFIX + 'disc';
-        cover.className = CSS_PREFIX + 'disc-cover';
-        cursor.className = CSS_PREFIX + 'disc-cursor';
-        barbg.className = CSS_PREFIX + 'bar-bg';
-        barwhite.className = CSS_PREFIX + 'bar-white';
-        barlum.className = CSS_PREFIX + 'bar-luminance';
-        barcursors.className = CSS_PREFIX + 'bar-cursors';
-        leftcursor.className = CSS_PREFIX + 'bar-cursor-left';
-        rightcursor.className = CSS_PREFIX + 'bar-cursor-right';
+            var CSS_PREFIX = 'colorpicker' + '-';
 
-        disc.width = 200;
-        disc.height = 200;
-        barlum.width = 25;
-        barlum.height = 200;
-        map.id = 'cp-map';
-        barcursors.id = 'cp-bar';
+            modal.className = CSS_PREFIX + 'modal';
+            patch.className = CSS_PREFIX + 'patch';
+            map.className = CSS_PREFIX + 'hsv-map';
+            disc.className = CSS_PREFIX + 'disc';
+            cover.className = CSS_PREFIX + 'disc-cover';
+            cursor.className = CSS_PREFIX + 'disc-cursor';
+            barbg.className = CSS_PREFIX + 'bar-bg';
+            barwhite.className = CSS_PREFIX + 'bar-white';
+            barlum.className = CSS_PREFIX + 'bar-luminance';
+            barcursors.className = CSS_PREFIX + 'bar-cursors';
+            leftcursor.className = CSS_PREFIX + 'bar-cursor-left';
+            rightcursor.className = CSS_PREFIX + 'bar-cursor-right';
 
-        modal.appendChild(patch);
-        modal.appendChild(map);
-        map.appendChild(disc);
-        map.appendChild(cover);
-        map.appendChild(cursor);
-        map.appendChild(barbg);
-        map.appendChild(barwhite);
-        map.appendChild(barlum);
-        map.appendChild(barcursors);
-        barcursors.appendChild(leftcursor);
-        barcursors.appendChild(rightcursor);
-        el.appendChild(modal);
+            disc.width = 200;
+            disc.height = 200;
+            barlum.width = 25;
+            barlum.height = 200;
+            map.id = 'cp-map';
+            barcursors.id = 'cp-bar';
 
-        return el;
+            modal.appendChild(patch);
+            modal.appendChild(map);
+            map.appendChild(disc);
+            map.appendChild(cover);
+            map.appendChild(cursor);
+            map.appendChild(barbg);
+            map.appendChild(barwhite);
+            map.appendChild(barlum);
+            map.appendChild(barcursors);
+            barcursors.appendChild(leftcursor);
+            barcursors.appendChild(rightcursor);
+            documentFragmentCache.appendChild(modal);
+        }
+
+        // Returns a clone of the cached document fragment
+        return documentFragmentCache.cloneNode(true);
     }
 
     ColorPickerModal.prototype.presentModal = function (x, y) {
@@ -248,7 +258,7 @@
             ctx.fillRect(0, 0, 30, 200);
         }
 
-        doRender(myColor.colors);
+        doRender(this.lib.colors);
     }
 
     // Monkey patches for Thistle.js functionality
@@ -258,11 +268,11 @@
     }
 
     ColorPickerModal.prototype.getCSS = function () {
-        return '#' + myColor.colors.HEX.toLowerCase();
+        return '#' + this.lib.colors.HEX.toLowerCase();
     }
 
     ColorPickerModal.prototype.getRGB = function () {
-        var RND = myColor.colors.RND;
+        var RND = this.lib.colors.RND;
         return {
             r: RND.rgb.r / 255,
             g: RND.rgb.g / 255,
@@ -343,11 +353,11 @@
         }
     };
 
-    var renderHSVPicker = function (color) { // used in renderCallback of 'new ColorPicker'
-        var pi2 = Math.PI * 2,
-            x = Math.cos(pi2 - color.hsv.h * pi2),
-            y = Math.sin(pi2 - color.hsv.h * pi2),
-            r = color.hsv.s * (colorDiscRadius - 5);
+    var renderHSVPicker = function (color) {
+        var pi2 = Math.PI * 2;
+        var x = Math.cos(pi2 - color.hsv.h * pi2);
+        var y = Math.sin(pi2 - color.hsv.h * pi2);
+        var r = color.hsv.s * (colorDiscRadius - 5);
 
         hsv_mapCover.style.opacity = 1 - color.hsv.v;
         // this is the faster version...
@@ -361,6 +371,7 @@
             'left: ' + (x * r + colorDiscRadius) + 'px;' +
             'top: ' + (y * r + colorDiscRadius) + 'px;' +
             'border-color: ' + (color.RGBLuminance > 0.22 ? '#333;' : '#ddd');
+
         hsv_barCursors.className = color.RGBLuminance > 0.22 ? hsv_barCursorsCln + ' colorpicker-dark' : hsv_barCursorsCln;
         if (hsv_Leftcursor) hsv_Leftcursor.style.top = hsv_Rightcursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
     };
