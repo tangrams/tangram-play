@@ -29,7 +29,7 @@ export default class ColorPicker extends Widget {
      *  this.color is requested
      */
     get color () {
-        return this.el.style.background;
+        return this.el.style.backgroundColor;
     }
 
     /**
@@ -39,7 +39,7 @@ export default class ColorPicker extends Widget {
      *  Be sure to convert value parameter to a CSS-readable value.
      */
     set color (cssColor) {
-        this.el.style.background = cssColor;
+        this.el.style.backgroundColor = cssColor;
     }
 
     set value (val) {
