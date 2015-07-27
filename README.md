@@ -27,7 +27,7 @@ Clone this repository, then, in this repository's root directory, run the follow
 
 ```sh
 npm install     # Installs Node modules dependencies
-gulp js css     # Builds Javascript and CSS files to /build
+gulp js css     # Compiles Javascript and CSS files to /build
 ```
 
 You may also need to install command line dependencies globally if you do not already have it (and you may need to do this with `sudo`):
