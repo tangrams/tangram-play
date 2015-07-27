@@ -36,7 +36,7 @@ You may also need to install command line dependencies globally if you do not al
 npm install -g gulp
 ```
 
-Typing `gulp` by itself runs the Javascript and CSS build scripts, and additionally starts a watcher that will rebuild each time the source files are changed. If a [LiveReload](http://livereload.com/) server is active, it will also publish stylesheet updates to LiveReload. You may safely kill the gulp process at any time by hitting Ctrl-C.
+Typing `gulp` by itself runs the Javascript and CSS build scripts, and additionally starts a watcher that will rebuild each time the source files are changed. If a [LiveReload](http://livereload.com/) listener is active, Gulp will also publish stylesheet updates to it. You may safely kill the `gulp` process at any time by hitting Ctrl-C.
 
 Tangram Play is a static site, and can be viewed by any static fileserver, such as Python's [SimpleHTTPServer](https://docs.python.org/2/library/simplehttpserver.html) or Node's [http-server module](https://www.npmjs.com/package/http-server).
 
