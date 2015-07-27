@@ -36,6 +36,7 @@
 
 /* + Widgets */
 @import '_widgets';
+@import '_colorpicker';
 
 /* + Suggest */
 @import '_suggest';
