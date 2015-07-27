@@ -81,7 +81,7 @@ export default class GlslSandbox {
         this.address = "";
         this.animated = false;
         this.uniforms = {};
-        this.uniforms.u_color = { name:"u_color", method: "uniform3f", type: "vec3", value:[1,0,0] };
+        this.uniforms.u_color = [1,0,0];
 
         // EVENTS
         tangram_play.editor.on("cursorActivity", function(cm) {
@@ -94,7 +94,7 @@ export default class GlslSandbox {
     }
 
     setColor(colorArray) {
-        this.uniforms.u_color.value = colorArray;
+        this.uniforms.u_color = colorArray;
     }
 
     disable() {
@@ -140,12 +140,12 @@ export default class GlslSandbox {
                         this.sandbox = new GlslCanvas(this.canvas);
                     } 
 
-                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.uniforms, this.address) + 
+                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.address) + 
                                         // this._getBlockUntilLine(this.address, nLine) +
                                         getAddressSceneContent(this.tangram_play.scene, this.address) +
                                         "\ngl_FragColor = vec4(normal,1.0);\n}";
 
-                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.uniforms, this.address));          
+                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.address));          
 
                     if (!this.active) {
                         this.active = true;
@@ -165,13 +165,13 @@ export default class GlslSandbox {
                         }
                     }
 
-                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.uniforms, this.address) + 
+                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.address) + 
                                         block_normal + 
                                         // this._getBlockUntilLine(this.address, line) +
                                         getAddressSceneContent(this.tangram_play.scene, this.address) +
                                         "\ngl_FragColor = color;\n}";
 
-                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.uniforms, this.address));          
+                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.address));          
 
                     if (!this.active) {
                         this.active = true;
@@ -203,18 +203,13 @@ export default class GlslSandbox {
             let styleObj = getStyleObj(this.tangram_play.scene, this.address);
 
             // Tangram uniforms
-            this.sandbox.setUniform("u_meters_per_pixel",this.tangram_play.scene.meters_per_pixel);
+            this.sandbox.setUniform("u_meters_per_pixel",[this.tangram_play.scene.meters_per_pixel]);
             this.sandbox.setUniform("u_device_pixel_ratio",window.devicePixelRatio);
-            this.sandbox.setUniform("u_map_position", [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom]);
+            this.sandbox.uniform("1f","float","u_map_position", [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom]);
             this.sandbox.setUniform("u_tile_origin", [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z]);
             this.sandbox.setUniform("u_vanishing_point", this.tangram_play.scene.camera.vanishing_point);
 
-            // Dynamic Uniforms
-            for (let u in this.uniforms) {
-                let uniform = this.uniforms[u];
-                uniform.location = this.sandbox.gl.getUniformLocation(this.sandbox.program, uniform.name);
-                this.sandbox.gl[uniform.method].apply(this.sandbox.gl, [uniform.location].concat(uniform.value));
-            }
+            this.sandbox.setUniforms(this.uniforms);
 
 			this.sandbox.render();
 			requestAnimationFrame(function(){
@@ -251,17 +246,7 @@ function getVertex(scene, uniforms, address) {
     precision mediump float;
     #endif
 
-    uniform vec2 u_resolution;
-    uniform vec2 u_mouse;
-    uniform float u_time;
-    uniform float u_meters_per_pixel;
-    uniform float u_device_pixel_ratio;
-
-    uniform vec3 u_map_position;
-    uniform vec3 u_tile_origin;
-
     vec3 u_eye = vec3(1.0);
-    uniform vec2 u_vanishing_point;
 
     attribute vec3 a_position;
     attribute vec2 a_texcoord;
@@ -273,8 +258,10 @@ function getVertex(scene, uniforms, address) {
 
     for (let u in uniforms) {
         let uniform = uniforms[u];
-        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";";
+        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";\n";
     }
+
+    console.log(block_uniforms);
 
     let styleObj = getStyleObj(scene, address);
 
@@ -327,70 +314,22 @@ function getFramgmentHeader(scene, uniforms, address) {
     }
 
     let block_uniforms = `
-        #ifdef GL_ES
-        precision mediump float;
-        #endif
+    #ifdef GL_ES
+    precision mediump float;
+    #endif
 
-        uniform vec2 u_resolution;
-        uniform vec2 u_mouse;
-        uniform float u_time;
-        uniform float u_meters_per_pixel;
-        uniform float u_device_pixel_ratio;
+    vec3 u_eye = vec3(1.0);
 
-        uniform vec3 u_map_position;
-        uniform vec3 u_tile_origin;
+    varying vec2 v_texcoord;
+    varying vec3 v_world_position;
 
-        varying vec2 v_texcoord;
-        varying vec3 v_world_position;
+    vec3 v_normal = vec3(0.0,0.0,1.0);
 
-        vec3 u_eye = vec3(1.0);
-        uniform vec2 u_vanishing_point;
-
-        vec3 v_normal = vec3(0.0,0.0,1.0);
-        vec4 v_color = vec4(1.0,0.0,1.0,1.0);
-
-        vec3 hsb2rgb( in vec3 c ){
-            vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
-                                     6.0)-3.0)-1.0, 
-                             0.0, 
-                             1.0 );
-            rgb = rgb*rgb*(3.0-2.0*rgb);
-            return c.z * mix( vec3(1.0), rgb, c.y);
-        }
-
-        #ifdef SPHERE
-        vec3 sphereNormal(vec2 uv) {
-            uv = fract(uv)*2.0-1.0; 
-            vec3 ret;
-            ret.xy = sqrt(uv * uv) * sign(uv);
-            ret.z = sqrt(abs(1.0 - dot(ret.xy,ret.xy)));
-            return ret * 0.5 + 0.5;
-        }
-
-        vec2 sphereCoords(vec2 _st, float _scale){
-            float maxFactor = sin(1.570796327);
-            vec2 uv = vec2(0.0);
-            vec2 xy = 2.0 * _st.xy - 1.0;
-            float d = length(xy);
-            if (d < (2.0-maxFactor)){
-                d = length(xy * maxFactor);
-                float z = sqrt(1.0 - d * d);
-                float r = atan(d, z) / 3.1415926535 * _scale;
-                float phi = atan(xy.y, xy.x);
-
-                uv.x = r * cos(phi) + 0.5;
-                uv.y = r * sin(phi) + 0.5;
-            } else {
-                uv = _st.xy;
-            }
-            return uv;
-        }
-        #endif
-    `;
+    `
 
     for (let u in uniforms) {
         let uniform = uniforms[u];
-        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";";
+        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";\n";
     }
 
     let block_global = "\n";
