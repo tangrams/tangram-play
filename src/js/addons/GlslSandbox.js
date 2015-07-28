@@ -1,4 +1,4 @@
-import { fetchHTTP, debounce, getPosition } from '../core/common.js';
+import { fetchHTTP, debounce, getPosition, toCSS } from '../core/common.js';
 import { isEmpty } from '../core/codemirror/tools.js';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress, getAddressFromKeys } from '../core/codemirror/yaml-tangram.js';
 
@@ -29,9 +29,8 @@ import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress
 
 // Debounced event after user stop doing something
 var stopAction = debounce(function(cm) {
-    cm.widgets_manager.rebuild();
     if (cm.glsl_sandbox.active) {
-        cm.glsl_sandbox.update_changes(cm.getCursor().line);
+        cm.glsl_sandbox.cursorMove();
     }
 }, 1000);
 
@@ -54,26 +53,28 @@ export default class GlslSandbox {
         this.canvas.className = 'glsl_sandbox';
         this.canvas.setAttribute("width","130");
         this.canvas.setAttribute("height","130");
-        this.canvas.setAttribute("data-fragment","void main() {\ngl_FragColor = vec4(1.0,0.0,1.0,1.0);\n}");
+        this.canvas.setAttribute("data-fragment",'precision mediump float;\nvarying vec2 v_texcoord;void main() {\ngl_FragColor = vec4(v_texcoord.x,v_texcoord.y,1.0,1.0);\n}');
         this.element.appendChild(this.canvas);
 
-        let el = document.createElement('div');
-        el.id = 'tp-a-sandbox-colorpicker';
-        el.style.background = '#FF0000';
-        el.addEventListener('click', function (e) {
-            let picker = new thistle.Picker(el.style.background);
-            let pos = getPosition(el);
+        this.colorPicker = document.createElement('div');
+        // el.className = 'tp-widget tp-widget-colorpicker';
+        this.colorPicker.addEventListener('click', this.onClick.bind(this));
+        this.colorPicker.id = 'tp-a-sandbox-colorpicker';
+        // el.style.background = '#FF0000';
+        // el.addEventListener('click', function (e) {
+        //     let picker = new thistle.Picker(el.style.background);
+        //     let pos = getPosition(el);
             
-            picker.presentModal(pos.x+20,
-                                tangram_play.editor.heightAtLine( tangram_play.editor.glsl_sandbox.line )-16);
+        //     picker.presentModal(pos.x+20,
+        //                         tangram_play.editor.heightAtLine( tangram_play.editor.glsl_sandbox.line )-16);
 
-            picker.on('changed', function() {
-                el.style.background = picker.getCSS();
-                let color = picker.getRGB();
-                tangram_play.editor.tangram_play.addons.glsl_sandbox.setColor([color.r,color.g,color.b]);
-            });
-        });
-        this.element.appendChild(el);
+        //     picker.on('changed', function() {
+        //         el.style.background = picker.getCSS();
+        //         let color = picker.getRGB();
+        //         tangram_play.editor.tangram_play.addons.glsl_sandbox.setColor([color.r,color.g,color.b]);
+        //     });
+        // });
+        this.element.appendChild(this.colorPicker);
 
         // VARIABLES
         this.active = false;
@@ -81,11 +82,18 @@ export default class GlslSandbox {
         this.address = "";
         this.animated = false;
         this.uniforms = {};
-        this.uniforms.u_color = [1,0,0];
+
+        // Tangram uniforms
+        this.uniforms.u_color = [0,1,0,1];
+        this.uniforms.u_device_pixel_ratio = window.devicePixelRatio;
+        this.uniforms.u_meters_per_pixel = 1;
+        this.uniforms.u_map_position = [0,0,0];
+        this.uniforms.u_tile_origin = [0,0,0];
+        this.uniforms.u_vanishing_point = 1;
 
         // EVENTS
         tangram_play.editor.on("cursorActivity", function(cm) {
-            cm.glsl_sandbox.update();
+            cm.glsl_sandbox.cursorMove();
         });
 
         tangram_play.editor.on("changes", function(cm, changesObj) {
@@ -93,103 +101,68 @@ export default class GlslSandbox {
         });
     }
 
-    setColor(colorArray) {
-        this.uniforms.u_color = colorArray;
-    }
-
-    disable() {
-        if (this.active) {
-            this.element.parentNode.removeChild(this.element);
+    reload(nLine) {
+        if (nLine === undefined) {
+            nLine = this.tangram_play.editor.getCursor().line;
         }
-        this.active = false;
-        this.address = "";
-    }
 
-    update() {
-    	let pos = this.tangram_play.editor.getCursor();
-        if (pos.ch < 16) {
-            if (this.active) {
-                this.disable();
-            }
-        } else if (pos.line !== this.line) {
-    		this.line = pos.line;
-    		this.update_changes(pos.line);
-    	}
-    }
-
-    update_changes(nLine) {
-
-        if (!isEmpty(this.tangram_play.editor,nLine)){
+        if (!isEmpty(this.tangram_play.editor,nLine)) {
             let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys && keys[0]){
+
                 this.address = keys[0].address;
-                let styleObj = getStyleObj(this.tangram_play.scene, this.address);
+                let isNormal = isNormalBlock(this.address);
+                let isColor = isColorBlock(this.address);
 
-                if (styleObj===undefined) {
-                    if (this.active) this.element.parentNode.removeChild(this.element);
-                    this.active = false;
-                    return;
-                }
+                if (isNormal || isColor) {
+                    // Store address and states
+                    this.styleObj = getStyleObj(this.tangram_play.scene, this.address);
 
-                this.animated = styleObj.animated;
+                    if (this.styleObj===undefined || this.styleObj.shaders === undefined) { this.disable(); return; }
 
-                if (isNormalBlock(this.address)){
+                    //  Start sandbox and inject widget
+                    if (this.sandbox === undefined) this.sandbox = new GlslCanvas(this.canvas);
                     this.tangram_play.editor.addWidget({line: nLine, ch: 0}, this.element);
 
-                    if (!this.active) {
-                        this.sandbox = new GlslCanvas(this.canvas);
-                    } 
-
-                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.address) + 
-                                        // this._getBlockUntilLine(this.address, nLine) +
-                                        getAddressSceneContent(this.tangram_play.scene, this.address) +
-                                        "\ngl_FragColor = vec4(normal,1.0);\n}";
-
-                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.address));          
-
-                    if (!this.active) {
-                        this.active = true;
-                        this.render();
-                    }
-                } else if (isColorBlock(this.address)){
-                    this.tangram_play.editor.addWidget( {line: nLine, ch: 0} , this.element);
-
-                    if (!this.active) {
-                        this.sandbox = new GlslCanvas(this.canvas);
-                    } 
-
-                    let block_normal = "\n"
-                    if (styleObj.shaders.blocks.normal) {
-                        for (let i = 0; i < styleObj.shaders.blocks.normal.length; i++){
-                            block_normal += styleObj.shaders.blocks.normal[i] + "\n";
-                        }
-                    }
-
-                    let fragmentCode =  getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.address) + 
-                                        block_normal + 
-                                        // this._getBlockUntilLine(this.address, line) +
-                                        getAddressSceneContent(this.tangram_play.scene, this.address) +
-                                        "\ngl_FragColor = color;\n}";
-
-                    this.sandbox.load(fragmentCode, getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.address));          
-
-                    if (!this.active) {
-                        this.active = true;
-                        this.render();
-                    }
-                } else {
-                    this.disable();
-                }
-
-                if (this.active) {
-                    if (styleObj.material) {
-                        for (let el in styleObj.material) {
-                            if (!Array.isArray(styleObj.material[el]) && styleObj.material[el].texture ){
-                                this.sandbox.setUniform("u_material_"+el+"_texture", styleObj.material[el].texture);
-                                this.sandbox.setUniform("u_material."+el+"Scale",styleObj.material[el].scale);
+                    // Load block data
+                    if (this.styleObj.material) {   // Materials
+                        for (let el in this.styleObj.material) {
+                            if (!Array.isArray(this.styleObj.material[el]) && this.styleObj.material[el].texture ){
+                                this.uniforms["u_material_"+el+"_texture"] = this.styleObj.material[el].texture;
+                                this.uniforms["u_material."+el+"Scale"] = this.styleObj.material[el].scale;
                             }
                         }
                     }
+
+                    //  Update data
+                    this.update();
+
+                    // Common HEADER
+                    this.vertexCode = getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
+                    this.fragmentCode = getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
+
+                    if (isNormal) {
+                        // NORMAL CORE & ENDING
+                        this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
+                                        "\ngl_FragColor = vec4(normal,1.0);\n}";        
+                    } else if (isColor) {
+                        // COLOR CORE & ENDING
+                        this.fragmentCode += "\n";
+                        if ( this.styleObj.shaders.blocks && this.styleObj.shaders.blocks.normal) {
+                            for (let i = 0; i < this.styleObj.shaders.blocks.normal.length; i++){
+                                this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + "\n";
+                            }
+                        }
+                        this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
+                                        "\ngl_FragColor = color;\n}";   
+                    }
+
+                    // Load load composed shader code
+                    this.sandbox.load(this.fragmentCode, this.vertexCode);          
+
+                    this.start();
+                } else {
+                    this.disable();
                 }
             }
         } else {
@@ -197,25 +170,117 @@ export default class GlslSandbox {
         }
     }
 
+    start() {
+        if (!this.active) {
+            this.active = true;
+            this.render();
+        }
+    }
+
+    stop() {
+        this.active = false;
+    }
+
+    disable() {
+        if (this.active) {
+            this.element.parentNode.removeChild(this.element);
+        }
+        this.stop();
+        this.address = "";
+    }
+
+    update() {
+        // Update uniforms
+        this.uniforms.u_device_pixel_ratio = window.devicePixelRatio;
+        this.uniforms.u_meters_per_pixel = this.tangram_play.scene.meters_per_pixel;
+        this.uniforms.u_map_position = [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom];
+        this.uniforms.u_tile_origin = [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z];
+        this.uniforms.u_vanishing_point = this.tangram_play.scene.camera.vanishing_point;
+
+        this.sandbox.setUniforms(this.uniforms);
+    }
+
     render() {
     	if (this.active) { // && this.animated) {
-
-            let styleObj = getStyleObj(this.tangram_play.scene, this.address);
-
-            // Tangram uniforms
-            this.sandbox.setUniform("u_meters_per_pixel",[this.tangram_play.scene.meters_per_pixel]);
-            this.sandbox.setUniform("u_device_pixel_ratio",window.devicePixelRatio);
-            this.sandbox.uniform("1f","float","u_map_position", [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom]);
-            this.sandbox.setUniform("u_tile_origin", [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z]);
-            this.sandbox.setUniform("u_vanishing_point", this.tangram_play.scene.camera.vanishing_point);
-
-            this.sandbox.setUniforms(this.uniforms);
-
+            this.update();
 			this.sandbox.render();
 			requestAnimationFrame(function(){
 				tangramPlay.editor.glsl_sandbox.render();
 			}, 1000 / 30);
     	}
+    }
+
+    /**
+     *  Handles when user clicks on the in-line color indicator widget
+     */
+    onClick (event) {
+        let pos = getPosition(this.colorPicker);
+        pos.x += 20;
+        pos.y = this.tangram_play.editor.heightAtLine( this.line )-16;
+
+        this.picker = new ColorPickerModal("["+this.uniforms.u_color.toString()+"]");
+        // // let pos = this.colorPicker.getBoundingClientRect();
+
+        // // Thistle modal size
+        // const modalWidth = 260;
+        // const modalHeight = 270;
+
+        // // Desired buffer from edge of window
+        // const modalBuffer = 20;
+
+        // // Set x, y pos depending on widget position. Do not allow the modal
+        // // to disappear off the edge of the window.
+        // let modalXPos = (pos.right + modalWidth < window.innerWidth) ? pos.right : (window.innerWidth - modalBuffer - modalWidth);
+        // let modalYPos = (pos.bottom + modalHeight < window.innerHeight) ? pos.bottom : (window.innerHeight - modalBuffer - modalHeight);
+
+        // this.picker.presentModal(modalXPos + 3, modalYPos + 3);
+
+        this.picker.presentModal(pos.x,pos.y);
+
+        // Note: this fires change events as a live preview of the color.
+        // TODO: Store original value so we can go back to it if the
+        // interaction is canceled.
+        this.picker.on('changed', this.onPickerChange.bind(this));
+    }
+
+    /**
+     *  Handles when user selects a new color on the colorpicker
+     */
+    onPickerChange (event) {
+        let color = this.picker.getCSS();
+        this.setColor( [color.r,color.g,color.b,1] );
+    }
+
+    setColor(colorArray) {
+        if (typeof colorArray === "number") {
+            this.uniforms.u_color = [colorArray,colorArray,colorArray,1];
+        } else if (colorArray.length === 1){
+             this.uniforms.u_color = [colorArray[0],colorArray[0],colorArray[0],1];
+        } else if (colorArray.length === 3){
+             this.uniforms.u_color = [colorArray[0],colorArray[1],colorArray[2],1];
+        } else if (colorArray.length === 4){
+             this.uniforms.u_color = colorArray;
+        }
+        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[1]*255)+","+
+                                Math.round(this.uniforms.u_color[2]*255)+","+
+                                Math.round(this.uniforms.u_color[3]*255)+")";
+        this.colorPicker.style.backgroundColor = rgbString;
+    }
+
+    cursorMove() {
+        let pos = this.tangram_play.editor.getCursor();
+
+        let edge = this.tangram_play.editor.charCoords({line:pos.line, ch:20}).left;
+        let left = this.tangram_play.editor.charCoords(pos).left;
+
+        if (pos.ch < 20 || left < edge) {
+            if (this.active) {
+                this.disable();
+            }
+        } else if (pos.line !== this.line || !this.active) {
+            this.line = pos.line;
+            this.reload(pos.line);
+        }
     }
 }
 
@@ -233,37 +298,37 @@ function getNumberOfOpenParentesis(str) {
 
 function getStyleObj(sc, address) {
     let keys = getKeysFromAddress(address);
-    if (keys.length===0) {
+    if (keys === undefined || keys.length === 0) {
         console.log("Error: no Style on: ", address );
         return {};
     }
     return sc.styles[keys[1]];
 }
 
-function getVertex(scene, uniforms, address) {
+function getVertex(scene, uniforms, styleObj) {
     let block_uniforms = `
-    #ifdef GL_ES
-    precision mediump float;
-    #endif
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-    vec3 u_eye = vec3(1.0);
+vec3 u_eye = vec3(1.0);
 
-    attribute vec3 a_position;
-    attribute vec2 a_texcoord;
+attribute vec3 a_position;
+// attribute vec2 a_texcoord;
 
-    varying vec2 v_texcoord;
-    varying vec3 v_world_position;
+varying vec4 v_position;
+varying vec3 v_normal;
+varying vec4 v_color;
+varying vec4 v_world_position;
 
-    `
+#ifdef TANGRAM_TEXTURE_COORDS
+    // varying vec2 v_texcoord;
+#endif
 
+`
     for (let u in uniforms) {
-        let uniform = uniforms[u];
-        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";\n";
+        block_uniforms += "uniform " + uniforms[u].type + " " + uniforms[u].name + ";\n";
     }
-
-    console.log(block_uniforms);
-
-    let styleObj = getStyleObj(scene, address);
 
     let block_global = "\n";
     if (styleObj.shaders.blocks.global) {
@@ -273,13 +338,17 @@ function getVertex(scene, uniforms, address) {
     }
             
     let core = `
-    void main() {
-        vec4 position = vec4(a_position.xy, 0.0, 1.0);
-        v_texcoord = a_texcoord;
-        v_world_position = u_map_position*0.001;
-        v_world_position.xy += (a_texcoord*u_meters_per_pixel);
-        v_world_position.xy *= 100.;
-     `;
+void main() {
+    gl_Position = vec4(a_position.xy, 0.0, 1.0);
+    vec4 position = vec4(a_position.xy, 0.0, 1.0);
+
+    #ifdef TANGRAM_TEXTURE_COORDS
+    v_texcoord = a_position.xy*.5+.5;// a_texcoord.xy;
+    #endif
+
+    v_world_position = vec4(u_map_position*0.001,1.);
+    v_world_position.xy += (position.xy*u_meters_per_pixel)*100.;
+ `;
 
     let block_position = "\n";
     if (styleObj.shaders.blocks.position) {
@@ -289,15 +358,16 @@ function getVertex(scene, uniforms, address) {
     }
 
     let ending = `
-        gl_Position = position;
-    }
-    `;
+    v_position = position;
+    v_normal = vec3(0.,0.,1.);
+    v_color = u_color;
+}
+`;
 
     return block_uniforms + block_global + core + block_position + ending;
 }
 
-function getFramgmentHeader(scene, uniforms, address) {
-    let styleObj = getStyleObj(scene, address);
+function getFramgmentHeader(scene, uniforms, styleObj) {
 
     let defines = "\n";
     for(let name in styleObj.defines){
@@ -314,22 +384,24 @@ function getFramgmentHeader(scene, uniforms, address) {
     }
 
     let block_uniforms = `
-    #ifdef GL_ES
-    precision mediump float;
-    #endif
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-    vec3 u_eye = vec3(1.0);
+vec3 u_eye = vec3(1.0);
 
-    varying vec2 v_texcoord;
-    varying vec3 v_world_position;
+varying vec4 v_position;
+varying vec3 v_normal;
+varying vec4 v_color;
+varying vec4 v_world_position;
 
-    vec3 v_normal = vec3(0.0,0.0,1.0);
+#ifdef TANGRAM_TEXTURE_COORDS
+    // varying vec2 v_texcoord;
+#endif
 
-    `
-
+`
     for (let u in uniforms) {
-        let uniform = uniforms[u];
-        block_uniforms += "uniform " + uniform.type + " " + uniform.name + ";\n";
+        block_uniforms += "uniform " + uniforms[u].type + " " + uniforms[u].name + ";\n";
     }
 
     let block_global = "\n";
@@ -340,33 +412,10 @@ function getFramgmentHeader(scene, uniforms, address) {
     }
 
     let pre = `
-        void main() {
-            #ifdef SPHERE
-            v_normal = sphereNormal(v_texcoord);
-            #endif
-
-            vec3 normal = v_normal;
-
-            #ifdef TANGRAM_MATERIAL_NORMAL_TEXTURE
-                calculateNormal(normal);
-            #endif
-
-            vec2 TEMPLATE_ST = v_texcoord.xy;
-
-            #ifdef SPHERE
-            TEMPLATE_ST = sphereCoords(TEMPLATE_ST,1.0);
-            #endif
-          
-            v_color.rgb = u_color;
-            //v_color.rgb = hsb2rgb(vec3(fract(u_time*0.01),1.,1.));
-
-            #ifdef SPHERE
-            v_color = mix(v_color, vec4(0.), 
-                          step(.25,dot(vec2(0.5)-v_texcoord,vec2(0.5)-v_texcoord)) );
-            #endif
-
-            vec4 color = v_color;
-        `;
+void main() {
+    vec4 color = v_color;
+    vec3 normal = v_normal;            
+`;
 
     return defines + block_uniforms + block_material + block_global + pre;
 }
