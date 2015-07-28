@@ -57,23 +57,8 @@ export default class GlslSandbox {
         this.element.appendChild(this.canvas);
 
         this.colorPicker = document.createElement('div');
-        // el.className = 'tp-widget tp-widget-colorpicker';
         this.colorPicker.addEventListener('click', this.onClick.bind(this));
         this.colorPicker.id = 'tp-a-sandbox-colorpicker';
-        // el.style.background = '#FF0000';
-        // el.addEventListener('click', function (e) {
-        //     let picker = new thistle.Picker(el.style.background);
-        //     let pos = getPosition(el);
-            
-        //     picker.presentModal(pos.x+20,
-        //                         tangram_play.editor.heightAtLine( tangram_play.editor.glsl_sandbox.line )-16);
-
-        //     picker.on('changed', function() {
-        //         el.style.background = picker.getCSS();
-        //         let color = picker.getRGB();
-        //         tangram_play.editor.tangram_play.addons.glsl_sandbox.setColor([color.r,color.g,color.b]);
-        //     });
-        // });
         this.element.appendChild(this.colorPicker);
 
         // VARIABLES
@@ -84,7 +69,8 @@ export default class GlslSandbox {
         this.uniforms = {};
 
         // Tangram uniforms
-        this.uniforms.u_color = [0,1,0,1];
+        this.color = "rgb(0,255,0)"
+        this.setColor( [0,1,0,1] );
         this.uniforms.u_device_pixel_ratio = window.devicePixelRatio;
         this.uniforms.u_meters_per_pixel = 1;
         this.uniforms.u_map_position = [0,0,0];
@@ -214,32 +200,13 @@ export default class GlslSandbox {
      *  Handles when user clicks on the in-line color indicator widget
      */
     onClick (event) {
-        let pos = getPosition(this.colorPicker);
+        let pos = getPosition(this.color);
         pos.x += 20;
         pos.y = this.tangram_play.editor.heightAtLine( this.line )-16;
 
-        this.picker = new ColorPickerModal("["+this.uniforms.u_color.toString()+"]");
-        // // let pos = this.colorPicker.getBoundingClientRect();
-
-        // // Thistle modal size
-        // const modalWidth = 260;
-        // const modalHeight = 270;
-
-        // // Desired buffer from edge of window
-        // const modalBuffer = 20;
-
-        // // Set x, y pos depending on widget position. Do not allow the modal
-        // // to disappear off the edge of the window.
-        // let modalXPos = (pos.right + modalWidth < window.innerWidth) ? pos.right : (window.innerWidth - modalBuffer - modalWidth);
-        // let modalYPos = (pos.bottom + modalHeight < window.innerHeight) ? pos.bottom : (window.innerHeight - modalBuffer - modalHeight);
-
-        // this.picker.presentModal(modalXPos + 3, modalYPos + 3);
+        this.picker = new ColorPickerModal(this.uniforms.u_color);
 
         this.picker.presentModal(pos.x,pos.y);
-
-        // Note: this fires change events as a live preview of the color.
-        // TODO: Store original value so we can go back to it if the
-        // interaction is canceled.
         this.picker.on('changed', this.onPickerChange.bind(this));
     }
 
@@ -247,7 +214,15 @@ export default class GlslSandbox {
      *  Handles when user selects a new color on the colorpicker
      */
     onPickerChange (event) {
-        let color = this.picker.getCSS();
+        // console.log(this.picker);
+        // console.log(this.picker.color);
+        // let match = this.picker.color.match(/\[\s*(\d|\d*\.?\d+)\s*,\s*(\d|\d*\.?\d+)\s*,\s*(\d|\d*\.?\d+)\s*,\s*(\d|\d*\.?\d+)\s*\]/);
+        // console.log(match);
+
+        // this.setColor( [match[1],match[2],match[3],1] );
+
+        let color = this.picker.getRGB();
+        console.log(color);
         this.setColor( [color.r,color.g,color.b,1] );
     }
 
@@ -265,6 +240,8 @@ export default class GlslSandbox {
                                 Math.round(this.uniforms.u_color[2]*255)+","+
                                 Math.round(this.uniforms.u_color[3]*255)+")";
         this.colorPicker.style.backgroundColor = rgbString;
+        console.log("SetColor ", rgbString);
+        this.color = rgbString;
     }
 
     cursorMove() {
