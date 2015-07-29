@@ -29,11 +29,11 @@ export default class WidgetsManager {
         // Suggestions are trigged by the folowing CM events
 
         //  When there is a change
-        tangram_play.editor.on('update', (cm, changesObj) => {
-            this.update();
-        });
+        // tangram_play.editor.on('update', (cm, changesObj) => {
+        //     this.update();
+        // });
 
-        tangram_play.editor.on('change', (cm, changesObj) => {
+        tangram_play.editor.on('changes', (cm, changesObj) => {
             this.fresh = false;
             this.update();
             this.stopAction();
