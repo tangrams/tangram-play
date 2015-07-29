@@ -207,6 +207,22 @@ export default class GlslSandbox {
     	}
     }
 
+    setColor(colorArray) {
+        if (typeof colorArray === "number") {
+            this.uniforms.u_color = [colorArray,colorArray,colorArray,1];
+        } else if (colorArray.length === 1){
+             this.uniforms.u_color = [colorArray[0],colorArray[0],colorArray[0],1];
+        } else if (colorArray.length === 3){
+             this.uniforms.u_color = [colorArray[0],colorArray[1],colorArray[2],1];
+        } else if (colorArray.length === 4){
+             this.uniforms.u_color = colorArray;
+        }
+        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[0]*255)+","+
+                                Math.round(this.uniforms.u_color[1]*255)+","+
+                                Math.round(this.uniforms.u_color[2]*255)+")";
+        this.colorPicker.style.backgroundColor = rgbString;
+    }
+
     /**
      *  Handles when user clicks on the in-line color indicator widget
      */
@@ -227,22 +243,6 @@ export default class GlslSandbox {
     onColorChange (event) {
         let color = this.picker.getRGB();
         this.setColor( [color.r,color.g,color.b,1] );
-    }
-
-    setColor(colorArray) {
-        if (typeof colorArray === "number") {
-            this.uniforms.u_color = [colorArray,colorArray,colorArray,1];
-        } else if (colorArray.length === 1){
-             this.uniforms.u_color = [colorArray[0],colorArray[0],colorArray[0],1];
-        } else if (colorArray.length === 3){
-             this.uniforms.u_color = [colorArray[0],colorArray[1],colorArray[2],1];
-        } else if (colorArray.length === 4){
-             this.uniforms.u_color = colorArray;
-        }
-        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[0]*255)+","+
-                                Math.round(this.uniforms.u_color[1]*255)+","+
-                                Math.round(this.uniforms.u_color[2]*255)+")";
-        this.colorPicker.style.backgroundColor = rgbString;
     }
 
     onCursorMove() {

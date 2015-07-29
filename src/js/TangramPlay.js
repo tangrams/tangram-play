@@ -11,7 +11,7 @@ import GlslSandbox from './addons/GlslSandbox.js';
 
 // Import Utils
 import { fetchHTTP, debounce } from './core/common.js';
-import { selectLines, unfoldAll, foldByLevel } from './core/codemirror/tools.js';
+import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from './core/codemirror/tools.js';
 import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codemirror/yaml-tangram.js';
 
 export default class TangramPlay {
@@ -98,6 +98,9 @@ export default class TangramPlay {
     }
 
     getKeysOnLine(nLine) {
+        if ( isStrEmpty(this.editor.getLine(nLine)) ){
+            return [];
+        }
         return getKeyPairs(this.editor, nLine);
     }
 
@@ -110,6 +113,23 @@ export default class TangramPlay {
                 return keys[index];
             }
         }
+    }
+
+    getKeyForKey(key) {
+        return this.getKey(key.pos.line,key.index);
+    }
+
+    getKey(nLine, nIndex) {
+        if (nIndex === undefined) {
+            return getKeysOnLine(nLine);
+        }
+
+        let keys = this.getKeysOnLine(nLine);
+        if (keys && nIndex < keys.length ){
+            return keys[nIndex];
+        }
+
+        return [];
     }
 
     getKeyForAddress(address) {

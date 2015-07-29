@@ -74,6 +74,7 @@ export default class Widget {
     setEditorValue (string) {
         // Send the value to editor
         // TODO: Something that doesn't rely on global
+        this.key = window.tangramPlay.getKeyForKey(this.key);
         window.tangramPlay.setValue(this.key, string);
 
         // Change the value attached to this widget instance

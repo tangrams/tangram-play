@@ -29,7 +29,7 @@ export default class WidgetsManager {
         // Suggestions are trigged by the folowing CM events
 
         //  When there is a change
-        tangram_play.editor.on('changes', (cm, changesObj) => {
+        tangram_play.editor.on('update', (cm, changesObj) => {
             this.fresh = false;
             this.update();
             this.stopAction();
@@ -45,12 +45,6 @@ export default class WidgetsManager {
             this.fresh = false;
             this.rebuild();
         });
-
-        // tangram_play.editor.on('update', function(cm) {
-        //     cm.widgets_manager.fresh = false;
-        //     cm.widgets_manager.update();
-        //     stopAction(cm);
-        // });
 
         // Build all widgets
         this.build();
