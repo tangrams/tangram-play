@@ -172,17 +172,18 @@ export default class GlslSandbox {
         }
     }
 
-    stop() {
-        this.active = false;
-        this.change = true;
-    }
-
     disable() {
         if (this.active) {
             this.element.parentNode.removeChild(this.element);
         }
         this.stop();
-        this.address = "";
+        // this.address = "";
+        // this.uniforms = {};
+    }
+
+    stop() {
+        this.active = false;
+        this.change = true;
     }
 
     update() {
