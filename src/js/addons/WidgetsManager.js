@@ -30,6 +30,10 @@ export default class WidgetsManager {
 
         //  When there is a change
         tangram_play.editor.on('update', (cm, changesObj) => {
+            this.update();
+        });
+
+        tangram_play.editor.on('change', (cm, changesObj) => {
             this.fresh = false;
             this.update();
             this.stopAction();
