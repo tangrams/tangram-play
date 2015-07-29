@@ -29,8 +29,9 @@ import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress
 
 // Debounced event after user stop doing something
 var stopAction = debounce(function(cm) {
+    cm.glsl_sandbox.change = true;
     if (cm.glsl_sandbox.active) {
-        cm.glsl_sandbox.cursorMove();
+        cm.glsl_sandbox.reload();
     }
 }, 1000);
 
@@ -57,7 +58,7 @@ export default class GlslSandbox {
         this.element.appendChild(this.canvas);
 
         this.colorPicker = document.createElement('div');
-        this.colorPicker.addEventListener('click', this.onClick.bind(this));
+        this.colorPicker.addEventListener('click', this.onColorClick.bind(this));
         this.colorPicker.id = 'tp-a-sandbox-colorpicker';
         this.element.appendChild(this.colorPicker);
 
@@ -66,10 +67,10 @@ export default class GlslSandbox {
         this.line = -1;
         this.address = "";
         this.animated = false;
+        this.change = true;
         this.uniforms = {};
 
         // Tangram uniforms
-        this.color = "rgb(0,255,0)"
         this.setColor( [0,1,0,1] );
         this.uniforms.u_device_pixel_ratio = window.devicePixelRatio;
         this.uniforms.u_meters_per_pixel = 1;
@@ -79,7 +80,7 @@ export default class GlslSandbox {
 
         // EVENTS
         tangram_play.editor.on("cursorActivity", function(cm) {
-            cm.glsl_sandbox.cursorMove();
+            cm.glsl_sandbox.onCursorMove();
         });
 
         tangram_play.editor.on("changes", function(cm, changesObj) {
@@ -92,7 +93,7 @@ export default class GlslSandbox {
             nLine = this.tangram_play.editor.getCursor().line;
         }
 
-        if (!isEmpty(this.tangram_play.editor,nLine)) {
+        if (!isEmpty(this.tangram_play.editor,nLine) && this.change) {
             let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys && keys[0]){
 
@@ -123,28 +124,31 @@ export default class GlslSandbox {
                     //  Update data
                     this.update();
 
-                    // Common HEADER
-                    this.vertexCode = getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
-                    this.fragmentCode = getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
+                    if (this.change) {
+                        // Common HEADER
+                        this.vertexCode = getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
+                        this.fragmentCode = getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
 
-                    if (isNormal) {
-                        // NORMAL CORE & ENDING
-                        this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
-                                        "\ngl_FragColor = vec4(normal,1.0);\n}";        
-                    } else if (isColor) {
-                        // COLOR CORE & ENDING
-                        this.fragmentCode += "\n";
-                        if ( this.styleObj.shaders.blocks && this.styleObj.shaders.blocks.normal) {
-                            for (let i = 0; i < this.styleObj.shaders.blocks.normal.length; i++){
-                                this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + "\n";
+                        if (isNormal) {
+                            // NORMAL CORE & ENDING
+                            this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
+                                            "\ngl_FragColor = vec4(normal,1.0);\n}";        
+                        } else if (isColor) {
+                            // COLOR CORE & ENDING
+                            this.fragmentCode += "\n";
+                            if ( this.styleObj.shaders.blocks && this.styleObj.shaders.blocks.normal) {
+                                for (let i = 0; i < this.styleObj.shaders.blocks.normal.length; i++){
+                                    this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + "\n";
+                                }
                             }
+                            this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
+                                            "\ngl_FragColor = color;\n}";   
                         }
-                        this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
-                                        "\ngl_FragColor = color;\n}";   
-                    }
 
-                    // Load load composed shader code
-                    this.sandbox.load(this.fragmentCode, this.vertexCode);          
+                        // Load load composed shader code
+                        this.sandbox.load(this.fragmentCode, this.vertexCode);
+                        this.change = false;
+                    }
 
                     this.start();
                 } else {
@@ -158,13 +162,19 @@ export default class GlslSandbox {
 
     start() {
         if (!this.active) {
+            let red = this.uniforms.u_color[0];
+            let green = this.uniforms.u_color[1];
+            let blue = this.uniforms.u_color[2];
+            this.setColor([1,0,0,1]);
             this.active = true;
-            this.render();
+            this.render(true);
+            this.setColor([red,green,blue,1]);
         }
     }
 
     stop() {
         this.active = false;
+        this.change = true;
     }
 
     disable() {
@@ -189,7 +199,7 @@ export default class GlslSandbox {
     render() {
     	if (this.active) { // && this.animated) {
             this.update();
-			this.sandbox.render();
+			this.sandbox.render(true);
 			requestAnimationFrame(function(){
 				tangramPlay.editor.glsl_sandbox.render();
 			}, 1000 / 30);
@@ -199,30 +209,22 @@ export default class GlslSandbox {
     /**
      *  Handles when user clicks on the in-line color indicator widget
      */
-    onClick (event) {
-        let pos = getPosition(this.color);
-        pos.x += 20;
-        pos.y = this.tangram_play.editor.heightAtLine( this.line )-16;
+    onColorClick (event) {
+        let pos = getPosition(this.colorPicker);
+        pos.x += 30;
+        pos.y = this.tangram_play.editor.heightAtLine( this.line )-15;
 
-        this.picker = new ColorPickerModal(this.uniforms.u_color);
+        this.picker = new ColorPickerModal(this.colorPicker.style.backgroundColor);
 
         this.picker.presentModal(pos.x,pos.y);
-        this.picker.on('changed', this.onPickerChange.bind(this));
+        this.picker.on('changed', this.onColorChange.bind(this));
     }
 
     /**
      *  Handles when user selects a new color on the colorpicker
      */
-    onPickerChange (event) {
-        // console.log(this.picker);
-        // console.log(this.picker.color);
-        // let match = this.picker.color.match(/\[\s*(\d|\d*\.?\d+)\s*,\s*(\d|\d*\.?\d+)\s*,\s*(\d|\d*\.?\d+)\s*,\s*(\d|\d*\.?\d+)\s*\]/);
-        // console.log(match);
-
-        // this.setColor( [match[1],match[2],match[3],1] );
-
+    onColorChange (event) {
         let color = this.picker.getRGB();
-        console.log(color);
         this.setColor( [color.r,color.g,color.b,1] );
     }
 
@@ -236,15 +238,13 @@ export default class GlslSandbox {
         } else if (colorArray.length === 4){
              this.uniforms.u_color = colorArray;
         }
-        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[1]*255)+","+
-                                Math.round(this.uniforms.u_color[2]*255)+","+
-                                Math.round(this.uniforms.u_color[3]*255)+")";
+        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[0]*255)+","+
+                                Math.round(this.uniforms.u_color[1]*255)+","+
+                                Math.round(this.uniforms.u_color[2]*255)+")";
         this.colorPicker.style.backgroundColor = rgbString;
-        console.log("SetColor ", rgbString);
-        this.color = rgbString;
     }
 
-    cursorMove() {
+    onCursorMove() {
         let pos = this.tangram_play.editor.getCursor();
 
         let edge = this.tangram_play.editor.charCoords({line:pos.line, ch:20}).left;
@@ -291,7 +291,7 @@ precision mediump float;
 vec3 u_eye = vec3(1.0);
 
 attribute vec3 a_position;
-// attribute vec2 a_texcoord;
+attribute vec2 a_texcoord;
 
 varying vec4 v_position;
 varying vec3 v_normal;
@@ -299,7 +299,7 @@ varying vec4 v_color;
 varying vec4 v_world_position;
 
 #ifdef TANGRAM_TEXTURE_COORDS
-    // varying vec2 v_texcoord;
+    varying vec2 v_texcoord;
 #endif
 
 `
@@ -316,8 +316,7 @@ varying vec4 v_world_position;
             
     let core = `
 void main() {
-    gl_Position = vec4(a_position.xy, 0.0, 1.0);
-    vec4 position = vec4(a_position.xy, 0.0, 1.0);
+    vec4 position = vec4((a_position.xy*2.0)-1., 0.0, 1.0);
 
     #ifdef TANGRAM_TEXTURE_COORDS
     v_texcoord = a_position.xy*.5+.5;// a_texcoord.xy;
@@ -336,6 +335,7 @@ void main() {
 
     let ending = `
     v_position = position;
+    gl_Position = position;
     v_normal = vec3(0.,0.,1.);
     v_color = u_color;
 }
@@ -373,7 +373,7 @@ varying vec4 v_color;
 varying vec4 v_world_position;
 
 #ifdef TANGRAM_TEXTURE_COORDS
-    // varying vec2 v_texcoord;
+    varying vec2 v_texcoord;
 #endif
 
 `
