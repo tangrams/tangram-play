@@ -43,7 +43,7 @@ export default class GlslSandbox {
 
         // Constant OBJ
         this.tangram_play = tangram_play;
-        this.sandbox = undefined;
+        this.shader = undefined;
         this.element = document.createElement('div');
         this.element.id = 'tp-a-sandbox';
         this.element.setAttribute("width","130");
@@ -93,7 +93,7 @@ export default class GlslSandbox {
             nLine = this.tangram_play.editor.getCursor().line;
         }
 
-        if (!isEmpty(this.tangram_play.editor,nLine) && this.change) {
+        if (!isEmpty(this.tangram_play.editor,nLine)) {
             let keys = this.tangram_play.getKeysOnLine(nLine);
             if (keys && keys[0]){
 
@@ -105,29 +105,40 @@ export default class GlslSandbox {
                     // Store address and states
                     this.styleObj = getStyleObj(this.tangram_play.scene, this.address);
 
-                    if (this.styleObj===undefined || this.styleObj.shaders === undefined) { this.disable(); return; }
+                    if (this.styleObj === undefined || this.styleObj === null || 
+                        this.styleObj.shaders === undefined || this.styleObj.shaders === null ) { 
+                        this.disable(); return; 
+                    }
 
                     //  Start sandbox and inject widget
-                    if (this.sandbox === undefined) this.sandbox = new GlslCanvas(this.canvas);
+                    if (this.shader === undefined) {
+                        this.shader = new GlslCanvas(this.canvas);
+                    }
                     this.tangram_play.editor.addWidget({line: nLine, ch: 0}, this.element);
 
-                    // Load block data
-                    if (this.styleObj.material) {   // Materials
-                        for (let el in this.styleObj.material) {
-                            if (!Array.isArray(this.styleObj.material[el]) && this.styleObj.material[el].texture ){
-                                this.uniforms["u_material_"+el+"_texture"] = this.styleObj.material[el].texture;
-                                this.uniforms["u_material."+el+"Scale"] = this.styleObj.material[el].scale;
-                            }
+                    if (this.styleObj.shaders.uniforms) {
+                        for (let name in this.styleObj.shaders.uniforms) {
+                            this.uniforms[name] = this.styleObj.shaders.uniforms[name];
                         }
-                    }
+                    } 
+
+                    // Load block data
+                    // if (this.styleObj.material) {   // Materials
+                    //     for (let el in this.styleObj.material) {
+                    //         if (!Array.isArray(this.styleObj.material[el]) && this.styleObj.material[el].texture ){
+                    //             this.uniforms["u_material_"+el+"_texture"] = this.styleObj.material[el].texture;
+                    //             this.uniforms["u_material."+el+"Scale"] = this.styleObj.material[el].scale;
+                    //         }
+                    //     }
+                    // }
 
                     //  Update data
                     this.update();
 
                     if (this.change) {
                         // Common HEADER
-                        this.vertexCode = getVertex(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
-                        this.fragmentCode = getFramgmentHeader(this.tangram_play.scene, this.sandbox.uniforms, this.styleObj);
+                        this.vertexCode = getVertex(this.tangram_play.scene, this.shader.uniforms, this.styleObj);
+                        this.fragmentCode = getFramgmentHeader(this.tangram_play.scene, this.shader.uniforms, this.styleObj);
 
                         if (isNormal) {
                             // NORMAL CORE & ENDING
@@ -146,7 +157,11 @@ export default class GlslSandbox {
                         }
 
                         // Load load composed shader code
-                        this.sandbox.load(this.fragmentCode, this.vertexCode);
+                        this.shader.load(this.fragmentCode, this.vertexCode);
+
+                        this.shader.refreshUniforms();
+                        this.update();
+
                         this.change = false;
                     }
 
@@ -162,13 +177,11 @@ export default class GlslSandbox {
 
     start() {
         if (!this.active) {
-            let red = this.uniforms.u_color[0];
-            let green = this.uniforms.u_color[1];
-            let blue = this.uniforms.u_color[2];
-            this.setColor([1,0,0,1]);
+            if (this.shader) {
+                this.shader.refreshUniforms();
+            } 
             this.active = true;
-            this.render(true);
-            this.setColor([red,green,blue,1]);
+            this.render();
         }
     }
 
@@ -177,8 +190,7 @@ export default class GlslSandbox {
             this.element.parentNode.removeChild(this.element);
         }
         this.stop();
-        // this.address = "";
-        // this.uniforms = {};
+        this.address = "";
     }
 
     stop() {
@@ -194,13 +206,13 @@ export default class GlslSandbox {
         this.uniforms.u_tile_origin = [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z];
         this.uniforms.u_vanishing_point = this.tangram_play.scene.camera.vanishing_point;
 
-        this.sandbox.setUniforms(this.uniforms);
+        this.shader.setUniforms(this.uniforms);
     }
 
     render() {
     	if (this.active) { // && this.animated) {
             this.update();
-			this.sandbox.render(true);
+			this.shader.render(true);
 			requestAnimationFrame(function(){
 				tangramPlay.editor.glsl_sandbox.render();
 			}, 1000 / 30);
@@ -276,9 +288,9 @@ function getNumberOfOpenParentesis(str) {
 
 function getStyleObj(sc, address) {
     let keys = getKeysFromAddress(address);
-    if (keys === undefined || keys.length === 0) {
-        console.log("Error: no Style on: ", address );
-        return {};
+    if (keys === undefined || keys.length === 0 || sc.styles === undefined || sc.styles === null ||sc.styles[keys[1]] === undefined) {
+        console.log("Error: No style for ", address );
+        return undefined;
     }
     return sc.styles[keys[1]];
 }
@@ -320,11 +332,9 @@ void main() {
     vec4 position = vec4((a_position.xy*2.0)-1., 0.0, 1.0);
 
     #ifdef TANGRAM_TEXTURE_COORDS
-    v_texcoord = a_position.xy*.5+.5;// a_texcoord.xy;
+    v_texcoord = a_texcoord;//a_position.xy*.5+.5;
     #endif
-
-    v_world_position = vec4(u_map_position*0.001,1.);
-    v_world_position.xy += (position.xy*u_meters_per_pixel)*100.;
+    v_world_position = vec4(vec3(u_map_position.xy*0.01+(position.xy*u_meters_per_pixel)*50.,u_map_position.z),1.);
  `;
 
     let block_position = "\n";
