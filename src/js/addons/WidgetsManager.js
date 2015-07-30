@@ -29,9 +29,9 @@ export default class WidgetsManager {
         // Suggestions are trigged by the folowing CM events
 
         //  When there is a change
-        // tangram_play.editor.on('update', (cm, changesObj) => {
-        //     this.update();
-        // });
+        tangram_play.editor.on('update', (cm, changesObj) => {
+            this.update();
+        });
 
         tangram_play.editor.on('changes', (cm, changesObj) => {
             this.fresh = false;
@@ -109,7 +109,7 @@ export default class WidgetsManager {
 
             if (this.tangram_play.editor.getLineHandle(line) && this.tangram_play.editor.getLineHandle(line).height) {
                 if (index < keys.length) {
-                    let pos = getValueRange(widget.key).to;
+                    let pos = getValueRange(keys[index]).to;
                     this.tangram_play.editor.addWidget(pos, widget.el);
                 } else {
                     this.rebuildLine(line);
