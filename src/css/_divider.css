@@ -1,9 +1,9 @@
 /* DRAGGABLE LINE */
 
 .tp-divider {
-    position: fixed;
+    position: absolute;
     left: 0;
-    bottom: 0;
+    top: 0;
     width: 9px;
     height: 100%;
     vertical-align: top;
