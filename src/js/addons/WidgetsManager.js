@@ -6,6 +6,11 @@ import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 // Load addons modules
 import WidgetType from './widgets/WidgetType.js';
 
+var stopAction = debounce(function(wm) {
+    wm.rebuild();
+    console.log("stopAction -> rebuild (old debounced)");
+}, 1000);
+
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
 
@@ -14,7 +19,7 @@ export default class WidgetsManager {
 
         // Local variables
         this.tangram_play = tangram_play;
-        this.fresh = true;  // widget - key sync
+        this.fresh = false;  // widget - key sync
         this.data = [];     // tokens to check
         this.active = [];   // active widgets
 
@@ -26,13 +31,16 @@ export default class WidgetsManager {
             this.data.push(new WidgetType(datum));
         }
 
+        // Build all widgets
+        this.build();
+
         // Suggestions are trigged by the folowing CM events
 
         //  When there is a change
-        tangram_play.editor.on('update', (cm, changesObj) => {
-            if (window.watch) window.watch.printElapsed("Editor: UPDATE");
-            this.update();
-        });
+        // tangram_play.editor.on('update', (cm, changesObj) => {
+        //     if (window.watch) window.watch.printElapsed("Editor: UPDATE");
+        //     this.update();
+        // });
 
         tangram_play.editor.on('changes', (cm, changesObj) => {
             if (window.watch) window.watch.printElapsed("Editor: CHANGE");
@@ -42,11 +50,11 @@ export default class WidgetsManager {
         });
 
         // When the viewport change (lines are add or erased)
-        tangram_play.editor.on('viewportChange', (cm, from, to) => {
-            if (window.watch) window.watch.printElapsed("Editor: VIEWPORT_CHANGE");
-            this.fresh = false;
-            this.rebuild();
-        });
+        // tangram_play.editor.on('viewportChange', (cm, from, to) => {
+        //     if (window.watch) window.watch.printElapsed("Editor: VIEWPORT_CHANGE");
+        //     this.fresh = false;
+        //     this.rebuild();
+        // });
 
         tangram_play.editor.on('unfold', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
@@ -54,8 +62,7 @@ export default class WidgetsManager {
             this.rebuild();
         });
 
-        // Build all widgets
-        this.build();
+        
     }
 
     build() {
@@ -158,8 +165,12 @@ export default class WidgetsManager {
 
     // Debounced event after user stop doing something
     stopAction () {
+        console.log("stopAction -> DO rebouid");
         debounce(() => {
+            console.log("stopAction -> rebuild (debounced)");
             this.rebuild();
         }, 1000);
+
+        stopAction(this);
     }
 }
