@@ -296,24 +296,30 @@ function getStyleObj(sc, address) {
 }
 
 function getVertex(scene, uniforms, styleObj) {
+    let defines = "#define TANGRAM_VERTEX_SHADER\n";
+
+    for (let name in styleObj.defines) {
+        if (styleObj.defines[name]) {
+            defines += "#define " + name + (styleObj.defines[name] === true ? "\n" : " " + styleObj.defines[name] + "\n");
+        }
+    }
+
     let block_uniforms = `
+
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-vec3 u_eye = vec3(1.0);
+const vec3 u_eye = vec3(1.0);
 
 attribute vec3 a_position;
 attribute vec2 a_texcoord;
 
 varying vec4 v_position;
-varying vec3 v_normal;
 varying vec4 v_color;
 varying vec4 v_world_position;
-
-#ifdef TANGRAM_TEXTURE_COORDS
-    varying vec2 v_texcoord;
-#endif
+varying vec3 v_normal;
+varying vec2 v_texcoord;
 
 `
     for (let u in uniforms) {
@@ -330,10 +336,7 @@ varying vec4 v_world_position;
     let core = `
 void main() {
     vec4 position = vec4((a_position.xy*2.0)-1., 0.0, 1.0);
-
-    #ifdef TANGRAM_TEXTURE_COORDS
-    v_texcoord = a_texcoord;//a_position.xy*.5+.5;
-    #endif
+    v_texcoord = (a_texcoord*2.0)-1.;
     v_world_position = vec4(vec3(u_map_position.xy*0.01+(position.xy*u_meters_per_pixel)*50.,u_map_position.z),1.);
  `;
 
@@ -352,12 +355,13 @@ void main() {
 }
 `;
 
-    return block_uniforms + block_global + core + block_position + ending;
+    return defines + block_uniforms + block_global + core + block_position + ending;
 }
 
 function getFramgmentHeader(scene, uniforms, styleObj) {
 
-    let defines = "\n";
+    let defines = "#define TANGRAM_FRAGMENT_SHADER\n";
+
     for(let name in styleObj.defines){
         if (styleObj.defines[name]) {
             defines += "#define " + name + (styleObj.defines[name] === true ? "\n" : " " + styleObj.defines[name] + "\n");
@@ -372,21 +376,18 @@ function getFramgmentHeader(scene, uniforms, styleObj) {
     }
 
     let block_uniforms = `
+
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-vec3 u_eye = vec3(1.0);
+const vec3 u_eye = vec3(1.0);
 
 varying vec4 v_position;
-varying vec3 v_normal;
 varying vec4 v_color;
 varying vec4 v_world_position;
-
-#ifdef TANGRAM_TEXTURE_COORDS
-    varying vec2 v_texcoord;
-#endif
-
+varying vec3 v_normal;
+varying vec2 v_texcoord;
 `
     for (let u in uniforms) {
         block_uniforms += "uniform " + uniforms[u].type + " " + uniforms[u].name + ";\n";
