@@ -41,6 +41,9 @@ export default class TangramPlay {
         this.options = options;
 
         //  EVENTS
+        // Create Events
+        this.onLoaded = new CustomEvent('loaded');
+
         let tangram_play = this;
         window.addEventListener('resize', function(){
             tangram_play.divider.reflow();
@@ -77,6 +80,9 @@ export default class TangramPlay {
 
     loadFile(str) {
         this.loadContent(fetchHTTP(str));
+
+        // Trigger Events 
+        this.container.dispatchEvent(this.onLoaded);
     }
 
     loadQuery() {

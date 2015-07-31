@@ -6,6 +6,10 @@ import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 // Load addons modules
 import WidgetType from './widgets/WidgetType.js';
 
+var stopAction = debounce(function(wm) {
+    wm.update();
+}, 100);
+
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
 
@@ -15,6 +19,7 @@ export default class WidgetsManager {
         // Local variables
         this.tangram_play = tangram_play;
         this.totalLines = 0;// keep track of lines
+        this.pairedUntil = 0;
         this.forceRebuild = true;  // build widget - key sync
         this.data = [];     // tokens to check
         this.active = [];   // active widgets
@@ -30,23 +35,55 @@ export default class WidgetsManager {
         // Build all widgets
         this.build();
 
+        tangram_play.editor.on('update', (cm, changesObj) => {
+            if (window.watch) window.watch.printElapsed("Editor: UPDATE");
+
+            let to = tangramPlay.editor.getViewport().to;
+            
+            if (this.pairedUntil > this.tangram_play.editor.getDoc().size) {
+                this.pairedUntil = 0;
+                this.forceRebuild = true;
+
+                // console.log(this.pairedUntil + "/" + this.tangram_play.editor.getDoc().size, to);
+                // this.update();
+                stopAction(this);
+            } else if (this.pairedUntil < to) {
+                for (let i = this.pairedUntil; i < to; i++ ){
+                    this.addWidgetsTo(i);
+                }
+                this.pairedUntil = to;
+
+                // console.log(this.pairedUntil + "/" + this.tangram_play.editor.getDoc().size, to);
+                // this.update();
+                stopAction(this);
+            }
+        });
+
         // Suggestions are trigged by the folowing CM events
         tangram_play.editor.on('changes', (cm, changesObj) => {
             if (window.watch) window.watch.printElapsed("Editor: CHANGE");
-            this.update();
+
+            // this.update();
+            stopAction(this);
         });
 
         tangram_play.editor.on('unfold', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
             this.forceRebuild = true;
-            this.rebuild();
+            this.update();
         });   
 
-        tangram_play.divider.el.addEventListener('change', (cm, from, to) => {
+        tangram_play.container.addEventListener('resize', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Divider: CHANGE");
             this.forceRebuild = true;
-            this.rebuild();
-        });     
+            this.update();
+        });
+
+        tangram_play.container.addEventListener('loaded', (cm, from, to) => {
+            if (window.watch) window.watch.printElapsed("Divider: CHANGE");
+            this.forceRebuild = true;
+            this.pairedUntil = 0;
+        });
     }
 
     build() {
@@ -56,11 +93,13 @@ export default class WidgetsManager {
         }
         
         // the key~widget pairs is new
-        this.totalLines = this.tangram_play.editor.getViewport().to;
+        this.totalLines = this.tangram_play.editor.getDoc().size;
         this.forceRebuild = false;
         
         // update position
-        this.update();
+        // this.update();
+        stopAction(this);
+
         if (window.watch) window.watch.printElapsed("Widgets: Finish building widgets");
     }
 
@@ -164,6 +203,7 @@ export default class WidgetsManager {
 
     // Is keys~widgets pairs dirty? (usually after lines are been added)
     _isPairingDirty() {
-        return this.forceRebuild || this.totalLines !== this.tangram_play.editor.getViewport().to
+        return this.forceRebuild || this.totalLines !== this.tangram_play.editor.getDoc().size;// || this.totalLines !== this.tangram_play.editor.getViewport().to
     }
+
 }

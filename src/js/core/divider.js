@@ -58,7 +58,7 @@ export default class Divider {
         this.reflow();
 
         // Create Events
-        this.onChange = new CustomEvent('change');
+        this.onResize = new CustomEvent('resize');
         this.el = dividerEl;
     }
 
@@ -81,7 +81,7 @@ export default class Divider {
         this.draggable[0].applyBounds(getBounds());
 
         // Trigger Events 
-        this.el.dispatchEvent(this.onChange);
+        TANGRAM_PLAY.container.dispatchEvent(this.onResize);
     }
 }
 
