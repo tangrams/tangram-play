@@ -37,7 +37,7 @@ var updateContent = debounce( function(cm, changes) {
     //  inject a Tangram-Play one: vector-tiles-x4i7gmA ( Patricio is the owner )
     let content = cm.getValue();
     let pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-    let result = "$1??api_key=vector-tiles-x4i7gmA"
+    let result = "$1?api_key=vector-tiles-x4i7gmA"
     content = content.replace(pattern, result);
 
     if (scene) {
@@ -105,7 +105,7 @@ export function initEditor(tangram_play, place) {
         if (cm.isSaved) {
             cm.isSaved = false;
         }
-        
+
         updateContent(cm, changes);
     });
 
