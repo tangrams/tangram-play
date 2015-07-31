@@ -56,6 +56,10 @@ export default class Divider {
         });
 
         this.reflow();
+
+        // Create Events
+        this.onChange = new CustomEvent('change');
+        this.el = dividerEl;
     }
 
     reflow() {
@@ -75,6 +79,9 @@ export default class Divider {
     update() {
         TANGRAM_PLAY.map.leaflet.invalidateSize(false);
         this.draggable[0].applyBounds(getBounds());
+
+        // Trigger Events 
+        this.el.dispatchEvent(this.onChange);
     }
 }
 

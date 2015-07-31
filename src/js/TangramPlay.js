@@ -62,6 +62,8 @@ export default class TangramPlay {
 
         // LOAD STYLE
         this.loadFile(options.style);
+
+        // window.tangramPlay = this;
     };
 
 //  SET

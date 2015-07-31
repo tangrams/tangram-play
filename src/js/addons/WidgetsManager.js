@@ -6,11 +6,6 @@ import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 // Load addons modules
 import WidgetType from './widgets/WidgetType.js';
 
-var stopAction = debounce(function(wm) {
-    wm.rebuild();
-    console.log("stopAction -> rebuild (old debounced)");
-}, 1000);
-
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
 
@@ -19,7 +14,8 @@ export default class WidgetsManager {
 
         // Local variables
         this.tangram_play = tangram_play;
-        this.fresh = false;  // widget - key sync
+        this.totalLines = 0;// keep track of lines
+        this.forceRebuild = true;  // build widget - key sync
         this.data = [];     // tokens to check
         this.active = [];   // active widgets
 
@@ -35,34 +31,22 @@ export default class WidgetsManager {
         this.build();
 
         // Suggestions are trigged by the folowing CM events
-
-        //  When there is a change
-        // tangram_play.editor.on('update', (cm, changesObj) => {
-        //     if (window.watch) window.watch.printElapsed("Editor: UPDATE");
-        //     this.update();
-        // });
-
         tangram_play.editor.on('changes', (cm, changesObj) => {
             if (window.watch) window.watch.printElapsed("Editor: CHANGE");
-            this.fresh = false;
             this.update();
-            this.stopAction();
         });
-
-        // When the viewport change (lines are add or erased)
-        // tangram_play.editor.on('viewportChange', (cm, from, to) => {
-        //     if (window.watch) window.watch.printElapsed("Editor: VIEWPORT_CHANGE");
-        //     this.fresh = false;
-        //     this.rebuild();
-        // });
 
         tangram_play.editor.on('unfold', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
-            this.fresh = false;
+            this.forceRebuild = true;
             this.rebuild();
-        });
+        });   
 
-        
+        tangram_play.divider.el.addEventListener('change', (cm, from, to) => {
+            if (window.watch) window.watch.printElapsed("Divider: CHANGE");
+            this.forceRebuild = true;
+            this.rebuild();
+        });     
     }
 
     build() {
@@ -70,13 +54,18 @@ export default class WidgetsManager {
         for (let line = 0, size = this.tangram_play.editor.doc.size; line < size; line++) {
             this.addWidgetsTo(line);
         }
-        this.fresh = true;
+        
+        // the key~widget pairs is new
+        this.totalLines = this.tangram_play.editor.getViewport().to;
+        this.forceRebuild = false;
+        
+        // update position
         this.update();
         if (window.watch) window.watch.printElapsed("Widgets: Finish building widgets");
     }
 
     rebuild() {
-        if (!this.fresh) {
+        if (this._isPairingDirty()) {
             this.deleteAll();
             this.build();
         }
@@ -116,29 +105,39 @@ export default class WidgetsManager {
     // Update widgets unless something is not right
     update() {
         if (window.watch) window.watch.printElapsed("Widgets: Start updating positions");
-        for (let widget of this.active) {
-            let line = widget.key.pos.line;
-            let index = widget.key.index;
-            let keys = this.tangram_play.getKeysOnLine(line);
 
-            if (this.tangram_play.editor.getLineHandle(line) && this.tangram_play.editor.getLineHandle(line).height) {
-                if (index < keys.length) {
-                    let pos = getValueRange(keys[index]).to;
-                    this.tangram_play.editor.addWidget(pos, widget.el);
-                } else {
-                    this.rebuildLine(line);
+        if ( this._isPairingDirty() ) {
+            if (window.tangramPlay === undefined) return;
+
+            // If there is different number of lines force a rebuild
+            this.rebuild();
+        } else {
+            // If the lines are the same proceed to update just the position
+            for (let widget of this.active) {
+                let line = widget.key.pos.line;
+                let index = widget.key.index;
+                let keys = this.tangram_play.getKeysOnLine(line);
+
+                if (this.tangram_play.editor.getLineHandle(line) && this.tangram_play.editor.getLineHandle(line).height) {
+                    if (index < keys.length) {
+                        let pos = getValueRange(keys[index]).to;
+                        this.tangram_play.editor.addWidget(pos, widget.el);
+                    } else {
+                        this.rebuildLine(line);
+                        break;
+                    }
+                }
+                // NOTE: If the condition above never becomes true,
+                // this can put TangramPlay into an infinite loop.
+                // TODO: Catch this, never let it happen
+                else {
+                    this.forceRebuild = true;
+                    this.rebuild();
                     break;
                 }
             }
-            // NOTE: If the condition above never becomes true,
-            // this can put TangramPlay into an infinite loop.
-            // TODO: Catch this, never let it happen
-            else {
-                this.fresh = false;
-                this.rebuild();
-                break;
-            }
         }
+
         if (window.watch) window.watch.printElapsed("Widgets: Finish updating positions");
     }
 
@@ -163,14 +162,8 @@ export default class WidgetsManager {
         if (window.watch) window.watch.printElapsed("Widgets: Finish erasing widgets");
     }
 
-    // Debounced event after user stop doing something
-    stopAction () {
-        console.log("stopAction -> DO rebouid");
-        debounce(() => {
-            console.log("stopAction -> rebuild (debounced)");
-            this.rebuild();
-        }, 1000);
-
-        stopAction(this);
+    // Is keys~widgets pairs dirty? (usually after lines are been added)
+    _isPairingDirty() {
+        return this.forceRebuild || this.totalLines !== this.tangram_play.editor.getViewport().to
     }
 }
