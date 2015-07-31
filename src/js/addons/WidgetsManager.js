@@ -62,7 +62,7 @@ export default class WidgetsManager {
         // Suggestions are trigged by the folowing CM events
         tangram_play.editor.on('changes', (cm, changesObj) => {
             if (window.watch) window.watch.printElapsed("Editor: CHANGE");
-
+            console.log(changesObj);
             // this.update();
             stopAction(this);
         });
@@ -70,14 +70,12 @@ export default class WidgetsManager {
         tangram_play.editor.on('fold', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
             this.forceRebuild = true;
-            // this.update();
             stopAction(this);
         });   
 
         tangram_play.editor.on('unfold', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
             this.forceRebuild = true;
-            // this.update();
             stopAction(this);
         });   
 
