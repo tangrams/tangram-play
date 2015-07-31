@@ -8,7 +8,7 @@ import WidgetType from './widgets/WidgetType.js';
 
 var stopAction = debounce(function(wm) {
     wm.update();
-}, 100);
+}, 200);
 
 export default class WidgetsManager {
     constructor (tangram_play, configFile ) {
@@ -67,10 +67,18 @@ export default class WidgetsManager {
             stopAction(this);
         });
 
+        tangram_play.editor.on('fold', (cm, from, to) => {
+            if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
+            this.forceRebuild = true;
+            // this.update();
+            stopAction(this);
+        });   
+
         tangram_play.editor.on('unfold', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
             this.forceRebuild = true;
-            this.update();
+            // this.update();
+            stopAction(this);
         });   
 
         tangram_play.container.addEventListener('resize', (cm, from, to) => {
@@ -81,8 +89,10 @@ export default class WidgetsManager {
 
         tangram_play.container.addEventListener('loaded', (cm, from, to) => {
             if (window.watch) window.watch.printElapsed("Divider: CHANGE");
+            this.deleteAll();
             this.forceRebuild = true;
             this.pairedUntil = 0;
+            stopAction(this);
         });
     }
 
@@ -181,7 +191,7 @@ export default class WidgetsManager {
     }
 
     // Erase the widgets on one line
-    deleteLine (nLine) {
+    deleteLine(nLine) {
         for (let i = this.active.length - 1; i >= 0; i--) { // Look through each of the active widgets
             let widget = this.active[i];
             if (widget.key.pos.line === nLine) { // If widget is on the line (passed as nLine parameter)
@@ -192,7 +202,7 @@ export default class WidgetsManager {
     }
 
     // Erase all widgets
-    deleteAll () {
+    deleteAll() {
         if (window.watch) window.watch.printElapsed("Widgets: Start erasing widgets");
         while (this.active.length > 0) { // While there are still active widgets,
             let widget = this.active.pop(); // ...take the last widget off the list of active widgets
