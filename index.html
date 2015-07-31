@@ -155,26 +155,11 @@
     <!-- IDE -->
     <script type="text/javascript" src="build/js/tangram-play.js"></script>
     <script>
-
-        const query = parseQuery(window.location.search.slice(1));
         const flags = parseFeatureFlags(query);
 
         if (flags['fullmenu'] === true) {
             document.getElementById('tangram_play_wrapper').querySelector('.tp-menu-bar').classList.add('tp-debug-full-menu');
         }
-
-        // Create an instance of TangramPlay with the following modules
-        /*
-        var tangramPlay = new TangramPlay('#tangram_play_wrapper', {
-                                            style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
-                                            // suggest: 'data/suggest.json',
-                                            widgets: 'data/widgets.json',
-                                            menu: 'data/menu.json',
-                                            // sandbox: true,
-                                            // benchark: true,
-                                            ui: true
-                                        });
-        */
 
         // Once everything is loaded
         setTimeout(function () {
@@ -190,16 +175,6 @@
                 tangramPlay.divider.reflow();
             });
         }
-
-        function parseQuery(qstr) {
-            var query = {};
-            var a = qstr.split('&');
-            for (var i in a) {
-                var b = a[i].split('=');
-                query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
-            }
-            return query;
-        };
 
         function parseFeatureFlags(query) {
             var qstr = query['flags'];
@@ -220,7 +195,5 @@
         };
 
     </script>
-
   </body>
-
 </html>
