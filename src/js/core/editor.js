@@ -49,19 +49,19 @@ var updateContent = debounce( function(cm, changes) {
 export function initEditor(tangram_play, place) {
 
     // Add rulers
-    var rulers = [];
-    for (var i = 1; i < 10; i++) {
-        var b = Math.round((0.88 + i/90)*255);
+    let rulers = [];
+    for (let i = 1; i < 10; i++) {
+        let b = Math.round((0.88 + i/90)*255);
         rulers.push({   color: 'rgb('+b+','+b+','+b+')',
                         column: i * 4,
                         lineStyle: "dashed"     });
     }
 
     // Create DOM (TODO)
-    var dom = document.getElementById(place);
+    let dom = document.getElementById(place);
 
     // Initialize CodeMirror
-    var cm = CodeMirror(dom ,{
+    let cm = CodeMirror(dom ,{
         value: "Loading...",
         rulers: rulers,
         lineNumbers: true,

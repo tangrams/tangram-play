@@ -33,9 +33,6 @@ export default class TangramPlay {
         this.divider = new Divider(this, 'divider');
         this.options = options;
 
-        // for debug
-        window.editor = this.editor;
-
         //  EVENTS
         let tangram_play = this;
         window.addEventListener('resize', function(){

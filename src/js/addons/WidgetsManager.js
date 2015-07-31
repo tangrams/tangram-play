@@ -84,7 +84,7 @@ export default class WidgetsManager {
                 for (let key of keys) {
                     let val = key.value;
 
-                    if (val === '|' || isStrEmpty(val) || isStrEmpty(editor.getLine(nLine)) ) {
+                    if (val === '|' || isStrEmpty(val) || isStrEmpty(this.tangram_play.editor.getLine(nLine)) ) {
                         continue;
                     }
 
