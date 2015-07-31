@@ -57,7 +57,7 @@
         {
             "address": "^/sources/(\\w|\\_|\\-)+/type$",
             "type" : "dropdownmenu",
-            "options": ["", "GeoJSONTiles","TopoJSONTiles", "MVT"]
+            "options": ["", "GeoJSON","TopoJSON", "MVT"]
         },
 
         {

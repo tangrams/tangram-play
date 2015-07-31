@@ -10,13 +10,20 @@ import SuggestManager from './addons/SuggestManager.js';
 import GlslSandbox from './addons/GlslSandbox.js';
 
 // Import Utils
-import { fetchHTTP, debounce } from './core/common.js';
+import { fetchHTTP, debounce, StopWatch } from './core/common.js';
 import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from './core/codemirror/tools.js';
 import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codemirror/yaml-tangram.js';
 
 export default class TangramPlay {
 
     constructor(selector, options) {
+
+        //Benchmark
+        if (options.benchark) {
+            window.watch = new StopWatch();
+            window.watch.start();
+        }
+        
 
         if (options.style === undefined) {
             options.style = "data/styles/basic.yaml";
@@ -89,7 +96,7 @@ export default class TangramPlay {
     getContent() {
         let content = this.editor.getValue();
         let pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-        let result = "$1??api_key=vector-tiles-x4i7gmA"
+        let result = "$1?api_key=vector-tiles-x4i7gmA"
         content = content.replace(pattern, result);
         return content;
     }

@@ -30,10 +30,12 @@ export default class WidgetsManager {
 
         //  When there is a change
         tangram_play.editor.on('update', (cm, changesObj) => {
+            if (window.watch) window.watch.printElapsed("Editor: UPDATE");
             this.update();
         });
 
         tangram_play.editor.on('changes', (cm, changesObj) => {
+            if (window.watch) window.watch.printElapsed("Editor: CHANGE");
             this.fresh = false;
             this.update();
             this.stopAction();
@@ -41,11 +43,13 @@ export default class WidgetsManager {
 
         // When the viewport change (lines are add or erased)
         tangram_play.editor.on('viewportChange', (cm, from, to) => {
+            if (window.watch) window.watch.printElapsed("Editor: VIEWPORT_CHANGE");
             this.fresh = false;
             this.rebuild();
         });
 
         tangram_play.editor.on('unfold', (cm, from, to) => {
+            if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
             this.fresh = false;
             this.rebuild();
         });
@@ -55,11 +59,13 @@ export default class WidgetsManager {
     }
 
     build() {
+        if (window.watch) window.watch.printElapsed("Widgets: Start building widgets");
         for (let line = 0, size = this.tangram_play.editor.doc.size; line < size; line++) {
             this.addWidgetsTo(line);
         }
         this.fresh = true;
         this.update();
+        if (window.watch) window.watch.printElapsed("Widgets: Finish building widgets");
     }
 
     rebuild() {
@@ -102,6 +108,7 @@ export default class WidgetsManager {
 
     // Update widgets unless something is not right
     update() {
+        if (window.watch) window.watch.printElapsed("Widgets: Start updating positions");
         for (let widget of this.active) {
             let line = widget.key.pos.line;
             let index = widget.key.index;
@@ -124,8 +131,8 @@ export default class WidgetsManager {
                 this.rebuild();
                 break;
             }
-
         }
+        if (window.watch) window.watch.printElapsed("Widgets: Finish updating positions");
     }
 
     // Erase the widgets on one line
@@ -141,10 +148,12 @@ export default class WidgetsManager {
 
     // Erase all widgets
     deleteAll () {
+        if (window.watch) window.watch.printElapsed("Widgets: Start erasing widgets");
         while (this.active.length > 0) { // While there are still active widgets,
             let widget = this.active.pop(); // ...take the last widget off the list of active widgets
             widget.destroyEl(); // ...and remove its DOM from the page
         }
+        if (window.watch) window.watch.printElapsed("Widgets: Finish erasing widgets");
     }
 
     // Debounced event after user stop doing something
