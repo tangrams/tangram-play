@@ -6,6 +6,8 @@
 // ----------------------------------------------------------------------------
 'use strict';
 
+import TangramPlay from '../../TangramPlay.js';
+
 const GEOLOCATOR_TITLE_TEXT = 'Get current location';
 
 export default class Geolocator {
@@ -48,7 +50,7 @@ export default class Geolocator {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        window.tangramPlay.map.leaflet.setView([latitude, longitude], 14);
+        TangramPlay.map.leaflet.setView([latitude, longitude], 14);
         this.resetGeolocateButton();
     }
 

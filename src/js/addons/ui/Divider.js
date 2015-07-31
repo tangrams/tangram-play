@@ -1,3 +1,7 @@
+'use strict';
+
+import TangramPlay from '../../TangramPlay.js';
+
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/Tweenlite.js';
 import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
@@ -6,31 +10,26 @@ import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
 const CM_MINIMUM_WIDTH = 160; // integer, in pixels
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 
-let dividerEl;
-let TANGRAM_PLAY;
-
 export default class Divider {
-    constructor(tangramPlay, dividerId) {
-        TANGRAM_PLAY = tangramPlay;
-
+    constructor(dividerId) {
         let transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
 
-        dividerEl = document.getElementById(dividerId);
+        this.el = document.getElementById(dividerId);
 
-        if (dividerEl.style.hasOwnProperty('transform')) {
-            dividerEl.style.transform = transformStyle;
+        if (this.el.style.hasOwnProperty('transform')) {
+            this.el.style.transform = transformStyle;
         }
-        else if (dividerEl.style.hasOwnProperty('webkitTransform')) {
+        else if (this.el.style.hasOwnProperty('webkitTransform')) {
             // For Safari
-            dividerEl.style.webkitTransform = transformStyle;
+            this.el.style.webkitTransform = transformStyle;
         }
         else {
             // For Firefox
-            dividerEl.style.transform = transformStyle;
+            this.el.style.transform = transformStyle;
         }
 
         let divider = this;
-        this.draggable = Draggable.create(dividerEl, {
+        this.draggable = Draggable.create(this.el, {
             type: 'x',
             bounds: getBounds(),
             cursor: 'col-resize',
@@ -43,7 +42,7 @@ export default class Divider {
             },
             onDragEnd: function () {
                 divider.update();
-                savePosition();
+                divider.savePosition();
             },
             onRelease: function () {
                 this.target.classList.remove('tp-divider-is-dragging');
@@ -67,21 +66,28 @@ export default class Divider {
         let contentEl = document.getElementById('content');
         let menuEl = document.querySelector('.tp-menu-container');
         let menuBottom = menuEl.getBoundingClientRect().bottom;
-        let positionX = dividerEl.getBoundingClientRect().left;
+        let positionX = this.el.getBoundingClientRect().left;
 
         mapEl.style.width = positionX + 'px';
         contentEl.style.width = (window.innerWidth - positionX) + 'px';
 
-        TANGRAM_PLAY.editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
-        dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
+        TangramPlay.editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
+        this.el.style.height = (window.innerHeight - menuBottom) + 'px';
     }
 
     update() {
-        TANGRAM_PLAY.map.leaflet.invalidateSize(false);
+        TangramPlay.map.leaflet.invalidateSize(false);
         this.draggable[0].applyBounds(getBounds());
 
         // Trigger Events 
         TANGRAM_PLAY.container.dispatchEvent(this.onResize);
+    }
+
+    savePosition() {
+        let posX = this.el.getBoundingClientRect().left;
+        if (posX) {
+            window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX);
+        }
     }
 }
 
@@ -98,13 +104,6 @@ function getStartingPosition() {
     }
     else {
         return Math.floor(window.innerWidth / 2);
-    }
-}
-
-function savePosition() {
-    let posX = dividerEl.getBoundingClientRect().left;
-    if (posX) {
-        window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX);
     }
 }
 

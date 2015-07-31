@@ -1,7 +1,6 @@
 // Core elements
 import Map from './core/Map.js';
 import {initEditor} from './core/editor.js';
-import Divider from './core/Divider.js';
 
 // Addons
 import UI from './addons/UI.js';
@@ -14,8 +13,7 @@ import { fetchHTTP, debounce, StopWatch } from './core/common.js';
 import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from './core/codemirror/tools.js';
 import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codemirror/yaml-tangram.js';
 
-export default class TangramPlay {
-
+class TangramPlay {
     constructor(selector, options) {
 
         //Benchmark
@@ -23,51 +21,45 @@ export default class TangramPlay {
             window.watch = new StopWatch();
             window.watch.start();
         }
-        
 
         if (options.style === undefined) {
-            options.style = "data/styles/basic.yaml";
+            options.style = 'data/styles/basic.yaml';
         }
 
-        // create CORE elements
-
-        // TODO:
-        //      - Create DOM for map, divider and editor
-
         this.container = document.querySelector(selector);
-        this.map = new Map(this,'map',options.style);
+        this.map = new Map(this, 'map', options.style);
         this.editor = initEditor(this, 'editor');
-        this.divider = new Divider(this, 'divider');
         this.options = options;
+        this.addons = {};
 
         //  EVENTS
         // Create Events
         this.onLoaded = new CustomEvent('loaded');
 
-        let tangram_play = this;
-        window.addEventListener('resize', function(){
-            tangram_play.divider.reflow();
-            tangram_play.divider.update();
-        });
-
-        setTimeout(function () {
+        setTimeout(() => {
             if (query['lines']) {
-                tangramPlay.selectLines(query['lines']);
+                this.selectLines(query['lines']);
             }
         }, 500);
-
-        //  ADDONS
-        this.addons = {};
-        if (options.widgets) this.addons.widgets_manager = new WidgetsManager(this, options.widgets);
-        if (options.suggest) this.addons.suggest_manager = new SuggestManager(this, options.suggest);
-		if (options.sandbox) this.addons.glsl_sandbox = new GlslSandbox(this);
-        if (options.ui) this.addons.ui = new UI(this);
 
         // LOAD STYLE
         this.loadFile(options.style);
 
-        // window.tangramPlay = this;
-    };
+        // TODO: Manage history / routing in its own module
+        window.onpopstate = (e) => {
+            if (e.state && e.state.loadStyleURL) {
+                this.loadQuery();
+            }
+        };
+    }
+
+    //  ADDONS
+    initAddons () {
+        if (this.options.widgets) this.addons.widgets_manager = new WidgetsManager(this, this.options.widgets);
+        if (this.options.suggest) this.addons.suggest_manager = new SuggestManager(this, this.options.suggest);
+        if (this.options.sandbox) this.addons.glsl_sandbox = new GlslSandbox(this);
+        if (this.options.ui) this.addons.ui = new UI();
+    }
 
 //  SET
     loadContent(str) {
@@ -81,7 +73,7 @@ export default class TangramPlay {
     loadFile(str) {
         this.loadContent(fetchHTTP(str));
 
-        // Trigger Events 
+        // Trigger Events
         this.container.dispatchEvent(this.onLoaded);
     }
 
@@ -89,7 +81,7 @@ export default class TangramPlay {
         let query = parseQuery(window.location.search.slice(1));
         let src = query['style'] ? query['style'] : "data/styles/basic.yaml";
         this.loadFile(src);
-    };
+    }
 
 // SET
     setValue(KeyPair, str){
@@ -164,7 +156,7 @@ export default class TangramPlay {
 // Other actions
     selectLines(strRange) {
         selectLines(this.editor, strRange);
-    };
+    }
 
     foldByLevel(nLevel) {
         foldByLevel(this.editor, nLevel);
@@ -177,6 +169,31 @@ export default class TangramPlay {
     takeScreenshot() {
         this.map.takeScreenshot();
     }
+}
+
+const query = parseQuery(window.location.search.slice(1));
+
+function parseQuery(qstr) {
+    var query = {};
+    var a = qstr.split('&');
+    for (var i in a) {
+        var b = a[i].split('=');
+        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
+    }
+    return query;
 };
 
-window.TangramPlay = TangramPlay;
+// Export an instance of TangramPlay with the following modules
+
+let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
+    style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
+    // suggest: 'data/suggest.json',
+    widgets: 'data/widgets.json',
+    menu: 'data/menu.json',
+    // sandbox: true,
+    ui: true
+});
+
+export default tangramPlay;
+
+tangramPlay.initAddons();
