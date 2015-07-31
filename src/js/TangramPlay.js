@@ -55,7 +55,7 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        if (this.options.widgets) this.addons.widgets_manager = new WidgetsManager(this, this.options.widgets);
+        if (this.options.widgets) this.addons.widgets_manager = new WidgetsManager(this.options.widgets);
         if (this.options.suggest) this.addons.suggest_manager = new SuggestManager(this, this.options.suggest);
         if (this.options.sandbox) this.addons.glsl_sandbox = new GlslSandbox(this);
         if (this.options.ui) this.addons.ui = new UI();
