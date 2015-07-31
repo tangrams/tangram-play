@@ -161,21 +161,6 @@
             document.getElementById('tangram_play_wrapper').querySelector('.tp-menu-bar').classList.add('tp-debug-full-menu');
         }
 
-        // Once everything is loaded
-        setTimeout(function () {
-            if (query['lines']) {
-                tangramPlay.selectLines(query['lines']);
-            }
-        }, 500);
-
-        if (isMobile() === true) {
-            document.getElementById('mobile-message').style.display = 'block';
-            document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
-                document.getElementById('mobile-message').style.display = 'none';
-                tangramPlay.divider.reflow();
-            });
-        }
-
         function parseFeatureFlags(query) {
             var qstr = query['flags'];
             var flags = {};
@@ -186,6 +171,14 @@
             }
             return flags;
         };
+
+        if (isMobile() === true) {
+            document.getElementById('mobile-message').style.display = 'block';
+            document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
+                document.getElementById('mobile-message').style.display = 'none';
+                tangramPlay.divider.reflow();
+            });
+        }
 
         function isMobile () {
           if (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(navigator.userAgent.toLowerCase()))

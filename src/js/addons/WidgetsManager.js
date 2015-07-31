@@ -1,6 +1,6 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
+import TangramPlay from '../TangramPlay.js';
 
 // Load some common functions
 import { fetchHTTP, debounce } from '../core/common.js';
@@ -16,9 +16,6 @@ var stopAction = debounce(function(wm) {
 
 export default class WidgetsManager {
     constructor (configFile) {
-
-        // Make link to this manager inside codemirror obj to be excecuted from CM events
-        TangramPlay.editor.widgets_manager = this;
 
         // Local variables
         this.totalLines = 0;// keep track of lines
