@@ -96,7 +96,7 @@ export default class TangramPlay {
     getContent() {
         let content = this.editor.getValue();
         let pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-        let result = "$1?api_key=vector-tiles-x4i7gmA"
+        let result = "$1?api_key=vector-tiles-P6dkVl4"
         content = content.replace(pattern, result);
         return content;
     }
