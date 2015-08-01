@@ -155,22 +155,22 @@
     <!-- IDE -->
     <script type="text/javascript" src="build/js/tangram-play.js"></script>
     <script>
-        const flags = parseFeatureFlags(query);
+        // const flags = parseFeatureFlags(query);
 
-        if (flags['fullmenu'] === true) {
-            document.getElementById('tangram_play_wrapper').querySelector('.tp-menu-bar').classList.add('tp-debug-full-menu');
-        }
+        // if (flags['fullmenu'] === true) {
+        //     document.getElementById('tangram_play_wrapper').querySelector('.tp-menu-bar').classList.add('tp-debug-full-menu');
+        // }
 
-        function parseFeatureFlags(query) {
-            var qstr = query['flags'];
-            var flags = {};
-            if (!qstr) return flags;
-            var values = qstr.split(',');
-            for (var i in values) {
-                flags[values[i]] = true;
-            }
-            return flags;
-        };
+        // function parseFeatureFlags(query) {
+        //     var qstr = query['flags'];
+        //     var flags = {};
+        //     if (!qstr) return flags;
+        //     var values = qstr.split(',');
+        //     for (var i in values) {
+        //         flags[values[i]] = true;
+        //     }
+        //     return flags;
+        // };
 
         if (isMobile() === true) {
             document.getElementById('mobile-message').style.display = 'block';

@@ -67,7 +67,7 @@ class TangramPlay {
         }
     }
 
-    //  SET
+    // LOADers
     loadContent(str) {
         //  Delete API Key (TODO: check with the actual user and take out the onces that don't belong to the user)
         str = str.replace(/\?api_key\=(\w|\-)*$/gm, '');
@@ -194,6 +194,7 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     // suggest: 'data/suggest.json',
     widgets: 'data/widgets.json',
     menu: 'data/menu.json',
+    benchark: true,
     // sandbox: true,
 });
 

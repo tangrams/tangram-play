@@ -12,7 +12,12 @@ import WidgetType from './widgets/WidgetType.js';
 
 var stopAction = debounce(function(wm) {
     wm.update();
-}, 200);
+}, 100);
+
+var stopMicroAction = debounce(function(wm,nLine) {
+    wm.rebuildLine(nLine);
+    wm.update();
+}, 1000);
 
 export default class WidgetsManager {
     constructor (configFile) {
@@ -45,7 +50,6 @@ export default class WidgetsManager {
                 this.forceRebuild = true;
 
                 // console.log(this.pairedUntil + "/" + TangramPlay.editor.getDoc().size, to);
-                // this.update();
                 stopAction(this);
             } else if (this.pairedUntil < to) {
                 for (let i = this.pairedUntil; i < to; i++ ){
@@ -54,17 +58,43 @@ export default class WidgetsManager {
                 this.pairedUntil = to;
 
                 // console.log(this.pairedUntil + "/" + TangramPlay.editor.getDoc().size, to);
-                // this.update();
                 stopAction(this);
             }
         });
 
         // Suggestions are trigged by the folowing CM events
-        TangramPlay.editor.on('changes', (cm, changesObj) => {
+        TangramPlay.editor.on('changes', (cm, changesObjs) => {
             if (window.watch) window.watch.printElapsed("Editor: CHANGE");
-            console.log(changesObj);
-            // this.update();
-            stopAction(this);
+
+            // Is a multi line change???
+            let lineChange = -1;
+            let multiLine = false;
+            for (let i = 0; i < changesObjs.length; i++){
+                // If the change happen in a single line
+                if (changesObjs[i].from.line === changesObjs[i].to.line) {
+                    if (lineChange === -1) {
+                        lineChange = changesObjs[i].from.line;
+                    } else if ( lineChange !== changesObjs[i].from.line ) {
+                        multiLine = true;
+                        break;
+                    }
+                } else {
+                    multiLine = true;
+                    break;
+                }
+            }
+
+            if (multiLine) {
+                console.log("MULTI_LINE CHANGE");
+                this.forceRebuild = true;
+                // this.update();
+                stopAction();
+            } else if (lineChange !== -1){
+                console.log("SINGLE_LINE CHANGE");
+                stopMicroAction(this,lineChange);
+            } else {
+                console.log("Something change and don't know what to do: ", changesObj);
+            }
         });
 
         TangramPlay.editor.on('fold', (cm, from, to) => {
@@ -105,17 +135,14 @@ export default class WidgetsManager {
         this.forceRebuild = false;
 
         // update position
-        // this.update();
-        stopAction(this);
+        this.update();
 
         if (window.watch) window.watch.printElapsed("Widgets: Finish building widgets");
     }
 
     rebuild() {
-        if (this._isPairingDirty()) {
-            this.deleteAll();
-            this.build();
-        }
+        this.deleteAll();
+        this.build();
     }
 
     rebuildLine(nLine) {
@@ -154,8 +181,6 @@ export default class WidgetsManager {
         if (window.watch) window.watch.printElapsed("Widgets: Start updating positions");
 
         if ( this._isPairingDirty() ) {
-            if (window.tangramPlay === undefined) return;
-
             // If there is different number of lines force a rebuild
             this.rebuild();
         } else {
@@ -211,7 +236,7 @@ export default class WidgetsManager {
 
     // Is keys~widgets pairs dirty? (usually after lines are been added)
     _isPairingDirty() {
-        return this.forceRebuild || this.totalLines !== TangramPlay.editor.getDoc().size;// || this.totalLines !== TangramPlay.editor.getViewport().to
+        return this.forceRebuild || this.totalLines !== TangramPlay.editor.getDoc().size;
     }
 
 }

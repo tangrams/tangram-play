@@ -58,7 +58,6 @@ export default class Divider {
 
         // Create Events
         this.onResize = new CustomEvent('resize');
-        this.el = dividerEl;
     }
 
     reflow() {
@@ -80,7 +79,7 @@ export default class Divider {
         this.draggable[0].applyBounds(getBounds());
 
         // Trigger Events 
-        TANGRAM_PLAY.container.dispatchEvent(this.onResize);
+        TangramPlay.container.dispatchEvent(this.onResize);
     }
 
     savePosition() {
