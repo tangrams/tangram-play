@@ -1,38 +1,30 @@
 'use strict';
-// For now: assume globals
-/* global tangramPlay */
 
+import TangramPlay from '../../TangramPlay.js';
 import { noop } from './Helpers.js';
 import EditorIO from './EditorIO.js';
 import FileOpen from './FileOpen.js';
 import ExamplesModal from './Modal.Examples.js';
 
-let container;
-
 export default class Menu {
-    constructor (options) {
-        // Not great. TODO: Figure out how to get access to the
-        // tangramPlay instance without having to pass it in
-        // as an argument.
-        container = (typeof tangramPlay !== 'undefined') ? tangramPlay.container : document;
-
-        this.el = container.querySelector('.tp-menu-bar');
+    constructor () {
+        this.el = TangramPlay.container.querySelector('.tp-menu-bar');
         this.menus = {};
-        this.initMenuItems(options);
+        this.initMenuItems();
     }
 
-    initMenuItems (options) {
+    initMenuItems () {
         this.menus.open = new MenuItem('.tp-menu-button-open', _onClickOpen);
         this.menus.new = new MenuItem('.tp-menu-button-new', _onClickNew);
         this.menus.export = new MenuItem('.tp-menu-button-export', _onClickExport);
 
         this.fileopen = new FileOpen();
-        this.examplesModal = new ExamplesModal(options.menu);
+        this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
 
-        container.querySelector('.tp-menu-open-file').addEventListener('click', () => {
+        TangramPlay.container.querySelector('.tp-menu-open-file').addEventListener('click', () => {
             this.fileopen.activate();
         }, false);
-        container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
+        TangramPlay.container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
             this.examplesModal.show();
         }, false);
     }
@@ -40,17 +32,17 @@ export default class Menu {
 
 export class MenuItem {
     constructor (classSelector, onClick = noop) {
-        this.el = container.querySelector(classSelector);
+        this.el = TangramPlay.container.querySelector(classSelector);
         this.el.addEventListener('click', onClick, false);
     }
 }
 
 function _onClickOpen (event) {
-    let menuEl = container.querySelector('.tp-menu-dropdown-open');
-    let posX = container.querySelector('.tp-menu-button-open').getBoundingClientRect().left;
+    let menuEl = TangramPlay.container.querySelector('.tp-menu-dropdown-open');
+    let posX = TangramPlay.container.querySelector('.tp-menu-button-open').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    TangramPlay.container.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _onClickNew (event) {
@@ -70,7 +62,7 @@ function _onClickOutsideDropdown (event) {
 
     if (!target.classList.contains('tp-menu-item')) {
         _loseMenuFocus();
-        container.removeEventListener('click', _onClickOutsideDropdown, false);
+        TangramPlay.container.removeEventListener('click', _onClickOutsideDropdown, false);
     }
 }
 
@@ -83,5 +75,5 @@ function _hideMenus () {
     for (let el of menus) {
         el.style.display = 'none';
     }
-    container.removeEventListener('click', _onClickOutsideDropdown, false);
+    TangramPlay.container.removeEventListener('click', _onClickOutsideDropdown, false);
 }

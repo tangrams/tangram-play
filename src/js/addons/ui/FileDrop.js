@@ -1,15 +1,14 @@
 'use strict';
 
+import TangramPlay from '../../TangramPlay.js';
 import EditorIO from './EditorIO.js';
 
 export default class FileDrop {
-    constructor (container) {
-        // TODO: A way to refer to the parent's container without
-        // having to pass it into the constructor
-        this.el = container.getElementsByClassName('tp-filedrop-container')[0];
+    constructor () {
+        this.el = TangramPlay.container.getElementsByClassName('tp-filedrop-container')[0];
 
         // Set up drag/drop file listeners
-        container.addEventListener('dragenter', (event) => {
+        TangramPlay.container.addEventListener('dragenter', (event) => {
             // Check to make sure that dropped items are files.
             // This prevents other drags (e.g. text in editor)
             // from turning on the file drop area.

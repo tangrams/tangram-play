@@ -3,22 +3,14 @@
 import FileDrop from './ui/FileDrop.js';
 import Menu from './ui/Menu.js';
 import Geolocator from './ui/Geolocator.js';
+import Divider from './ui/Divider.js';
 
 export default class UI {
-    constructor (TANGRAM_PLAY) {
-        const container = TANGRAM_PLAY.container;
-        const options = TANGRAM_PLAY.options;
-
+    constructor () {
         // Set up UI components
-        new FileDrop(container);
-        new Menu(options);
+        new FileDrop();
+        new Menu();
         new Geolocator();
-
-        // TODO: Manage history / routing in its own module
-        window.onpopstate = function (e) {
-            if (e.state && e.state.loadStyleURL) {
-                TANGRAM_PLAY.loadQuery();
-            }
-        };
+        new Divider('divider');
     }
 }

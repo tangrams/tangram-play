@@ -1,7 +1,6 @@
 'use strict';
-// For now: assume globals
-/* global tangramPlay */
 
+import TangramPlay from '../../TangramPlay.js';
 import Modal from './Modal.js';
 import EditorIO from './EditorIO.js';
 import { fetchHTTP } from '../../core/common.js';
@@ -13,7 +12,7 @@ export default class ExamplesModal extends Modal {
         super();
 
         // TODO
-        const container = (typeof tangramPlay !== 'undefined') ? tangramPlay.container : document;
+        const container = (typeof TangramPlay !== 'undefined') ? TangramPlay.container : document;
 
         this.el = examplesEl = container.querySelector('.tp-example-modal');
         this.message = 'Choose an example to open';
@@ -85,5 +84,5 @@ function openExample (value) {
     window.history.pushState({
         loadStyleURL: value
     }, null, '.?style=' + value + window.location.hash);
-    tangramPlay.loadQuery();
+    TangramPlay.loadQuery();
 }
