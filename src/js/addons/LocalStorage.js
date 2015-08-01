@@ -23,7 +23,7 @@ const LocalStorage = {
         if (window.localStorage) {
             window.localStorage.setItem(LOCAL_STORAGE_PREFIX + key, value);
         }
-    }
+    },
 
     /**
      *  getItem()
@@ -33,7 +33,7 @@ const LocalStorage = {
         if (window.localStorage) {
             return window.localStorage.getItem(LOCAL_STORAGE_PREFIX + key);
         }
-    }
+    },
 
     /**
      *  removeItem()
@@ -43,7 +43,7 @@ const LocalStorage = {
         if (window.localStorage) {
             window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + key);
         }
-    }
+    },
 
     /**
      *  clear()
@@ -51,15 +51,15 @@ const LocalStorage = {
      *  namespace and removes them, preserving other key-value pairs in
      *  localStorage.
      */
-     clear () {
+    clear () {
         if (window.localStorage) {
             for (let key in window.localStorage) {
-                if (key.indexOf(LOCAL_STORAGE_PREFIX) === 0 {
-                    window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + key)
+                if (key.indexOf(LOCAL_STORAGE_PREFIX) === 0) {
+                    window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + key);
                 }
             }
         }
-     }
-}
+    },
+};
 
 export default LocalStorage;
