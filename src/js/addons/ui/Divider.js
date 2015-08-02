@@ -1,6 +1,7 @@
 'use strict';
 
 import TangramPlay from '../../TangramPlay.js';
+import LocalStorage from '../LocalStorage.js';
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/Tweenlite.js';
@@ -8,7 +9,7 @@ import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
 import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
 
 const CM_MINIMUM_WIDTH = 160; // integer, in pixels
-const LOCAL_STORAGE_PREFIX = 'tangram-play-';
+const STORAGE_POSITION_KEY = 'divider-position-x';
 
 export default class Divider {
     constructor(dividerId) {
@@ -78,14 +79,14 @@ export default class Divider {
         TangramPlay.map.leaflet.invalidateSize(false);
         this.draggable[0].applyBounds(getBounds());
 
-        // Trigger Events 
+        // Trigger Events
         TangramPlay.container.dispatchEvent(this.onResize);
     }
 
     savePosition() {
         let posX = this.el.getBoundingClientRect().left;
         if (posX) {
-            window.localStorage.setItem(LOCAL_STORAGE_PREFIX + 'divider-position-x', posX);
+            LocalStorage.setItem(STORAGE_POSITION_KEY, posX);
         }
     }
 }
@@ -93,7 +94,7 @@ export default class Divider {
 // Private functions for dragable panel divider
 
 function getStartingPosition() {
-    let storedPosition = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'divider-position-x');
+    let storedPosition = LocalStorage.getItem(STORAGE_POSITION_KEY);
     if (storedPosition) {
         return storedPosition;
     }
