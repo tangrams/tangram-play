@@ -25,8 +25,6 @@ var colorDisc;
 var colorDiscRadius;
 var luminanceBar;
 
-var myColor;
-
 var documentFragmentCache;
 
 var listeners = {};
@@ -106,11 +104,9 @@ export default class ColorPickerModal {
         this.dom = this.createDom();
         this.el = this.dom.firstElementChild;
 
-        myColor = new Colors({
+        this.lib = new Colors({
             color: this.color
         });
-
-        this.lib = myColor;
 
         hsv_map = this.el.querySelector('.colorpicker-hsv-map');
         hsv_mapCover = hsv_map.children[1]; // well...
@@ -214,7 +210,7 @@ export default class ColorPickerModal {
 
         Tools.addEvent(hsv_map, 'mousedown', this.hsvDown.bind(this)); // event delegation
         Tools.addEvent(window, 'mouseup', () => {
-            Tools.removeEvent (window, 'mousemove', hsvMove);
+            Tools.removeEvent (window, 'mousemove', this.hsvMove.bind(this));
             hsv_map.classList.remove('colorpicker-no-cursor');
             this.renderer.stop();
         });
@@ -280,17 +276,20 @@ export default class ColorPickerModal {
         this.renderer = {
             // Stores a reference to the animation rendering loop.
             frame: null,
+
             // Animates one frame of activity. Call this directly if you do not
             // need it to go into the animation rendering loop.
             tick: () => {
                 this.renderTestPatch();
-                renderHSVPicker(this.lib.colors);
+                this.renderHSVPicker();
             },
+
             // Starts animation rendering loop
             start: () => {
                 this.renderer.tick();
                 this.renderer.frame = window.requestAnimationFrame(this.renderer.start);
             },
+
             // Stops animation rendering loop
             stop: () => {
                 window.cancelAnimationFrame(this.renderer.frame);
@@ -302,20 +301,42 @@ export default class ColorPickerModal {
     /* ---- HSV-circle color picker ----- */
     /* ---------------------------------- */
 
-    hsvDown (e) { // mouseDown callback
-        var target = e.target || e.srcElement;
+    hsvDown (event) { // mouseDown callback
+        let target = event.target || event.srcElement;
 
-        if (e.preventDefault) e.preventDefault();
+        if (event.preventDefault) event.preventDefault();
 
         currentTarget = target.id ? target : target.parentNode;
         startPoint = Tools.getOrigin(currentTarget);
         currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
 
-        Tools.addEvent(window, 'mousemove', hsvMove);
+        Tools.addEvent(window, 'mousemove', this.hsvMove.bind(this));
         hsv_map.classList.add('colorpicker-no-cursor');
-        hsvMove(e);
+        this.hsvMove(event);
 
         this.renderer.start();
+    }
+
+    hsvMove (e) { // mouseMove callback
+        let r, x, y, h, s;
+
+        if (currentTarget === hsv_map) { // the circle
+            r = currentTargetHeight / 2,
+            x = e.clientX - startPoint.left - r,
+            y = e.clientY - startPoint.top - r,
+            h = 360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0)),
+            s = (Math.sqrt((x * x) + (y * y)) / r) * 100;
+            this.lib.setColor({h: h, s: s}, 'hsv');
+        } else if (currentTarget === hsv_barCursors) { // the luminanceBar
+            this.lib.setColor({
+                v: (currentTargetHeight - (e.clientY - startPoint.top)) / currentTargetHeight * 100
+            }, 'hsv');
+        }
+
+        // fire 'changed'
+        if (listeners.changed && typeof listeners.changed === 'function') {
+            listeners.changed();
+        }
     }
 
     /**
@@ -326,6 +347,33 @@ export default class ColorPickerModal {
         let color = this.lib.colors;
         let RGB = color.RND.rgb;
         patch.style.backgroundColor = 'rgb(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ')';
+    }
+
+    /**
+     *  Render HSV picker
+     */
+    renderHSVPicker () {
+        let color = this.lib.colors;
+        let pi2 = Math.PI * 2;
+        let x = Math.cos(pi2 - color.hsv.h * pi2);
+        let y = Math.sin(pi2 - color.hsv.h * pi2);
+        let r = color.hsv.s * (colorDiscRadius - 5);
+
+        hsv_mapCover.style.opacity = 1 - color.hsv.v;
+        // this is the faster version...
+        hsv_barWhiteLayer.style.opacity = 1 - color.hsv.s;
+        hsv_barBGLayer.style.backgroundColor = 'rgb(' +
+            color.hueRGB.r + ',' +
+            color.hueRGB.g + ',' +
+            color.hueRGB.b + ')';
+
+        hsv_mapCursor.style.cssText =
+            'left: ' + (x * r + colorDiscRadius) + 'px;' +
+            'top: ' + (y * r + colorDiscRadius) + 'px;' +
+            'border-color: ' + (color.RGBLuminance > 0.22 ? '#333;' : '#ddd');
+
+        hsv_barCursors.className = color.RGBLuminance > 0.22 ? hsv_barCursorsCln + ' colorpicker-dark' : hsv_barCursorsCln;
+        if (hsv_Leftcursor) hsv_Leftcursor.style.top = hsv_Rightcursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
     }
 
     // Monkey patches for Thistle.js functionality
@@ -354,7 +402,7 @@ export default class ColorPickerModal {
             r: RND.rgb.r / 255,
             g: RND.rgb.g / 255,
             b: RND.rgb.b / 255
-        }
+        };
     }
 
     // Not from Thistle.js, but example helper functions for getting color values.
@@ -373,7 +421,7 @@ export default class ColorPickerModal {
             rgba: 'rgba(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ',' + color.alpha + ')',
             hsl: 'hsl(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ')',
             hsla: 'hsla(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ',' + color.alpha + ')',
-        }
+        };
     }
 
     /**
@@ -385,65 +433,15 @@ export default class ColorPickerModal {
     }
 }
 
-
-/* ---------------------------------- */
-/* ---- HSV-circle color picker ----- */
-/* ---------------------------------- */
-
-var hsvMove = function (e) { // mouseMove callback
-    var r, x, y, h, s;
-
-    if(currentTarget === hsv_map) { // the circle
-        r = currentTargetHeight / 2,
-        x = e.clientX - startPoint.left - r,
-        y = e.clientY - startPoint.top - r,
-        h = 360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0)),
-        s = (Math.sqrt((x * x) + (y * y)) / r) * 100;
-        myColor.setColor({h: h, s: s}, 'hsv');
-    } else if (currentTarget === hsv_barCursors) { // the luminanceBar
-        myColor.setColor({
-            v: (currentTargetHeight - (e.clientY - startPoint.top)) / currentTargetHeight * 100
-        }, 'hsv');
-    }
-
-    // fire 'changed'
-    if (listeners.changed && typeof listeners.changed === 'function') {
-        listeners.changed();
-    }
-};
-
-var renderHSVPicker = function (color) {
-    var pi2 = Math.PI * 2;
-    var x = Math.cos(pi2 - color.hsv.h * pi2);
-    var y = Math.sin(pi2 - color.hsv.h * pi2);
-    var r = color.hsv.s * (colorDiscRadius - 5);
-
-    hsv_mapCover.style.opacity = 1 - color.hsv.v;
-    // this is the faster version...
-    hsv_barWhiteLayer.style.opacity = 1 - color.hsv.s;
-    hsv_barBGLayer.style.backgroundColor = 'rgb(' +
-        color.hueRGB.r + ',' +
-        color.hueRGB.g + ',' +
-        color.hueRGB.b + ')';
-
-    hsv_mapCursor.style.cssText =
-        'left: ' + (x * r + colorDiscRadius) + 'px;' +
-        'top: ' + (y * r + colorDiscRadius) + 'px;' +
-        'border-color: ' + (color.RGBLuminance > 0.22 ? '#333;' : '#ddd');
-
-    hsv_barCursors.className = color.RGBLuminance > 0.22 ? hsv_barCursorsCln + ' colorpicker-dark' : hsv_barCursorsCln;
-    if (hsv_Leftcursor) hsv_Leftcursor.style.top = hsv_Rightcursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
-};
-
 // generic function for drawing a canvas disc
-var drawDisk = function (ctx, coords, radius, steps, colorCallback) {
-    var x = coords[0] || coords; // coordinate on x-axis
-    var y = coords[1] || coords; // coordinate on y-axis
-    var a = radius[0] || radius; // radius on x-axis
-    var b = radius[1] || radius; // radius on y-axis
-    var angle = 360;
-    var rotate = 0;
-    var coef = Math.PI / 180;
+function drawDisk (ctx, coords, radius, steps, colorCallback) {
+    let x = coords[0] || coords; // coordinate on x-axis
+    let y = coords[1] || coords; // coordinate on y-axis
+    let a = radius[0] || radius; // radius on x-axis
+    let b = radius[1] || radius; // radius on y-axis
+    let angle = 360;
+    let rotate = 0;
+    let coef = Math.PI / 180;
 
     ctx.save();
     ctx.translate(x - a, y - b);
@@ -451,7 +449,7 @@ var drawDisk = function (ctx, coords, radius, steps, colorCallback) {
 
     steps = (angle / steps) || 360;
 
-    for (; angle > 0 ; angle -= steps){
+    for (; angle > 0 ; angle -= steps) {
         ctx.beginPath();
         if (steps !== 360) ctx.moveTo(1, 1); // stroke
         ctx.arc(1, 1, 1,
@@ -467,13 +465,14 @@ var drawDisk = function (ctx, coords, radius, steps, colorCallback) {
     }
     ctx.restore();
 };
-var drawCircle = function(ctx, coords, radius, color, width) { // uses drawDisk
+
+function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
     width = width || 1;
     radius = [
         (radius[0] || radius) - width / 2,
         (radius[1] || radius) - width / 2
     ];
-    drawDisk(ctx, coords, radius, 1, function(ctx, angle){
+    drawDisk(ctx, coords, radius, 1, function (ctx, angle) {
         ctx.restore();
         ctx.lineWidth = width;
         ctx.strokeStyle = color || '#000';
