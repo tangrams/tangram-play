@@ -1,58 +1,52 @@
-;(function(window) {
-    'use strict';
+'use strict';
 
-    // Some common use variables
-    var startPoint;
-    var currentTarget;
-    var currentTargetWidth = 0;
-    var currentTargetHeight = 0;
+// Some common use variables
+var startPoint;
+var currentTarget;
+var currentTargetWidth = 0;
+var currentTargetHeight = 0;
 
-    // placeholders for later
-    var modal;
-    var hsv_map;
-    var hsv_mapCover;
-    var hsv_mapCursor;
-    var hsv_barBGLayer;
-    var hsv_barWhiteLayer;
-    var hsv_barCursors;
-    var hsv_barCursorsCln;
-    var hsv_Leftcursor;
-    var hsv_Rightcursor;
-    var colorDisc;
-    var colorDiscRadius;
-    var luminanceBar;
+// placeholders for later
+var modal;
+var hsv_map;
+var hsv_mapCover;
+var hsv_mapCursor;
+var hsv_barBGLayer;
+var hsv_barWhiteLayer;
+var hsv_barCursors;
+var hsv_barCursorsCln;
+var hsv_Leftcursor;
+var hsv_Rightcursor;
+var colorDisc;
+var colorDiscRadius;
+var luminanceBar;
 
-    var myColor;
+var myColor;
 
-    var Tools = {
-        addEvent: addEvent,
-        removeEvent: removeEvent,
-        getOrigin: getOrigin
-    }
+var documentFragmentCache;
 
-    var documentFragmentCache;
+var listeners = {};
 
-    var listeners = {};
-
-    function getOrigin(elm) {
-        var box = (elm.getBoundingClientRect) ? elm.getBoundingClientRect() : {top: 0, left: 0},
-            doc = elm && elm.ownerDocument,
-            body = doc.body,
-            win = doc.defaultView || doc.parentWindow || window,
-            docElem = doc.documentElement || body.parentNode,
-            clientTop  = docElem.clientTop  || body.clientTop  || 0, // border on html or body or both
-            clientLeft =  docElem.clientLeft || body.clientLeft || 0;
+const Tools = {
+    getOrigin (el) {
+        const box = (el.getBoundingClientRect) ? el.getBoundingClientRect() : { top: 0, left: 0 };
+        const doc = el && el.ownerDocument;
+        const body = doc.body;
+        const win = doc.defaultView || doc.parentWindow || window;
+        const docElem = doc.documentElement || body.parentNode;
+        const clientTop = docElem.clientTop || body.clientTop || 0; // border on html or body or both
+        const clientLeft = docElem.clientLeft || body.clientLeft || 0;
 
         return {
             left: box.left + (win.pageXOffset || docElem.scrollLeft) - clientLeft,
             top:  box.top  + (win.pageYOffset || docElem.scrollTop)  - clientTop
         };
-    }
-
-    function addEvent(obj, type, func) {
-        addEvent.cache = addEvent.cache || {
-            _get: function(obj, type, func, checkOnly) {
-                var cache = addEvent.cache[type] || [];
+    },
+    eventCache: null,
+    addEvent (obj, type, func) {
+        this.eventCache = this.eventCache || {
+            _get: (obj, type, func, checkOnly) => {
+                let cache = this.eventCache[type] || [];
 
                 for (var n = cache.length; n--; ) {
                     if (obj === cache[n].obj && '' + func === '' + cache[n].func) {
@@ -65,10 +59,10 @@
                     }
                 }
             },
-            _set: function(obj, type, func) {
-                var cache = addEvent.cache[type] = addEvent.cache[type] || [];
+            _set: (obj, type, func) => {
+                let cache = this.eventCache[type] = this.eventCache[type] || [];
 
-                if (addEvent.cache._get(obj, type, func, true)) {
+                if (this.eventCache._get(obj, type, func, true)) {
                     return true;
                 } else {
                     cache.push({
@@ -79,30 +73,31 @@
             }
         };
 
-        if (!func.name && addEvent.cache._set(obj, type, func) || typeof func !== 'function') {
+        if (!func.name && this.eventCache._set(obj, type, func) || typeof func !== 'function') {
             return;
         }
 
         if (obj.addEventListener) obj.addEventListener(type, func, false);
         else obj.attachEvent('on' + type, func);
-    }
-
-    function removeEvent(obj, type, func) {
+    },
+    removeEvent (obj, type, func) {
         if (typeof func !== 'function') return;
         if (!func.name) {
-            func = addEvent.cache._get(obj, type, func) || func;
+            func = this.eventCache._get(obj, type, func) || func;
         }
 
         if (obj.removeEventListener) obj.removeEventListener(type, func, false);
         else obj.detachEvent('on' + type, func);
     }
+};
 
-    function ColorPickerModal (color) {
-        this.color = color || '#000';
+export default class ColorPickerModal {
+    constructor (color = '#000') {
+        this.color = color;
         this.init();
     }
 
-    ColorPickerModal.prototype.init = function () {
+    init () {
         this.dom = this.createDom();
         this.el = this.dom.firstElementChild;
         // Temporarily refer to this outside of the object prototype for helper functions
@@ -128,7 +123,7 @@
         luminanceBar = modal.querySelector('.colorpicker-bar-luminance');
     }
 
-    ColorPickerModal.prototype.createDom = function () {
+    createDom () {
         /* Creates this DOM structure :-/
 
         <div id='cp' class='colorpicker-modal'>
@@ -207,7 +202,7 @@
         return documentFragmentCache.cloneNode(true);
     }
 
-    ColorPickerModal.prototype.presentModal = function (x, y) {
+    presentModal (x, y) {
         this.dom.firstElementChild.style.left = x + 'px';
         this.dom.firstElementChild.style.top = y + 'px';
         document.body.appendChild(this.dom);
@@ -263,228 +258,221 @@
 
     // Monkey patches for Thistle.js functionality
 
-    ColorPickerModal.prototype.on = function (type, callback) {
+    on (type, callback) {
         listeners[type] = callback;
     }
 
-    ColorPickerModal.prototype.getCSS = function () {
+    getCSS () {
         return '#' + this.lib.colors.HEX.toLowerCase();
     }
 
-    ColorPickerModal.prototype.getRGB = function () {
-        var RND = this.lib.colors.RND;
+    getRGB () {
+        const RND = this.lib.colors.RND;
         return {
             r: RND.rgb.r / 255,
             g: RND.rgb.g / 255,
             b: RND.rgb.b / 255
         }
     }
+}
 
-    /**
-     *  Gets CSS color strings for output
-     */
-    function getColorValues (color) {
-        var RND = color.RND;
 
-        return {
-            hex: '#' + color.HEX,
-            rgb: 'rgb(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ')',
-            rgba: 'rgba(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ',' + color.alpha + ')',
-            hsl: 'hsl(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ')',
-            hsla: 'hsla(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ',' + color.alpha + ')',
-        }
+/**
+ *  Gets CSS color strings for output
+ */
+function getColorValues (color) {
+    var RND = color.RND;
+
+    return {
+        hex: '#' + color.HEX,
+        rgb: 'rgb(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ')',
+        rgba: 'rgba(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ',' + color.alpha + ')',
+        hsl: 'hsl(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ')',
+        hsla: 'hsla(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ',' + color.alpha + ')',
+    }
+}
+
+/**
+ *  Returns true if the color is bright
+ *  Helps determine which contrasting text color you need
+ */
+function isThisColorBright (color) {
+    return (color.rgbaMixBlack.luminance > 0.22) ? true : false;
+}
+
+/**
+ *  Render color patch
+ */
+function renderTestPatch (color) {
+    var patch = modal.querySelector('.colorpicker-patch');
+    var RGB = color.RND.rgb;
+    patch.style.backgroundColor = 'rgb(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ')';
+};
+
+/* ---------------------------------- */
+/* ---- HSV-circle color picker ----- */
+/* ---------------------------------- */
+
+var hsvDown = function (e) { // mouseDown callback
+    var target = e.target || e.srcElement;
+
+    if (e.preventDefault) e.preventDefault();
+
+    currentTarget = target.id ? target : target.parentNode;
+    startPoint = Tools.getOrigin(currentTarget);
+    currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
+
+    Tools.addEvent(window, 'mousemove', hsvMove);
+    hsv_map.classList.add('colorpicker-no-cursor');
+    hsvMove(e);
+    startRender();
+};
+
+var hsvMove = function (e) { // mouseMove callback
+    var r, x, y, h, s;
+
+    if(currentTarget === hsv_map) { // the circle
+        r = currentTargetHeight / 2,
+        x = e.clientX - startPoint.left - r,
+        y = e.clientY - startPoint.top - r,
+        h = 360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0)),
+        s = (Math.sqrt((x * x) + (y * y)) / r) * 100;
+        myColor.setColor({h: h, s: s}, 'hsv');
+    } else if (currentTarget === hsv_barCursors) { // the luminanceBar
+        myColor.setColor({
+            v: (currentTargetHeight - (e.clientY - startPoint.top)) / currentTargetHeight * 100
+        }, 'hsv');
     }
 
-    /**
-     *  Returns true if the color is bright
-     *  Helps determine which contrasting text color you need
-     */
-    function isThisColorBright (color) {
-        return (color.rgbaMixBlack.luminance > 0.22) ? true : false;
+    // fire 'changed'
+    if (listeners.changed && typeof listeners.changed === 'function') {
+        listeners.changed();
     }
+};
 
-    /**
-     *  Render color patch
-     */
-    function renderTestPatch (color) {
-        var patch = modal.querySelector('.colorpicker-patch');
-        var RGB = color.RND.rgb;
-        patch.style.backgroundColor = 'rgb(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ')';
-    };
+var renderHSVPicker = function (color) {
+    var pi2 = Math.PI * 2;
+    var x = Math.cos(pi2 - color.hsv.h * pi2);
+    var y = Math.sin(pi2 - color.hsv.h * pi2);
+    var r = color.hsv.s * (colorDiscRadius - 5);
 
-    /* ---------------------------------- */
-    /* ---- HSV-circle color picker ----- */
-    /* ---------------------------------- */
+    hsv_mapCover.style.opacity = 1 - color.hsv.v;
+    // this is the faster version...
+    hsv_barWhiteLayer.style.opacity = 1 - color.hsv.s;
+    hsv_barBGLayer.style.backgroundColor = 'rgb(' +
+        color.hueRGB.r + ',' +
+        color.hueRGB.g + ',' +
+        color.hueRGB.b + ')';
 
-    var hsvDown = function (e) { // mouseDown callback
-        var target = e.target || e.srcElement;
+    hsv_mapCursor.style.cssText =
+        'left: ' + (x * r + colorDiscRadius) + 'px;' +
+        'top: ' + (y * r + colorDiscRadius) + 'px;' +
+        'border-color: ' + (color.RGBLuminance > 0.22 ? '#333;' : '#ddd');
 
-        if (e.preventDefault) e.preventDefault();
+    hsv_barCursors.className = color.RGBLuminance > 0.22 ? hsv_barCursorsCln + ' colorpicker-dark' : hsv_barCursorsCln;
+    if (hsv_Leftcursor) hsv_Leftcursor.style.top = hsv_Rightcursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
+};
 
-        currentTarget = target.id ? target : target.parentNode;
-        startPoint = Tools.getOrigin(currentTarget);
-        currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
+// generic function for drawing a canvas disc
+var drawDisk = function (ctx, coords, radius, steps, colorCallback) {
+    var x = coords[0] || coords; // coordinate on x-axis
+    var y = coords[1] || coords; // coordinate on y-axis
+    var a = radius[0] || radius; // radius on x-axis
+    var b = radius[1] || radius; // radius on y-axis
+    var angle = 360;
+    var rotate = 0;
+    var coef = Math.PI / 180;
 
-        Tools.addEvent(window, 'mousemove', hsvMove);
-        hsv_map.classList.add('colorpicker-no-cursor');
-        hsvMove(e);
-        startRender();
-    };
+    ctx.save();
+    ctx.translate(x - a, y - b);
+    ctx.scale(a, b);
 
-    var hsvMove = function (e) { // mouseMove callback
-        var r, x, y, h, s;
+    steps = (angle / steps) || 360;
 
-        if(currentTarget === hsv_map) { // the circle
-            r = currentTargetHeight / 2,
-            x = e.clientX - startPoint.left - r,
-            y = e.clientY - startPoint.top - r,
-            h = 360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0)),
-            s = (Math.sqrt((x * x) + (y * y)) / r) * 100;
-            myColor.setColor({h: h, s: s}, 'hsv');
-        } else if (currentTarget === hsv_barCursors) { // the luminanceBar
-            myColor.setColor({
-                v: (currentTargetHeight - (e.clientY - startPoint.top)) / currentTargetHeight * 100
-            }, 'hsv');
-        }
+    for (; angle > 0 ; angle -= steps){
+        ctx.beginPath();
+        if (steps !== 360) ctx.moveTo(1, 1); // stroke
+        ctx.arc(1, 1, 1,
+            (angle - (steps / 2) - 1) * coef,
+            (angle + (steps  / 2) + 1) * coef);
 
-        // fire 'changed'
-        if (listeners.changed && typeof listeners.changed === 'function') {
-            listeners.changed();
-        }
-    };
-
-    var renderHSVPicker = function (color) {
-        var pi2 = Math.PI * 2;
-        var x = Math.cos(pi2 - color.hsv.h * pi2);
-        var y = Math.sin(pi2 - color.hsv.h * pi2);
-        var r = color.hsv.s * (colorDiscRadius - 5);
-
-        hsv_mapCover.style.opacity = 1 - color.hsv.v;
-        // this is the faster version...
-        hsv_barWhiteLayer.style.opacity = 1 - color.hsv.s;
-        hsv_barBGLayer.style.backgroundColor = 'rgb(' +
-            color.hueRGB.r + ',' +
-            color.hueRGB.g + ',' +
-            color.hueRGB.b + ')';
-
-        hsv_mapCursor.style.cssText =
-            'left: ' + (x * r + colorDiscRadius) + 'px;' +
-            'top: ' + (y * r + colorDiscRadius) + 'px;' +
-            'border-color: ' + (color.RGBLuminance > 0.22 ? '#333;' : '#ddd');
-
-        hsv_barCursors.className = color.RGBLuminance > 0.22 ? hsv_barCursorsCln + ' colorpicker-dark' : hsv_barCursorsCln;
-        if (hsv_Leftcursor) hsv_Leftcursor.style.top = hsv_Rightcursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
-    };
-
-    // generic function for drawing a canvas disc
-    var drawDisk = function (ctx, coords, radius, steps, colorCallback) {
-        var x = coords[0] || coords; // coordinate on x-axis
-        var y = coords[1] || coords; // coordinate on y-axis
-        var a = radius[0] || radius; // radius on x-axis
-        var b = radius[1] || radius; // radius on y-axis
-        var angle = 360;
-        var rotate = 0;
-        var coef = Math.PI / 180;
-
-        ctx.save();
-        ctx.translate(x - a, y - b);
-        ctx.scale(a, b);
-
-        steps = (angle / steps) || 360;
-
-        for (; angle > 0 ; angle -= steps){
-            ctx.beginPath();
-            if (steps !== 360) ctx.moveTo(1, 1); // stroke
-            ctx.arc(1, 1, 1,
-                (angle - (steps / 2) - 1) * coef,
-                (angle + (steps  / 2) + 1) * coef);
-
-            if (colorCallback) {
-                colorCallback(ctx, angle);
-            } else {
-                ctx.fillStyle = 'black';
-                ctx.fill();
-            }
-        }
-        ctx.restore();
-    };
-    var drawCircle = function(ctx, coords, radius, color, width) { // uses drawDisk
-        width = width || 1;
-        radius = [
-            (radius[0] || radius) - width / 2,
-            (radius[1] || radius) - width / 2
-        ];
-        drawDisk(ctx, coords, radius, 1, function(ctx, angle){
-            ctx.restore();
-            ctx.lineWidth = width;
-            ctx.strokeStyle = color || '#000';
-            ctx.stroke();
-        });
-    };
-
-    /*
-     * This script is set up so it runs either with ColorPicker or with Color only.
-     * The difference here is that ColorPicker has a renderCallback that Color doesn't have
-     * therefor we have to set a render intervall in case it's missing...
-     * setInterval() can be exchanged to window.requestAnimationFrame(callBack)...
-     *
-     * If you want to render on mouseMove only then get rid of startRender(); in
-     * all the mouseDown callbacks and add doRender(myColor.colors); in all
-     * mouseMove callbacks. (Also remove all stopRender(); in mouseUp callbacks)
-    */
-    var doRender = function (color) {
-        renderHSVPicker(color);
-        renderTestPatch(color);
-        getColorValues(color);
-    };
-
-    var renderTimer;
-    var startRender = function (oneTime) {
-        if (oneTime) {
-            doRender(myColor.colors);
+        if (colorCallback) {
+            colorCallback(ctx, angle);
         } else {
-            renderTimer = window.requestAnimationFrame(repeatRender);
+            ctx.fillStyle = 'black';
+            ctx.fill();
         }
-    };
-    var repeatRender = function () {
+    }
+    ctx.restore();
+};
+var drawCircle = function(ctx, coords, radius, color, width) { // uses drawDisk
+    width = width || 1;
+    radius = [
+        (radius[0] || radius) - width / 2,
+        (radius[1] || radius) - width / 2
+    ];
+    drawDisk(ctx, coords, radius, 1, function(ctx, angle){
+        ctx.restore();
+        ctx.lineWidth = width;
+        ctx.strokeStyle = color || '#000';
+        ctx.stroke();
+    });
+};
+
+/*
+ * This script is set up so it runs either with ColorPicker or with Color only.
+ * The difference here is that ColorPicker has a renderCallback that Color doesn't have
+ * therefor we have to set a render intervall in case it's missing...
+ * setInterval() can be exchanged to window.requestAnimationFrame(callBack)...
+ *
+ * If you want to render on mouseMove only then get rid of startRender(); in
+ * all the mouseDown callbacks and add doRender(myColor.colors); in all
+ * mouseMove callbacks. (Also remove all stopRender(); in mouseUp callbacks)
+*/
+var doRender = function (color) {
+    renderHSVPicker(color);
+    renderTestPatch(color);
+    getColorValues(color);
+};
+
+var renderTimer;
+var startRender = function (oneTime) {
+    if (oneTime) {
         doRender(myColor.colors);
+    } else {
         renderTimer = window.requestAnimationFrame(repeatRender);
-    };
-    var stopRender = function () {
-        window.cancelAnimationFrame(renderTimer);
-    };
+    }
+};
+var repeatRender = function () {
+    doRender(myColor.colors);
+    renderTimer = window.requestAnimationFrame(repeatRender);
+};
+var stopRender = function () {
+    window.cancelAnimationFrame(renderTimer);
+};
 
-    function _onClickOutsideElement (event) {
-        var target = event.target;
+function _onClickOutsideElement (event) {
+    var target = event.target;
 
-        while (target !== document.documentElement && !target.classList.contains('colorpicker-modal')) {
-            target = target.parentNode;
-        }
-
-        if (!target.classList.contains('colorpicker-modal')) {
-            _loseModalFocus();
-            window.removeEventListener('click', _onClickOutsideElement, false);
-        }
+    while (target !== document.documentElement && !target.classList.contains('colorpicker-modal')) {
+        target = target.parentNode;
     }
 
-    function _loseModalFocus () {
-        _removeModal();
-    }
-
-    function _removeModal () {
-        var modal = document.querySelector('.colorpicker-modal');
-        if (modal && modal.parentNode) {
-            modal.parentNode.removeChild(modal);
-        }
-
+    if (!target.classList.contains('colorpicker-modal')) {
+        _loseModalFocus();
         window.removeEventListener('click', _onClickOutsideElement, false);
     }
+}
 
-    // Export to browserify or window
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        module.exports = ColorPickerModal;
-    } else if (typeof window !== 'undefined') {
-        window.ColorPickerModal = ColorPickerModal;
+function _loseModalFocus () {
+    _removeModal();
+}
+
+function _removeModal () {
+    var modal = document.querySelector('.colorpicker-modal');
+    if (modal && modal.parentNode) {
+        modal.parentNode.removeChild(modal);
     }
 
-})(window);
+    window.removeEventListener('click', _onClickOutsideElement, false);
+}

@@ -2,6 +2,7 @@
 /* global thistle */
 
 import Widget from './Widget.js';
+import ColorPickerModal from './ColorPickerModal.js';
 import { toCSS } from '../../core/common.js';
 
 export default class ColorPicker extends Widget {
