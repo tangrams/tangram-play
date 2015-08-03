@@ -1,7 +1,7 @@
 'use strict';
 
 import LocalStorage from '../addons/LocalStorage.js';
-import { saveAS } from '../vendor/FileSaver.min.js';
+import { saveAs } from '../vendor/FileSaver.min.js';
 
 var take_screenshot = false;
 
