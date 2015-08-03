@@ -11,7 +11,7 @@ var startPoint;
 var currentTarget;
 var currentTargetHeight = 0;
 
-var documentFragmentCache;
+var domCache;
 
 var listeners = {};
 
@@ -99,8 +99,8 @@ export default class ColorPickerModal {
     }
 
     init () {
-        this.dom = this.createDom();
-        this.el = this.dom.firstElementChild;
+        this.dom = {};
+        this.el = this.createDom();
 
         this.lib = new Colors({
             color: this.color
@@ -145,8 +145,7 @@ export default class ColorPickerModal {
         // Creates DOM structure for the widget.
         // This also caches the DOM nodes in memory so that it does
         // not need to be re-created on subsequent inits.
-        if (!documentFragmentCache) {
-            documentFragmentCache = document.createDocumentFragment();
+        if (!domCache) {
             let modal = document.createElement('div');
             let patch = document.createElement('div');
             let map = document.createElement('div');
@@ -193,17 +192,18 @@ export default class ColorPickerModal {
             map.appendChild(barcursors);
             barcursors.appendChild(leftcursor);
             barcursors.appendChild(rightcursor);
-            documentFragmentCache.appendChild(modal);
+
+            domCache = modal;
         }
 
         // Returns a clone of the cached document fragment
-        return documentFragmentCache.cloneNode(true);
+        return domCache.cloneNode(true);
     }
 
     presentModal (x, y) {
         this.el.style.left = x + 'px';
         this.el.style.top = y + 'px';
-        document.body.appendChild(this.dom);
+        document.body.appendChild(this.el);
 
         // Listen for interaction on the HSV map
         Tools.addEvent(this.dom.hsvMap, 'mousedown', this.hsvDown.bind(this));
