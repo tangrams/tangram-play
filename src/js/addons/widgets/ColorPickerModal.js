@@ -1,5 +1,10 @@
 'use strict';
 
+// Import Greensock (GSAP)
+import 'gsap/src/uncompressed/Tweenlite.js';
+import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
+import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
+
 // Some common use variables
 var startPoint;
 var currentTarget;
@@ -109,7 +114,7 @@ export default class ColorPickerModal {
 
         this.lib = myColor;
 
-        hsv_map = modal.querySelector('.colorpicker-hsv-map');
+        hsv_map = this.el.querySelector('.colorpicker-hsv-map');
         hsv_mapCover = hsv_map.children[1]; // well...
         hsv_mapCursor = hsv_map.children[2];
         hsv_barBGLayer = hsv_map.children[3];
@@ -119,8 +124,8 @@ export default class ColorPickerModal {
         hsv_Leftcursor = hsv_barCursors.children[0];
         hsv_Rightcursor = hsv_barCursors.children[1];
 
-        colorDisc = modal.querySelector('.colorpicker-disc');
-        luminanceBar = modal.querySelector('.colorpicker-bar-luminance');
+        colorDisc = this.el.querySelector('.colorpicker-disc');
+        luminanceBar = this.el.querySelector('.colorpicker-bar-luminance');
     }
 
     createDom () {
@@ -219,6 +224,19 @@ export default class ColorPickerModal {
         window.setTimeout(function () {
             window.addEventListener('click', _onClickOutsideElement, false);
         }, 0);
+
+        // (experimental)
+        // Allows color picker modal to be draggable & reposition-able on screen.
+        // TODO: Better / cacheable DOM queries
+        // TODO: Should dragging indicator be more obvious?
+        // TODO: Fix a bug where dragging to edge of screen can close the colorpicker
+        // TODO: Consider whether clicking outside a modal can close the colorpicker
+        //       once it's been dragged elsewhere, and then how it can be closed then.
+        this.draggable = Draggable.create(this.el, {
+            type: 'x, y',
+            bounds: document.querySelector('.tp-core-container'),
+            trigger: this.el.querySelector('.colorpicker-patch')
+        });
 
         if (colorDisc.getContext) {
             drawDisk( // HSV color wheel with white center
