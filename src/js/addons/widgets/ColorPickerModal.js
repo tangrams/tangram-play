@@ -7,13 +7,10 @@ import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
 import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
 
 // Some common use variables
-var startPoint;
-var currentTarget;
-var currentTargetHeight = 0;
-
-var domCache;
-
-var listeners = {};
+let startPoint;
+let currentTarget;
+let currentTargetHeight = 0;
+let domCache;
 
 const Tools = {
     getOrigin (el) {
@@ -31,6 +28,17 @@ const Tools = {
         };
     },
     eventCache: null,
+    addEvent (element, event, callback, caller) {
+        var handler;
+        element.addEventListener(event, handler = function (e) {
+            callback.call(caller, e);
+        }, false);
+        return handler;
+    },
+    removeEvent (element, event, callback) {
+        element.removeEventListener(event, callback, false);
+    },
+    /*
     addEvent (obj, type, func) {
         this.eventCache = this.eventCache || {
             _get: (obj, type, func, checkOnly) => {
@@ -89,6 +97,7 @@ const Tools = {
             obj.detachEvent('on' + type, func);
         }
     }
+    */
 };
 
 export default class ColorPickerModal {
@@ -99,6 +108,7 @@ export default class ColorPickerModal {
     }
 
     init () {
+        this.listeners = {};
         this.dom = {};
         this.el = this.createDom();
 
@@ -206,19 +216,18 @@ export default class ColorPickerModal {
         document.body.appendChild(this.el);
 
         // Listen for interaction on the HSV map
-        Tools.addEvent(this.dom.hsvMap, 'mousedown', this.hsvDown.bind(this));
+        this.hsvDownHandler = Tools.addEvent(this.dom.hsvMap, 'mousedown', this.hsvDown, this);
 
         // Listen for interaction outside of the modal
         // TODO: Should this also be added through Tools ?
-        window.setTimeout(function () {
-            document.body.addEventListener('click', _onClickOutsideElement, false);
+        window.setTimeout(() => {
+            this.onClickOutsideHandler = Tools.addEvent(document.body, 'click', this.onClickOutside, this);
         }, 0);
 
         // (experimental)
         // Allows color picker modal to be draggable & reposition-able on screen.
         // TODO: Better / cacheable DOM queries
         // TODO: Should dragging indicator be more obvious?
-        // TODO: Fix a bug where dragging to edge of screen can close the colorpicker
         // TODO: Consider whether clicking outside a modal can close the colorpicker
         //       once it's been dragged elsewhere, and then how it can be closed then.
         this.draggable = Draggable.create(this.el, {
@@ -312,8 +321,8 @@ export default class ColorPickerModal {
         currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
 
         // Starts listening for mousemove and mouseup events
-        Tools.addEvent(window, 'mousemove', this.hsvMove.bind(this));
-        Tools.addEvent(window, 'mouseup', this.hsvUp.bind(this));
+        this.hsvMoveHandler = Tools.addEvent(window, 'mousemove', this.hsvMove, this);
+        this.hsvUpHandler = Tools.addEvent(window, 'mouseup', this.hsvUp, this);
 
         this.hsvMove(event);
 
@@ -341,8 +350,8 @@ export default class ColorPickerModal {
         }
 
         // fire 'changed'
-        if (listeners.changed && typeof listeners.changed === 'function') {
-            listeners.changed();
+        if (this.listeners.changed && typeof this.listeners.changed === 'function') {
+            this.listeners.changed();
         }
     }
 
@@ -351,10 +360,57 @@ export default class ColorPickerModal {
         // Stops rendering and returns mouse cursor
         this.renderer.stop();
         this.dom.hsvMap.classList.remove('colorpicker-no-cursor');
+        this.destroyEvents();
+    }
 
-        // Destroy event listeners
-        Tools.removeEvent(window, 'mousemove', this.hsvMove.bind(this));
-        Tools.removeEvent(window, 'mouseup', this.hsvUp.bind(this));
+    onClickOutside (event) {
+        // HACKY!!
+        // A click event fires on the body after mousedown - mousemove, simultaneously with
+        // mouseup. So if someone started a mouse action inside the color picker modal and then
+        // mouseup'd outside of it, it fires a click event on the body, thus, causing the
+        // modal to disappear when the user does not expect it to, since the mouse down event
+        // did not start outside the modal.
+        // There might be (or should be) a better way to track this, but right now, just cancel
+        // the event if the target ends up being on the body directly rather than on one of the
+        // other child elements.
+        if (event.target === document.body) {
+            return;
+        }
+        // end this specific hacky part
+
+        let target = event.target;
+
+        while (target !== document.documentElement && !target.classList.contains('colorpicker-modal')) {
+            target = target.parentNode;
+        }
+
+        if (!target.classList.contains('colorpicker-modal')) {
+            this.removeModal();
+        }
+    }
+
+    /**
+     *  Removes modal from DOM and destroys related event listeners
+     */
+    removeModal () {
+        if (this.el && this.el.parentNode) {
+            this.el.parentNode.removeChild(this.el);
+        }
+        this.destroyEvents();
+
+        // Destroy event listeners that should not exist when modal is gone
+        Tools.removeEvent(this.dom.hsvMap, 'mousedown', this.hsvDownHandler);
+        this.hsvDownHandler = null;
+        Tools.removeEvent(document.body, 'click', this.onClickOutsideHandler);
+        this.onClickOutsideHandler = null;
+    }
+
+    // Destroy event listeners that exist during mousedown colorpicker interaction
+    destroyEvents () {
+        Tools.removeEvent(window, 'mousemove', this.hsvMoveHandler);
+        Tools.removeEvent(window, 'mouseup', this.hsvUpHandler);
+        this.hsvMoveHandler = null;
+        this.hsvUpHandler = null;
     }
 
     /**
@@ -409,7 +465,7 @@ export default class ColorPickerModal {
      *  Execute a callback for a fired event listener
      */
     on (type, callback) {
-        listeners[type] = callback;
+        this.listeners[type] = callback;
     }
 
     /**
@@ -507,41 +563,4 @@ function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
         ctx.strokeStyle = color || '#000';
         ctx.stroke();
     });
-}
-
-function _onClickOutsideElement (event) {
-    // HACKY!!
-    // A click event fires on the body after mousedown - mousemove, simultaneously with
-    // mouseup. So if someone started a mouse action inside the color picker modal and then
-    // mouseup'd outside of it, it fires a click event on the body, thus, causing the
-    // modal to disappear when the user does not expect it to, since the mouse down event
-    // did not start outside the modal.
-    // There might be (or should be) a better way to track this, but right now, just cancel
-    // the event if the target ends up being on the body directly rather than on one of the
-    // other child elements.
-    if (event.target === document.body) {
-        return;
-    }
-
-    var target = event.target;
-
-    while (target !== document.documentElement && !target.classList.contains('colorpicker-modal')) {
-        target = target.parentNode;
-    }
-
-    if (!target.classList.contains('colorpicker-modal')) {
-        _loseModalFocus();
-        document.body.removeEventListener('click', _onClickOutsideElement, false);
-    }
-}
-
-function _loseModalFocus () {
-    _removeModal();
-}
-
-function _removeModal () {
-    let modal = document.querySelector('.colorpicker-modal');
-    if (modal && modal.parentNode) {
-        modal.parentNode.removeChild(modal);
-    }
 }
