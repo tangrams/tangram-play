@@ -12,7 +12,6 @@ var currentTargetWidth = 0;
 var currentTargetHeight = 0;
 
 // placeholders for later
-var modal;
 var hsv_map;
 var hsv_mapCover;
 var hsv_mapCursor;
@@ -100,13 +99,12 @@ export default class ColorPickerModal {
     constructor (color = '#000') {
         this.color = color;
         this.init();
+        this.initRenderer();
     }
 
     init () {
         this.dom = this.createDom();
         this.el = this.dom.firstElementChild;
-        // Temporarily refer to this outside of the object prototype for helper functions
-        modal = this.el;
 
         myColor = new Colors({
             color: this.color
@@ -154,20 +152,20 @@ export default class ColorPickerModal {
         // not need to be re-created on subsequent inits.
         if (!documentFragmentCache) {
             documentFragmentCache = document.createDocumentFragment();
-            var modal = document.createElement('div');
-            var patch = document.createElement('div');
-            var map = document.createElement('div');
-            var disc = document.createElement('canvas');
-            var cover = document.createElement('div');
-            var cursor = document.createElement('div');
-            var barbg = document.createElement('div');
-            var barwhite = document.createElement('div');
-            var barlum = document.createElement('canvas');
-            var barcursors = document.createElement('div');
-            var leftcursor = document.createElement('div');
-            var rightcursor = document.createElement('div');
+            let modal = document.createElement('div');
+            let patch = document.createElement('div');
+            let map = document.createElement('div');
+            let disc = document.createElement('canvas');
+            let cover = document.createElement('div');
+            let cursor = document.createElement('div');
+            let barbg = document.createElement('div');
+            let barwhite = document.createElement('div');
+            let barlum = document.createElement('canvas');
+            let barcursors = document.createElement('div');
+            let leftcursor = document.createElement('div');
+            let rightcursor = document.createElement('div');
 
-            var CSS_PREFIX = 'colorpicker' + '-';
+            const CSS_PREFIX = 'colorpicker' + '-';
 
             modal.className = CSS_PREFIX + 'modal';
             patch.className = CSS_PREFIX + 'patch';
@@ -214,11 +212,11 @@ export default class ColorPickerModal {
 
         colorDiscRadius = colorDisc.offsetHeight / 2;
 
-        Tools.addEvent(hsv_map, 'mousedown', hsvDown); // event delegation
-        Tools.addEvent(window, 'mouseup', function () {
+        Tools.addEvent(hsv_map, 'mousedown', this.hsvDown.bind(this)); // event delegation
+        Tools.addEvent(window, 'mouseup', () => {
             Tools.removeEvent (window, 'mousemove', hsvMove);
             hsv_map.classList.remove('colorpicker-no-cursor');
-            stopRender();
+            this.renderer.stop();
         });
 
         window.setTimeout(function () {
@@ -271,19 +269,85 @@ export default class ColorPickerModal {
             ctx.fillRect(0, 0, 30, 200);
         }
 
-        doRender(this.lib.colors);
+        this.renderer.tick();
+    }
+
+    /**
+     *  This initializes the renderer. It uses requestAnimationFrame() to
+     *  smoothly render changes in the color picker as user interacts with it.
+     */
+    initRenderer () {
+        this.renderer = {
+            // Stores a reference to the animation rendering loop.
+            frame: null,
+            // Animates one frame of activity. Call this directly if you do not
+            // need it to go into the animation rendering loop.
+            tick: () => {
+                this.renderTestPatch();
+                renderHSVPicker(this.lib.colors);
+            },
+            // Starts animation rendering loop
+            start: () => {
+                this.renderer.tick();
+                this.renderer.frame = window.requestAnimationFrame(this.renderer.start);
+            },
+            // Stops animation rendering loop
+            stop: () => {
+                window.cancelAnimationFrame(this.renderer.frame);
+            }
+        }
+    }
+
+    /* ---------------------------------- */
+    /* ---- HSV-circle color picker ----- */
+    /* ---------------------------------- */
+
+    hsvDown (e) { // mouseDown callback
+        var target = e.target || e.srcElement;
+
+        if (e.preventDefault) e.preventDefault();
+
+        currentTarget = target.id ? target : target.parentNode;
+        startPoint = Tools.getOrigin(currentTarget);
+        currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
+
+        Tools.addEvent(window, 'mousemove', hsvMove);
+        hsv_map.classList.add('colorpicker-no-cursor');
+        hsvMove(e);
+
+        this.renderer.start();
+    }
+
+    /**
+     *  Render color patch
+     */
+    renderTestPatch () {
+        let patch = this.el.querySelector('.colorpicker-patch');
+        let color = this.lib.colors;
+        let RGB = color.RND.rgb;
+        patch.style.backgroundColor = 'rgb(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ')';
     }
 
     // Monkey patches for Thistle.js functionality
 
+    /**
+     *  Execute a callback for a fired event listener
+     */
     on (type, callback) {
         listeners[type] = callback;
     }
 
+    /**
+     *  Returns CSS hex value of the current color
+     */
     getCSS () {
         return '#' + this.lib.colors.HEX.toLowerCase();
     }
 
+    /**
+     *  Returns RGB object of the current color
+     *  TODO: Streamline format between end use and what this returns
+     */
     getRGB () {
         const RND = this.lib.colors.RND;
         return {
@@ -292,59 +356,39 @@ export default class ColorPickerModal {
             b: RND.rgb.b / 255
         }
     }
-}
 
+    // Not from Thistle.js, but example helper functions for getting color values.
+    // These are retained from old ColorPicker - not currently used anywhere...
 
-/**
- *  Gets CSS color strings for output
- */
-function getColorValues (color) {
-    var RND = color.RND;
+    /**
+     *  Gets CSS color strings for output
+     */
+    getColorValues () {
+        const color = this.lib.colors;
+        const RND = this.lib.colors.RND;
 
-    return {
-        hex: '#' + color.HEX,
-        rgb: 'rgb(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ')',
-        rgba: 'rgba(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ',' + color.alpha + ')',
-        hsl: 'hsl(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ')',
-        hsla: 'hsla(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ',' + color.alpha + ')',
+        return {
+            hex: '#' + color.HEX,
+            rgb: 'rgb(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ')',
+            rgba: 'rgba(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ',' + color.alpha + ')',
+            hsl: 'hsl(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ')',
+            hsla: 'hsla(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ',' + color.alpha + ')',
+        }
+    }
+
+    /**
+     *  Returns true if the color is bright
+     *  Helps determine which contrasting text color you need
+     */
+    isBright () {
+        return (this.lib.colors.rgbaMixBlack.luminance > 0.22) ? true : false;
     }
 }
 
-/**
- *  Returns true if the color is bright
- *  Helps determine which contrasting text color you need
- */
-function isThisColorBright (color) {
-    return (color.rgbaMixBlack.luminance > 0.22) ? true : false;
-}
-
-/**
- *  Render color patch
- */
-function renderTestPatch (color) {
-    var patch = modal.querySelector('.colorpicker-patch');
-    var RGB = color.RND.rgb;
-    patch.style.backgroundColor = 'rgb(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ')';
-};
 
 /* ---------------------------------- */
 /* ---- HSV-circle color picker ----- */
 /* ---------------------------------- */
-
-var hsvDown = function (e) { // mouseDown callback
-    var target = e.target || e.srcElement;
-
-    if (e.preventDefault) e.preventDefault();
-
-    currentTarget = target.id ? target : target.parentNode;
-    startPoint = Tools.getOrigin(currentTarget);
-    currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
-
-    Tools.addEvent(window, 'mousemove', hsvMove);
-    hsv_map.classList.add('colorpicker-no-cursor');
-    hsvMove(e);
-    startRender();
-};
 
 var hsvMove = function (e) { // mouseMove callback
     var r, x, y, h, s;
@@ -437,38 +481,6 @@ var drawCircle = function(ctx, coords, radius, color, width) { // uses drawDisk
     });
 };
 
-/*
- * This script is set up so it runs either with ColorPicker or with Color only.
- * The difference here is that ColorPicker has a renderCallback that Color doesn't have
- * therefor we have to set a render intervall in case it's missing...
- * setInterval() can be exchanged to window.requestAnimationFrame(callBack)...
- *
- * If you want to render on mouseMove only then get rid of startRender(); in
- * all the mouseDown callbacks and add doRender(myColor.colors); in all
- * mouseMove callbacks. (Also remove all stopRender(); in mouseUp callbacks)
-*/
-var doRender = function (color) {
-    renderHSVPicker(color);
-    renderTestPatch(color);
-    getColorValues(color);
-};
-
-var renderTimer;
-var startRender = function (oneTime) {
-    if (oneTime) {
-        doRender(myColor.colors);
-    } else {
-        renderTimer = window.requestAnimationFrame(repeatRender);
-    }
-};
-var repeatRender = function () {
-    doRender(myColor.colors);
-    renderTimer = window.requestAnimationFrame(repeatRender);
-};
-var stopRender = function () {
-    window.cancelAnimationFrame(renderTimer);
-};
-
 function _onClickOutsideElement (event) {
     var target = event.target;
 
@@ -487,7 +499,7 @@ function _loseModalFocus () {
 }
 
 function _removeModal () {
-    var modal = document.querySelector('.colorpicker-modal');
+    let modal = document.querySelector('.colorpicker-modal');
     if (modal && modal.parentNode) {
         modal.parentNode.removeChild(modal);
     }
