@@ -11,20 +11,6 @@ var currentTarget;
 var currentTargetWidth = 0;
 var currentTargetHeight = 0;
 
-// placeholders for later
-var hsv_map;
-var hsv_mapCover;
-var hsv_mapCursor;
-var hsv_barBGLayer;
-var hsv_barWhiteLayer;
-var hsv_barCursors;
-var hsv_barCursorsCln;
-var hsv_Leftcursor;
-var hsv_Rightcursor;
-var colorDisc;
-var colorDiscRadius;
-var luminanceBar;
-
 var documentFragmentCache;
 
 var listeners = {};
@@ -108,18 +94,19 @@ export default class ColorPickerModal {
             color: this.color
         });
 
-        hsv_map = this.el.querySelector('.colorpicker-hsv-map');
-        hsv_mapCover = hsv_map.children[1]; // well...
-        hsv_mapCursor = hsv_map.children[2];
-        hsv_barBGLayer = hsv_map.children[3];
-        hsv_barWhiteLayer = hsv_map.children[4];
-        hsv_barCursors = hsv_map.children[6];
-        hsv_barCursorsCln = hsv_barCursors.className;
-        hsv_Leftcursor = hsv_barCursors.children[0];
-        hsv_Rightcursor = hsv_barCursors.children[1];
+        // TODO: Improve these references
+        // The caching of references is likely to be important for speed
+        this.dom.hsvMap = this.el.querySelector('.colorpicker-hsv-map');
+        this.dom.hsvMapCover = this.dom.hsvMap.children[1]; // well...
+        this.dom.hsvMapCursor = this.dom.hsvMap.children[2];
+        this.dom.hsvBarBGLayer = this.dom.hsvMap.children[3];
+        this.dom.hsvBarWhiteLayer = this.dom.hsvMap.children[4];
+        this.dom.hsvBarCursors = this.dom.hsvMap.children[6];
+        this.dom.hsvLeftCursor = this.dom.hsvBarCursors.children[0];
+        this.dom.hsvRightCursor = this.dom.hsvBarCursors.children[1];
 
-        colorDisc = this.el.querySelector('.colorpicker-disc');
-        luminanceBar = this.el.querySelector('.colorpicker-bar-luminance');
+        this.dom.colorDisc = this.el.querySelector('.colorpicker-disc');
+        this.dom.luminanceBar = this.el.querySelector('.colorpicker-bar-luminance');
     }
 
     createDom () {
@@ -206,12 +193,10 @@ export default class ColorPickerModal {
         this.dom.firstElementChild.style.top = y + 'px';
         document.body.appendChild(this.dom);
 
-        colorDiscRadius = colorDisc.offsetHeight / 2;
-
-        Tools.addEvent(hsv_map, 'mousedown', this.hsvDown.bind(this)); // event delegation
+        Tools.addEvent(this.dom.hsvMap, 'mousedown', this.hsvDown.bind(this)); // event delegation
         Tools.addEvent(window, 'mouseup', () => {
             Tools.removeEvent (window, 'mousemove', this.hsvMove.bind(this));
-            hsv_map.classList.remove('colorpicker-no-cursor');
+            this.dom.hsvMap.classList.remove('colorpicker-no-cursor');
             this.renderer.stop();
         });
 
@@ -232,14 +217,16 @@ export default class ColorPickerModal {
             trigger: this.el.querySelector('.colorpicker-patch')
         });
 
+        let colorDisc = this.dom.colorDisc;
+
         if (colorDisc.getContext) {
             drawDisk( // HSV color wheel with white center
                 colorDisc.getContext("2d"),
                 [colorDisc.width / 2, colorDisc.height / 2],
                 [colorDisc.width / 2 - 1, colorDisc.height / 2 - 1],
                 360,
-                function(ctx, angle) {
-                    var gradient = ctx.createRadialGradient(1, 1, 1, 1, 1, 0);
+                function (ctx, angle) {
+                    let gradient = ctx.createRadialGradient(1, 1, 1, 1, 1, 0);
                     gradient.addColorStop(0, 'hsl(' + (360 - angle + 0) + ', 100%, 50%)');
                     gradient.addColorStop(1, "#FFFFFF");
 
@@ -254,9 +241,10 @@ export default class ColorPickerModal {
                 '#303030',
                 2
             );
+
             // draw the luminanceBar bar
-            var ctx = luminanceBar.getContext('2d');
-            var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+            let ctx = this.dom.luminanceBar.getContext('2d');
+            let gradient = ctx.createLinearGradient(0, 0, 0, 200);
 
             gradient.addColorStop(0, 'transparent');
             gradient.addColorStop(1, 'black');
@@ -311,7 +299,7 @@ export default class ColorPickerModal {
         currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
 
         Tools.addEvent(window, 'mousemove', this.hsvMove.bind(this));
-        hsv_map.classList.add('colorpicker-no-cursor');
+        this.dom.hsvMap.classList.add('colorpicker-no-cursor');
         this.hsvMove(event);
 
         this.renderer.start();
@@ -320,14 +308,14 @@ export default class ColorPickerModal {
     hsvMove (e) { // mouseMove callback
         let r, x, y, h, s;
 
-        if (currentTarget === hsv_map) { // the circle
+        if (currentTarget === this.dom.hsvMap) { // the circle
             r = currentTargetHeight / 2,
             x = e.clientX - startPoint.left - r,
             y = e.clientY - startPoint.top - r,
             h = 360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0)),
             s = (Math.sqrt((x * x) + (y * y)) / r) * 100;
             this.lib.setColor({h: h, s: s}, 'hsv');
-        } else if (currentTarget === hsv_barCursors) { // the luminanceBar
+        } else if (currentTarget === this.dom.hsvBarCursors) { // the luminanceBar
             this.lib.setColor({
                 v: (currentTargetHeight - (e.clientY - startPoint.top)) / currentTargetHeight * 100
             }, 'hsv');
@@ -354,26 +342,30 @@ export default class ColorPickerModal {
      */
     renderHSVPicker () {
         let color = this.lib.colors;
+        let colorDiscRadius = this.dom.colorDisc.offsetHeight / 2;
         let pi2 = Math.PI * 2;
         let x = Math.cos(pi2 - color.hsv.h * pi2);
         let y = Math.sin(pi2 - color.hsv.h * pi2);
         let r = color.hsv.s * (colorDiscRadius - 5);
 
-        hsv_mapCover.style.opacity = 1 - color.hsv.v;
+        this.dom.hsvMapCover.style.opacity = 1 - color.hsv.v;
         // this is the faster version...
-        hsv_barWhiteLayer.style.opacity = 1 - color.hsv.s;
-        hsv_barBGLayer.style.backgroundColor = 'rgb(' +
+        this.dom.hsvBarWhiteLayer.style.opacity = 1 - color.hsv.s;
+        this.dom.hsvBarBGLayer.style.backgroundColor = 'rgb(' +
             color.hueRGB.r + ',' +
             color.hueRGB.g + ',' +
             color.hueRGB.b + ')';
 
-        hsv_mapCursor.style.cssText =
+        this.dom.hsvMapCursor.style.cssText =
             'left: ' + (x * r + colorDiscRadius) + 'px;' +
             'top: ' + (y * r + colorDiscRadius) + 'px;' +
             'border-color: ' + (color.RGBLuminance > 0.22 ? '#333;' : '#ddd');
 
-        hsv_barCursors.className = color.RGBLuminance > 0.22 ? hsv_barCursorsCln + ' colorpicker-dark' : hsv_barCursorsCln;
-        if (hsv_Leftcursor) hsv_Leftcursor.style.top = hsv_Rightcursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
+        if (color.RGBLuminance > 0.22) {
+            this.dom.hsvBarCursors.classList.add('colorpicker-dark');
+        }
+
+        if (this.dom.hsvLeftCursor) this.dom.hsvLeftCursor.style.top = this.dom.hsvRightCursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
     }
 
     // Monkey patches for Thistle.js functionality
