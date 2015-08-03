@@ -189,19 +189,17 @@ export default class ColorPickerModal {
     }
 
     presentModal (x, y) {
-        this.dom.firstElementChild.style.left = x + 'px';
-        this.dom.firstElementChild.style.top = y + 'px';
+        this.el.style.left = x + 'px';
+        this.el.style.top = y + 'px';
         document.body.appendChild(this.dom);
 
-        Tools.addEvent(this.dom.hsvMap, 'mousedown', this.hsvDown.bind(this)); // event delegation
-        Tools.addEvent(window, 'mouseup', () => {
-            Tools.removeEvent (window, 'mousemove', this.hsvMove.bind(this));
-            this.dom.hsvMap.classList.remove('colorpicker-no-cursor');
-            this.renderer.stop();
-        });
+        // Listen for interaction on the HSV map
+        Tools.addEvent(this.dom.hsvMap, 'mousedown', this.hsvDown.bind(this));
 
+        // Listen for interaction outside of the modal
+        // TODO: Should this also be added through Tools ?
         window.setTimeout(function () {
-            window.addEventListener('click', _onClickOutsideElement, false);
+            document.body.addEventListener('click', _onClickOutsideElement, false);
         }, 0);
 
         // (experimental)
@@ -289,7 +287,8 @@ export default class ColorPickerModal {
     /* ---- HSV-circle color picker ----- */
     /* ---------------------------------- */
 
-    hsvDown (event) { // mouseDown callback
+    // Actions when user mouses down on HSV color map
+    hsvDown (event) {
         let target = event.target || event.srcElement;
 
         if (event.preventDefault) event.preventDefault();
@@ -298,26 +297,31 @@ export default class ColorPickerModal {
         startPoint = Tools.getOrigin(currentTarget);
         currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
 
+        // Starts listening for mousemove and mouseup events
         Tools.addEvent(window, 'mousemove', this.hsvMove.bind(this));
-        this.dom.hsvMap.classList.add('colorpicker-no-cursor');
+        Tools.addEvent(window, 'mouseup', this.hsvUp.bind(this));
+
         this.hsvMove(event);
 
+        // Hides mouse cursor and begins rendering loop
+        this.dom.hsvMap.classList.add('colorpicker-no-cursor');
         this.renderer.start();
     }
 
-    hsvMove (e) { // mouseMove callback
+    // Actions when user moves around on HSV color map
+    hsvMove (event) {
         let r, x, y, h, s;
 
         if (currentTarget === this.dom.hsvMap) { // the circle
             r = currentTargetHeight / 2,
-            x = e.clientX - startPoint.left - r,
-            y = e.clientY - startPoint.top - r,
+            x = event.clientX - startPoint.left - r,
+            y = event.clientY - startPoint.top - r,
             h = 360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0)),
             s = (Math.sqrt((x * x) + (y * y)) / r) * 100;
             this.lib.setColor({h: h, s: s}, 'hsv');
         } else if (currentTarget === this.dom.hsvBarCursors) { // the luminanceBar
             this.lib.setColor({
-                v: (currentTargetHeight - (e.clientY - startPoint.top)) / currentTargetHeight * 100
+                v: (currentTargetHeight - (event.clientY - startPoint.top)) / currentTargetHeight * 100
             }, 'hsv');
         }
 
@@ -325,6 +329,17 @@ export default class ColorPickerModal {
         if (listeners.changed && typeof listeners.changed === 'function') {
             listeners.changed();
         }
+    }
+
+    // Actions when user mouses up on HSV color map
+    hsvUp (event) {
+        // Stops rendering and returns mouse cursor
+        this.renderer.stop();
+        this.dom.hsvMap.classList.remove('colorpicker-no-cursor');
+
+        // Destroy event listeners
+        Tools.removeEvent(window, 'mousemove', this.hsvMove.bind(this));
+        Tools.removeEvent(window, 'mouseup', this.hsvUp.bind(this));
     }
 
     /**
@@ -473,6 +488,17 @@ function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
 };
 
 function _onClickOutsideElement (event) {
+    // HACKY!!
+    // A click event fires on the body after mousedown - mousemove, simultaneously with
+    // mouseup. So if someone started a mouse action inside the color picker modal and then
+    // mouseup'd outside of it, it fires a click event on the body, thus, causing the
+    // modal to disappear when the user does not expect it to, since the mouse down event
+    // did not start outside the modal.
+    // There might be (or should be) a better way to track this, but right now, just cancel
+    // the event if the target ends up being on the body directly rather than on one of the
+    // other child elements.
+    if (event.target === document.body) return;
+
     var target = event.target;
 
     while (target !== document.documentElement && !target.classList.contains('colorpicker-modal')) {
@@ -481,7 +507,7 @@ function _onClickOutsideElement (event) {
 
     if (!target.classList.contains('colorpicker-modal')) {
         _loseModalFocus();
-        window.removeEventListener('click', _onClickOutsideElement, false);
+        document.body.removeEventListener('click', _onClickOutsideElement, false);
     }
 }
 
@@ -494,6 +520,4 @@ function _removeModal () {
     if (modal && modal.parentNode) {
         modal.parentNode.removeChild(modal);
     }
-
-    window.removeEventListener('click', _onClickOutsideElement, false);
 }
