@@ -1,4 +1,5 @@
 'use strict';
+/* global Colors */
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/Tweenlite.js';
@@ -8,7 +9,6 @@ import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
 // Some common use variables
 var startPoint;
 var currentTarget;
-var currentTargetWidth = 0;
 var currentTargetHeight = 0;
 
 var documentFragmentCache;
@@ -27,7 +27,7 @@ const Tools = {
 
         return {
             left: box.left + (win.pageXOffset || docElem.scrollLeft) - clientLeft,
-            top:  box.top  + (win.pageYOffset || docElem.scrollTop)  - clientTop
+            top: box.top + (win.pageYOffset || docElem.scrollTop) - clientTop
         };
     },
     eventCache: null,
@@ -36,8 +36,8 @@ const Tools = {
             _get: (obj, type, func, checkOnly) => {
                 let cache = this.eventCache[type] || [];
 
-                for (var n = cache.length; n--; ) {
-                    if (obj === cache[n].obj && '' + func === '' + cache[n].func) {
+                for (let n = cache.length; n--;) {
+                    if (obj === cache[n].obj && func.toString() === cache[n].func.toString()) {
                         func = cache[n].func;
                         if (!checkOnly) {
                             cache[n] = cache[n].obj = cache[n].func = null;
@@ -52,7 +52,8 @@ const Tools = {
 
                 if (this.eventCache._get(obj, type, func, true)) {
                     return true;
-                } else {
+                }
+                else {
                     cache.push({
                         func: func,
                         obj: obj
@@ -65,17 +66,28 @@ const Tools = {
             return;
         }
 
-        if (obj.addEventListener) obj.addEventListener(type, func, false);
-        else obj.attachEvent('on' + type, func);
+        if (obj.addEventListener) {
+            obj.addEventListener(type, func, false);
+        }
+        else {
+            obj.attachEvent('on' + type, func);
+        }
     },
     removeEvent (obj, type, func) {
-        if (typeof func !== 'function') return;
+        if (typeof func !== 'function') {
+            return;
+        }
+
         if (!func.name) {
             func = this.eventCache._get(obj, type, func) || func;
         }
 
-        if (obj.removeEventListener) obj.removeEventListener(type, func, false);
-        else obj.detachEvent('on' + type, func);
+        if (obj.removeEventListener) {
+            obj.removeEventListener(type, func, false);
+        }
+        else {
+            obj.detachEvent('on' + type, func);
+        }
     }
 };
 
@@ -218,22 +230,24 @@ export default class ColorPickerModal {
         let colorDisc = this.dom.colorDisc;
 
         if (colorDisc.getContext) {
-            drawDisk( // HSV color wheel with white center
-                colorDisc.getContext("2d"),
+            // HSV color wheel with white center
+            drawDisk(
+                colorDisc.getContext('2d'),
                 [colorDisc.width / 2, colorDisc.height / 2],
                 [colorDisc.width / 2 - 1, colorDisc.height / 2 - 1],
                 360,
                 function (ctx, angle) {
                     let gradient = ctx.createRadialGradient(1, 1, 1, 1, 1, 0);
                     gradient.addColorStop(0, 'hsl(' + (360 - angle + 0) + ', 100%, 50%)');
-                    gradient.addColorStop(1, "#FFFFFF");
+                    gradient.addColorStop(1, '#fff');
 
                     ctx.fillStyle = gradient;
                     ctx.fill();
                 }
             );
-            drawCircle( // gray border
-                colorDisc.getContext("2d"),
+            // gray border
+            drawCircle(
+                colorDisc.getContext('2d'),
                 [colorDisc.width / 2, colorDisc.height / 2],
                 [colorDisc.width / 2, colorDisc.height / 2],
                 '#303030',
@@ -280,7 +294,7 @@ export default class ColorPickerModal {
             stop: () => {
                 window.cancelAnimationFrame(this.renderer.frame);
             }
-        }
+        };
     }
 
     /* ---------------------------------- */
@@ -291,7 +305,7 @@ export default class ColorPickerModal {
     hsvDown (event) {
         let target = event.target || event.srcElement;
 
-        if (event.preventDefault) event.preventDefault();
+        event.preventDefault();
 
         currentTarget = target.id ? target : target.parentNode;
         startPoint = Tools.getOrigin(currentTarget);
@@ -318,8 +332,9 @@ export default class ColorPickerModal {
             y = event.clientY - startPoint.top - r,
             h = 360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0)),
             s = (Math.sqrt((x * x) + (y * y)) / r) * 100;
-            this.lib.setColor({h: h, s: s}, 'hsv');
-        } else if (currentTarget === this.dom.hsvBarCursors) { // the luminanceBar
+            this.lib.setColor({ h, s }, 'hsv');
+        }
+        else if (currentTarget === this.dom.hsvBarCursors) { // the luminanceBar
             this.lib.setColor({
                 v: (currentTargetHeight - (event.clientY - startPoint.top)) / currentTargetHeight * 100
             }, 'hsv');
@@ -380,7 +395,9 @@ export default class ColorPickerModal {
             this.dom.hsvBarCursors.classList.add('colorpicker-dark');
         }
 
-        if (this.dom.hsvLeftCursor) this.dom.hsvLeftCursor.style.top = this.dom.hsvRightCursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
+        if (this.dom.hsvLeftCursor) {
+            this.dom.hsvLeftCursor.style.top = this.dom.hsvRightCursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
+        }
     }
 
     // Monkey patches for Thistle.js functionality
@@ -423,11 +440,11 @@ export default class ColorPickerModal {
         const RND = this.lib.colors.RND;
 
         return {
-            hex: '#' + color.HEX,
-            rgb: 'rgb(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ')',
-            rgba: 'rgba(' + RND.rgb.r  + ',' + RND.rgb.g  + ',' + RND.rgb.b  + ',' + color.alpha + ')',
-            hsl: 'hsl(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ')',
-            hsla: 'hsla(' + RND.hsl.h  + ',' + RND.hsl.s  + ',' + RND.hsl.l  + ',' + color.alpha + ')',
+            hex: `#${color.HEX}`,
+            rgb: 'rgb(' + RND.rgb.r + ',' + RND.rgb.g + ',' + RND.rgb.b + ')',
+            rgba: 'rgba(' + RND.rgb.r + ',' + RND.rgb.g + ',' + RND.rgb.b + ',' + color.alpha + ')',
+            hsl: 'hsl(' + RND.hsl.h + ',' + RND.hsl.s + ',' + RND.hsl.l + ')',
+            hsla: 'hsla(' + RND.hsl.h + ',' + RND.hsl.s + ',' + RND.hsl.l + ',' + color.alpha + ')',
         };
     }
 
@@ -447,7 +464,6 @@ function drawDisk (ctx, coords, radius, steps, colorCallback) {
     let a = radius[0] || radius; // radius on x-axis
     let b = radius[1] || radius; // radius on y-axis
     let angle = 360;
-    let rotate = 0;
     let coef = Math.PI / 180;
 
     ctx.save();
@@ -458,20 +474,23 @@ function drawDisk (ctx, coords, radius, steps, colorCallback) {
 
     for (; angle > 0 ; angle -= steps) {
         ctx.beginPath();
-        if (steps !== 360) ctx.moveTo(1, 1); // stroke
+        if (steps !== 360) {
+            ctx.moveTo(1, 1); // stroke
+        }
         ctx.arc(1, 1, 1,
             (angle - (steps / 2) - 1) * coef,
-            (angle + (steps  / 2) + 1) * coef);
+            (angle + (steps / 2) + 1) * coef);
 
         if (colorCallback) {
             colorCallback(ctx, angle);
-        } else {
+        }
+        else {
             ctx.fillStyle = 'black';
             ctx.fill();
         }
     }
     ctx.restore();
-};
+}
 
 function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
     width = width || 1;
@@ -485,7 +504,7 @@ function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
         ctx.strokeStyle = color || '#000';
         ctx.stroke();
     });
-};
+}
 
 function _onClickOutsideElement (event) {
     // HACKY!!
@@ -497,7 +516,9 @@ function _onClickOutsideElement (event) {
     // There might be (or should be) a better way to track this, but right now, just cancel
     // the event if the target ends up being on the body directly rather than on one of the
     // other child elements.
-    if (event.target === document.body) return;
+    if (event.target === document.body) {
+        return;
+    }
 
     var target = event.target;
 
