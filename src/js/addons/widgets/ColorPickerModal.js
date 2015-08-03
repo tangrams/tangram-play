@@ -394,6 +394,9 @@ export default class ColorPickerModal {
         if (color.RGBLuminance > 0.22) {
             this.dom.hsvBarCursors.classList.add('colorpicker-dark');
         }
+        else {
+            this.dom.hsvBarCursors.classList.remove('colorpicker-dark');
+        }
 
         if (this.dom.hsvLeftCursor) {
             this.dom.hsvLeftCursor.style.top = this.dom.hsvRightCursor.style.top = ((1 - color.hsv.v) * colorDiscRadius * 2) + 'px';
