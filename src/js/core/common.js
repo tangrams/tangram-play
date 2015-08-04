@@ -1,11 +1,12 @@
 export function fetchHTTP(url, methood) {
-    let request = new XMLHttpRequest(), response;
+    let request = new XMLHttpRequest(),
+        response;
 
     request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status === 200) {
             response = request.responseText;
         }
-    }
+    };
     request.open(methood ? methood : 'GET', url, false);
     request.send();
     return response;
@@ -14,22 +15,28 @@ export function fetchHTTP(url, methood) {
 export function debounce(func, wait, immediate) {
     let timeout;
     return function() {
-        let context = this, args = arguments;
+        let context = this,
+            args = arguments;
         let later = function() {
             timeout = null;
-            if (!immediate) func.apply(context, args);
+            if (!immediate) {
+                func.apply(context, args);
+            }
         };
         let callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
+        if (callNow) {
+            func.apply(context, args);
+        }
     };
 };
 
 export function getPosition(dom) {
-    let y = 0, x = 0;
+    let y = 0,
+        x = 0;
     do {
-        y += dom.offsetTop  || 0;
+        y += dom.offsetTop || 0;
         x += dom.offsetLeft || 0;
         dom = dom.offsetParent;
     } while (dom);
@@ -41,16 +48,16 @@ export function getPosition(dom) {
 };
 
 //  Check if a variable is a number
-export function isNumber(n) { 
+export function isNumber(n) {
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
 };
 
 export function toCSS(str) {
     let match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
     if (match) {
-        str = 'rgb(' + Math.round(match[1] * 255) +','+
-                        Math.round(match[2] * 255) +','+
-                        Math.round(match[3] * 255) +')';
+        str = 'rgb(' + Math.round(match[1] * 255) + ',' +
+                        Math.round(match[2] * 255) + ',' +
+                        Math.round(match[3] * 255) + ')';
     }
     else if (isNumber(str)) {
         let val = Math.round(parseFloat(str) * 255);
