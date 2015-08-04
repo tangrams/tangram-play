@@ -20,6 +20,7 @@
   "devDependencies": {
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
+    "browserify-shim": "^3.8.10",
     "cssnext": "^1.8.0",
     "gulp": "^3.9.0",
     "gulp-livereload": "^3.8.0",
@@ -39,5 +40,8 @@
     "babel": "^5.6.14",
     "codemirror": "4.12.0",
     "gsap": "^1.17.0"
+  },
+  "browserify-shim": {
+    "./src/js/vendor/colors.js": "Colors"
   }
 }

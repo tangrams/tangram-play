@@ -1,5 +1,6 @@
 'use strict';
-/* global Colors */
+
+import Colors from '../../vendor/colors.js';
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/Tweenlite.js';
