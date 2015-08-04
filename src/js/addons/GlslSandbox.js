@@ -29,9 +29,9 @@ import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress
 
 // Debounced event after user stop doing something
 var stopAction = debounce(function(cm) {
-    cm.glsl_sandbox.change = true;
-    if (cm.glsl_sandbox.active) {
-        cm.glsl_sandbox.reload();
+    cm.glslSandbox.change = true;
+    if (cm.glslSandbox.active) {
+        cm.glslSandbox.reload();
     }
 }, 1000);
 
@@ -39,7 +39,7 @@ export default class GlslSandbox {
     constructor (tangram_play, configFile ) {
 
     	//  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangram_play.editor.glsl_sandbox = this;
+        tangram_play.editor.glslSandbox = this;
 
         // Constant OBJ
         this.tangram_play = tangram_play;
@@ -51,7 +51,7 @@ export default class GlslSandbox {
 
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'tp-a-sandbox-canvas';
-        this.canvas.className = 'glsl_sandbox';
+        this.canvas.className = 'glslSandbox';
         this.canvas.setAttribute("width","130");
         this.canvas.setAttribute("height","130");
         this.canvas.setAttribute("data-fragment",'precision mediump float;\nvarying vec2 v_texcoord;void main() {\ngl_FragColor = vec4(v_texcoord.x,v_texcoord.y,1.0,1.0);\n}');
@@ -80,7 +80,7 @@ export default class GlslSandbox {
 
         // EVENTS
         tangram_play.editor.on("cursorActivity", function(cm) {
-            cm.glsl_sandbox.onCursorMove();
+            cm.glslSandbox.onCursorMove();
         });
 
         tangram_play.editor.on("changes", function(cm, changesObj) {
@@ -214,7 +214,7 @@ export default class GlslSandbox {
             this.update();
 			this.shader.render(true);
 			requestAnimationFrame(function(){
-				tangramPlay.editor.glsl_sandbox.render();
+				tangramPlay.editor.glslSandbox.render();
 			}, 1000 / 30);
     	}
     }

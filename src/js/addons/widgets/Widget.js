@@ -80,5 +80,8 @@ export default class Widget {
 
         // Change the value attached to this widget instance
         this.key.value = string;
+
+        // Update the position
+        TangramPlay.addons.widgetsManager.update();
     }
 }

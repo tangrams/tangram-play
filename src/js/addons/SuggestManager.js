@@ -6,14 +6,14 @@ import { getAddressSceneContent, getValueRange } from '../core/codemirror/yaml-t
 // Debounced event after user stop doing something
 var stopAction = debounce(function(cm) {
     let line = editor.getCursor().line;
-    cm.suggest_manager.suggest(line);
+    cm.suggestManager.suggest(line);
 }, 1000);
 
 export default class SuggestManager {
     constructor (tangram_play, configFile ) {
 
         //  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangram_play.editor.suggest_manager = this;
+        tangram_play.editor.suggestManager = this;
 
         //  private variables
         this.tangram_play = tangram_play;
@@ -167,14 +167,14 @@ function makeMenu(cm, nLine, list) {
     for (let i = 0; i < list.length; i++) {
         let btn = document.createElement('button');
         let text = document.createTextNode(list[i]+": ");
-        cm.suggest_manager.activeLine = nLine;
+        cm.suggestManager.activeLine = nLine;
         btn.className = 'tangram-play-suggested-menu-btn';
 
         btn.onclick = function() {
-            if (cm.suggest_manager.active) {
-                cm.suggest_manager.active.clear();
+            if (cm.suggestManager.active) {
+                cm.suggestManager.active.clear();
             }
-            let tabs = getLineInd(cm, cm.suggest_manager.activeLine )+1;
+            let tabs = getLineInd(cm, cm.suggestManager.activeLine )+1;
             let textToAdd = "";
 
             if (isEmpty(cm, cm.getCursor().line) ) {

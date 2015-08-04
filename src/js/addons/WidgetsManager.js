@@ -17,7 +17,7 @@ var stopAction = debounce(function(wm) {
 var stopMicroAction = debounce(function(wm,nLine) {
     wm.rebuildLine(nLine);
     wm.update();
-}, 500);
+}, 1000);
 
 export default class WidgetsManager {
     constructor (configFile) {

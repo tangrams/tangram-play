@@ -17,7 +17,7 @@ const query = parseQuery(window.location.search.slice(1));
 
 class TangramPlay {
     constructor(selector, options) {
-        //Benchmark
+        //Benchmark & Debuggin
         if (options.benchark) {
             window.watch = new StopWatch();
             window.watch.start();
@@ -57,13 +57,13 @@ class TangramPlay {
     //  ADDONS
     initAddons () {
         if (this.options.widgets) {
-            new WidgetsManager(this.options.widgets);
+            this.addons.widgetsManager = new WidgetsManager(this.options.widgets);
         }
         if (this.options.suggest) {
-            this.addons.suggest_manager = new SuggestManager(this, this.options.suggest);
+            this.addons.suggestManager = new SuggestManager(this, this.options.suggest);
         }
         if (this.options.sandbox) {
-            this.addons.glsl_sandbox = new GlslSandbox(this);
+            this.addons.glslSandbox = new GlslSandbox(this);
         }
     }
 

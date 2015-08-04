@@ -1,5 +1,5 @@
 export function fetchHTTP(url, methood) {
-    var request = new XMLHttpRequest(), response;
+    let request = new XMLHttpRequest(), response;
 
     request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status === 200) {
@@ -12,14 +12,14 @@ export function fetchHTTP(url, methood) {
 };
 
 export function debounce(func, wait, immediate) {
-    var timeout;
+    let timeout;
     return function() {
-        var context = this, args = arguments;
-        var later = function() {
+        let context = this, args = arguments;
+        let later = function() {
             timeout = null;
             if (!immediate) func.apply(context, args);
         };
-        var callNow = immediate && !timeout;
+        let callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
         if (callNow) func.apply(context, args);
@@ -27,7 +27,7 @@ export function debounce(func, wait, immediate) {
 };
 
 export function getPosition(dom) {
-    var y = 0, x = 0;
+    let y = 0, x = 0;
     do {
         y += dom.offsetTop  || 0;
         x += dom.offsetLeft || 0;
@@ -46,16 +46,16 @@ export function isNumber(n) {
 };
 
 export function toCSS(str) {
-    var match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
+    let match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
     if (match) {
         str = 'rgb(' + Math.round(match[1]*255)+","+
                         Math.round(match[2]*255)+","+
                         Math.round(match[3]*255)+")";
     } else if (isNumber(str)) {
-        var val = Math.round( parseFloat(str)*255 );
+        let val = Math.round( parseFloat(str)*255 );
         str = 'rgb('+val+","+val+","+val+")";
     } else if (/^\s*[\'|\"]#[0-9a-f]{3}(?:[0-9a-f]{3})?[\'|\"]\s*$/i.test(str)) {
-        var value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
+        let value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
         return value ? value[1] : "";
 
     }
@@ -64,10 +64,10 @@ export function toCSS(str) {
 
 export function uniqueId(){
     // always start with a letter (for DOM friendlyness)
-    var idstr=String.fromCharCode(Math.floor((Math.random()*25)+65));
+    let idstr=String.fromCharCode(Math.floor((Math.random()*25)+65));
     do {                
         // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
-        var ascicode=Math.floor((Math.random()*42)+48);
+        let ascicode=Math.floor((Math.random()*42)+48);
         if (ascicode<58 || ascicode>64){
             // exclude all chars between : (58) and @ (64)
             idstr+=String.fromCharCode(ascicode);    
