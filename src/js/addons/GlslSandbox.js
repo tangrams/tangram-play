@@ -42,7 +42,7 @@ export default class GlslSandbox {
         tangram_play.editor.glslSandbox = this;
 
         // Constant OBJ
-        this.tangram_play = tangram_play;
+        this.tangramPlay = tangram_play;
         this.shader = undefined;
         this.element = document.createElement('div');
         this.element.id = 'tp-a-sandbox';
@@ -90,11 +90,11 @@ export default class GlslSandbox {
 
     reload(nLine) {
         if (nLine === undefined) {
-            nLine = this.tangram_play.editor.getCursor().line;
+            nLine = this.tangramPlay.editor.getCursor().line;
         }
 
-        if (!isEmpty(this.tangram_play.editor,nLine)) {
-            let keys = this.tangram_play.getKeysOnLine(nLine);
+        if (!isEmpty(this.tangramPlay.editor,nLine)) {
+            let keys = this.tangramPlay.getKeysOnLine(nLine);
             if (keys && keys[0]){
 
                 this.address = keys[0].address;
@@ -103,7 +103,7 @@ export default class GlslSandbox {
 
                 if (isNormal || isColor) {
                     // Store address and states
-                    this.styleObj = getStyleObj(this.tangram_play.scene, this.address);
+                    this.styleObj = getStyleObj(this.tangramPlay.scene, this.address);
 
                     if (this.styleObj === undefined || this.styleObj === null || 
                         this.styleObj.shaders === undefined || this.styleObj.shaders === null ) { 
@@ -114,7 +114,7 @@ export default class GlslSandbox {
                     if (this.shader === undefined) {
                         this.shader = new GlslCanvas(this.canvas);
                     }
-                    this.tangram_play.editor.addWidget({line: nLine, ch: 0}, this.element);
+                    this.tangramPlay.editor.addWidget({line: nLine, ch: 0}, this.element);
 
                     if (this.styleObj.shaders.uniforms) {
                         for (let name in this.styleObj.shaders.uniforms) {
@@ -137,12 +137,12 @@ export default class GlslSandbox {
 
                     if (this.change) {
                         // Common HEADER
-                        this.vertexCode = getVertex(this.tangram_play.scene, this.shader.uniforms, this.styleObj);
-                        this.fragmentCode = getFramgmentHeader(this.tangram_play.scene, this.shader.uniforms, this.styleObj);
+                        this.vertexCode = getVertex(this.tangramPlay.scene, this.shader.uniforms, this.styleObj);
+                        this.fragmentCode = getFramgmentHeader(this.tangramPlay.scene, this.shader.uniforms, this.styleObj);
 
                         if (isNormal) {
                             // NORMAL CORE & ENDING
-                            this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
+                            this.fragmentCode += getAddressSceneContent(this.tangramPlay.scene, this.address) +
                                             "\ngl_FragColor = vec4(normal,1.0);\n}";        
                         } else if (isColor) {
                             // COLOR CORE & ENDING
@@ -152,7 +152,7 @@ export default class GlslSandbox {
                                     this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + "\n";
                                 }
                             }
-                            this.fragmentCode += getAddressSceneContent(this.tangram_play.scene, this.address) +
+                            this.fragmentCode += getAddressSceneContent(this.tangramPlay.scene, this.address) +
                                             "\ngl_FragColor = color;\n}";   
                         }
 
@@ -201,10 +201,10 @@ export default class GlslSandbox {
     update() {
         // Update uniforms
         this.uniforms.u_device_pixel_ratio = window.devicePixelRatio;
-        this.uniforms.u_meters_per_pixel = this.tangram_play.scene.meters_per_pixel;
-        this.uniforms.u_map_position = [this.tangram_play.scene.center_meters.x, this.tangram_play.scene.center_meters.y, this.tangram_play.scene.zoom];
-        this.uniforms.u_tile_origin = [this.tangram_play.scene.center_tile.x, this.tangram_play.scene.center_tile.y, this.tangram_play.scene.center_tile.z];
-        this.uniforms.u_vanishing_point = this.tangram_play.scene.camera.vanishing_point;
+        this.uniforms.u_meters_per_pixel = this.tangramPlay.scene.meters_per_pixel;
+        this.uniforms.u_map_position = [this.tangramPlay.scene.center_meters.x, this.tangramPlay.scene.center_meters.y, this.tangramPlay.scene.zoom];
+        this.uniforms.u_tile_origin = [this.tangramPlay.scene.center_tile.x, this.tangramPlay.scene.center_tile.y, this.tangramPlay.scene.center_tile.z];
+        this.uniforms.u_vanishing_point = this.tangramPlay.scene.camera.vanishing_point;
 
         this.shader.setUniforms(this.uniforms);
     }
@@ -241,7 +241,7 @@ export default class GlslSandbox {
     onColorClick (event) {
         let pos = getPosition(this.colorPicker);
         pos.x += 30;
-        pos.y = this.tangram_play.editor.heightAtLine( this.line )-15;
+        pos.y = this.tangramPlay.editor.heightAtLine( this.line )-15;
 
         this.picker = new ColorPickerModal(this.colorPicker.style.backgroundColor);
 
@@ -258,10 +258,10 @@ export default class GlslSandbox {
     }
 
     onCursorMove() {
-        let pos = this.tangram_play.editor.getCursor();
+        let pos = this.tangramPlay.editor.getCursor();
 
-        let edge = this.tangram_play.editor.charCoords({line:pos.line, ch:20}).left;
-        let left = this.tangram_play.editor.charCoords(pos).left;
+        let edge = this.tangramPlay.editor.charCoords({line:pos.line, ch:20}).left;
+        let left = this.tangramPlay.editor.charCoords(pos).left;
 
         if (pos.ch < 20 || left < edge) {
             if (this.active) {

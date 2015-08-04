@@ -16,7 +16,7 @@ export default class SuggestManager {
         tangram_play.editor.suggestManager = this;
 
         //  private variables
-        this.tangram_play = tangram_play;
+        this.tangramPlay = tangram_play;
         this.data = [];
         this.active = undefined;
 
@@ -29,7 +29,7 @@ export default class SuggestManager {
         }
 
         // Suggestions are trigged by the folowing CM events
-        this.tangram_play.editor.on("cursorActivity", function(cm) {
+        this.tangramPlay.editor.on("cursorActivity", function(cm) {
             stopAction(cm);
         });
     }
@@ -37,16 +37,16 @@ export default class SuggestManager {
     suggest (nLine) {
         
         this.clear();
-        let top = this.tangram_play.editor.getScrollInfo().top;
+        let top = this.tangramPlay.editor.getScrollInfo().top;
 
         // What's the main key of the line?
-        let keys = this.tangram_play.getKeysOnLine(nLine);
+        let keys = this.tangramPlay.getKeysOnLine(nLine);
         if (keys) {
             let key = keys[0];
             if (key && key.value === ""){
                 for (let datum of this.data) {
                     if (datum.check(key)) {
-                        datum.make(this.tangram_play, key);
+                        datum.make(this.tangramPlay, key);
                     }
                 }
             } else {
@@ -56,8 +56,8 @@ export default class SuggestManager {
             return;
         }
         
-        this.tangram_play.editor.focus();
-        this.tangram_play.editor.scrollTo(null,top);
+        this.tangramPlay.editor.focus();
+        this.tangramPlay.editor.scrollTo(null,top);
     };
 
     clear() {
@@ -65,7 +65,7 @@ export default class SuggestManager {
         if (this.active) {
             this.active.clear();
             this.active = undefined;
-            this.tangram_play.editor.focus();
+            this.tangramPlay.editor.focus();
         }
 
     }

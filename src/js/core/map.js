@@ -3,31 +3,31 @@
 import LocalStorage from '../addons/LocalStorage.js';
 import { saveAs } from '../vendor/FileSaver.min.js';
 
-var take_screenshot = false;
+var takeScreenshot = false;
 
 export default class Map {
-    constructor(tangram_play, place, style_file) {
+    constructor(place, styleFile) {
         // Get map start position
         let mapStartLocation = _getMapStartLocation();
 
         // Create Leaflet map
         let map = L.map(place,
             { zoomControl: false },
-            { keyboardZoomOffset: .05}
+            { keyboardZoomOffset: .05 }
         );
-        L.control.zoom({position: 'topright'}).addTo(map);
+        L.control.zoom({ position: 'topright' }).addTo(map);
         map.attributionControl.setPrefix('<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>');
         map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
         this.hash = new L.Hash(map);
 
         // Add Tangram Layer
         var layer = Tangram.leafletLayer({
-            scene: style_file,
+            scene: styleFile,
             postUpdate: postUpdate,
             attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
         });
 
-        this.take_screenshot = false;
+        this.takeScreenshot = false;
 
         window.layer = layer;
         window.scene = layer.scene;
@@ -45,12 +45,11 @@ export default class Map {
 
         this.leaflet = map;
         this.layer = layer;
-        tangram_play.scene = layer.scene;
     };
 
     takeScreenshot() {
-        if (!take_screenshot) {
-            take_screenshot = true;
+        if (!takeScreenshot) {
+            takeScreenshot = true;
             this.layer.scene.requestRedraw();
         }
     }
@@ -93,7 +92,7 @@ function _getMapStartLocation () {
 }
 
 function postUpdate() {
-    if (take_screenshot == true) {
+    if (takeScreenshot == true) {
         // Adapted from: https://gist.github.com/unconed/4370822
         var image = scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
         var data = atob(image); // convert base64 to binary without UTF-8 mangling
@@ -102,8 +101,8 @@ function postUpdate() {
             buf[i] = data.charCodeAt(i);
         }
         var blob = new Blob([buf], { type: 'image/png' });
-        saveAs(blob, 'tangram-' + (+new Date()) + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
+        saveAs(blob, 'tangram-' + (new Date()).toString() + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
 
-        take_screenshot = false;
+        takeScreenshot = false;
     }
 }

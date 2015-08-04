@@ -48,41 +48,27 @@ export function isNumber(n) {
 export function toCSS(str) {
     let match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
     if (match) {
-        str = 'rgb(' + Math.round(match[1]*255)+","+
-                        Math.round(match[2]*255)+","+
-                        Math.round(match[3]*255)+")";
-    } else if (isNumber(str)) {
-        let val = Math.round( parseFloat(str)*255 );
-        str = 'rgb('+val+","+val+","+val+")";
-    } else if (/^\s*[\'|\"]#[0-9a-f]{3}(?:[0-9a-f]{3})?[\'|\"]\s*$/i.test(str)) {
+        str = 'rgb(' + Math.round(match[1] * 255) +','+
+                        Math.round(match[2] * 255) +','+
+                        Math.round(match[3] * 255) +')';
+    }
+    else if (isNumber(str)) {
+        let val = Math.round(parseFloat(str) * 255);
+        str = 'rgb(' + val + ',' + val + ',' + val + ')';
+    }
+    else if (/^\s*[\'|\"]#[0-9a-f]{3}(?:[0-9a-f]{3})?[\'|\"]\s*$/i.test(str)) {
         let value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
-        return value ? value[1] : "";
-
+        return value ? value[1] : '';
     }
     return str;
 };
-
-export function uniqueId(){
-    // always start with a letter (for DOM friendlyness)
-    let idstr=String.fromCharCode(Math.floor((Math.random()*25)+65));
-    do {                
-        // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
-        let ascicode=Math.floor((Math.random()*42)+48);
-        if (ascicode<58 || ascicode>64){
-            // exclude all chars between : (58) and @ (64)
-            idstr+=String.fromCharCode(ascicode);    
-        }                
-    } while (idstr.length<32);
-
-    return (idstr);
-}
 
 export class StopWatch {
     constructor (performance) {
         this.startTime = 0;
         this.stopTime = 0;
         this.running = false;
-        this.performance = performance === false ? false : !!window.performance;
+        this.performance = performance === false ? false : !window.performance;
     }
 
     currentTime() {
@@ -113,5 +99,5 @@ export class StopWatch {
     printElapsed(name) {
         let currentName = name || 'Elapsed:';
         console.log(currentName, '[' + this.getElapsedMilliseconds() + 'ms]', '[' + this.getElapsedSeconds() + 's]');
-    };
+    }
 }

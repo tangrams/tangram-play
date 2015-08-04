@@ -23,7 +23,7 @@ export default class WidgetsManager {
     constructor (configFile) {
 
         // Local variables
-        this.totalLines = 0;// keep track of lines
+        this.totalLines = 0;// keep track of linesf
         this.pairedUntil = 0;
         this.forceRebuild = true;  // build widget - key sync
         this.data = [];     // tokens to check

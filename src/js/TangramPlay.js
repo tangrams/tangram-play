@@ -28,8 +28,8 @@ class TangramPlay {
         }
 
         this.container = document.querySelector(selector);
-        this.map = new Map(this, 'map', options.style);
-        this.editor = initEditor(this, 'editor');
+        this.map = new Map('map', options.style);
+        this.editor = initEditor('editor');
         this.options = options;
         this.addons = {};
 
