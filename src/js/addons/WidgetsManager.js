@@ -14,26 +14,25 @@ var stopAction = debounce(function(wm) {
     wm.update();
 }, 100);
 
-var stopMicroAction = debounce(function(wm,nLine) {
+var stopMicroAction = debounce(function(wm, nLine) {
     wm.rebuildLine(nLine);
     wm.update();
 }, 1000);
 
 export default class WidgetsManager {
-    constructor (configFile) {
-
+    constructor(configFile) {
         // Local variables
-        this.totalLines = 0;// keep track of linesf
+        this.totalLines = 0; // keep track of linesf
         this.pairedUntil = 0;
-        this.forceRebuild = true;  // build widget - key sync
-        this.data = [];     // tokens to check
-        this.active = [];   // active widgets
+        this.forceRebuild = true; // build widget - key sync
+        this.data = []; // tokens to check
+        this.active = []; // active widgets
 
         // Load data file
-        let widgets_data = JSON.parse(fetchHTTP(configFile))['widgets'];
+        let widgetsData = JSON.parse(fetchHTTP(configFile))['widgets'];
 
         // Initialize tokens
-        for (let datum of widgets_data) {
+        for (let datum of widgetsData) {
             this.data.push(new WidgetType(datum));
         }
 
@@ -41,82 +40,76 @@ export default class WidgetsManager {
         this.build();
 
         TangramPlay.editor.on('update', (cm, changesObj) => {
-            if (window.watch) window.watch.printElapsed("Editor: UPDATE");
-
             let to = TangramPlay.editor.getViewport().to;
 
             if (this.pairedUntil > TangramPlay.editor.getDoc().size) {
                 this.pairedUntil = 0;
                 this.forceRebuild = true;
 
-                // console.log(this.pairedUntil + "/" + TangramPlay.editor.getDoc().size, to);
+                // console.log(this.pairedUntil + '/' + TangramPlay.editor.getDoc().size, to);
                 stopAction(this);
-            } else if (this.pairedUntil < to) {
-                for (let i = this.pairedUntil; i < to; i++ ){
+            }
+            else if (this.pairedUntil < to) {
+                for (let i = this.pairedUntil; i < to; i++) {
                     this.addWidgetsTo(i);
                 }
                 this.pairedUntil = to;
 
-                // console.log(this.pairedUntil + "/" + TangramPlay.editor.getDoc().size, to);
+                // console.log(this.pairedUntil + '/' + TangramPlay.editor.getDoc().size, to);
                 stopAction(this);
             }
         });
 
         // Suggestions are trigged by the folowing CM events
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
-            if (window.watch) window.watch.printElapsed("Editor: CHANGE");
-
             // Is a multi line change???
             let lineChange = -1;
             let multiLine = false;
-            for (let i = 0; i < changesObjs.length; i++){
+            for (let i = 0; i < changesObjs.length; i++) {
                 // If the change happen in a single line
                 if (changesObjs[i].from.line === changesObjs[i].to.line) {
                     if (lineChange === -1) {
                         lineChange = changesObjs[i].from.line;
-                    } else if ( lineChange !== changesObjs[i].from.line ) {
+                    }
+                    else if (lineChange !== changesObjs[i].from.line) {
                         multiLine = true;
                         break;
                     }
-                } else {
+                }
+                else {
                     multiLine = true;
                     break;
                 }
             }
 
             if (multiLine) {
-                console.log("MULTI_LINE CHANGE");
                 this.forceRebuild = true;
-                // this.update();
                 stopAction();
-            } else if (lineChange !== -1){
-                console.log("SINGLE_LINE CHANGE");
-                stopMicroAction(this,lineChange);
-            } else {
-                console.log("Something change and don't know what to do: ", changesObj);
+            }
+            else if (lineChange !== -1) {
+                stopMicroAction(this, lineChange);
+            }
+            else {
+                console.log('Something change and don t know what to do: ', changesObj);
             }
         });
 
         TangramPlay.editor.on('fold', (cm, from, to) => {
-            if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
             this.forceRebuild = true;
             stopAction(this);
         });
 
         TangramPlay.editor.on('unfold', (cm, from, to) => {
-            if (window.watch) window.watch.printElapsed("Editor: UNFOLD");
             this.forceRebuild = true;
             stopAction(this);
         });
 
         TangramPlay.container.addEventListener('resize', (cm, from, to) => {
-            if (window.watch) window.watch.printElapsed("Divider: CHANGE");
             this.forceRebuild = true;
             this.update();
         });
 
         TangramPlay.container.addEventListener('loaded', (cm, from, to) => {
-            if (window.watch) window.watch.printElapsed("Divider: CHANGE");
             this.deleteAll();
             this.forceRebuild = true;
             this.pairedUntil = 0;
@@ -125,7 +118,6 @@ export default class WidgetsManager {
     }
 
     build() {
-        if (window.watch) window.watch.printElapsed("Widgets: Start building widgets");
         for (let line = 0, size = TangramPlay.editor.doc.size; line < size; line++) {
             this.addWidgetsTo(line);
         }
@@ -136,8 +128,6 @@ export default class WidgetsManager {
 
         // update position
         this.update();
-
-        if (window.watch) window.watch.printElapsed("Widgets: Finish building widgets");
     }
 
     rebuild() {
@@ -160,7 +150,7 @@ export default class WidgetsManager {
                 for (let key of keys) {
                     let val = key.value;
 
-                    if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(nLine)) ) {
+                    if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(nLine))) {
                         continue;
                     }
 
@@ -178,12 +168,11 @@ export default class WidgetsManager {
 
     // Update widgets unless something is not right
     update() {
-        if (window.watch) window.watch.printElapsed("Widgets: Start updating positions");
-
-        if ( this._isPairingDirty() ) {
+        if (this._isPairingDirty()) {
             // If there is different number of lines force a rebuild
             this.rebuild();
-        } else {
+        }
+        else {
             // If the lines are the same proceed to update just the position
             for (let widget of this.active) {
                 let line = widget.key.pos.line;
@@ -194,7 +183,8 @@ export default class WidgetsManager {
                     if (index < keys.length) {
                         let pos = getValueRange(keys[index]).to;
                         TangramPlay.editor.addWidget(pos, widget.el);
-                    } else {
+                    }
+                    else {
                         this.rebuildLine(line);
                         break;
                     }
@@ -209,8 +199,6 @@ export default class WidgetsManager {
                 }
             }
         }
-
-        if (window.watch) window.watch.printElapsed("Widgets: Finish updating positions");
     }
 
     // Erase the widgets on one line
@@ -226,12 +214,10 @@ export default class WidgetsManager {
 
     // Erase all widgets
     deleteAll() {
-        if (window.watch) window.watch.printElapsed("Widgets: Start erasing widgets");
         while (this.active.length > 0) { // While there are still active widgets,
             let widget = this.active.pop(); // ...take the last widget off the list of active widgets
             widget.destroyEl(); // ...and remove its DOM from the page
         }
-        if (window.watch) window.watch.printElapsed("Widgets: Finish erasing widgets");
     }
 
     // Is keys~widgets pairs dirty? (usually after lines are been added)

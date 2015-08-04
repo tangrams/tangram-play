@@ -51,8 +51,8 @@ export default class Widget {
     }
 
     // Future
-    updatePosition () {
-
+    updatePosition() {
+        // Like this
     }
 
     /**
@@ -72,7 +72,7 @@ export default class Widget {
      *  Use this method within a module to communicate a value
      *  back to the Tangram Play editor.
      */
-    setEditorValue (string) {
+    setEditorValue(string) {
         // Send the value to editor
         // TODO: Something that doesn't rely on global
         this.key = TangramPlay.getKeyForKey(this.key);

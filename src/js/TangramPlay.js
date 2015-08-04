@@ -194,7 +194,6 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     // suggest: 'data/suggest.json',
     widgets: 'data/widgets.json',
     menu: 'data/menu.json',
-    benchark: true,
     // sandbox: true,
 });
 

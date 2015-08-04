@@ -10,32 +10,30 @@ var stopAction = debounce(function(cm) {
 }, 1000);
 
 export default class SuggestManager {
-    constructor (tangram_play, configFile ) {
-
+    constructor(tangramPlay, configFile) {
         //  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangram_play.editor.suggestManager = this;
+        tangramPlay.editor.suggestManager = this;
 
         //  private variables
-        this.tangramPlay = tangram_play;
+        this.tangramPlay = tangramPlay;
         this.data = [];
         this.active = undefined;
 
         //  Load data file
-        let suggestions_data = JSON.parse(fetchHTTP(configFile))['suggest'];
-        
+        let suggestionsData = JSON.parse(fetchHTTP(configFile))['suggest'];
+
         // Initialize tokens
-        for (let datum of suggestions_data) {
-            this.data.push(new Suggestion(this,datum));
+        for (let datum of suggestionsData) {
+            this.data.push(new Suggestion(this, datum));
         }
 
         // Suggestions are trigged by the folowing CM events
-        this.tangramPlay.editor.on("cursorActivity", function(cm) {
+        this.tangramPlay.editor.on('cursorActivity', function(cm) {
             stopAction(cm);
         });
     }
 
     suggest (nLine) {
-        
         this.clear();
         let top = this.tangramPlay.editor.getScrollInfo().top;
 
@@ -43,21 +41,23 @@ export default class SuggestManager {
         let keys = this.tangramPlay.getKeysOnLine(nLine);
         if (keys) {
             let key = keys[0];
-            if (key && key.value === ""){
+            if (key && key.value === '') {
                 for (let datum of this.data) {
                     if (datum.check(key)) {
                         datum.make(this.tangramPlay, key);
                     }
                 }
-            } else {
+            }
+            else {
                 return;
             }
-        } else {
+        }
+        else {
             return;
         }
-        
+
         this.tangramPlay.editor.focus();
-        this.tangramPlay.editor.scrollTo(null,top);
+        this.tangramPlay.editor.scrollTo(null, top);
     };
 
     clear() {
@@ -67,7 +67,6 @@ export default class SuggestManager {
             this.active = undefined;
             this.tangramPlay.editor.focus();
         }
-
     }
 };
 
@@ -76,16 +75,17 @@ class Suggestion {
         this.manager = manager;
 
         //  TODO: must be a better way to do this
-        if ( datum['address'] ){
+        if (datum['address']) {
             this.checkAgainst = 'address';
-        } else if ( datum['key'] ){
+        }
+        else if (datum['key']) {
             this.checkAgainst = 'key';
-        } else if ( datum['value'] ){
+        }
+        else if (datum['value']) {
             this.checkAgainst = 'value';
         }
 
         this.checkPatern = datum[this.checkAgainst];
-        
         if (datum.options) {
             this.options = datum.options;
         }
@@ -103,9 +103,10 @@ class Suggestion {
     }
 
     check(keyPair) {
-        if (keyPair && this.checkAgainst){
-            return RegExp( this.checkPatern ).test( keyPair[this.checkAgainst] );
-        } else {
+        if (keyPair && this.checkAgainst) {
+            return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]);
+        }
+        else {
             return false;
         }
     }
@@ -124,14 +125,14 @@ class Suggestion {
         // Add sources
         if (this.source) {
             let obj = getAddressSceneContent(scene, this.source);
-            let keyFromSource = obj? Object.keys(obj) : [];
+            let keyFromSource = obj ? Object.keys(obj) : [];
             Array.prototype.push.apply(list, keyFromSource);
         }
 
         // Take out present keys
         let obj = getAddressSceneContent(scene, keyPair.address);
-        presentKeys = obj? Object.keys(obj) : [];
-        for (let j = list.length-1; j >= 0; j--) {
+        presentKeys = obj ? Object.keys(obj) : [];
+        for (let j = list.length - 1; j >= 0; j--) {
             if (presentKeys.indexOf(list[j]) > -1) {
                 list.splice(j, 1);
             }
@@ -139,9 +140,7 @@ class Suggestion {
 
         if (list.length) {
             // this.addList(list,nline);
-            let options = {
-                position: "top"
-            }
+            let options = { position: 'top' };
 
             // If there is a previus suggestion take it out
             if (this.manager.active) {
@@ -161,12 +160,12 @@ class Suggestion {
 };
 
 function makeMenu(cm, nLine, list) {
-    let node = document.createElement("div");
-    node.className = "tangram-play-suggested-menu";
+    let node = document.createElement('div');
+    node.className = 'tangram-play-suggested-menu';
 
     for (let i = 0; i < list.length; i++) {
-        let btn = document.createElement('button');
-        let text = document.createTextNode(list[i]+": ");
+        let btn = document.createElement('button'),
+            text = document.createTextNode(list[i] + ': ');
         cm.suggestManager.activeLine = nLine;
         btn.className = 'tangram-play-suggested-menu-btn';
 
@@ -174,33 +173,34 @@ function makeMenu(cm, nLine, list) {
             if (cm.suggestManager.active) {
                 cm.suggestManager.active.clear();
             }
-            let tabs = getLineInd(cm, cm.suggestManager.activeLine )+1;
-            let textToAdd = "";
+            let tabs = getLineInd(cm, cm.suggestManager.activeLine) + 1;
+            let textToAdd = '';
 
-            if (isEmpty(cm, cm.getCursor().line) ) {
-                tabs -= getLineInd(cm,cm.getCursor().line);
-            } else {
+            if (isEmpty(cm, cm.getCursor().line)) {
+                tabs -= getLineInd(cm, cm.getCursor().line);
+            }
+            else {
                 textToAdd += '\n';
             }
 
             for (let i = 0; i < tabs; i++) {
-                textToAdd += Array(cm.getOption("indentUnit") + 1).join(" ");
+                textToAdd += Array(cm.getOption('indentUnit') + 1).join(' ');
             }
-            
-            textToAdd += list[i] +": ";
+
+            textToAdd += list[i] + ': ';
 
             let doc = cm.getDoc();
-            let cursor = doc.getCursor();           // gets the line number in the cursor position
-            let line = doc.getLine(cursor.line);    // get the line contents
-            let pos = {                             // create a new object to avoid mutation of the original selection
-                line: cursor.line,
-                ch: line.length                     // set the character position to the end of the line
-            }
-            doc.replaceRange(textToAdd, pos);            // adds a new line
+            let cursor = doc.getCursor(); // gets the line number in the cursor position
+            let line = doc.getLine(cursor.line); // get the line contents
+
+            // create a new object to avoid mutation of the original selection
+            let pos = { line: cursor.line, ch: line.length }; // set the character position to the end of the line
+
+            doc.replaceRange(textToAdd, pos); // adds a new line
         };
 
         btn.appendChild(text);
         node.appendChild(btn);
-    };
+    }
     return node;
-};
+}
