@@ -1,3 +1,5 @@
+import TangramPlay from '../TangramPlay.js';
+
 import { fetchHTTP, debounce, getPosition, toCSS } from '../core/common.js';
 import { isEmpty } from '../core/codemirror/tools.js';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress, getAddressFromKeys } from '../core/codemirror/yaml-tangram.js';
@@ -46,15 +48,15 @@ export default class GlslSandbox {
         this.shader = undefined;
         this.element = document.createElement('div');
         this.element.id = 'tp-a-sandbox';
-        this.element.setAttribute("width","130");
-        this.element.setAttribute("height","130");
+        this.element.setAttribute('width','130');
+        this.element.setAttribute('height','130');
 
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'tp-a-sandbox-canvas';
         this.canvas.className = 'glslSandbox';
-        this.canvas.setAttribute("width","130");
-        this.canvas.setAttribute("height","130");
-        this.canvas.setAttribute("data-fragment",'precision mediump float;\nvarying vec2 v_texcoord;void main() {\ngl_FragColor = vec4(v_texcoord.x,v_texcoord.y,1.0,1.0);\n}');
+        this.canvas.setAttribute('width','130');
+        this.canvas.setAttribute('height','130');
+        this.canvas.setAttribute('data-fragment','precision mediump float;\nvarying vec2 v_texcoord;void main() {\ngl_FragColor = vec4(v_texcoord.x,v_texcoord.y,1.0,1.0);\n}');
         this.element.appendChild(this.canvas);
 
         this.colorPicker = document.createElement('div');
@@ -65,7 +67,7 @@ export default class GlslSandbox {
         // VARIABLES
         this.active = false;
         this.line = -1;
-        this.address = "";
+        this.address = '';
         this.animated = false;
         this.change = true;
         this.uniforms = {};
@@ -79,11 +81,11 @@ export default class GlslSandbox {
         this.uniforms.u_vanishing_point = 1;
 
         // EVENTS
-        tangram_play.editor.on("cursorActivity", function(cm) {
+        tangram_play.editor.on('cursorActivity', function(cm) {
             cm.glslSandbox.onCursorMove();
         });
 
-        tangram_play.editor.on("changes", function(cm, changesObj) {
+        tangram_play.editor.on('changes', function(cm, changesObj) {
             stopAction(cm);
         });
     }
@@ -126,8 +128,8 @@ export default class GlslSandbox {
                     // if (this.styleObj.material) {   // Materials
                     //     for (let el in this.styleObj.material) {
                     //         if (!Array.isArray(this.styleObj.material[el]) && this.styleObj.material[el].texture ){
-                    //             this.uniforms["u_material_"+el+"_texture"] = this.styleObj.material[el].texture;
-                    //             this.uniforms["u_material."+el+"Scale"] = this.styleObj.material[el].scale;
+                    //             this.uniforms['u_material_'+el+'_texture'] = this.styleObj.material[el].texture;
+                    //             this.uniforms['u_material.'+el+'Scale'] = this.styleObj.material[el].scale;
                     //         }
                     //     }
                     // }
@@ -143,17 +145,17 @@ export default class GlslSandbox {
                         if (isNormal) {
                             // NORMAL CORE & ENDING
                             this.fragmentCode += getAddressSceneContent(this.tangramPlay.scene, this.address) +
-                                            "\ngl_FragColor = vec4(normal,1.0);\n}";        
+                                            '\ngl_FragColor = vec4(normal,1.0);\n}';        
                         } else if (isColor) {
                             // COLOR CORE & ENDING
-                            this.fragmentCode += "\n";
+                            this.fragmentCode += '\n';
                             if ( this.styleObj.shaders.blocks && this.styleObj.shaders.blocks.normal) {
                                 for (let i = 0; i < this.styleObj.shaders.blocks.normal.length; i++){
-                                    this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + "\n";
+                                    this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + '\n';
                                 }
                             }
                             this.fragmentCode += getAddressSceneContent(this.tangramPlay.scene, this.address) +
-                                            "\ngl_FragColor = color;\n}";   
+                                            '\ngl_FragColor = color;\n}';   
                         }
 
                         // Load load composed shader code
@@ -190,7 +192,7 @@ export default class GlslSandbox {
             this.element.parentNode.removeChild(this.element);
         }
         this.stop();
-        this.address = "";
+        this.address = '';
     }
 
     stop() {
@@ -220,7 +222,7 @@ export default class GlslSandbox {
     }
 
     setColor(colorArray) {
-        if (typeof colorArray === "number") {
+        if (typeof colorArray === 'number') {
             this.uniforms.u_color = [colorArray,colorArray,colorArray,1];
         } else if (colorArray.length === 1){
              this.uniforms.u_color = [colorArray[0],colorArray[0],colorArray[0],1];
@@ -229,9 +231,9 @@ export default class GlslSandbox {
         } else if (colorArray.length === 4){
              this.uniforms.u_color = colorArray;
         }
-        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[0]*255)+","+
-                                Math.round(this.uniforms.u_color[1]*255)+","+
-                                Math.round(this.uniforms.u_color[2]*255)+")";
+        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[0]*255)+','+
+                                Math.round(this.uniforms.u_color[1]*255)+','+
+                                Math.round(this.uniforms.u_color[2]*255)+')';
         this.colorPicker.style.backgroundColor = rgbString;
     }
 
@@ -267,7 +269,8 @@ export default class GlslSandbox {
             if (this.active) {
                 this.disable();
             }
-        } else if (pos.line !== this.line || !this.active) {
+        }
+        else if (pos.line !== this.line || !this.active) {
             this.line = pos.line;
             this.reload(pos.line);
         }
@@ -276,10 +279,11 @@ export default class GlslSandbox {
 
 function getNumberOfOpenParentesis(str) {
     let counter = 0;
-    for (let i = 0; i < str.length; i++){
-        if ( str[i] === "{" ){
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === '{') {
             counter++;
-        } else if ( str[i] === "}" ){
+        }
+        else if (str[i] === '}') {
             counter--;
         }
     }
@@ -288,23 +292,23 @@ function getNumberOfOpenParentesis(str) {
 
 function getStyleObj(sc, address) {
     let keys = getKeysFromAddress(address);
-    if (keys === undefined || keys.length === 0 || sc.styles === undefined || sc.styles === null ||sc.styles[keys[1]] === undefined) {
-        console.log("Error: No style for ", address );
+    if (keys === undefined || keys.length === 0 || sc.styles === undefined || sc.styles === null || sc.styles[keys[1]] === undefined) {
+        console.log('Error: No style for ', address);
         return undefined;
     }
     return sc.styles[keys[1]];
 }
 
 function getVertex(scene, uniforms, styleObj) {
-    let defines = "#define TANGRAM_VERTEX_SHADER\n";
+    let defines = '#define TANGRAM_VERTEX_SHADER\n';
 
     for (let name in styleObj.defines) {
         if (styleObj.defines[name]) {
-            defines += "#define " + name + (styleObj.defines[name] === true ? "\n" : " " + styleObj.defines[name] + "\n");
+            defines += '#define ' + name + (styleObj.defines[name] === true ? '\n' : ' ' + styleObj.defines[name] + '\n');
         }
     }
 
-    let block_uniforms = `
+    let blockUniforms = `
 
 #ifdef GL_ES
 precision mediump float;
@@ -321,18 +325,18 @@ varying vec4 v_world_position;
 varying vec3 v_normal;
 varying vec2 v_texcoord;
 
-`
+`;
     for (let u in uniforms) {
-        block_uniforms += "uniform " + uniforms[u].type + " " + uniforms[u].name + ";\n";
+        blockUniforms += 'uniform ' + uniforms[u].type + ' ' + uniforms[u].name + ';\n';
     }
 
-    let block_global = "\n";
+    let blockGlobal = '\n';
     if (styleObj.shaders.blocks.global) {
-        for (let i = 0; i < styleObj.shaders.blocks.global.length; i++){
-            block_global += styleObj.shaders.blocks.global[i] + "\n";
+        for (let i = 0; i < styleObj.shaders.blocks.global.length; i++) {
+            blockGlobal += styleObj.shaders.blocks.global[i] + '\n';
         }
     }
-            
+
     let core = `
 void main() {
     vec4 position = vec4((a_position.xy*2.0)-1., 0.0, 1.0);
@@ -340,10 +344,10 @@ void main() {
     v_world_position = vec4(vec3(u_map_position.xy*0.01+(position.xy*u_meters_per_pixel)*50.,u_map_position.z),1.);
  `;
 
-    let block_position = "\n";
+    let blockPosition = '\n';
     if (styleObj.shaders.blocks.position) {
-        for (let i = 0; i < styleObj.shaders.blocks.position.length; i++){
-            block_position += styleObj.shaders.blocks.position[i] + "\n";
+        for (let i = 0; i < styleObj.shaders.blocks.position.length; i++) {
+            blockPosition += styleObj.shaders.blocks.position[i] + '\n';
         }
     }
 
@@ -355,27 +359,26 @@ void main() {
 }
 `;
 
-    return defines + block_uniforms + block_global + core + block_position + ending;
+    return defines + blockUniforms + blockGlobal + core + blockPosition + ending;
 }
 
 function getFramgmentHeader(scene, uniforms, styleObj) {
+    let defines = '#define TANGRAM_FRAGMENT_SHADER\n';
 
-    let defines = "#define TANGRAM_FRAGMENT_SHADER\n";
-
-    for(let name in styleObj.defines){
+    for (let name in styleObj.defines) {
         if (styleObj.defines[name]) {
-            defines += "#define " + name + (styleObj.defines[name] === true ? "\n" : " " + styleObj.defines[name] + "\n");
+            defines += '#define ' + name + (styleObj.defines[name] === true ? '\n' : ' ' + styleObj.defines[name] + '\n');
         }
     }
 
-    let block_material = "\n";
+    let blockMaterial = '\n';
     if (styleObj.shaders.blocks.material) {
-        for (let i = 0; i < styleObj.shaders.blocks.material.length; i++){
-            block_material += styleObj.shaders.blocks.material[i] + "\n";
+        for (let i = 0; i < styleObj.shaders.blocks.material.length; i++) {
+            blockMaterial += styleObj.shaders.blocks.material[i] + '\n';
         }
     }
 
-    let block_uniforms = `
+    let blockUniforms = `
 
 #ifdef GL_ES
 precision mediump float;
@@ -388,39 +391,23 @@ varying vec4 v_color;
 varying vec4 v_world_position;
 varying vec3 v_normal;
 varying vec2 v_texcoord;
-`
+`;
     for (let u in uniforms) {
-        block_uniforms += "uniform " + uniforms[u].type + " " + uniforms[u].name + ";\n";
+        blockUniforms += 'uniform ' + uniforms[u].type + ' ' + uniforms[u].name + ';\n';
     }
 
-    let block_global = "\n";
+    let blockGlobal = '\n';
     if (styleObj.shaders.blocks.global) {
-        for (let i = 0; i < styleObj.shaders.blocks.global.length; i++){
-            block_global += styleObj.shaders.blocks.global[i] + "\n";
+        for (let i = 0; i < styleObj.shaders.blocks.global.length; i++) {
+            blockGlobal += styleObj.shaders.blocks.global[i] + '\n';
         }
     }
 
     let pre = `
 void main() {
     vec4 color = v_color;
-    vec3 normal = v_normal;            
+    vec3 normal = v_normal;
 `;
 
-    return defines + block_uniforms + block_material + block_global + pre;
-}
-
-function getBlockUntilLine(tangram_play, address, nLine) {
-    let from = tangram_play.getKeyForAddress(address).pos.line+1;
-    let to = nLine+1;
-
-    let block = "\n";
-    for (let i = from; i < to; i++) {
-        block += tangram_play.editor.getLine(i);
-    }
-
-    let nP = getNumberOfOpenParentesis(block);
-    for (let i = 0; i < nP; i++) {
-        block += "}\n";
-    }
-    return block;
+    return defines + blockUniforms + blockMaterial + blockGlobal + pre;
 }
