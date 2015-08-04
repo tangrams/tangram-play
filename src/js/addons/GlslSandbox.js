@@ -4,7 +4,7 @@ import { debounce, getPosition } from '../core/common.js';
 import { isEmpty } from '../core/codemirror/tools.js';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from '../core/codemirror/yaml-tangram.js';
 
-import ColorPickerModal from './ColorPickerModal.js';
+import ColorPickerModal from './widgets/ColorPickerModal.js';
 
 (function() {
     var lastTime = 0;
