@@ -1,16 +1,18 @@
 import TangramPlay from '../TangramPlay.js';
 
-import { fetchHTTP, debounce, getPosition, toCSS } from '../core/common.js';
+import { debounce, getPosition } from '../core/common.js';
 import { isEmpty } from '../core/codemirror/tools.js';
-import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress, getAddressFromKeys } from '../core/codemirror/yaml-tangram.js';
+import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from '../core/codemirror/yaml-tangram.js';
+
+import ColorPickerModal from './ColorPickerModal.js';
 
 (function() {
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
         window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
-                                   || window[vendors[x] + 'CancelRequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
+                                        window[vendors[x] + 'CancelRequestAnimationFrame'];
     }
     if (!window.requestAnimationFrame) {
         window.requestAnimationFrame = function(callback, element) {
@@ -224,7 +226,7 @@ export default class GlslSandbox {
             this.update();
             this.shader.render(true);
             requestAnimationFrame(function() {
-                tangramPlay.editor.glslSandbox.render();
+                TangramPlay.editor.glslSandbox.render();
             }, 1000 / 30);
         }
     }
@@ -287,19 +289,6 @@ export default class GlslSandbox {
         }
     }
 }
-
-function getNumberOfOpenParentesis(str) {
-    let counter = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === '{') {
-            counter++;
-        }
-        else if (str[i] === '}') {
-            counter--;
-        }
-    }
-    return counter;
-};
 
 function getStyleObj(sc, address) {
     let keys = getKeysFromAddress(address);

@@ -1,5 +1,4 @@
 'use strict';
-/* global thistle */
 
 import Widget from './Widget.js';
 import ColorPickerModal from './ColorPickerModal.js';

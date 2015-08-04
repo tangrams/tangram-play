@@ -78,11 +78,6 @@ export function selectLines(cm, rangeString) {
         to = parseInt(lines[1]) - 1;
     }
 
-    // If folding level is on un fold the lines selected
-    if (query['foldLevel']) {
-        foldAllBut(cm, from, to, query['foldLevel']);
-    }
-
     cm.setSelection({ line: from, ch:0 },
                     { line: to, ch: cm.getLine(to).length });
     jumpToLine(cm, from);

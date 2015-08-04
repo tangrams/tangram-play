@@ -5,7 +5,7 @@ import { getAddressSceneContent, getValueRange } from '../core/codemirror/yaml-t
 
 // Debounced event after user stop doing something
 var stopAction = debounce(function(cm) {
-    let line = editor.getCursor().line;
+    let line = cm.getCursor().line;
     cm.suggestManager.suggest(line);
 }, 1000);
 
@@ -33,7 +33,7 @@ export default class SuggestManager {
         });
     }
 
-    suggest (nLine) {
+    suggest(nLine) {
         this.clear();
         let top = this.tangramPlay.editor.getScrollInfo().top;
 
@@ -58,7 +58,7 @@ export default class SuggestManager {
 
         this.tangramPlay.editor.focus();
         this.tangramPlay.editor.scrollTo(null, top);
-    };
+    }
 
     clear() {
         // Erase previus keys
@@ -68,7 +68,7 @@ export default class SuggestManager {
             this.tangramPlay.editor.focus();
         }
     }
-};
+}
 
 class Suggestion {
     constructor(manager, datum) {
@@ -157,7 +157,7 @@ class Suggestion {
             this.manager.active = this;
         }
     }
-};
+}
 
 function makeMenu(cm, nLine, list) {
     let node = document.createElement('div');

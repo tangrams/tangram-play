@@ -10,7 +10,6 @@ import 'codemirror/addon/search/search';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/edit/closebrackets';
-// import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/wrap/hardwrap';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
@@ -22,14 +21,11 @@ import 'codemirror/keymap/sublime';
 import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
-import GLSLTangram from './codemirror/glsl-tangram.js';
-import YAMLTangram from './codemirror/yaml-tangram.js';
-import { getKeyPairs } from './codemirror/yaml-tangram.js';
+import { getLineInd } from './codemirror/tools.js';
 import './codemirror/comment-tangram.js';
 
 // Import Utils
-import { fetchHTTP, debounce } from './common.js';
-import { selectLines, unfoldAll, foldByLevel } from './codemirror/tools.js';
+import { debounce } from './common.js';
 
 //  Main CM functions
 //  ===============================================================================
@@ -43,9 +39,9 @@ var updateContent = debounce(function(cm, changes) {
     let result = '$1?api_key=vector-tiles-P6dkVl4';
     content = content.replace(pattern, result);
 
-    if (scene) {
+    if (TangramPlay.map.scene) {
         let url = createObjectURL(new Blob([content]));
-        scene.reload(url);
+        TangramPlay.map.scene.reload(url);
     }
 }, 500);
 

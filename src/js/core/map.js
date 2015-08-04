@@ -1,9 +1,11 @@
 'use strict';
 
+import TangramPlay from '../TangramPlay.js';
+
 import LocalStorage from '../addons/LocalStorage.js';
 import { saveAs } from '../vendor/FileSaver.min.js';
 
-var takeScreenshot = false;
+let takeScreenshot = false;
 
 export default class Map {
     constructor(place, styleFile) {
@@ -13,7 +15,7 @@ export default class Map {
         // Create Leaflet map
         let map = L.map(place,
             { zoomControl: false },
-            { keyboardZoomOffset: .05 }
+            { keyboardZoomOffset: 0.05 }
         );
         L.control.zoom({ position: 'topright' }).addTo(map);
         map.attributionControl.setPrefix('<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>');
@@ -21,7 +23,7 @@ export default class Map {
         this.hash = new L.Hash(map);
 
         // Add Tangram Layer
-        var layer = Tangram.leafletLayer({
+        let layer = window.Tangram.leafletLayer({
             scene: styleFile,
             postUpdate: postUpdate,
             attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
@@ -45,7 +47,8 @@ export default class Map {
 
         this.leaflet = map;
         this.layer = layer;
-    };
+        this.scene = layer.scene;
+    }
 
     takeScreenshot() {
         if (!takeScreenshot) {
@@ -53,7 +56,7 @@ export default class Map {
             this.layer.scene.requestRedraw();
         }
     }
-};
+}
 
 function _getMapStartLocation () {
     // Set default location
@@ -92,15 +95,15 @@ function _getMapStartLocation () {
 }
 
 function postUpdate() {
-    if (takeScreenshot == true) {
+    if (takeScreenshot) {
         // Adapted from: https://gist.github.com/unconed/4370822
-        var image = scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
-        var data = atob(image); // convert base64 to binary without UTF-8 mangling
-        var buf = new Uint8Array(data.length);
-        for (var i = 0; i < data.length; ++i) {
+        let image = TangramPlay.map.scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
+        let data = atob(image); // convert base64 to binary without UTF-8 mangling
+        let buf = new Uint8Array(data.length);
+        for (let i = 0; i < data.length; ++i) {
             buf[i] = data.charCodeAt(i);
         }
-        var blob = new Blob([buf], { type: 'image/png' });
+        let blob = new Blob([buf], { type: 'image/png' });
         saveAs(blob, 'tangram-' + (new Date()).toString() + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
 
         takeScreenshot = false;

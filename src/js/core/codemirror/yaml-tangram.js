@@ -1,5 +1,7 @@
+import TangramPlay from '../../TangramPlay.js';
+
 import CodeMirror from 'codemirror';
-import 'codemirror/mode/yaml/yaml.js'
+import 'codemirror/mode/yaml/yaml.js';
 
 // Load some common functions
 import { getInd } from './tools.js';
@@ -24,7 +26,7 @@ export function getKeyPairs(cm, nLine) {
         // return [ {address: "/", key: '', value: '', pos: { line: 0, ch: 0 }, index: 0} ];
         return [];
     }
-};
+}
 
 export function getValueRange(keyPair) {
     return {
@@ -64,7 +66,7 @@ export function getAddressSceneContent(tangramScene, address) {
     else {
         return '';
     }
-};
+}
 
 // Make an folder style address from an array of keys
 export function getAddressFromKeys(keys) {
@@ -78,7 +80,7 @@ export function getAddressFromKeys(keys) {
     else {
         return '/';
     }
-};
+}
 
 export function getKeysFromAddress(address) {
     let keys = address.split('/');
@@ -131,7 +133,7 @@ function isContentJS(tangramScene, address) {
     else {
         return false;
     }
-};
+}
 
 function isAfterKey(str, pos) {
     let key = /^\s*(\w+):/gm.exec(str);
@@ -141,7 +143,7 @@ function isAfterKey(str, pos) {
     else {
         return [0].length < pos;
     }
-};
+}
 
 //  Special Tangram YAML Parser
 //  ===============================================================================
@@ -207,7 +209,7 @@ function getInlineKeys(str, nLine) {
         i++;
     }
     return rta;
-};
+}
 
 // Add Address to token states
 function yamlAddressing(stream, state) {
@@ -286,7 +288,8 @@ function yamlAddressing(stream, state) {
             } ];
         }
     }
-};
+}
+
 //  YAML-TANGRAM
 //  ===============================================================================
 CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
@@ -313,7 +316,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
                 //        Replace global scene by a local
                 //
             }
-            else if (isContentJS(scene, address) &&
+            else if (isContentJS(TangramPlay.map.scene, address) &&
                         !/^\|$/g.test(stream.string) &&
                         isAfterKey(stream.string, stream.pos)) {
                 state.token = js;
@@ -328,7 +331,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
         }
 
         return yamlMode.token(stream, state.yamlState);
-    };
+    }
 
     function glsl(stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
@@ -341,14 +344,14 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
             state.yamlState.line++;
         }
         return glslMode.token(stream, state.localState);
-    };
+    }
 
     //  TODO:
     //        Replace global scene by a local
     //
     function js(stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
-        if ((!isContentJS(scene, address) || /^\|$/g.test(stream.string))) {
+        if ((!isContentJS(TangramPlay.map.scene, address) || /^\|$/g.test(stream.string))) {
             state.token = yaml;
             state.localState = state.localMode = null;
             return null;
@@ -357,7 +360,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
             state.yamlState.line++;
         }
         return jsMode.token(stream, state.localState);
-    };
+    }
 
     return {
         startState: function() {

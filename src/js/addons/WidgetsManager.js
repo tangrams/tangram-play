@@ -89,9 +89,6 @@ export default class WidgetsManager {
             else if (lineChange !== -1) {
                 stopMicroAction(this, lineChange);
             }
-            else {
-                console.log('Something change and don t know what to do: ', changesObj);
-            }
         });
 
         TangramPlay.editor.on('fold', (cm, from, to) => {

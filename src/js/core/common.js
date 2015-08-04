@@ -10,7 +10,7 @@ export function fetchHTTP(url, methood) {
     request.open(methood ? methood : 'GET', url, false);
     request.send();
     return response;
-};
+}
 
 export function debounce(func, wait, immediate) {
     let timeout;
@@ -30,7 +30,7 @@ export function debounce(func, wait, immediate) {
             func.apply(context, args);
         }
     };
-};
+}
 
 export function getPosition(dom) {
     let y = 0,
@@ -45,12 +45,12 @@ export function getPosition(dom) {
         y: y,
         x: x
     };
-};
+}
 
 //  Check if a variable is a number
 export function isNumber(n) {
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
-};
+}
 
 export function toCSS(str) {
     let match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
@@ -68,7 +68,7 @@ export function toCSS(str) {
         return value ? value[1] : '';
     }
     return str;
-};
+}
 
 export class StopWatch {
     constructor (performance) {
