@@ -8,25 +8,26 @@ import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
-                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
+                                   || window[vendors[x] + 'CancelRequestAnimationFrame'];
     }
- 
-    if (!window.requestAnimationFrame)
+    if (!window.requestAnimationFrame) {
         window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
-              timeToCall);
+            var id = window.setTimeout(function() {
+                callback(currTime + timeToCall);
+            }, timeToCall);
             lastTime = currTime + timeToCall;
             return id;
         };
- 
-    if (!window.cancelAnimationFrame)
+    }
+    if (!window.cancelAnimationFrame) {
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);
         };
+    }
 }());
 
 // Debounced event after user stop doing something
@@ -38,25 +39,29 @@ var stopAction = debounce(function(cm) {
 }, 1000);
 
 export default class GlslSandbox {
-    constructor (tangram_play, configFile ) {
-
-    	//  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangram_play.editor.glslSandbox = this;
+    constructor (tangramPlay, configFile) {
+        //  Make link to this manager inside codemirror obj to be excecuted from CM events
+        tangramPlay.editor.glslSandbox = this;
 
         // Constant OBJ
-        this.tangramPlay = tangram_play;
+        // this.tangramPlay = tangramPlay;
         this.shader = undefined;
         this.element = document.createElement('div');
         this.element.id = 'tp-a-sandbox';
-        this.element.setAttribute('width','130');
-        this.element.setAttribute('height','130');
+        this.element.setAttribute('width', '130');
+        this.element.setAttribute('height', '130');
 
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'tp-a-sandbox-canvas';
         this.canvas.className = 'glslSandbox';
-        this.canvas.setAttribute('width','130');
-        this.canvas.setAttribute('height','130');
-        this.canvas.setAttribute('data-fragment','precision mediump float;\nvarying vec2 v_texcoord;void main() {\ngl_FragColor = vec4(v_texcoord.x,v_texcoord.y,1.0,1.0);\n}');
+        this.canvas.setAttribute('width', '130');
+        this.canvas.setAttribute('height', '130');
+        this.canvas.setAttribute('data-fragment', `
+    precision mediump float;
+    varying vec2 v_texcoord;
+    void main() {
+        gl_FragColor = vec4(v_texcoord.x, v_texcoord.y, 1.0, 1.0);
+    }`);
         this.element.appendChild(this.canvas);
 
         this.colorPicker = document.createElement('div');
@@ -73,19 +78,19 @@ export default class GlslSandbox {
         this.uniforms = {};
 
         // Tangram uniforms
-        this.setColor( [0,1,0,1] );
-        this.uniforms.u_device_pixel_ratio = window.devicePixelRatio;
-        this.uniforms.u_meters_per_pixel = 1;
-        this.uniforms.u_map_position = [0,0,0];
-        this.uniforms.u_tile_origin = [0,0,0];
-        this.uniforms.u_vanishing_point = 1;
+        this.setColor([0, 1, 0, 1]);
+        this.uniforms['u_device_pixel_ratio'] = window.devicePixelRatio;
+        this.uniforms['u_meters_per_pixel'] = 1;
+        this.uniforms['u_map_position'] = [0, 0, 0];
+        this.uniforms['u_tile_origin'] = [0, 0, 0];
+        this.uniforms['u_vanishing_point'] = 1;
 
         // EVENTS
-        tangram_play.editor.on('cursorActivity', function(cm) {
+        tangramPlay.editor.on('cursorActivity', function(cm) {
             cm.glslSandbox.onCursorMove();
         });
 
-        tangram_play.editor.on('changes', function(cm, changesObj) {
+        tangramPlay.editor.on('changes', function(cm, changesObj) {
             stopAction(cm);
         });
     }
@@ -95,10 +100,9 @@ export default class GlslSandbox {
             nLine = this.tangramPlay.editor.getCursor().line;
         }
 
-        if (!isEmpty(this.tangramPlay.editor,nLine)) {
+        if (!isEmpty(this.tangramPlay.editor, nLine)) {
             let keys = this.tangramPlay.getKeysOnLine(nLine);
-            if (keys && keys[0]){
-
+            if (keys && keys[0]) {
                 this.address = keys[0].address;
                 let isNormal = isNormalBlock(this.address);
                 let isColor = isColorBlock(this.address);
@@ -107,22 +111,23 @@ export default class GlslSandbox {
                     // Store address and states
                     this.styleObj = getStyleObj(this.tangramPlay.scene, this.address);
 
-                    if (this.styleObj === undefined || this.styleObj === null || 
-                        this.styleObj.shaders === undefined || this.styleObj.shaders === null ) { 
-                        this.disable(); return; 
+                    if (this.styleObj === undefined || this.styleObj === null ||
+                        this.styleObj.shaders === undefined || this.styleObj.shaders === null) {
+                        this.disable();
+                        return;
                     }
 
                     //  Start sandbox and inject widget
                     if (this.shader === undefined) {
                         this.shader = new GlslCanvas(this.canvas);
                     }
-                    this.tangramPlay.editor.addWidget({line: nLine, ch: 0}, this.element);
+                    this.tangramPlay.editor.addWidget({ line: nLine, ch: 0 }, this.element);
 
                     if (this.styleObj.shaders.uniforms) {
                         for (let name in this.styleObj.shaders.uniforms) {
                             this.uniforms[name] = this.styleObj.shaders.uniforms[name];
                         }
-                    } 
+                    }
 
                     // Load block data
                     // if (this.styleObj.material) {   // Materials
@@ -145,17 +150,18 @@ export default class GlslSandbox {
                         if (isNormal) {
                             // NORMAL CORE & ENDING
                             this.fragmentCode += getAddressSceneContent(this.tangramPlay.scene, this.address) +
-                                            '\ngl_FragColor = vec4(normal,1.0);\n}';        
-                        } else if (isColor) {
+                                            '\ngl_FragColor = vec4(normal,1.0);\n}';
+                        }
+                        else if (isColor) {
                             // COLOR CORE & ENDING
                             this.fragmentCode += '\n';
-                            if ( this.styleObj.shaders.blocks && this.styleObj.shaders.blocks.normal) {
-                                for (let i = 0; i < this.styleObj.shaders.blocks.normal.length; i++){
+                            if (this.styleObj.shaders.blocks && this.styleObj.shaders.blocks.normal) {
+                                for (let i = 0; i < this.styleObj.shaders.blocks.normal.length; i++) {
                                     this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + '\n';
                                 }
                             }
                             this.fragmentCode += getAddressSceneContent(this.tangramPlay.scene, this.address) +
-                                            '\ngl_FragColor = color;\n}';   
+                                            '\ngl_FragColor = color;\n}';
                         }
 
                         // Load load composed shader code
@@ -168,11 +174,13 @@ export default class GlslSandbox {
                     }
 
                     this.start();
-                } else {
+                }
+                else {
                     this.disable();
                 }
             }
-        } else {
+        }
+        else {
             this.disable();
         }
     }
@@ -181,7 +189,7 @@ export default class GlslSandbox {
         if (!this.active) {
             if (this.shader) {
                 this.shader.refreshUniforms();
-            } 
+            }
             this.active = true;
             this.render();
         }
@@ -202,38 +210,41 @@ export default class GlslSandbox {
 
     update() {
         // Update uniforms
-        this.uniforms.u_device_pixel_ratio = window.devicePixelRatio;
-        this.uniforms.u_meters_per_pixel = this.tangramPlay.scene.meters_per_pixel;
-        this.uniforms.u_map_position = [this.tangramPlay.scene.center_meters.x, this.tangramPlay.scene.center_meters.y, this.tangramPlay.scene.zoom];
-        this.uniforms.u_tile_origin = [this.tangramPlay.scene.center_tile.x, this.tangramPlay.scene.center_tile.y, this.tangramPlay.scene.center_tile.z];
-        this.uniforms.u_vanishing_point = this.tangramPlay.scene.camera.vanishing_point;
+        this.uniforms['u_device_pixel_ratio'] = window.devicePixelRatio;
+        this.uniforms['u_meters_per_pixel'] = this.tangramPlay.scene['meters_per_pixel'];
+        this.uniforms['u_map_position'] = [this.tangramPlay.scene['center_meters'].x, this.tangramPlay.scene['center_meters'].y, this.tangramPlay.scene.zoom];
+        this.uniforms['u_tile_origin'] = [this.tangramPlay.scene['center_tile'].x, this.tangramPlay.scene['center_tile'].y, this.tangramPlay.scene['center_tile'].z];
+        this.uniforms['u_vanishing_point'] = this.tangramPlay.scene.camera['vanishing_point'];
 
         this.shader.setUniforms(this.uniforms);
     }
 
     render() {
-    	if (this.active) { // && this.animated) {
+        if (this.active) { // && this.animated) {
             this.update();
-			this.shader.render(true);
-			requestAnimationFrame(function(){
-				tangramPlay.editor.glslSandbox.render();
-			}, 1000 / 30);
-    	}
+            this.shader.render(true);
+            requestAnimationFrame(function() {
+                tangramPlay.editor.glslSandbox.render();
+            }, 1000 / 30);
+        }
     }
 
     setColor(colorArray) {
         if (typeof colorArray === 'number') {
-            this.uniforms.u_color = [colorArray,colorArray,colorArray,1];
-        } else if (colorArray.length === 1){
-             this.uniforms.u_color = [colorArray[0],colorArray[0],colorArray[0],1];
-        } else if (colorArray.length === 3){
-             this.uniforms.u_color = [colorArray[0],colorArray[1],colorArray[2],1];
-        } else if (colorArray.length === 4){
-             this.uniforms.u_color = colorArray;
+            this.uniforms['u_color'] = [colorArray, colorArray, colorArray, 1];
         }
-        let rgbString = 'rgb('+ Math.round(this.uniforms.u_color[0]*255)+','+
-                                Math.round(this.uniforms.u_color[1]*255)+','+
-                                Math.round(this.uniforms.u_color[2]*255)+')';
+        else if (colorArray.length === 1) {
+            this.uniforms['u_color'] = [colorArray[0], colorArray[0], colorArray[0], 1];
+        }
+        else if (colorArray.length === 3) {
+            this.uniforms['u_color'] = [colorArray[0], colorArray[1], colorArray[2], 1];
+        }
+        else if (colorArray.length === 4) {
+            this.uniforms['u_color'] = colorArray;
+        }
+        let rgbString = 'rgb(' + Math.round(this.uniforms['u_color'][0] * 255) + ',' +
+                                Math.round(this.uniforms['u_color'][1] * 255) + ',' +
+                                Math.round(this.uniforms['u_color'][2] * 255) + ')';
         this.colorPicker.style.backgroundColor = rgbString;
     }
 
@@ -243,11 +254,11 @@ export default class GlslSandbox {
     onColorClick (event) {
         let pos = getPosition(this.colorPicker);
         pos.x += 30;
-        pos.y = this.tangramPlay.editor.heightAtLine( this.line )-15;
+        pos.y = this.tangramPlay.editor.heightAtLine(this.line) - 15;
 
         this.picker = new ColorPickerModal(this.colorPicker.style.backgroundColor);
 
-        this.picker.presentModal(pos.x,pos.y);
+        this.picker.presentModal(pos.x, pos.y);
         this.picker.on('changed', this.onColorChange.bind(this));
     }
 
@@ -256,13 +267,13 @@ export default class GlslSandbox {
      */
     onColorChange (event) {
         let color = this.picker.getRGB();
-        this.setColor( [color.r,color.g,color.b,1] );
+        this.setColor([color.r, color.g, color.b, 1]);
     }
 
     onCursorMove() {
         let pos = this.tangramPlay.editor.getCursor();
 
-        let edge = this.tangramPlay.editor.charCoords({line:pos.line, ch:20}).left;
+        let edge = this.tangramPlay.editor.charCoords({ line:pos.line, ch:20 }).left;
         let left = this.tangramPlay.editor.charCoords(pos).left;
 
         if (pos.ch < 20 || left < edge) {
@@ -355,7 +366,7 @@ void main() {
     v_position = position;
     gl_Position = position;
     v_normal = vec3(0.,0.,1.);
-    v_color = u_color;
+    v_color =['u_color'];
 }
 `;
 
