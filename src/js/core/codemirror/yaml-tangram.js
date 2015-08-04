@@ -1,5 +1,6 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
+import './glsl-tangram.js';
 
 // Load some common functions
 import { getInd } from './tools.js';
@@ -288,19 +289,12 @@ function yamlAddressing(stream, state) {
     }
 }
 
-  function Context(indented, column, type, align, prev) {
-    this.indented = indented;
-    this.column = column;
-    this.type = type;
-    this.align = align;
-    this.prev = prev;
-  }
-
 //  YAML-TANGRAM
 //  ===============================================================================
 CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
     let yamlMode = CodeMirror.getMode(config, 'yaml');
     let glslMode = CodeMirror.getMode(config, 'glsl');
+
     let jsMode = CodeMirror.getMode(config, 'javascript');
     yamlMode.lineComment = '#';
 
@@ -315,18 +309,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
                 isAfterKey(stream.string, stream.pos)) {
                 state.token = glsl;
                 state.localMode = glslMode;
-                // state.localState = glslMode.startState(getInd(stream.string));
-                state.localState = {
-                    tokenize: null,
-                    context: {
-                        column: 0,
-                        indented: (getInd(stream.string)) - 4,
-                        type: 'top',
-                        align: false
-                    },
-                    indented: 0,
-                    startOfLine: true
-                  };
+                state.localState = glslMode.startState(getInd(stream.string));
                 return glsl(stream, state);
             }
             else if (isContentJS(window.scene, address) &&
