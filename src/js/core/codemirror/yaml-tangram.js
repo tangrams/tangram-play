@@ -1,5 +1,3 @@
-import TangramPlay from '../../TangramPlay.js';
-
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
 
@@ -290,6 +288,14 @@ function yamlAddressing(stream, state) {
     }
 }
 
+  function Context(indented, column, type, align, prev) {
+    this.indented = indented;
+    this.column = column;
+    this.type = type;
+    this.align = align;
+    this.prev = prev;
+  }
+
 //  YAML-TANGRAM
 //  ===============================================================================
 CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
@@ -309,14 +315,21 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
                 isAfterKey(stream.string, stream.pos)) {
                 state.token = glsl;
                 state.localMode = glslMode;
-                state.localState = glslMode.startState(getInd(stream.string));
+                // state.localState = glslMode.startState(getInd(stream.string));
+                state.localState = {
+                    tokenize: null,
+                    context: {
+                        column: 0,
+                        indented: (getInd(stream.string)) - 4,
+                        type: 'top',
+                        align: false
+                    },
+                    indented: 0,
+                    startOfLine: true
+                  };
                 return glsl(stream, state);
-
-                //  TODO:
-                //        Replace global scene by a local
-                //
             }
-            else if (isContentJS(TangramPlay.map.scene, address) &&
+            else if (isContentJS(window.scene, address) &&
                         !/^\|$/g.test(stream.string) &&
                         isAfterKey(stream.string, stream.pos)) {
                 state.token = js;
@@ -351,7 +364,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
     //
     function js(stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
-        if ((!isContentJS(TangramPlay.map.scene, address) || /^\|$/g.test(stream.string))) {
+        if ((!isContentJS(window.scene, address) || /^\|$/g.test(stream.string))) {
             state.token = yaml;
             state.localState = state.localMode = null;
             return null;
