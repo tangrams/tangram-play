@@ -6,6 +6,8 @@ import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress
 
 import ColorPickerModal from './widgets/ColorPickerModal.js';
 
+/* global GlslCanvas */
+
 (function() {
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
