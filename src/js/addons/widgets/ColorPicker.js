@@ -42,6 +42,10 @@ export default class ColorPicker extends Widget {
         this.el.style.backgroundColor = cssColor;
     }
 
+    get value () {
+        return super['value'];
+    }
+
     set value (val) {
         super['value'](val);
         this.color = toCSS(val);

@@ -26,7 +26,7 @@ CodeMirror.commands.toggleComment = function(cm) {
             to = Pos(minLine, 0);
         }
         minLine = from.line;
-        if (mode === null) {
+        if (mode == null) {
             if (cm.uncomment(from, to)) {
                 mode = 'un';
             }
@@ -112,7 +112,7 @@ CodeMirror.defineExtension('blockComment', function(from, to, options) {
         --end;
     }
 
-    let pad = options.padding === null ? ' ' : options.padding;
+    let pad = options.padding == null ? ' ' : options.padding;
     if (from.line > end) {
         return;
     }
@@ -150,11 +150,12 @@ CodeMirror.defineExtension('uncomment', function(from, to, options) {
     // Try finding line comments
     let lineString = options.lineComment || mode.lineComment,
         lines = [];
-    let pad = options.padding === null ? ' ' : options.padding,
+    let pad = options.padding == null ? ' ' : options.padding,
         didSomething;
     lineComment: {
         if (!lineString) {
-            break lineComment;
+            // break lineComment;
+            return false;
         }
         for (let i = start; i <= end; ++i) {
             let line = self.getLine(i);
