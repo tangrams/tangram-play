@@ -82,6 +82,6 @@ export default class Widget {
         this.key.value = string;
 
         // Update the position
-        TangramPlay.addons.widgetsManager.update();
+        TangramPlay.addons.widgetsManager.updateLine(this.key.pos.line);
     }
 }
