@@ -103,7 +103,8 @@ const Tools = {
 
 export default class ColorPickerModal {
     constructor (color = 'rgb(0, 0, 0)') {
-        this.color = _getColorAsRGB(color);
+        this.color = color;
+        // this.color = _getColorAsRGB(color);
         this.init();
         this.initRenderer();
         this.isVisible = false;
