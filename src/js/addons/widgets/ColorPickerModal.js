@@ -106,6 +106,7 @@ export default class ColorPickerModal {
         this.color = _getColorAsRGB(color);
         this.init();
         this.initRenderer();
+        this.isVisible = false;
     }
 
     init () {
@@ -275,6 +276,7 @@ export default class ColorPickerModal {
             ctx.fillRect(0, 0, 30, 200);
         }
 
+        this.isVisible = true;
         this.renderer.tick();
     }
 
@@ -305,6 +307,18 @@ export default class ColorPickerModal {
                 window.cancelAnimationFrame(this.renderer.frame);
             }
         };
+    }
+
+    /**
+     *  Updates only the color value of the color picker
+     *  and the view. Designed to be called by external modules
+     *  so that it can update its internal value from an outside source.
+     *  Does no DOM creation & other initialization work.
+     */
+    setColor (color) {
+        this.color = _getColorAsRGB(color);
+        // Update render by one tick
+        this.renderer.tick();
     }
 
     /* ---------------------------------- */
@@ -404,6 +418,8 @@ export default class ColorPickerModal {
         this.hsvDownHandler = null;
         Tools.removeEvent(document.body, 'click', this.onClickOutsideHandler);
         this.onClickOutsideHandler = null;
+
+        this.isVisible = false;
     }
 
     // Destroy event listeners that exist during mousedown colorpicker interaction

@@ -49,13 +49,28 @@ export default class ColorPicker extends Widget {
     set value (val) {
         super['value'](val);
         this.color = toCSS(val);
+
+        // Updates the color picker modal, if present.
+        if (this.picker) {
+            this.picker.setColor(this.color);
+        }
     }
 
     /**
      *  Handles when user clicks on the in-line color indicator widget
      */
     onClick (event) {
-        this.picker = new ColorPickerModal(this.color);
+        // Toggles the picker to be off if it's already present.
+        if (this.picker && this.picker.isVisible) {
+            this.picker.removeModal();
+            return;
+        }
+        // If no picker is created yet, do it now
+        else if (!this.picker) {
+            this.picker = new ColorPickerModal(this.color);
+        }
+
+        // Turn the picker on and present modal
         let pos = this.el.getBoundingClientRect();
 
         // Thistle modal size
