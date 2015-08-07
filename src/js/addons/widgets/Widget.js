@@ -11,6 +11,7 @@
 
 import TangramPlay from '../../TangramPlay.js';
 import { getPosition } from '../../core/common.js';
+import { getValueRange } from '../../core/codemirror/yaml-tangram.js';
 
 export default class Widget {
     constructor (def, key) {
@@ -51,8 +52,13 @@ export default class Widget {
     }
 
     // Future
-    updatePosition() {
-        // Like this
+    update() {
+        // Update key
+        this.key = TangramPlay.getKeyForKey(this.key);
+
+        // Update position
+        let pos = getValueRange(this.key).to;
+        TangramPlay.editor.addWidget(pos, this.el);
     }
 
     /**
@@ -74,7 +80,6 @@ export default class Widget {
      */
     setEditorValue(string) {
         // Send the value to editor
-        // TODO: Something that doesn't rely on global
         this.key = TangramPlay.getKeyForKey(this.key);
         TangramPlay.setValue(this.key, string);
 

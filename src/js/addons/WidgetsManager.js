@@ -210,9 +210,10 @@ export default class WidgetsManager {
             }
             else {
                 for (let widget of widgets) {
-                    let index = widget.key.index;
-                    let pos = getValueRange(keys[index]).to;
-                    TangramPlay.editor.addWidget(pos, widget.el);
+                    widget.update();
+                    // let index = widget.key.index;
+                    // let pos = getValueRange(keys[index]).to;
+                    // TangramPlay.editor.addWidget(pos, widget.el);
                 }
             }
         }
