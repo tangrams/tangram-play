@@ -24,6 +24,7 @@ export default class ColorPicker extends Widget {
         return el;
     }
 
+<<<<<<< HEAD
     // update() {
     //     this.super();
 
@@ -31,6 +32,8 @@ export default class ColorPicker extends Widget {
     //     this.color = toCSS(this.key.value);
     // }
 
+=======
+>>>>>>> parent of d44a593... trying something
     /**
      *  Returns widget background color when
      *  this.color is requested
