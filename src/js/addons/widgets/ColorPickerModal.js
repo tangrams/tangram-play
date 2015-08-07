@@ -601,22 +601,31 @@ function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
  *  browsers.
  */
 function _getColorAsRGB (color) {
-    // Create a test element to apply CSS color and retrieve
-    // a value from. Do not append this to the document (no need to).
-    // This reference will be automatically garbage-collected
-    // when this function returns.
+    // Create a test element to apply a CSS color and retrieve
+    // a normalized value from.
     let test = document.createElement('div');
     test.style.backgroundColor = color;
+
+    // Chrome requires the element to be in DOM for styles to be computed.
+    document.body.appendChild(test);
+
+    // Get the computed style from the browser, in the format of
+    // rgb(x, x, x)
     let normalized = window.getComputedStyle(test).backgroundColor;
+
     // In certain cases getComputedStyle() may return
     // 'transparent' as a value, which is useless(?) for the current
-    // color picker, in which case we naively reset it to a value
-    // that the color picker understands.
-    // TODO: Handle this better, especially if we want to
-    // handle alphas in this color picker then it makes sense.
+    // color picker. According to specifications, transparent
+    // is a black with 0 alpha - rgba(0, 0, 0, 0) - but because
+    // the picker does not currently handle alpha, we return the
+    // black value.
     if (normalized === 'transparent') {
-        normalized = 'rgb(0, 0, 0';
+        normalized = 'rgb(0, 0, 0)';
     }
+
+    // Garbage collection
+    test.parentNode.removeChild(test);
+
     return normalized;
 }
 
