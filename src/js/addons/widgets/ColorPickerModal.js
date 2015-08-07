@@ -102,8 +102,8 @@ const Tools = {
 };
 
 export default class ColorPickerModal {
-    constructor (color = '#000') {
-        this.color = color;
+    constructor (color = 'rgb(0, 0, 0)') {
+        this.color = _getColorAsRGB(color);
         this.init();
         this.initRenderer();
     }
@@ -565,3 +565,42 @@ function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
         ctx.stroke();
     });
 }
+
+/**
+ *  The color passed from ColorPicker is whatever that
+ *  CSS background color is of the widget, which is also whatever
+ *  is entered as a value in the Tangram YAML. It may be
+ *  necessary to normalize this on the widget side instead of
+ *  the modal side (TODO; investigate this in future).
+ *  Currently the issue is that the color picker functionality
+ *  here does not convert from CSS named color values and so
+ *  behaves strangely when it encounters it. So it is necessary
+ *  to take the raw CSS value and convert it to a format that
+ *  Colors.js understand, and this includes rgb(x,x,x) value.
+ *  window.getComputedStyle() is a very fast, cross-browser
+ *  compatible (no old-IE, though) way of letting the browser
+ *  do the work and tell us what the computed rgb() value is.
+ *  TODO: Find out what happens if value includes an alpha.
+ *  TODO: Guarantee that the returned value is consistent across
+ *  browsers.
+ */
+function _getColorAsRGB (color) {
+    // Create a test element to apply CSS color and retrieve
+    // a value from. Do not append this to the document (no need to).
+    // This reference will be automatically garbage-collected
+    // when this function returns.
+    let test = document.createElement('div');
+    test.style.backgroundColor = color;
+    let normalized = window.getComputedStyle(test).backgroundColor;
+    // In certain cases getComputedStyle() may return
+    // 'transparent' as a value, which is useless(?) for the current
+    // color picker, in which case we naively reset it to a value
+    // that the color picker understands.
+    // TODO: Handle this better, especially if we want to
+    // handle alphas in this color picker then it makes sense.
+    if (normalized === 'transparent') {
+        normalized = 'rgb(0, 0, 0';
+    }
+    return normalized;
+}
+
