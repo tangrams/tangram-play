@@ -83,7 +83,7 @@ export default class WidgetsManager {
 
             if (multiLine) {
                 this.forceBuild = true;
-                stopAction();
+                stopAction(this);
             }
             else if (lineChange !== -1) {
                 stopMicroAction(this, lineChange);
