@@ -24,12 +24,12 @@ export default class ColorPicker extends Widget {
         return el;
     }
 
-    update() {
-        this.super();
+    // update() {
+    //     this.super();
 
-        // Set the color property from editor value
-        this.color = toCSS(this.key.value);
-    }
+    //     // Set the color property from editor value
+    //     this.color = toCSS(this.key.value);
+    // }
 
     /**
      *  Returns widget background color when

@@ -54,10 +54,10 @@ export default class Widget {
     // Future
     update() {
         // Update key
-        this.key = TangramPlay.getKeyForKey(this.key);
+        let key = TangramPlay.getKeyForKey(this.key);
 
         // Update position
-        let pos = getValueRange(this.key).to;
+        let pos = getValueRange(key).to;
         TangramPlay.editor.addWidget(pos, this.el);
     }
 

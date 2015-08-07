@@ -176,8 +176,9 @@ export default class WidgetsManager {
 
                 if (TangramPlay.editor.getLineHandle(nLine) && TangramPlay.editor.getLineHandle(nLine).height) {
                     if (index < keys.length) {
-                        let pos = getValueRange(keys[index]).to;
-                        TangramPlay.editor.addWidget(pos, widget.el);
+                        // let pos = getValueRange(keys[index]).to;
+                        // TangramPlay.editor.addWidget(pos, widget.el);
+                        widget.update();
                     }
                     else {
                         this.rebuildLine(nLine);
