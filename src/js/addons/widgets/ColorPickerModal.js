@@ -316,7 +316,12 @@ export default class ColorPickerModal {
      *  Does no DOM creation & other initialization work.
      */
     setColor (color) {
+        // Set color
         this.color = _getColorAsRGB(color);
+        this.lib = new Colors({
+            color: this.color
+        });
+
         // Update render by one tick
         this.renderer.tick();
     }
