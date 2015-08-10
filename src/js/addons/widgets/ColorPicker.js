@@ -54,7 +54,7 @@ export default class ColorPicker extends Widget {
     }
 
     set value (val) {
-        super['value'](val);
+        super['value'] = val;
         this.color = toCSS(val);
 
         // Updates the color picker modal, if present.
