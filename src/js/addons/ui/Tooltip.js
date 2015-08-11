@@ -85,8 +85,9 @@ const Tooltip = {
         const alignment = this.target.getAttribute('data-tooltip-alignment') || 'left';
 
         if (alignment === 'right') {
-            // Momentarily, this is aligned to right side of window (with some margin)
-            // rather than right side of element position.
+            // Because there is currently only one menu item on the right,
+            // we're cheating by aligning the tooltip to the right side of window (with
+            // some margin) rather than right side of element position.
             // This will need to change if / when there are more menu items to the
             // right (or adjusted for arbitrary positioning so that elements do not
             // disappear out of the viewport.)
