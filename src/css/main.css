@@ -30,6 +30,7 @@
 @import '_filedrop';
 @import '_menu-bar';
 @import '_menu-dropdown';
+@import '_tooltip';
 @import '_modals';
 @import '_shield';
 @import '_typography';

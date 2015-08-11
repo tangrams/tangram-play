@@ -1,0 +1,47 @@
+/* TOOLTIP */
+
+.tp-tooltip {
+    position: fixed;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1020; /* TODO z-index hierarchy */
+    transform: translateY(-10px);
+    opacity: 0;
+
+    &.tp-tooltip-animate {
+        transition: 70ms opacity ease-out, 70ms transform ease-out;
+    }
+
+    &.tp-tooltip-show {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+.tp-tooltip-content {
+    display: block;
+    background-color: black;
+    padding: 1em;
+    font-family: var(--font-family);
+    font-weight: 200;
+    font-size: .8em;
+    color: var(--ui-highlight-color);
+    text-align: left;
+    line-height: 1.2em;
+    white-space: nowrap;
+}
+
+/* TODO: Align pointers based on target element dimensions */
+.tp-tooltip-pointer {
+    display: block;
+    position: absolute;
+    top: -15px;
+    border: 8px solid transparent;
+    border-bottom-color: black;
+    transform: translateX(14px);
+
+    &.tp-tooltip-pointer-right {
+        right: 0;
+        transform: translateX(-8px);
+    }
+}
