@@ -1,3 +1,9 @@
+import http from 'http-browserify';
+import url from 'url';
+
+/* NOTE: Deprecated.
+   Browsers will warn that synchronous XMLHttpRequests are being phased out.
+
 export function fetchHTTP(url, methood) {
     let request = new XMLHttpRequest(),
         response;
@@ -10,6 +16,27 @@ export function fetchHTTP(url, methood) {
     request.open(methood ? methood : 'GET', url, false);
     request.send();
     return response;
+}
+*/
+
+export function httpGet (path, callback) {
+    let location = url.parse(path);
+
+    http.get({
+        host: location.host || window.location.host,
+        // If path looks like a relative URL, we need to get the full one.
+        path: (location.pathname.indexOf('/') !== 0) ? window.location.pathname + location.pathname : location.pathname,
+        withCredentials: false
+    }, function (response) {
+        let body = '';
+        response.on('data', function (chunk) {
+            body += chunk;
+        });
+        response.on('end', function () {
+            let error = null;
+            callback(error, body);
+        });
+    });
 }
 
 export function debounce(func, wait, immediate) {

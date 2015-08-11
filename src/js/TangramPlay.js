@@ -9,7 +9,7 @@ import SuggestManager from './addons/SuggestManager.js';
 import GlslSandbox from './addons/GlslSandbox.js';
 
 // Import Utils
-import { fetchHTTP, StopWatch } from './core/common.js';
+import { httpGet, StopWatch } from './core/common.js';
 import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from './core/codemirror/tools.js';
 import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codemirror/yaml-tangram.js';
 
@@ -76,11 +76,13 @@ class TangramPlay {
         this.editor.isSaved = true;
     }
 
-    loadFile(str) {
-        this.loadContent(fetchHTTP(str));
+    loadFile (path) {
+        httpGet(path, (err, res) => {
+            this.loadContent(res);
 
-        // Trigger Events
-        this.container.dispatchEvent(this.onLoaded);
+            // Trigger Events
+            this.container.dispatchEvent(this.onLoaded);
+        });
     }
 
     loadQuery() {

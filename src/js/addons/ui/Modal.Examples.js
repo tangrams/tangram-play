@@ -3,7 +3,7 @@
 import TangramPlay from '../../TangramPlay.js';
 import Modal from './Modal.js';
 import EditorIO from './EditorIO.js';
-import { fetchHTTP } from '../../core/common.js';
+import { httpGet } from '../../core/common.js';
 
 let examplesEl;
 
@@ -41,26 +41,28 @@ export default class ExamplesModal extends Modal {
 
 // TODO: Refactor
 function loadExamples (configFile) {
-    const data = JSON.parse(fetchHTTP(configFile));
-    const listEl = examplesEl.querySelector('.tp-example-list');
+    httpGet(configFile, function (err, res) {
+        const data = JSON.parse(res);
+        const listEl = examplesEl.querySelector('.tp-example-list');
 
-    for (let example of data['examples']) {
-        let newOption = document.createElement('div');
-        let nameEl = document.createElement('div');
-        let name = example['name'].split('.')[0];
-        let thumbnailEl = document.createElement('div');
-        newOption.className = 'tp-example-option';
-        newOption.setAttribute('data-value', example['url']);
-        nameEl.className = 'tp-example-option-name';
-        nameEl.textContent = name.replace(/-/g, ' ');
-        thumbnailEl.className = 'tp-example-thumbnail';
-        thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
-        thumbnailEl.style.backgroundImage = 'url(https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/' + name + '.png)';
-        newOption.appendChild(nameEl);
-        newOption.appendChild(thumbnailEl);
-        newOption.addEventListener('click', selectExample);
-        listEl.appendChild(newOption);
-    }
+        for (let example of data['examples']) {
+            let newOption = document.createElement('div');
+            let nameEl = document.createElement('div');
+            let name = example['name'].split('.')[0];
+            let thumbnailEl = document.createElement('div');
+            newOption.className = 'tp-example-option';
+            newOption.setAttribute('data-value', example['url']);
+            nameEl.className = 'tp-example-option-name';
+            nameEl.textContent = name.replace(/-/g, ' ');
+            thumbnailEl.className = 'tp-example-thumbnail';
+            thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
+            thumbnailEl.style.backgroundImage = 'url(https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/' + name + '.png)';
+            newOption.appendChild(nameEl);
+            newOption.appendChild(thumbnailEl);
+            newOption.addEventListener('click', selectExample);
+            listEl.appendChild(newOption);
+        }
+    });
 }
 
 function selectExample (event) {
