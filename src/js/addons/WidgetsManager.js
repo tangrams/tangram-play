@@ -3,7 +3,7 @@
 import TangramPlay from '../TangramPlay.js';
 
 // Load some common functions
-import { fetchHTTP, debounce } from '../core/common.js';
+import { httpGet, fetchHTTP, debounce } from '../core/common.js';
 import { isStrEmpty } from '../core/codemirror/tools.js';
 import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 
@@ -28,15 +28,17 @@ export default class WidgetsManager {
         this.active = []; // active widgets
 
         // Load data file
-        let widgetsData = JSON.parse(fetchHTTP(configFile))['widgets'];
+        httpGet(configFile, (err, res) => {
+            let widgetsData = JSON.parse(res)['widgets'];
 
-        // Initialize tokens
-        for (let datum of widgetsData) {
-            this.data.push(new WidgetType(datum));
-        }
+            // Initialize tokens
+            for (let datum of widgetsData) {
+                this.data.push(new WidgetType(datum));
+            }
 
-        // Build all widgets
-        this.build();
+            // Build all widgets
+            this.build();
+        });
 
         TangramPlay.editor.on('update', (cm, changesObj) => {
             let to = TangramPlay.editor.getViewport().to;

@@ -1,3 +1,5 @@
+import http from 'http-browserify';
+
 export function fetchHTTP(url, methood) {
     let request = new XMLHttpRequest(),
         response;
@@ -10,6 +12,21 @@ export function fetchHTTP(url, methood) {
     request.open(methood ? methood : 'GET', url, false);
     request.send();
     return response;
+}
+
+export function httpGet (path, callback) {
+    let url = window.location.origin + window.location.pathname + path;
+
+    http.get(url, function (response) {
+        let body = '';
+        response.on('data', function (chunk) {
+            body += chunk;
+        });
+        response.on('end', function () {
+            let error = null;
+            callback(error, body);
+        });
+    });
 }
 
 export function debounce(func, wait, immediate) {
