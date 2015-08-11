@@ -1,5 +1,5 @@
 // Load some common functions
-import { fetchHTTP, debounce } from '../core/common.js';
+import { httpGet, debounce } from '../core/common.js';
 import { getLineInd, isEmpty } from '../core/codemirror/tools.js';
 import { getAddressSceneContent, getValueRange } from '../core/codemirror/yaml-tangram.js';
 
@@ -20,12 +20,14 @@ export default class SuggestManager {
         this.active = undefined;
 
         //  Load data file
-        let suggestionsData = JSON.parse(fetchHTTP(configFile))['suggest'];
+        httpGet(configFile, (err, res) => {
+            let suggestionsData = JSON.parse(res)['suggest'];
 
-        // Initialize tokens
-        for (let datum of suggestionsData) {
-            this.data.push(new Suggestion(this, datum));
-        }
+            // Initialize tokens
+            for (let datum of suggestionsData) {
+                this.data.push(new Suggestion(this, datum));
+            }
+        });
 
         // Suggestions are trigged by the folowing CM events
         this.tangramPlay.editor.on('cursorActivity', function(cm) {
