@@ -57,7 +57,9 @@ const Tooltip = {
         this.isCurrentlyShowing = true;
 
         // Set global listener to hide a tooltip on click
-        window.addEventListener('click', (e) => { this.hide() }, false);
+        window.addEventListener('click', (e) => {
+            this.hide();
+        }, false);
     },
 
     hide () {
@@ -73,7 +75,9 @@ const Tooltip = {
             }
         }, TIME_BEFORE_RESET);
 
-        window.removeEventListener('click', (e) => { this.hide() }, false);
+        window.removeEventListener('click', (e) => {
+            this.hide();
+        }, false);
     },
 
     applyPosition () {
@@ -98,7 +102,7 @@ const Tooltip = {
 
         this.el.style.top = Math.floor(targetPos.bottom + 5) + 'px'; // Starting position, animate down
     }
-}
+};
 
 export default Tooltip;
 
