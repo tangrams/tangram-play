@@ -35,8 +35,13 @@ export default class Map {
 
         this.takeScreenshot = false;
 
+        window.map = map;
         window.layer = layer;
         window.scene = layer.scene;
+
+        window.setTimeout(function () {
+            map.invalidateSize(false);
+        }, 0);
 
         // Set up a listener to record current map view settings when user leaves
         window.addEventListener('unload', function (event) {
