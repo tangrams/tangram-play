@@ -1,7 +1,7 @@
 /* MAP LOADING INDICATOR */
 
 .tp-map-loading {
-    position: absolute;
+    position: fixed;
     height: 10px;
     width: 100%;
     left: 0;
