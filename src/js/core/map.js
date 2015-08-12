@@ -5,6 +5,9 @@ import TangramPlay from '../TangramPlay.js';
 import LocalStorage from '../addons/LocalStorage.js';
 import { saveAs } from '../vendor/FileSaver.min.js';
 
+//import L from 'leaflet';
+import * as Hash from 'leaflet-hash';
+
 let takeScreenshot = false;
 
 export default class Map {
