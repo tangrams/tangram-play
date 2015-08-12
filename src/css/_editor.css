@@ -1,5 +1,7 @@
 /* EDITOR */
 
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
+
 :root {
     --editor-font-family: var(--font-family);
 }
@@ -13,7 +15,8 @@
 }
 
 .CodeMirror {
-    font-size: 110%;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
     line-height: 1.4;
 }
 
