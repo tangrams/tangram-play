@@ -1,0 +1,32 @@
+/* MAP LOADING INDICATOR */
+
+.tp-map-loading {
+    position: absolute;
+    height: 10px;
+    width: 100%;
+    left: 0;
+    bottom: -10px;
+    transition: 80ms bottom ease-out;
+    animation: barberpole 1s linear infinite;
+    background-size: 30px 30px;
+    background-image: linear-gradient(
+        135deg,
+        #707070 25%,
+        #404040 25%,
+        #404040 50%,
+        #707070 50%,
+        #707070 75%,
+        #404040 75%,
+        #404040
+    );
+    user-select: none;
+
+    &.tp-map-loading-show {
+        bottom: 0;
+    }
+}
+
+@keyframes barberpole {
+  from { background-position: 0 0; }
+  to   { background-position: 60px 30px; }
+}

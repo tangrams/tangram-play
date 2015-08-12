@@ -4,6 +4,7 @@ import {initEditor} from './core/editor.js';
 
 // Addons
 import UI from './addons/UI.js';
+import MapLoading from './addons/ui/MapLoading.js';
 import WidgetsManager from './addons/WidgetsManager.js';
 import SuggestManager from './addons/SuggestManager.js';
 import GlslSandbox from './addons/GlslSandbox.js';
@@ -69,6 +70,8 @@ class TangramPlay {
 
     // LOADers
     loadContent(str) {
+        MapLoading.show();
+
         //  Delete API Key (TODO: check with the actual user and take out the onces that don't belong to the user)
         str = str.replace(/\?api_key\=(\w|\-)*$/gm, '');
 
@@ -77,6 +80,8 @@ class TangramPlay {
     }
 
     loadFile (path) {
+        MapLoading.show();
+
         httpGet(path, (err, res) => {
             this.loadContent(res);
 

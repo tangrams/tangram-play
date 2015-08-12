@@ -4,6 +4,7 @@ import TangramPlay from '../TangramPlay.js';
 
 import LocalStorage from '../addons/LocalStorage.js';
 import { saveAs } from '../vendor/FileSaver.min.js';
+import MapLoading from '../addons/ui/MapLoading.js';
 
 //import L from 'leaflet';
 import 'leaflet-hash';
@@ -35,10 +36,14 @@ export default class Map {
 
         this.takeScreenshot = false;
 
+        // Debug access
         window.Lmap = map;
         window.layer = layer;
         window.scene = layer.scene;
 
+        // Force Leaflet update itself.
+        // This resolves an issue where the map may sometimes not appear
+        // or only partially appear when this app is first loaded.
         window.setTimeout(function () {
             map.invalidateSize(false);
         }, 0);
@@ -100,6 +105,9 @@ function _getMapStartLocation () {
 }
 
 function postUpdate() {
+    // Hide loading indicator
+    MapLoading.hide();
+
     if (takeScreenshot) {
         // Adapted from: https://gist.github.com/unconed/4370822
         let image = TangramPlay.map.scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.

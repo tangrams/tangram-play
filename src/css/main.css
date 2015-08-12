@@ -47,4 +47,5 @@
 
 /* + Map UI */
 @import '_leaflet-overrides';
+@import '_map-loading';
 @import '_geolocator';
