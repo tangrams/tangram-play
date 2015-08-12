@@ -5,6 +5,9 @@ import TangramPlay from '../TangramPlay.js';
 import LocalStorage from '../addons/LocalStorage.js';
 import { saveAs } from '../vendor/FileSaver.min.js';
 
+//import L from 'leaflet';
+import * as Hash from 'leaflet-hash';
+
 let takeScreenshot = false;
 
 export default class Map {
@@ -28,15 +31,12 @@ export default class Map {
             postUpdate: postUpdate,
             attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
         });
+        layer.addTo(map);
 
         this.takeScreenshot = false;
 
         window.layer = layer;
         window.scene = layer.scene;
-
-        window.addEventListener('load', function () {
-            layer.addTo(map);
-        });
 
         // Set up a listener to record current map view settings when user leaves
         window.addEventListener('unload', function (event) {
