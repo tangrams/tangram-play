@@ -6,7 +6,7 @@ import LocalStorage from '../addons/LocalStorage.js';
 import { saveAs } from '../vendor/FileSaver.min.js';
 
 //import L from 'leaflet';
-import * as Hash from 'leaflet-hash';
+import 'leaflet-hash';
 
 let takeScreenshot = false;
 
@@ -35,7 +35,7 @@ export default class Map {
 
         this.takeScreenshot = false;
 
-        window.map = map;
+        window.Lmap = map;
         window.layer = layer;
         window.scene = layer.scene;
 
