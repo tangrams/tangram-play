@@ -26,21 +26,29 @@ export default class ErrorsManager {
     }
 
     clean() {
-        for (let i = 0; i < this.widgets.length; i++) {
-            TangramPlay.editor.removeLineWidget(this.widgets[i]);
+        if (this.widgets.length > 0) {
+            for (let i = 0; i < this.widgets.length; i++) {
+                TangramPlay.editor.removeLineWidget(this.widgets[i]);
+            }
+            this.widgets.length = 0;
+
+            // Temporal Fix, consider WidgetManager to admin line widgtets
+            TangramPlay.addons.widgetsManager.update();
         }
-        this.widgets.length = 0;
     }
 
     addError(args) {
         if (args.type !== undefined) {
             let msg = document.createElement('div');
             let icon = msg.appendChild(document.createElement('span'));
-            icon.innerHTML = 'x';
+            icon.innerHTML = 'X';
             icon.className = 'tp-error-icon';
             msg.appendChild(document.createTextNode(args.error.reason));
             msg.className = 'tp-error';
             this.widgets.push(TangramPlay.editor.addLineWidget(args.error.mark.line, msg, { coverGutter: false, noHScroll: true }));
+
+            // Temporal Fix, consider WidgetManager to admin line widgtets
+            TangramPlay.addons.widgetsManager.update();
         }
     }
 
@@ -54,12 +62,15 @@ export default class ErrorsManager {
 
                 let msg = document.createElement('div');
                 let icon = msg.appendChild(document.createElement('span'));
-                icon.innerHTML = '!';
+                icon.innerHTML = '!!';
                 icon.className = 'tp-warning-icon';
                 msg.appendChild(document.createTextNode(errors[i].message));
                 msg.className = 'tp-warning';
                 this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
             }
+
+            // Temporal Fix, consider WidgetManager to admin line widgtets
+            TangramPlay.addons.widgetsManager.update();
         }
     }
 }

@@ -1,9 +1,10 @@
 
 .tp-error {
-	font-family: arial;
-	font-size: 70%;
-	background: #ffa;
-	color: #a00;
+	font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 12px;
+	background: red;
+	color: white;
 	padding: 2px 5px 3px; 
 }
 
@@ -17,10 +18,11 @@
 }
 
 .tp-warning {
-	font-family: arial;
-	font-size: 70%;
-	background: #ffa;
-	color: #a00;
+	font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 12px;
+	background: yellow;
+	color: black;
 	padding: 2px 5px 3px; 
 }
 
