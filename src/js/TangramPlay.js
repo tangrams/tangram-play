@@ -54,6 +54,9 @@ class TangramPlay {
                 this.loadQuery();
             }
         };
+
+        // for debug
+        window.tangramPlay = this;
     }
 
     //  ADDONS
