@@ -45,6 +45,9 @@
 /* + GLSL Sandbox */
 @import '_sandbox';
 
+/* + Errors Manager */
+@import '_errors';
+
 /* + Map UI */
 @import '_leaflet-overrides';
 @import '_map-loading';

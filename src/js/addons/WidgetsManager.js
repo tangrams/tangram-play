@@ -5,7 +5,7 @@ import TangramPlay from '../TangramPlay.js';
 // Load some common functions
 import { httpGet, debounce } from '../core/common.js';
 import { isStrEmpty } from '../core/codemirror/tools.js';
-import { getValueRange } from '../core/codemirror/yaml-tangram.js';
+// import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 
 // Load addons modules
 import WidgetType from './widgets/WidgetType.js';

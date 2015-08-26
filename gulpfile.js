@@ -62,7 +62,7 @@ gulp.task('js', function () {
     return bundle.bundle()
         .pipe(source('tangram-play.js'))
         .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(sourcemaps.init({ loadMaps: true }))
             // Add transformation tasks to the pipeline here.
             .pipe(uglify())
             .on('error', gutil.log)
