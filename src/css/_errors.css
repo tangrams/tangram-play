@@ -1,0 +1,36 @@
+
+.tp-error {
+	font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 12px;
+	background: red;
+	color: white;
+	padding: 2px 5px 3px; 
+}
+
+.tp-error-icon {
+	color: white;
+	background-color: red;
+	font-weight: bold;
+	border-radius: 50%;
+	padding: 0 3px;
+	margin-right: 7px;
+}
+
+.tp-warning {
+	font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 12px;
+	background: yellow;
+	color: black;
+	padding: 2px 5px 3px; 
+}
+
+.tp-warning-icon {
+	color: white;
+	background-color: red;
+	font-weight: bold;
+	border-radius: 50%;
+	padding: 0 3px;
+	margin-right: 7px;
+}

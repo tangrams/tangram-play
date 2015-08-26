@@ -8,6 +8,7 @@ import MapLoading from './addons/ui/MapLoading.js';
 import WidgetsManager from './addons/WidgetsManager.js';
 import SuggestManager from './addons/SuggestManager.js';
 import GlslSandbox from './addons/GlslSandbox.js';
+import ErrorsManager from './addons/ErrorsManager.js';
 
 // Import Utils
 import { httpGet, StopWatch } from './core/common.js';
@@ -53,6 +54,9 @@ class TangramPlay {
                 this.loadQuery();
             }
         };
+
+        // for debug
+        window.tangramPlay = this;
     }
 
     //  ADDONS
@@ -65,6 +69,9 @@ class TangramPlay {
         }
         if (this.options.sandbox) {
             this.addons.glslSandbox = new GlslSandbox(this);
+        }
+        if (this.options.errors) {
+            this.addons.errorsManager = new ErrorsManager();
         }
     }
 
@@ -202,6 +209,7 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     widgets: 'data/widgets.json',
     menu: 'data/menu.json',
     // sandbox: true,
+    errors: true,
 });
 
 export default tangramPlay;
