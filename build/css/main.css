@@ -2300,6 +2300,20 @@ select.tp-widget-dropdown {
 	margin-right: 7px;
 }
 
+/* + Color Palette*/
+.tp-colorpalette {
+	position: absolute;
+	/*top: 0px;*/
+	left: 0px;
+}
+
+.tp-colorpalette-element {
+	width: 30px;
+	height: 30px;
+	margin: 10px;
+    cursor: pointer;
+}
+
 /* + Map UI */
 .leaflet-container {
     background-color: #222;

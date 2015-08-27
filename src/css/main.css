@@ -48,6 +48,9 @@
 /* + Errors Manager */
 @import '_errors';
 
+/* + Color Palette*/
+@import '_colorPalette';
+
 /* + Map UI */
 @import '_leaflet-overrides';
 @import '_map-loading';

@@ -9,6 +9,7 @@ import WidgetsManager from './addons/WidgetsManager.js';
 import SuggestManager from './addons/SuggestManager.js';
 import GlslSandbox from './addons/GlslSandbox.js';
 import ErrorsManager from './addons/ErrorsManager.js';
+import ColorPalette from './addons/ColorPalette.js';
 
 // Import Utils
 import { httpGet, StopWatch } from './core/common.js';
@@ -72,6 +73,9 @@ class TangramPlay {
         }
         if (this.options.errors) {
             this.addons.errorsManager = new ErrorsManager();
+        }
+        if (this.options.colors) {
+            this.addons.colorPalette = new ColorPalette();
         }
     }
 
@@ -210,6 +214,7 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     menu: 'data/menu.json',
     // sandbox: true,
     errors: true,
+    colors: true,
 });
 
 export default tangramPlay;

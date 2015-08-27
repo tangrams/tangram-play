@@ -5,7 +5,6 @@ import TangramPlay from '../TangramPlay.js';
 // Load some common functions
 import { httpGet, debounce } from '../core/common.js';
 import { isStrEmpty } from '../core/codemirror/tools.js';
-// import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 
 // Load addons modules
 import WidgetType from './widgets/WidgetType.js';
@@ -178,8 +177,6 @@ export default class WidgetsManager {
 
                 if (TangramPlay.editor.getLineHandle(nLine) && TangramPlay.editor.getLineHandle(nLine).height) {
                     if (index < keys.length) {
-                        // let pos = getValueRange(keys[index]).to;
-                        // TangramPlay.editor.addWidget(pos, widget.el);
                         widget.update();
                     }
                     else {
@@ -213,9 +210,6 @@ export default class WidgetsManager {
             }
             else {
                 for (let widget of widgets) {
-                    // let index = widget.key.index;
-                    // let pos = getValueRange(keys[index]).to;
-                    // TangramPlay.editor.addWidget(pos, widget.el);
                     widget.update();
                 }
             }
