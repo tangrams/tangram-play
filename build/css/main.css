@@ -2303,14 +2303,19 @@ select.tp-widget-dropdown {
 /* + Color Palette*/
 .tp-colorpalette {
 	position: absolute;
-	/*top: 0px;*/
-	left: 0px;
+	z-index: 102;
+	/*height: 30px;*/
+	right: 0;
+    bottom: 0;
 }
 
 .tp-colorpalette-element {
-	width: 30px;
-	height: 30px;
-	margin: 10px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin-top: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
     cursor: pointer;
 }
 

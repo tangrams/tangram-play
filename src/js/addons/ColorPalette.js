@@ -23,7 +23,7 @@ export default class ColorPalette {
         });
 
         TangramPlay.container.addEventListener('resize', (cm, from, to) => {
-            this.palette.style.top = (window.innerHeight - this.palette.clientHeight).toString() + "px";
+            TangramPlay.addons.colorPalette.update();
         });
     }
 
@@ -45,11 +45,10 @@ export default class ColorPalette {
 
     make() {
         this.palette.innerHTML = '';
+
         for (let color in this.colors) {
             this.palette.appendChild(this.colors[color].el);
         }
-
-        this.palette.style.top = (window.innerHeight - this.palette.clientHeight).toString() + "px";
     }
 }
 

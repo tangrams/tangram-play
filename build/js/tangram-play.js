@@ -20616,8 +20616,6 @@ var _coreCommonJs = require('../core/common.js');
 
 var ColorPalette = (function () {
     function ColorPalette() {
-        var _this = this;
-
         _classCallCheck(this, ColorPalette);
 
         if (_TangramPlayJs2['default'].addons.widgetsManager === undefined) {
@@ -20636,7 +20634,7 @@ var ColorPalette = (function () {
         });
 
         _TangramPlayJs2['default'].container.addEventListener('resize', function (cm, from, to) {
-            _this.palette.style.top = (window.innerHeight - _this.palette.clientHeight).toString() + "px";
+            _TangramPlayJs2['default'].addons.colorPalette.update();
         });
     }
 
@@ -20661,11 +20659,10 @@ var ColorPalette = (function () {
         key: 'make',
         value: function make() {
             this.palette.innerHTML = '';
+
             for (var color in this.colors) {
                 this.palette.appendChild(this.colors[color].el);
             }
-
-            this.palette.style.top = (window.innerHeight - this.palette.clientHeight).toString() + "px";
         }
     }]);
 
