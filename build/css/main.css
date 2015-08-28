@@ -2304,7 +2304,6 @@ select.tp-widget-dropdown {
 .tp-colorpalette {
 	position: absolute;
 	z-index: 102;
-	/*height: 30px;*/
 	right: 0;
     bottom: 0;
 }

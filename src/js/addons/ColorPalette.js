@@ -12,26 +12,21 @@ export default class ColorPalette {
         }
 
         this.colors = {};
-        this.palette = document.createElement("div");
+        this.palette = document.createElement('div');
         this.palette.className = 'tp-colorpalette';
         document.body.appendChild(this.palette);
 
-        TangramPlay.map.layer.scene.subscribe({
-            load: function (args) {
-                TangramPlay.addons.colorPalette.update();
-            }
-        });
-
-        TangramPlay.container.addEventListener('resize', (cm, from, to) => {
-            TangramPlay.addons.colorPalette.update();
+        TangramPlay.addons.widgetsManager.on('update', (args) => {
+            TangramPlay.addons.colorPalette.update(args);
         });
     }
 
-    update() {
-        this.colors = {};
+    update(args) {
+        // console.log(args);
 
+        this.colors = {};
         let widgets = TangramPlay.addons.widgetsManager.active;
-        for (let i = 0; i < widgets.length; i++ ) {
+        for (let i = 0; i < widgets.length; i++) {
             if (widgets[i].definition.type === 'colorpicker') {
                 let color = widgets[i].el.style.backgroundColor;
                 if (this.colors[color] === undefined) {

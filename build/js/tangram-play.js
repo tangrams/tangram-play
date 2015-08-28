@@ -20361,6 +20361,8 @@ var TangramPlay = (function () {
 
         _classCallCheck(this, TangramPlay);
 
+        (0, _coreCommonJs.subscribeMixin)(this);
+
         //Benchmark & Debuggin
         if (options.benchark) {
             window.watch = new _coreCommonJs.StopWatch();
@@ -20376,10 +20378,6 @@ var TangramPlay = (function () {
         this.editor = (0, _coreEditorJs.initEditor)('editor');
         this.options = options;
         this.addons = {};
-
-        //  EVENTS
-        // Create Events
-        this.onLoaded = new CustomEvent('loaded');
 
         setTimeout(function () {
             if (query['lines']) {
@@ -20399,6 +20397,13 @@ var TangramPlay = (function () {
 
         // for debug
         window.tangramPlay = this;
+
+        // Events
+        this.map.layer.scene.subscribe({
+            load: function load(args) {
+                _this.trigger('style_updated', args);
+            }
+        });
     }
 
     //  ADDONS
@@ -20446,7 +20451,7 @@ var TangramPlay = (function () {
                 _this2.loadContent(res);
 
                 // Trigger Events
-                _this2.container.dispatchEvent(_this2.onLoaded);
+                _this2.trigger('url_loaded', { url: path });
             });
         }
     }, {
@@ -20623,26 +20628,21 @@ var ColorPalette = (function () {
         }
 
         this.colors = {};
-        this.palette = document.createElement("div");
+        this.palette = document.createElement('div');
         this.palette.className = 'tp-colorpalette';
         document.body.appendChild(this.palette);
 
-        _TangramPlayJs2['default'].map.layer.scene.subscribe({
-            load: function load(args) {
-                _TangramPlayJs2['default'].addons.colorPalette.update();
-            }
-        });
-
-        _TangramPlayJs2['default'].container.addEventListener('resize', function (cm, from, to) {
-            _TangramPlayJs2['default'].addons.colorPalette.update();
+        _TangramPlayJs2['default'].addons.widgetsManager.on('update', function (args) {
+            _TangramPlayJs2['default'].addons.colorPalette.update(args);
         });
     }
 
     _createClass(ColorPalette, [{
         key: 'update',
-        value: function update() {
-            this.colors = {};
+        value: function update(args) {
+            // console.log(args);
 
+            this.colors = {};
             var widgets = _TangramPlayJs2['default'].addons.widgetsManager.active;
             for (var i = 0; i < widgets.length; i++) {
                 if (widgets[i].definition.type === 'colorpicker') {
@@ -20784,6 +20784,8 @@ var _TangramPlayJs2 = _interopRequireDefault(_TangramPlayJs);
 
 var ErrorsManager = (function () {
     function ErrorsManager() {
+        var _this = this;
+
         _classCallCheck(this, ErrorsManager);
 
         //  private variables
@@ -20795,14 +20797,11 @@ var ErrorsManager = (function () {
         });
 
         _TangramPlayJs2['default'].map.layer.scene.subscribe({
-            // load: function (args) {
-            //     console.log('scene loaded!');
-            // },
             error: function error(args) {
-                _TangramPlayJs2['default'].addons.errorsManager.addError(args);
+                _this.addError(args);
             },
             warning: function warning(args) {
-                _TangramPlayJs2['default'].addons.errorsManager.addWarning(args);
+                _this.addWarning(args);
             }
         });
     }
@@ -21699,6 +21698,8 @@ var WidgetsManager = (function () {
 
         _classCallCheck(this, WidgetsManager);
 
+        (0, _coreCommonJs.subscribeMixin)(this);
+
         // Local variables
         this.totalLines = 0; // keep track of linesf
         this.pairedUntil = 0;
@@ -21799,12 +21800,12 @@ var WidgetsManager = (function () {
             stopAction(_this);
         });
 
-        _TangramPlayJs2['default'].container.addEventListener('resize', function (cm, from, to) {
+        _TangramPlayJs2['default'].on('resize', function (args) {
             _this.forceBuild = true;
             _this.update();
         });
 
-        _TangramPlayJs2['default'].container.addEventListener('loaded', function (cm, from, to) {
+        _TangramPlayJs2['default'].on('url_loaded', function (args) {
             _this.clean();
             _this.forceBuild = true;
             _this.pairedUntil = 0;
@@ -21958,6 +21959,8 @@ var WidgetsManager = (function () {
                         }
                     }
                 }
+
+                this.trigger('update', { lines: 'all', widgets: this.active });
             }
         }
     }, {
@@ -21998,6 +22001,8 @@ var WidgetsManager = (function () {
                             }
                         }
                     }
+
+                    this.trigger('update', { lines: nLine, widgets: widgets });
                 }
             }
         }
@@ -22161,7 +22166,7 @@ var Divider = (function () {
             this.draggable[0].applyBounds(getBounds());
 
             // Trigger Events
-            _TangramPlayJs2['default'].container.dispatchEvent(this.onResize);
+            _TangramPlayJs2['default'].trigger('resize', {});
         }
     }, {
         key: 'savePosition',
@@ -25561,6 +25566,7 @@ exports.debounce = debounce;
 exports.getPosition = getPosition;
 exports.isNumber = isNumber;
 exports.toCSS = toCSS;
+exports.subscribeMixin = subscribeMixin;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
@@ -25689,6 +25695,64 @@ var StopWatch = (function () {
 })();
 
 exports.StopWatch = StopWatch;
+
+function subscribeMixin(target) {
+    var listeners = new Set();
+
+    return Object.assign(target, {
+
+        subscribe: function subscribe(listener) {
+            listeners.add(listener);
+        },
+
+        on: function on(type, f) {
+            var listener = {};
+            listener[type] = f;
+            listeners.add(listener);
+        },
+
+        unsubscribe: function unsubscribe(listener) {
+            listeners['delete'](listener);
+        },
+
+        unsubscribeAll: function unsubscribeAll() {
+            listeners.clear();
+        },
+
+        trigger: function trigger(event) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _len = arguments.length, data = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                    data[_key - 1] = arguments[_key];
+                }
+
+                for (var _iterator = listeners[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var listener = _step.value;
+
+                    if (typeof listener[event] === 'function') {
+                        listener[event].apply(listener, data);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator['return']) {
+                        _iterator['return']();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+    });
+}
 
 },{}],55:[function(require,module,exports){
 // Import TangramPlay

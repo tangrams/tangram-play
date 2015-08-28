@@ -3,7 +3,7 @@
 import TangramPlay from '../TangramPlay.js';
 
 // Load some common functions
-import { httpGet, debounce } from '../core/common.js';
+import { httpGet, debounce, subscribeMixin } from '../core/common.js';
 import { isStrEmpty } from '../core/codemirror/tools.js';
 
 // Load addons modules
@@ -19,6 +19,8 @@ var stopMicroAction = debounce(function(wm, nLine) {
 
 export default class WidgetsManager {
     constructor(configFile) {
+        subscribeMixin(this);
+
         // Local variables
         this.totalLines = 0; // keep track of linesf
         this.pairedUntil = 0;
@@ -101,12 +103,12 @@ export default class WidgetsManager {
             stopAction(this);
         });
 
-        TangramPlay.container.addEventListener('resize', (cm, from, to) => {
+        TangramPlay.on('resize', (args) => {
             this.forceBuild = true;
             this.update();
         });
 
-        TangramPlay.container.addEventListener('loaded', (cm, from, to) => {
+        TangramPlay.on('url_loaded', (args) => {
             this.clean();
             this.forceBuild = true;
             this.pairedUntil = 0;
@@ -193,6 +195,8 @@ export default class WidgetsManager {
                     break;
                 }
             }
+
+            this.trigger('update', { lines: 'all', widgets: this.active });
         }
     }
 
@@ -212,6 +216,8 @@ export default class WidgetsManager {
                 for (let widget of widgets) {
                     widget.update();
                 }
+
+                this.trigger('update', { lines: nLine, widgets: widgets });
             }
         }
     }
