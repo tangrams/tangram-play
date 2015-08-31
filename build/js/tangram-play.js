@@ -21706,6 +21706,8 @@ var WidgetsManager = (function () {
         this.forceBuild = true; // build widget - key sync
         this.data = []; // tokens to check
         this.active = []; // active widgets
+        this.building = false;
+        this.updating = false;
 
         // Load data file
         (0, _coreCommonJs.httpGet)(configFile, function (err, res) {
@@ -21762,7 +21764,7 @@ var WidgetsManager = (function () {
             }
         });
 
-        // Suggestions are trigged by the folowing CM events
+        // // Suggestions are trigged by the folowing CM events
         _TangramPlayJs2['default'].editor.on('changes', function (cm, changesObjs) {
             // Is a multi line change???
             var lineChange = -1;
@@ -21816,20 +21818,25 @@ var WidgetsManager = (function () {
     _createClass(WidgetsManager, [{
         key: 'build',
         value: function build() {
-            if (this.active.length > 0) {
-                this.clean();
+            if (!this.building) {
+                this.building = true;
+                if (this.active.length > 0) {
+                    this.clean();
+                }
+
+                for (var line = 0, size = _TangramPlayJs2['default'].editor.doc.size; line < size; line++) {
+                    this.buildLine(line);
+                }
+
+                // the key~widget pairs is new
+                this.totalLines = _TangramPlayJs2['default'].editor.getDoc().size;
+                this.forceBuild = false;
+
+                // update position
+                this.update();
+
+                this.building = false;
             }
-
-            for (var line = 0, size = _TangramPlayJs2['default'].editor.doc.size; line < size; line++) {
-                this.buildLine(line);
-            }
-
-            // the key~widget pairs is new
-            this.totalLines = _TangramPlayJs2['default'].editor.getDoc().size;
-            this.forceBuild = false;
-
-            // update position
-            this.update();
         }
     }, {
         key: 'buildLine',
@@ -21911,56 +21918,63 @@ var WidgetsManager = (function () {
     }, {
         key: 'update',
         value: function update() {
-            if (this._isPairingDirty()) {
-                // If there is different number of lines force a rebuild
-                this.build();
-            } else {
-                // If the lines are the same proceed to update just the position
-                var _iteratorNormalCompletion4 = true;
-                var _didIteratorError4 = false;
-                var _iteratorError4 = undefined;
+            if (!this.updating) {
+                this.updating = true;
 
-                try {
-                    for (var _iterator4 = this.active[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                        var widget = _step4.value;
+                if (this._isPairingDirty()) {
+                    // If there is different number of lines force a rebuild
+                    this.build();
+                } else {
+                    // If the lines are the same proceed to update just the position
+                    var _iteratorNormalCompletion4 = true;
+                    var _didIteratorError4 = false;
+                    var _iteratorError4 = undefined;
 
-                        var nLine = widget.key.pos.line;
-                        var index = widget.key.index;
-                        var keys = _TangramPlayJs2['default'].getKeysOnLine(nLine);
-
-                        if (_TangramPlayJs2['default'].editor.getLineHandle(nLine) && _TangramPlayJs2['default'].editor.getLineHandle(nLine).height) {
-                            if (index < keys.length) {
-                                widget.update();
-                            } else {
-                                this.rebuildLine(nLine);
-                                break;
-                            }
-                        }
-                        // NOTE: If the condition above never becomes true,
-                        // this can put TangramPlay into an infinite loop.
-                        // TODO: Catch this, never let it happen
-                        else {
-                                this.forceBuild = true;
-                                this.build();
-                                break;
-                            }
-                    }
-                } catch (err) {
-                    _didIteratorError4 = true;
-                    _iteratorError4 = err;
-                } finally {
                     try {
-                        if (!_iteratorNormalCompletion4 && _iterator4['return']) {
-                            _iterator4['return']();
+                        for (var _iterator4 = this.active[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                            var widget = _step4.value;
+
+                            var nLine = widget.key.pos.line;
+                            var index = widget.key.index;
+                            var keys = _TangramPlayJs2['default'].getKeysOnLine(nLine);
+
+                            if (_TangramPlayJs2['default'].editor.getLineHandle(nLine) && _TangramPlayJs2['default'].editor.getLineHandle(nLine).height) {
+                                if (index < keys.length) {
+                                    widget.update();
+                                } else {
+                                    this.rebuildLine(nLine);
+                                    break;
+                                }
+                            }
+                            // NOTE: If the condition above never becomes true,
+                            // this can put TangramPlay into an infinite loop.
+                            // TODO: Catch this, never let it happen
+                            else {
+                                    this.forceBuild = true;
+                                    this.build();
+                                    break;
+                                }
                         }
+                    } catch (err) {
+                        _didIteratorError4 = true;
+                        _iteratorError4 = err;
                     } finally {
-                        if (_didIteratorError4) {
-                            throw _iteratorError4;
+                        try {
+                            if (!_iteratorNormalCompletion4 && _iterator4['return']) {
+                                _iterator4['return']();
+                            }
+                        } finally {
+                            if (_didIteratorError4) {
+                                throw _iteratorError4;
+                            }
                         }
                     }
-                }
 
-                this.trigger('update', { lines: 'all', widgets: this.active });
+                    this.trigger('update', { lines: 'all', widgets: this.active });
+                }
+                this.updating = false;
+            } else {
+                console.log('Warning, prevent updating during updating');
             }
         }
     }, {

@@ -27,6 +27,8 @@ export default class WidgetsManager {
         this.forceBuild = true; // build widget - key sync
         this.data = []; // tokens to check
         this.active = []; // active widgets
+        this.building = false;
+        this.updating = false;
 
         // Load data file
         httpGet(configFile, (err, res) => {
@@ -62,7 +64,7 @@ export default class WidgetsManager {
             }
         });
 
-        // Suggestions are trigged by the folowing CM events
+        // // Suggestions are trigged by the folowing CM events
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
             // Is a multi line change???
             let lineChange = -1;
@@ -117,20 +119,25 @@ export default class WidgetsManager {
     }
 
     build() {
-        if (this.active.length > 0) {
-            this.clean();
+        if (!this.building) {
+            this.building = true;
+            if (this.active.length > 0) {
+                this.clean();
+            }
+
+            for (let line = 0, size = TangramPlay.editor.doc.size; line < size; line++) {
+                this.buildLine(line);
+            }
+
+            // the key~widget pairs is new
+            this.totalLines = TangramPlay.editor.getDoc().size;
+            this.forceBuild = false;
+
+            // update position
+            this.update();
+
+            this.building = false;
         }
-
-        for (let line = 0, size = TangramPlay.editor.doc.size; line < size; line++) {
-            this.buildLine(line);
-        }
-
-        // the key~widget pairs is new
-        this.totalLines = TangramPlay.editor.getDoc().size;
-        this.forceBuild = false;
-
-        // update position
-        this.update();
     }
 
     buildLine(nLine) {
@@ -166,37 +173,42 @@ export default class WidgetsManager {
 
     // Update widgets unless something is not right
     update() {
-        if (this._isPairingDirty()) {
-            // If there is different number of lines force a rebuild
-            this.build();
-        }
-        else {
-            // If the lines are the same proceed to update just the position
-            for (let widget of this.active) {
-                let nLine = widget.key.pos.line;
-                let index = widget.key.index;
-                let keys = TangramPlay.getKeysOnLine(nLine);
+        if (!this.updating) {
+            this.updating = true;
 
-                if (TangramPlay.editor.getLineHandle(nLine) && TangramPlay.editor.getLineHandle(nLine).height) {
-                    if (index < keys.length) {
-                        widget.update();
+            if (this._isPairingDirty()) {
+                // If there is different number of lines force a rebuild
+                this.build();
+            }
+            else {
+                // If the lines are the same proceed to update just the position
+                for (let widget of this.active) {
+                    let nLine = widget.key.pos.line;
+                    let index = widget.key.index;
+                    let keys = TangramPlay.getKeysOnLine(nLine);
+
+                    if (TangramPlay.editor.getLineHandle(nLine) && TangramPlay.editor.getLineHandle(nLine).height) {
+                        if (index < keys.length) {
+                            widget.update();
+                        }
+                        else {
+                            this.rebuildLine(nLine);
+                            break;
+                        }
                     }
+                    // NOTE: If the condition above never becomes true,
+                    // this can put TangramPlay into an infinite loop.
+                    // TODO: Catch this, never let it happen
                     else {
-                        this.rebuildLine(nLine);
+                        this.forceBuild = true;
+                        this.build();
                         break;
                     }
                 }
-                // NOTE: If the condition above never becomes true,
-                // this can put TangramPlay into an infinite loop.
-                // TODO: Catch this, never let it happen
-                else {
-                    this.forceBuild = true;
-                    this.build();
-                    break;
-                }
-            }
 
-            this.trigger('update', { lines: 'all', widgets: this.active });
+                this.trigger('update', { lines: 'all', widgets: this.active });
+            }
+            this.updating = false;
         }
     }
 
