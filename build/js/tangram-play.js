@@ -20642,13 +20642,11 @@ var ColorPalette = (function () {
 
         // If is a new file load all colors by going to the end and comeback
         _TangramPlayJs2['default'].on('url_loaded', function (args) {
-            // if (TangramPlay.editor.isSaved) {
-            console.log('force to load widgets');
+            // console.log('force to load widgets');
             for (var i = 0; i < _TangramPlayJs2['default'].editor.getDoc().size; i++) {
                 (0, _coreCodemirrorToolsJs.jumpToLine)(_TangramPlayJs2['default'].editor, i);
             }
             (0, _coreCodemirrorToolsJs.jumpToLine)(_TangramPlayJs2['default'].editor, 0);
-            // }
         });
     }
 

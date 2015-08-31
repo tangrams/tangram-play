@@ -24,13 +24,11 @@ export default class ColorPalette {
 
         // If is a new file load all colors by going to the end and comeback
         TangramPlay.on('url_loaded', (args) => {
-            // if (TangramPlay.editor.isSaved) {
-                console.log('force to load widgets');
-                for (let i = 0; i < TangramPlay.editor.getDoc().size; i++){
-                    jumpToLine(TangramPlay.editor, i);
-                }
-                jumpToLine(TangramPlay.editor, 0);
-            // }
+            // console.log('force to load widgets');
+            for (let i = 0; i < TangramPlay.editor.getDoc().size; i++) {
+                jumpToLine(TangramPlay.editor, i);
+            }
+            jumpToLine(TangramPlay.editor, 0);
         });
     }
 
