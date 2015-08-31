@@ -13,14 +13,11 @@ export default class ErrorsManager {
         });
 
         TangramPlay.map.layer.scene.subscribe({
-            // load: function (args) {
-            //     console.log('scene loaded!');
-            // },
-            error: function (args) {
-                TangramPlay.addons.errorsManager.addError(args);
+            error: (args) => {
+                this.addError(args);
             },
-            warning: function (args) {
-                TangramPlay.addons.errorsManager.addWarning(args);
+            warning: (args) => {
+                this.addWarning(args);
             }
         });
     }

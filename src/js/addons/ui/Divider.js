@@ -80,7 +80,7 @@ export default class Divider {
         this.draggable[0].applyBounds(getBounds());
 
         // Trigger Events
-        TangramPlay.container.dispatchEvent(this.onResize);
+        TangramPlay.trigger('resize', { });
     }
 
     savePosition() {

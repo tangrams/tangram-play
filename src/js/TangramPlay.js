@@ -9,9 +9,10 @@ import WidgetsManager from './addons/WidgetsManager.js';
 import SuggestManager from './addons/SuggestManager.js';
 import GlslSandbox from './addons/GlslSandbox.js';
 import ErrorsManager from './addons/ErrorsManager.js';
+import ColorPalette from './addons/ColorPalette.js';
 
 // Import Utils
-import { httpGet, StopWatch } from './core/common.js';
+import { httpGet, StopWatch, subscribeMixin } from './core/common.js';
 import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from './core/codemirror/tools.js';
 import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codemirror/yaml-tangram.js';
 
@@ -19,6 +20,8 @@ const query = parseQuery(window.location.search.slice(1));
 
 class TangramPlay {
     constructor(selector, options) {
+        subscribeMixin(this);
+
         //Benchmark & Debuggin
         if (options.benchark) {
             window.watch = new StopWatch();
@@ -34,10 +37,6 @@ class TangramPlay {
         this.editor = initEditor('editor');
         this.options = options;
         this.addons = {};
-
-        //  EVENTS
-        // Create Events
-        this.onLoaded = new CustomEvent('loaded');
 
         setTimeout(() => {
             if (query['lines']) {
@@ -57,6 +56,13 @@ class TangramPlay {
 
         // for debug
         window.tangramPlay = this;
+
+        // Events
+        this.map.layer.scene.subscribe({
+            load: (args) => {
+                this.trigger('style_updated', args);
+            }
+        });
     }
 
     //  ADDONS
@@ -72,6 +78,9 @@ class TangramPlay {
         }
         if (this.options.errors) {
             this.addons.errorsManager = new ErrorsManager();
+        }
+        if (this.options.colors) {
+            this.addons.colorPalette = new ColorPalette();
         }
     }
 
@@ -93,7 +102,7 @@ class TangramPlay {
             this.loadContent(res);
 
             // Trigger Events
-            this.container.dispatchEvent(this.onLoaded);
+            this.trigger('url_loaded', { url: path });
         });
     }
 
@@ -210,6 +219,7 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     menu: 'data/menu.json',
     // sandbox: true,
     errors: true,
+    colors: true,
 });
 
 export default tangramPlay;
