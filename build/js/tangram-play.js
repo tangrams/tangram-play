@@ -20619,6 +20619,8 @@ var _widgetsColorPickerModalJs2 = _interopRequireDefault(_widgetsColorPickerModa
 
 var _coreCommonJs = require('../core/common.js');
 
+var _coreCodemirrorYamlTangramJs = require('../core/codemirror/yaml-tangram.js');
+
 var ColorPalette = (function () {
     function ColorPalette() {
         _classCallCheck(this, ColorPalette);
@@ -20696,9 +20698,22 @@ var Color = (function () {
      */
 
     _createClass(Color, [{
+        key: 'select',
+        value: function select() {
+            // Select all instances
+            var selections = [];
+            for (var i = 0; i < this.widgets.length; i++) {
+                selections.push({
+                    anchor: (0, _coreCodemirrorYamlTangramJs.getValueRange)(this.widgets[i].key).from,
+                    head: (0, _coreCodemirrorYamlTangramJs.getValueRange)(this.widgets[i].key).to
+                });
+            }
+            _TangramPlayJs2['default'].editor.getDoc().setSelections(selections);
+        }
+    }, {
         key: 'onClick',
         value: function onClick(event) {
-            console.log(this);
+            this.select();
 
             // Toggles the picker to be off if it's already present.
             if (this.picker && this.picker.isVisible) {
@@ -20731,6 +20746,7 @@ var Color = (function () {
             // TODO: Store original value so we can go back to it if the
             // interaction is canceled.
             this.picker.on('changed', this.onPickerChange.bind(this));
+            _TangramPlayJs2['default'].editor.focus();
         }
 
         /**
@@ -20748,6 +20764,8 @@ var Color = (function () {
             for (var i = 0; i < this.widgets.length; i++) {
                 this.widgets[i].setEditorValue(rgbString);
             }
+
+            this.select();
         }
     }, {
         key: 'color',
@@ -20765,7 +20783,7 @@ var Color = (function () {
 
 module.exports = exports['default'];
 
-},{"../TangramPlay.js":23,"../core/common.js":54,"./widgets/ColorPickerModal.js":44}],25:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54,"./widgets/ColorPickerModal.js":44}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -21918,13 +21936,13 @@ var WidgetsManager = (function () {
     }, {
         key: 'update',
         value: function update() {
-            if (!this.updating) {
-                this.updating = true;
+            if (this._isPairingDirty()) {
+                // If there is different number of lines force a rebuild
+                this.build();
+            } else {
+                if (!this.updating) {
+                    this.updating = true;
 
-                if (this._isPairingDirty()) {
-                    // If there is different number of lines force a rebuild
-                    this.build();
-                } else {
                     // If the lines are the same proceed to update just the position
                     var _iteratorNormalCompletion4 = true;
                     var _didIteratorError4 = false;
@@ -21971,8 +21989,8 @@ var WidgetsManager = (function () {
                     }
 
                     this.trigger('update', { lines: 'all', widgets: this.active });
+                    this.updating = false;
                 }
-                this.updating = false;
             }
         }
     }, {

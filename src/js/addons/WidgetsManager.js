@@ -173,14 +173,14 @@ export default class WidgetsManager {
 
     // Update widgets unless something is not right
     update() {
-        if (!this.updating) {
-            this.updating = true;
+        if (this._isPairingDirty()) {
+            // If there is different number of lines force a rebuild
+            this.build();
+        }
+        else {
+            if (!this.updating) {
+                this.updating = true;
 
-            if (this._isPairingDirty()) {
-                // If there is different number of lines force a rebuild
-                this.build();
-            }
-            else {
                 // If the lines are the same proceed to update just the position
                 for (let widget of this.active) {
                     let nLine = widget.key.pos.line;
@@ -207,8 +207,8 @@ export default class WidgetsManager {
                 }
 
                 this.trigger('update', { lines: 'all', widgets: this.active });
+                this.updating = false;
             }
-            this.updating = false;
         }
     }
 

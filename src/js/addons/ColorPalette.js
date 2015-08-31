@@ -4,6 +4,7 @@ import TangramPlay from '../TangramPlay.js';
 
 import ColorPickerModal from './widgets/ColorPickerModal.js';
 import { toCSS } from '../core/common.js';
+import { getValueRange } from '../core/codemirror/yaml-tangram.js';
 
 export default class ColorPalette {
     constructor() {
@@ -77,8 +78,20 @@ class Color {
         return this.el.style.background;
     }
 
+    select() {
+        // Select all instances
+        let selections = [];
+        for (let i = 0; i < this.widgets.length; i++) {
+            selections.push({
+                anchor: getValueRange(this.widgets[i].key).from,
+                head: getValueRange(this.widgets[i].key).to
+            });
+        }
+        TangramPlay.editor.getDoc().setSelections(selections);
+    }
+
     onClick(event) {
-        console.log(this);
+        this.select();
 
         // Toggles the picker to be off if it's already present.
         if (this.picker && this.picker.isVisible) {
@@ -111,6 +124,7 @@ class Color {
         // TODO: Store original value so we can go back to it if the
         // interaction is canceled.
         this.picker.on('changed', this.onPickerChange.bind(this));
+        TangramPlay.editor.focus();
     }
 
     /**
@@ -126,5 +140,7 @@ class Color {
         for (let i = 0; i < this.widgets.length; i++) {
             this.widgets[i].setEditorValue(rgbString);
         }
+
+        this.select();
     }
 }
