@@ -5,6 +5,7 @@ import TangramPlay from '../TangramPlay.js';
 import ColorPickerModal from './widgets/ColorPickerModal.js';
 import { toCSS } from '../core/common.js';
 import { getValueRange } from '../core/codemirror/yaml-tangram.js';
+import { jumpToLine } from '../core/codemirror/tools.js';
 
 export default class ColorPalette {
     constructor() {
@@ -19,6 +20,17 @@ export default class ColorPalette {
 
         TangramPlay.addons.widgetsManager.on('update', (args) => {
             TangramPlay.addons.colorPalette.update(args);
+        });
+
+        // If is a new file load all colors by going to the end and comeback
+        TangramPlay.on('url_loaded', (args) => {
+            // if (TangramPlay.editor.isSaved) {
+                console.log('force to load widgets');
+                for (let i = 0; i < TangramPlay.editor.getDoc().size; i++){
+                    jumpToLine(TangramPlay.editor, i);
+                }
+                jumpToLine(TangramPlay.editor, 0);
+            // }
         });
     }
 

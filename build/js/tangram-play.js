@@ -20621,6 +20621,8 @@ var _coreCommonJs = require('../core/common.js');
 
 var _coreCodemirrorYamlTangramJs = require('../core/codemirror/yaml-tangram.js');
 
+var _coreCodemirrorToolsJs = require('../core/codemirror/tools.js');
+
 var ColorPalette = (function () {
     function ColorPalette() {
         _classCallCheck(this, ColorPalette);
@@ -20636,6 +20638,17 @@ var ColorPalette = (function () {
 
         _TangramPlayJs2['default'].addons.widgetsManager.on('update', function (args) {
             _TangramPlayJs2['default'].addons.colorPalette.update(args);
+        });
+
+        // If is a new file load all colors by going to the end and comeback
+        _TangramPlayJs2['default'].on('url_loaded', function (args) {
+            // if (TangramPlay.editor.isSaved) {
+            console.log('force to load widgets');
+            for (var i = 0; i < _TangramPlayJs2['default'].editor.getDoc().size; i++) {
+                (0, _coreCodemirrorToolsJs.jumpToLine)(_TangramPlayJs2['default'].editor, i);
+            }
+            (0, _coreCodemirrorToolsJs.jumpToLine)(_TangramPlayJs2['default'].editor, 0);
+            // }
         });
     }
 
@@ -20783,7 +20796,7 @@ var Color = (function () {
 
 module.exports = exports['default'];
 
-},{"../TangramPlay.js":23,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54,"./widgets/ColorPickerModal.js":44}],25:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../core/codemirror/tools.js":52,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54,"./widgets/ColorPickerModal.js":44}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
