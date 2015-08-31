@@ -21973,8 +21973,6 @@ var WidgetsManager = (function () {
                     this.trigger('update', { lines: 'all', widgets: this.active });
                 }
                 this.updating = false;
-            } else {
-                console.log('Warning, prevent updating during updating');
             }
         }
     }, {
