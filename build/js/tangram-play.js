@@ -20643,7 +20643,7 @@ tangramPlay.initAddons();
 new _addonsUIJs2['default']();
 module.exports = exports['default'];
 
-},{"./addons/ColorPalette.js":24,"./addons/ErrorsManager.js":25,"./addons/GlslSandbox.js":26,"./addons/SuggestManager.js":28,"./addons/UI.js":29,"./addons/WidgetsManager.js":30,"./addons/ui/MapLoading.js":37,"./core/Map.js":49,"./core/codemirror/tools.js":52,"./core/codemirror/yaml-tangram.js":53,"./core/common.js":54,"./core/editor.js":55}],24:[function(require,module,exports){
+},{"./addons/ColorPalette.js":24,"./addons/ErrorsManager.js":25,"./addons/GlslSandbox.js":26,"./addons/SuggestManager.js":28,"./addons/UI.js":29,"./addons/WidgetsManager.js":30,"./addons/ui/MapLoading.js":37,"./core/Map.js":49,"./core/codemirror/tools.js":53,"./core/codemirror/yaml-tangram.js":54,"./core/common.js":55,"./core/editor.js":56}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -20841,7 +20841,7 @@ var Color = (function () {
 
 module.exports = exports['default'];
 
-},{"../TangramPlay.js":23,"../core/codemirror/tools.js":52,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54,"./widgets/ColorPickerModal.js":44}],25:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../core/codemirror/tools.js":53,"../core/codemirror/yaml-tangram.js":54,"../core/common.js":55,"./widgets/ColorPickerModal.js":44}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -21334,7 +21334,7 @@ function getFramgmentHeader(scene, uniforms, styleObj) {
 }
 module.exports = exports['default'];
 
-},{"../TangramPlay.js":23,"../core/codemirror/tools.js":52,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54,"./widgets/ColorPickerModal.js":44}],27:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../core/codemirror/tools.js":53,"../core/codemirror/yaml-tangram.js":54,"../core/common.js":55,"./widgets/ColorPickerModal.js":44}],27:[function(require,module,exports){
 /**
  *  TANGRAM PLAY  ·  Local storage
  *
@@ -21438,12 +21438,6 @@ var _codemirror2 = _interopRequireDefault(_codemirror);
 
 require('codemirror/addon/hint/show-hint');
 
-// Debounced event after user stop doing something
-var stopAction = (0, _coreCommonJs.debounce)(function (cm) {
-    var line = cm.getCursor().line;
-    _TangramPlayJs2['default'].addons.suggestManager.suggest(line);
-}, 1000);
-
 var SuggestManager = (function () {
     function SuggestManager(configFile) {
         var _this = this;
@@ -21467,7 +21461,7 @@ var SuggestManager = (function () {
                 for (var _iterator = suggestionsData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var datum = _step.value;
 
-                    _this.data.push(new Suggestion(_this, datum));
+                    _this.data.push(new KeySuggestion(datum));
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -21484,22 +21478,20 @@ var SuggestManager = (function () {
                 }
             }
         });
-
-        // Suggestions are trigged by the folowing CM events
-        // TangramPlay.editor.on('cursorActivity', function(cm) {
-        //     stopAction(cm);
-        // });
-
-        // CodeMirror.registerHelper("hint", "yaml-tangram", this.hint);
     }
 
     _createClass(SuggestManager, [{
         key: 'getSuggestions',
-        value: function getSuggestions(nLine) {
+        value: function getSuggestions(cursor) {
+            var nLine = cursor.line;
+            var list = [];
+
             // What's the main key of the line?
-            var keys = _TangramPlayJs2['default'].getKeysOnLine(nLine);
+            var keys = (0, _coreCodemirrorYamlTangramJs.getKeyPairs)(_TangramPlayJs2['default'].editor, nLine);
             if (keys) {
                 var key = keys[0];
+
+                console.log('GetSuggestion for key', keys);
                 if (key && key.value === '') {
                     var _iteratorNormalCompletion2 = true;
                     var _didIteratorError2 = false;
@@ -21510,7 +21502,7 @@ var SuggestManager = (function () {
                             var datum = _step2.value;
 
                             if (datum.check(key)) {
-                                return datum.getList(key);
+                                list.push.apply(list, datum.getList(key));
                             }
                         }
                     } catch (err) {
@@ -21529,69 +21521,7 @@ var SuggestManager = (function () {
                     }
                 }
             }
-            return [];
-        }
-    }, {
-        key: 'hint',
-        value: function hint(editor, options) {
-            console.log(options);
-        }
-    }, {
-        key: 'suggest',
-        value: function suggest(nLine) {
-            this.clear();
-            var top = _TangramPlayJs2['default'].editor.getScrollInfo().top;
-
-            // What's the main key of the line?
-            var keys = _TangramPlayJs2['default'].getKeysOnLine(nLine);
-            if (keys) {
-                var key = keys[0];
-                if (key && key.value === '') {
-                    var _iteratorNormalCompletion3 = true;
-                    var _didIteratorError3 = false;
-                    var _iteratorError3 = undefined;
-
-                    try {
-                        for (var _iterator3 = this.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                            var datum = _step3.value;
-
-                            if (datum.check(key)) {
-                                datum.make(key);
-                            }
-                        }
-                    } catch (err) {
-                        _didIteratorError3 = true;
-                        _iteratorError3 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion3 && _iterator3['return']) {
-                                _iterator3['return']();
-                            }
-                        } finally {
-                            if (_didIteratorError3) {
-                                throw _iteratorError3;
-                            }
-                        }
-                    }
-                } else {
-                    return;
-                }
-            } else {
-                return;
-            }
-
-            _TangramPlayJs2['default'].editor.focus();
-            _TangramPlayJs2['default'].editor.scrollTo(null, top);
-        }
-    }, {
-        key: 'clear',
-        value: function clear() {
-            // Erase previus keys
-            if (this.active) {
-                this.active.clear();
-                this.active = undefined;
-                _TangramPlayJs2['default'].editor.focus();
-            }
+            return list;
         }
     }]);
 
@@ -21600,11 +21530,9 @@ var SuggestManager = (function () {
 
 exports['default'] = SuggestManager;
 
-var Suggestion = (function () {
-    function Suggestion(manager, datum) {
-        _classCallCheck(this, Suggestion);
-
-        this.manager = manager;
+var KeySuggestion = (function () {
+    function KeySuggestion(datum) {
+        _classCallCheck(this, KeySuggestion);
 
         //  TODO: must be a better way to do this
         if (datum['address']) {
@@ -21625,15 +21553,7 @@ var Suggestion = (function () {
         }
     }
 
-    _createClass(Suggestion, [{
-        key: 'clear',
-        value: function clear() {
-            if (this.dom && this.dom.parentNode) {
-                this.dom.parentNode.removeChild(this.dom);
-                this.dom = undefined;
-            }
-        }
-    }, {
+    _createClass(KeySuggestion, [{
         key: 'check',
         value: function check(keyPair) {
             if (keyPair && this.checkAgainst) {
@@ -21672,86 +21592,14 @@ var Suggestion = (function () {
 
             return list;
         }
-    }, {
-        key: 'make',
-        value: function make(keyPair) {
-            var list = this.getList(keyPair);
-            if (list.length) {
-                var cm = _TangramPlayJs2['default'].editor;
-                // this.addList(list,nline);
-                var options = { position: 'top' };
-
-                // If there is a previus suggestion take it out
-                if (this.manager.active) {
-                    this.manager.active.clear();
-                    options.replace = this.manager.active;
-                }
-
-                this.dom = makeMenu(cm, keyPair.pos.line, list);
-
-                // Add as a panel on top of codemirror
-                // this.manager.active = cm.addPanel(dom, options);
-
-                cm.addWidget((0, _coreCodemirrorYamlTangramJs.getValueRange)(keyPair).to, this.dom);
-                this.manager.active = this;
-            }
-        }
     }]);
 
-    return Suggestion;
+    return KeySuggestion;
 })();
 
-function makeMenu(cm, nLine, list) {
-    var node = document.createElement('div');
-    node.className = 'tangram-play-suggested-menu';
-
-    var _loop = function (i) {
-        var btn = document.createElement('button'),
-            text = document.createTextNode(list[i] + ': ');
-        _TangramPlayJs2['default'].addons.suggestManager.activeLine = nLine;
-        btn.className = 'tangram-play-suggested-menu-btn';
-
-        btn.onclick = function () {
-            if (cm.suggestManager.active) {
-                cm.suggestManager.active.clear();
-            }
-            var tabs = (0, _coreCodemirrorToolsJs.getLineInd)(cm, cm.suggestManager.activeLine) + 1;
-            var textToAdd = '';
-
-            if ((0, _coreCodemirrorToolsJs.isEmpty)(cm, cm.getCursor().line)) {
-                tabs -= (0, _coreCodemirrorToolsJs.getLineInd)(cm, cm.getCursor().line);
-            } else {
-                textToAdd += '\n';
-            }
-
-            for (var _i = 0; _i < tabs; _i++) {
-                textToAdd += Array(cm.getOption('indentUnit') + 1).join(' ');
-            }
-
-            textToAdd += list[i] + ': ';
-
-            var doc = cm.getDoc();
-            var cursor = doc.getCursor(); // gets the line number in the cursor position
-            var line = doc.getLine(cursor.line); // get the line contents
-
-            // create a new object to avoid mutation of the original selection
-            var pos = { line: cursor.line, ch: line.length }; // set the character position to the end of the line
-
-            doc.replaceRange(textToAdd, pos); // adds a new line
-        };
-
-        btn.appendChild(text);
-        node.appendChild(btn);
-    };
-
-    for (var i = 0; i < list.length; i++) {
-        _loop(i);
-    }
-    return node;
-}
 module.exports = exports['default'];
 
-},{"../TangramPlay.js":23,"../core/codemirror/tools.js":52,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54,"codemirror":14,"codemirror/addon/hint/show-hint":9}],29:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../core/codemirror/tools.js":53,"../core/codemirror/yaml-tangram.js":54,"../core/common.js":55,"codemirror":14,"codemirror/addon/hint/show-hint":9}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -22206,7 +22054,7 @@ var WidgetsManager = (function () {
 exports['default'] = WidgetsManager;
 module.exports = exports['default'];
 
-},{"../TangramPlay.js":23,"../core/codemirror/tools.js":52,"../core/common.js":54,"./widgets/WidgetType.js":48}],31:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../core/codemirror/tools.js":53,"../core/common.js":55,"./widgets/WidgetType.js":48}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -22419,7 +22267,7 @@ var EditorIO = {
 exports['default'] = EditorIO;
 module.exports = exports['default'];
 
-},{"../../TangramPlay.js":23,"../../vendor/FileSaver.min.js":56,"./Helpers.js":36,"./Modal.js":40}],33:[function(require,module,exports){
+},{"../../TangramPlay.js":23,"../../vendor/FileSaver.min.js":57,"./Helpers.js":36,"./Modal.js":40}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -22724,7 +22572,7 @@ var MapLoading = {
 exports['default'] = MapLoading;
 module.exports = exports['default'];
 
-},{"../../core/common.js":54}],38:[function(require,module,exports){
+},{"../../core/common.js":55}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -23091,7 +22939,7 @@ function openExample(value) {
 }
 module.exports = exports['default'];
 
-},{"../../TangramPlay.js":23,"../../core/common.js":54,"./EditorIO.js":32,"./Modal.js":40}],40:[function(require,module,exports){
+},{"../../TangramPlay.js":23,"../../core/common.js":55,"./EditorIO.js":32,"./Modal.js":40}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -23528,7 +23376,7 @@ var ColorPicker = (function (_Widget) {
 exports['default'] = ColorPicker;
 module.exports = exports['default'];
 
-},{"../../core/common.js":54,"./ColorPickerModal.js":44,"./Widget.js":47}],44:[function(require,module,exports){
+},{"../../core/common.js":55,"./ColorPickerModal.js":44,"./Widget.js":47}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -24199,7 +24047,7 @@ function _getColorAsRGB(color) {
 }
 module.exports = exports['default'];
 
-},{"../../vendor/colors.js":57,"gsap/src/uncompressed/Tweenlite.js":19,"gsap/src/uncompressed/plugins/CSSPlugin.js":20,"gsap/src/uncompressed/utils/Draggable.js":21}],45:[function(require,module,exports){
+},{"../../vendor/colors.js":58,"gsap/src/uncompressed/Tweenlite.js":19,"gsap/src/uncompressed/plugins/CSSPlugin.js":20,"gsap/src/uncompressed/utils/Draggable.js":21}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -24308,7 +24156,7 @@ var DropDownMenu = (function (_Widget) {
 exports['default'] = DropDownMenu;
 module.exports = exports['default'];
 
-},{"../../TangramPlay.js":23,"../../core/codemirror/yaml-tangram.js":53,"./Widget.js":47}],46:[function(require,module,exports){
+},{"../../TangramPlay.js":23,"../../core/codemirror/yaml-tangram.js":54,"./Widget.js":47}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -24490,7 +24338,7 @@ var Widget = (function () {
 exports['default'] = Widget;
 module.exports = exports['default'];
 
-},{"../../TangramPlay.js":23,"../../core/codemirror/yaml-tangram.js":53,"../../core/common.js":54}],48:[function(require,module,exports){
+},{"../../TangramPlay.js":23,"../../core/codemirror/yaml-tangram.js":54,"../../core/common.js":55}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -24746,7 +24594,7 @@ function postUpdate() {
 }
 module.exports = exports['default'];
 
-},{"../TangramPlay.js":23,"../addons/LocalStorage.js":27,"../addons/ui/MapLoading.js":37,"../vendor/FileSaver.min.js":56,"leaflet-hash":22}],50:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../addons/LocalStorage.js":27,"../addons/ui/MapLoading.js":37,"../vendor/FileSaver.min.js":57,"leaflet-hash":22}],50:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -25082,6 +24930,34 @@ def(['glsl', 'x-shader/x-vertex', 'x-shader/x-fragment'], {
 },{"codemirror":14,"codemirror/mode/clike/clike.js":15}],52:[function(require,module,exports){
 'use strict';
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _TangramPlayJs = require('../../TangramPlay.js');
+
+var _TangramPlayJs2 = _interopRequireDefault(_TangramPlayJs);
+
+var _codemirror = require('codemirror');
+
+var _codemirror2 = _interopRequireDefault(_codemirror);
+
+_codemirror2['default'].registerHelper('hint', 'yaml', function (editor, options) {
+    var cur = editor.getCursor();
+    var token = editor.getTokenAt(cur);
+    var list = [];
+
+    if (_TangramPlayJs2['default'].addons.suggestManager) {
+        list = _TangramPlayJs2['default'].addons.suggestManager.getSuggestions(cur);
+    }
+
+    return { list: list,
+        from: _codemirror2['default'].Pos(cur.line, token.start + 1),
+        to: _codemirror2['default'].Pos(cur.line, token.end + 1)
+    };
+});
+
+},{"../../TangramPlay.js":23,"codemirror":14}],53:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
@@ -25296,7 +25172,7 @@ function foldByLevel(cm, level) {
     }
 }
 
-},{"../common.js":54}],53:[function(require,module,exports){
+},{"../common.js":55}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -25700,7 +25576,7 @@ _codemirror2['default'].defineMode('yaml-tangram', function (config, parserConfi
 
 _codemirror2['default'].defineMIME('text/x-yaml-tangram', 'yaml-tangram');
 
-},{"./glsl-tangram.js":51,"./tools.js":52,"codemirror":14,"codemirror/mode/yaml/yaml.js":17}],54:[function(require,module,exports){
+},{"./glsl-tangram.js":51,"./tools.js":53,"codemirror":14,"codemirror/mode/yaml/yaml.js":17}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -25902,7 +25778,7 @@ function subscribeMixin(target) {
     });
 }
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 // Import TangramPlay
 'use strict';
 
@@ -25958,6 +25834,8 @@ require('codemirror/mode/javascript/javascript');
 var _codemirrorToolsJs = require('./codemirror/tools.js');
 
 require('./codemirror/comment-tangram.js');
+
+require('./codemirror/hint-tangram.js');
 
 // Import Utils
 
@@ -26074,7 +25952,7 @@ function initEditor(place) {
     return cm;
 }
 
-},{"../TangramPlay.js":23,"./codemirror/comment-tangram.js":50,"./codemirror/tools.js":52,"./common.js":54,"codemirror":14,"codemirror/addon/dialog/dialog":1,"codemirror/addon/display/panel":2,"codemirror/addon/display/rulers":3,"codemirror/addon/edit/closebrackets":4,"codemirror/addon/edit/matchbrackets":5,"codemirror/addon/fold/foldcode":6,"codemirror/addon/fold/foldgutter":7,"codemirror/addon/fold/indent-fold":8,"codemirror/addon/hint/show-hint":9,"codemirror/addon/search/search":10,"codemirror/addon/search/searchcursor":11,"codemirror/addon/wrap/hardwrap":12,"codemirror/keymap/sublime":13,"codemirror/mode/javascript/javascript":16}],56:[function(require,module,exports){
+},{"../TangramPlay.js":23,"./codemirror/comment-tangram.js":50,"./codemirror/hint-tangram.js":52,"./codemirror/tools.js":53,"./common.js":55,"codemirror":14,"codemirror/addon/dialog/dialog":1,"codemirror/addon/display/panel":2,"codemirror/addon/display/rulers":3,"codemirror/addon/edit/closebrackets":4,"codemirror/addon/edit/matchbrackets":5,"codemirror/addon/fold/foldcode":6,"codemirror/addon/fold/foldgutter":7,"codemirror/addon/fold/indent-fold":8,"codemirror/addon/hint/show-hint":9,"codemirror/addon/search/search":10,"codemirror/addon/search/searchcursor":11,"codemirror/addon/wrap/hardwrap":12,"codemirror/keymap/sublime":13,"codemirror/mode/javascript/javascript":16}],57:[function(require,module,exports){
 /*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
 "use strict";
 
@@ -26174,7 +26052,9 @@ var saveAs = saveAs || (function (e) {
   return saveAs;
 });
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
+(function (global){
+; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 'use strict';
 
 ;(function (window, undefined) {
@@ -26881,6 +26761,12 @@ var saveAs = saveAs || (function (e) {
 		return value > max ? max : value < min ? min : value;
 	}
 })(window);
+
+; browserify_shim__define__module__export__(typeof Colors != "undefined" ? Colors : window.Colors);
+
+}).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}]},{},[23])
 

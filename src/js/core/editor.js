@@ -23,6 +23,7 @@ import 'codemirror/mode/javascript/javascript';
 // Import additional parsers
 import { getLineInd } from './codemirror/tools.js';
 import './codemirror/comment-tangram.js';
+import './codemirror/hint-tangram.js';
 
 // Import Utils
 import { debounce } from './common.js';
