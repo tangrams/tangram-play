@@ -40,7 +40,8 @@ export function isCommented(cm, nLine) {
     return isStrCommented(cm.lineInfo(nLine).text);
 }
 
-export function getText(cm,nLine) {
+// Get the text of a line and ignore the previus spaces
+export function getText(cm, nLine) {
     let value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);
     return value ? value[1] : '';
 }

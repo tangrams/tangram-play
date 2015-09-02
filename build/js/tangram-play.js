@@ -20403,6 +20403,7 @@ var TangramPlay = (function () {
         this.map.layer.scene.subscribe({
             load: function load(args) {
                 _this.trigger('style_updated', args);
+                _this.editor.showHint();
             }
         });
     }
@@ -20445,7 +20446,7 @@ var TangramPlay = (function () {
                 data[_key - 1] = arguments[_key];
             }
 
-            console.log.apply(console, ["Loading addon", addon].concat(data));
+            console.log.apply(console, ['Loading addon', addon].concat(data));
             switch (addon) {
                 case 'widgets':
                     if (this.addons.widgetsManager === undefined) {
@@ -21526,24 +21527,23 @@ var SuggestManager = (function () {
                         }
 
                         var string = (0, _coreCodemirrorToolsJs.getText)(editor, nLine);
-                        var ind = (0, _coreCodemirrorToolsJs.getLineInd)(editor, nLine);
                         if (string !== '') {
                             var matchedList = [];
                             var match = RegExp('^' + string + '.*');
                             for (var i = 0; i < list.length; i++) {
                                 if (match.test(list[i])) {
-                                    matchedList.push(list[i] + ':');
+                                    matchedList.push(list[i] + ': ');
                                 }
                             }
                             list = matchedList;
                             start -= string.length;
                         } else {
                             for (var i = 0; i < list.length; i++) {
-                                list[i] += ':';
+                                list[i] += ': ';
                             }
                         }
                     } else {
-                        console.log("Suggest Value");
+                        console.log('Suggest Value');
                     }
                 }
             }
@@ -25058,6 +25058,8 @@ function isStrCommented(str) {
 function isCommented(cm, nLine) {
     return isStrCommented(cm.lineInfo(nLine).text);
 }
+
+// Get the text of a line and ignore the previus spaces
 
 function getText(cm, nLine) {
     var value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);

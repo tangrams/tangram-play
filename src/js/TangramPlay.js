@@ -61,6 +61,7 @@ class TangramPlay {
         this.map.layer.scene.subscribe({
             load: (args) => {
                 this.trigger('style_updated', args);
+                this.editor.showHint();
             }
         });
     }
@@ -69,12 +70,12 @@ class TangramPlay {
     initAddons () {
         let options = Object.keys(this.options);
         for (let option of options) {
-            this.initAddon(option,this.options[option]);
+            this.initAddon(option, this.options[option]);
         }
     }
 
     initAddon(addon, ...data) {
-        console.log("Loading addon", addon, ...data);
+        console.log('Loading addon', addon, ...data);
         switch(addon) {
             case 'widgets':
                 if (this.addons.widgetsManager === undefined) {
