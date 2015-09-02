@@ -61,7 +61,9 @@ class TangramPlay {
         this.map.layer.scene.subscribe({
             load: (args) => {
                 this.trigger('style_updated', args);
-                this.editor.showHint();
+                this.editor.showHint({
+                    completeSingle: false
+                });
             }
         });
     }

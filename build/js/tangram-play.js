@@ -20403,7 +20403,9 @@ var TangramPlay = (function () {
         this.map.layer.scene.subscribe({
             load: function load(args) {
                 _this.trigger('style_updated', args);
-                _this.editor.showHint();
+                _this.editor.showHint({
+                    completeSingle: false
+                });
             }
         });
     }
@@ -24207,6 +24209,20 @@ var DropDownMenu = (function (_Widget) {
 
             el.className = 'tp-widget tp-widget-dropdown';
 
+            // Add empty option
+            {
+                var newOption = document.createElement('option');
+
+                if (this.key.value === '') {
+                    newOption.selected = true;
+                }
+
+                newOption.value = '';
+                newOption.textContent = '';
+                el.appendChild(newOption);
+            }
+
+            // Add static options
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -24225,6 +24241,8 @@ var DropDownMenu = (function (_Widget) {
                     newOption.textContent = value;
                     el.appendChild(newOption);
                 }
+
+                // Add dinamic options from source
             } catch (err) {
                 _didIteratorError = true;
                 _iteratorError = err;

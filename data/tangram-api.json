@@ -88,8 +88,8 @@
     "values" : [
 
         {   "key": "visible", "type" : "togglebutton" },
-        {   "key": "join", "type" : "dropdownmenu", "options": ["", "miter","round", "bevel"] },
-        {   "key": "cap", "type" : "dropdownmenu", "options": ["", "butt","round", "round"] },
+        {   "key": "join", "type" : "dropdownmenu", "options": ["miter","round", "bevel"] },
+        {   "key": "cap", "type" : "dropdownmenu", "options": ["butt","round", "round"] },
 
         {   "key" : "^color$",    "type" : "colorpicker" },
         {   "key" : "^fill$",     "type" : "colorpicker" },
@@ -101,65 +101,64 @@
         {
             "address": "/ambient/mapping$",
             "type" : "dropdownmenu",
-            "options": ["", "uv","spheremap", "planar", "triplanar"]
+            "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/diffuse/mapping$",
             "type" : "dropdownmenu",
-            "options": ["", "uv","spheremap", "planar", "triplanar"]
+            "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/specular/mapping$",
             "type" : "dropdownmenu",
-            "options": ["", "uv","spheremap", "planar", "triplanar"]
+            "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/emission/mapping$",
             "type" : "dropdownmenu",
-            "options": ["", "uv","spheremap", "planar", "triplanar"]
+            "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/normal/mapping$",
             "type" : "dropdownmenu",
-            "options": ["", "uv", "planar", "triplanar" ]
+            "options": ["uv", "planar", "triplanar" ]
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/type$",
             "type" : "dropdownmenu",
-            "options": ["", "ambient","directional", "point", "spotlight"]
+            "options": ["ambient","directional", "point", "spotlight"]
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/origin$",
             "type" : "dropdownmenu",
-            "options": ["", "camera", "world","ground"]
+            "options": ["camera", "world","ground"]
         },
 
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/type$",
             "type" : "dropdownmenu",
-            "options": ["", "flat","perspective", "isometric"]
+            "options": ["flat","perspective", "isometric"]
         },
 
         {
             "address": "^/sources/(\\w|\\_|\\-)+/type$",
             "type" : "dropdownmenu",
-            "options": ["", "GeoJSON","TopoJSON", "MVT"]
+            "options": ["GeoJSON","TopoJSON", "MVT"]
         },
 
         {
             "address": "^/styles/(\\w|\\_|\\-)+/base",
             "type" : "dropdownmenu",
-            "options": ["", "points", "lines", "polygons", "text"]
+            "options": ["points", "lines", "polygons", "text"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/blend$",
             "type" : "dropdownmenu",
-            "options": ["", "add","multiply", "overlay"]
+            "options": ["add","multiply", "overlay"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/mix$",
             "type" : "dropdownmenu",
-            "options": [""],
             "source": "/styles"
         },
         {   
@@ -187,7 +186,7 @@
             "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/style$",
             "type" : "dropdownmenu",
             "source": "/styles",
-            "options": ["", "points", "lines", "polygons", "text"]
+            "options": ["points", "lines", "polygons", "text"]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
