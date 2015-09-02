@@ -20998,21 +20998,17 @@ var _widgetsColorPickerModalJs2 = _interopRequireDefault(_widgetsColorPickerModa
 
 // Debounced event after user stop doing something
 var stopAction = (0, _coreCommonJs.debounce)(function (cm) {
-    cm.glslSandbox.change = true;
-    if (cm.glslSandbox.active) {
-        cm.glslSandbox.reload();
+    _TangramPlayJs2['default'].addons.glslSandbox.change = true;
+    if (_TangramPlayJs2['default'].addons.glslSandbox.active) {
+        _TangramPlayJs2['default'].addons.glslSandbox.reload();
     }
 }, 1000);
 
 var GlslSandbox = (function () {
-    function GlslSandbox(tangramPlay, configFile) {
+    function GlslSandbox(configFile) {
         _classCallCheck(this, GlslSandbox);
 
-        //  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangramPlay.editor.glslSandbox = this;
-
         // Constant OBJ
-        // this.tangramPlay = tangramPlay;
         this.shader = undefined;
         this.element = document.createElement('div');
         this.element.id = 'tp-a-sandbox';
@@ -21049,11 +21045,11 @@ var GlslSandbox = (function () {
         this.uniforms['u_vanishing_point'] = 1;
 
         // EVENTS
-        tangramPlay.editor.on('cursorActivity', function (cm) {
-            cm.glslSandbox.onCursorMove();
+        _TangramPlayJs2['default'].editor.on('cursorActivity', function (cm) {
+            _TangramPlayJs2['default'].addons.glslSandbox.onCursorMove();
         });
 
-        tangramPlay.editor.on('changes', function (cm, changesObj) {
+        _TangramPlayJs2['default'].editor.on('changes', function (cm, changesObj) {
             stopAction(cm);
         });
     }
@@ -21062,11 +21058,11 @@ var GlslSandbox = (function () {
         key: 'reload',
         value: function reload(nLine) {
             if (nLine === undefined) {
-                nLine = this.tangramPlay.editor.getCursor().line;
+                nLine = _TangramPlayJs2['default'].editor.getCursor().line;
             }
 
-            if (!(0, _coreCodemirrorToolsJs.isEmpty)(this.tangramPlay.editor, nLine)) {
-                var keys = this.tangramPlay.getKeysOnLine(nLine);
+            if (!(0, _coreCodemirrorToolsJs.isEmpty)(_TangramPlayJs2['default'].editor, nLine)) {
+                var keys = _TangramPlayJs2['default'].getKeysOnLine(nLine);
                 if (keys && keys[0]) {
                     this.address = keys[0].address;
                     var isNormal = (0, _coreCodemirrorYamlTangramJs.isNormalBlock)(this.address);
@@ -21074,7 +21070,7 @@ var GlslSandbox = (function () {
 
                     if (isNormal || isColor) {
                         // Store address and states
-                        this.styleObj = getStyleObj(this.tangramPlay.scene, this.address);
+                        this.styleObj = getStyleObj(_TangramPlayJs2['default'].map.scene, this.address);
 
                         if (this.styleObj === undefined || this.styleObj === null || this.styleObj.shaders === undefined || this.styleObj.shaders === null) {
                             this.disable();
@@ -21085,7 +21081,7 @@ var GlslSandbox = (function () {
                         if (this.shader === undefined) {
                             this.shader = new GlslCanvas(this.canvas);
                         }
-                        this.tangramPlay.editor.addWidget({ line: nLine, ch: 0 }, this.element);
+                        _TangramPlayJs2['default'].editor.addWidget({ line: nLine, ch: 0 }, this.element);
 
                         if (this.styleObj.shaders.uniforms) {
                             for (var _name in this.styleObj.shaders.uniforms) {
@@ -21108,12 +21104,12 @@ var GlslSandbox = (function () {
 
                         if (this.change) {
                             // Common HEADER
-                            this.vertexCode = getVertex(this.tangramPlay.scene, this.shader.uniforms, this.styleObj);
-                            this.fragmentCode = getFramgmentHeader(this.tangramPlay.scene, this.shader.uniforms, this.styleObj);
+                            this.vertexCode = getVertex(_TangramPlayJs2['default'].map.scene, this.shader.uniforms, this.styleObj);
+                            this.fragmentCode = getFramgmentHeader(_TangramPlayJs2['default'].map.scene, this.shader.uniforms, this.styleObj);
 
                             if (isNormal) {
                                 // NORMAL CORE & ENDING
-                                this.fragmentCode += (0, _coreCodemirrorYamlTangramJs.getAddressSceneContent)(this.tangramPlay.scene, this.address) + '\ngl_FragColor = vec4(normal,1.0);\n}';
+                                this.fragmentCode += (0, _coreCodemirrorYamlTangramJs.getAddressSceneContent)(_TangramPlayJs2['default'].map.scene, this.address) + '\ngl_FragColor = vec4(normal,1.0);\n}';
                             } else if (isColor) {
                                 // COLOR CORE & ENDING
                                 this.fragmentCode += '\n';
@@ -21122,10 +21118,12 @@ var GlslSandbox = (function () {
                                         this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + '\n';
                                     }
                                 }
-                                this.fragmentCode += (0, _coreCodemirrorYamlTangramJs.getAddressSceneContent)(this.tangramPlay.scene, this.address) + '\ngl_FragColor = color;\n}';
+                                this.fragmentCode += (0, _coreCodemirrorYamlTangramJs.getAddressSceneContent)(_TangramPlayJs2['default'].map.scene, this.address) + '\ngl_FragColor = color;\n}';
                             }
 
-                            // Load load composed shader code
+                            // Load composed shader code
+                            // console.log('\n FRAGMENT SHADER \n ######################\n', this.fragmentCode);
+                            // console.log('\n VERTEX SHADER \n ######################\n', this.vertexCode);
                             this.shader.load(this.fragmentCode, this.vertexCode);
 
                             this.shader.refreshUniforms();
@@ -21174,10 +21172,10 @@ var GlslSandbox = (function () {
         value: function update() {
             // Update uniforms
             this.uniforms['u_device_pixel_ratio'] = window.devicePixelRatio;
-            this.uniforms['u_meters_per_pixel'] = this.tangramPlay.scene['meters_per_pixel'];
-            this.uniforms['u_map_position'] = [this.tangramPlay.scene['center_meters'].x, this.tangramPlay.scene['center_meters'].y, this.tangramPlay.scene.zoom];
-            this.uniforms['u_tile_origin'] = [this.tangramPlay.scene['center_tile'].x, this.tangramPlay.scene['center_tile'].y, this.tangramPlay.scene['center_tile'].z];
-            this.uniforms['u_vanishing_point'] = this.tangramPlay.scene.camera['vanishing_point'];
+            this.uniforms['u_meters_per_pixel'] = _TangramPlayJs2['default'].map.scene['meters_per_pixel'];
+            this.uniforms['u_map_position'] = [_TangramPlayJs2['default'].map.scene['center_meters'].x, _TangramPlayJs2['default'].map.scene['center_meters'].y, _TangramPlayJs2['default'].map.scene.zoom];
+            this.uniforms['u_tile_origin'] = [_TangramPlayJs2['default'].map.scene['center_tile'].x, _TangramPlayJs2['default'].map.scene['center_tile'].y, _TangramPlayJs2['default'].map.scene['center_tile'].z];
+            this.uniforms['u_vanishing_point'] = _TangramPlayJs2['default'].map.scene.camera['vanishing_point'];
 
             this.shader.setUniforms(this.uniforms);
         }
@@ -21189,7 +21187,7 @@ var GlslSandbox = (function () {
                 this.update();
                 this.shader.render(true);
                 requestAnimationFrame(function () {
-                    _TangramPlayJs2['default'].editor.glslSandbox.render();
+                    _TangramPlayJs2['default'].addons.glslSandbox.render();
                 }, 1000 / 30);
             }
         }
@@ -21217,7 +21215,7 @@ var GlslSandbox = (function () {
         value: function onColorClick(event) {
             var pos = (0, _coreCommonJs.getPosition)(this.colorPicker);
             pos.x += 30;
-            pos.y = this.tangramPlay.editor.heightAtLine(this.line) - 15;
+            pos.y = _TangramPlayJs2['default'].editor.heightAtLine(this.line) - 15;
 
             this.picker = new _widgetsColorPickerModalJs2['default'](this.colorPicker.style.backgroundColor);
 
@@ -21237,10 +21235,10 @@ var GlslSandbox = (function () {
     }, {
         key: 'onCursorMove',
         value: function onCursorMove() {
-            var pos = this.tangramPlay.editor.getCursor();
+            var pos = _TangramPlayJs2['default'].editor.getCursor();
 
-            var edge = this.tangramPlay.editor.charCoords({ line: pos.line, ch: 20 }).left;
-            var left = this.tangramPlay.editor.charCoords(pos).left;
+            var edge = _TangramPlayJs2['default'].editor.charCoords({ line: pos.line, ch: 20 }).left;
+            var left = _TangramPlayJs2['default'].editor.charCoords(pos).left;
 
             if (pos.ch < 20 || left < edge) {
                 if (this.active) {
@@ -21408,7 +21406,6 @@ exports['default'] = LocalStorage;
 module.exports = exports['default'];
 
 },{}],28:[function(require,module,exports){
-// Load some common functions
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -21417,7 +21414,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _TangramPlayJs = require('../TangramPlay.js');
+
+var _TangramPlayJs2 = _interopRequireDefault(_TangramPlayJs);
+
+// Load some common functions
 
 var _coreCommonJs = require('../core/common.js');
 
@@ -21425,23 +21430,27 @@ var _coreCodemirrorToolsJs = require('../core/codemirror/tools.js');
 
 var _coreCodemirrorYamlTangramJs = require('../core/codemirror/yaml-tangram.js');
 
+// Import CodeMirror
+
+var _codemirror = require('codemirror');
+
+var _codemirror2 = _interopRequireDefault(_codemirror);
+
+require('codemirror/addon/hint/show-hint');
+
 // Debounced event after user stop doing something
 var stopAction = (0, _coreCommonJs.debounce)(function (cm) {
     var line = cm.getCursor().line;
-    cm.suggestManager.suggest(line);
+    _TangramPlayJs2['default'].addons.suggestManager.suggest(line);
 }, 1000);
 
 var SuggestManager = (function () {
-    function SuggestManager(tangramPlay, configFile) {
+    function SuggestManager(configFile) {
         var _this = this;
 
         _classCallCheck(this, SuggestManager);
 
-        //  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangramPlay.editor.suggestManager = this;
-
         //  private variables
-        this.tangramPlay = tangramPlay;
         this.data = [];
         this.active = undefined;
 
@@ -21477,19 +21486,18 @@ var SuggestManager = (function () {
         });
 
         // Suggestions are trigged by the folowing CM events
-        this.tangramPlay.editor.on('cursorActivity', function (cm) {
-            stopAction(cm);
-        });
+        // TangramPlay.editor.on('cursorActivity', function(cm) {
+        //     stopAction(cm);
+        // });
+
+        // CodeMirror.registerHelper("hint", "yaml-tangram", this.hint);
     }
 
     _createClass(SuggestManager, [{
-        key: 'suggest',
-        value: function suggest(nLine) {
-            this.clear();
-            var top = this.tangramPlay.editor.getScrollInfo().top;
-
+        key: 'getSuggestions',
+        value: function getSuggestions(nLine) {
             // What's the main key of the line?
-            var keys = this.tangramPlay.getKeysOnLine(nLine);
+            var keys = _TangramPlayJs2['default'].getKeysOnLine(nLine);
             if (keys) {
                 var key = keys[0];
                 if (key && key.value === '') {
@@ -21502,7 +21510,7 @@ var SuggestManager = (function () {
                             var datum = _step2.value;
 
                             if (datum.check(key)) {
-                                datum.make(this.tangramPlay, key);
+                                return datum.getList(key);
                             }
                         }
                     } catch (err) {
@@ -21519,6 +21527,52 @@ var SuggestManager = (function () {
                             }
                         }
                     }
+                }
+            }
+            return [];
+        }
+    }, {
+        key: 'hint',
+        value: function hint(editor, options) {
+            console.log(options);
+        }
+    }, {
+        key: 'suggest',
+        value: function suggest(nLine) {
+            this.clear();
+            var top = _TangramPlayJs2['default'].editor.getScrollInfo().top;
+
+            // What's the main key of the line?
+            var keys = _TangramPlayJs2['default'].getKeysOnLine(nLine);
+            if (keys) {
+                var key = keys[0];
+                if (key && key.value === '') {
+                    var _iteratorNormalCompletion3 = true;
+                    var _didIteratorError3 = false;
+                    var _iteratorError3 = undefined;
+
+                    try {
+                        for (var _iterator3 = this.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                            var datum = _step3.value;
+
+                            if (datum.check(key)) {
+                                datum.make(key);
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError3 = true;
+                        _iteratorError3 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+                                _iterator3['return']();
+                            }
+                        } finally {
+                            if (_didIteratorError3) {
+                                throw _iteratorError3;
+                            }
+                        }
+                    }
                 } else {
                     return;
                 }
@@ -21526,8 +21580,8 @@ var SuggestManager = (function () {
                 return;
             }
 
-            this.tangramPlay.editor.focus();
-            this.tangramPlay.editor.scrollTo(null, top);
+            _TangramPlayJs2['default'].editor.focus();
+            _TangramPlayJs2['default'].editor.scrollTo(null, top);
         }
     }, {
         key: 'clear',
@@ -21536,7 +21590,7 @@ var SuggestManager = (function () {
             if (this.active) {
                 this.active.clear();
                 this.active = undefined;
-                this.tangramPlay.editor.focus();
+                _TangramPlayJs2['default'].editor.focus();
             }
         }
     }]);
@@ -21589,10 +21643,9 @@ var Suggestion = (function () {
             }
         }
     }, {
-        key: 'make',
-        value: function make(tp, keyPair) {
-            var scene = tp.scene;
-            var cm = tp.editor;
+        key: 'getList',
+        value: function getList(keyPair) {
+            var scene = _TangramPlayJs2['default'].map.scene;
             var list = [];
             var presentKeys = [];
 
@@ -21617,7 +21670,14 @@ var Suggestion = (function () {
                 }
             }
 
+            return list;
+        }
+    }, {
+        key: 'make',
+        value: function make(keyPair) {
+            var list = this.getList(keyPair);
             if (list.length) {
+                var cm = _TangramPlayJs2['default'].editor;
                 // this.addList(list,nline);
                 var options = { position: 'top' };
 
@@ -21648,7 +21708,7 @@ function makeMenu(cm, nLine, list) {
     var _loop = function (i) {
         var btn = document.createElement('button'),
             text = document.createTextNode(list[i] + ': ');
-        cm.suggestManager.activeLine = nLine;
+        _TangramPlayJs2['default'].addons.suggestManager.activeLine = nLine;
         btn.className = 'tangram-play-suggested-menu-btn';
 
         btn.onclick = function () {
@@ -21691,7 +21751,7 @@ function makeMenu(cm, nLine, list) {
 }
 module.exports = exports['default'];
 
-},{"../core/codemirror/tools.js":52,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54}],29:[function(require,module,exports){
+},{"../TangramPlay.js":23,"../core/codemirror/tools.js":52,"../core/codemirror/yaml-tangram.js":53,"../core/common.js":54,"codemirror":14,"codemirror/addon/hint/show-hint":9}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

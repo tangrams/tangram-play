@@ -1,21 +1,23 @@
+import TangramPlay from '../TangramPlay.js';
+
 // Load some common functions
 import { httpGet, debounce } from '../core/common.js';
 import { getLineInd, isEmpty } from '../core/codemirror/tools.js';
 import { getAddressSceneContent, getValueRange } from '../core/codemirror/yaml-tangram.js';
 
+// Import CodeMirror
+import CodeMirror from 'codemirror';
+import 'codemirror/addon/hint/show-hint';
+
 // Debounced event after user stop doing something
 var stopAction = debounce(function(cm) {
     let line = cm.getCursor().line;
-    cm.suggestManager.suggest(line);
+    TangramPlay.addons.suggestManager.suggest(line);
 }, 1000);
 
 export default class SuggestManager {
-    constructor(tangramPlay, configFile) {
-        //  Make link to this manager inside codemirror obj to be excecuted from CM events
-        tangramPlay.editor.suggestManager = this;
-
+    constructor(configFile) {
         //  private variables
-        this.tangramPlay = tangramPlay;
         this.data = [];
         this.active = undefined;
 
@@ -30,23 +32,45 @@ export default class SuggestManager {
         });
 
         // Suggestions are trigged by the folowing CM events
-        this.tangramPlay.editor.on('cursorActivity', function(cm) {
-            stopAction(cm);
-        });
+        // TangramPlay.editor.on('cursorActivity', function(cm) {
+        //     stopAction(cm);
+        // });
+
+        // CodeMirror.registerHelper("hint", "yaml-tangram", this.hint);
     }
 
-    suggest(nLine) {
-        this.clear();
-        let top = this.tangramPlay.editor.getScrollInfo().top;
-
+    getSuggestions(nLine) {
         // What's the main key of the line?
-        let keys = this.tangramPlay.getKeysOnLine(nLine);
+        let keys = TangramPlay.getKeysOnLine(nLine);
         if (keys) {
             let key = keys[0];
             if (key && key.value === '') {
                 for (let datum of this.data) {
                     if (datum.check(key)) {
-                        datum.make(this.tangramPlay, key);
+                        return datum.getList(key);
+                    }
+                }
+            }
+        }
+        return [];
+    }
+
+    hint(editor, options) {
+        console.log(options);
+    }
+
+    suggest(nLine) {
+        this.clear();
+        let top = TangramPlay.editor.getScrollInfo().top;
+
+        // What's the main key of the line?
+        let keys = TangramPlay.getKeysOnLine(nLine);
+        if (keys) {
+            let key = keys[0];
+            if (key && key.value === '') {
+                for (let datum of this.data) {
+                    if (datum.check(key)) {
+                        datum.make(key);
                     }
                 }
             }
@@ -58,8 +82,8 @@ export default class SuggestManager {
             return;
         }
 
-        this.tangramPlay.editor.focus();
-        this.tangramPlay.editor.scrollTo(null, top);
+        TangramPlay.editor.focus();
+        TangramPlay.editor.scrollTo(null, top);
     }
 
     clear() {
@@ -67,7 +91,7 @@ export default class SuggestManager {
         if (this.active) {
             this.active.clear();
             this.active = undefined;
-            this.tangramPlay.editor.focus();
+            TangramPlay.editor.focus();
         }
     }
 }
@@ -113,9 +137,8 @@ class Suggestion {
         }
     }
 
-    make(tp, keyPair) {
-        let scene = tp.scene;
-        let cm = tp.editor;
+    getList(keyPair) {
+        let scene = TangramPlay.map.scene;
         let list = [];
         let presentKeys = [];
 
@@ -140,7 +163,13 @@ class Suggestion {
             }
         }
 
+        return list;
+    }
+
+    make(keyPair) {
+        let list = this.getList(keyPair);
         if (list.length) {
+            let cm = TangramPlay.editor;
             // this.addList(list,nline);
             let options = { position: 'top' };
 
@@ -168,7 +197,7 @@ function makeMenu(cm, nLine, list) {
     for (let i = 0; i < list.length; i++) {
         let btn = document.createElement('button'),
             text = document.createTextNode(list[i] + ': ');
-        cm.suggestManager.activeLine = nLine;
+        TangramPlay.addons.suggestManager.activeLine = nLine;
         btn.className = 'tangram-play-suggested-menu-btn';
 
         btn.onclick = function() {
