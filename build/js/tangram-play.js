@@ -20302,6 +20302,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
+var _bind = Function.prototype.bind;
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -20411,20 +20412,66 @@ var TangramPlay = (function () {
     _createClass(TangramPlay, [{
         key: 'initAddons',
         value: function initAddons() {
-            if (this.options.widgets) {
-                this.addons.widgetsManager = new _addonsWidgetsManagerJs2['default'](this.options.widgets);
+            var options = Object.keys(this.options);
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = options[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var option = _step.value;
+
+                    this.initAddon(option, this.options[option]);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator['return']) {
+                        _iterator['return']();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
             }
-            if (this.options.suggest) {
-                this.addons.suggestManager = new _addonsSuggestManagerJs2['default'](this, this.options.suggest);
+        }
+    }, {
+        key: 'initAddon',
+        value: function initAddon(addon) {
+            for (var _len = arguments.length, data = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                data[_key - 1] = arguments[_key];
             }
-            if (this.options.sandbox) {
-                this.addons.glslSandbox = new _addonsGlslSandboxJs2['default'](this);
-            }
-            if (this.options.errors) {
-                this.addons.errorsManager = new _addonsErrorsManagerJs2['default']();
-            }
-            if (this.options.colors) {
-                this.addons.colorPalette = new _addonsColorPaletteJs2['default']();
+
+            console.log.apply(console, ["Loading addon", addon].concat(data));
+            switch (addon) {
+                case 'widgets':
+                    if (this.addons.widgetsManager === undefined) {
+                        this.addons.widgetsManager = new (_bind.apply(_addonsWidgetsManagerJs2['default'], [null].concat(data)))();
+                    }
+                    break;
+                case 'suggest':
+                    if (this.addons.suggestManager === undefined) {
+                        this.addons.suggestManager = new (_bind.apply(_addonsSuggestManagerJs2['default'], [null].concat(data)))();
+                    }
+                    break;
+                case 'sandbox':
+                    if (this.addons.glslSandbox === undefined) {
+                        this.addons.glslSandbox = new _addonsGlslSandboxJs2['default']();
+                    }
+                    break;
+                case 'errors':
+                    if (this.addons.errorsManager === undefined) {
+                        this.addons.errorsManager = new _addonsErrorsManagerJs2['default']();
+                    }
+                    break;
+                case 'colors':
+                    if (this.addons.colorPalette === undefined) {
+                        this.addons.colorPalette = new _addonsColorPaletteJs2['default']();
+                    }
+                    break;
             }
         }
 
@@ -20582,7 +20629,7 @@ function parseQuery(qstr) {
 
 var tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
-    // suggest: 'data/suggest.json',
+    suggest: 'data/suggest.json',
     widgets: 'data/widgets.json',
     menu: 'data/menu.json',
     // sandbox: true,
@@ -26068,8 +26115,6 @@ var saveAs = saveAs || (function (e) {
 });
 
 },{}],57:[function(require,module,exports){
-(function (global){
-; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 'use strict';
 
 ;(function (window, undefined) {
@@ -26776,12 +26821,6 @@ var saveAs = saveAs || (function (e) {
 		return value > max ? max : value < min ? min : value;
 	}
 })(window);
-
-; browserify_shim__define__module__export__(typeof Colors != "undefined" ? Colors : window.Colors);
-
-}).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}]},{},[23])
 

@@ -67,20 +67,40 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        if (this.options.widgets) {
-            this.addons.widgetsManager = new WidgetsManager(this.options.widgets);
+        let options = Object.keys(this.options);
+        for (let option of options) {
+            this.initAddon(option,this.options[option]);
         }
-        if (this.options.suggest) {
-            this.addons.suggestManager = new SuggestManager(this, this.options.suggest);
-        }
-        if (this.options.sandbox) {
-            this.addons.glslSandbox = new GlslSandbox(this);
-        }
-        if (this.options.errors) {
-            this.addons.errorsManager = new ErrorsManager();
-        }
-        if (this.options.colors) {
-            this.addons.colorPalette = new ColorPalette();
+    }
+
+    initAddon(addon, ...data) {
+        console.log("Loading addon", addon, ...data);
+        switch(addon) {
+            case 'widgets':
+                if (this.addons.widgetsManager === undefined) {
+                    this.addons.widgetsManager = new WidgetsManager(...data);
+                }
+                break;
+            case 'suggest':
+                if (this.addons.suggestManager === undefined) {
+                    this.addons.suggestManager = new SuggestManager(...data);
+                }
+                break;
+            case 'sandbox':
+                if (this.addons.glslSandbox === undefined) {
+                    this.addons.glslSandbox = new GlslSandbox();
+                }
+                break;
+            case 'errors':
+                if (this.addons.errorsManager === undefined) {
+                    this.addons.errorsManager = new ErrorsManager();
+                }
+                break;
+            case 'colors':
+                if (this.addons.colorPalette === undefined) {
+                    this.addons.colorPalette = new ColorPalette();
+                }
+                break;
         }
     }
 
@@ -214,7 +234,7 @@ function parseQuery (qstr) {
 
 let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
-    // suggest: 'data/suggest.json',
+    suggest: 'data/suggest.json',
     widgets: 'data/widgets.json',
     menu: 'data/menu.json',
     // sandbox: true,
