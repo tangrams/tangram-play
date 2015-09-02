@@ -69,7 +69,7 @@ export function getAddressSceneContent(tangramScene, address) {
 
 // Make an folder style address from an array of keys
 export function getAddressFromKeys(keys) {
-    if (keys) {
+    if (keys && keys.length > 0) {
         let address = '';
         for (let i = 0; i < keys.length; i++) {
             address += '/' + keys[i] ;

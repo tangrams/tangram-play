@@ -12,16 +12,24 @@ import 'codemirror/addon/hint/show-hint';
 export default class SuggestManager {
     constructor(configFile) {
         //  private variables
-        this.data = [];
+        this.keySuggestions = [];
+        this.valueSuggestions = [];
         this.active = undefined;
 
         //  Load data file
         httpGet(configFile, (err, res) => {
-            let suggestionsData = JSON.parse(res)['keys'];
+            let keys = JSON.parse(res)['keys'];
 
             // Initialize tokens
-            for (let datum of suggestionsData) {
-                this.data.push(new KeySuggestion(datum));
+            for (let datum of keys) {
+                this.keySuggestions.push(new Suggestion(datum));
+            }
+
+            let values = JSON.parse(res)['values'];
+
+            // Initialize tokens
+            for (let datum of values) {
+                this.valueSuggestions.push(new Suggestion(datum));
             }
         });
     }
@@ -42,7 +50,7 @@ export default class SuggestManager {
             if (keyPair) {
                 if (keyPair.key === '') {
                     // Suggest keyPair
-                    for (let datum of this.data) {
+                    for (let datum of this.keySuggestions) {
                         if (datum.check(keyPair)) {
                             list.push.apply(list, datum.getList(keyPair));
                         }
@@ -66,8 +74,27 @@ export default class SuggestManager {
                         }
                     }
                 }
+                // else if (keyPair.value === '') {
                 else {
-                    console.log('Suggest Value');
+                    // Check for widgets
+                    for (let datum of this.valueSuggestions) {
+                        if (datum.check(keyPair)) {
+                            list.push.apply(list, datum.getList(keyPair));
+                            break;
+                        }
+                    }
+                    let string = keyPair.value;
+                    if (string !== '') {
+                        let matchedList = [];
+                        let match = RegExp('^' + string + '.*');
+                        for (let i = 0; i < list.length; i++) {
+                            if (match.test(list[i])) {
+                                matchedList.push(list[i]);
+                            }
+                        }
+                        list = matchedList;
+                        start -= string.length;
+                    }
                 }
             }
         }
@@ -80,7 +107,7 @@ export default class SuggestManager {
     }
 }
 
-class KeySuggestion {
+class Suggestion {
     constructor(datum) {
         //  TODO: must be a better way to do this
         if (datum['address']) {

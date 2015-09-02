@@ -21446,12 +21446,13 @@ var SuggestManager = (function () {
         _classCallCheck(this, SuggestManager);
 
         //  private variables
-        this.data = [];
+        this.keySuggestions = [];
+        this.valueSuggestions = [];
         this.active = undefined;
 
         //  Load data file
         (0, _coreCommonJs.httpGet)(configFile, function (err, res) {
-            var suggestionsData = JSON.parse(res)['keys'];
+            var keys = JSON.parse(res)['keys'];
 
             // Initialize tokens
             var _iteratorNormalCompletion = true;
@@ -21459,10 +21460,10 @@ var SuggestManager = (function () {
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = suggestionsData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var datum = _step.value;
 
-                    _this.data.push(new KeySuggestion(datum));
+                    _this.keySuggestions.push(new Suggestion(datum));
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -21475,6 +21476,34 @@ var SuggestManager = (function () {
                 } finally {
                     if (_didIteratorError) {
                         throw _iteratorError;
+                    }
+                }
+            }
+
+            var values = JSON.parse(res)['values'];
+
+            // Initialize tokens
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = values[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var datum = _step2.value;
+
+                    _this.valueSuggestions.push(new Suggestion(datum));
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+                        _iterator2['return']();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
                     }
                 }
             }
@@ -21499,29 +21528,29 @@ var SuggestManager = (function () {
                 if (keyPair) {
                     if (keyPair.key === '') {
                         // Suggest keyPair
-                        var _iteratorNormalCompletion2 = true;
-                        var _didIteratorError2 = false;
-                        var _iteratorError2 = undefined;
+                        var _iteratorNormalCompletion3 = true;
+                        var _didIteratorError3 = false;
+                        var _iteratorError3 = undefined;
 
                         try {
-                            for (var _iterator2 = this.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                var datum = _step2.value;
+                            for (var _iterator3 = this.keySuggestions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                var datum = _step3.value;
 
                                 if (datum.check(keyPair)) {
                                     list.push.apply(list, datum.getList(keyPair));
                                 }
                             }
                         } catch (err) {
-                            _didIteratorError2 = true;
-                            _iteratorError2 = err;
+                            _didIteratorError3 = true;
+                            _iteratorError3 = err;
                         } finally {
                             try {
-                                if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-                                    _iterator2['return']();
+                                if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+                                    _iterator3['return']();
                                 }
                             } finally {
-                                if (_didIteratorError2) {
-                                    throw _iteratorError2;
+                                if (_didIteratorError3) {
+                                    throw _iteratorError3;
                                 }
                             }
                         }
@@ -21542,9 +21571,51 @@ var SuggestManager = (function () {
                                 list[i] += ': ';
                             }
                         }
-                    } else {
-                        console.log('Suggest Value');
                     }
+                    // else if (keyPair.value === '') {
+                    else {
+                            // Check for widgets
+                            var _iteratorNormalCompletion4 = true;
+                            var _didIteratorError4 = false;
+                            var _iteratorError4 = undefined;
+
+                            try {
+                                for (var _iterator4 = this.valueSuggestions[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                                    var datum = _step4.value;
+
+                                    if (datum.check(keyPair)) {
+                                        list.push.apply(list, datum.getList(keyPair));
+                                        break;
+                                    }
+                                }
+                            } catch (err) {
+                                _didIteratorError4 = true;
+                                _iteratorError4 = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion4 && _iterator4['return']) {
+                                        _iterator4['return']();
+                                    }
+                                } finally {
+                                    if (_didIteratorError4) {
+                                        throw _iteratorError4;
+                                    }
+                                }
+                            }
+
+                            var string = keyPair.value;
+                            if (string !== '') {
+                                var matchedList = [];
+                                var match = RegExp('^' + string + '.*');
+                                for (var i = 0; i < list.length; i++) {
+                                    if (match.test(list[i])) {
+                                        matchedList.push(list[i]);
+                                    }
+                                }
+                                list = matchedList;
+                                start -= string.length;
+                            }
+                        }
                 }
             }
 
@@ -21561,9 +21632,9 @@ var SuggestManager = (function () {
 
 exports['default'] = SuggestManager;
 
-var KeySuggestion = (function () {
-    function KeySuggestion(datum) {
-        _classCallCheck(this, KeySuggestion);
+var Suggestion = (function () {
+    function Suggestion(datum) {
+        _classCallCheck(this, Suggestion);
 
         //  TODO: must be a better way to do this
         if (datum['address']) {
@@ -21589,7 +21660,7 @@ var KeySuggestion = (function () {
         }
     }
 
-    _createClass(KeySuggestion, [{
+    _createClass(Suggestion, [{
         key: 'check',
         value: function check(keyPair) {
             if (keyPair && this.checkAgainst) {
@@ -21634,7 +21705,7 @@ var KeySuggestion = (function () {
         }
     }]);
 
-    return KeySuggestion;
+    return Suggestion;
 })();
 
 module.exports = exports['default'];
@@ -25304,7 +25375,7 @@ function getAddressSceneContent(tangramScene, address) {
 // Make an folder style address from an array of keys
 
 function getAddressFromKeys(keys) {
-    if (keys) {
+    if (keys && keys.length > 0) {
         var address = '';
         for (var i = 0; i < keys.length; i++) {
             address += '/' + keys[i];
