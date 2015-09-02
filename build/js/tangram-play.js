@@ -21521,12 +21521,16 @@ var SuggestManager = (function () {
             var end = cursor.ch + 1;
 
             // What's the main key of the line?
-            var keyPairs = (0, _coreCodemirrorYamlTangramJs.getKeyPairs)(_TangramPlayJs2['default'].editor, nLine);
+            var keyPairs = (0, _coreCodemirrorYamlTangramJs.getKeyPairs)(editor, nLine);
             if (keyPairs) {
                 var keyPair = keyPairs[0];
 
                 if (keyPair) {
                     if (keyPair.key === '') {
+                        // Fallback the address to match
+                        var actualLevel = (0, _coreCodemirrorToolsJs.getLineInd)(editor, nLine);
+                        var newAddress = (0, _coreCodemirrorYamlTangramJs.getAddressForLevel)(keyPair.address, actualLevel);
+                        keyPair.address = newAddress;
                         // Suggest keyPair
                         var _iteratorNormalCompletion3 = true;
                         var _didIteratorError3 = false;
@@ -21665,8 +21669,8 @@ var Suggestion = (function () {
         value: function check(keyPair) {
             if (keyPair && this.checkAgainst) {
                 var rightLevel = true;
-                if (this.keyLevel) {
-                    rightLevel = (0, _coreCodemirrorToolsJs.getLineInd)(_TangramPlayJs2['default'].editor, keyPair.pos.line) === this.keyLevel;
+                if (this.level) {
+                    rightLevel = (0, _coreCodemirrorToolsJs.getLineInd)(_TangramPlayJs2['default'].editor, keyPair.pos.line) === this.level;
                 }
                 return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]) && rightLevel;
             } else {
@@ -25295,6 +25299,7 @@ exports.getValueRange = getValueRange;
 exports.getAddressSceneContent = getAddressSceneContent;
 exports.getAddressFromKeys = getAddressFromKeys;
 exports.getKeysFromAddress = getKeysFromAddress;
+exports.getAddressForLevel = getAddressForLevel;
 exports.isGlobalBlock = isGlobalBlock;
 exports.isWidthBlock = isWidthBlock;
 exports.isPositionBlock = isPositionBlock;
@@ -25390,6 +25395,15 @@ function getKeysFromAddress(address) {
     var keys = address.split('/');
     keys.shift();
     return keys;
+}
+
+function getAddressForLevel(address, level) {
+    var keys = getKeysFromAddress(address);
+    var newAddress = '';
+    for (var i = 0; i < level; i++) {
+        newAddress += '/' + keys[i];
+    }
+    return newAddress;
 }
 
 //  CHECK

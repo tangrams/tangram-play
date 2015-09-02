@@ -2,85 +2,85 @@
     "keys" : [
         {
             "address": "^/cameras/(\\w|\\_|\\-)+$",
-            "keyLevel": 2,
+            "level": 2,
             "options": ["type","vanishing_point", "focal_length", "active"]
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+$",
-            "keyLevel": 2,
+            "level": 2,
             "options": ["type","diffuse", "ambient","specular","direction", "position", "origin", "radius", "attenuation", "exponent"]
         },
         {
             "address": "^/scene$",
-            "keyLevel": 1,
+            "level": 1,
             "options": ["background"]
         },
         {
             "address": "^/scene/background$",
-            "keyLevel": 2,
+            "level": 2,
             "options": ["color"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+$",
-            "keyLevel": 2,
+            "level": 2,
             "options": ["base", "mix", "blend", "lighting", "texcoords", "animated", "material", "shaders"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/material$",
-            "keyLevel": 3,
+            "level": 3,
             "options": ["normal","emission","ambient","diffuse","specular","shininess"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/material/(normal|emission|ambient|diffuse|specular)$",
-            "keyLevel": 4,
+            "level": 4,
             "options": ["texture","mapping","scale","amount"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/shaders$",
-            "keyLevel": 3,
+            "level": 3,
             "options": ["blocks"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/shaders/blocks$",
-            "keyLevel": 4,
+            "level": 4,
             "options": ["global","position","width","normal","color","filter"]
         },
         {
             "address": "^/sources/(\\w|\\_|\\-)+$",
-            "keyLevel": 2,
+            "level": 2,
             "options": ["type", "url"]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+$",
-            "keyLevel": 2,
+            "level": 2,
             "options": ["data", "draw", "properties", "filter", "extruded"]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data$",
-            "keyLevel": 3,
+            "level": 3,
             "options": ["source"]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/draw$",
-            "keyLevel": 3,
+            "level": 3,
             "options": ["points", "lines", "polygons", "text"],
             "source": "/styles"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/draw/(\\w|\\_|\\-)+$",
-            "keyLevel": 4,
+            "level": 4,
             "options": ["style", "extrude", "color", "order", "width", "font"],
             "source": "/styles"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/draw/text/font$",
-            "keyLevel": 5,
+            "level": 5,
             "options": ["fill", "typeface"],
             "source": "/styles"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/properties$",
-            "keyLevel": 3,
+            "level": 3,
             "options": ["width"]
         }
     ],

@@ -3,7 +3,7 @@ import TangramPlay from '../TangramPlay.js';
 // Load some common functions
 import { httpGet } from '../core/common.js';
 import { getText, getLineInd } from '../core/codemirror/tools.js';
-import { getAddressSceneContent, getKeyPairs } from '../core/codemirror/yaml-tangram.js';
+import { getAddressSceneContent, getKeyPairs, getAddressForLevel } from '../core/codemirror/yaml-tangram.js';
 
 // Import CodeMirror
 import CodeMirror from 'codemirror';
@@ -43,12 +43,16 @@ export default class SuggestManager {
         let end = cursor.ch + 1;
 
         // What's the main key of the line?
-        let keyPairs = getKeyPairs(TangramPlay.editor, nLine);
+        let keyPairs = getKeyPairs(editor, nLine);
         if (keyPairs) {
             let keyPair = keyPairs[0];
 
             if (keyPair) {
                 if (keyPair.key === '') {
+                    // Fallback the address to match
+                    let actualLevel = getLineInd(editor, nLine);
+                    let newAddress = getAddressForLevel(keyPair.address, actualLevel);
+                    keyPair.address = newAddress;
                     // Suggest keyPair
                     for (let datum of this.keySuggestions) {
                         if (datum.check(keyPair)) {
@@ -138,8 +142,8 @@ class Suggestion {
     check(keyPair) {
         if (keyPair && this.checkAgainst) {
             let rightLevel = true;
-            if (this.keyLevel) {
-                rightLevel = getLineInd(TangramPlay.editor, keyPair.pos.line) === this.keyLevel;
+            if (this.level) {
+                rightLevel = getLineInd(TangramPlay.editor, keyPair.pos.line) === this.level;
             }
             return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]) && rightLevel;
         }

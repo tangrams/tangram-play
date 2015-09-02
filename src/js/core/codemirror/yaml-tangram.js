@@ -87,6 +87,15 @@ export function getKeysFromAddress(address) {
     return keys;
 }
 
+export function getAddressForLevel(address, level) {
+    let keys = getKeysFromAddress(address);
+    let newAddress = '';
+    for (let i = 0; i < level; i++) {
+        newAddress += '/' + keys[i] ;
+    }
+    return newAddress;
+}
+
 //  CHECK
 //  ===============================================================================
 
