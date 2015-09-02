@@ -3,8 +3,6 @@
 
 ![](data/imgs/screenshot.png)
 
-https://img.shields.io/david/dev/tangrams/tangram-play.svg?style=flat-square
-
 # Style Editor for Tangram Styles
 
 ## Query string API
