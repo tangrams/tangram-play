@@ -1,6 +1,11 @@
+[![David Dependencies](https://img.shields.io/david/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play)
+[![David devDependencies](https://img.shields.io/david/dev/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play#info=devDependencies)
+
 ![](data/imgs/screenshot.png)
 
-Style Editor for Tangram Styles
+https://img.shields.io/david/dev/tangrams/tangram-play.svg?style=flat-square
+
+# Style Editor for Tangram Styles
 
 ## Query string API
 
