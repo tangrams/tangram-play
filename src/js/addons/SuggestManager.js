@@ -2,7 +2,7 @@ import TangramPlay from '../TangramPlay.js';
 
 // Load some common functions
 import { httpGet, debounce } from '../core/common.js';
-import { getLineInd, isEmpty } from '../core/codemirror/tools.js';
+import { getText, getLineInd, isEmpty } from '../core/codemirror/tools.js';
 import { getAddressSceneContent, getKeyPairs, getValueRange } from '../core/codemirror/yaml-tangram.js';
 
 // Import CodeMirror
@@ -17,7 +17,7 @@ export default class SuggestManager {
 
         //  Load data file
         httpGet(configFile, (err, res) => {
-            let suggestionsData = JSON.parse(res)['suggest'];
+            let suggestionsData = JSON.parse(res)['keys'];
 
             // Initialize tokens
             for (let datum of suggestionsData) {
@@ -26,25 +26,57 @@ export default class SuggestManager {
         });
     }
 
-    getSuggestions(cursor) {
+    hint(editor, options) {
+        let cursor = editor.getCursor();
         let nLine = cursor.line;
+
         let list = [];
+        let start = cursor.ch;
+        let end = cursor.ch+1;
 
         // What's the main key of the line?
-        let keys = getKeyPairs(TangramPlay.editor, nLine);
-        if (keys) {
-            let key = keys[0];
-            
-            console.log('GetSuggestion for key',keys);
-            if (key && key.value === '') {
-                for (let datum of this.data) {
-                    if (datum.check(key)) {
-                        list.push.apply(list,datum.getList(key));
+        let keyPairs = getKeyPairs(TangramPlay.editor, nLine);
+        if (keyPairs) {
+            let keyPair = keyPairs[0];
+
+            if (keyPair) {
+                if (keyPair.key === '') {
+                    // Suggest keyPair
+                    for (let datum of this.data) {
+                        if (datum.check(keyPair)) {
+                            list.push.apply(list,datum.getList(keyPair));
+                        }
                     }
+
+                    let string = getText(editor, nLine);
+                    let ind = getLineInd(editor,nLine);
+                    if (string !== '') {
+                        let matchedList = [];
+                        let match = RegExp('^'+string+'.*');
+                        for (let i = 0; i < list.length; i++) {
+                            if (match.test(list[i])) {
+                                matchedList.push(list[i]+':');
+                            }
+                        }
+                        list = matchedList;
+                        start -= string.length;
+                    } else {
+                        for (let i = 0; i < list.length; i++) {
+                            list[i] += ':';
+                        }
+                    }
+                }
+                else {
+                    console.log("Suggest Value");
                 }
             }
         }
-        return list;
+
+        return { 
+                list: list,
+                from: CodeMirror.Pos(nLine, start),
+                to: CodeMirror.Pos(nLine, end)
+            };
     }
 }
 
@@ -62,6 +94,11 @@ class KeySuggestion {
         }
 
         this.checkPatern = datum[this.checkAgainst];
+
+        if (datum.keyLevel) {
+            this.keyLevel = datum.keyLevel;
+        }
+
         if (datum.options) {
             this.options = datum.options;
         }
@@ -73,7 +110,11 @@ class KeySuggestion {
 
     check(keyPair) {
         if (keyPair && this.checkAgainst) {
-            return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]);
+            let rightLevel = true;
+            if (this.keyLevel) {
+                rightLevel = getLineInd(TangramPlay.editor,keyPair.pos.line) === this.keyLevel;
+            }
+            return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]) && rightLevel;
         }
         else {
             return false;

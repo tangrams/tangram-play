@@ -40,6 +40,11 @@ export function isCommented(cm, nLine) {
     return isStrCommented(cm.lineInfo(nLine).text);
 }
 
+export function getText(cm,nLine) {
+    let value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);
+    return value ? value[1] : '';
+}
+
 //  Get value of a key pair
 export function getValue(cm, nLine) {
     let value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec(cm.lineInfo(nLine).text);

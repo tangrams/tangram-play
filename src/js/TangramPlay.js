@@ -234,8 +234,8 @@ function parseQuery (qstr) {
 
 let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
-    suggest: 'data/suggest.json',
-    widgets: 'data/widgets.json',
+    suggest: 'data/tangram-api.json',
+    widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
     // sandbox: true,
     errors: true,

@@ -20629,8 +20629,8 @@ function parseQuery(qstr) {
 
 var tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
-    suggest: 'data/suggest.json',
-    widgets: 'data/widgets.json',
+    suggest: 'data/tangram-api.json',
+    widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
     // sandbox: true,
     errors: true,
@@ -21450,7 +21450,7 @@ var SuggestManager = (function () {
 
         //  Load data file
         (0, _coreCommonJs.httpGet)(configFile, function (err, res) {
-            var suggestionsData = JSON.parse(res)['suggest'];
+            var suggestionsData = JSON.parse(res)['keys'];
 
             // Initialize tokens
             var _iteratorNormalCompletion = true;
@@ -21481,47 +21481,78 @@ var SuggestManager = (function () {
     }
 
     _createClass(SuggestManager, [{
-        key: 'getSuggestions',
-        value: function getSuggestions(cursor) {
+        key: 'hint',
+        value: function hint(editor, options) {
+            var cursor = editor.getCursor();
             var nLine = cursor.line;
+
             var list = [];
+            var start = cursor.ch;
+            var end = cursor.ch + 1;
 
             // What's the main key of the line?
-            var keys = (0, _coreCodemirrorYamlTangramJs.getKeyPairs)(_TangramPlayJs2['default'].editor, nLine);
-            if (keys) {
-                var key = keys[0];
+            var keyPairs = (0, _coreCodemirrorYamlTangramJs.getKeyPairs)(_TangramPlayJs2['default'].editor, nLine);
+            if (keyPairs) {
+                var keyPair = keyPairs[0];
 
-                console.log('GetSuggestion for key', keys);
-                if (key && key.value === '') {
-                    var _iteratorNormalCompletion2 = true;
-                    var _didIteratorError2 = false;
-                    var _iteratorError2 = undefined;
+                if (keyPair) {
+                    if (keyPair.key === '') {
+                        // Suggest keyPair
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
 
-                    try {
-                        for (var _iterator2 = this.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                            var datum = _step2.value;
-
-                            if (datum.check(key)) {
-                                list.push.apply(list, datum.getList(key));
-                            }
-                        }
-                    } catch (err) {
-                        _didIteratorError2 = true;
-                        _iteratorError2 = err;
-                    } finally {
                         try {
-                            if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-                                _iterator2['return']();
+                            for (var _iterator2 = this.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var datum = _step2.value;
+
+                                if (datum.check(keyPair)) {
+                                    list.push.apply(list, datum.getList(keyPair));
+                                }
                             }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
                         } finally {
-                            if (_didIteratorError2) {
-                                throw _iteratorError2;
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+                                    _iterator2['return']();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
                             }
                         }
+
+                        var string = (0, _coreCodemirrorToolsJs.getText)(editor, nLine);
+                        var ind = (0, _coreCodemirrorToolsJs.getLineInd)(editor, nLine);
+                        if (string !== '') {
+                            var matchedList = [];
+                            var match = RegExp('^' + string + '.*');
+                            for (var i = 0; i < list.length; i++) {
+                                if (match.test(list[i])) {
+                                    matchedList.push(list[i] + ':');
+                                }
+                            }
+                            list = matchedList;
+                            start -= string.length;
+                        } else {
+                            for (var i = 0; i < list.length; i++) {
+                                list[i] += ':';
+                            }
+                        }
+                    } else {
+                        console.log("Suggest Value");
                     }
                 }
             }
-            return list;
+
+            return {
+                list: list,
+                from: _codemirror2['default'].Pos(nLine, start),
+                to: _codemirror2['default'].Pos(nLine, end)
+            };
         }
     }]);
 
@@ -21544,6 +21575,11 @@ var KeySuggestion = (function () {
         }
 
         this.checkPatern = datum[this.checkAgainst];
+
+        if (datum.keyLevel) {
+            this.keyLevel = datum.keyLevel;
+        }
+
         if (datum.options) {
             this.options = datum.options;
         }
@@ -21557,7 +21593,11 @@ var KeySuggestion = (function () {
         key: 'check',
         value: function check(keyPair) {
             if (keyPair && this.checkAgainst) {
-                return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]);
+                var rightLevel = true;
+                if (this.keyLevel) {
+                    rightLevel = (0, _coreCodemirrorToolsJs.getLineInd)(_TangramPlayJs2['default'].editor, keyPair.pos.line) === this.keyLevel;
+                }
+                return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]) && rightLevel;
             } else {
                 return false;
             }
@@ -21695,7 +21735,7 @@ var WidgetsManager = (function () {
 
         // Load data file
         (0, _coreCommonJs.httpGet)(configFile, function (err, res) {
-            var widgetsData = JSON.parse(res)['widgets'];
+            var widgetsData = JSON.parse(res)['values'];
 
             // Initialize tokens
             var _iteratorNormalCompletion = true;
@@ -24941,18 +24981,11 @@ var _codemirror = require('codemirror');
 var _codemirror2 = _interopRequireDefault(_codemirror);
 
 _codemirror2['default'].registerHelper('hint', 'yaml', function (editor, options) {
-    var cur = editor.getCursor();
-    var token = editor.getTokenAt(cur);
-    var list = [];
-
     if (_TangramPlayJs2['default'].addons.suggestManager) {
-        list = _TangramPlayJs2['default'].addons.suggestManager.getSuggestions(cur);
+        return _TangramPlayJs2['default'].addons.suggestManager.hint(editor, options);
+    } else {
+        return {};
     }
-
-    return { list: list,
-        from: _codemirror2['default'].Pos(cur.line, token.start + 1),
-        to: _codemirror2['default'].Pos(cur.line, token.end + 1)
-    };
 });
 
 },{"../../TangramPlay.js":23,"codemirror":14}],53:[function(require,module,exports){
@@ -24968,6 +25001,7 @@ exports.isStrEmpty = isStrEmpty;
 exports.isEmpty = isEmpty;
 exports.isStrCommented = isStrCommented;
 exports.isCommented = isCommented;
+exports.getText = getText;
 exports.getValue = getValue;
 exports.jumpToLine = jumpToLine;
 exports.jumpToLineAt = jumpToLineAt;
@@ -25023,6 +25057,11 @@ function isStrCommented(str) {
 
 function isCommented(cm, nLine) {
     return isStrCommented(cm.lineInfo(nLine).text);
+}
+
+function getText(cm, nLine) {
+    var value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);
+    return value ? value[1] : '';
 }
 
 //  Get value of a key pair

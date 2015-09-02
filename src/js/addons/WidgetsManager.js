@@ -32,7 +32,7 @@ export default class WidgetsManager {
 
         // Load data file
         httpGet(configFile, (err, res) => {
-            let widgetsData = JSON.parse(res)['widgets'];
+            let widgetsData = JSON.parse(res)['values'];
 
             // Initialize tokens
             for (let datum of widgetsData) {
