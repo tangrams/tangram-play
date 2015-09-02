@@ -21,7 +21,7 @@ gulp.task('css', function () {
     var options = {
         browsers: ['last 2 versions', 'IE >= 11'],
         compress: {
-            comments: { removeAll: true },
+            discardComments: { removeAll: true },
             zindex: false
         },
         url: false, // TODO: Figure this out

@@ -14,7 +14,7 @@
     "disallowNewlineBeforeBlockStatements": true,
     "disallowPaddingNewlinesInBlocks": true,
     "disallowQuotedKeysInObjects": true,
-    "disallowSpaceAfterObjectKeys": true,
+    "disallowSpaceAfterObjectKeys": false,
     "disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
     "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
     "disallowSpacesInCallExpression": true,
