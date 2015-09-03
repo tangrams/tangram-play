@@ -7,7 +7,6 @@ import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram.js';
 export default class DropDownMenu extends Widget {
     createEl () {
         let el = document.createElement('select');
-
         el.className = 'tp-widget tp-widget-dropdown';
 
         // Add empty option

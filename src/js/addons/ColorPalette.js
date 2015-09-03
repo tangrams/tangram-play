@@ -38,7 +38,7 @@ export default class ColorPalette {
         this.colors = {};
         let widgets = TangramPlay.addons.widgetsManager.active;
         for (let i = 0; i < widgets.length; i++) {
-            if (widgets[i].definition.type === 'colorpicker') {
+            if (widgets[i].definition.type === 'color') {
                 let color = widgets[i].el.style.backgroundColor;
                 if (this.colors[color] === undefined) {
                     this.colors[color] = new Color(color);

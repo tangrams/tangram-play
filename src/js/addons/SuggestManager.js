@@ -32,6 +32,44 @@ export default class SuggestManager {
                 this.valueSuggestions.push(new Suggestion(datum));
             }
         });
+
+        // Trigger hint after each time the style is uploaded
+        TangramPlay.on('style_updated', (args) => {
+            if (TangramPlay.editor.showHint) {
+                TangramPlay.editor.showHint({
+                    completeSingle: false,
+                    customKeys: {
+                        Tab: function(cm, handle) {
+                            cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
+                        },
+                        Up: function(cm, handle) {
+                            handle.moveFocus(-1);
+                        },
+                        Down: function(cm, handle) {
+                            handle.moveFocus(1);
+                        },
+                        PageUp: function(cm, handle) {
+                            handle.moveFocus(-handle.menuSize() + 1, true);
+                        },
+                        PageDown: function(cm, handle) {
+                            handle.moveFocus(handle.menuSize() - 1, true);
+                        },
+                        Home: function(cm, handle) {
+                            handle.setFocus(0);
+                        },
+                        End: function(cm, handle) {
+                            handle.setFocus(handle.length - 1);
+                        },
+                        Enter: function(cm, handle) {
+                            handle.pick();
+                        },
+                        Esc: function(cm, handle) {
+                            handle.close();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     hint(editor, options) {

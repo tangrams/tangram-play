@@ -1,6 +1,11 @@
 {
     "keys" : [
         {
+            "address": "^/$",
+            "level": 0,
+            "options": ["cameras","lights", "styles", "sources","layers"]
+        },
+        {
             "address": "^/cameras/(\\w|\\_|\\-)+$",
             "level": 2,
             "options": ["type","vanishing_point", "focal_length", "active"]
@@ -87,110 +92,110 @@
 
     "values" : [
 
-        {   "key": "visible", "type" : "togglebutton" },
-        {   "key": "join", "type" : "dropdownmenu", "options": ["miter","round", "bevel"] },
-        {   "key": "cap", "type" : "dropdownmenu", "options": ["butt","round", "round"] },
+        {   "key": "visible", "type" : "boolean" },
+        {   "key": "join", "type" : "string", "options": ["miter","round", "bevel"] },
+        {   "key": "cap", "type" : "string", "options": ["butt","round", "round"] },
 
-        {   "key" : "^color$",    "type" : "colorpicker" },
-        {   "key" : "^fill$",     "type" : "colorpicker" },
-        {   "key": "^ambient$",   "type" : "colorpicker" },
-        {   "key": "^diffuse$",   "type" : "colorpicker" },
-        {   "key": "^specular$",  "type" : "colorpicker" },
-        {   "key": "^emission$",  "type" : "colorpicker" },
+        {   "key" : "^color$",    "type" : "color" },
+        {   "key" : "^fill$",     "type" : "color" },
+        {   "key": "^ambient$",   "type" : "color" },
+        {   "key": "^diffuse$",   "type" : "color" },
+        {   "key": "^specular$",  "type" : "color" },
+        {   "key": "^emission$",  "type" : "color" },
 
         {
             "address": "/ambient/mapping$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/diffuse/mapping$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/specular/mapping$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/emission/mapping$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["uv","spheremap", "planar", "triplanar"]
         },
         {
             "address": "/normal/mapping$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["uv", "planar", "triplanar" ]
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/type$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["ambient","directional", "point", "spotlight"]
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/origin$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["camera", "world","ground"]
         },
 
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/type$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["flat","perspective", "isometric"]
         },
 
         {
             "address": "^/sources/(\\w|\\_|\\-)+/type$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["GeoJSON","TopoJSON", "MVT"]
         },
 
         {
             "address": "^/styles/(\\w|\\_|\\-)+/base",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["points", "lines", "polygons", "text"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/blend$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": ["add","multiply", "overlay"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/mix$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "source": "/styles"
         },
         {   
             "address": "^/styles/(\\w|\\_|\\-)+/texcoords$", 
-            "type" : "togglebutton" 
+            "type" : "boolean" 
         },
         {   
             "address": "^/styles/(\\w|\\_|\\-)+/lighting$",  
-            "type" : "togglebutton" 
+            "type" : "boolean" 
         },
         {   
             "address": "^/styles/(\\w|\\_|\\-)+/animated$",  
-            "type" : "togglebutton" 
+            "type" : "boolean" 
         },
 
         {   
             "address": "^/layers/(\\w|\\_|\\-|\\/)+/extrude$",   
-            "type" : "togglebutton" 
+            "type" : "boolean" 
         },
         { 
             "address": "^/layers/(\\w|\\_|\\-|\\/)+/tile_edges$",
-            "type" : "togglebutton" 
+            "type" : "boolean" 
         },
         {
             "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/style$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "source": "/styles",
             "options": ["points", "lines", "polygons", "text"]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
-            "type" : "dropdownmenu",
+            "type" : "string",
             "options": [""],
             "source": "/sources"
         }

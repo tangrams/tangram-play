@@ -36,13 +36,13 @@ export default class WidgetType {
         let widgetObj;
 
         switch (this.type) {
-            case 'colorpicker':
+            case 'color':
                 widgetObj = new ColorPicker(this, keyPair);
                 break;
-            case 'togglebutton':
+            case 'boolean':
                 widgetObj = new ToggleButton(this, keyPair);
                 break;
-            case 'dropdownmenu':
+            case 'string':
                 widgetObj = new DropDownMenu(this, keyPair);
                 break;
             default:
