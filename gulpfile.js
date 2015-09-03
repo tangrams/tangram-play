@@ -21,7 +21,7 @@ gulp.task('css', function () {
     var options = {
         browsers: ['last 2 versions', 'IE >= 11'],
         compress: {
-            comments: { removeAll: true },
+            discardComments: { removeAll: true },
             zindex: false
         },
         url: false, // TODO: Figure this out
@@ -62,11 +62,11 @@ gulp.task('js', function () {
     return bundle.bundle()
         .pipe(source('tangram-play.js'))
         .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
+        // .pipe(sourcemaps.init({ loadMaps: true }))
             // Add transformation tasks to the pipeline here.
             // .pipe(uglify())
-            .on('error', gutil.log)
-        .pipe(sourcemaps.write('.'))
+            // .on('error', gutil.log)
+        // .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./build/js'));
 });
 
