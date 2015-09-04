@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "postinstall": "ln -s -f ../src/js node_modules/app",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "jshint *.js src/ || true; jscs *.js src/ || true"
   },

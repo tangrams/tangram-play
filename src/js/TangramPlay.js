@@ -1,20 +1,20 @@
 // Core elements
-import Map from './core/Map.js';
-import {initEditor} from './core/editor.js';
+import Map from 'app/core/Map';
+import {initEditor} from 'app/core/editor';
 
 // Addons
-import UI from './addons/UI.js';
-import MapLoading from './addons/ui/MapLoading.js';
-import WidgetsManager from './addons/WidgetsManager.js';
-import SuggestManager from './addons/SuggestManager.js';
-import GlslSandbox from './addons/GlslSandbox.js';
-import ErrorsManager from './addons/ErrorsManager.js';
-import ColorPalette from './addons/ColorPalette.js';
+import UI from 'app/addons/UI';
+import MapLoading from 'app/addons/ui/MapLoading';
+import WidgetsManager from 'app/addons/WidgetsManager';
+import SuggestManager from 'app/addons/SuggestManager';
+import GlslSandbox from 'app/addons/GlslSandbox';
+import ErrorsManager from 'app/addons/ErrorsManager';
+import ColorPalette from 'app/addons/ColorPalette';
 
 // Import Utils
-import { httpGet, StopWatch, subscribeMixin } from './core/common.js';
-import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from './core/codemirror/tools.js';
-import { getKeyPairs, getValueRange, getAddressSceneContent } from './core/codemirror/yaml-tangram.js';
+import { httpGet, StopWatch, subscribeMixin } from 'app/core/common';
+import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from 'app/core/codemirror/tools';
+import { getKeyPairs, getValueRange, getAddressSceneContent } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
 

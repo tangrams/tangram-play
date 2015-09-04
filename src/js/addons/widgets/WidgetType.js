@@ -1,6 +1,6 @@
-import ColorPicker from './ColorPicker.js';
-import ToggleButton from './ToggleButton.js';
-import DropDownMenu from './DropDownMenu.js';
+import ColorPicker from 'app/addons/widgets/ColorPicker';
+import ToggleButton from 'app/addons/widgets/ToggleButton';
+import DropDownMenu from 'app/addons/widgets/DropDownMenu';
 
 export default class WidgetType {
     constructor (datum) {

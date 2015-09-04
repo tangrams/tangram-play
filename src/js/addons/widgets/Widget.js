@@ -9,9 +9,9 @@
  */
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import { getPosition } from '../../core/common.js';
-import { getValueRange } from '../../core/codemirror/yaml-tangram.js';
+import TangramPlay from 'app/TangramPlay';
+import { getPosition } from 'app/core/common';
+import { getValueRange } from 'app/core/codemirror/yaml-tangram';
 
 export default class Widget {
     constructor (def, key) {

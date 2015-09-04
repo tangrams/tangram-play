@@ -1,9 +1,9 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import { saveAs } from '../../vendor/FileSaver.min.js';
-import { noop } from './Helpers.js';
-import Modal from './Modal.js';
+import TangramPlay from 'app/TangramPlay';
+import { saveAs } from 'app/vendor/FileSaver.min.js';
+import { noop } from 'app/addons/ui/Helpers';
+import Modal from 'app/addons/ui/Modal';
 
 const EditorIO = {
     open (file) {

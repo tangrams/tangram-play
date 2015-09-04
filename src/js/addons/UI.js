@@ -1,9 +1,9 @@
 'use strict';
 
-import FileDrop from './ui/FileDrop.js';
-import Menu from './ui/Menu.js';
-import Geolocator from './ui/Geolocator.js';
-import Divider from './ui/Divider.js';
+import FileDrop from 'app/addons/ui/FileDrop';
+import Menu from 'app/addons/ui/Menu';
+import Geolocator from 'app/addons/ui/Geolocator';
+import Divider from 'app/addons/ui/Divider';
 
 export default class UI {
     constructor () {

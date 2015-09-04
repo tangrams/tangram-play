@@ -1,7 +1,7 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import LocalStorage from '../LocalStorage.js';
+import TangramPlay from 'app/TangramPlay';
+import LocalStorage from 'app/addons/LocalStorage';
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/Tweenlite.js';

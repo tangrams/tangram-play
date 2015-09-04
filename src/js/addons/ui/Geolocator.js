@@ -6,7 +6,7 @@
 // ----------------------------------------------------------------------------
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
 const GEOLOCATOR_TITLE_TEXT = 'Get current location';
 
