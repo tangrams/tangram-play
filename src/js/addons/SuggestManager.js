@@ -35,7 +35,19 @@ export default class SuggestManager {
 
         // Trigger hint after each time the style is uploaded
         TangramPlay.on('style_updated', (args) => {
-            if (TangramPlay.editor.showHint) {
+            let bOpen = true;
+
+            let line = TangramPlay.editor.getCursor().line;
+            if (TangramPlay.editor.getLineHandle(line).stateAfter &&
+                TangramPlay.editor.getLineHandle(line).stateAfter.localMode &&
+                TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType) {
+                if (TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === "glsl" ||
+                    TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === "javascript") {
+                    bOpen = false;
+                }
+            }
+
+            if (bOpen && TangramPlay.editor.showHint) {
                 TangramPlay.editor.showHint({
                     completeSingle: false,
                     customKeys: {

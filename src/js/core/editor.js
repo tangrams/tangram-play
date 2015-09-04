@@ -15,6 +15,7 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/indent-fold';
 import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/addon/display/rulers';
 import 'codemirror/addon/display/panel';
 import 'codemirror/keymap/sublime';
