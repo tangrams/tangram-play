@@ -1,7 +1,7 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import EditorIO from './EditorIO.js';
+import TangramPlay from 'app/TangramPlay';
+import EditorIO from 'app/addons/ui/EditorIO';
 
 export default class FileDrop {
     constructor () {

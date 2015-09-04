@@ -1,9 +1,9 @@
-import TangramPlay from '../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
-import { httpGet } from '../core/common.js';
-import { getText, getLineInd } from '../core/codemirror/tools.js';
-import { getAddressSceneContent, getKeyPairs, getAddressForLevel } from '../core/codemirror/yaml-tangram.js';
+import { httpGet } from 'app/core/common';
+import { getText, getLineInd } from 'app/core/codemirror/tools';
+import { getAddressSceneContent, getKeyPairs, getAddressForLevel } from 'app/core/codemirror/yaml-tangram';
 
 // Import CodeMirror
 import CodeMirror from 'codemirror';

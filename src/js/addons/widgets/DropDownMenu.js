@@ -1,8 +1,8 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import Widget from './Widget.js';
-import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram.js';
+import TangramPlay from 'app/TangramPlay';
+import Widget from 'app/addons/widgets/Widget';
+import { getAddressSceneContent } from 'app/core/codemirror/yaml-tangram';
 
 export default class DropDownMenu extends Widget {
     createEl () {

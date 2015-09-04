@@ -1,4 +1,4 @@
-import { isNumber } from '../common.js';
+import { isNumber } from 'app/core/common';
 
 //  GET Functions
 //  ===============================================================================

@@ -1,11 +1,11 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import { noop } from './Helpers.js';
-import EditorIO from './EditorIO.js';
-import FileOpen from './FileOpen.js';
-import ExamplesModal from './Modal.Examples.js';
-import Tooltip from './Tooltip.js';
+import TangramPlay from 'app/TangramPlay';
+import { noop } from 'app/addons/ui/Helpers';
+import EditorIO from 'app/addons/ui/EditorIO';
+import FileOpen from 'app/addons/ui/FileOpen';
+import ExamplesModal from 'app/addons/ui/Modal.Examples';
+import Tooltip from 'app/addons/ui/Tooltip';
 
 export default class Menu {
     constructor () {

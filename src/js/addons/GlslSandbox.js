@@ -1,10 +1,10 @@
-import TangramPlay from '../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
-import { debounce, getPosition } from '../core/common.js';
-import { isEmpty } from '../core/codemirror/tools.js';
-import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from '../core/codemirror/yaml-tangram.js';
+import { debounce, getPosition } from 'app/core/common';
+import { isEmpty } from 'app/core/codemirror/tools';
+import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from 'app/core/codemirror/yaml-tangram';
 
-import ColorPickerModal from './widgets/ColorPickerModal.js';
+import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
 
 /* global GlslCanvas */
 

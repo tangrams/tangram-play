@@ -1,8 +1,8 @@
 'use strict';
 
-import Widget from './Widget.js';
-import ColorPickerModal from './ColorPickerModal.js';
-import { toCSS } from '../../core/common.js';
+import Widget from 'app/addons/widgets/Widget';
+import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
+import { toCSS } from 'app/core/common';
 
 export default class ColorPicker extends Widget {
     // There must be a constructor call here because

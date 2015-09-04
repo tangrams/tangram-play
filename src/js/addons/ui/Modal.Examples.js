@@ -1,9 +1,9 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import Modal from './Modal.js';
-import EditorIO from './EditorIO.js';
-import { httpGet } from '../../core/common.js';
+import TangramPlay from 'app/TangramPlay';
+import Modal from 'app/addons/ui/Modal';
+import EditorIO from 'app/addons/ui/EditorIO';
+import { httpGet } from 'app/core/common';
 
 let examplesEl;
 

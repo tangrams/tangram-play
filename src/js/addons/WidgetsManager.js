@@ -1,13 +1,13 @@
 'use strict';
 
-import TangramPlay from '../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
-import { httpGet, debounce, subscribeMixin } from '../core/common.js';
-import { isStrEmpty } from '../core/codemirror/tools.js';
+import { httpGet, debounce, subscribeMixin } from 'app/core/common';
+import { isStrEmpty } from 'app/core/codemirror/tools';
 
 // Load addons modules
-import WidgetType from './widgets/WidgetType.js';
+import WidgetType from 'app/addons/widgets/WidgetType';
 
 var stopAction = debounce(function(wm) {
     wm.update();

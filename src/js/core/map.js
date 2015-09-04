@@ -1,10 +1,10 @@
 'use strict';
 
-import TangramPlay from '../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
-import LocalStorage from '../addons/LocalStorage.js';
-import { saveAs } from '../vendor/FileSaver.min.js';
-import MapLoading from '../addons/ui/MapLoading.js';
+import LocalStorage from 'app/addons/LocalStorage';
+import { saveAs } from 'app/vendor/FileSaver.min.js';
+import MapLoading from 'app/addons/ui/MapLoading';
 
 //import L from 'leaflet';
 import 'leaflet-hash';

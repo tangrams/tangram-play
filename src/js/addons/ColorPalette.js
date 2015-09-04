@@ -1,11 +1,11 @@
 'use strict';
 
-import TangramPlay from '../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
-import ColorPickerModal from './widgets/ColorPickerModal.js';
-import { toCSS } from '../core/common.js';
-import { getValueRange } from '../core/codemirror/yaml-tangram.js';
-import { jumpToLine } from '../core/codemirror/tools.js';
+import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
+import { toCSS } from 'app/core/common';
+import { getValueRange } from 'app/core/codemirror/yaml-tangram';
+import { jumpToLine } from 'app/core/codemirror/tools';
 
 export default class ColorPalette {
     constructor() {

@@ -1,6 +1,6 @@
 'use strict';
 
-import TangramPlay from '../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
 export default class ErrorsManager {
     constructor() {

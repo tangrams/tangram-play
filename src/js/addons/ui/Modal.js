@@ -1,8 +1,8 @@
 'use strict';
 
-import TangramPlay from '../../TangramPlay.js';
-import Shield from './Shield.js';
-import { noop } from './Helpers.js';
+import TangramPlay from 'app/TangramPlay';
+import Shield from 'app/addons/ui/Shield';
+import { noop } from 'app/addons/ui/Helpers';
 
 export default class Modal {
     constructor (message = 'Dude.', callback = noop, abort = noop) {

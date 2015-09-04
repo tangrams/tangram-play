@@ -1,5 +1,5 @@
 // Import TangramPlay
-import TangramPlay from '../TangramPlay.js';
+import TangramPlay from 'app/TangramPlay';
 
 // Import CodeMirror
 import CodeMirror from 'codemirror';
@@ -22,12 +22,12 @@ import 'codemirror/keymap/sublime';
 import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
-import { getLineInd } from './codemirror/tools.js';
-import './codemirror/comment-tangram.js';
-import './codemirror/hint-tangram.js';
+import { getLineInd } from 'app/core/codemirror/tools';
+import 'app/core/codemirror/comment-tangram';
+import 'app/core/codemirror/hint-tangram';
 
 // Import Utils
-import { debounce } from './common.js';
+import { debounce } from 'app/core/common';
 
 //  Main CM functions
 //  ===============================================================================
