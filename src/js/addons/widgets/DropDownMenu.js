@@ -37,9 +37,10 @@ export default class DropDownMenu extends Widget {
 
         // Add dinamic options from source
         if (this.definition.source) {
-            let obj = getAddressSceneContent(TangramPlay.scene, this.definition.source);
+            let obj = getAddressSceneContent(TangramPlay.map.scene, this.definition.source);
             let keys = (obj) ? Object.keys(obj) : {};
 
+            console.log(this.definition.source, obj);
             for (let j = 0; j < keys.length; j++) {
                 let newOption = document.createElement('option');
 
