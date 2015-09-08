@@ -92,7 +92,7 @@
 
     "values" : [
 
-        {   "key": "visible", "type" : "boolean" },
+        {   "key": "visible", "default" : "true", "type" : "boolean" },
         {   "key": "join", "type" : "string", "options": ["miter","round", "bevel"] },
         {   "key": "cap", "type" : "string", "options": ["butt","round", "round"] },
 
@@ -167,24 +167,29 @@
             "source": "/styles"
         },
         {   
-            "address": "^/styles/(\\w|\\_|\\-)+/texcoords$", 
+            "address": "^/styles/(\\w|\\_|\\-)+/texcoords$",
+            "default" : "true",
             "type" : "boolean" 
         },
         {   
-            "address": "^/styles/(\\w|\\_|\\-)+/lighting$",  
+            "address": "^/styles/(\\w|\\_|\\-)+/lighting$",
+            "default" : "true",
             "type" : "boolean" 
         },
         {   
-            "address": "^/styles/(\\w|\\_|\\-)+/animated$",  
+            "address": "^/styles/(\\w|\\_|\\-)+/animated$",
+            "default" : "true",
             "type" : "boolean" 
         },
 
         {   
-            "address": "^/layers/(\\w|\\_|\\-|\\/)+/extrude$",   
+            "address": "^/layers/(\\w|\\_|\\-|\\/)+/extrude$",
+            "default" : "true",
             "type" : "boolean" 
         },
         { 
             "address": "^/layers/(\\w|\\_|\\-|\\/)+/tile_edges$",
+            "default" : "true",
             "type" : "boolean" 
         },
         {

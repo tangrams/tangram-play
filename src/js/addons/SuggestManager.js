@@ -51,31 +51,31 @@ export default class SuggestManager {
                 TangramPlay.editor.showHint({
                     completeSingle: false,
                     customKeys: {
-                        Tab: function(cm, handle) {
+                        Tab: (cm, handle) => {
                             cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
                         },
-                        Up: function(cm, handle) {
+                        Up: (cm, handle) => {
                             handle.moveFocus(-1);
                         },
-                        Down: function(cm, handle) {
+                        Down: (cm, handle) => {
                             handle.moveFocus(1);
                         },
-                        PageUp: function(cm, handle) {
+                        PageUp: (cm, handle) => {
                             handle.moveFocus(-handle.menuSize() + 1, true);
                         },
-                        PageDown: function(cm, handle) {
+                        PageDown: (cm, handle) => {
                             handle.moveFocus(handle.menuSize() - 1, true);
                         },
-                        Home: function(cm, handle) {
+                        Home: (cm, handle) => {
                             handle.setFocus(0);
                         },
-                        End: function(cm, handle) {
+                        End: (cm, handle) => {
                             handle.setFocus(handle.length - 1);
                         },
-                        Enter: function(cm, handle) {
+                        Enter: (cm, handle) => {
                             handle.pick();
                         },
-                        Esc: function(cm, handle) {
+                        Esc: (cm, handle) => {
                             handle.close();
                         }
                     }
@@ -91,6 +91,8 @@ export default class SuggestManager {
         let list = [];
         let start = cursor.ch;
         let end = cursor.ch + 1;
+        let wasKey = false; 
+        let address = '/';
 
         // What's the main key of the line?
         let keyPairs = getKeyPairs(editor, nLine);
@@ -101,8 +103,8 @@ export default class SuggestManager {
                 if (keyPair.key === '') {
                     // Fallback the address to match
                     let actualLevel = getLineInd(editor, nLine);
-                    let newAddress = getAddressForLevel(keyPair.address, actualLevel);
-                    keyPair.address = newAddress;
+                    address = getAddressForLevel(keyPair.address, actualLevel);
+                    keyPair.address = address;
                     // Suggest keyPair
                     for (let datum of this.keySuggestions) {
                         if (datum.check(keyPair)) {
@@ -116,17 +118,14 @@ export default class SuggestManager {
                         let match = RegExp('^' + string + '.*');
                         for (let i = 0; i < list.length; i++) {
                             if (match.test(list[i])) {
-                                matchedList.push(list[i] + ': ');
+                                matchedList.push(list[i]);
                             }
                         }
                         list = matchedList;
                         start -= string.length;
                     }
-                    else {
-                        for (let i = 0; i < list.length; i++) {
-                            list[i] += ': ';
-                        }
-                    }
+
+                    wasKey = true;
                 }
                 // else if (keyPair.value === '') {
                 else {
@@ -142,7 +141,7 @@ export default class SuggestManager {
                         let matchedList = [];
                         let match = RegExp('^' + string + '.*');
                         for (let i = 0; i < list.length; i++) {
-                            if (match.test(list[i])) {
+                            if (list[i] !== string && match.test(list[i])) {
                                 matchedList.push(list[i]);
                             }
                         }
@@ -153,11 +152,42 @@ export default class SuggestManager {
             }
         }
 
-        return {
+        let result = {
                 list: list,
                 from: CodeMirror.Pos(nLine, start),
                 to: CodeMirror.Pos(nLine, end)
             };
+
+        CodeMirror.on(result, 'pick', (completion) => { 
+            if (wasKey) {
+                console.log(address+'/'+completion);
+                completion += this.getDefault(address, completion);
+                editor.replaceRange(': ',
+                                    {line: result.to.line, ch: result.to.ch + completion.length},
+                                    {line: result.to.line, ch: result.to.ch + completion.length + 1},
+                                    'complete');
+            }
+        });
+
+        return result;
+    }
+
+    getDefault(address, completion) {
+        let key = {
+            address: address+'/'+completion,
+            key: completion,
+            value: ''
+        };
+        console.log(key);
+        let defaultValue = '';
+        for (let datum of this.valueSuggestions) {
+            if (datum.check(key,true)) {
+                defaultValue = datum.getDefault();
+                break;
+            }
+        }
+        console.log(defaultValue);
+        return defaultValue;
     }
 }
 
@@ -187,12 +217,16 @@ class Suggestion {
         if (datum.source) {
             this.source = datum.source;
         }
+
+        if (datum.defaultValue) {
+            this.defaultValue = datum.defaultValue;
+        }
     }
 
-    check(keyPair) {
+    check(keyPair,forceLevel) {
         if (keyPair && this.checkAgainst) {
             let rightLevel = true;
-            if (this.level) {
+            if (!forceLevel && this.level) {
                 rightLevel = getLineInd(TangramPlay.editor, keyPair.pos.line) === this.level;
             }
             return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]) && rightLevel;
@@ -200,6 +234,10 @@ class Suggestion {
         else {
             return false;
         }
+    }
+
+    getDefault() {
+        return this.defaultValue || '';
     }
 
     getList(keyPair) {
