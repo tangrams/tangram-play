@@ -41,8 +41,8 @@ export default class SuggestManager {
             if (TangramPlay.editor.getLineHandle(line).stateAfter &&
                 TangramPlay.editor.getLineHandle(line).stateAfter.localMode &&
                 TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType) {
-                if (TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === "glsl" ||
-                    TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === "javascript") {
+                if (TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === 'glsl' ||
+                    TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === 'javascript') {
                     bOpen = false;
                 }
             }

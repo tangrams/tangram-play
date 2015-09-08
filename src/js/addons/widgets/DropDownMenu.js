@@ -10,17 +10,15 @@ export default class DropDownMenu extends Widget {
         el.className = 'tp-widget tp-widget-dropdown';
 
         // Add empty option
-        {
-            let newOption = document.createElement('option');
+        let newOption = document.createElement('option');
 
-            if (this.key.value === '') {
-                newOption.selected = true;
-            }
-
-            newOption.value = '';
-            newOption.textContent = '';
-            el.appendChild(newOption);
+        if (this.key.value === '') {
+            newOption.selected = true;
         }
+
+        newOption.value = '';
+        newOption.textContent = '';
+        el.appendChild(newOption);
 
         // Add static options
         for (let value of this.definition.options) {
@@ -40,7 +38,6 @@ export default class DropDownMenu extends Widget {
             let obj = getAddressSceneContent(TangramPlay.map.scene, this.definition.source);
             let keys = (obj) ? Object.keys(obj) : {};
 
-            console.log(this.definition.source, obj);
             for (let j = 0; j < keys.length; j++) {
                 let newOption = document.createElement('option');
 
