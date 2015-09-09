@@ -36,7 +36,9 @@ export default class WidgetsManager {
 
             // Initialize tokens
             for (let datum of widgetsData) {
-                this.data.push(new WidgetType(datum));
+                if (datum.type === "color" || datum.type === "boolean" || datum.type === "string") {
+                    this.data.push(new WidgetType(datum));
+                }
             }
 
             // Build all widgets

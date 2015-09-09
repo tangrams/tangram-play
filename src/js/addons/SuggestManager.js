@@ -127,7 +127,6 @@ export default class SuggestManager {
 
                     wasKey = true;
                 }
-                // else if (keyPair.value === '') {
                 else {
                     // Check for widgets
                     for (let datum of this.valueSuggestions) {
@@ -161,8 +160,9 @@ export default class SuggestManager {
         CodeMirror.on(result, 'pick', (completion) => { 
             if (wasKey) {
                 console.log(address+'/'+completion);
-                completion += this.getDefault(address, completion);
-                editor.replaceRange(': ',
+                let defaultValue = this.getDefault(address, completion);
+                // completion += defaultValue;
+                editor.replaceRange(': '+defaultValue,
                                     {line: result.to.line, ch: result.to.ch + completion.length},
                                     {line: result.to.line, ch: result.to.ch + completion.length + 1},
                                     'complete');
@@ -178,7 +178,6 @@ export default class SuggestManager {
             key: completion,
             value: ''
         };
-        console.log(key);
         let defaultValue = '';
         for (let datum of this.valueSuggestions) {
             if (datum.check(key,true)) {
@@ -186,7 +185,6 @@ export default class SuggestManager {
                 break;
             }
         }
-        console.log(defaultValue);
         return defaultValue;
     }
 }
@@ -228,6 +226,7 @@ class Suggestion {
             let rightLevel = true;
             if (!forceLevel && this.level) {
                 rightLevel = getLineInd(TangramPlay.editor, keyPair.pos.line) === this.level;
+
             }
             return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]) && rightLevel;
         }
