@@ -296,7 +296,7 @@
         {
             "key": "cap",
             "type": "string",
-            "options": ["butt","round", "round"] 
+            "options": ["butt","square", "round"] 
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
