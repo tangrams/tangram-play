@@ -19,5 +19,8 @@ export default class MapNavigation {
         this.el.querySelector('#zoom-out').addEventListener('click', e => {
             this.map.zoomOut(1, { animate: true });
         }, false);
+        this.el.querySelector('.tp-map-search-icon').addEventListener('click', e => {
+            this.el.querySelector('.tp-map-search-input').focus();
+        })
     }
 }
