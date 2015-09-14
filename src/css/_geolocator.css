@@ -1,28 +1,30 @@
-/* GEOLOCATOR, borrowed from Mapzen demo UI */
+/* GEOLOCATOR */
 
 .tp-geolocator {
-  position: absolute;
-  top: 73px;
-  right: 10px;
-  z-index: 1000;
+    position: absolute;
+    right: 6px;
+    top: 6px;
 }
 
+/* borrowing from map-nav button */
 .tp-geolocator-button {
-  position: relative;
-  background-color: white;
-  width: 26px;
-  height: 26px;
-  cursor: pointer;
-  text-align: center;
-  border-radius: 4px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-  pointer-events: auto;
-  overflow: hidden;
+    position: relative;
+    background-color: #3f3f3f;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.tp-geolocator-button:hover {
+    background-color: #444;
 }
 
 .tp-geolocator-button.tp-geolocator-active {
-  background-color: #eee;
-  color: #777;
+    background-color: #444;
+    color: #ddd;
 }
 
 .tp-geolocator-icon {
@@ -33,11 +35,11 @@
   background-size: 70%;
   background-position: center center;
   background-repeat: no-repeat;
-  background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2215.991%22%20viewBox%3D%220%200%2016%2015.991%22%3E%3Cpath%20fill%3D%22%23454545%22%20d%3D%22M5.962%2010.098l2.68%205.397%206.857-15-15%207.197%205.462%202.406zm.16-.583L1.934%207.672l11.498-5.52L6.12%209.514z%22%2F%3E%3C%2Fsvg%3E);
+  background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2215.991%22%20viewBox%3D%220%200%2016%2015.991%22%3E%3Cpath%20fill%3D%22%23e1e1e1%22%20d%3D%22M5.962%2010.098l2.68%205.397%206.857-15-15%207.197%205.462%202.406zm.16-.583L1.934%207.672l11.498-5.52L6.12%209.514z%22%2F%3E%3C%2Fsvg%3E);
 }
 
 .tp-geolocator-button:hover .tp-geolocator-icon {
-  background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2215.991%22%20viewBox%3D%220%200%2016%2015.991%22%3E%3Cpath%20fill%3D%22%23D4645C%22%20d%3D%22M5.962%2010.098l2.682%205.397%206.856-15L.5%207.69%205.962%2010.1zm.162-.584l-4.19-1.842L13.437%202.15%206.124%209.514z%22%2F%3E%3C%2Fsvg%3E);
+  background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2215.991%22%20viewBox%3D%220%200%2016%2015.991%22%3E%3Cpath%20fill%3D%22%23ffff00%22%20d%3D%22M5.962%2010.098l2.682%205.397%206.856-15L.5%207.69%205.962%2010.1zm.162-.584l-4.19-1.842L13.437%202.15%206.124%209.514z%22%2F%3E%3C%2Fsvg%3E);
 }
 
 .tp-geolocator-icon.tp-geolocator-active,

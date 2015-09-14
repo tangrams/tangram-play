@@ -62,7 +62,7 @@ export default class Divider {
     }
 
     reflow() {
-        let mapEl = document.getElementById('map');
+        let mapEl = document.getElementById('map-container');
         let contentEl = document.getElementById('content');
         let menuEl = document.querySelector('.tp-menu-container');
         let menuBottom = menuEl.getBoundingClientRect().bottom;

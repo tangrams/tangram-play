@@ -2,15 +2,15 @@
 
 import FileDrop from 'app/addons/ui/FileDrop';
 import Menu from 'app/addons/ui/Menu';
-import Geolocator from 'app/addons/ui/Geolocator';
 import Divider from 'app/addons/ui/Divider';
+import MapNavigation from 'app/addons/ui/MapNavigation';
 
 export default class UI {
     constructor () {
         // Set up UI components
         new FileDrop();
         new Menu();
-        new Geolocator();
         new Divider('divider');
+        new MapNavigation();
     }
 }

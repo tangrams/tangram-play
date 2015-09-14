@@ -1,18 +1,23 @@
 'use strict';
 
-const MapNavigation = {
-    el: document.getElementById('map-loading'),
-    show () {
-        this.el.classList.add('tp-map-loading-show');
-    },
-    // Hides are debounced in case several of these are called rapidly in post-update hooks
-    hide: debounce(() => {
-        // this.el does not work here ¯\_(ツ)_/¯
-        document.getElementById('map-loading').classList.remove('tp-map-loading-show');
-    }, 50),
-    size (width) {
-        this.el.style.width = width.toString() + 'px';
-    }
-};
+import Geolocator from 'app/addons/ui/Geolocator';
+import TangramPlay from 'app/TangramPlay';
 
-export default MapNavigation;
+export default class MapNavigation {
+    constructor () {
+        this.el = document.getElementById('map-nav');
+        this.map = TangramPlay.map.leaflet;
+        this.setupEventListeners();
+
+        new Geolocator();
+    }
+
+    setupEventListeners () {
+        this.el.querySelector('#zoom-in').addEventListener('click', e => {
+            this.map.zoomIn(1, { animate: true });
+        }, false);
+        this.el.querySelector('#zoom-out').addEventListener('click', e => {
+            this.map.zoomOut(1, { animate: true });
+        }, false);
+    }
+}

@@ -14,7 +14,7 @@
    some properties of .tp-menu-items to disappear */
 .tp-menu-bar h1 {
     display: inline-block;
-    margin: 0 30px 0 15px;
+    margin: 0 15px;
     font-size: 16px;
     font-weight: 300;
     line-height: 44px;

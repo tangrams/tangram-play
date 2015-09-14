@@ -113,9 +113,20 @@
         </div>
 
         <div class='tp-core-container'>
-            <div id='map' class='tp-map-container'></div>
-            <div class='tp-map-nav' id='map-nav'></div>
-            <div class='tp-map-loading' id='map-loading'></div>
+            <div class='tp-map-container' id='map-container'>
+                <div class='tp-map-view' id='map'></div>
+                <div class='tp-map-nav' id='map-nav'>
+                    <div class='tp-map-zoom'>
+                        <button class='tp-map-zoom-in' id='zoom-in' data-tooltip='Zoom in'>+</button>
+                        <button class='tp-map-zoom-out' id='zoom-out' data-tooltip='Zoom out'>-</button>
+                    </div>
+                    <div class='tp-map-search'>
+                        <div class='tp-map-search-icon'><i class='btb bt-search'></i></div>
+                        <input class='tp-map-search-input'>
+                    </div>
+                </div>
+                <div class='tp-map-loading' id='map-loading'></div>
+            </div>
             <div class='tp-divider' id='divider'><span class='tp-divider-affordance'></span></div>
             <div id='content'>
                 <div id='editor'></div>

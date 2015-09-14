@@ -23,7 +23,7 @@
     margin: 0;
     box-sizing: border-box;
     padding: 14px;
-    border-top: 1px solid rgba(255,255,255,0.2);
+    border-top: 1px solid rgba(255,255,255,0.15);
     font-size: 14px;
     line-height: 24px;
     cursor: pointer;

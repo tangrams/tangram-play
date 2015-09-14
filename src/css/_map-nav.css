@@ -2,11 +2,87 @@
 
 .tp-map-nav {
     position: absolute;
+    box-sizing: border-box;
+    padding: 6px;
     height: 40px;
     width: 100%;
-    background-color: #3d3d3d;
+    background-color: #222;
     top: 0;
     left: 0;
     transition: 80ms bottom ease-out;
     user-select: none;
+    z-index: 401; /* Leaflet map at 400 */
+}
+
+.tp-map-zoom {
+    /* Remove spacing between buttons */
+    font-size: 0;
+
+    button {
+        appearance: none;
+        border: 0;
+        border-radius: 2px;
+        box-sizing: border-box;
+        background-color: #3f3f3f;
+        color: #ddd;
+        height: 28px;
+        width: 28px;
+        font-size: 18px;
+        line-height: 24px; /* ??? */
+        cursor: pointer;
+        outline: none;
+    }
+
+    button:hover {
+        background-color: #444;
+        color: yellow;
+    }
+
+    .tp-map-zoom-in {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .tp-map-zoom-out {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: 1px solid #333;
+    }
+}
+
+.tp-map-search {
+    display: inline-block;
+    width: calc(100% - 104px);
+    height: 28px;
+    background-color: #3f3f3f;
+    border-radius: 2px;
+    position: absolute;
+    top: 6px;
+    left: 66px;
+}
+
+.tp-map-search-icon {
+    display: inline-block;
+    color: #e1e1e1;
+    line-height: 28px;
+    height: 28px;
+    width: 28px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.tp-map-search-input {
+    background-color: transparent;
+    appearance: none;
+    border: 0;
+    border-bottom: 1px dotted #606060;
+    outline: none;
+    width: calc(100% - 40px);
+    position: absolute;
+    right: 6px;
+    bottom: 3px;
+    color: white;
+    font-size: 14px;
+    font-family: var(--font-family);
+    font-weight: 200;
 }
