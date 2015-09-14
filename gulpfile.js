@@ -20,8 +20,6 @@ gulp.task('css', function () {
     var csswring = require('csswring');
     var reporter = require('postcss-reporter');
 
-    var options = {};
-
     var plugins = [
         cssimport,
         nested,
