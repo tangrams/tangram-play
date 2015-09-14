@@ -90,23 +90,23 @@
             <div class='tp-menu-bar'>
                 <h1>Tangram Play</h1>
                 <ul class='tp-menu-items'>
-                    <li class='tp-menu-item tp-menu-button-new' data-tooltip='New style'><i class='btm bt-file'></i></li>
-                    <li class='tp-menu-item tp-menu-button-open' data-tooltip='Open style'><i class='btm bt-plus-square'></i></li>
-                    <li class='tp-menu-item tp-menu-button-export' data-tooltip='Export style'><i class='btm bt-download'></i></li>
+                    <li class='tp-menu-item tp-menu-button-new' data-tooltip='New style'><i class='btm bt-file'></i><span class='tp-menu-item-label'>New style</span></li>
+                    <li class='tp-menu-item tp-menu-button-open' data-tooltip='Open style'><i class='btm bt-plus-square'></i><span class='tp-menu-item-label'>Open style</span></li>
+                    <li class='tp-menu-item tp-menu-button-export' data-tooltip='Export style'><i class='btm bt-download'></i><span class='tp-menu-item-label'>Export style</span></li>
                     <li class='tp-menu-item tp-menu-item-private' data-tooltip='Share'><i class='btm bt-share'></i></li>
                 </ul>
                 <ul class='tp-menu-items tp-menu-right'>
                     <li class='tp-menu-item tp-menu-item-private' data-tooltip='Refresh map'><i class='btm bt-sync'></i></li>
                     <li class='tp-menu-item tp-menu-item-private' data-tooltip='Settings'><i class='btm bt-gear'></i></li>
-                    <li class='tp-menu-item tp-menu-button-help' data-tooltip='Documentation and help' data-tooltip-alignment='right'><a href='https://github.com/tangrams/tangram-docs#tangram-documentation' target='_blank'><i class='btm bt-question-circle'></i></a></li>
+                    <li class='tp-menu-item tp-menu-button-help' data-tooltip='Documentation and help' data-tooltip-alignment='right'><a href='https://github.com/tangrams/tangram-docs#tangram-documentation' target='_blank'><i class='btm bt-question-circle'></i><span class='tp-menu-item-label'>Help</span></a></li>
                     <li class='tp-menu-item tp-menu-item-private tp-menu-sign-in' data-tooltip='Sign in'><span class='tp-menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
                 </ul>
             </div>
             <div class='tp-menu-dropdowns'>
                 <div class='tp-menu-dropdown tp-menu-dropdown-open'>
                     <ul>
-                        <li class='tp-menu-open-file'><i class='btm bt-folder'></i> Open a file</li>
-                        <li class='tp-menu-open-example'><i class='btm bt-map'></i> Choose example</li>
+                        <li class='tp-menu-open-file'><i class='btm bt-folder'></i><span class='tp-menu-item-label'>Open a file</span></li>
+                        <li class='tp-menu-open-example'><i class='btm bt-map'></i><span class='tp-menu-item-label'>Choose example</span></li>
                     </ul>
                 </div>
             </div>
@@ -114,6 +114,7 @@
 
         <div class='tp-core-container'>
             <div id='map' class='tp-map-container'></div>
+            <div class='tp-map-nav' id='map-nav'></div>
             <div class='tp-map-loading' id='map-loading'></div>
             <div class='tp-divider' id='divider'><span class='tp-divider-affordance'></span></div>
             <div id='content'>

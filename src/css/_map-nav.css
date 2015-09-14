@@ -1,0 +1,12 @@
+/* MAP NAVIGATION BAR */
+
+.tp-map-nav {
+    position: absolute;
+    height: 40px;
+    width: 100%;
+    background-color: #3d3d3d;
+    top: 0;
+    left: 0;
+    transition: 80ms bottom ease-out;
+    user-select: none;
+}
