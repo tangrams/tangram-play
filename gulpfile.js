@@ -13,26 +13,24 @@ var paths = {
 // Build stylesheets
 gulp.task('css', function () {
     var postcss = require('gulp-postcss');
-    var cssnext = require('cssnext');
+    var autoprefixer = require('autoprefixer');
+    var cssimport = require('postcss-import');
     var nested = require('postcss-nested');
-    var simplevars = require('postcss-simple-vars');
+    var customProperties = require('postcss-custom-properties');
+    var csswring = require('csswring');
     var reporter = require('postcss-reporter');
 
-    var options = {
-        browsers: ['last 2 versions', 'IE >= 11'],
-        compress: {
-            discardComments: { removeAll: true },
-            zindex: false
-        },
-        url: false, // TODO: Figure this out
-        plugins: [
-            nested,
-            simplevars
-        ]
-    };
+    var options = {};
 
     var plugins = [
-        cssnext(options),
+        cssimport,
+        nested,
+        customProperties(),
+        autoprefixer({ browsers: ['last 2 versions', 'IE >= 11'] }),
+        // preserveHacks is true because NOT preserving them doesn't mean
+        // delete the hack, it means turn it into real CSS. Which is not
+        // what we want!
+        csswring({ removeAllComments: true, preserveHacks: true }),
         reporter()
     ];
 
