@@ -8,23 +8,17 @@
 
 import TangramPlay from 'app/TangramPlay';
 
-const GEOLOCATOR_TITLE_TEXT = 'Get current location';
-
 export default class Geolocator {
     constructor () {
-        this.el = _createEl();
-        this.el.querySelector('.tp-geolocator-icon').addEventListener('click', (e) => {
+        this.el = document.getElementById('tp-geolocator');
+        this.el.addEventListener('click', (e) => {
             if (e.target.classList.contains('tp-geolocator-active')) {
                 return false;
             }
             e.target.classList.add('tp-geolocator-active');
             this.getCurrentLocation(this.onGeolocateSuccess.bind(this), this.onGeolocateError.bind(this));
         });
-
-        // Tangram play map container overrides
-        // TODO: this better
-        document.getElementById('map-nav').appendChild(this.el);
-    }
+   }
 
     getCurrentLocation (success, error) {
         const geolocator = window.navigator.geolocation;
@@ -61,25 +55,7 @@ export default class Geolocator {
     }
 
     resetGeolocateButton () {
-        const button = this.el.querySelector('.tp-geolocator-icon');
+        const button = this.el.querySelector('.tp-geolocator-button');
         button.classList.remove('tp-geolocator-active');
     }
-}
-
-function _createEl () {
-    // Create geolocator
-    let el = document.createElement('div');
-    let buttonEL = document.createElement('div');
-    let iconEl = document.createElement('span');
-
-    iconEl.className = 'tp-geolocator-icon';
-
-    buttonEL.className = 'tp-geolocator-button';
-    buttonEL.setAttribute('title', GEOLOCATOR_TITLE_TEXT);
-    buttonEL.appendChild(iconEl);
-
-    el.className = 'tp-geolocator';
-    el.appendChild(buttonEL);
-
-    return el;
 }

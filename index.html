@@ -117,12 +117,19 @@
                 <div class='tp-map-view' id='map'></div>
                 <div class='tp-map-nav' id='map-nav'>
                     <div class='tp-map-zoom'>
-                        <button class='tp-map-zoom-in' id='zoom-in' data-tooltip='Zoom in'>+</button>
-                        <button class='tp-map-zoom-out' id='zoom-out' data-tooltip='Zoom out'>-</button>
+                        <button class='tp-map-zoom-in' id='zoom-in' data-tooltip='Zoom in'><i class='btb bt-plus'></i></button>
+                        <div class='tp-map-zoom-indicator'>zxx</div>
+                        <button class='tp-map-zoom-out' id='zoom-out' data-tooltip='Zoom out'><i class='btb bt-minus'></i></button>
                     </div>
                     <div class='tp-map-search'>
                         <div class='tp-map-search-icon'><i class='btb bt-search'></i></div>
                         <input class='tp-map-search-input'>
+                    </div>
+                    <div class='tp-geolocator' id='tp-geolocator'>
+                        <div class='tp-geolocator-button' title='Get current location'>
+                            <i class='btb bt-map-arrow'></i>
+                            <i class='btb bt-sync bt-spin'></i>
+                        </div>
                     </div>
                 </div>
                 <div class='tp-map-loading' id='map-loading'></div>
