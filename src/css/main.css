@@ -58,5 +58,5 @@
 /* + Map UI */
 @import '_leaflet-overrides';
 @import '_map-loading';
-@import '_map-nav';
+@import '_map-toolbar';
 @import '_geolocator';

@@ -18,6 +18,7 @@ export default class Geolocator {
             e.target.classList.add('tp-geolocator-active');
             this.getCurrentLocation(this.onGeolocateSuccess.bind(this), this.onGeolocateError.bind(this));
         });
+        this.map = TangramPlay.map.leaflet;
    }
 
     getCurrentLocation (success, error) {
@@ -44,7 +45,10 @@ export default class Geolocator {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        TangramPlay.map.leaflet.setView([latitude, longitude], 14);
+        // Zoom in a bit only if user's view is very zoomed out
+        let zoom = (this.map.getZoom() < 16) ? 16 : this.map.getZoom();
+
+        this.map.setView([latitude, longitude], zoom);
         this.resetGeolocateButton();
     }
 

@@ -1,22 +1,30 @@
 /* MAP NAVIGATION BAR */
 
-.tp-map-nav {
+.tp-map-toolbar {
     position: absolute;
     box-sizing: border-box;
     display: flex;
     padding: 6px;
-    height: 50px;
+    padding-right: 4px;
     width: 100%;
-    background-color: var(--ui-component-color);
+    height: 50px;
     top: 0;
     left: 0;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: stretch;
-    transition: 80ms bottom ease-out;
+    font-family: var(--font-family);
+    font-weight: 200;
+    color: var(--ui-component-text-color);
+    background-color: var(--ui-component-color);
+    transition: 120ms top ease-out;
     user-select: none;
     z-index: 401; /* Leaflet map at 400 */
+
+    & > div:not(:last-child) {
+        margin-right: 4px;
+    }
 }
 
 .tp-map-zoom {
@@ -52,10 +60,7 @@
     display: inline-block;
     width: 38px;
     text-align: center;
-    font-family: var(--font-family);
-    font-weight: 200;
     font-size: 12px;
-    color: var(--ui-component-text-color);
 }
 
 .tp-map-search {
@@ -63,13 +68,10 @@
     overflow: hidden;
     flex-grow: 1;
     display: flex;
-    margin-left: 4px;
-    margin-right: 4px;
 }
 
 .tp-map-search-icon {
     display: inline-block;
-    color: var(--ui-component-text-color);
     line-height: 38px;
     height: 38px;
     width: 34px;
@@ -98,4 +100,24 @@
 
 .tp-map-search-input:focus {
     border-bottom: 1px dotted #606060;
+}
+
+.tp-map-toolbar-toggle {
+    width: 18px;
+    text-align: center;
+    font-size: 8px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+
+    &::after {
+        /* The up arrow is not a perfect mirror of the down arrow */
+        display: block;
+        transform: rotateX(180deg);
+        content: "\25BE";
+        font-size: 14px;
+        color: #666;
+    }
 }

@@ -24,8 +24,31 @@
     padding: 0 8px;
 }
 
+/* Slightly more padding around the text content */
 .CodeMirror pre {
     padding: 0 8px;
+}
+
+/* Stylized scroll bars, webkit only */
+.CodeMirror-vscrollbar,
+.CodeMirror-hscrollbar {
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: var(--ui-component-color);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #b9b9bd;
+    }
+}
+.CodeMirror-scrollbar-filler {
+    background-color: var(--ui-component-color);
+    width: 8px;
+    height: 8px;
 }
 
 .cm-s-tangram.CodeMirror {
