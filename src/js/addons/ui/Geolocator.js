@@ -12,10 +12,10 @@ export default class Geolocator {
     constructor () {
         this.el = document.getElementById('tp-geolocator');
         this.el.addEventListener('click', (e) => {
-            if (e.target.classList.contains('tp-geolocator-active')) {
+            if (this.el.classList.contains('tp-geolocator-active')) {
                 return false;
             }
-            e.target.classList.add('tp-geolocator-active');
+            this.el.classList.add('tp-geolocator-active');
             this.getCurrentLocation(this.onGeolocateSuccess.bind(this), this.onGeolocateError.bind(this));
         });
         this.map = TangramPlay.map.leaflet;
@@ -59,7 +59,6 @@ export default class Geolocator {
     }
 
     resetGeolocateButton () {
-        const button = this.el.querySelector('.tp-geolocator-button');
-        button.classList.remove('tp-geolocator-active');
+        this.el.classList.remove('tp-geolocator-active');
     }
 }
