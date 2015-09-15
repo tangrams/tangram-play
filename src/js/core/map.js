@@ -21,7 +21,6 @@ export default class Map {
             { zoomControl: false },
             { keyboardZoomOffset: 0.05 }
         );
-        L.control.zoom({ position: 'topright' }).addTo(map);
         map.attributionControl.setPrefix('<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>');
         map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
         this.hash = new L.Hash(map);

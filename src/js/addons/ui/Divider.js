@@ -9,6 +9,7 @@ import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
 import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
 
 const CM_MINIMUM_WIDTH = 160; // integer, in pixels
+const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
 const STORAGE_POSITION_KEY = 'divider-position-x';
 
 export default class Divider {
@@ -62,7 +63,7 @@ export default class Divider {
     }
 
     reflow() {
-        let mapEl = document.getElementById('map');
+        let mapEl = document.getElementById('map-container');
         let contentEl = document.getElementById('content');
         let menuEl = document.querySelector('.tp-menu-container');
         let menuBottom = menuEl.getBoundingClientRect().bottom;
@@ -109,7 +110,7 @@ function getStartingPosition() {
 
 function getBounds() {
     return {
-        minX: 100,
+        minX: MAP_MINIMUM_WIDTH,
         maxX: window.innerWidth - CM_MINIMUM_WIDTH
     };
 }

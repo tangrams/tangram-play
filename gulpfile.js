@@ -3,6 +3,7 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var livereload = require('gulp-livereload');
+var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
 
 var paths = {
@@ -33,6 +34,7 @@ gulp.task('css', function () {
     ];
 
     return gulp.src('./src/css/main.css')
+        .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(postcss(plugins))
         .pipe(sourcemaps.write('.'))
@@ -56,6 +58,7 @@ gulp.task('js', function () {
     });
 
     return bundle.bundle()
+        .pipe(plumber())
         .pipe(source('tangram-play.js'))
         .pipe(buffer())
         // .pipe(sourcemaps.init({ loadMaps: true }))

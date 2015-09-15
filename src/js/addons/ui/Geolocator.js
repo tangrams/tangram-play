@@ -23,7 +23,7 @@ export default class Geolocator {
 
         // Tangram play map container overrides
         // TODO: this better
-        document.getElementById('map').appendChild(this.el);
+        document.getElementById('map-nav').appendChild(this.el);
     }
 
     getCurrentLocation (success, error) {

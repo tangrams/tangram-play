@@ -22,7 +22,7 @@
 @import '_core';
 @import '_editor';
 @import '_divider';
-@import '_tangram';
+@import '_map';
 
 /* ADDONS */
 
@@ -54,4 +54,5 @@
 /* + Map UI */
 @import '_leaflet-overrides';
 @import '_map-loading';
+@import '_map-nav';
 @import '_geolocator';

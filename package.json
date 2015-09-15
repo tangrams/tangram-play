@@ -26,6 +26,7 @@
     "csswring": "^4.0.0",
     "gulp": "^3.9.0",
     "gulp-livereload": "^3.8.0",
+    "gulp-plumber": "^1.0.1",
     "gulp-postcss": "^6.0.0",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.4.1",

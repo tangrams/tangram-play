@@ -1,0 +1,17 @@
+/* MAP VIEWPORT */
+
+/* Container for map and map-related UI */
+.tp-map-container {
+    position: fixed;
+    height: 100%;
+    width: 50%;
+}
+
+/* Container for Leaflet/Tangram */
+.tp-map-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
