@@ -52,9 +52,9 @@ export function initEditor(place) {
     let rulers = [];
     for (let i = 1; i < 10; i++) {
         let b = Math.round((0.88 + i / 90) * 255);
-        rulers.push({ color: 'rgb(' + b + ',' + b + ',' + b + ')',
+        rulers.push({ color: 'rgba(' + b + ',' + b + ',' + b + ', 0.08)',
                       column: i * 4,
-                      lineStyle: 'dashed' });
+                      lineStyle: 'dotted' });
     }
 
     // Create DOM (TODO)

@@ -6,7 +6,7 @@
     padding: 6px;
     height: 50px;
     width: 100%;
-    background-color: #222;
+    background-color: var(--ui-component-color);
     top: 0;
     left: 0;
     transition: 80ms bottom ease-out;
@@ -22,7 +22,7 @@
         appearance: none;
         border: 0;
         box-sizing: border-box;
-        background-color: #3f3f3f;
+        background-color: var(--ui-element-color);
         color: #ddd;
         height: 38px;
         width: 38px;
@@ -33,7 +33,7 @@
     }
 
     button:hover {
-        background-color: #444;
+        background-color: var(--ui-active-color);
         color: yellow;
     }
 
@@ -41,7 +41,7 @@
     }
 
     .tp-map-zoom-out {
-        border-left: 1px solid #333;
+        border-left: 1px solid var(--ui-component-color);
     }
 }
 
@@ -49,7 +49,7 @@
     display: inline-block;
     width: calc(100% - 134px);
     height: 38px;
-    background-color: #3f3f3f;
+    background-color: var(--ui-element-color);
     position: absolute;
     top: 6px;
     left: 86px;
@@ -58,7 +58,7 @@
 
 .tp-map-search-icon {
     display: inline-block;
-    color: #e1e1e1;
+    color: var(--ui-component-text-color);
     line-height: 38px;
     height: 38px;
     width: 34px;

@@ -4,7 +4,7 @@
     display: none;
     position: absolute;
     width: 200px;
-    background: #303030;
+    background-color: var(--ui-component-color);
     z-index: 1010; /* TODO don't guess z hierarchy. min 1000; Leaflet and Draggable starts at z-index 1000 */
     font-family: var(--font-family);
     font-weight: 200;
@@ -23,13 +23,13 @@
     margin: 0;
     box-sizing: border-box;
     padding: 14px;
-    border-top: 1px solid rgba(255,255,255,0.15);
+    border-top: 1px solid var(--ui-active-color);
     font-size: 14px;
     line-height: 24px;
     cursor: pointer;
 }
 
 .tp-menu-dropdown > ul > li:hover {
-    background-color: rgba(255,255,255,0.10);
+    background-color: var(--ui-active-color);
     color: yellow;
 }

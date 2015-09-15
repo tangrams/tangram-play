@@ -9,7 +9,7 @@
 /* borrowing from map-nav button */
 .tp-geolocator-button {
     position: relative;
-    background-color: #3f3f3f;
+    background-color: var(--ui-element-color);
     width: 38px;
     height: 38px;
     cursor: pointer;
@@ -18,12 +18,12 @@
 }
 
 .tp-geolocator-button:hover {
-    background-color: #444;
+    background-color: var(--ui-active-color);
 }
 
 .tp-geolocator-button.tp-geolocator-active {
-    background-color: #444;
-    color: #ddd;
+    background-color: var(--ui-active-color);
+    color: var(--ui-component-text-color);
 }
 
 .tp-geolocator-icon {
