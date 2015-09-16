@@ -101,7 +101,6 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
     color: yellow;
     margin-left: 0.5em;
     text-shadow: none;
-    font-size: 22px;
 }
 .CodeMirror-foldgutter { width: .9em; }
 .CodeMirror-foldgutter-open,
