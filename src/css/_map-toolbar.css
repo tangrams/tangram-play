@@ -38,7 +38,7 @@
         border: 0;
         box-sizing: border-box;
         background-color: var(--ui-element-color);
-        color: #ddd;
+        color: var(--ui-component-text-color);
         height: 38px;
         width: 38px;
         font-size: 12px;
@@ -48,7 +48,7 @@
 
     button:hover {
         background-color: var(--ui-active-color);
-        color: yellow;
+        color: var(--ui-highlight-color);
     }
 
     .tp-map-zoom-out {
@@ -100,7 +100,7 @@
 }
 
 .tp-map-search-input:focus {
-    border-bottom: 1px dotted #606060;
+    border-bottom: 1px dotted #909090;
 }
 
 .tp-map-toolbar-toggle {
@@ -119,6 +119,6 @@
         transform: rotateX(180deg);
         content: "\25BE";
         font-size: 14px;
-        color: #666;
+        color: #777; /* match CM folding arrows */
     }
 }
