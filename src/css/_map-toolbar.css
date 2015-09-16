@@ -8,7 +8,7 @@
     padding-right: 4px;
     width: 100%;
     height: 50px;
-    top: 0;
+    top: -50px; /* starting condition */
     left: 0;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -38,7 +38,7 @@
         border: 0;
         box-sizing: border-box;
         background-color: var(--ui-element-color);
-        color: #ddd;
+        color: var(--ui-component-text-color);
         height: 38px;
         width: 38px;
         font-size: 12px;
@@ -48,7 +48,7 @@
 
     button:hover {
         background-color: var(--ui-active-color);
-        color: yellow;
+        color: var(--ui-highlight-color);
     }
 
     .tp-map-zoom-out {
@@ -61,6 +61,7 @@
     width: 38px;
     text-align: center;
     font-size: 12px;
+    margin-right: 4px;
 }
 
 .tp-map-search {
@@ -88,18 +89,19 @@
     background-color: transparent;
     appearance: none;
     border: 0;
+    border-bottom: 1px solid transparent;
     outline: none;
     color: white;
-    font-size: 14px;
+    font-size: 12px;
     font-family: var(--font-family);
     font-weight: 200;
     line-height: 28px;
     flex-grow: 1;
     margin: 4px 4px 4px auto;
-}
 
-.tp-map-search-input:focus {
-    border-bottom: 1px dotted #606060;
+    &:focus {
+        border-bottom: 1px dotted #909090;
+    }
 }
 
 .tp-map-toolbar-toggle {
@@ -118,6 +120,6 @@
         transform: rotateX(180deg);
         content: "\25BE";
         font-size: 14px;
-        color: #666;
+        color: #777; /* match CM folding arrows */
     }
 }

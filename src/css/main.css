@@ -8,12 +8,13 @@
 
 :root {
     --font-family: 'Montserrat';
+    --ui-editor-background-color: #1f2225;
     --ui-base-color: #26282c;
     --ui-component-color: #2c2e32;
     --ui-element-color: #3a3c40;
     --ui-active-color: #36383c;
     --ui-highlight-color: yellow;
-    --ui-component-text-color: #e1e1e1;
+    --ui-component-text-color: #eefafa;
 }
 
 /* CORE */

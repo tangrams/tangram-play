@@ -99,6 +99,7 @@
                 <ul class='tp-menu-items tp-menu-right'>
                     <li class='tp-menu-item tp-menu-item-private' data-tooltip='Refresh map'><i class='btm bt-sync'></i></li>
                     <li class='tp-menu-item tp-menu-item-private' data-tooltip='Settings'><i class='btm bt-gear'></i></li>
+                    <li class='tp-menu-item tp-menu-button-fullscreen' data-tooltip='View fullscreen' data-tooltip-alignment='right'><i class='btm bt-maximize'></i><span class='tp-menu-item-label'>Fullscreen</span></li>
                     <li class='tp-menu-item tp-menu-button-help' data-tooltip='Documentation and help' data-tooltip-alignment='right'><a href='https://github.com/tangrams/tangram-docs#tangram-documentation' target='_blank'><i class='btm bt-question-circle'></i><span class='tp-menu-item-label'>Help</span></a></li>
                     <li class='tp-menu-item tp-menu-item-private tp-menu-sign-in' data-tooltip='Sign in'><span class='tp-menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
                 </ul>
@@ -118,13 +119,13 @@
                 <div class='tp-map-view' id='map'></div>
                 <div class='tp-map-toolbar' id='map-toolbar'>
                     <div class='tp-map-zoom'>
+                        <div class='tp-map-zoom-indicator'></div>
                         <button class='tp-map-zoom-in' id='zoom-in' data-tooltip='Zoom in'><i class='btb bt-plus'></i></button>
-                        <div class='tp-map-zoom-indicator'>zxx</div>
                         <button class='tp-map-zoom-out' id='zoom-out' data-tooltip='Zoom out'><i class='btb bt-minus'></i></button>
                     </div>
                     <div class='tp-map-search'>
                         <div class='tp-map-search-icon'><i class='btb bt-search'></i></div>
-                        <input class='tp-map-search-input'>
+                        <input class='tp-map-search-input' placeholder='' spellcheck='false'>
                     </div>
                     <div class='tp-geolocator' id='tp-geolocator'>
                         <div class='tp-geolocator-button' title='Get current location'>
