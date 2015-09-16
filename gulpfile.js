@@ -18,6 +18,7 @@ gulp.task('css', function () {
     var cssimport = require('postcss-import');
     var nested = require('postcss-nested');
     var customProperties = require('postcss-custom-properties');
+    var colorHexAlpha = require('postcss-color-hex-alpha');
     var csswring = require('csswring');
     var reporter = require('postcss-reporter');
 
@@ -25,6 +26,7 @@ gulp.task('css', function () {
         cssimport,
         nested,
         customProperties(),
+        colorHexAlpha(),
         autoprefixer({ browsers: ['last 2 versions', 'IE >= 11'] }),
         // preserveHacks is true because NOT preserving them doesn't mean
         // delete the hack, it means turn it into real CSS. Which is not
