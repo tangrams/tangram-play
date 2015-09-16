@@ -89,6 +89,7 @@
     background-color: transparent;
     appearance: none;
     border: 0;
+    border-bottom: 1px solid transparent;
     outline: none;
     color: white;
     font-size: 12px;
