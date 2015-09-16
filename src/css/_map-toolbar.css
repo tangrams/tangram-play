@@ -8,7 +8,7 @@
     padding-right: 4px;
     width: 100%;
     height: 50px;
-    top: 0;
+    top: -50px; /* starting condition */
     left: 0;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -61,6 +61,7 @@
     width: 38px;
     text-align: center;
     font-size: 12px;
+    margin-right: 4px;
 }
 
 .tp-map-search {

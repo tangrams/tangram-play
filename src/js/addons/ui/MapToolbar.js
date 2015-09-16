@@ -2,9 +2,12 @@
 
 import Geolocator from 'app/addons/ui/Geolocator';
 import TangramPlay from 'app/TangramPlay';
+import LocalStorage from 'app/addons/LocalStorage';
 
 let el;
 let map;
+
+const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 
 const MapToolbar = {
     init () {
@@ -14,6 +17,7 @@ const MapToolbar = {
 
         new Geolocator();
 
+        setInitialDisplayState();
         setZoomLabel();
     },
 
@@ -55,10 +59,28 @@ export default MapToolbar;
 
 function showToolbar () {
     el.style.top = '0';
+    saveDisplayState('true');
 }
 
 function hideToolbar () {
     el.style.top = '-50px';
+    saveDisplayState('false');
+}
+
+function saveDisplayState (isShown = 'true') {
+    LocalStorage.setItem(STORAGE_DISPLAY_KEY, isShown);
+}
+
+function setInitialDisplayState () {
+    let storedPosition = LocalStorage.getItem(STORAGE_DISPLAY_KEY);
+    // LocalStorage saves a string rather than actual boolean value
+    if (storedPosition && storedPosition === 'false') {
+        hideToolbar();
+    }
+    // show toolbar by default
+    else {
+        showToolbar();
+    }
 }
 
 function setZoomLabel () {
