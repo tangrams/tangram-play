@@ -61,7 +61,7 @@
     border-right: 0;
 }
 .cm-s-tangram .CodeMirror-linenumber { color: #eeffffff; margin-left: 14px; }
-div.cm-s-tangram .CodeMirror-cursor { border-left: 2px solid #FFCC00; }
+.cm-s-tangram .CodeMirror-cursor { border-left: 1px solid white; }
 
 .cm-s-tangram .cm-keyword { color: #82B1FF; }
 .cm-s-tangram .cm-builtin { color: #39ADB5; }
