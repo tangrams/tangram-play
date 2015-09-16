@@ -91,16 +91,16 @@
     border: 0;
     outline: none;
     color: white;
-    font-size: 14px;
+    font-size: 12px;
     font-family: var(--font-family);
     font-weight: 200;
     line-height: 28px;
     flex-grow: 1;
     margin: 4px 4px 4px auto;
-}
 
-.tp-map-search-input:focus {
-    border-bottom: 1px dotted #909090;
+    &:focus {
+        border-bottom: 1px dotted #909090;
+    }
 }
 
 .tp-map-toolbar-toggle {

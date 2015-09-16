@@ -19,6 +19,7 @@ const MapToolbar = {
 
         setInitialDisplayState();
         setZoomLabel();
+        setCurrentLocation();
     },
 
     setupEventListeners () {
@@ -43,6 +44,9 @@ const MapToolbar = {
         map.on('zoomend', function (e) {
             setZoomLabel();
         });
+        map.on('moveend', function (e) {
+            setCurrentLocation();
+        })
     },
 
     toggle () {
@@ -88,4 +92,10 @@ function setZoomLabel () {
     let currentZoom = map.getZoom();
     let fractionalNumber = Math.round(currentZoom * 10) / 10;
     label.innerHTML = 'z&#8202;' + fractionalNumber.toFixed(1).toString();
+}
+
+function setCurrentLocation () {
+    let latlng = map.getCenter();
+    let input = el.querySelector('.tp-map-search-input');
+    input.placeholder = `${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`;
 }
