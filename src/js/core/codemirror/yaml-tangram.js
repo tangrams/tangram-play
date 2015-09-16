@@ -340,7 +340,9 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
 
     function glsl(stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
-        if (!isShader(address) || (/^\|$/g.test(stream.string))) {
+        if (!isShader(address) || 
+            (/^\|$/g.test(stream.string))) {
+
             state.token = yaml;
             state.localState = state.localMode = null;
             return null;

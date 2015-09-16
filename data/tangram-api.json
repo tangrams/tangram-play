@@ -88,9 +88,8 @@
     ],
 
     "values": [
-
         {
-            "address": "^/scene/background$",
+            "address": "^/scene/background/color$",
             "type": "color",
             "defaultValue": "[0., 0., 0.]" 
         },

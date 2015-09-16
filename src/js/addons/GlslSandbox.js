@@ -355,7 +355,7 @@ void main() {
     v_position = position;
     gl_Position = position;
     v_normal = vec3(0.,0.,1.);
-    v_color =['u_color'];
+    v_color = u_color;
 }
 `;
 

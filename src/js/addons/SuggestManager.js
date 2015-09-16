@@ -2,7 +2,7 @@ import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
 import { httpGet } from 'app/core/common';
-import { getText, getLineInd } from 'app/core/codemirror/tools';
+import { getText, getLineInd, isCommented, isEmpty, getValue } from 'app/core/codemirror/tools';
 import { getAddressSceneContent, getKeyPairs, getAddressForLevel } from 'app/core/codemirror/yaml-tangram';
 
 // Import CodeMirror
@@ -36,20 +36,29 @@ export default class SuggestManager {
         // Trigger hint after each time the style is uploaded
         TangramPlay.on('style_updated', (args) => {
             let bOpen = true;
+            let bFocus = true;
 
             let line = TangramPlay.editor.getCursor().line;
             if (TangramPlay.editor.getLineHandle(line).stateAfter &&
                 TangramPlay.editor.getLineHandle(line).stateAfter.localMode &&
                 TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType) {
+
                 if (TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === 'glsl' ||
                     TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === 'javascript') {
                     bOpen = false;
                 }
             }
 
+            if (isCommented(TangramPlay.editor,line) ||
+                isEmpty(TangramPlay.editor,line)) {
+                bOpen = false;
+            }
+
             if (bOpen && TangramPlay.editor.showHint) {
                 TangramPlay.editor.showHint({
                     completeSingle: false,
+                    alignWithWord: true,
+                    closeCharacters: /[\s()\[\]{};:>,]/,
                     customKeys: {
                         Tab: (cm, handle) => {
                             cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
@@ -159,9 +168,8 @@ export default class SuggestManager {
 
         CodeMirror.on(result, 'pick', (completion) => { 
             if (wasKey) {
-                console.log(address+'/'+completion);
+                // console.log(address+'/'+completion);
                 let defaultValue = this.getDefault(address, completion);
-                // completion += defaultValue;
                 editor.replaceRange(': '+defaultValue,
                                     {line: result.to.line, ch: result.to.ch + completion.length},
                                     {line: result.to.line, ch: result.to.ch + completion.length + 1},
