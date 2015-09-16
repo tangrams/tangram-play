@@ -29,6 +29,7 @@
     height: 100%;
     color: white;
     font-size: 0;
+    vertical-align: top; /* Fix Firefox pushing this down by 1px */
 }
 
 .tp-menu-right {
