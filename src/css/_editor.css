@@ -52,7 +52,7 @@
 
 .cm-s-tangram.CodeMirror {
     color: #e1e1e1;
-    background-color: #1f2225;
+    background-color: var(--ui-editor-background-color);
 }
 .cm-s-tangram .CodeMirror-selected { background: #61616140;} /* #cfc !important; } */
 .cm-s-tangram .CodeMirror-gutters {
@@ -96,7 +96,13 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
     color: #FCD812;
 }
 
-.CodeMirror-foldmarker { font-family: arial; }
+.CodeMirror-foldmarker {
+    font-family: 'Source Code Pro';
+    color: yellow;
+    margin-left: 0.5em;
+    text-shadow: none;
+    font-size: 22px;
+}
 .CodeMirror-foldgutter { width: .9em; }
 .CodeMirror-foldgutter-open,
 .CodeMirror-foldgutter-folded { color: #777; /*cursor: pointer;*/ }

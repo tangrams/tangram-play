@@ -20,7 +20,7 @@
 
 .tp-tooltip-content {
     display: block;
-    background-color: black;
+    background-color: #000004;
     padding: 1em;
     font-family: var(--font-family);
     font-weight: 200;
@@ -37,7 +37,7 @@
     position: absolute;
     top: -15px;
     border: 8px solid transparent;
-    border-bottom-color: black;
+    border-bottom-color: #000004;
     transform: translateX(14px);
 
     &.tp-tooltip-pointer-right {
