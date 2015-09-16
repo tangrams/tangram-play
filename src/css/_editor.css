@@ -1,5 +1,4 @@
 /* EDITOR */
-
 @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
 
 :root {
@@ -69,7 +68,7 @@ div.cm-s-tangram .CodeMirror-cursor { border-left: 2px solid #FFCC00; }
 .cm-s-tangram .cm-atom { color: #D16768; }
 .cm-s-tangram .cm-number { color:  #ca7841; }
 .cm-s-tangram .cm-def { color: #8DA6CE; }
-.cm-s-tangram .cm-variable { color: #eeffffff; }
+.cm-s-tangram .cm-variable { color: #DAFAFF; }
 .cm-s-tangram .cm-property { color: #ff5370; }
 .cm-s-tangram .cm-qualifier { color: #690; }
 .cm-s-tangram .cm-operator { color: #ffcb6b; }
