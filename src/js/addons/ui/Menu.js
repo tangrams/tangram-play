@@ -7,6 +7,7 @@ import FileOpen from 'app/addons/ui/FileOpen';
 import ExamplesModal from 'app/addons/ui/Modal.Examples';
 import Tooltip from 'app/addons/ui/Tooltip';
 import MapToolbar from 'app/addons/ui/MapToolbar';
+import fullscreen from 'app/addons/ui/fullscreen';
 
 export default class Menu {
     constructor () {
@@ -20,6 +21,7 @@ export default class Menu {
         this.menus.new = new MenuItem('.tp-menu-button-new', _onClickNew);
         this.menus.export = new MenuItem('.tp-menu-button-export', _onClickExport);
         this.menus.map = new MenuItem('.tp-menu-button-map', _onClickMap);
+        this.menus.fullscreen = new MenuItem('.tp-menu-button-fullscreen', _onClickFullscreen);
         this.menus.help = new MenuItem('.tp-menu-button-help');
 
         this.fileopen = new FileOpen();
@@ -77,6 +79,10 @@ function _onClickExport (event) {
 
 function _onClickMap (event) {
     MapToolbar.toggle();
+}
+
+function _onClickFullscreen (event) {
+    fullscreen.toggle();
 }
 
 function _onClickOutsideDropdown (event) {

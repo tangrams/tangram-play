@@ -19,7 +19,7 @@ export default class Geolocator {
             this.getCurrentLocation(this.onGeolocateSuccess.bind(this), this.onGeolocateError.bind(this));
         });
         this.map = TangramPlay.map.leaflet;
-   }
+    }
 
     getCurrentLocation (success, error) {
         const geolocator = window.navigator.geolocation;
