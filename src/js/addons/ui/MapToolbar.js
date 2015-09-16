@@ -64,5 +64,6 @@ function hideToolbar () {
 function setZoomLabel () {
     let label = el.querySelector('.tp-map-zoom-indicator');
     let currentZoom = map.getZoom();
-    label.textContent = 'z' + Math.floor(currentZoom);
+    let fractionalNumber = Math.round(currentZoom * 10) / 10
+    label.innerHTML = 'z&#8202;' + fractionalNumber.toFixed(1).toString();
 }

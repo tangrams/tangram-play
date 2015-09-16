@@ -52,29 +52,29 @@
 
 .cm-s-tangram.CodeMirror {
     color: var(--ui-component-text-color);
-    background-color: #202022;
+    background-color: #1f2225;
 }
-.cm-s-tangram .CodeMirror-selected { background: #556;} /* #cfc !important; } */
+.cm-s-tangram .CodeMirror-selected { background: #61616140;} /* #cfc !important; } */
 .cm-s-tangram .CodeMirror-gutters {
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
     border-right: 0;
 }
 .cm-s-tangram .CodeMirror-linenumber { color: #eeffffff; margin-left: 14px; }
-div.cm-s-tangram .CodeMirror-cursor { border-left: 2px solid #FFCC00; }
+div.cm-s-tangram .CodeMirror-cursor { border-left: 1px solid white; }
 
-.cm-s-tangram .cm-keyword { color: #82B1FF; }
-.cm-s-tangram .cm-builtin { color: #39ADB5; }
-.cm-s-tangram .cm-atom { color: #D16768; }
-.cm-s-tangram .cm-number { color:  #ca7841; }
+.cm-s-tangram .cm-keyword { color: #c792ea; }
+.cm-s-tangram .cm-builtin { color: #80CBC4; }
+.cm-s-tangram .cm-atom { color: #ff5370; }
+.cm-s-tangram .cm-number { color:  #F77669; }
 .cm-s-tangram .cm-def { color: #8DA6CE; }
-.cm-s-tangram .cm-variable { color: #DAFAFF; }
+.cm-s-tangram .cm-variable { color: #80b0ff; }
 .cm-s-tangram .cm-property { color: #ff5370; }
 .cm-s-tangram .cm-qualifier { color: #690; }
-.cm-s-tangram .cm-operator { color: #ffcb6b; }
-.cm-s-tangram .cm-comment { color:#777; font-weight:normal; }
+.cm-s-tangram .cm-operator { color: #c0c1cc; }
+.cm-s-tangram .cm-comment { color: #616161; font-weight:normal; }
 .cm-s-tangram .cm-meta { color: #999; }
-.cm-s-tangram .cm-string { color:#C3E88D; font-style:italic; }
+.cm-s-tangram .cm-string { color: #C3E88D; /*font-style:italic;*/ }
 .cm-s-tangram .cm-string-2 { color:#ffcb6b; }
 .cm-s-tangram .cm-tab {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
@@ -87,7 +87,7 @@ div.cm-s-tangram .CodeMirror-cursor { border-left: 2px solid #FFCC00; }
 .cm-s-tangram .cm-hr { color: #AEAEAE; }
 .cm-s-tangram .cm-link { color:#ad9361; font-style:italic; text-decoration:none; }
 .cm-s-tangram span.cm-variable-2, .cm-s-tangram span.cm-tag { color: #690; }
-.cm-s-tangram span.cm-variable-3, .cm-s-tangram span.cm-def { color: #82B1FF; }
+.cm-s-tangram span.cm-variable-3, .cm-s-tangram span.cm-def { color: #c792ea; }
 .cm-s-tangram .cm-error { border-bottom: 1px solid red; }
 
 div.cm-s-tangram .CodeMirror-activeline-background { background: #FFF; }

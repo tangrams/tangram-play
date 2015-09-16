@@ -12,15 +12,16 @@ import 'leaflet-hash';
 let takeScreenshot = false;
 
 export default class Map {
-    constructor(place, styleFile) {
+    constructor(mapElement, styleFile) {
         // Get map start position
         let mapStartLocation = _getMapStartLocation();
 
         // Create Leaflet map
-        let map = L.map(place,
-            { zoomControl: false },
-            { keyboardZoomOffset: 0.05 }
-        );
+        let map = L.map(mapElement, {
+            zoomControl: false,
+            maxZoom: 24,
+            keyboardZoomOffset: 0.05
+        });
         map.attributionControl.setPrefix('<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>');
         map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
         this.hash = new L.Hash(map);
