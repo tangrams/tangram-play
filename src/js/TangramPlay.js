@@ -237,7 +237,7 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
-    sandbox: true,
+    // sandbox: true,
     errors: true,
     colors: true,
 });
