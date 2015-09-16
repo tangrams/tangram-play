@@ -139,12 +139,12 @@
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/focal_length$",
             "type": "number",
-            "defaultValue": "[[16, 2], [17, 2.5], [18, 3], [19, 4], [20, 6]]"
+            "defaultValue": "1"
         },
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/vanishing_point$",
             "type": "vector2",
-            "defaultValue": "[0px, 0px]"
+            "defaultValue": "[0, 0]"
         },
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/fov$",
