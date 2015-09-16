@@ -10,7 +10,7 @@
     margin-left: -200px;
     top: 50%;
     margin-top: -80px;
-    background-color: #303030;
+    background-color: var(--ui-component-color);
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 16px;

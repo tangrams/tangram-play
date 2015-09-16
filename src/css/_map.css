@@ -5,6 +5,7 @@
     position: fixed;
     height: 100%;
     width: 50%;
+    overflow: hidden;
 }
 
 /* Container for Leaflet/Tangram */

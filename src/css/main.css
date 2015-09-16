@@ -8,8 +8,12 @@
 
 :root {
     --font-family: 'Montserrat';
-    --ui-base-color: #303030;
+    --ui-base-color: #26282c;
+    --ui-component-color: #303236;
+    --ui-element-color: #3a3c40;
+    --ui-active-color: #36383c;
     --ui-highlight-color: yellow;
+    --ui-component-text-color: #e1e1e1;
 }
 
 /* CORE */
@@ -54,5 +58,5 @@
 /* + Map UI */
 @import '_leaflet-overrides';
 @import '_map-loading';
-@import '_map-nav';
+@import '_map-toolbar';
 @import '_geolocator';

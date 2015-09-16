@@ -1,0 +1,123 @@
+/* MAP NAVIGATION BAR */
+
+.tp-map-toolbar {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    padding: 6px;
+    padding-right: 4px;
+    width: 100%;
+    height: 50px;
+    top: 0;
+    left: 0;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    font-family: var(--font-family);
+    font-weight: 200;
+    color: var(--ui-component-text-color);
+    background-color: var(--ui-component-color);
+    transition: 120ms top ease-out;
+    user-select: none;
+    z-index: 401; /* Leaflet map at 400 */
+
+    & > div:not(:last-child) {
+        margin-right: 4px;
+    }
+}
+
+.tp-map-zoom {
+    /* Remove spacing between buttons */
+    font-size: 0;
+    flex: none;
+    cursor: default;
+
+    button {
+        appearance: none;
+        border: 0;
+        box-sizing: border-box;
+        background-color: var(--ui-element-color);
+        color: #ddd;
+        height: 38px;
+        width: 38px;
+        font-size: 12px;
+        cursor: pointer;
+        outline: none;
+    }
+
+    button:hover {
+        background-color: var(--ui-active-color);
+        color: yellow;
+    }
+
+    .tp-map-zoom-out {
+        border-left: 1px solid var(--ui-component-color);
+    }
+}
+
+.tp-map-zoom-indicator {
+    display: inline-block;
+    width: 38px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.tp-map-search {
+    background-color: var(--ui-element-color);
+    overflow: hidden;
+    flex-grow: 1;
+    display: flex;
+}
+
+.tp-map-search-icon {
+    display: inline-block;
+    line-height: 38px;
+    height: 38px;
+    width: 34px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.tp-map-search-icon:hover {
+    color: yellow;
+}
+
+.tp-map-search-input {
+    background-color: transparent;
+    appearance: none;
+    border: 0;
+    outline: none;
+    color: white;
+    font-size: 14px;
+    font-family: var(--font-family);
+    font-weight: 200;
+    line-height: 28px;
+    flex-grow: 1;
+    margin: 4px 4px 4px auto;
+}
+
+.tp-map-search-input:focus {
+    border-bottom: 1px dotted #606060;
+}
+
+.tp-map-toolbar-toggle {
+    width: 18px;
+    text-align: center;
+    font-size: 8px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+
+    &::after {
+        /* The up arrow is not a perfect mirror of the down arrow */
+        display: block;
+        transform: rotateX(180deg);
+        content: "\25BE";
+        font-size: 14px;
+        color: #666;
+    }
+}
