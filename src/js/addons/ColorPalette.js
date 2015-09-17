@@ -120,15 +120,12 @@ class Color {
         const modalWidth = 260;
         const modalHeight = 270;
 
-        // Desired buffer from edge of window
-        const modalBuffer = 20;
-
         // Set x, y pos depending on widget position. Do not allow the modal
         // to disappear off the edge of the window.
-        let modalXPos = (pos.right + modalWidth < window.innerWidth) ? pos.right : (window.innerWidth - modalBuffer - modalWidth);
-        let modalYPos = (pos.bottom + modalHeight < window.innerHeight) ? pos.bottom : (window.innerHeight - modalBuffer - modalHeight);
+        let modalXPos = pos.right - modalWidth;
+        let modalYPos = pos.top - modalHeight - 5;
 
-        this.picker.presentModal(modalXPos + 10, modalYPos + 3);
+        this.picker.presentModal(modalXPos, modalYPos);
 
         // Note: this fires change events as a live preview of the color.
         // TODO: Store original value so we can go back to it if the
