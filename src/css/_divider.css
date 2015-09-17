@@ -37,7 +37,7 @@
     height: 4px;
     border-radius: 50%;
     top: 50%;
-    background-color: #ccc;
+    background-color: var(--ui-component-text-color);
 }
 
 .tp-divider-affordance {
