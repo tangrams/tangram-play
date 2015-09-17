@@ -8,6 +8,7 @@
 
 :root {
     --font-family: 'Montserrat';
+    --editor-font-family: 'Source Code Pro', monospace;
     --ui-editor-background-color: #1f2225;
     --ui-base-color: #26282c;
     --ui-component-color: #2c2e32;

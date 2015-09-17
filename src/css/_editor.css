@@ -1,9 +1,4 @@
 /* EDITOR */
-@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
-
-:root {
-    --editor-font-family: var(--font-family);
-}
 
 #content {
     position: absolute;
@@ -14,7 +9,7 @@
 }
 
 .CodeMirror {
-    font-family: 'Source Code Pro', monospace;
+    font-family: var(--editor-font-family);
     font-size: 14px;
     line-height: 1.4;
 }
@@ -44,6 +39,7 @@
         background-color: #b9b9bd;
     }
 }
+
 .CodeMirror-scrollbar-filler {
     background-color: var(--ui-component-color);
     width: 8px;
@@ -54,13 +50,22 @@
     color: #e1e1e1;
     background-color: var(--ui-editor-background-color);
 }
-.cm-s-tangram .CodeMirror-selected { background: #61616140;} /* #cfc !important; } */
+
+.cm-s-tangram .CodeMirror-selected {
+    background: #61616140;
+}
+
 .cm-s-tangram .CodeMirror-gutters {
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
     border-right: 0;
 }
-.cm-s-tangram .CodeMirror-linenumber { color: var(--ui-component-text-color); margin-left: 14px; }
+
+.cm-s-tangram .CodeMirror-linenumber {
+    margin-left: 14px;
+    color: var(--ui-component-text-color);
+    font-weight: 200;
+}
 div.cm-s-tangram .CodeMirror-cursor { border-left: 1px solid white; }
 
 .cm-s-tangram .cm-keyword { color: #c792ea; }
@@ -97,11 +102,13 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 }
 
 .CodeMirror-foldmarker {
-    font-family: 'Source Code Pro';
+    font-family: var(--editor-font-family);
     color: yellow;
     margin-left: 0.5em;
     text-shadow: none;
+    font-size: 1em;
 }
+
 .CodeMirror-foldgutter { width: .9em; }
 .CodeMirror-foldgutter-open,
 .CodeMirror-foldgutter-folded { color: #777; /*cursor: pointer;*/ }
