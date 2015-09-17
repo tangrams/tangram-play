@@ -1,8 +1,8 @@
 .tp-colorpalette {
     position: absolute;
     z-index: 102;
-    right: 13px;
-    bottom: 8px;
+    right: 18px;
+    bottom: 12px;
     user-select: none;
     pointer-events: none;
 }
