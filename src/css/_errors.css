@@ -1,36 +1,27 @@
 
-.tp-error {
-	font-family: var(--font-family);
-    font-weight: 200;
-    font-size: 12px;
-	background: #ff5370;
-	color: white;
-	padding: 2px 5px 3px; 
+.tp-error,
+.tp-warning {
+    position: relative;
+    font-family: var(--editor-font-family);
+    padding-left: 3em; /* Theoretically, aligns error text to the first tab stop */
+    padding-right: 10px;
 }
 
-.tp-error-icon {
-	color: white;
-	background-color: #ff5370;
-	font-weight: bold;
-	border-radius: 50%;
-	padding: 0 3px;
-	margin-right: 7px;
+.tp-error-icon,
+.tp-warning-icon {
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 3em; /* Centers the icon within the first tab stop */
+    text-align: center;
+}
+
+.tp-error {
+    background: #be1a20;
+    color: white;
 }
 
 .tp-warning {
-	font-family: var(--font-family);
-    font-weight: 200;
-    font-size: 12px;
-	background: #FFCC00;
-	color: black;
-	padding: 2px 5px 3px; 
-}
-
-.tp-warning-icon {
-	color: white;
-	background-color: #ff5370;
-	font-weight: bold;
-	border-radius: 50%;
-	padding: 0 3px;
-	margin-right: 7px;
+    background: #ffcc00;
+    color: black;
 }

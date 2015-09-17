@@ -38,8 +38,7 @@ export default class ErrorsManager {
         if (args.type !== undefined) {
             let msg = document.createElement('div');
             let icon = msg.appendChild(document.createElement('span'));
-            icon.innerHTML = 'X';
-            icon.className = 'tp-error-icon';
+            icon.className = 'btm bt-exclamation-triangle tp-error-icon';
             msg.appendChild(document.createTextNode(args.error.reason));
             msg.className = 'tp-error';
             this.widgets.push(TangramPlay.editor.addLineWidget(args.error.mark.line, msg, { coverGutter: false, noHScroll: true }));
@@ -59,8 +58,7 @@ export default class ErrorsManager {
 
                 let msg = document.createElement('div');
                 let icon = msg.appendChild(document.createElement('span'));
-                icon.innerHTML = '!!';
-                icon.className = 'tp-warning-icon';
+                icon.className = 'btm bt-exclamation-circle tp-warning-icon';
                 msg.appendChild(document.createTextNode(errors[i].message));
                 msg.className = 'tp-warning';
                 this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
