@@ -43,7 +43,7 @@ var updateContent = debounce(function(cm, changes) {
 
     if (TangramPlay.map.scene) {
         let url = createObjectURL(new Blob([content]));
-        TangramPlay.map.scene.reload(url);
+        TangramPlay.map.scene.reload(url, TangramPlay.map.scene.config_path);
     }
 }, 500);
 

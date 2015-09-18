@@ -6,6 +6,7 @@ export default class ErrorsManager {
     constructor() {
         //  private variables
         this.widgets = [];
+        this.block_errors = new Set();
 
         // EVENTS
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
@@ -31,6 +32,8 @@ export default class ErrorsManager {
 
             // Temporal Fix, consider WidgetManager to admin line widgtets
             TangramPlay.addons.widgetsManager.update();
+
+            this.block_errors.clear();
         }
     }
 
@@ -50,11 +53,27 @@ export default class ErrorsManager {
 
     addWarning(args) {
         if (args.type === 'styles') {
-            let address = '/styles/' + args.style.name + '/shaders/blocks/';
-            let errors = args['shader_errors'];
+            // Only show first error, cascading errors can be confusing
+            let errors = args['shader_errors'].slice(0, 1);
 
             for (let i = 0; i < errors.length; i++) {
-                let nLine = TangramPlay.getKeyForAddress(address + errors[i].block.name).pos.line + 1 + errors[i].block.line;
+                let style = errors[i].block.scope;
+
+                // Skip generic errors not originating in style-sheet
+                if (style === 'ShaderProgram') {
+                    continue;
+                }
+
+                let block = errors[i].block;
+
+                // De-dupe errors per block
+                if (this.block_errors.has(JSON.stringify(block))) {
+                    continue;
+                }
+                this.block_errors.add(JSON.stringify(block));
+
+                let address = '/styles/' + style + '/shaders/blocks/';
+                let nLine = TangramPlay.getKeyForAddress(address + block.name).pos.line + 1 + block.line;
 
                 let msg = document.createElement('div');
                 let icon = msg.appendChild(document.createElement('span'));
