@@ -88,10 +88,10 @@ function setInitialDisplayState () {
 }
 
 function setZoomLabel () {
-    let label = el.querySelector('.tp-map-zoom-indicator');
+    let label = el.querySelector('.tp-map-zoom-quantity');
     let currentZoom = map.getZoom();
     let fractionalNumber = Math.floor(currentZoom * 10) / 10;
-    label.innerHTML = 'z&#8202;' + fractionalNumber.toFixed(1).toString();
+    label.textContent = fractionalNumber.toFixed(1);
 }
 
 function setCurrentLocation () {
