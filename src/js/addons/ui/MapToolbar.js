@@ -58,7 +58,7 @@ function setupEventListeners () {
     });
     map.on('moveend', function (e) {
         search.setCurrentLocation();
-    })
+    });
 }
 
 function showToolbar () {

@@ -246,7 +246,7 @@ let map = tangramPlay.map.leaflet;
 let container = tangramPlay.container;
 
 export default tangramPlay;
-export { map };1
+export { map };
 export { container };
 
 tangramPlay.initAddons();

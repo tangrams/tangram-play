@@ -1,6 +1,7 @@
 'use strict';
 
 import TangramPlay from 'app/TangramPlay';
+import { container } from 'app/TangramPlay';
 import { noop } from 'app/addons/ui/Helpers';
 import EditorIO from 'app/addons/ui/EditorIO';
 import FileOpen from 'app/addons/ui/FileOpen';
@@ -11,7 +12,7 @@ import fullscreen from 'app/addons/ui/fullscreen';
 
 export default class Menu {
     constructor () {
-        this.el = TangramPlay.container.querySelector('.tp-menu-bar');
+        this.el = container.querySelector('.tp-menu-bar');
         this.menus = {};
         this.initMenuItems();
     }
@@ -29,10 +30,10 @@ export default class Menu {
 
         Tooltip.init();
 
-        TangramPlay.container.querySelector('.tp-menu-open-file').addEventListener('click', () => {
+        container.querySelector('.tp-menu-open-file').addEventListener('click', () => {
             this.fileopen.activate();
         }, false);
-        TangramPlay.container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
+        container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
             this.examplesModal.show();
         }, false);
     }
@@ -40,7 +41,7 @@ export default class Menu {
 
 export class MenuItem {
     constructor (classSelector, onClick = noop) {
-        this.el = TangramPlay.container.querySelector(classSelector);
+        this.el = container.querySelector(classSelector);
 
         // Attach listeners, including those for tooltip behavior
         this.el.addEventListener('click', (event) => {
@@ -57,14 +58,14 @@ export class MenuItem {
 }
 
 function _onClickOpen (event) {
-    let menuEl = TangramPlay.container.querySelector('.tp-menu-dropdown-open');
-    let posX = TangramPlay.container.querySelector('.tp-menu-button-open').getBoundingClientRect().left;
+    let menuEl = container.querySelector('.tp-menu-dropdown-open');
+    let posX = container.querySelector('.tp-menu-button-open').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
     }
-    TangramPlay.container.addEventListener('click', _onClickOutsideDropdown, false);
+    container.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _onClickNew (event) {
@@ -94,7 +95,7 @@ function _onClickOutsideDropdown (event) {
 
     if (!target.classList.contains('tp-menu-item')) {
         _loseMenuFocus();
-        TangramPlay.container.removeEventListener('click', _onClickOutsideDropdown, false);
+        container.removeEventListener('click', _onClickOutsideDropdown, false);
     }
 }
 
@@ -108,7 +109,7 @@ function _hideMenus () {
     for (let el of menus) {
         el.style.display = 'none';
     }
-    TangramPlay.container.removeEventListener('click', _onClickOutsideDropdown, false);
+    container.removeEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _resetTooltipState () {

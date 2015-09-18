@@ -25,6 +25,6 @@ const fullscreen = {
             }
         }
     }
-}
+};
 
 export default fullscreen;
