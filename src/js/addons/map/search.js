@@ -12,11 +12,15 @@ let resultsEl;
 let currentLocation;
 
 function init () {
-    // Cache reference to input element
+    // Cache reference to elements
     input = container.querySelector('.tp-map-search-input');
     latlngLabel = container.querySelector('.tp-map-latlng-label');
     resultsEl = container.querySelector('.tp-map-search-results');
-    input.addEventListener('keyup', onInputHandler, false);
+
+    input.addEventListener('keyup', onInputKeyupHandler, false);
+    input.addEventListener('keydown', onInputKeydownHandler, false);
+    input.addEventListener('focus', onInputFocusHandler, false);
+    resultsEl.addEventListener('click', onResultsClickHandler, false);
 }
 
 function setCurrentLocation () {
@@ -48,13 +52,106 @@ function reverseGeocode (latlng) {
     }), 300);
 }
 
-function onInputHandler (event) {
+function onInputKeyupHandler (event) {
+    let key = event.which || event.keyCode;
     let query = input.value.trim();
     if (query.length < 2) {
         clearResults();
         return;
     }
 
+    // Ignore all further action if the keycode matches an arrow
+    // key (handled via keydown event)
+    if (key === 13 || key === 38 || key === 40) {
+        return;
+    }
+
+    // keyCode 27 = esc key (esc should clear results)
+    if (key === 27) {
+        input.blur();
+        clearInput();
+        clearResults();
+        return;
+    }
+
+    suggest(query);
+}
+
+function onInputKeydownHandler (event) {
+    let key = event.which || event.keyCode;
+
+    var list = resultsEl.querySelectorAll('.tp-map-search-result');
+    var selected = resultsEl.querySelector('.tp-map-search-active');
+    var selectedPosition;
+
+    for (var i = 0; i < list.length; i++) {
+        if (list[i] === selected) {
+            selectedPosition = i;
+            break;
+        }
+    }
+
+    switch (event.keyCode) {
+        // 13 = enter
+        case 13:
+            if (selected) {
+                gotoSelectedResult(selected);
+            }
+            break;
+        // 38 = up arrow
+        case 38:
+          // Ignore key if there are no results or if list is not visible
+          if (!list || resultsEl.style.display === 'none') {
+            return;
+          }
+
+          if (selected) {
+            selected.classList.remove('tp-map-search-active');
+          }
+
+          let previousItem = list[selectedPosition - 1];
+
+          if (selected && previousItem) {
+            previousItem.classList.add('tp-map-search-active');
+          } else {
+            list[list.length - 1].classList.add('tp-map-search-active');
+          }
+          break;
+        // 40 = down arrow
+        case 40:
+            // Ignore key if there are no results or if list is not visible
+            if (!list || resultsEl.style.display === 'none') {
+                return;
+            }
+
+            if (selected) {
+                selected.classList.remove('tp-map-search-active');
+            }
+
+            let nextItem = list[selectedPosition + 1];
+
+            if (selected && nextItem) {
+                nextItem.classList.add('tp-map-search-active');
+            } else {
+                list[0].classList.add('tp-map-search-active');
+            }
+            break;
+        // all other keys
+        default:
+            break;
+    }
+}
+
+// Reruns query if input is focused while there is still input in there
+function onInputFocusHandler (event) {
+    let query = input.value.trim();
+    if (query.length >= 2) {
+        suggest(query);
+    }
+}
+
+// Get autocomplete suggestions
+function suggest (query) {
     let center = map.getCenter();
     let endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
 
@@ -66,6 +163,24 @@ function onInputHandler (event) {
             showResults(JSON.parse(res));
         }
     }), 300);
+}
+
+function onResultsClickHandler (event) {
+    var selected = event.target;
+    var findParent = function () {
+        if (selected.nodeName !== 'LI') {
+            selected = selected.parentElement;
+            findParent();
+        }
+        return selected;
+    };
+
+    // click event can be registered on the child nodes
+    // that does not have the required coords prop
+    // so its important to find the parent.
+    findParent();
+
+    gotoSelectedResult(selected);
 }
 
 function showResults (results) {
@@ -95,9 +210,17 @@ function showResults (results) {
     container.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
+function gotoSelectedResult (selectedEl) {
+    let coords = selectedEl.coords;
+    map.setView({ lat: coords[1], lng: coords[0] });
+    clearResults();
+    clearInput();
+}
+
 function clearResults () {
     resultsEl.innerHTML = '';
     resultsEl.style.display = 'none';
+    container.removeEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function clearInput () {
@@ -114,7 +237,6 @@ function _onClickOutsideDropdown (event) {
     if (!target.classList.contains('tp-map-search')) {
         clearResults();
         clearInput();
-        container.removeEventListener('click', _onClickOutsideDropdown, false);
     }
 }
 
