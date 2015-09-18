@@ -2,9 +2,11 @@
 
 /* Container for map and map-related UI */
 .tp-map-container {
-    position: fixed;
+    position: absolute;
+    left: 0;
+    top: 0;
     height: 100%;
-    width: 50%;
+    width: 50%; /* Starting position; this is overridden by scripts */
     overflow: hidden;
 }
 

@@ -19,10 +19,10 @@ export default class Map {
         // Create Leaflet map
         let map = L.map(mapElement, {
             zoomControl: false,
+            attributionControl: false,
             maxZoom: 24,
             keyboardZoomOffset: 0.05
         });
-        map.attributionControl.setPrefix('<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>');
         map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
         this.hash = new L.Hash(map);
 
