@@ -25,7 +25,7 @@
 .tp-geolocator:hover,
 .tp-geolocator.tp-geolocator-active {
     background-color: var(--ui-active-color);
-    color: var(--ui-component-text-color);
+    color: var(--ui-highlight-color);
 }
 
 .tp-geolocator.tp-geolocator-active,

@@ -25,6 +25,11 @@
     & > div:not(:last-child) {
         margin-right: 4px;
     }
+
+    ::-webkit-input-placeholder { color: #909195 }
+    :-moz-placeholder { color: #909195 }
+    ::-moz-placeholder { color: #909195 }
+    :-ms-input-placeholder { color: #909195 }
 }
 
 .tp-map-zoom {
@@ -65,13 +70,14 @@
 }
 
 .tp-map-search {
-    background-color: var(--ui-element-color);
-    overflow: hidden;
-    flex-grow: 1;
+    position: relative;
     display: flex;
+    flex-grow: 1;
+    background-color: var(--ui-element-color);
 }
 
-.tp-map-search-icon {
+.tp-map-search-icon,
+.tp-map-save-icon {
     display: inline-block;
     line-height: 38px;
     height: 38px;
@@ -79,10 +85,10 @@
     text-align: center;
     font-size: 12px;
     cursor: pointer;
-}
 
-.tp-map-search-icon:hover {
-    color: yellow;
+    &:hover {
+        color: var(--ui-highlight-color);
+    }
 }
 
 .tp-map-search-input {
@@ -97,11 +103,25 @@
     font-weight: 200;
     line-height: 28px;
     flex-grow: 1;
-    margin: 4px 4px 4px auto;
+    margin: 4px 8px 4px auto;
 
     &:focus {
-        border-bottom: 1px dotted #909090;
+        border-bottom: 1px dotted var(--ui-border-color);
     }
+
+    &[placeholder] { text-overflow: ellipsis; }
+    ::-moz-placeholder { text-overflow: ellipsis; } /* firefox 19+ */
+    &:-moz-placeholder { text-overflow: ellipsis; }
+}
+
+.tp-map-latlng-label {
+    font-size: 12px;
+    font-family: var(--font-family);
+    font-weight: 200;
+    line-height: 28px;
+    color: #909195; /* match placeholder text color */
+    margin: 5px auto;
+    user-select: auto;
 }
 
 .tp-map-toolbar-toggle {
@@ -121,5 +141,51 @@
         content: "\25BE";
         font-size: 14px;
         color: #777; /* match CM folding arrows */
+    }
+}
+
+.tp-map-search-results {
+    display: block;
+    flex: none;
+    position: absolute;
+    left: 0;
+    top: 38px;
+    width: 100%;
+    font-size: 12px;
+    background-color: var(--ui-component-color);
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    li {
+        padding: 10px;
+        border-top: 1px solid var(--ui-active-color);
+        cursor: pointer;
+        line-height: 1.4;
+    }
+
+    li:first-child {
+        border-top: 1px solid var(--ui-component-color);
+    }
+
+    li:hover,
+    li.tp-map-search-active {
+        background-color: var(--ui-active-color);
+    }
+
+    li > i {
+        display: inline-block;
+        width: 15px;
+        margin-right: 8px;
+        text-align: center;
+        font-size: 10px;
+    }
+
+    strong {
+        font-weight: inherit;
+        color: var(--ui-highlight-color);
     }
 }
