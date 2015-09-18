@@ -26,7 +26,7 @@ function setCurrentLocation () {
 function reverseGeocode (latlng) {
     let lat = latlng.lat;
     let lng = latlng.lng;
-    let endpoint = `//${PELIAS_HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&api_key=${PELIAS_KEY}`;
+    let endpoint = `//${PELIAS_HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${PELIAS_KEY}`;
 
     debounce(httpGet(endpoint, (err, res) => {
         if (err) {
