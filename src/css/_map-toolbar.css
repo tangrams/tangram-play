@@ -25,6 +25,11 @@
     & > div:not(:last-child) {
         margin-right: 4px;
     }
+
+    ::-webkit-input-placeholder { color: #909195 }
+    :-moz-placeholder { color: #909195 }
+    ::-moz-placeholder { color: #909195 }
+    :-ms-input-placeholder { color: #909195 }
 }
 
 .tp-map-zoom {
@@ -71,7 +76,8 @@
     display: flex;
 }
 
-.tp-map-search-icon {
+.tp-map-search-icon,
+.tp-map-save-icon {
     display: inline-block;
     line-height: 38px;
     height: 38px;
@@ -79,10 +85,10 @@
     text-align: center;
     font-size: 12px;
     cursor: pointer;
-}
 
-.tp-map-search-icon:hover {
-    color: yellow;
+    &:hover {
+        color: var(--ui-highlight-color);
+    }
 }
 
 .tp-map-search-input {
@@ -97,11 +103,25 @@
     font-weight: 200;
     line-height: 28px;
     flex-grow: 1;
-    margin: 4px 4px 4px auto;
+    margin: 4px 8px 4px auto;
 
     &:focus {
-        border-bottom: 1px dotted #909090;
+        border-bottom: 1px dotted var(--ui-border-color);
     }
+
+    &[placeholder] { text-overflow: ellipsis; }
+    ::-moz-placeholder { text-overflow: ellipsis; } /* firefox 19+ */
+    &:-moz-placeholder { text-overflow: ellipsis; }
+}
+
+.tp-map-latlng-label {
+    font-size: 12px;
+    font-family: var(--font-family);
+    font-weight: 200;
+    line-height: 28px;
+    color: #909195; /* match placeholder text color */
+    margin: 5px auto;
+    user-select: auto;
 }
 
 .tp-map-toolbar-toggle {
