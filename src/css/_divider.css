@@ -2,7 +2,7 @@
 
 .tp-divider {
     position: absolute;
-    left: 0;
+    left: 0; /* Starting position; this is overridden by scripts */
     top: 0;
     width: 8px;
     height: 100%;

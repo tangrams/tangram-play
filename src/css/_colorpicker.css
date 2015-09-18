@@ -6,7 +6,7 @@
     padding: 10px;
     background-color: var(--ui-component-color);
     overflow: hidden;
-    box-shadow: 0 0 0 5px rgba(0,0,0,0.20), 0 4px 8px 0 rgba(0,0,0,0.25);
+    box-shadow: var(--modal-shadow);
     user-select: none;
     z-index: 2000;
 }
