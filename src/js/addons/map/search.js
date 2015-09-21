@@ -26,7 +26,13 @@ function init () {
 function setCurrentLocation () {
     latlng = map.getCenter();
     latlngLabel.textContent = `${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`;
-    reverseGeocode(latlng);
+
+    // Does not update location if the no-update flag is false
+    // This is used to prevent an unnecessary additional request to Pelias
+    if (input.dataset.noUpdate !== 'true') {
+        reverseGeocode(latlng);
+    }
+    input.dataset.noUpdate = false;
 }
 
 function reverseGeocode (latlng) {
@@ -217,6 +223,10 @@ function showResults (results) {
 
 function gotoSelectedResult (selectedEl) {
     let coords = selectedEl.coords;
+    // Set placeholder immediately so there isn't a lag between the selection
+    // and the reverse geocoder kicking in with the right location
+    input.placeholder = selectedEl.textContent.trim();
+    input.dataset.noUpdate = true;
     map.setView({ lat: coords[1], lng: coords[0] });
     clearResults();
     clearInput();
