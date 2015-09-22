@@ -3,8 +3,8 @@
 import { map, container } from 'app/TangramPlay';
 import { httpGet, debounce } from 'app/core/common';
 
-const PELIAS_KEY = 'pelias-HC34Gr4';
-const PELIAS_HOST = 'pelias.mapzen.com';
+const PELIAS_KEY = 'search-xFAc9NI';
+const PELIAS_HOST = 'search.mapzen.com';
 let input;
 let latlngLabel;
 let latlng;
@@ -94,31 +94,36 @@ function onInputKeydownHandler (event) {
     switch (event.keyCode) {
         // 13 = enter
         case 13:
+            event.preventDefault();
             if (selected) {
                 gotoSelectedResult(selected);
             }
             break;
         // 38 = up arrow
         case 38:
-          // Ignore key if there are no results or if list is not visible
-          if (!list || resultsEl.style.display === 'none') {
-            return;
-          }
+            event.preventDefault();
 
-          if (selected) {
-            selected.classList.remove('tp-map-search-active');
-          }
+            // Ignore key if there are no results or if list is not visible
+            if (!list || resultsEl.style.display === 'none') {
+                return;
+            }
 
-          let previousItem = list[selectedPosition - 1];
+            if (selected) {
+                selected.classList.remove('tp-map-search-active');
+            }
 
-          if (selected && previousItem) {
-            previousItem.classList.add('tp-map-search-active');
-          } else {
-            list[list.length - 1].classList.add('tp-map-search-active');
-          }
-          break;
+            let previousItem = list[selectedPosition - 1];
+
+            if (selected && previousItem) {
+                previousItem.classList.add('tp-map-search-active');
+            } else {
+                list[list.length - 1].classList.add('tp-map-search-active');
+            }
+            break;
         // 40 = down arrow
         case 40:
+            event.preventDefault();
+
             // Ignore key if there are no results or if list is not visible
             if (!list || resultsEl.style.display === 'none') {
                 return;
