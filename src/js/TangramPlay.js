@@ -115,11 +115,21 @@ class TangramPlay {
         this.editor.isSaved = true;
     }
 
+    loadScene (url, { reset = false } = {}) {
+        if (!this.map.scene) {
+            return;
+        }
+
+        // Preserve scene base path unless reset requested (e.g. reset on new file load)
+        return this.map.scene.load(url, !reset && this.map.scene.config_path);
+    }
+
     loadFile (path) {
         MapLoading.show();
 
         httpGet(path, (err, res) => {
-            this.loadContent(res);
+            this.loadScene(path, { reset: true }).
+                then(() => this.loadContent(res));
 
             // Trigger Events
             this.trigger('url_loaded', { url: path });
