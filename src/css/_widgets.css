@@ -10,7 +10,7 @@
 }
 
 .tp-widget-colorpicker {
-    border: 1px solid transparent;
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 50%;
     width: 15px;
     height: 15px;
@@ -21,10 +21,6 @@
     /* position override */
     margin-top: -17px;
     margin-left: 6px;
-
-    &.tp-widget-colorpicker-contrast {
-        box-shadow: inset 0 0 0px 1px rgba(255,255,255,0.5);
-    }
 }
 
 select.tp-widget-dropdown {
