@@ -191,3 +191,21 @@
         color: var(--ui-highlight-color);
     }
 }
+
+.tp-map-bookmarks {
+    flex: none;
+    background-color: var(--ui-element-color);
+    color: var(--ui-component-text-color);
+}
+
+/* borrowing from map-nav button */
+.tp-map-bookmarks-button {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    line-height: 38px;
+    font-size: 12px;
+}

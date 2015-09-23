@@ -5,7 +5,7 @@
     position: fixed;
     box-sizing: border-box;
     width: 400px;
-    height: 160px;
+    min-height: 160px;
     padding: 30px;
     left: 50%;
     margin-left: -200px;
@@ -26,15 +26,14 @@
     display: inline-block;
     margin: 0;
     padding: 0;
+    line-height: 1.4;
     user-select: none;
 }
 
 .tp-modal-buttons {
-    position: absolute;
-    bottom: 30px;
-    left: 0;
     text-align: center;
     width: 100%;
+    margin-top: 30px;
 
     button {
         padding: 16px;
@@ -97,9 +96,11 @@
     text-align: left;
 
     .tp-modal-buttons {
+        position: absolute;
         text-align: right;
         width: auto;
         right: 30px;
+        bottom: 30px;
     }
 }
 
