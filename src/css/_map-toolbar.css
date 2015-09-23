@@ -37,6 +37,7 @@
     font-size: 0;
     flex: none;
     cursor: default;
+    white-space: nowrap;
 
     button {
         appearance: none;

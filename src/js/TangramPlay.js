@@ -254,10 +254,12 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
 
 let map = tangramPlay.map.leaflet;
 let container = tangramPlay.container;
+let editor = tangramPlay.editor;
 
 export default tangramPlay;
 export { map };
 export { container };
+export { editor };
 
 tangramPlay.initAddons();
 new UI();

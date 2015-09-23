@@ -1,13 +1,15 @@
 'use strict';
 
+import TangramPlay from 'app/TangramPlay';
 import { map, container } from 'app/TangramPlay';
 import { httpGet, debounce } from 'app/core/common';
 
 const PELIAS_KEY = 'search-xFAc9NI';
 const PELIAS_HOST = 'search.mapzen.com';
 let input;
-let latlngLabel;
 let latlng;
+let latlngLabel;
+let latlngLabelPrecision = 4;
 let resultsEl;
 let currentLocation;
 
@@ -21,11 +23,13 @@ function init () {
     input.addEventListener('keydown', onInputKeydownHandler, false);
     input.addEventListener('focus', onInputFocusHandler, false);
     resultsEl.addEventListener('click', onResultsClickHandler, false);
+
+    TangramPlay.on('resize', onDividerMove);
 }
 
 function setCurrentLocation () {
     latlng = map.getCenter();
-    latlngLabel.textContent = `${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`;
+    latlngLabel.textContent = `${latlng.lat.toFixed(latlngLabelPrecision)}, ${latlng.lng.toFixed(latlngLabelPrecision)}`;
 
     // Does not update location if the no-update flag is false
     // This is used to prevent an unnecessary additional request to Pelias
@@ -218,7 +222,7 @@ function showResults (results) {
         listEl.appendChild(resultItem);
     }
 
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    container.addEventListener('click', onClickOutsideDropdown, false);
 }
 
 function gotoSelectedResult (selectedEl) {
@@ -235,14 +239,14 @@ function gotoSelectedResult (selectedEl) {
 function clearResults () {
     resultsEl.innerHTML = '';
     resultsEl.style.display = 'none';
-    container.removeEventListener('click', _onClickOutsideDropdown, false);
+    container.removeEventListener('click', onClickOutsideDropdown, false);
 }
 
 function clearInput () {
     input.value = '';
 }
 
-function _onClickOutsideDropdown (event) {
+function onClickOutsideDropdown (event) {
     let target = event.target;
 
     while (target !== document.documentElement && !target.classList.contains('tp-map-search')) {
@@ -253,6 +257,22 @@ function _onClickOutsideDropdown (event) {
         clearResults();
         clearInput();
     }
+}
+
+function onDividerMove (event) {
+    // Updates the precision of the lat-lng display label
+    // based on the available screen width
+    input.dataset.noUpdate = true;
+    if (event.mapX < 600) {
+        latlngLabelPrecision = 2;
+    }
+    else if (event.mapX < 700) {
+        latlngLabelPrecision = 3;
+    }
+    else {
+        latlngLabelPrecision = 4;
+    }
+    setCurrentLocation();
 }
 
 function highlight (text, focus) {
