@@ -1,6 +1,7 @@
 'use strict';
 
 import TangramPlay from 'app/TangramPlay';
+import { map, editor } from 'app/TangramPlay';
 import LocalStorage from 'app/addons/LocalStorage';
 
 // Import Greensock (GSAP)
@@ -57,9 +58,6 @@ export default class Divider {
         });
 
         this.reflow();
-
-        // Create Events
-        this.onResize = new CustomEvent('resize');
     }
 
     reflow() {
@@ -72,16 +70,22 @@ export default class Divider {
         mapEl.style.width = positionX + 'px';
         contentEl.style.width = (window.innerWidth - positionX) + 'px';
 
-        TangramPlay.editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
+        editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
         this.el.style.height = (window.innerHeight - menuBottom) + 'px';
+
+        // Triggers resize event to reposition editor widgets
+        // Sends positioning data to subscribers
+        TangramPlay.trigger('resize', {
+            mapX: positionX,
+            contentX: window.innerWidth - positionX
+        });
     }
 
     update() {
-        TangramPlay.map.leaflet.invalidateSize(false);
+        // We update the map on the end of the drag because
+        // of horrible flickering of the map in Chrome
+        map.invalidateSize(false);
         this.draggable[0].applyBounds(getBounds());
-
-        // Trigger Events
-        TangramPlay.trigger('resize', { });
     }
 
     savePosition() {
