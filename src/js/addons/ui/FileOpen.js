@@ -21,7 +21,7 @@ function constructInvisibleFileInputElement () {
     fileSelector.style.display = 'none';
     fileSelector.addEventListener('change', function (event) {
         const files = event.target.files;
-        EditorIO.loadContent(files[0]);
+        EditorIO.loadContentFromFile(files[0]);
     });
     return fileSelector;
 }
