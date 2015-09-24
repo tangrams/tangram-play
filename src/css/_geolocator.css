@@ -2,38 +2,20 @@
 
 .tp-geolocator {
     flex: none;
-    background-color: var(--ui-element-color);
-    color: var(--ui-component-text-color);
 }
 
 /* borrowing from map-nav button */
 .tp-geolocator-button {
-    position: relative;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    text-align: center;
-    overflow: hidden;
-    line-height: 38px;
-    font-size: 12px;
-
     i.bt-spin {
         display: none;
     }
 }
 
-.tp-geolocator:hover,
-.tp-geolocator.tp-geolocator-active {
-    background-color: var(--ui-active-color);
-    color: var(--ui-highlight-color);
-}
-
-.tp-geolocator.tp-geolocator-active,
-.tp-geolocator.tp-geolocator-active:hover {
+.tp-geolocator-button.tp-active {
     i.bt-map-arrow {
         display: none;
     }
     i.bt-spin {
-        display: inline;
+        display: inline-block;
     }
 }

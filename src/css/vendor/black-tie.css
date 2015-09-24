@@ -5,6 +5,12 @@
  * -------------------------- */
 @font-face {
   font-family: 'Black Tie';
+  src: url('../../data/fonts/BlackTie-Solid-webfont.woff2?v=1.0.0') format('woff2'), url('../../data/fonts/BlackTie-Solid-webfont.woff?v=1.0.0') format('woff'), url('../../data/fonts/BlackTie-Solid-webfont.ttf?v=1.0.0') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Black Tie';
   src: url('../../data/fonts/BlackTie-Medium-webfont.woff2?v=1.0.0') format('woff2'), url('../../data/fonts/BlackTie-Medium-webfont.woff?v=1.0.0') format('woff'), url('../../data/fonts/BlackTie-Medium-webfont.ttf?v=1.0.0') format('truetype');
   font-weight: 400;
   font-style: normal;

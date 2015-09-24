@@ -17,6 +17,7 @@ import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from 'app/core/codemi
 import { getKeyPairs, getValueRange, getAddressSceneContent } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
+const DEFAULT_STYLE = 'data/styles/default.yaml';
 
 class TangramPlay {
     constructor(selector, options) {
@@ -29,7 +30,7 @@ class TangramPlay {
         }
 
         if (options.style === undefined) {
-            options.style = 'data/styles/basic.yaml';
+            options.style = DEFAULT_STYLE;
         }
 
         this.container = document.querySelector(selector);
@@ -138,7 +139,7 @@ class TangramPlay {
 
     loadQuery() {
         let query = parseQuery(window.location.search.slice(1));
-        let src = query['style'] ? query['style'] : 'data/styles/basic.yaml';
+        let src = query['style'] ? query['style'] : DEFAULT_STYLE;
         this.loadFile(src);
     }
 
@@ -243,7 +244,7 @@ function parseQuery (qstr) {
 // Export an instance of TangramPlay with the following modules
 
 let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
-    style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
+    style: query['style'] ? query['style'] : DEFAULT_STYLE,
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
