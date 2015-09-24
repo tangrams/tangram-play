@@ -201,7 +201,7 @@ function onResultsClickHandler (event) {
     let selected = event.target;
 
     const findParent = function () {
-        if (selected.nodeName !== 'LI') {
+        if (selected && selected.nodeName !== 'LI') {
             selected = selected.parentElement;
             findParent();
         }
@@ -213,7 +213,9 @@ function onResultsClickHandler (event) {
     // so its important to find the parent.
     findParent();
 
-    gotoSelectedResult(selected);
+    if (selected){
+        gotoSelectedResult(selected);
+    }
 }
 
 function showResults (results) {
