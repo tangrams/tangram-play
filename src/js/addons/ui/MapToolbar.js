@@ -3,7 +3,7 @@
 import LocalStorage from 'app/addons/LocalStorage';
 import { map, container } from 'app/TangramPlay';
 import search from 'app/addons/map/search';
-import geolocator from 'app/addons/ui/Geolocator';
+import geolocator from 'app/addons/map/geolocator';
 
 let el;
 

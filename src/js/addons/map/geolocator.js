@@ -9,11 +9,11 @@ function init () {
     const geolocator = window.navigator.geolocation;
 
     // Cache a reference to the element
-    buttonEl = document.getElementById('tp-geolocator');
+    buttonEl = document.getElementById('geolocator');
 
     // Hide the geolocator button if geolocation is not supported on the browser
     if (!geolocator) {
-        buttonEl.style.display = 'none';
+        buttonEl.parentNode.style.display = 'none';
     }
     // If enabled, attach an event listener to it
     else {
