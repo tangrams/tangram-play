@@ -48,13 +48,11 @@ layers:
                 width: 5
     buildings:
         data: { source: osm }
-        filter: { $zoom: { min: 14 } }
         draw:
             polygons:
                 order: 50
                 color: '#999'
         extruded:
-            filter: { $zoom: { min: 15 } }
             draw:
                 polygons:
                     style: buildings
