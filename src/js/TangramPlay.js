@@ -113,6 +113,7 @@ class TangramPlay {
         str = str.replace(/\?api_key\=(\w|\-)*$/gm, '');
 
         this.editor.setValue(str);
+        this.editor.clearHistory();
         this.editor.isSaved = true;
     }
 
