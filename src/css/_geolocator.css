@@ -11,10 +11,7 @@
     }
 }
 
-.tp-geolocator-button.tp-geolocator-active {
-    background-color: var(--ui-active-color);
-    color: var(--ui-highlight-color);
-
+.tp-geolocator-button.tp-active {
     i.bt-map-arrow {
         display: none;
     }

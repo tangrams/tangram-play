@@ -98,6 +98,13 @@
     }
 }
 
+.tp-map-save-icon-active {
+    color: var(--ui-highlight-color);
+    > i {
+        font-weight: 700; /* Switches state to solid icon */
+    }
+}
+
 .tp-map-search-input {
     background-color: transparent;
     appearance: none;
@@ -152,13 +159,11 @@
     }
 }
 
-.tp-map-search-results {
+.tp-map-search-results,
+.tp-map-bookmarks-menu {
     display: block;
     flex: none;
     position: absolute;
-    left: 0;
-    top: 38px;
-    width: 100%;
     font-size: 12px;
     background-color: var(--ui-component-color);
 
@@ -198,20 +203,18 @@
     }
 }
 
-.tp-map-bookmarks {
-    flex: none;
-    background-color: var(--ui-element-color);
-    color: var(--ui-component-text-color);
+.tp-map-search-results {
+    left: 0;
+    top: 38px;
+    width: 100%;
 }
 
-/* borrowing from map-nav button */
-.tp-map-bookmarks-button {
-    position: relative;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    text-align: center;
-    overflow: hidden;
-    line-height: 38px;
-    font-size: 12px;
+.tp-map-bookmarks-menu {
+    right: 0;
+    min-width: 200px;
+}
+
+.tp-map-bookmark-meta {
+    color: var(--ui-border-color);
+    margin-left: 27px;
 }
