@@ -218,7 +218,7 @@ function showResults (results) {
         var resultItem = document.createElement('li');
         resultItem.className = 'tp-map-search-result';
         resultItem.coords = feature.geometry.coordinates;
-        resultItem.innerHTML += '<i class="btb bt-map-marker"></i> ' + highlight(feature.properties.label, input.value.trim());
+        resultItem.innerHTML += '<i class="bts bt-map-marker"></i> ' + highlight(feature.properties.label, input.value.trim());
         listEl.appendChild(resultItem);
     }
 
