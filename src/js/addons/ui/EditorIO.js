@@ -33,7 +33,8 @@ const EditorIO = {
     },
     newContent () {
         // TODO: Don't hack
-        window.location.href = '.';
+        // window.location.href = '.';
+        window.location.href = '?style=data/styles/empty.yaml';
     },
     loadContent (content) {
         const reader = new FileReader();

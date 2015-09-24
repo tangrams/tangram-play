@@ -29,7 +29,7 @@ class TangramPlay {
         }
 
         if (options.style === undefined) {
-            options.style = 'data/styles/basic.yaml';
+            options.style = 'data/styles/empty.yaml';
         }
 
         this.container = document.querySelector(selector);
@@ -138,7 +138,7 @@ class TangramPlay {
 
     loadQuery() {
         let query = parseQuery(window.location.search.slice(1));
-        let src = query['style'] ? query['style'] : 'data/styles/basic.yaml';
+        let src = query['style'] ? query['style'] : 'data/styles/empty.yaml';
         this.loadFile(src);
     }
 
@@ -243,7 +243,7 @@ function parseQuery (qstr) {
 // Export an instance of TangramPlay with the following modules
 
 let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
-    style: query['style'] ? query['style'] : 'data/styles/basic.yaml',
+    style: query['style'] ? query['style'] : 'data/styles/default.yaml',
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
