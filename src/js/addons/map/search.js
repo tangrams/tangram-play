@@ -3,26 +3,37 @@
 import TangramPlay from 'app/TangramPlay';
 import { map, container } from 'app/TangramPlay';
 import { httpGet, debounce } from 'app/core/common';
+import bookmarks from 'app/addons/map/bookmarks';
 
 const PELIAS_KEY = 'search-xFAc9NI';
 const PELIAS_HOST = 'search.mapzen.com';
+
+let searchEl;
 let input;
 let latlng;
 let latlngLabel;
 let latlngLabelPrecision = 4;
 let resultsEl;
+let saveEl;
 let currentLocation;
 
 function init () {
     // Cache reference to elements
-    input = container.querySelector('.tp-map-search-input');
-    latlngLabel = container.querySelector('.tp-map-latlng-label');
-    resultsEl = container.querySelector('.tp-map-search-results');
+    searchEl = container.querySelector('.tp-map-search');
+    input = searchEl.querySelector('.tp-map-search-input');
+    latlngLabel = searchEl.querySelector('.tp-map-latlng-label');
+    resultsEl = searchEl.querySelector('.tp-map-search-results');
+    saveEl = searchEl.querySelector('.tp-map-save-icon');
 
     input.addEventListener('keyup', onInputKeyupHandler, false);
     input.addEventListener('keydown', onInputKeydownHandler, false);
     input.addEventListener('focus', onInputFocusHandler, false);
     resultsEl.addEventListener('click', onResultsClickHandler, false);
+    saveEl.addEventListener('click', onSaveClickHandler, false);
+
+    searchEl.querySelector('.tp-map-search-icon').addEventListener('click', e => {
+        input.focus();
+    });
 
     TangramPlay.on('resize', onDividerMove);
 }
@@ -35,14 +46,18 @@ function setCurrentLocation () {
     // This is used to prevent an unnecessary additional request to Pelias
     if (input.dataset.noUpdate !== 'true') {
         reverseGeocode(latlng);
+
+        // Reset save icon
+        // TODO: Be smarter about when this happens
+        resetSaveIcon();
     }
     input.dataset.noUpdate = false;
 }
 
 function reverseGeocode (latlng) {
-    let lat = latlng.lat;
-    let lng = latlng.lng;
-    let endpoint = `//${PELIAS_HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${PELIAS_KEY}`;
+    const lat = latlng.lat;
+    const lng = latlng.lng;
+    const endpoint = `//${PELIAS_HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${PELIAS_KEY}`;
 
     debounce(httpGet(endpoint, (err, res) => {
         if (err) {
@@ -63,8 +78,8 @@ function reverseGeocode (latlng) {
 }
 
 function onInputKeyupHandler (event) {
-    let key = event.which || event.keyCode;
-    let query = input.value.trim();
+    const key = event.which || event.keyCode;
+    const query = input.value.trim();
     if (query.length < 2) {
         clearResults();
         return;
@@ -88,20 +103,20 @@ function onInputKeyupHandler (event) {
 }
 
 function onInputKeydownHandler (event) {
-    let key = event.which || event.keyCode;
+    const key = event.which || event.keyCode;
 
-    var list = resultsEl.querySelectorAll('.tp-map-search-result');
-    var selected = resultsEl.querySelector('.tp-map-search-active');
-    var selectedPosition;
+    const list = resultsEl.querySelectorAll('.tp-map-search-result');
+    const selected = resultsEl.querySelector('.tp-map-search-active');
+    let selectedPosition;
 
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
         if (list[i] === selected) {
             selectedPosition = i;
             break;
         }
     }
 
-    switch (event.keyCode) {
+    switch (key) {
         // 13 = enter
         case 13:
             event.preventDefault();
@@ -126,7 +141,8 @@ function onInputKeydownHandler (event) {
 
             if (selected && previousItem) {
                 previousItem.classList.add('tp-map-search-active');
-            } else {
+            }
+            else {
                 list[list.length - 1].classList.add('tp-map-search-active');
             }
             break;
@@ -147,7 +163,8 @@ function onInputKeydownHandler (event) {
 
             if (selected && nextItem) {
                 nextItem.classList.add('tp-map-search-active');
-            } else {
+            }
+            else {
                 list[0].classList.add('tp-map-search-active');
             }
             break;
@@ -159,7 +176,7 @@ function onInputKeydownHandler (event) {
 
 // Reruns query if input is focused while there is still input in there
 function onInputFocusHandler (event) {
-    let query = input.value.trim();
+    const query = input.value.trim();
     if (query.length >= 2) {
         suggest(query);
     }
@@ -167,8 +184,8 @@ function onInputFocusHandler (event) {
 
 // Get autocomplete suggestions
 function suggest (query) {
-    let center = map.getCenter();
-    let endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
+    const center = map.getCenter();
+    const endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
 
     debounce(httpGet(endpoint, (err, res) => {
         if (err) {
@@ -181,8 +198,9 @@ function suggest (query) {
 }
 
 function onResultsClickHandler (event) {
-    var selected = event.target;
-    var findParent = function () {
+    let selected = event.target;
+
+    const findParent = function () {
         if (selected.nodeName !== 'LI') {
             selected = selected.parentElement;
             findParent();
@@ -199,7 +217,7 @@ function onResultsClickHandler (event) {
 }
 
 function showResults (results) {
-    var features = results.features;
+    const features = results.features;
 
     if (features.length === 0) {
         return;
@@ -209,24 +227,24 @@ function showResults (results) {
     resultsEl.innerHTML = '';
     resultsEl.style.display = 'block';
 
-    var listEl = document.createElement('ul');
+    const listEl = document.createElement('ul');
     listEl.className = 'tp-map-search-results-list';
     resultsEl.appendChild(listEl);
 
-    for (var i = 0, j = features.length; i < j; i++) {
-        var feature = features[i];
-        var resultItem = document.createElement('li');
+    for (let i = 0, j = features.length; i < j; i++) {
+        const feature = features[i];
+        const resultItem = document.createElement('li');
         resultItem.className = 'tp-map-search-result';
         resultItem.coords = feature.geometry.coordinates;
-        resultItem.innerHTML += '<i class="btb bt-map-marker"></i> ' + highlight(feature.properties.label, input.value.trim());
+        resultItem.innerHTML += '<i class="bts bt-map-marker"></i> ' + highlight(feature.properties.label, input.value.trim());
         listEl.appendChild(resultItem);
     }
 
-    container.addEventListener('click', onClickOutsideDropdown, false);
+    container.addEventListener('click', onClickOutsideMenu, false);
 }
 
 function gotoSelectedResult (selectedEl) {
-    let coords = selectedEl.coords;
+    const coords = selectedEl.coords;
     // Set placeholder immediately so there isn't a lag between the selection
     // and the reverse geocoder kicking in with the right location
     input.placeholder = selectedEl.textContent.trim();
@@ -239,14 +257,14 @@ function gotoSelectedResult (selectedEl) {
 function clearResults () {
     resultsEl.innerHTML = '';
     resultsEl.style.display = 'none';
-    container.removeEventListener('click', onClickOutsideDropdown, false);
+    container.removeEventListener('click', onClickOutsideMenu, false);
 }
 
 function clearInput () {
     input.value = '';
 }
 
-function onClickOutsideDropdown (event) {
+function onClickOutsideMenu (event) {
     let target = event.target;
 
     while (target !== document.documentElement && !target.classList.contains('tp-map-search')) {
@@ -259,6 +277,30 @@ function onClickOutsideDropdown (event) {
     }
 }
 
+function onSaveClickHandler (event) {
+    let data = getCurrentMapViewData();
+    if (bookmarks.saveBookmark(data) === true) {
+        saveEl.classList.add('tp-map-save-icon-active');
+    }
+}
+
+function resetSaveIcon () {
+    saveEl.classList.remove('tp-map-save-icon-active');
+}
+
+function getCurrentMapViewData () {
+    let center = map.getCenter();
+    let zoom = map.getZoom();
+    let label = input.placeholder;
+    return {
+        label,
+        lat: center.lat,
+        lng: center.lng,
+        zoom,
+        _date: new Date().toJSON()
+    };
+}
+
 function onDividerMove (event) {
     // Updates the precision of the lat-lng display label
     // based on the available screen width
@@ -266,7 +308,7 @@ function onDividerMove (event) {
     if (event.mapX < 600) {
         latlngLabelPrecision = 2;
     }
-    else if (event.mapX < 700) {
+    else if (event.mapX < 800) {
         latlngLabelPrecision = 3;
     }
     else {

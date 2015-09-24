@@ -1,9 +1,10 @@
 'use strict';
 
-import Geolocator from 'app/addons/ui/Geolocator';
 import LocalStorage from 'app/addons/LocalStorage';
 import { map, container } from 'app/TangramPlay';
 import search from 'app/addons/map/search';
+import geolocator from 'app/addons/map/geolocator';
+import bookmarks from 'app/addons/map/bookmarks';
 
 let el;
 
@@ -13,13 +14,13 @@ const MapToolbar = {
     init () {
         el = container.querySelector('.tp-map-toolbar');
         search.init();
+        geolocator.init();
+        bookmarks.init();
 
         setupEventListeners();
         setInitialDisplayState();
         setZoomLabel();
         search.setCurrentLocation();
-
-        new Geolocator();
     },
 
     toggle () {
@@ -43,9 +44,6 @@ function setupEventListeners () {
         map.zoomOut(1, { animate: true });
         setZoomLabel();
     }, false);
-    el.querySelector('.tp-map-search-icon').addEventListener('click', e => {
-        el.querySelector('.tp-map-search-input').focus();
-    });
 
     // Close
     el.querySelector('.tp-map-toolbar-toggle').addEventListener('click', e => {
