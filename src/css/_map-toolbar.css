@@ -34,6 +34,7 @@
     /* Much dislike Black Tie's pick of font smoothing */
     .btm {
         -webkit-font-smoothing: auto;
+        -moz-osx-font-smoothing: auto;
     }
 
     button {
@@ -48,6 +49,11 @@
         color: var(--ui-component-text-color);
         cursor: pointer;
         outline: none;
+    }
+
+    button.tp-active {
+        background-color: var(--ui-active-color);
+        color: var(--ui-highlight-color);
     }
 
     button:hover {
@@ -98,8 +104,10 @@
     }
 }
 
-.tp-map-save-icon-active {
-    color: var(--ui-highlight-color);
+.tp-map-save-icon.tp-active {
+    /* Overrides default .tp-active helper */
+    background-color: transparent;
+
     > i {
         font-weight: 700; /* Switches state to solid icon */
     }
@@ -212,6 +220,10 @@
 .tp-map-bookmarks-menu {
     right: 0;
     min-width: 200px;
+}
+
+.tp-map-bookmarks-message {
+    padding: 10px;
 }
 
 .tp-map-bookmark-meta {

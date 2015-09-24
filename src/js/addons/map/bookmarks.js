@@ -52,29 +52,33 @@ function saveBookmark (newBookmark) {
 function showMenu () {
     let bookmarks = readData().data;
 
-    if (bookmarks.length === 0) {
-        return;
-    }
-
     // Reset and display menu container
     menuEl.innerHTML = '';
     menuEl.style.display = 'block';
 
-    const listEl = document.createElement('ul');
-    listEl.className = 'tp-map-bookmarks-list';
-    menuEl.appendChild(listEl);
+    if (bookmarks.length === 0) {
+        const msgEl = document.createElement('div');
+        msgEl.className = 'tp-map-bookmarks-message';
+        msgEl.textContent = 'No bookmarks yet!';
+        menuEl.appendChild(msgEl);
+    }
+    else {
+        const listEl = document.createElement('ul');
+        listEl.className = 'tp-map-bookmarks-list';
+        menuEl.appendChild(listEl);
 
-    for (let i = 0, j = bookmarks.length; i < j; i++) {
-        const bookmark = bookmarks[i];
-        const bookmarkEl = document.createElement('li');
+        for (let i = 0, j = bookmarks.length; i < j; i++) {
+            const bookmark = bookmarks[i];
+            const bookmarkEl = document.createElement('li');
 
-        let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
+            let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
 
-        bookmarkEl.className = 'tp-map-bookmark-item';
-        bookmarkEl.coordinates = { lat: bookmark.lat, lng: bookmark.lng };
-        bookmarkEl.zoom = bookmark.zoom;
-        bookmarkEl.innerHTML += `<i class='bts bt-map-marker'></i> <span class='tp-map-bookmark-label'>${bookmark.label}</span> <br><span class='tp-map-bookmark-meta'>${bookmark.lat.toFixed(4)}, ${bookmark.lng.toFixed(4)}, z&#8202;${fractionalZoom.toFixed(1)}</span>`;
-        listEl.appendChild(bookmarkEl);
+            bookmarkEl.className = 'tp-map-bookmark-item';
+            bookmarkEl.coordinates = { lat: bookmark.lat, lng: bookmark.lng };
+            bookmarkEl.zoom = bookmark.zoom;
+            bookmarkEl.innerHTML += `<i class='bts bt-map-marker'></i> <span class='tp-map-bookmark-label'>${bookmark.label}</span> <br><span class='tp-map-bookmark-meta'>${bookmark.lat.toFixed(4)}, ${bookmark.lng.toFixed(4)}, z&#8202;${fractionalZoom.toFixed(1)}</span>`;
+            listEl.appendChild(bookmarkEl);
+        }
     }
 
     buttonEl.classList.add('tp-active');
@@ -93,7 +97,7 @@ function onMenuClickHandler (event) {
     let selected = event.target;
 
     const findParent = function () {
-        if (selected.nodeName !== 'LI') {
+        if (selected && selected.nodeName !== 'LI') {
             selected = selected.parentElement;
             findParent();
         }
@@ -105,7 +109,9 @@ function onMenuClickHandler (event) {
     // so its important to find the parent.
     findParent();
 
-    gotoBookmark(selected);
+    if (selected) {
+        gotoBookmark(selected);
+    }
 }
 
 function gotoBookmark (selectedEl) {
@@ -114,6 +120,13 @@ function gotoBookmark (selectedEl) {
     map.setView(coordinates);
     map.setZoom(zoom);
     clearMenu();
+
+    // When you select a bookmark, highlight the star to indicate that
+    // it's a location you saved.
+    // TODO: This is hacky, do this better, elsewhere
+    window.setTimeout(function () {
+        container.querySelector('.tp-map-save-icon').classList.add('tp-active');
+    }, 0);
 }
 
 function onClickOutsideMenu (event) {

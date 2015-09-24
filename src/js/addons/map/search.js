@@ -201,7 +201,7 @@ function onResultsClickHandler (event) {
     let selected = event.target;
 
     const findParent = function () {
-        if (selected.nodeName !== 'LI') {
+        if (selected && selected.nodeName !== 'LI') {
             selected = selected.parentElement;
             findParent();
         }
@@ -213,7 +213,9 @@ function onResultsClickHandler (event) {
     // so its important to find the parent.
     findParent();
 
-    gotoSelectedResult(selected);
+    if (selected){
+        gotoSelectedResult(selected);
+    }
 }
 
 function showResults (results) {
@@ -280,12 +282,12 @@ function onClickOutsideMenu (event) {
 function onSaveClickHandler (event) {
     let data = getCurrentMapViewData();
     if (bookmarks.saveBookmark(data) === true) {
-        saveEl.classList.add('tp-map-save-icon-active');
+        saveEl.classList.add('tp-active');
     }
 }
 
 function resetSaveIcon () {
-    saveEl.classList.remove('tp-map-save-icon-active');
+    saveEl.classList.remove('tp-active');
 }
 
 function getCurrentMapViewData () {
