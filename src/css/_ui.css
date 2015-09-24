@@ -2,6 +2,5 @@
 
 /* Generic active class */
 .tp-active {
-  background-color: var(--ui-active-color) !important;
-  color: var(--ui-highlight-color) !important;
+  color: var(--ui-highlight-color);
 }

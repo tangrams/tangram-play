@@ -282,12 +282,12 @@ function onClickOutsideMenu (event) {
 function onSaveClickHandler (event) {
     let data = getCurrentMapViewData();
     if (bookmarks.saveBookmark(data) === true) {
-        saveEl.classList.add('tp-map-save-icon-active');
+        saveEl.classList.add('tp-active');
     }
 }
 
 function resetSaveIcon () {
-    saveEl.classList.remove('tp-map-save-icon-active');
+    saveEl.classList.remove('tp-active');
 }
 
 function getCurrentMapViewData () {

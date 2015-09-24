@@ -120,6 +120,13 @@ function gotoBookmark (selectedEl) {
     map.setView(coordinates);
     map.setZoom(zoom);
     clearMenu();
+
+    // When you select a bookmark, highlight the star to indicate that
+    // it's a location you saved.
+    // TODO: This is hacky, do this better, elsewhere
+    window.setTimeout(function () {
+        container.querySelector('.tp-map-save-icon').classList.add('tp-active');
+    }, 0);
 }
 
 function onClickOutsideMenu (event) {
