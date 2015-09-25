@@ -114,7 +114,7 @@ class TangramPlay {
 
         this.editor.setValue(str);
         this.editor.clearHistory();
-        this.editor.isSaved = true;
+        this.editor.doc.markClean();
     }
 
     loadScene (url, { reset = false } = {}) {

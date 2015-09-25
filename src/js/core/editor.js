@@ -118,16 +118,11 @@ export function initEditor(place) {
     });
 
     cm.tangramPlay = TangramPlay;
-    cm.isSaved = true;
 
     //  Hook events
 
     // Update widgets & content after a batch of changes
     cm.on('changes', function(cm, changes) {
-        if (cm.isSaved) {
-            cm.isSaved = false;
-        }
-
         updateContent(cm, changes);
     });
 
