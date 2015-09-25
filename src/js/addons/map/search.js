@@ -293,7 +293,7 @@ function resetSaveIcon () {
 function getCurrentMapViewData () {
     let center = map.getCenter();
     let zoom = map.getZoom();
-    let label = input.placeholder;
+    let label = input.placeholder || 'Unknown location';
     return {
         label,
         lat: center.lat,
