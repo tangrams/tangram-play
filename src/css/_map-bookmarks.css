@@ -1,0 +1,13 @@
+
+.tp-bookmark-message {
+    padding: 10px;
+}
+
+.tp-bookmark-meta {
+    color: var(--ui-border-color);
+    margin-left: 27px;
+}
+
+.tp-bookmark-clear {
+     text-align: center;
+}

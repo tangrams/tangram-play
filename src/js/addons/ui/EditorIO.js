@@ -5,15 +5,17 @@ import { saveAs } from 'app/vendor/FileSaver.min.js';
 import { noop } from 'app/addons/ui/Helpers';
 import Modal from 'app/addons/ui/Modal';
 
+const NEW_STYLE_PATH = 'data/styles/empty.yaml';
+
 const EditorIO = {
     open (file) {
         this.checkSaveStateThen(() => {
-            this.loadContent(file);
+            this.loadContentFromFile(file);
         });
     },
     new () {
         this.checkSaveStateThen(() => {
-            this.newContent();
+            this.loadContentFromPath(NEW_STYLE_PATH);
         });
     },
     export () {
@@ -31,14 +33,18 @@ const EditorIO = {
             callback();
         }
     },
-    newContent () {
-        // TODO: Don't hack
-        // window.location.href = '.';
-        window.location.href = '?style=data/styles/empty.yaml';
+    loadContentFromPath (path) {
+        window.history.pushState({
+            loadStyleURL: path
+        }, null, '.?style=' + path + window.location.hash);
+        TangramPlay.loadQuery();
     },
-    loadContent (content) {
+    loadContentFromFile (content) {
         const reader = new FileReader();
         reader.onload = function (event) {
+            window.history.pushState({
+                loadStyleURL: null
+            }, null, '.' + window.location.hash);
             TangramPlay.loadContent(event.target.result);
         };
         reader.readAsText(content);

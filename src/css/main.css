@@ -65,4 +65,5 @@
 @import '_leaflet-overrides';
 @import '_map-loading';
 @import '_map-toolbar';
+@import '_map-bookmarks';
 @import '_geolocator';

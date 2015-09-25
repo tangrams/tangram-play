@@ -49,13 +49,14 @@ export default class Modal {
         this.el.querySelector('.tp-modal-cancel').removeEventListener('click', this._handleAbort, false);
     }
 
-    _handleConfirm () {
+    // Pass through events to callbacks
+    _handleConfirm (event) {
         this.hide();
-        this.callback();
+        this.callback(event);
     }
 
-    _handleAbort () {
+    _handleAbort (event) {
         this.hide();
-        this.abort();
+        this.abort(event);
     }
 }

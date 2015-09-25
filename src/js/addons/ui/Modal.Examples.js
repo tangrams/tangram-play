@@ -1,6 +1,6 @@
 'use strict';
 
-import TangramPlay from 'app/TangramPlay';
+import { container } from 'app/TangramPlay';
 import Modal from 'app/addons/ui/Modal';
 import EditorIO from 'app/addons/ui/EditorIO';
 import { httpGet } from 'app/core/common';
@@ -10,9 +10,6 @@ let examplesEl;
 export default class ExamplesModal extends Modal {
     constructor (configFile) {
         super();
-
-        // TODO
-        const container = (typeof TangramPlay !== 'undefined') ? TangramPlay.container : document;
 
         this.el = examplesEl = container.querySelector('.tp-example-modal');
         this.message = 'Choose an example to open';
@@ -28,7 +25,7 @@ export default class ExamplesModal extends Modal {
     _handleConfirm () {
         const selected = this.el.querySelectorAll('.tp-example-option.tp-example-selected')[0];
         const value = selected.getAttribute('data-value');
-        openExample(value);
+        EditorIO.loadContentFromPath(value);
         super._handleConfirm();
     }
 
@@ -80,11 +77,4 @@ function resetExampleSelection () {
     for (let example of allExamples) {
         example.classList.remove('tp-example-selected');
     }
-}
-
-function openExample (value) {
-    window.history.pushState({
-        loadStyleURL: value
-    }, null, '.?style=' + value + window.location.hash);
-    TangramPlay.loadQuery();
 }

@@ -1,7 +1,8 @@
 'use strict';
 
-import LocalStorage from 'app/addons/LocalStorage';
 import { map, container } from 'app/TangramPlay';
+import LocalStorage from 'app/addons/LocalStorage';
+import Modal from 'app/addons/ui/Modal';
 
 const STORAGE_BOOKMARKS_KEY = 'bookmarks';
 const DEFAULT_BOOKMARKS_OBJECT = {
@@ -58,13 +59,13 @@ function showMenu () {
 
     if (bookmarks.length === 0) {
         const msgEl = document.createElement('div');
-        msgEl.className = 'tp-map-bookmarks-message';
+        msgEl.className = 'tp-bookmark-message';
         msgEl.textContent = 'No bookmarks yet!';
         menuEl.appendChild(msgEl);
     }
     else {
         const listEl = document.createElement('ul');
-        listEl.className = 'tp-map-bookmarks-list';
+        listEl.className = 'tp-bookmark-list';
         menuEl.appendChild(listEl);
 
         for (let i = 0, j = bookmarks.length; i < j; i++) {
@@ -73,12 +74,19 @@ function showMenu () {
 
             let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
 
-            bookmarkEl.className = 'tp-map-bookmark-item';
+            bookmarkEl.className = 'tp-bookmark-item';
             bookmarkEl.coordinates = { lat: bookmark.lat, lng: bookmark.lng };
             bookmarkEl.zoom = bookmark.zoom;
-            bookmarkEl.innerHTML += `<i class='bts bt-map-marker'></i> <span class='tp-map-bookmark-label'>${bookmark.label}</span> <br><span class='tp-map-bookmark-meta'>${bookmark.lat.toFixed(4)}, ${bookmark.lng.toFixed(4)}, z&#8202;${fractionalZoom.toFixed(1)}</span>`;
+            bookmarkEl.innerHTML = `<i class='bts bt-map-marker'></i> <span class='tp-bookmark-label'>${bookmark.label}</span> <br><span class='tp-bookmark-meta'>${bookmark.lat.toFixed(4)}, ${bookmark.lng.toFixed(4)}, z&#8202;${fractionalZoom.toFixed(1)}</span>`;
             listEl.appendChild(bookmarkEl);
         }
+
+        // Create a delete bookmarks button
+        const deleteEl = document.createElement('li');
+        deleteEl.className = 'tp-bookmark-item tp-bookmark-clear';
+        deleteEl.textContent = 'Clear bookmarks';
+        deleteEl.addEventListener('click', onClickDeleteBookmarks, false);
+        listEl.appendChild(deleteEl);
     }
 
     buttonEl.classList.add('tp-active');
@@ -117,6 +125,7 @@ function onMenuClickHandler (event) {
 function gotoBookmark (selectedEl) {
     const coordinates = selectedEl.coordinates;
     const zoom = selectedEl.zoom;
+    if (!coordinates || !zoom) return;
     map.setView(coordinates);
     map.setZoom(zoom);
     clearMenu();
@@ -127,6 +136,14 @@ function gotoBookmark (selectedEl) {
     window.setTimeout(function () {
         container.querySelector('.tp-map-save-icon').classList.add('tp-active');
     }, 0);
+}
+
+function onClickDeleteBookmarks (event) {
+    const abort = function (event) {
+        event.stopImmediatePropagation();
+    }
+    const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', clearData, abort);
+    modal.show();
 }
 
 function onClickOutsideMenu (event) {
