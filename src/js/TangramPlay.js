@@ -13,7 +13,7 @@ import ColorPalette from 'app/addons/ColorPalette';
 
 // Import Utils
 import { httpGet, StopWatch, subscribeMixin } from 'app/core/common';
-import { selectLines, unfoldAll, foldByLevel, isStrEmpty } from 'app/core/codemirror/tools';
+import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
 import { getKeyPairs, getValueRange, getAddressSceneContent } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
@@ -217,14 +217,6 @@ class TangramPlay {
     // Other actions
     selectLines(strRange) {
         selectLines(this.editor, strRange);
-    }
-
-    foldByLevel(nLevel) {
-        foldByLevel(this.editor, nLevel);
-    }
-
-    unfoldAll() {
-        unfoldAll(this.editor);
     }
 
     takeScreenshot() {
