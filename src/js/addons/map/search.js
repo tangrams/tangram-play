@@ -7,6 +7,7 @@ import bookmarks from 'app/addons/map/bookmarks';
 
 const PELIAS_KEY = 'search-xFAc9NI';
 const PELIAS_HOST = 'search.mapzen.com';
+const PELIAS_THROTTLE = 300; // in ms, time to wait before repeating a request
 
 let searchEl;
 let input;
@@ -15,7 +16,6 @@ let latlngLabel;
 let latlngLabelPrecision = 4;
 let resultsEl;
 let saveEl;
-let currentLocation;
 
 function init () {
     // Cache reference to elements
@@ -66,15 +66,14 @@ function reverseGeocode (latlng) {
 
         // TODO: Much more clever viewport/zoom based determination of current location
         let response = JSON.parse(res);
-        currentLocation = response.features[0].properties.label;
-
-        if (currentLocation) {
-            input.placeholder = `${currentLocation}`;
+        if (!response.features || response.features.length === 0) {
+            // Sometimes reverse geocoding returns no results
+            input.placeholder = 'Unknown location';
         }
         else {
-            input.placeholder = '???';
+            input.placeholder = response.features[0].properties.label;
         }
-    }), 300);
+    }), PELIAS_THROTTLE);
 }
 
 function onInputKeyupHandler (event) {
@@ -194,7 +193,7 @@ function suggest (query) {
         else {
             showResults(JSON.parse(res));
         }
-    }), 300);
+    }), PELIAS_THROTTLE);
 }
 
 function onResultsClickHandler (event) {
