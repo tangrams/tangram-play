@@ -10,6 +10,7 @@
 'use strict';
 
 import TangramPlay from 'app/TangramPlay';
+import { editor } from 'app/TangramPlay';
 import { getPosition } from 'app/core/common';
 import { getValueRange } from 'app/core/codemirror/yaml-tangram';
 
@@ -17,7 +18,7 @@ export default class Widget {
     constructor (def, key) {
         this.key = key;
         this.definition = def;
-        this.el = this.createEl();
+        this.el = this.createEl(key);
     }
 
     /**
@@ -25,8 +26,9 @@ export default class Widget {
      *  This is a simple bare-bones example.
      *  Widgets that extend from this should create
      *  their own DOM and avoid calling super()
+     *  @param key in case the element needs to know something about the source
      */
-    createEl () {
+    createEl (key) {
         return document.createDocumentFragment();
     }
 
@@ -58,7 +60,13 @@ export default class Widget {
 
         // Update position
         let pos = getValueRange(this.key).to;
-        TangramPlay.editor.addWidget(pos, this.el);
+        //editor.addWidget(pos, this.el);
+        // cm.addWidget does not update automatically;
+        // whereas cm.doc.setBookmark includes the element in the CM dom.
+        editor.doc.setBookmark(pos, {
+            widget: this.el,
+            insertLeft: true
+        });
     }
 
     /**

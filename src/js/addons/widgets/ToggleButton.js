@@ -1,16 +1,26 @@
 import Widget from 'app/addons/widgets/Widget.js';
 
 export default class ToggleButton extends Widget {
-    createEl () {
-        let el = document.createElement('input');
+    createEl (key) {
+        const id = 'toggle-' + key.address;
+        const el = document.createElement('div');
+        el.className = 'tp-widget';
 
-        el.type = 'checkbox';
-        el.className = 'tp-widget tp-widget-toggle';
-        el.checked = (this.key.value === 'true') ? true : false;
+        const inputEl = document.createElement('input');
+        inputEl.type = 'checkbox';
+        inputEl.className = 'tp-widget-toggle';
+        inputEl.id = id;
+        inputEl.checked = (this.key.value === 'true') ? true : false;
 
-        el.addEventListener('change', (event) => {
-            this.setEditorValue((el.checked) ? 'true' : 'false');
+        inputEl.addEventListener('change', (event) => {
+            this.setEditorValue((inputEl.checked) ? 'true' : 'false');
         });
+
+        const labelEl = document.createElement('label');
+        labelEl.htmlFor = id;
+
+        el.appendChild(inputEl);
+        el.appendChild(labelEl);
 
         return el;
     }
