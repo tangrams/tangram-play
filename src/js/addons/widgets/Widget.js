@@ -36,8 +36,16 @@ export default class Widget {
      *  Removes the widget element from DOM.
      */
     destroyEl () {
+        /*
         if (this.el && this.el.parentNode) {
             this.el.parentNode.removeChild(this.el);
+        }
+        */
+    }
+
+    destroy () {
+        if (this.bookmark) {
+            this.bookmark.clear();
         }
     }
 
@@ -53,7 +61,7 @@ export default class Widget {
         return getPosition(this.el);
     }
 
-    update() {
+    update () {
         // Update key
         this.key = TangramPlay.getKeyForKey(this.key);
         this.value = this.key.value;
@@ -61,9 +69,16 @@ export default class Widget {
         // Update position
         let pos = getValueRange(this.key).to;
         //editor.addWidget(pos, this.el);
+
+    }
+
+    insert () {
+        this.key = TangramPlay.getKeyForKey(this.key);
+        let pos = getValueRange(this.key).to;
+
         // cm.addWidget does not update automatically;
         // whereas cm.doc.setBookmark includes the element in the CM dom.
-        editor.doc.setBookmark(pos, {
+        this.bookmark = editor.doc.setBookmark(pos, {
             widget: this.el,
             insertLeft: true
         });
@@ -95,6 +110,6 @@ export default class Widget {
         this.key.value = string;
 
         // Update the position
-        TangramPlay.addons.widgetsManager.updateLine(this.key.pos.line);
+        //TangramPlay.addons.widgetsManager.updateLine(this.key.pos.line);
     }
 }

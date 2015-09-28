@@ -162,6 +162,36 @@ class TangramPlay {
         return content;
     }
 
+    getKeys(from, to) {
+        let keys = [];
+        for (let i = from.line; i <= to.line; i++) {
+            let inLineKeys = this.getKeysOnLine(i);
+
+            for (let key of inLineKeys) {
+                if (key.range.from.line === from.line && key.range.to.line === to.line) {
+                    // Is in the begining line
+                    if (key.range.to.ch > from.ch && key.range.from < to.ch) {
+                        keys.push(key);
+                    }
+                } else if (key.range.from.line === from.line) {
+                    // Is in the begining line
+                    if (key.range.to.ch > from.ch) {
+                        keys.push(key);
+                    }
+                } else if (key.range.to.line === to.line ) {
+                    // is in the end line
+                    if (key.range.from.ch < to.ch) {
+                        keys.push(key);
+                    }
+                } else {
+                    // is in the swandwich lines
+                    keys.push(key);
+                }
+            }
+        }
+        return keys;
+    }
+
     getKeysOnLine(nLine) {
         if (isStrEmpty(this.editor.getLine(nLine))) {
             return [];
