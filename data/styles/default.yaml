@@ -1,3 +1,7 @@
+sources:
+    osm:
+        type: TopoJSON
+        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-HqUVidw
 cameras:
     perspective:
         type: perspective
@@ -15,10 +19,6 @@ styles:
             blocks:
                 color: |
                     color.rgb *= vec3(min((v_world_position.z*.001 + .5),1.));
-sources:
-    osm:
-        type: TopoJSONTiles
-        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-HqUVidw
 layers:
     water:
         data: { source: osm }
