@@ -37,24 +37,32 @@
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/ikeda.yaml"
 		},
 		{
-			"name" : "patterns.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
+			"name"	: "9845C.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/9845C.yaml"
 		},
 		{
-			"name" : "pericoli.yaml",
-			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml"
+			"name"	: "press.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/press.yaml"
+		},
+		{
+			"name"	: "radar.yaml",
+			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/radar.yaml"
 		},
 		{
 			"name" : "crosshatch.yaml",
 			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml"
 		},
 		{
-			"name" : "lego.yaml",
-			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
+			"name" : "pericoli.yaml",
+			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml"
 		},
 		{
-			"name" : "sandbox.yaml",
-			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/sandbox.yaml"
+			"name" : "patterns.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
+		},
+		{
+			"name" : "lego.yaml",
+			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
 		}
 	]
 }
