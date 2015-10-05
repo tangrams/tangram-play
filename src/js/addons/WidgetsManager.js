@@ -47,33 +47,26 @@ export default class WidgetsManager {
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
+            console.log(changesObjs);
             for (let obj of changesObjs) {
-                this.clear(obj.from,obj.to);
-                this.create(obj.from,obj.to);
+                let from = obj.from;
+                let to = obj.to;
+
+                // Erase the widgets for the edited area
+                console.log("Clear",from,to);
+                this.clear(from,to);
+
+                // If the changes add or erase new lines
+                // ( because the removed and added lines don't match )
+                if (obj.removed.length !== obj.text.length) {
+                    to.line = obj.from.line + obj.text.length-1;
+                    to.ch = TangramPlay.editor.getLine(to.line).length;
+                }
+
+                console.log("Create",from,to);
+                this.create(from,to);
             }
         });
-
-        // Keep track of possible NOT-PARSED lines
-        // and in every codemirror "render update" check if we are aproaching a
-        // non-parsed area and for it to update by cleaning and creating
-        // TangramPlay.editor.on('update', (cm, changesObj) => {
-            
-        //     let to = { line: TangramPlay.editor.getViewport().to-1, ch: TangramPlay.editor.getLine(TangramPlay.editor.getViewport().to-1).length };
-
-        //     if (this.pairedUntilLine < to.line) {
-        //         let from = { line: this.pairedUntilLine+1, ch: 0};
-
-        //         // this.clear(from,to);
-        //         // this.create(from,to);
-
-        //         this.pairedUntilLine = to.line;
-        //     }
-        // });
-
-        // // If a new files is loaded reset the tracked line
-        // TangramPlay.on('url_loaded', (url) => {
-        //     this.pairedUntilLine = 0;
-        // })
     }
 
     create(from, to) {
