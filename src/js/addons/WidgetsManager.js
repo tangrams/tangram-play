@@ -10,11 +10,7 @@ import { isStrEmpty } from 'app/core/codemirror/tools';
 import WidgetType from 'app/addons/widgets/WidgetType';
 
 var stopAction = debounce(function(wm) {
-    wm.update();
-}, 100);
-
-var stopMicroAction = debounce(function(wm, nLine) {
-    wm.updateLine(nLine);
+    wm.reload();
 }, 100);
 
 export default class WidgetsManager {
@@ -67,6 +63,23 @@ export default class WidgetsManager {
                 this.create(from,to);
             }
         });
+
+        // Keep track of possible NOT-PARSED lines
+        // and in every codemirror "render update" check if we are aproaching a
+        // non-parsed area and for it to update by cleaning and creating
+        TangramPlay.editor.on('update', (cm) => {
+            let horizon = TangramPlay.editor.getViewport().to-1;
+            if (this.pairedUntilLine < horizon) {
+                console.log("PairedUntil",this.pairedUntilLine);
+                this.pairedUntilLine = horizon;
+                stopAction(this);
+            }
+        });
+
+        // If a new files is loaded reset the tracked line
+        TangramPlay.on('url_loaded', (url) => {
+            this.pairedUntilLine = 0;
+        })
     }
 
     create(from, to) {
@@ -94,9 +107,21 @@ export default class WidgetsManager {
 
     clear(from, to) {
         // Delete widgets
-        let bookmarks = TangramPlay.editor.doc.findMarks(from,to);
+        let bookmarks = TangramPlay.editor.getDoc().findMarks(from,to);
         for (let bkm of bookmarks) {
             bkm.clear();
         }
+    }
+
+    reload() {
+        let bookmarks = TangramPlay.editor.getDoc().getAllMarks();
+        for (let bkm of bookmarks) {
+            bkm.clear();
+        }
+
+        let from = { line:0, ch:0 };
+        let to = {  line: TangramPlay.editor.getDoc().size-1,
+                    ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size-1).length };
+        this.create(from,to);
     }
 }
