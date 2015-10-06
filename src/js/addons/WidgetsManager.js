@@ -43,13 +43,13 @@ export default class WidgetsManager {
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
-            console.log(changesObjs);
+            // console.log(changesObjs);
             for (let obj of changesObjs) {
                 let from = obj.from;
                 let to = obj.to;
 
                 // Erase the widgets for the edited area
-                console.log("Clear",from,to);
+                // console.log("Clear",from,to);
                 this.clear(from,to);
 
                 // If the changes add or erase new lines
@@ -59,7 +59,7 @@ export default class WidgetsManager {
                     to.ch = TangramPlay.editor.getLine(to.line).length;
                 }
 
-                console.log("Create",from,to);
+                // console.log("Create",from,to);
                 this.create(from,to);
             }
         });
@@ -70,7 +70,7 @@ export default class WidgetsManager {
         TangramPlay.editor.on('update', (cm) => {
             let horizon = TangramPlay.editor.getViewport().to-1;
             if (this.pairedUntilLine < horizon) {
-                console.log("PairedUntil",this.pairedUntilLine);
+                // console.log("PairedUntil",this.pairedUntilLine);
                 this.pairedUntilLine = horizon;
                 stopAction(this);
             }
