@@ -117,6 +117,11 @@ export default class WidgetsManager {
         let new_widgets = [];
         if (keys) {
             for (let key of keys) {
+                let val = key.value;
+                if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.pos.line))) {
+                    continue;
+                }
+
                 // Check for widgets to add
                 for (let datum of this.data) {
                     if (datum.match(key)) {
