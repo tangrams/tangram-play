@@ -19,6 +19,7 @@ export default class Widget {
         this.key = key;
         this.definition = def;
         this.el = this.createEl(key);
+        this.el.widget = this;
     }
 
     /**
@@ -32,21 +33,11 @@ export default class Widget {
         return document.createDocumentFragment();
     }
 
-    /**
-     *  Removes the widget element from DOM.
-     */
-    destroyEl () {
-        /*
-        if (this.el && this.el.parentNode) {
-            this.el.parentNode.removeChild(this.el);
-        }
-        */
-    }
-
     destroy () {
         if (this.bookmark) {
             this.bookmark.clear();
         }
+        delete this;
     }
 
     /**
@@ -68,8 +59,6 @@ export default class Widget {
 
         // Update position
         let pos = getValueRange(this.key).to;
-        //editor.addWidget(pos, this.el);
-
     }
 
     insert () {
@@ -108,8 +97,5 @@ export default class Widget {
 
         // Change the value attached to this widget instance
         this.key.value = string;
-
-        // Update the position
-        //TangramPlay.addons.widgetsManager.updateLine(this.key.pos.line);
     }
 }
