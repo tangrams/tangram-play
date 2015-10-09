@@ -82,22 +82,20 @@ export default class WidgetsManager {
         let keys = TangramPlay.getKeys(from, to);
         let doc = TangramPlay.editor.getDoc();
 
-        if (!keys) {
-            return;
-        }
+        if (keys) {
+            for (let key of keys) {
+                // Find bookmarks between FROM and TO
+                // For some reason findMarks() wants lines +1 than
+                // what getKeys() is giving us.
+                let from = key.range.from.line + 1;
+                let to = key.range.to.line + 1;
+                let bookmarks = doc.findMarks({ line: from }, { line: to });
+                console.log(key, bookmarks);
 
-        // Process each key
-        for (let key of keys) {
-            // Find bookmarks between FROM and TO
-            // For some reason findMarks() wants lines +1 than
-            // what getKeys() is giving us.
-            let fromLine = key.range.from.line + 1;
-            let toLine = key.range.to.line + 1;
-            let bookmarks = doc.findMarks({ line: fromLine }, { line: toLine });
-
-            // Delete those with widgets
-            for (let bkm of bookmarks) {
-                bkm.clear();
+                // Delete those with widgets
+                for (let bkm of bookmarks) {
+                    bkm.clear();
+                }
             }
         }
 
