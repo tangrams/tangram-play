@@ -67,10 +67,11 @@ export default class Widget {
 
         // cm.addWidget does not update automatically;
         // whereas cm.doc.setBookmark includes the element in the CM dom.
-        this.bookmark = editor.doc.setBookmark(pos, {
+        let bookmark = editor.doc.setBookmark(pos, {
             widget: this.el,
             insertLeft: true
         });
+        bookmark.widget = this;
     }
 
     /**
