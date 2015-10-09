@@ -11,7 +11,6 @@
 
 import TangramPlay from 'app/TangramPlay';
 import { editor } from 'app/TangramPlay';
-import { getPosition } from 'app/core/common';
 import { getValueRange } from 'app/core/codemirror/yaml-tangram';
 
 export default class Widget {
@@ -40,25 +39,10 @@ export default class Widget {
         delete this;
     }
 
-    /**
-     *  Returns x, y position of the upper left corner
-     *  of the DOM element for the widget, relative to parent
-     *  DOM containers. Use this.el.getBoundingClientRect()
-     *  as an alternative for positioning relative to the
-     *  viewport (for positioning secondary interactive UI
-     *  elements, for example).
-     */
-    getPosition () {
-        return getPosition(this.el);
-    }
-
     update () {
         // Update key
         this.key = TangramPlay.getKeyForKey(this.key);
         this.value = this.key.value;
-
-        // Update position
-        let pos = getValueRange(this.key).to;
     }
 
     insert () {

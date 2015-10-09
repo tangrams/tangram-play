@@ -1,6 +1,6 @@
 import TangramPlay from 'app/TangramPlay';
 
-import { debounce, getPosition } from 'app/core/common';
+import { debounce, getDOMOffset } from 'app/core/common';
 import { isEmpty } from 'app/core/codemirror/tools';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from 'app/core/codemirror/yaml-tangram';
 
@@ -254,7 +254,7 @@ export default class GlslSandbox {
      *  Handles when user clicks on the in-line color indicator widget
      */
     onColorClick (event) {
-        let pos = getPosition(this.colorPicker);
+        let pos = getDOMOffset(this.colorPicker);
         pos.x += 30;
         pos.y = TangramPlay.editor.heightAtLine(this.line) - 15;
 

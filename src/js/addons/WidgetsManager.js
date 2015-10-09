@@ -39,13 +39,12 @@ export default class WidgetsManager {
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
-
             for (let obj of changesObjs) {
                 let from = obj.from;
                 let to = obj.to;
 
                 // Erase the widgets for the edited area
-                this.clear(from,to);
+                this.clear(from, to);
 
                 // If the changes add or erase new lines
                 // ( because the removed and added lines don't match )
@@ -60,14 +59,14 @@ export default class WidgetsManager {
         });
 
         // Keep track of possible NOT-PARSED lines
-        // and in every codemirror "render update" check if we are aproaching a
+        // and in every codemirror "render update" check if we are approaching a
         // non-parsed area and for it to update by cleaning and creating
         TangramPlay.editor.on('update', (cm) => {
             let horizon = TangramPlay.editor.getViewport().to-1;
             if (this.pairedUntilLine < horizon) {
                 this.pairedUntilLine = horizon;
 
-                // the debounce event is necesary to prevent an infinit loop
+                // the debounce event is necesary to prevent an infinite loop
                 // because the injection of a bookmark cause a render update
                 stopAction(this);
             }
@@ -80,12 +79,19 @@ export default class WidgetsManager {
     }
 
     clear (from, to) {
-        let keys = TangramPlay.getKeys(from,to);
+        let keys = TangramPlay.getKeys(from, to);
         let del_widgets = [];
+        let doc = TangramPlay.editor.getDoc();
+
         if (keys) {
             for (let key of keys) {
                 // Find bookmarks between FROM and TO
-                let bookmarks = TangramPlay.editor.getDoc().findMarks(key.range.from,key.range.to);
+                // For some reason findMarks() wants lines +1 than
+                // what getKeys() is giving us.
+                let from = key.range.from.line + 1;
+                let to = key.range.to.line + 1;
+                let bookmarks = doc.findMarks({ line: from }, { line: to });
+                console.log(key, bookmarks);
 
                 // Delete those with widgets
                 for (let bkm of bookmarks) {
