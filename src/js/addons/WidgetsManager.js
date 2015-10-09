@@ -28,7 +28,7 @@ export default class WidgetsManager {
 
             // Initialize tokens
             for (let datum of widgetsData) {
-                if (datum.type === "color" || datum.type === "boolean" || datum.type === "string") {
+                if (datum.type === 'color' || datum.type === 'boolean' || datum.type === 'string') {
                     this.data.push(new WidgetType(datum));
                 }
             }
@@ -49,12 +49,12 @@ export default class WidgetsManager {
                 // If the changes add or erase new lines
                 // ( because the removed and added lines don't match )
                 if (obj.removed.length < obj.text.length) {
-                    to.line = obj.from.line + obj.text.length-1;
+                    to.line = obj.from.line + obj.text.length - 1;
                     to.ch = TangramPlay.editor.getLine(to.line).length;
                 }
 
                 // Create new widgets
-                this.create(from,to);
+                this.create(from, to);
             }
         });
 
@@ -62,7 +62,7 @@ export default class WidgetsManager {
         // and in every codemirror "render update" check if we are approaching a
         // non-parsed area and for it to update by cleaning and creating
         TangramPlay.editor.on('update', (cm) => {
-            let horizon = TangramPlay.editor.getViewport().to-1;
+            let horizon = TangramPlay.editor.getViewport().to - 1;
             if (this.pairedUntilLine < horizon) {
                 this.pairedUntilLine = horizon;
 
@@ -75,28 +75,29 @@ export default class WidgetsManager {
         // If a new files is loaded reset the tracked line
         TangramPlay.on('url_loaded', (url) => {
             this.pairedUntilLine = 0;
-        })
+        });
     }
 
     clear (from, to) {
         let keys = TangramPlay.getKeys(from, to);
-        let del_widgets = [];
         let doc = TangramPlay.editor.getDoc();
 
-        if (keys) {
-            for (let key of keys) {
-                // Find bookmarks between FROM and TO
-                // For some reason findMarks() wants lines +1 than
-                // what getKeys() is giving us.
-                let from = key.range.from.line + 1;
-                let to = key.range.to.line + 1;
-                let bookmarks = doc.findMarks({ line: from }, { line: to });
-                console.log(key, bookmarks);
+        if (!keys) {
+            return;
+        }
 
-                // Delete those with widgets
-                for (let bkm of bookmarks) {
-                    bkm.clear();
-                }
+        // Process each key
+        for (let key of keys) {
+            // Find bookmarks between FROM and TO
+            // For some reason findMarks() wants lines +1 than
+            // what getKeys() is giving us.
+            let fromLine = key.range.from.line + 1;
+            let toLine = key.range.to.line + 1;
+            let bookmarks = doc.findMarks({ line: fromLine }, { line: toLine });
+
+            // Delete those with widgets
+            for (let bkm of bookmarks) {
+                bkm.clear();
             }
         }
 
@@ -114,13 +115,13 @@ export default class WidgetsManager {
         }
 
         // Trigger Events
-        this.trigger('widgets_cleared')
+        this.trigger('widgets_cleared');
     }
 
     create (from, to) {
         // Search for keys between FROM and TO
-        let keys = TangramPlay.getKeys(from,to);
-        let new_widgets = [];
+        let keys = TangramPlay.getKeys(from, to);
+        let newWidgets = [];
         if (keys) {
             for (let key of keys) {
                 let val = key.value;
@@ -133,7 +134,7 @@ export default class WidgetsManager {
                     if (datum.match(key)) {
                         let widget = datum.create(key);
                         widget.insert();
-                        new_widgets.push(widget);
+                        newWidgets.push(widget);
                         break;
                     }
                 }
@@ -141,14 +142,16 @@ export default class WidgetsManager {
         }
 
         // Trigger Events
-        this.trigger('widgets_created', { widgets: new_widgets });
+        this.trigger('widgets_created', { widgets: newWidgets });
     }
 
     createAll () {
-        let from = { line:0, ch:0 };
-        let to = {  line: TangramPlay.editor.getDoc().size-1,
-                    ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size-1).length };
-        this.create(from,to);
+        let from = { line: 0, ch: 0 };
+        let to = {
+            line: TangramPlay.editor.getDoc().size - 1,
+            ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
+        };
+        this.create(from, to);
     }
 
     reload () {

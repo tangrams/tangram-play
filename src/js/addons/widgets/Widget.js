@@ -18,7 +18,6 @@ export default class Widget {
         this.key = key;
         this.definition = def;
         this.el = this.createEl(key);
-        this.el.widget = this;
     }
 
     /**
@@ -36,7 +35,6 @@ export default class Widget {
         if (this.bookmark) {
             this.bookmark.clear();
         }
-        delete this;
     }
 
     update () {

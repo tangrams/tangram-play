@@ -138,14 +138,14 @@ class TangramPlay {
         });
     }
 
-    loadQuery() {
+    loadQuery () {
         let query = parseQuery(window.location.search.slice(1));
         let src = query['style'] ? query['style'] : DEFAULT_STYLE;
         this.loadFile(src);
     }
 
     // SET
-    setValue(KeyPair, str) {
+    setValue (KeyPair, str) {
         let range = getValueRange(KeyPair);
         if (KeyPair.value === '') {
             str = ' ' + str;
@@ -154,7 +154,7 @@ class TangramPlay {
     }
 
     // GET
-    getContent() {
+    getContent () {
         let content = this.editor.getValue();
         let pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
         let result = '$1?api_key=vector-tiles-P6dkVl4';
@@ -162,10 +162,10 @@ class TangramPlay {
         return content;
     }
 
-    getKeys(from, to) {
+    getKeys (from, to) {
         let keys = [];
 
-        if ( from.line === to.line ) {
+        if (from.line === to.line) {
             // If the searched keys are in a same line
             let line = from.line;
             let inLineKeys = this.getKeysOnLine(line);
@@ -175,15 +175,15 @@ class TangramPlay {
                     keys.push(key);
                 }
             }
-
-        } else {
+        }
+        else {
             // If the searched keys are in a range of lines
             for (let i = from.line; i <= to.line; i++) {
                 let inLineKeys = this.getKeysOnLine(i);
 
                 for (let key of inLineKeys) {
                     if (key.range.from.line === from.line) {
-                        // Is in the begining line
+                        // Is in the beginning line
                         if (key.range.to.ch > from.ch) {
                             keys.push(key);
                         }
@@ -193,7 +193,7 @@ class TangramPlay {
                             keys.push(key);
                         }
                     } else {
-                        // is in the swandwich lines
+                        // is in the sandwich lines
                         keys.push(key);
                     }
                 }
@@ -202,14 +202,14 @@ class TangramPlay {
         return keys;
     }
 
-    getKeysOnLine(nLine) {
+    getKeysOnLine (nLine) {
         if (isStrEmpty(this.editor.getLine(nLine))) {
             return [];
         }
         return getKeyPairs(this.editor, nLine);
     }
 
-    getKeyForStr(str) {
+    getKeyForStr (str) {
         let pos = str.split('-');
         if (pos.length === 2) {
             let keys = this.getKeysOnLine(parseInt(pos[0]));
@@ -220,11 +220,11 @@ class TangramPlay {
         }
     }
 
-    getKeyForKey(key) {
+    getKeyForKey (key) {
         return this.getKey(key.pos.line, key.index);
     }
 
-    getKey(nLine, nIndex) {
+    getKey (nLine, nIndex) {
         if (nIndex === undefined) {
             return this.getKeysOnLine(nLine);
         }
@@ -237,7 +237,7 @@ class TangramPlay {
         return [];
     }
 
-    getKeyForAddress(address) {
+    getKeyForAddress (address) {
         for (let line = 0; line < this.editor.getDoc().size; line++) {
             let keys = this.getKeysOnLine(line);
             for (let i = 0; i < keys.length; i++) {
@@ -248,18 +248,18 @@ class TangramPlay {
         }
     }
 
-    getAddressContent(address) {
+    getAddressContent (address) {
         return getAddressSceneContent(this.scene, address);
     }
 
     // Check
 
     // Other actions
-    selectLines(strRange) {
+    selectLines (strRange) {
         selectLines(this.editor, strRange);
     }
 
-    takeScreenshot() {
+    takeScreenshot () {
         this.map.takeScreenshot();
     }
 }
