@@ -4,6 +4,11 @@ import Widget from 'app/addons/widgets/Widget';
 import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
 import { toCSS } from 'app/core/common';
 
+// When presenting the modal, offset X, Y of the the modal by
+// these values, in pixels
+const MODAL_X_OFFSET = 0;
+const MODAL_Y_OFFSET = 5;
+
 export default class ColorPicker extends Widget {
     // There must be a constructor call here because
     // ColorPicker sets its own properties for color
@@ -77,22 +82,9 @@ export default class ColorPicker extends Widget {
             this.picker = new ColorPickerModal(this.color);
         }
 
-        // Turn the picker on and present modal
+        // Turn the picker on and present modal at the desired position
         let pos = this.el.getBoundingClientRect();
-
-        // Thistle modal size
-        const modalWidth = 260;
-        const modalHeight = 270;
-
-        // Desired buffer from edge of window
-        const modalBuffer = 20;
-
-        // Set x, y pos depending on widget position. Do not allow the modal
-        // to disappear off the edge of the window.
-        let modalXPos = (pos.right + modalWidth < window.innerWidth) ? pos.right : (window.innerWidth - modalBuffer - modalWidth);
-        let modalYPos = (pos.bottom + modalHeight < window.innerHeight) ? pos.bottom : (window.innerHeight - modalBuffer - modalHeight);
-
-        this.picker.presentModal(modalXPos + 3, modalYPos + 3);
+        this.picker.presentModal(pos.left + MODAL_X_OFFSET, pos.bottom + MODAL_Y_OFFSET);
 
         // Note: this fires change events as a live preview of the color.
         // TODO: Store original value so we can go back to it if the

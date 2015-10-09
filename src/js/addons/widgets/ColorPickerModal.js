@@ -13,6 +13,11 @@ let currentTarget;
 let currentTargetHeight = 0;
 let domCache;
 
+// Default modal appearance values
+const MODAL_WIDTH = 260; // in pixels
+const MODAL_HEIGHT = 270; // in pixels
+const MODAL_VIEWPORT_EDGE_BUFFER = 20; // buffer zone at the viewport edge where a modal should not be presented
+
 const Tools = {
     getOrigin (el) {
         const box = (el.getBoundingClientRect) ? el.getBoundingClientRect() : { top: 0, left: 0 };
@@ -38,67 +43,7 @@ const Tools = {
     },
     removeEvent (element, event, callback) {
         element.removeEventListener(event, callback, false);
-    },
-    /*
-    addEvent (obj, type, func) {
-        this.eventCache = this.eventCache || {
-            _get: (obj, type, func, checkOnly) => {
-                let cache = this.eventCache[type] || [];
-
-                for (let n = cache.length; n--;) {
-                    if (obj === cache[n].obj && func.toString() === cache[n].func.toString()) {
-                        func = cache[n].func;
-                        if (!checkOnly) {
-                            cache[n] = cache[n].obj = cache[n].func = null;
-                            cache.splice(n, 1);
-                        }
-                        return func;
-                    }
-                }
-            },
-            _set: (obj, type, func) => {
-                let cache = this.eventCache[type] = this.eventCache[type] || [];
-
-                if (this.eventCache._get(obj, type, func, true)) {
-                    return true;
-                }
-                else {
-                    cache.push({
-                        func: func,
-                        obj: obj
-                    });
-                }
-            }
-        };
-
-        if (!func.name && this.eventCache._set(obj, type, func) || typeof func !== 'function') {
-            return;
-        }
-
-        if (obj.addEventListener) {
-            obj.addEventListener(type, func, false);
-        }
-        else {
-            obj.attachEvent('on' + type, func);
-        }
-    },
-    removeEvent (obj, type, func) {
-        if (typeof func !== 'function') {
-            return;
-        }
-
-        if (!func.name) {
-            func = this.eventCache._get(obj, type, func) || func;
-        }
-
-        if (obj.removeEventListener) {
-            obj.removeEventListener(type, func, false);
-        }
-        else {
-            obj.detachEvent('on' + type, func);
-        }
     }
-    */
 };
 
 export default class ColorPickerModal {
@@ -213,8 +158,13 @@ export default class ColorPickerModal {
     }
 
     presentModal (x, y) {
-        this.el.style.left = x + 'px';
-        this.el.style.top = y + 'px';
+        // Check if desired x, y will be outside the viewport.
+        // Do not allow the modal to disappear off the edge of the window.
+        let modalXPos = (x + MODAL_WIDTH < window.innerWidth) ? x : (window.innerWidth - MODAL_VIEWPORT_EDGE_BUFFER - MODAL_WIDTH);
+        let modalYPos = (y + MODAL_HEIGHT < window.innerHeight) ? y : (window.innerHeight - MODAL_VIEWPORT_EDGE_BUFFER - MODAL_HEIGHT);
+
+        this.el.style.left = modalXPos + 'px';
+        this.el.style.top = modalYPos + 'px';
         document.body.appendChild(this.el);
 
         // Listen for interaction on the HSV map

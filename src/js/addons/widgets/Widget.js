@@ -65,8 +65,9 @@ export default class Widget {
         this.key = TangramPlay.getKeyForKey(this.key);
         let pos = getValueRange(this.key).to;
 
-        // cm.addWidget does not update automatically;
-        // whereas cm.doc.setBookmark includes the element in the CM dom.
+        // cm.addWidget() overlays DOM objects on the page, so its position
+        // won't update automatically. It is better to use
+        // cm.doc.setBookmark(), which inserts the widget into CodeMirror DOM.
         let bookmark = editor.doc.setBookmark(pos, {
             widget: this.el,
             insertLeft: true
