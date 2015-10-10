@@ -2,15 +2,10 @@
 
 .tp-modal {
     display: none;
-    position: fixed;
     box-sizing: border-box;
     width: 400px;
     min-height: 160px;
     padding: 30px;
-    left: 50%;
-    margin-left: -200px;
-    top: 50%;
-    margin-top: -80px;
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 16px;
@@ -18,8 +13,9 @@
     color: var(--ui-component-text-color);
     background-color: var(--ui-base-color);
     box-shadow: var(--modal-shadow);
-    z-index: 1300;
+    z-index: 1;
     user-select: none;
+    pointer-events: auto;
 }
 
 .tp-modal-text {
@@ -90,29 +86,19 @@
 
 .tp-example-modal {
     width: 600px;
-    margin-left: -300px;
     height: 600px;
-    margin-top: -300px;
     text-align: left;
 
     .tp-modal-buttons {
-        position: absolute;
         text-align: right;
-        width: auto;
-        right: 30px;
-        bottom: 30px;
     }
 }
 
 .tp-example-list {
     margin-top: 20px;
+    height: 420px;
     overflow-x: hidden;
     overflow-y: auto;
-    position: absolute;
-    right: 30px;
-    left: 30px;
-    top: 50px;
-    bottom: 100px;
     background-color: var(--ui-component-color);
 
     &::-webkit-scrollbar {
