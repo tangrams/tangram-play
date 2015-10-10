@@ -18,12 +18,24 @@
     pointer-events: auto;
 }
 
+.tp-modal-alt {
+    text-align: left;
+
+    .tp-modal-buttons {
+        text-align: right;
+    }
+}
+
 .tp-modal-text {
     display: inline-block;
     margin: 0;
     padding: 0;
     line-height: 1.4;
     user-select: none;
+}
+
+.tp-modal-content {
+    margin-top: 20px;
 }
 
 .tp-modal-buttons {
@@ -87,15 +99,9 @@
 .tp-example-modal {
     width: 600px;
     height: 600px;
-    text-align: left;
-
-    .tp-modal-buttons {
-        text-align: right;
-    }
 }
 
 .tp-example-list {
-    margin-top: 20px;
     height: 420px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -152,4 +158,22 @@
     color: var(--ui-component-text-color);
     margin-bottom: 4px;
     text-transform: capitalize;
+}
+
+.tp-open-url-modal {
+    width: 600px;
+
+    input {
+        background-color: var(--ui-element-color);
+        appearance: none;
+        border: 0;
+        color: var(--ui-component-text-color);
+        font-size: 12px;
+        font-family: var(--font-family);
+        font-weight: 200;
+        line-height: 28px;
+        padding: 4px 8px 4px;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }

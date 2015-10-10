@@ -1,7 +1,9 @@
 'use strict';
 
+import { container } from 'app/TangramPlay';
+
 export default class Shield {
-    constructor (container = document) {
+    constructor () {
         this.el = container.getElementsByClassName('tp-shield')[0];
     }
 
