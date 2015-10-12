@@ -40,15 +40,14 @@ export default class ColorPalette {
 
         // check for color picker widgets
         for (let bkm of bookmarks) {
-            if (bkm.replacedWith &&
-                bkm.replacedWith.widget &&
-                bkm.replacedWith.widget.definition.type === 'color') {
+            if (bkm.widget &&
+                bkm.widget.definition.type === 'color') {
 
-                let color = bkm.replacedWith.widget.el.style.backgroundColor;
+                let color = bkm.widget.el.style.backgroundColor;
                 if (this.colors[color] === undefined) {
                     this.colors[color] = new Color(color);
                 }
-                this.colors[color].widgets.push(bkm.replacedWith.widget);
+                this.colors[color].widgets.push(bkm.widget);
             }
         }
         this.make();
