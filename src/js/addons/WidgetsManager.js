@@ -14,7 +14,6 @@ export default class WidgetsManager {
         subscribeMixin(this);
 
         this.data = []; // tokens to check
-
         this.totalLines = 0; // keep track of linesf
         this.pairedUntilLine = 0;
 
@@ -28,9 +27,6 @@ export default class WidgetsManager {
                     this.data.push(new WidgetType(datum));
                 }
             }
-
-            // Build all widgets
-            this.createAll();
         });
 
         // If something change only update that
@@ -61,15 +57,15 @@ export default class WidgetsManager {
             let horizon = TangramPlay.editor.getViewport().to - 1;
             if (this.pairedUntilLine < horizon) {
                 let from = {
-                                line: this.pairedUntilLine +1,
-                                ch: 0
-                            }
+                    line: this.pairedUntilLine +1,
+                    ch: 0
+                };
                 let to = {
-                            line: horizon,
-                            ch: TangramPlay.editor.getLine(horizon).length
-                        }
-                this.clear(from,to);
-                this.create(from,to);
+                    line: horizon,
+                    ch: TangramPlay.editor.getLine(horizon).length
+                };
+                this.clear(from, to);
+                this.create(from, to);
             }
         });
 
@@ -97,19 +93,6 @@ export default class WidgetsManager {
             for (let bkm of bookmarks) {
                 bkm.clear();
             }
-        }
-
-        // Trigger Events
-        this.trigger('widgets_cleared');
-    }
-
-    clearAll () {
-        // Find all bookmarks
-        let bookmarks = TangramPlay.editor.getDoc().getAllMarks();
-
-        // Delete those with widgets
-        for (let bkm of bookmarks) {
-            bkm.clear();
         }
 
         // Trigger Events
@@ -148,19 +131,5 @@ export default class WidgetsManager {
 
         // Trigger Events
         this.trigger('widgets_created', { widgets: newWidgets });
-    }
-
-    createAll () {
-        let from = { line: 0, ch: 0 };
-        let to = {
-            line: TangramPlay.editor.getDoc().size - 1,
-            ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
-        };
-        this.create(from, to);
-    }
-
-    reload () {
-        this.clearAll();
-        this.createAll();
     }
 }
