@@ -18,6 +18,8 @@ export function getKeyPairs(cm, nLine) {
         let keys = cm.getLineHandle(nLine).stateAfter.yamlState.keys;
         for (let i = 0 ; i < keys.length; i++) {
             keys[i].pos.line = nLine;
+            keys[i].range.from.line = nLine;
+            keys[i].range.to.line = nLine;
         }
         return keys;
     }
