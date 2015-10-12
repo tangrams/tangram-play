@@ -9,10 +9,6 @@ import { isStrEmpty } from 'app/core/codemirror/tools';
 // Load addons modules
 import WidgetType from 'app/addons/widgets/WidgetType';
 
-var stopAction = debounce(function(wm) {
-    wm.reload();
-}, 100);
-
 export default class WidgetsManager {
     constructor(configFile) {
         subscribeMixin(this);
@@ -61,14 +57,19 @@ export default class WidgetsManager {
         // Keep track of possible NOT-PARSED lines
         // and in every codemirror "render update" check if we are approaching a
         // non-parsed area and for it to update by cleaning and creating
-        TangramPlay.editor.on('update', (cm) => {
+        TangramPlay.editor.on('scroll', (cm) => {
             let horizon = TangramPlay.editor.getViewport().to - 1;
             if (this.pairedUntilLine < horizon) {
-                this.pairedUntilLine = horizon;
-
-                // the debounce event is necesary to prevent an infinite loop
-                // because the injection of a bookmark cause a render update
-                stopAction(this);
+                let from = {
+                                line: this.pairedUntilLine +1,
+                                ch: 0
+                            }
+                let to = {
+                            line: horizon,
+                            ch: TangramPlay.editor.getLine(horizon).length
+                        }
+                this.clear(from,to);
+                this.create(from,to);
             }
         });
 
@@ -82,17 +83,19 @@ export default class WidgetsManager {
         let keys = TangramPlay.getKeys(from, to);
         let doc = TangramPlay.editor.getDoc();
 
-        if (keys) {
-            for (let key of keys) {
-                // Find bookmarks between FROM and TO
-                let from = key.range.from.line;
-                let to = key.range.to.line;
-                let bookmarks = doc.findMarks({ line: from }, { line: to });
+        if (!keys || keys.length === 0) {
+            return;
+        }
 
-                // Delete those with widgets
-                for (let bkm of bookmarks) {
-                    bkm.clear();
-                }
+        for (let key of keys) {
+            // Find bookmarks between FROM and TO
+            let from = key.range.from.line;
+            let to = key.range.to.line;
+            let bookmarks = doc.findMarks({ line: from }, { line: to });
+
+            // Delete those with widgets
+            for (let bkm of bookmarks) {
+                bkm.clear();
             }
         }
 
@@ -117,21 +120,28 @@ export default class WidgetsManager {
         // Search for keys between FROM and TO
         let keys = TangramPlay.getKeys(from, to);
         let newWidgets = [];
-        if (keys) {
-            for (let key of keys) {
-                let val = key.value;
-                if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.pos.line))) {
-                    continue;
-                }
 
-                // Check for widgets to add
-                for (let datum of this.data) {
-                    if (datum.match(key)) {
-                        let widget = datum.create(key);
-                        widget.insert();
-                        newWidgets.push(widget);
-                        break;
+        if (!keys || keys.length === 0) {
+            return;
+        }
+
+        for (let key of keys) {
+            let val = key.value;
+            if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.pos.line))) {
+                continue;
+            }
+
+            // Check for widgets to add
+            for (let datum of this.data) {
+                if (datum.match(key)) {
+                    let widget = datum.create(key);
+                    widget.insert();
+                    newWidgets.push(widget);
+
+                    if (this.pairedUntilLine < key.pos.line) {
+                        this.pairedUntilLine = key.pos.line;
                     }
+                    break;
                 }
             }
         }
