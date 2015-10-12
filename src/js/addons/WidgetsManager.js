@@ -85,12 +85,9 @@ export default class WidgetsManager {
         if (keys) {
             for (let key of keys) {
                 // Find bookmarks between FROM and TO
-                // For some reason findMarks() wants lines +1 than
-                // what getKeys() is giving us.
-                let from = key.range.from.line + 1;
-                let to = key.range.to.line + 1;
+                let from = key.range.from.line;
+                let to = key.range.to.line;
                 let bookmarks = doc.findMarks({ line: from }, { line: to });
-                console.log(key, bookmarks);
 
                 // Delete those with widgets
                 for (let bkm of bookmarks) {
