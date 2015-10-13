@@ -6,9 +6,11 @@ import search from 'app/addons/map/search';
 import geolocator from 'app/addons/map/geolocator';
 import bookmarks from 'app/addons/map/bookmarks';
 
-let el;
-
 const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
+const MAP_UPDATE_DELTA = 0.002;
+
+let el;
+let currentLocation;
 
 const MapToolbar = {
     init () {
@@ -21,6 +23,8 @@ const MapToolbar = {
         setInitialDisplayState();
         setZoomLabel();
         search.setCurrentLocation();
+
+        currentLocation = map.getCenter();
     },
 
     toggle () {
@@ -55,7 +59,19 @@ function setupEventListeners () {
         setZoomLabel();
     });
     map.on('moveend', function (e) {
-        search.setCurrentLocation();
+        // Only update location if the map center has moved more than a given delta
+        // This is actually really necessary because EVERY update in the editor reloads
+        // the map, which fires moveend events despite not actually moving the map
+        // But we also have the bonus of not needing to make a reverse geocode request
+        // for small changes of the map center.
+        let center = map.getCenter();
+        if (getMapUpdateDelta(currentLocation, center) > MAP_UPDATE_DELTA) {
+            search.setCurrentLocation();
+            // Reset currentLocation after geocoding - don't reset after every
+            // moveend because this basically allows the reverse geocode to never
+            // happen if you just scoot the viewport tiny amounts each time.
+            currentLocation = center;
+        }
     });
 }
 
@@ -90,4 +106,12 @@ function setZoomLabel () {
     let currentZoom = map.getZoom();
     let fractionalNumber = Math.floor(currentZoom * 10) / 10;
     label.textContent = fractionalNumber.toFixed(1);
+}
+
+function getMapUpdateDelta (startLatLng, endLatLng) {
+    let startX = startLatLng.lat;
+    let startY = startLatLng.lng;
+    let endX = endLatLng.lat;
+    let endY = endLatLng.lng;
+    return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2))
 }
