@@ -130,8 +130,7 @@ function gotoBookmark (selectedEl) {
         return;
     }
 
-    map.setView(coordinates);
-    map.setZoom(zoom);
+    map.setView(coordinates, zoom);
     clearMenu();
 
     // When you select a bookmark, highlight the star to indicate that

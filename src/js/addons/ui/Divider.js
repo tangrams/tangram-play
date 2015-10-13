@@ -84,7 +84,15 @@ export default class Divider {
     update() {
         // We update the map on the end of the drag because
         // of horrible flickering of the map in Chrome
-        map.invalidateSize(false);
+        map.invalidateSize({
+            pan: {
+                animate: false
+            },
+            zoom: {
+                animate: false
+            },
+            debounceMoveend: true
+        });
         this.draggable[0].applyBounds(getBounds());
     }
 

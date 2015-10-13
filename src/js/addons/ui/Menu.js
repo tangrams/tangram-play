@@ -24,7 +24,7 @@ export default class Menu {
         this.menus.export = new MenuItem('.tp-menu-button-export', _onClickExport);
         this.menus.map = new MenuItem('.tp-menu-button-map', _onClickMap);
         this.menus.fullscreen = new MenuItem('.tp-menu-button-fullscreen', _onClickFullscreen);
-        this.menus.help = new MenuItem('.tp-menu-button-help');
+        this.menus.help = new MenuItem('.tp-menu-button-help', _onClickHelp);
 
         this.fileopen = new FileOpen();
         this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
@@ -66,6 +66,16 @@ function _onClickOpen (event) {
     let menuEl = container.querySelector('.tp-menu-dropdown-open');
     let posX = container.querySelector('.tp-menu-button-open').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
+    menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
+    if (menuEl.style.display === 'none') {
+        _resetTooltipState();
+    }
+    container.addEventListener('click', _onClickOutsideDropdown, false);
+}
+
+function _onClickHelp (event) {
+    let menuEl = container.querySelector('.tp-menu-dropdown-help');
+    menuEl.style.right = '0px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
