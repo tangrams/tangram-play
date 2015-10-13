@@ -9,26 +9,13 @@ import { isStrEmpty } from 'app/core/codemirror/tools';
 // Load addons modules
 import WidgetType from 'app/addons/widgets/WidgetType';
 
-var stopAction = debounce(function(wm) {
-    wm.update();
-}, 100);
-
-var stopMicroAction = debounce(function(wm, nLine) {
-    wm.updateLine(nLine);
-}, 100);
-
 export default class WidgetsManager {
-    constructor(configFile) {
+    constructor (configFile) {
         subscribeMixin(this);
 
-        // Local variables
-        this.totalLines = 0; // keep track of linesf
-        this.pairedUntil = 0;
-        this.forceBuild = true; // build widget - key sync
         this.data = []; // tokens to check
-        this.active = []; // active widgets
-        this.building = false;
-        this.updating = false;
+        this.totalLines = 0; // keep track of linesf
+        this.pairedUntilLine = 0;
 
         // Load data file
         httpGet(configFile, (err, res) => {
@@ -36,238 +23,168 @@ export default class WidgetsManager {
 
             // Initialize tokens
             for (let datum of widgetsData) {
-                if (datum.type === "color" || datum.type === "boolean" || datum.type === "string") {
+                if (datum.type === 'color' || datum.type === 'boolean' || datum.type === 'string') {
                     this.data.push(new WidgetType(datum));
                 }
             }
 
-            // Build all widgets
-            this.build();
+            let from = { line:0, ch:0 };
+            let to = {  line: TangramPlay.editor.getDoc().size-1,
+                        ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size-1).length };
+            this.createRange(from,to);
         });
 
-        TangramPlay.editor.on('update', (cm, changesObj) => {
-            let to = TangramPlay.editor.getViewport().to;
-
-            if (this.pairedUntil > TangramPlay.editor.getDoc().size) {
-                this.pairedUntil = 0;
-                this.forceBuild = true;
-
-                // console.log(this.pairedUntil + '/' + TangramPlay.editor.getDoc().size, to);
-                stopAction(this);
-            }
-            else if (this.pairedUntil < to) {
-                for (let i = this.pairedUntil; i < to; i++) {
-                    this.rebuildLine(i);
-                }
-                this.pairedUntil = to;
-
-                // console.log(this.pairedUntil + '/' + TangramPlay.editor.getDoc().size, to);
-                stopAction(this);
-            }
-        });
-
-        // // Suggestions are trigged by the folowing CM events
+        // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
-            // Is a multi line change???
-            let lineChange = -1;
-            let multiLine = false;
-            for (let i = 0; i < changesObjs.length; i++) {
-                // If the change happen in a single line
-                if (changesObjs[i].from.line === changesObjs[i].to.line) {
-                    if (lineChange === -1) {
-                        lineChange = changesObjs[i].from.line;
+            for (let obj of changesObjs) {
+                this.change(obj);
+            }
+        });
+
+        // Keep track of possible NOT-PARSED lines
+        // and in every codemirror "render update" check if we are approaching a
+        // non-parsed area and for it to update by cleaning and creating
+        TangramPlay.editor.on('scroll', (cm) => {
+            let horizon = TangramPlay.editor.getViewport().to - 1;
+            if (this.pairedUntilLine < horizon) {
+                let from = {
+                    line: this.pairedUntilLine +1,
+                    ch: 0
+                };
+                let to = {
+                    line: horizon,
+                    ch: TangramPlay.editor.getLine(horizon).length
+                };
+                this.clearRange(from, to);
+                this.createRange(from, to);
+            }
+        });
+
+        // If a new files is loaded reset the tracked line
+        TangramPlay.on('url_loaded', (url) => {
+            this.pairedUntilLine = 0;
+        });
+    }
+
+    change (changeObj) {
+        // console.log("Change", changeObj);
+
+        // Get FROM/TO range of the change
+        let from = {line: changeObj.from.line, ch: changeObj.from.ch};
+        let to = {line: changeObj.to.line, ch: changeObj.to.ch};
+
+        // This force to check changes until the end of line
+        to.line = changeObj.from.line + changeObj.text.length - 1;
+        to.ch = TangramPlay.editor.getLine(to.line).length;
+
+        // If is a new line move the range FROM the begining of the line
+        if (changeObj.text.length === 2 && 
+            changeObj.text[0] === '' && 
+            changeObj.text[1] === '') {
+            from.ch = 0;
+            // console.log("New line, now range is", from, to);
+        }
+
+        // Get the matching keys for the FROM/TO range
+        let keys = TangramPlay.getKeys(from, to);
+        // If there is no keys there nothing to do
+        if (!keys || keys.length === 0) return;
+
+        // Get affected bookmarks
+        let bookmarks = [];
+        if (from.line === to.line && 
+            from.ch === to.ch) {
+            // If the FROM/TO range is to narrow search using keys
+            for (let key of keys) {
+                // Find and concatenate bookmarks between FROM/TO range
+                bookmarks = bookmarks.concat( TangramPlay.editor.getDoc().findMarks(key.range.from, key.range.to) );
+            }
+        } else {
+            bookmarks = TangramPlay.editor.getDoc().findMarks(from, to);
+        }
+        // console.log("Bookmarks", bookmarks);
+
+        // If there is only one key and the change happen on the value
+        if (keys.length === 1 && 
+            bookmarks.length === 1 &&
+            from.ch > keys[0].pos.ch && 
+            bookmarks[0].widget) {
+            // console.log("Updating value of ", bookmarks[0]);
+            // Update the widget
+            bookmarks[0].widget.update();
+        } 
+        else {
+            // Delete those afected widgets
+            for (let bkm of bookmarks) {
+                bkm.clear();
+            }
+
+            // Create widgets from keys
+            this.createKeys(keys);
+        }
+    }
+
+    clearRange (from, to) {
+        let keys = TangramPlay.getKeys(from, to);
+
+        if (!keys || keys.length === 0) {
+            return;
+        }
+
+        this.clearKeys(keys);
+    }
+
+    clearKeys (keys) {
+        let doc = TangramPlay.editor.getDoc();
+        for (let key of keys) {
+            // Find bookmarks between FROM and TO
+            let from = key.range.from.line;
+            let to = key.range.to.line;
+            let bookmarks = doc.findMarks({ line: from }, { line: to });
+
+            // Delete those with widgets
+            for (let bkm of bookmarks) {
+                bkm.clear();
+            }
+        }
+    }
+
+    createRange (from, to) {
+        // Search for keys between FROM and TO
+        let keys = TangramPlay.getKeys(from, to);
+        
+        if (!keys || keys.length === 0) {
+            return;
+        }
+
+        this.createKeys(keys);
+    }
+
+    createKeys (keys) {   
+        let newWidgets = [];
+        for (let key of keys) {
+
+            let val = key.value;
+            if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.pos.line))) {
+                continue;
+            }
+
+            // Check for widgets to add
+            for (let datum of this.data) {
+                if (datum.match(key)) {
+                    let widget = datum.create(key);
+                    widget.insert();
+                    newWidgets.push(widget);
+
+                    if (this.pairedUntilLine < key.pos.line) {
+                        this.pairedUntilLine = key.pos.line;
                     }
-                    else if (lineChange !== changesObjs[i].from.line) {
-                        multiLine = true;
-                        break;
-                    }
-                }
-                else {
-                    multiLine = true;
                     break;
                 }
             }
-
-            if (multiLine) {
-                this.forceBuild = true;
-                stopAction(this);
-            }
-            else if (lineChange !== -1) {
-                stopMicroAction(this, lineChange);
-            }
-        });
-
-        TangramPlay.editor.on('fold', (cm, from, to) => {
-            this.forceBuild = true;
-            stopAction(this);
-        });
-
-        TangramPlay.editor.on('unfold', (cm, from, to) => {
-            this.forceBuild = true;
-            stopAction(this);
-        });
-
-        TangramPlay.on('resize', (args) => {
-            this.forceBuild = true;
-            this.update();
-        });
-
-        TangramPlay.on('url_loaded', (args) => {
-            this.clean();
-            this.forceBuild = true;
-            this.pairedUntil = 0;
-            stopAction(this);
-        });
-    }
-
-    build() {
-        if (!this.building) {
-            this.building = true;
-            if (this.active.length > 0) {
-                this.clean();
-            }
-
-            for (let line = 0, size = TangramPlay.editor.doc.size; line < size; line++) {
-                this.buildLine(line);
-            }
-
-            // the key~widget pairs is new
-            this.totalLines = TangramPlay.editor.getDoc().size;
-            this.forceBuild = false;
-
-            // update position
-            this.update();
-
-            this.building = false;
         }
+
+        // Trigger Events
+        this.trigger('widgets_created', { widgets: newWidgets });
     }
-
-    buildLine(nLine) {
-        // If is visible
-        if (TangramPlay.editor.getLineHandle(nLine) && TangramPlay.editor.getLineHandle(nLine).height) {
-            // Get keys of the line
-            let keys = TangramPlay.getKeysOnLine(nLine);
-            if (keys) {
-                // Check on every key of the line
-                for (let key of keys) {
-                    let val = key.value;
-
-                    if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(nLine))) {
-                        continue;
-                    }
-
-                    // Check for widgets to add
-                    for (let datum of this.data) {
-                        if (datum.match(key)) {
-                            this.active.push(datum.create(key));
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    rebuildLine(nLine) {
-        this.cleanLine(nLine);
-        this.buildLine(nLine);
-    }
-
-    // Update widgets unless something is not right
-    update() {
-        if (this._isPairingDirty()) {
-            // If there is different number of lines force a rebuild
-            this.build();
-        }
-        else {
-            if (!this.updating) {
-                this.updating = true;
-
-                // If the lines are the same proceed to update just the position
-                for (let widget of this.active) {
-                    let nLine = widget.key.pos.line;
-                    let index = widget.key.index;
-                    let keys = TangramPlay.getKeysOnLine(nLine);
-
-                    if (TangramPlay.editor.getLineHandle(nLine) && TangramPlay.editor.getLineHandle(nLine).height) {
-                        if (index < keys.length) {
-                            widget.update();
-                        }
-                        else {
-                            this.rebuildLine(nLine);
-                            break;
-                        }
-                    }
-                    // NOTE: If the condition above never becomes true,
-                    // this can put TangramPlay into an infinite loop.
-                    // TODO: Catch this, never let it happen
-                    else {
-                        this.forceBuild = true;
-                        this.build();
-                        break;
-                    }
-                }
-
-                this.trigger('update', { lines: 'all', widgets: this.active });
-                this.updating = false;
-            }
-        }
-    }
-
-    updateLine(nLine) {
-        // If the Line is already parsed and visible
-        if (TangramPlay.editor.getLineHandle(nLine) && TangramPlay.editor.getLineHandle(nLine).height) {
-            let widgets = this.getWidgetsOnLine(nLine);
-            let keys = TangramPlay.getKeysOnLine(nLine);
-
-            // Check that the keys~widgets are paired
-            if (widgets.length !== keys.length) {
-                // If the amount of keys and widgets doesn't match, force a full rebuild
-                this.forceBuild = true;
-                this.build();
-            }
-            else {
-                for (let widget of widgets) {
-                    widget.update();
-                }
-
-                this.trigger('update', { lines: nLine, widgets: widgets });
-            }
-        }
-    }
-
-    // Erase all widgets
-    clean() {
-        while (this.active.length > 0) { // While there are still active widgets,
-            let widget = this.active.pop(); // ...take the last widget off the list of active widgets
-            widget.destroyEl(); // ...and remove its DOM from the page
-        }
-    }
-
-    // Erase the widgets on one line
-    cleanLine(nLine) {
-        for (let i = this.active.length - 1; i >= 0; i--) { // Look through each of the active widgets
-            let widget = this.active[i];
-            if (widget.key.pos.line === nLine) { // If widget is on the line (passed as nLine parameter)
-                this.active.splice(i, 1); // ...then remove it from the list of active widgets
-                widget.destroyEl(); // and remove its DOM from the page
-            }
-        }
-    }
-
-    getWidgetsOnLine(nLine) {
-        let widgetsOnLine = [];
-        for (let i = 0; i < this.active.length ; i++) {
-            if (this.active[i].key.pos.line === nLine) {
-                widgetsOnLine.push(this.active[i]);
-            }
-        }
-        return widgetsOnLine;
-    }
-
-    // Is keys~widgets pairs dirty? (usually after lines are been added)
-    _isPairingDirty() {
-        return this.forceBuild || this.totalLines !== TangramPlay.editor.getDoc().size;
-    }
-
 }

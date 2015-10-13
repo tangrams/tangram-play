@@ -35,7 +35,7 @@ export function debounce(func, wait, immediate) {
     };
 }
 
-export function getPosition(dom) {
+export function getDOMOffset(dom) {
     let y = 0,
         x = 0;
     do {

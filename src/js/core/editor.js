@@ -22,11 +22,11 @@ import 'codemirror/keymap/sublime';
 import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
-import { getLineInd } from 'app/core/codemirror/tools';
 import 'app/core/codemirror/comment-tangram';
 import 'app/core/codemirror/hint-tangram';
 
 // Import Utils
+import { getLineInd, unfoldAll, foldByLevel } from 'app/core/codemirror/tools';
 import { debounce } from 'app/core/common';
 
 //  Main CM functions
@@ -76,34 +76,34 @@ export function initEditor(place) {
                 cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
             } ,
             'Alt-P': function(cm) {
-                cm.tangramPlay.takeScreenshot();
+                TangramPlay.takeScreenshot();
             },
             'Ctrl-0': function(cm) {
-                cm.tangramPlay.unfoldAll();
+                unfoldAll(cm);
             },
             'Ctrl-1': function(cm) {
-                cm.tangramPlay.foldByLevel(0);
+                foldByLevel(cm, 0);
             },
             'Ctrl-2': function(cm) {
-                cm.tangramPlay.foldByLevel(1);
+                foldByLevel(cm, 1);
             },
             'Ctrl-3': function(cm) {
-                cm.tangramPlay.foldByLevel(2);
+                foldByLevel(cm, 2);
             },
             'Ctrl-4': function(cm) {
-                cm.tangramPlay.foldByLevel(3);
+                foldByLevel(cm, 3);
             },
             'Ctrl-5': function(cm) {
-                cm.tangramPlay.foldByLevel(4);
+                foldByLevel(cm, 4);
             },
             'Ctrl-6': function(cm) {
-                cm.tangramPlay.foldByLevel(5);
+                foldByLevel(cm, 5);
             },
             'Ctrl-7': function(cm) {
-                cm.tangramPlay.foldByLevel(6);
+                foldByLevel(cm, 6);
             },
             'Ctrl-8': function(cm) {
-                cm.tangramPlay.foldByLevel(7);
+                foldByLevel(cm, 7);
             }
         },
         foldGutter: {
@@ -117,17 +117,10 @@ export function initEditor(place) {
         indentUnit: 4
     });
 
-    cm.tangramPlay = TangramPlay;
-    cm.isSaved = true;
-
     //  Hook events
 
     // Update widgets & content after a batch of changes
     cm.on('changes', function(cm, changes) {
-        if (cm.isSaved) {
-            cm.isSaved = false;
-        }
-
         updateContent(cm, changes);
     });
 

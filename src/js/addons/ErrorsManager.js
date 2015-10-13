@@ -29,10 +29,6 @@ export default class ErrorsManager {
                 TangramPlay.editor.removeLineWidget(this.widgets[i]);
             }
             this.widgets.length = 0;
-
-            // Temporal Fix, consider WidgetManager to admin line widgtets
-            TangramPlay.addons.widgetsManager.update();
-
             this.block_errors.clear();
         }
     }
@@ -45,9 +41,6 @@ export default class ErrorsManager {
             msg.appendChild(document.createTextNode(args.error.reason));
             msg.className = 'tp-error';
             this.widgets.push(TangramPlay.editor.addLineWidget(args.error.mark.line, msg, { coverGutter: false, noHScroll: true }));
-
-            // Temporal Fix, consider WidgetManager to admin line widgtets
-            TangramPlay.addons.widgetsManager.update();
         }
     }
 
@@ -82,9 +75,6 @@ export default class ErrorsManager {
                 msg.className = 'tp-warning';
                 this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
             }
-
-            // Temporal Fix, consider WidgetManager to admin line widgtets
-            TangramPlay.addons.widgetsManager.update();
         }
     }
 }

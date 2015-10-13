@@ -1,29 +1,94 @@
 /* EDITOR WIDGETS */
 
 .tp-widget {
+    display: inline-block;
+    position: relative;
     z-index: 10;
     user-select: none;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
 
     /* Codemirror positioning override */
+    /*
     margin-top: -20px;
     margin-left: 4px;
+    */
 }
 
 .tp-widget-colorpicker {
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 50%;
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     box-sizing: border-box;
     background-color: white;
     cursor: pointer;
 
     /* position override */
+    vertical-align: middle;
+    /*
     margin-top: -17px;
     margin-left: 6px;
+    */
 }
 
 select.tp-widget-dropdown {
-    width: 17px;
+    /* width: 17px; NTOE THIS IS WEIRD */
     height: 17px;
+}
+
+input.tp-widget-toggle {
+    position: relative;
+    visibility: hidden;
+    margin: 0;
+
+    & + label {
+        position: absolute;
+        top: 4px;
+        left: 0;
+        width: 13px;
+        height: 13px;
+        cursor: pointer;
+        background-color: var(--ui-element-color);
+
+        /* Checkmark */
+        &::after {
+            content: '';
+            width: 7px;
+            height: 3px;
+            position: absolute;
+            top: 3px;
+            left: 2px;
+            border: 2px solid var(--ui-highlight-color);
+            border-top: none;
+            border-right: none;
+            background: transparent;
+            opacity: 0;
+            transform: rotate(-45deg);
+        }
+
+        /* Unchecked */
+        &::before {
+            content: '';
+            width: 9px;
+            height: 9px;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            box-sizing: border-box;
+            border: 2px solid red;
+            border-radius: 50%;
+            background: transparent;
+            opacity: 0;
+        }
+    }
+
+    &:checked + label::after {
+        opacity: 1;
+    }
+    &:not(:checked) + label::before {
+        opacity: 1;
+    }
 }

@@ -10,14 +10,14 @@
 'use strict';
 
 import TangramPlay from 'app/TangramPlay';
-import { getPosition } from 'app/core/common';
+import { editor } from 'app/TangramPlay';
 import { getValueRange } from 'app/core/codemirror/yaml-tangram';
 
 export default class Widget {
     constructor (def, key) {
         this.key = key;
         this.definition = def;
-        this.el = this.createEl();
+        this.el = this.createEl(key);
     }
 
     /**
@@ -25,40 +25,36 @@ export default class Widget {
      *  This is a simple bare-bones example.
      *  Widgets that extend from this should create
      *  their own DOM and avoid calling super()
+     *  @param key in case the element needs to know something about the source
      */
-    createEl () {
+    createEl (key) {
         return document.createDocumentFragment();
     }
 
-    /**
-     *  Removes the widget element from DOM.
-     */
-    destroyEl () {
-        if (this.el && this.el.parentNode) {
-            this.el.parentNode.removeChild(this.el);
+    destroy () {
+        if (this.bookmark) {
+            this.bookmark.clear();
         }
     }
 
-    /**
-     *  Returns x, y position of the upper left corner
-     *  of the DOM element for the widget, relative to parent
-     *  DOM containers. Use this.el.getBoundingClientRect()
-     *  as an alternative for positioning relative to the
-     *  viewport (for positioning secondary interactive UI
-     *  elements, for example).
-     */
-    getPosition () {
-        return getPosition(this.el);
-    }
-
-    update() {
+    update () {
         // Update key
         this.key = TangramPlay.getKeyForKey(this.key);
         this.value = this.key.value;
+    }
 
-        // Update position
+    insert () {
+        this.key = TangramPlay.getKeyForKey(this.key);
         let pos = getValueRange(this.key).to;
-        TangramPlay.editor.addWidget(pos, this.el);
+
+        // cm.addWidget() overlays DOM objects on the page, so its position
+        // won't update automatically. It is better to use
+        // cm.doc.setBookmark(), which inserts the widget into CodeMirror DOM.
+        let bookmark = editor.doc.setBookmark(pos, {
+            widget: this.el,
+            insertLeft: true
+        });
+        bookmark.widget = this;
     }
 
     /**
@@ -85,8 +81,5 @@ export default class Widget {
 
         // Change the value attached to this widget instance
         this.key.value = string;
-
-        // Update the position
-        TangramPlay.addons.widgetsManager.updateLine(this.key.pos.line);
     }
 }

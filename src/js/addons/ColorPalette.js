@@ -18,13 +18,12 @@ export default class ColorPalette {
         this.palette.className = 'tp-colorpalette';
         document.body.appendChild(this.palette);
 
-        TangramPlay.addons.widgetsManager.on('update', (args) => {
+        TangramPlay.addons.widgetsManager.on('widgets_created', (args) => {
             TangramPlay.addons.colorPalette.update(args);
         });
 
         // If is a new file load all colors by going to the end and comeback
         TangramPlay.on('url_loaded', (args) => {
-            // console.log('force to load widgets');
             for (let i = 0; i < TangramPlay.editor.getDoc().size; i++) {
                 jumpToLine(TangramPlay.editor, i);
             }
@@ -32,18 +31,23 @@ export default class ColorPalette {
         });
     }
 
-    update(args) {
-        // console.log(args);
-
+    update (args) {
+        // Clean colors
         this.colors = {};
-        let widgets = TangramPlay.addons.widgetsManager.active;
-        for (let i = 0; i < widgets.length; i++) {
-            if (widgets[i].definition.type === 'color') {
-                let color = widgets[i].el.style.backgroundColor;
+
+        // Find all bookmarks
+        let bookmarks = TangramPlay.editor.getDoc().getAllMarks();
+
+        // check for color picker widgets
+        for (let bkm of bookmarks) {
+            if (bkm.widget &&
+                bkm.widget.definition.type === 'color') {
+
+                let color = bkm.widget.el.style.backgroundColor;
                 if (this.colors[color] === undefined) {
                     this.colors[color] = new Color(color);
                 }
-                this.colors[color].widgets.push(widgets[i]);
+                this.colors[color].widgets.push(bkm.widget);
             }
         }
         this.make();
@@ -79,16 +83,16 @@ class Color {
      *  Assumes color property is a CSS color.
      *  Be sure to convert value parameter to a CSS-readable value.
      */
-    set color(cssColor) {
+    set color (cssColor) {
         this.el.style.backgroundColor = cssColor;
         this.el.style.background = cssColor;
     }
 
-    get color() {
+    get color () {
         return this.el.style.background;
     }
 
-    select() {
+    select () {
         // Select all instances
         let selections = [];
         for (let i = 0; i < this.widgets.length; i++) {
@@ -100,7 +104,7 @@ class Color {
         TangramPlay.editor.getDoc().setSelections(selections);
     }
 
-    onClick(event) {
+    onClick (event) {
         this.select();
 
         // Toggles the picker to be off if it's already present.

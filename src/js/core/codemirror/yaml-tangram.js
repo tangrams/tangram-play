@@ -18,6 +18,8 @@ export function getKeyPairs(cm, nLine) {
         let keys = cm.getLineHandle(nLine).stateAfter.yamlState.keys;
         for (let i = 0 ; i < keys.length; i++) {
             keys[i].pos.line = nLine;
+            keys[i].range.from.line = nLine;
+            keys[i].range.to.line = nLine;
         }
         return keys;
     }
@@ -192,17 +194,25 @@ function getInlineKeys(str, nLine) {
         }
         else {
             // check for keypair
-            let isKey = /^\s*([\w|\-|\_|\$]+):\s*([\w|\'|\#]*)\s*/gm.exec(str.substr(i));
+            let isKey = /^\s*([\w|\-|\_|\$]+)(\s*:\s*)([\w|\'|\#]*)\s*/gm.exec(str.substr(i));
             if (isKey) {
                 keys[level] = isKey[1];
                 i += isKey[1].length;
                 rta.push({
                     address: getAddressFromKeys(keys),
                     key: isKey[1],
-                    value: isKey[2],
+                    value: isKey[3],
                     pos: {
                         line: nLine,
-                        ch: i + 1
+                        ch: i + 1 // TODO make this smarter!!!!
+                    },
+                    range: {
+                        from: {
+                            line: nLine,
+                            ch: i + 1 - isKey[1].length },
+                        to: {
+                            line: nLine,
+                            ch: i + isKey[2].length + isKey[3].length + 1 },
                     },
                     index: rta.length + 1
                 });
@@ -223,8 +233,20 @@ function getInlineKeys(str, nLine) {
 function yamlAddressing(stream, state) {
     // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
     if (stream.pos === 0) {
-        let regex = /(^\s*)([\w|\-|\_]+):\s*([\w|\W]*)\s*$/gm;
+        // TODO:
+        //  - add an extra \s* before the :
+        //  - break all this into smaller and reusable functions
+        //  - get rid of the pos
+        //
+        let regex = /(^\s*)([\w|\-|\_]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
         let key = regex.exec(stream.string);
+
+        // key[0] = all the matching line
+        // key[1] = spaces
+        // key[2] = key
+        // key[3] = "\s*:\s*"
+        // key[4] = value (if there is one)
+        //
         if (key) {
             //  If looks like a key
             //  Calculate the number of spaces and indentation level
@@ -251,8 +273,10 @@ function yamlAddressing(stream, state) {
 
             let address = getAddressFromKeys(state.keyStack);
             let ch = spaces + key[2].length;
+            let fromCh = spaces;
+            let toCh = spaces + key[2].length + key[3].length;
 
-            if (key[3].substr(0, 1) === '{') {
+            if (key[4].substr(0, 1) === '{') {
                 state.keys = [ {
                     address: address,
                     key: key[2],
@@ -260,25 +284,44 @@ function yamlAddressing(stream, state) {
                     pos: {
                         line: state.line,
                         ch: ch },
+                    range: {
+                        from: {
+                            line: state.line,
+                            ch: fromCh },
+                        to: {
+                            line: state.line,
+                            ch: toCh }
+                    },
                     index: 0
                 } ];
 
-                let subKeys = getInlineKeys(key[3],
+                let subKeys = getInlineKeys(key[4],
                     state.line);
                 for (let i = 0; i < subKeys.length; i++) {
                     subKeys[i].address = address + subKeys[i].address;
-                    subKeys[i].pos.ch = ch + 2 + subKeys[i].pos.ch;
+                    subKeys[i].pos.ch += spaces + key[2].length + key[3].length;
+                    subKeys[i].range.from.ch += spaces + key[2].length + key[3].length;
+                    subKeys[i].range.to.ch += spaces + key[2].length + key[3].length;
                     state.keys.push(subKeys[i]);
                 }
             }
             else {
+                toCh += key[4].length;
                 state.keys = [ {
                     address: address,
                     key: key[2],
-                    value: key[3],
+                    value: key[4],
                     pos: {
                         line: state.line,
                         ch: ch },
+                    range: {
+                        from: {
+                            line: state.line,
+                            ch: fromCh },
+                        to: {
+                            line: state.line,
+                            ch: toCh }
+                    },
                     index: 0
                 } ];
             }
@@ -292,6 +335,14 @@ function yamlAddressing(stream, state) {
                 pos: {
                     line: state.line,
                     ch: 0 },
+                range: {
+                    from: {
+                        line: state.line,
+                        ch: 0 },
+                    to: {
+                        line: state.line,
+                        ch: 0 }
+                },
                 index: 0
             } ];
         }
@@ -340,7 +391,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
 
     function glsl(stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
-        if (!isShader(address) || 
+        if (!isShader(address) ||
             (/^\|$/g.test(stream.string))) {
 
             state.token = yaml;

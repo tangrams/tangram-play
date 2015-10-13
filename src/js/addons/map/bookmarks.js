@@ -125,7 +125,11 @@ function onMenuClickHandler (event) {
 function gotoBookmark (selectedEl) {
     const coordinates = selectedEl.coordinates;
     const zoom = selectedEl.zoom;
-    if (!coordinates || !zoom) return;
+
+    if (!coordinates || !zoom) {
+        return;
+    }
+
     map.setView(coordinates);
     map.setZoom(zoom);
     clearMenu();
@@ -141,7 +145,7 @@ function gotoBookmark (selectedEl) {
 function onClickDeleteBookmarks (event) {
     const abort = function (event) {
         event.stopImmediatePropagation();
-    }
+    };
     const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', clearData, abort);
     modal.show();
 }
