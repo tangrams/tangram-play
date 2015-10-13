@@ -67,14 +67,19 @@ export default class WidgetsManager {
     }
 
     change (changeObj) {
-        // console.log("Change", changeObj);
+        console.log("Change", changeObj);
 
         // Get FROM/TO range of the change
         let from = {line: changeObj.from.line, ch: changeObj.from.ch};
         let to = {line: changeObj.to.line, ch: changeObj.to.ch};
 
-        // This force to check changes until the end of line
-        to.line = changeObj.from.line + changeObj.text.length - 1;
+        if (changeObj.removed.length > changeObj.text.length) {
+            from.line -= changeObj.removed.length - 1;
+            to.line += 1;
+        } else if (changeObj.removed.length < changeObj.text.length) {
+            to.line = changeObj.from.line + changeObj.text.length - 1;
+        }
+
         to.ch = TangramPlay.editor.getLine(to.line).length;
 
         // If is a new line move the range FROM the begining of the line
@@ -82,7 +87,6 @@ export default class WidgetsManager {
             changeObj.text[0] === '' && 
             changeObj.text[1] === '') {
             from.ch = 0;
-            // console.log("New line, now range is", from, to);
         }
 
         // Get the matching keys for the FROM/TO range
@@ -102,14 +106,13 @@ export default class WidgetsManager {
         } else {
             bookmarks = TangramPlay.editor.getDoc().findMarks(from, to);
         }
-        // console.log("Bookmarks", bookmarks);
 
         // If there is only one key and the change happen on the value
         if (keys.length === 1 && 
             bookmarks.length === 1 &&
             from.ch > keys[0].pos.ch && 
             bookmarks[0].widget) {
-            // console.log("Updating value of ", bookmarks[0]);
+            console.log("Updating value of ", bookmarks[0]);
             // Update the widget
             bookmarks[0].widget.update();
         } 
