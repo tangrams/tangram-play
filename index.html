@@ -67,6 +67,7 @@
                 <div class='tp-menu-dropdown tp-menu-dropdown-open'>
                     <ul>
                         <li class='tp-menu-open-file'><i class='btm bt-folder'></i><span class='tp-menu-item-label'>Open a file</span></li>
+                        <li class='tp-menu-open-url'><i class='btm bt-link'></i><span class='tp-menu-item-label'>Open from URL</span></li>
                         <li class='tp-menu-open-example'><i class='btm bt-map'></i><span class='tp-menu-item-label'>Choose example</span></li>
                     </ul>
                 </div>
@@ -111,26 +112,38 @@
             </div>
         </div>
 
-        <div class='tp-shield'></div>
-        <div class='tp-modal'>
-            <p class='tp-modal-text'></p>
-            <div class='tp-modal-buttons'>
-                <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                <button class='tp-modal-confirm'><i class='btm bt-check'></i> Continue</button>
+        <div class='tp-overlay-container'>
+            <div class='tp-shield'></div>
+            <div class='tp-modal'>
+                <p class='tp-modal-text'></p>
+                <div class='tp-modal-buttons'>
+                    <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                    <button class='tp-modal-confirm'><i class='btm bt-check'></i> Continue</button>
+                </div>
             </div>
-        </div>
-        <div class='tp-modal tp-example-modal'>
-            <p class='tp-modal-text'></p>
-            <div class='tp-example-list'></div>
-            <div class='tp-modal-buttons'>
-                <button id='example-cancel' class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                <button id='example-confirm' class='tp-modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
+            <div class='tp-modal tp-modal-alt tp-example-modal'>
+                <p class='tp-modal-text'></p>
+                <div class='tp-modal-content tp-example-list'></div>
+                <div class='tp-modal-buttons'>
+                    <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                    <button class='tp-modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
+                </div>
             </div>
-        </div>
-        <div class='tp-filedrop-container'>
-            <div class='tp-filedrop-indicator'>
-                <div class='tp-filedrop-icon'><i class='btm bt-upload'></i></div>
-                <div class='tp-filedrop-label'>Drop a file here to open</div>
+            <div class='tp-modal tp-modal-alt tp-open-url-modal'>
+                <p class='tp-modal-text'></p>
+                <div class='tp-modal-content tp-open-url-input'>
+                    <input type='text' placeholder='https://' spellcheck='false'>
+                </div>
+                <div class='tp-modal-buttons'>
+                    <button id='example-cancel' class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                    <button id='example-confirm' class='tp-modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
+                </div>
+            </div>
+            <div class='tp-filedrop-container'>
+                <div class='tp-filedrop-indicator'>
+                    <div class='tp-filedrop-icon'><i class='btm bt-upload'></i></div>
+                    <div class='tp-filedrop-label'>Drop a file here to open</div>
+                </div>
             </div>
         </div>
     </div>

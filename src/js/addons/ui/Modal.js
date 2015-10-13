@@ -1,19 +1,17 @@
 'use strict';
 
-import TangramPlay from 'app/TangramPlay';
+import { container } from 'app/TangramPlay';
 import Shield from 'app/addons/ui/Shield';
 import { noop } from 'app/addons/ui/Helpers';
 
 export default class Modal {
     constructor (message = 'Dude.', callback = noop, abort = noop) {
-        const container = TangramPlay.container;
-
         this.el = container.querySelector('.tp-modal');
         this.message = message;
         this.callback = callback;
         this.abort = abort;
 
-        this.shield = new Shield(container);
+        this.shield = new Shield();
 
         // Setup proper "this" binding to these callback functions
         // This is necessary so that these functions have the proper
@@ -40,6 +38,7 @@ export default class Modal {
         this.el.style.display = 'block';
         this.el.querySelector('.tp-modal-confirm').addEventListener('click', this._handleConfirm, false);
         this.el.querySelector('.tp-modal-cancel').addEventListener('click', this._handleAbort, false);
+        container.addEventListener('keydown', this._handleEsc.bind(this), false);
     }
 
     hide () {
@@ -47,6 +46,7 @@ export default class Modal {
         this.el.style.display = 'none';
         this.el.querySelector('.tp-modal-confirm').removeEventListener('click', this._handleConfirm, false);
         this.el.querySelector('.tp-modal-cancel').removeEventListener('click', this._handleAbort, false);
+        container.removeEventListener('keydown', this._handleEsc.bind(this), false);
     }
 
     // Pass through events to callbacks
@@ -58,5 +58,15 @@ export default class Modal {
     _handleAbort (event) {
         this.hide();
         this.abort(event);
+    }
+
+    // Listen for escape key, which functions the same as hide & abort
+    // Events are passed through to the abort callback as well.
+    _handleEsc (event) {
+        let key = event.keyCode || event.which;
+        if (key === 27) {
+            this.hide();
+            this.abort(event);
+        }
     }
 }
