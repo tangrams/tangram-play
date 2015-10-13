@@ -113,6 +113,8 @@ export default class WidgetsManager {
             // console.log("Updating value of ", bookmarks[0]);
             // Update the widget
             bookmarks[0].widget.update();
+            // Trigger Events
+            this.trigger('widget_updated', { widgets: bookmarks[0].widget });
         } 
         else {
             // Delete those afected widgets

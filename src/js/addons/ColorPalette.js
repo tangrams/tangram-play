@@ -22,6 +22,10 @@ export default class ColorPalette {
             TangramPlay.addons.colorPalette.update(args);
         });
 
+        TangramPlay.addons.widgetsManager.on('widget_updated', (args) => {
+            TangramPlay.addons.colorPalette.update(args);
+        });        
+
         // If is a new file load all colors by going to the end and comeback
         TangramPlay.on('url_loaded', (args) => {
             for (let i = 0; i < TangramPlay.editor.getDoc().size; i++) {
