@@ -33,3 +33,19 @@
     background-color: var(--ui-active-color);
     color: yellow;
 }
+
+.tp-menu-dropdown {
+    a {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: var(--ui-component-text-color);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: yellow;
+    }
+}
