@@ -28,12 +28,14 @@ export default class WidgetsManager {
                 }
             }
 
-            this.init();
+            let from = { line:0, ch:0 };
+            let to = {  line: TangramPlay.editor.getDoc().size-1,
+                        ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size-1).length };
+            this.createRange(from,to);
         });
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
-            
             for (let obj of changesObjs) {
                 this.change(obj);
             }
@@ -64,15 +66,9 @@ export default class WidgetsManager {
         });
     }
 
-    init () {
-        let from = { line:0, ch:0 };
-        let to = {  line: TangramPlay.editor.getDoc().size-1,
-                    ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size-1).length };
-        this.createRange(from,to);
-    }
-
     change (changeObj) {
-        console.log("Change", changeObj);
+        // console.log("Change", changeObj);
+
         // Get FROM/TO range of the change
         let from = {line: changeObj.from.line, ch: changeObj.from.ch};
         let to = {line: changeObj.to.line, ch: changeObj.to.ch};
@@ -86,7 +82,7 @@ export default class WidgetsManager {
             changeObj.text[0] === '' && 
             changeObj.text[1] === '') {
             from.ch = 0;
-            console.log("(Adding newline) New line now range is", from, to);
+            // console.log("New line, now range is", from, to);
         }
 
         // Get the matching keys for the FROM/TO range
@@ -106,24 +102,23 @@ export default class WidgetsManager {
         } else {
             bookmarks = TangramPlay.editor.getDoc().findMarks(from, to);
         }
-        console.log("Bookmarks", bookmarks);
+        // console.log("Bookmarks", bookmarks);
 
         // If there is only one key and the change happen on the value
         if (keys.length === 1 && 
             bookmarks.length === 1 &&
             from.ch > keys[0].pos.ch && 
             bookmarks[0].widget) {
-            console.log("Updating value of ", bookmarks[0]);
+            // console.log("Updating value of ", bookmarks[0]);
             // Update the widget
             bookmarks[0].widget.update();
         } 
         else {
-            console.log("Clearing")
             // Delete those afected widgets
             for (let bkm of bookmarks) {
                 bkm.clear();
             }
-            console.log("creating")
+
             // Create widgets from keys
             this.createKeys(keys);
         }
