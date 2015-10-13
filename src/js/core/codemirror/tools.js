@@ -52,6 +52,12 @@ export function getValue(cm, nLine) {
     return value ? value[1] : '';
 }
 
+// Escape regex special characters
+// via http://stackoverflow.com/a/9310752
+export function regexEscape(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
 //  Common NAVIGATION functions on CM
 //  ===============================================================================
 

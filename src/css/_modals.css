@@ -2,15 +2,10 @@
 
 .tp-modal {
     display: none;
-    position: fixed;
     box-sizing: border-box;
     width: 400px;
     min-height: 160px;
     padding: 30px;
-    left: 50%;
-    margin-left: -200px;
-    top: 50%;
-    margin-top: -80px;
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 16px;
@@ -18,8 +13,17 @@
     color: var(--ui-component-text-color);
     background-color: var(--ui-base-color);
     box-shadow: var(--modal-shadow);
-    z-index: 1300;
+    z-index: 1;
     user-select: none;
+    pointer-events: auto;
+}
+
+.tp-modal-alt {
+    text-align: left;
+
+    .tp-modal-buttons {
+        text-align: right;
+    }
 }
 
 .tp-modal-text {
@@ -28,6 +32,10 @@
     padding: 0;
     line-height: 1.4;
     user-select: none;
+}
+
+.tp-modal-content {
+    margin-top: 20px;
 }
 
 .tp-modal-buttons {
@@ -90,29 +98,13 @@
 
 .tp-example-modal {
     width: 600px;
-    margin-left: -300px;
     height: 600px;
-    margin-top: -300px;
-    text-align: left;
-
-    .tp-modal-buttons {
-        position: absolute;
-        text-align: right;
-        width: auto;
-        right: 30px;
-        bottom: 30px;
-    }
 }
 
 .tp-example-list {
-    margin-top: 20px;
+    height: 420px;
     overflow-x: hidden;
     overflow-y: auto;
-    position: absolute;
-    right: 30px;
-    left: 30px;
-    top: 50px;
-    bottom: 100px;
     background-color: var(--ui-component-color);
 
     &::-webkit-scrollbar {
@@ -166,4 +158,22 @@
     color: var(--ui-component-text-color);
     margin-bottom: 4px;
     text-transform: capitalize;
+}
+
+.tp-open-url-modal {
+    width: 600px;
+
+    input {
+        background-color: var(--ui-element-color);
+        appearance: none;
+        border: 0;
+        color: var(--ui-component-text-color);
+        font-size: 12px;
+        font-family: var(--font-family);
+        font-weight: 200;
+        line-height: 28px;
+        padding: 4px 8px 4px;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }

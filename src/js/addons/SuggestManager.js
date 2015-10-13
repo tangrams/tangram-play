@@ -2,7 +2,7 @@ import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
 import { httpGet } from 'app/core/common';
-import { getText, getLineInd, isCommented, isEmpty, getValue } from 'app/core/codemirror/tools';
+import { getText, getLineInd, isCommented, isEmpty, getValue, regexEscape } from 'app/core/codemirror/tools';
 import { getAddressSceneContent, getKeyPairs, getAddressForLevel } from 'app/core/codemirror/yaml-tangram';
 
 // Import CodeMirror
@@ -121,7 +121,7 @@ export default class SuggestManager {
                         }
                     }
 
-                    let string = getText(editor, nLine);
+                    let string = regexEscape(getText(editor, nLine));
                     if (string !== '') {
                         let matchedList = [];
                         let match = RegExp('^' + string + '.*');
@@ -144,7 +144,7 @@ export default class SuggestManager {
                             break;
                         }
                     }
-                    let string = keyPair.value;
+                    let string = regexEscape(keyPair.value);
                     if (string !== '') {
                         let matchedList = [];
                         let match = RegExp('^' + string + '.*');

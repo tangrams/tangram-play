@@ -6,6 +6,7 @@ import { noop } from 'app/addons/ui/Helpers';
 import EditorIO from 'app/addons/ui/EditorIO';
 import FileOpen from 'app/addons/ui/FileOpen';
 import ExamplesModal from 'app/addons/ui/Modal.Examples';
+import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import Tooltip from 'app/addons/ui/Tooltip';
 import MapToolbar from 'app/addons/ui/MapToolbar';
 import fullscreen from 'app/addons/ui/fullscreen';
@@ -27,11 +28,15 @@ export default class Menu {
 
         this.fileopen = new FileOpen();
         this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
+        this.openUrlModal = new OpenURLModal();
 
         Tooltip.init();
 
         container.querySelector('.tp-menu-open-file').addEventListener('click', () => {
             this.fileopen.activate();
+        }, false);
+        container.querySelector('.tp-menu-open-url').addEventListener('click', () => {
+            this.openUrlModal.show();
         }, false);
         container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
             this.examplesModal.show();

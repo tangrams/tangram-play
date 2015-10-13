@@ -1,0 +1,16 @@
+/* OVERLAYS */
+
+/* Container for all overlays */
+.tp-overlay-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1300;
+}
