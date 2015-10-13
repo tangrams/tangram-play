@@ -16,6 +16,7 @@ let latlngLabel;
 let latlngLabelPrecision = 4;
 let resultsEl;
 let saveEl;
+let maxReqTimestampRendered = new Date().getTime();
 
 function init () {
     // Cache reference to elements
@@ -86,7 +87,7 @@ function onInputKeyupHandler (event) {
 
     // Ignore all further action if the keycode matches an arrow
     // key (handled via keydown event)
-    if (key === 13 || key === 38 || key === 40) {
+    if (key === 38 || key === 40) {
         return;
     }
 
@@ -98,7 +99,13 @@ function onInputKeyupHandler (event) {
         return;
     }
 
-    suggest(query);
+    // keyCode 13 = enter key (runs search query instead of autocomplete)
+    if (key === 13) {
+        search(query);
+        return;
+    }
+
+    autocomplete(query);
 }
 
 function onInputKeydownHandler (event) {
@@ -177,23 +184,33 @@ function onInputKeydownHandler (event) {
 function onInputFocusHandler (event) {
     const query = input.value.trim();
     if (query.length >= 2) {
-        suggest(query);
+        autocomplete(query);
     }
 }
 
-// Get autocomplete suggestions
-function suggest (query) {
-    const center = map.getCenter();
-    const endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
-
-    debounce(httpGet(endpoint, (err, res) => {
+let makeRequest = debounce(function (endpoint) {
+    httpGet(endpoint, (err, res) => {
         if (err) {
             console.error(err);
         }
         else {
             showResults(JSON.parse(res));
         }
-    }), PELIAS_THROTTLE);
+    });
+}, PELIAS_THROTTLE);
+
+// Get autocomplete suggestions
+function autocomplete (query) {
+    const center = map.getCenter();
+    const endpoint = `//${PELIAS_HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
+    makeRequest(endpoint);
+}
+
+// Get search results
+function search (query) {
+    const center = map.getCenter();
+    const endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
+    makeRequest(endpoint);
 }
 
 function onResultsClickHandler (event) {
@@ -223,6 +240,15 @@ function showResults (results) {
     if (features.length === 0) {
         return;
     }
+
+    // Ignore requests that started before a request which has already
+    // been successfully rendered on to the UI.
+    if (results.geocoding.timestamp < maxReqTimestampRendered) {
+        return;
+    }
+
+    // Store the latest timestamp of the last request
+    maxReqTimestampRendered = results.geocoding.timestamp;
 
     // Reset and display results container
     resultsEl.innerHTML = '';
