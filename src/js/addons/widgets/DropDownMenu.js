@@ -17,7 +17,7 @@ export default class DropDownMenu extends Widget {
         }
 
         newOption.value = '';
-        newOption.textContent = '';
+        newOption.textContent = '--Select--';
         el.appendChild(newOption);
 
         // Add static options

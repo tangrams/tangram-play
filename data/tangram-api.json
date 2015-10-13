@@ -281,7 +281,7 @@
         },
 
         {
-            "address": "/draw/(\\w|\\_|\\-)+/color$",
+            "address": "/draw/(\\w|\\_|\\-|\\/)+/color$",
             "type": "color",
             "defaultValue": "[1, 1, 1]"
         },
@@ -305,7 +305,6 @@
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
             "type": "string",
-            "options": [""],
             "source": "/sources"
         },
         {   

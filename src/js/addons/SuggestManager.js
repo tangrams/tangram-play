@@ -145,7 +145,6 @@ export default class SuggestManager {
                 // What ever the list is suggest using it
                 let string = TangramPlay.editor.getRange(from,to);
                 string = regexEscape(string);
-                console.log("Suggest Manager: string =", string);
 
                 // If the word is already begin to type, filter outcome
                 if (string !== '') {
