@@ -22,9 +22,10 @@ const MapToolbar = {
         setupEventListeners();
         setInitialDisplayState();
         setZoomLabel();
-        search.setCurrentLocation();
 
         currentLocation = map.getCenter();
+        search.setCurrentLatLng(currentLocation);
+        search.reverseGeocode(currentLocation);
     },
 
     toggle () {
@@ -65,8 +66,14 @@ function setupEventListeners () {
         // But we also have the bonus of not needing to make a reverse geocode request
         // for small changes of the map center.
         let center = map.getCenter();
-        if (getMapUpdateDelta(currentLocation, center) > MAP_UPDATE_DELTA) {
-            search.setCurrentLocation();
+        search.setCurrentLatLng(center);
+        if (getMapChangeDelta(currentLocation, center) > MAP_UPDATE_DELTA) {
+            search.reverseGeocode(center);
+
+            // Reset save icon
+            // TODO: Be smarter about when this happens
+            search.resetSaveIcon();
+
             // Reset currentLocation after geocoding - don't reset after every
             // moveend because this basically allows the reverse geocode to never
             // happen if you just scoot the viewport tiny amounts each time.
@@ -108,7 +115,7 @@ function setZoomLabel () {
     label.textContent = fractionalNumber.toFixed(1);
 }
 
-function getMapUpdateDelta (startLatLng, endLatLng) {
+function getMapChangeDelta (startLatLng, endLatLng) {
     let startX = startLatLng.lat;
     let startY = startLatLng.lng;
     let endX = endLatLng.lat;

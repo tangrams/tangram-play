@@ -11,7 +11,6 @@ const PELIAS_THROTTLE = 300; // in ms, time to wait before repeating a request
 
 let searchEl;
 let input;
-let latlng;
 let latlngLabel;
 let latlngLabelPrecision = 4;
 let resultsEl;
@@ -39,20 +38,8 @@ function init () {
     TangramPlay.on('resize', onDividerMove);
 }
 
-function setCurrentLocation () {
-    latlng = map.getCenter();
+function setCurrentLatLng (latlng) {
     latlngLabel.textContent = `${latlng.lat.toFixed(latlngLabelPrecision)}, ${latlng.lng.toFixed(latlngLabelPrecision)}`;
-
-    // Does not update location if the no-update flag is false
-    // This is used to prevent an unnecessary additional request to Pelias
-    if (input.dataset.noUpdate !== 'true') {
-        reverseGeocode(latlng);
-
-        // Reset save icon
-        // TODO: Be smarter about when this happens
-        resetSaveIcon();
-    }
-    input.dataset.noUpdate = false;
 }
 
 function reverseGeocode (latlng) {
@@ -275,7 +262,6 @@ function gotoSelectedResult (selectedEl) {
     // Set placeholder immediately so there isn't a lag between the selection
     // and the reverse geocoder kicking in with the right location
     input.placeholder = selectedEl.textContent.trim();
-    input.dataset.noUpdate = true;
     map.setView({ lat: coords[1], lng: coords[0] });
     clearResults();
     clearInput();
@@ -328,20 +314,23 @@ function getCurrentMapViewData () {
     };
 }
 
-function onDividerMove (event) {
+function setLabelPrecision (width) {
     // Updates the precision of the lat-lng display label
     // based on the available screen width
-    input.dataset.noUpdate = true;
-    if (event.mapX < 600) {
+    if (width < 600) {
         latlngLabelPrecision = 2;
     }
-    else if (event.mapX < 800) {
+    else if (width < 800) {
         latlngLabelPrecision = 3;
     }
     else {
         latlngLabelPrecision = 4;
     }
-    setCurrentLocation();
+}
+
+function onDividerMove (event) {
+    setLabelPrecision(event.mapX);
+    setCurrentLatLng(map.getCenter());
 }
 
 function highlight (text, focus) {
@@ -351,5 +340,7 @@ function highlight (text, focus) {
 
 export default {
     init,
-    setCurrentLocation
+    setCurrentLatLng,
+    reverseGeocode,
+    resetSaveIcon
 };
