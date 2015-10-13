@@ -2,7 +2,7 @@ import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
 import { httpGet } from 'app/core/common';
-import { getText, getLineInd, isCommented, isEmpty, getValue, regexEscape } from 'app/core/codemirror/tools';
+import { getText, getLineInd, isCommented, isEmpty, regexEscape } from 'app/core/codemirror/tools';
 import { getAddressSceneContent, getKeyPairs, getAddressForLevel } from 'app/core/codemirror/yaml-tangram';
 
 // Import CodeMirror
@@ -10,7 +10,7 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 export default class SuggestManager {
-    constructor(configFile) {
+    constructor (configFile) {
         //  private variables
         this.keySuggestions = [];
         this.valueSuggestions = [];
@@ -93,80 +93,78 @@ export default class SuggestManager {
         });
     }
 
-    hint(editor, options) {
-        let cursor = editor.getCursor();
-        let nLine = cursor.line;
+    hint (editor, options) {
+        let cursor = { line: editor.getCursor().line, ch: editor.getCursor().ch };
+        cursor.ch = cursor.ch - 1;
+        // console.log("Cursor", cursor);
 
+        let range = TangramPlay.editor.findWordAt(cursor);
+        let from = range.anchor;
+        let to = range.head;
+        // console.log("RANGE",from,to);
+
+        let nLine = cursor.line;
         let list = [];
-        let start = cursor.ch;
-        let end = cursor.ch + 1;
+        
         let wasKey = false; 
         let address = '/';
 
         // What's the main key of the line?
         let keyPairs = getKeyPairs(editor, nLine);
         if (keyPairs) {
+            // Get key pair where the cursor is
             let keyPair = keyPairs[0];
 
             if (keyPair) {
+                // If there is no key search for a KEY
                 if (keyPair.key === '') {
                     // Fallback the address to match
                     let actualLevel = getLineInd(editor, nLine);
                     address = getAddressForLevel(keyPair.address, actualLevel);
                     keyPair.address = address;
-                    // Suggest keyPair
+                    // Suggest key
                     for (let datum of this.keySuggestions) {
                         if (datum.check(keyPair)) {
                             list.push.apply(list, datum.getList(keyPair));
                         }
                     }
-
-                    let string = regexEscape(getText(editor, nLine));
-                    if (string !== '') {
-                        let matchedList = [];
-                        let match = RegExp('^' + string + '.*');
-                        for (let i = 0; i < list.length; i++) {
-                            if (match.test(list[i])) {
-                                matchedList.push(list[i]);
-                            }
-                        }
-                        list = matchedList;
-                        start -= string.length;
-                    }
-
                     wasKey = true;
                 }
+                // if it have a key search for the value
                 else {
-                    // Check for widgets
+                    // Suggest value
                     for (let datum of this.valueSuggestions) {
                         if (datum.check(keyPair)) {
                             list.push.apply(list, datum.getList(keyPair));
                             break;
                         }
                     }
-                    let string = regexEscape(keyPair.value);
-                    if (string !== '') {
-                        let matchedList = [];
-                        let match = RegExp('^' + string + '.*');
-                        for (let i = 0; i < list.length; i++) {
-                            if (list[i] !== string && match.test(list[i])) {
-                                matchedList.push(list[i]);
-                            }
-                        }
-                        list = matchedList;
-                        start -= string.length;
-                    }
                 }
+                // console.log("List",list);
+
+                // What ever the list is suggest using it
+                let string = TangramPlay.editor.getRange(from,to);
+                string = regexEscape(string);
+                console.log("Suggest Manager: string =", string);
+
+                // If the word is already begin to type, filter outcome
+                if (string !== '') {
+                    let matchedList = [];
+                    let match = RegExp('^' + string + '.*');
+                    for (let i = 0; i < list.length; i++) {
+                        if (list[i] !== string && match.test(list[i])) {
+                            matchedList.push(list[i]);
+                        }
+                    }
+                    list = matchedList;
+                } 
             }
         }
 
-        let result = {
-                list: list,
-                from: CodeMirror.Pos(nLine, start),
-                to: CodeMirror.Pos(nLine, end)
-            };
-
+        let result = { list: list, from: from, to: to };
         CodeMirror.on(result, 'pick', (completion) => { 
+
+            // If is a key autocomplete with de default value
             if (wasKey) {
                 // console.log(address+'/'+completion);
                 let defaultValue = this.getDefault(address, completion);
