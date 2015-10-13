@@ -67,8 +67,6 @@ export default class WidgetsManager {
     }
 
     change (changeObj) {
-        console.log("Change", changeObj);
-
         // Get FROM/TO range of the change
         let from = {line: changeObj.from.line, ch: changeObj.from.ch};
         let to = {line: changeObj.to.line, ch: changeObj.to.ch};
@@ -112,7 +110,7 @@ export default class WidgetsManager {
             bookmarks.length === 1 &&
             from.ch > keys[0].pos.ch && 
             bookmarks[0].widget) {
-            console.log("Updating value of ", bookmarks[0]);
+            // console.log("Updating value of ", bookmarks[0]);
             // Update the widget
             bookmarks[0].widget.update();
         } 
