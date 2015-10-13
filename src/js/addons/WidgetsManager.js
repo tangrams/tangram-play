@@ -27,10 +27,13 @@ export default class WidgetsManager {
                     this.data.push(new WidgetType(datum));
                 }
             }
+
+            this.init();
         });
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
+            console.log(changesObjs);
             for (let obj of changesObjs) {
                 let from = obj.from;
                 let to = obj.to;
@@ -75,6 +78,13 @@ export default class WidgetsManager {
         });
     }
 
+    init () {
+        let from = { line:0, ch:0 };
+        let to = {  line: TangramPlay.editor.getDoc().size-1,
+                    ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size-1).length };
+        this.create(from,to);
+    }
+
     clear (from, to) {
         let keys = TangramPlay.getKeys(from, to);
         let doc = TangramPlay.editor.getDoc();
@@ -108,6 +118,7 @@ export default class WidgetsManager {
             return;
         }
 
+       
         for (let key of keys) {
             let val = key.value;
             if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.pos.line))) {
