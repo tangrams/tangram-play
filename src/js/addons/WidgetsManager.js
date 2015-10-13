@@ -10,7 +10,7 @@ import { isStrEmpty } from 'app/core/codemirror/tools';
 import WidgetType from 'app/addons/widgets/WidgetType';
 
 export default class WidgetsManager {
-    constructor(configFile) {
+    constructor (configFile) {
         subscribeMixin(this);
 
         this.data = []; // tokens to check
@@ -33,23 +33,9 @@ export default class WidgetsManager {
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
-            console.log(changesObjs);
+            
             for (let obj of changesObjs) {
-                let from = obj.from;
-                let to = obj.to;
-
-                // Erase the widgets for the edited area
-                this.clear(from, to);
-
-                // If the changes add or erase new lines
-                // ( because the removed and added lines don't match )
-                if (obj.removed.length < obj.text.length) {
-                    to.line = obj.from.line + obj.text.length - 1;
-                    to.ch = TangramPlay.editor.getLine(to.line).length;
-                }
-
-                // Create new widgets
-                this.create(from, to);
+                this.change(obj);
             }
         });
 
@@ -67,8 +53,8 @@ export default class WidgetsManager {
                     line: horizon,
                     ch: TangramPlay.editor.getLine(horizon).length
                 };
-                this.clear(from, to);
-                this.create(from, to);
+                this.clearRange(from, to);
+                this.createRange(from, to);
             }
         });
 
@@ -82,17 +68,79 @@ export default class WidgetsManager {
         let from = { line:0, ch:0 };
         let to = {  line: TangramPlay.editor.getDoc().size-1,
                     ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size-1).length };
-        this.create(from,to);
+        this.createRange(from,to);
     }
 
-    clear (from, to) {
+    change (changeObj) {
+        console.log("Change", changeObj);
+        // Get FROM/TO range of the change
+        let from = {line: changeObj.from.line, ch: changeObj.from.ch};
+        let to = {line: changeObj.to.line, ch: changeObj.to.ch};
+
+        // This force to check changes until the end of line
+        to.line = changeObj.from.line + changeObj.text.length - 1;
+        to.ch = TangramPlay.editor.getLine(to.line).length;
+
+        // If is a new line move the range FROM the begining of the line
+        if (changeObj.text.length === 2 && 
+            changeObj.text[0] === '' && 
+            changeObj.text[1] === '') {
+            from.ch = 0;
+            console.log("(Adding newline) New line now range is", from, to);
+        }
+
+        // Get the matching keys for the FROM/TO range
         let keys = TangramPlay.getKeys(from, to);
-        let doc = TangramPlay.editor.getDoc();
+        // If there is no keys there nothing to do
+        if (!keys || keys.length === 0) return;
+
+        // Get affected bookmarks
+        let bookmarks = [];
+        if (from.line === to.line && 
+            from.ch === to.ch) {
+            // If the FROM/TO range is to narrow search using keys
+            for (let key of keys) {
+                // Find and concatenate bookmarks between FROM/TO range
+                bookmarks = bookmarks.concat( TangramPlay.editor.getDoc().findMarks(key.range.from, key.range.to) );
+            }
+        } else {
+            bookmarks = TangramPlay.editor.getDoc().findMarks(from, to);
+        }
+        console.log("Bookmarks", bookmarks);
+
+        // If there is only one key and the change happen on the value
+        if (keys.length === 1 && 
+            bookmarks.length === 1 &&
+            from.ch > keys[0].pos.ch && 
+            bookmarks[0].widget) {
+            console.log("Updating value of ", bookmarks[0]);
+            // Update the widget
+            bookmarks[0].widget.update();
+        } 
+        else {
+            console.log("Clearing")
+            // Delete those afected widgets
+            for (let bkm of bookmarks) {
+                bkm.clear();
+            }
+            console.log("creating")
+            // Create widgets from keys
+            this.createKeys(keys);
+        }
+    }
+
+    clearRange (from, to) {
+        let keys = TangramPlay.getKeys(from, to);
 
         if (!keys || keys.length === 0) {
             return;
         }
 
+        this.clearKeys(keys);
+    }
+
+    clearKeys (keys) {
+        let doc = TangramPlay.editor.getDoc();
         for (let key of keys) {
             // Find bookmarks between FROM and TO
             let from = key.range.from.line;
@@ -104,22 +152,23 @@ export default class WidgetsManager {
                 bkm.clear();
             }
         }
-
-        // Trigger Events
-        this.trigger('widgets_cleared');
     }
 
-    create (from, to) {
+    createRange (from, to) {
         // Search for keys between FROM and TO
         let keys = TangramPlay.getKeys(from, to);
-        let newWidgets = [];
-
+        
         if (!keys || keys.length === 0) {
             return;
         }
 
-       
+        this.createKeys(keys);
+    }
+
+    createKeys (keys) {   
+        let newWidgets = [];
         for (let key of keys) {
+
             let val = key.value;
             if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.pos.line))) {
                 continue;
