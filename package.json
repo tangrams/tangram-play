@@ -8,7 +8,7 @@
     "postinstall": "ln -s -f ../src/js node_modules/app",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "jshint *.js src/ || true; jscs *.js src/ || true",
-    "build": "node_modules/.bin/modernizr -c modernizr-config.json -d build/js; gulp build"
+    "build": "modernizr -c modernizr-config.json -d build/js; gulp build"
   },
   "repository": {
     "type": "git",
