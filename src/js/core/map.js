@@ -34,6 +34,13 @@ export default class Map {
         });
         layer.addTo(map);
 
+        layer.scene.subscribe({
+            load: function (msg) {
+                // Hide loading indicator
+                MapLoading.hide();
+            }
+        })
+
         this.takeScreenshot = false;
 
         // Debug access
@@ -105,9 +112,6 @@ function _getMapStartLocation () {
 }
 
 function postUpdate() {
-    // Hide loading indicator
-    MapLoading.hide();
-
     if (takeScreenshot) {
         // Adapted from: https://gist.github.com/unconed/4370822
         let image = TangramPlay.map.scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
