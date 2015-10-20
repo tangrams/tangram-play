@@ -1,0 +1,11 @@
+{
+  "minify": true,
+  "classPrefix": "mod-",
+  "options": [
+    "prefixed"
+  ],
+  "feature-detects": [
+    "test/fullscreen-api",
+    "test/webgl"
+  ]
+}

@@ -78,5 +78,8 @@ gulp.task('watch', function () {
     gulp.watch(paths.scripts, ['js']);
 });
 
+// Build files, do not watch
+gulp.task('build', ['css', 'js']);
+
 // The default task (called when you run `gulp` from cli)
 gulp.task('default', ['css', 'js', 'watch']);
