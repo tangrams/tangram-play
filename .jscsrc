@@ -22,7 +22,7 @@
     "disallowTrailingWhitespace": true,
     "disallowYodaConditions": true,
     "requireBlocksOnNewline": true,
-    "requireCamelCaseOrUpperCaseIdentifiers": true,
+    "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
     "requireCapitalizedConstructors": true,
     "requireCommaBeforeLineBreak": true,
     "requireCurlyBraces": [

@@ -1,7 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
-var gutil = require('gulp-util');
+// var gutil = require('gulp-util');
 var livereload = require('gulp-livereload');
 var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
@@ -51,7 +51,7 @@ gulp.task('js', function () {
     var babelify = require('babelify');
     var source = require('vinyl-source-stream');
     var buffer = require('vinyl-buffer');
-    var uglify = require('gulp-uglify');
+    // var uglify = require('gulp-uglify');
 
     var bundle = browserify({
         entries: 'src/js/TangramPlay.js',

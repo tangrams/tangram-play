@@ -2,7 +2,7 @@ import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
 import { httpGet } from 'app/core/common';
-import { getText, getLineInd, isCommented, isEmpty, regexEscape } from 'app/core/codemirror/tools';
+import { getLineInd, isCommented, isEmpty, regexEscape } from 'app/core/codemirror/tools';
 import { getAddressSceneContent, getKeyPairs, getAddressForLevel } from 'app/core/codemirror/yaml-tangram';
 
 // Import CodeMirror
@@ -36,21 +36,18 @@ export default class SuggestManager {
         // Trigger hint after each time the style is uploaded
         TangramPlay.on('style_updated', (args) => {
             let bOpen = true;
-            let bFocus = true;
 
             let line = TangramPlay.editor.getCursor().line;
-            if (TangramPlay.editor.getLineHandle(line).stateAfter &&
-                TangramPlay.editor.getLineHandle(line).stateAfter.localMode &&
-                TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType) {
-
-                if (TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === 'glsl' ||
-                    TangramPlay.editor.getLineHandle(line).stateAfter.localMode.helperType === 'javascript') {
+            let stateAfter = TangramPlay.editor.getLineHandle(line).stateAfter;
+            if (stateAfter && stateAfter.localMode && stateAfter.localMode.helperType) {
+                let helperType = stateAfter.localMode.helperType;
+                if (helperType === 'glsl' || helperType === 'javascript') {
                     bOpen = false;
                 }
             }
 
-            if (isCommented(TangramPlay.editor,line) ||
-                isEmpty(TangramPlay.editor,line)) {
+            if (isCommented(TangramPlay.editor, line) ||
+                isEmpty(TangramPlay.editor, line)) {
                 bOpen = false;
             }
 
@@ -105,8 +102,8 @@ export default class SuggestManager {
 
         let nLine = cursor.line;
         let list = [];
-        
-        let wasKey = false; 
+
+        let wasKey = false;
         let address = '/';
 
         // What's the main key of the line?
@@ -143,7 +140,7 @@ export default class SuggestManager {
                 // console.log("List",list);
 
                 // What ever the list is suggest using it
-                let string = TangramPlay.editor.getRange(from,to);
+                let string = TangramPlay.editor.getRange(from, to);
                 string = regexEscape(string);
 
                 // If the word is already begin to type, filter outcome
@@ -156,21 +153,20 @@ export default class SuggestManager {
                         }
                     }
                     list = matchedList;
-                } 
+                }
             }
         }
 
         let result = { list: list, from: from, to: to };
-        CodeMirror.on(result, 'pick', (completion) => { 
-
+        CodeMirror.on(result, 'pick', (completion) => {
             // If is a key autocomplete with de default value
             if (wasKey) {
                 // console.log(address+'/'+completion);
                 let defaultValue = this.getDefault(address, completion);
-                editor.replaceRange(': '+defaultValue,
-                                    {line: result.to.line, ch: result.to.ch + completion.length},
-                                    {line: result.to.line, ch: result.to.ch + completion.length + 1},
-                                    'complete');
+                editor.replaceRange(': ' + defaultValue,
+                    { line: result.to.line, ch: result.to.ch + completion.length },
+                    { line: result.to.line, ch: result.to.ch + completion.length + 1 },
+                    'complete');
             }
         });
 
@@ -179,13 +175,13 @@ export default class SuggestManager {
 
     getDefault(address, completion) {
         let key = {
-            address: address+'/'+completion,
+            address: address + '/' + completion,
             key: completion,
             value: ''
         };
         let defaultValue = '';
         for (let datum of this.valueSuggestions) {
-            if (datum.check(key,true)) {
+            if (datum.check(key, true)) {
                 defaultValue = datum.getDefault();
                 break;
             }
@@ -231,7 +227,6 @@ class Suggestion {
             let rightLevel = true;
             if (!forceLevel && this.level) {
                 rightLevel = getLineInd(TangramPlay.editor, keyPair.pos.line) === this.level;
-
             }
             return RegExp(this.checkPatern).test(keyPair[this.checkAgainst]) && rightLevel;
         }

@@ -53,3 +53,12 @@ npm run lint
 ```
 
 You may also run the linters on individual files if you do not want to see the massive list of warnings the script currently outputs on all of the files we have.
+
+#### Explanations for certain rules
+
+Since we can't document rationales for rules inside the `.jscsrc` itself, this is where we can record the reasons why certain rules are the way they are.
+
+- **[requireCamelCaseOrUpperCaseIdentifiers](http://jscs.info/rule/requireCamelCaseOrUpperCaseIdentifiers)** -- Set to `"ignoreProperties"` to allow for references to internal properties of Tangram, e.g. `scene.config_path`. Otherwise all identifiers including object properties of Tangram Play should be camelCase and constants can be UPPERCASE_WITH_UNDERSCORES.
+
+
+

@@ -39,7 +39,7 @@ export default class Map {
                 // Hide loading indicator
                 MapLoading.hide();
             }
-        })
+        });
 
         this.takeScreenshot = false;
 

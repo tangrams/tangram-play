@@ -120,5 +120,5 @@ function getMapChangeDelta (startLatLng, endLatLng) {
     let startY = startLatLng.lng;
     let endX = endLatLng.lat;
     let endY = endLatLng.lng;
-    return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2))
+    return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
 }

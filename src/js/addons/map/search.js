@@ -216,7 +216,7 @@ function onResultsClickHandler (event) {
     // so its important to find the parent.
     findParent();
 
-    if (selected){
+    if (selected) {
         gotoSelectedResult(selected);
     }
 }
