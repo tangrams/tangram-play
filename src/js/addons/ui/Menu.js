@@ -56,6 +56,11 @@ export class MenuItem {
         // Attach listeners, including those for tooltip behavior
         this.el.addEventListener('click', (event) => {
             this.el.setAttribute('data-tooltip-state', 'disabled');
+
+            // Hide currently open menus, if any
+            _loseMenuFocus();
+
+            // Execute onClick callback
             onClick(event);
         }, true);
         this.el.addEventListener('mouseenter', (e) => {
