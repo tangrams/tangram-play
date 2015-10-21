@@ -17,7 +17,7 @@ import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
 import { getKeyPairs, getValueRange, getAddressSceneContent } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
-const DEFAULT_STYLE = 'data/styles/default.yaml';
+const DEFAULT_SCENE = 'data/scenes/default.yaml';
 
 class TangramPlay {
     constructor(selector, options) {
@@ -29,12 +29,12 @@ class TangramPlay {
             window.watch.start();
         }
 
-        if (options.style === undefined) {
-            options.style = DEFAULT_STYLE;
+        if (options.scene === undefined) {
+            options.scene = DEFAULT_SCENE;
         }
 
         this.container = document.querySelector(selector);
-        this.map = new Map('map', options.style);
+        this.map = new Map('map', options.scene);
         this.editor = initEditor('editor');
         this.options = options;
         this.addons = {};
@@ -45,12 +45,12 @@ class TangramPlay {
             }
         }, 500);
 
-        // LOAD STYLE
-        this.loadFile(options.style);
+        // LOAD SCENE FILE
+        this.loadFile(options.scene);
 
         // TODO: Manage history / routing in its own module
         window.onpopstate = (e) => {
-            if (e.state && e.state.loadStyleURL) {
+            if (e.state && e.state.loadSceneURL) {
                 this.loadQuery();
             }
         };
@@ -61,7 +61,7 @@ class TangramPlay {
         // Events
         this.map.layer.scene.subscribe({
             load: (args) => {
-                this.trigger('style_updated', args);
+                this.trigger('scene_updated', args);
             }
         });
     }
@@ -140,7 +140,7 @@ class TangramPlay {
 
     loadQuery () {
         let query = parseQuery(window.location.search.slice(1));
-        let src = query['style'] ? query['style'] : DEFAULT_STYLE;
+        let src = query['scene'] ? query['scene'] : DEFAULT_SCENE;
         this.loadFile(src);
     }
 
@@ -279,7 +279,7 @@ function parseQuery (qstr) {
 // Export an instance of TangramPlay with the following modules
 
 let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
-    style: query['style'] ? query['style'] : DEFAULT_STYLE,
+    scene: query['scene'] ? query['scene'] : DEFAULT_SCENE,
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',

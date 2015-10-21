@@ -33,8 +33,8 @@ export default class SuggestManager {
             }
         });
 
-        // Trigger hint after each time the style is uploaded
-        TangramPlay.on('style_updated', (args) => {
+        // Trigger hint after each time the scene is uploaded
+        TangramPlay.on('scene_updated', (args) => {
             let bOpen = true;
 
             let line = TangramPlay.editor.getCursor().line;

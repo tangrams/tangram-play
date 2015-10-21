@@ -6,7 +6,7 @@ import { saveAs } from 'app/vendor/FileSaver.min.js';
 import { noop } from 'app/addons/ui/Helpers';
 import Modal from 'app/addons/ui/Modal';
 
-const NEW_STYLE_PATH = 'data/styles/empty.yaml';
+const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
 
 const EditorIO = {
     open (file) {
@@ -16,13 +16,13 @@ const EditorIO = {
     },
     new () {
         this.checkSaveStateThen(() => {
-            this.loadContentFromPath(NEW_STYLE_PATH);
+            this.loadContentFromPath(NEW_SCENE_PATH);
         });
     },
     export () {
         const typedArray = TangramPlay.getContent();
         const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, 'style.yaml');
+        saveAs(blob, 'scene.yaml');
         editor.doc.markClean();
     },
     checkSaveStateThen (callback = noop) {
@@ -30,21 +30,21 @@ const EditorIO = {
             callback();
         }
         else {
-            const unsavedModal = new Modal('Your style has not been saved. Continue?', callback);
+            const unsavedModal = new Modal('Your scene has not been saved. Continue?', callback);
             unsavedModal.show();
         }
     },
     loadContentFromPath (path) {
         window.history.pushState({
-            loadStyleURL: path
-        }, null, '.?style=' + path + window.location.hash);
+            loadSceneURL: path
+        }, null, '.?scene=' + path + window.location.hash);
         TangramPlay.loadQuery();
     },
     loadContentFromFile (content) {
         const reader = new FileReader();
         reader.onload = function (event) {
             window.history.pushState({
-                loadStyleURL: null
+                loadSceneURL: null
             }, null, '.' + window.location.hash);
             TangramPlay.loadContent(event.target.result);
         };

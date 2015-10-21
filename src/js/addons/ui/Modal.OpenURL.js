@@ -11,7 +11,7 @@ export default class OpenUrlModal extends Modal {
         super();
 
         this.el = modalEl = container.querySelector('.tp-open-url-modal');
-        this.message = 'Open a style from URL';
+        this.message = 'Open a scene file from URL';
         this.input = this.el.querySelector('.tp-open-url-input input');
         this.input.addEventListener('keyup', (event) => {
             if (this.input.value && this.input.validity.valid === true && this.input.value.match(/\.y(a?)ml$/)) {
