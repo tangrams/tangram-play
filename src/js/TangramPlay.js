@@ -288,14 +288,10 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     colors: true,
 });
 
-let map = tangramPlay.map.leaflet;
-let container = tangramPlay.container;
-let editor = tangramPlay.editor;
-
 export default tangramPlay;
-export { map };
-export { container };
-export { editor };
+export let map = tangramPlay.map.leaflet;
+export let container = tangramPlay.container;
+export let editor = tangramPlay.editor;
 
 tangramPlay.initAddons();
 new UI();
