@@ -46,6 +46,13 @@ layers:
                 order: 2
                 color: '#777'
                 width: 5
+        ferry:
+            filter: { kind: ferry }
+            draw:
+                lines:
+                    order: 2
+                    color: '#444'
+                    width: 2
     buildings:
         data: { source: osm }
         draw:
