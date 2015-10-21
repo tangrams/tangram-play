@@ -179,6 +179,9 @@
 }
 
 .tp-modal-about-text {
+    margin-left: 40px;
+    margin-right: 40px;
+
     h3 {
         font-weight: normal;
         margin: 0;
