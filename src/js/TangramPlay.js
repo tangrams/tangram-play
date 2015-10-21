@@ -117,13 +117,13 @@ class TangramPlay {
         this.editor.doc.markClean();
     }
 
-    loadScene (url, options = { reset: false }) {
+    loadScene (url, { reset = false } = {}) {
         if (!this.map.scene) {
             return;
         }
 
         // Preserve scene base path unless reset requested (e.g. reset on new file load)
-        return this.map.scene.load(url, !options.reset && this.map.scene.config_path);
+        return this.map.scene.load(url, !reset && this.map.scene.config_path);
     }
 
     loadFile (path) {
