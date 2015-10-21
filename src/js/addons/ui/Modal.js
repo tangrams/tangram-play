@@ -36,16 +36,33 @@ export default class Modal {
     show () {
         this.shield.show();
         this.el.style.display = 'block';
-        this.el.querySelector('.tp-modal-confirm').addEventListener('click', this._handleConfirm, false);
-        this.el.querySelector('.tp-modal-cancel').addEventListener('click', this._handleAbort, false);
+
+        this.confirmButton = this.el.querySelector('.tp-modal-confirm');
+        this.cancelButton = this.el.querySelector('.tp-modal-cancel');
+
+        if (this.confirmButton) {
+            this.confirmButton.addEventListener('click', this._handleConfirm, false);
+        }
+
+        if (this.cancelButton) {
+            this.cancelButton.addEventListener('click', this._handleAbort, false);
+        }
+
         container.addEventListener('keydown', this._handleEsc.bind(this), false);
     }
 
     hide () {
         this.shield.hide();
         this.el.style.display = 'none';
-        this.el.querySelector('.tp-modal-confirm').removeEventListener('click', this._handleConfirm, false);
-        this.el.querySelector('.tp-modal-cancel').removeEventListener('click', this._handleAbort, false);
+
+        if (this.confirmButton) {
+            this.confirmButton.removeEventListener('click', this._handleConfirm, false);
+        }
+
+        if (this.cancelButton) {
+            this.cancelButton.removeEventListener('click', this._handleAbort, false);
+        }
+
         container.removeEventListener('keydown', this._handleEsc.bind(this), false);
     }
 
