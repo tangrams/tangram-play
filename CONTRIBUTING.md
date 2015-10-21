@@ -22,6 +22,12 @@ Tangram Play is a static site, and can be viewed by any static fileserver, such 
 
 Compiled files in the `build/` directory are committed and published to GitHub so that [GitHub Pages](https://pages.github.com/) have access to it. Generally, I try not to include the compiled files with every commit until something is ready to go live. Then I make one commit that is just the compiled files. This makes it easier to back out of strange merge conflicts and keeps the history from getting too complicated.
 
+There is a npm command for just building files, without a watcher. It will also build [Modernizr](https://modernizr.com/) as well.
+
+```sh
+npm run build
+```
+
 
 ### Frameworks
 
@@ -47,3 +53,12 @@ npm run lint
 ```
 
 You may also run the linters on individual files if you do not want to see the massive list of warnings the script currently outputs on all of the files we have.
+
+#### Explanations for certain rules
+
+Since we can't document rationales for rules inside the `.jscsrc` itself, this is where we can record the reasons why certain rules are the way they are.
+
+- **[requireCamelCaseOrUpperCaseIdentifiers](http://jscs.info/rule/requireCamelCaseOrUpperCaseIdentifiers)** -- Set to `"ignoreProperties"` to allow for references to internal properties of Tangram, e.g. `scene.config_path`. Otherwise all identifiers including object properties of Tangram Play should be camelCase and constants can be UPPERCASE_WITH_UNDERSCORES.
+
+
+

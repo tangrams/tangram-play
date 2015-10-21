@@ -1,27 +1,29 @@
 'use strict';
 
+/* global Modernizr */
+// Mozilla (Firefox) has its own language for fullscreen API
+const requestFullscreen = Modernizr.prefixed('requestFullscreen', document.documentElement) ||
+                          Modernizr.prefixed('requestFullScreen', document.documentElement);
+const exitFullscreen = Modernizr.prefixed('exitFullscreen', document) ||
+                       Modernizr.prefixed('cancelFullScreen', document);
+
 const fullscreen = {
     toggle: function () {
-        if (!document.fullscreenElement &&    // alternative standard method
-            !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) {
-                document.documentElement.msRequestFullscreen();
-            } else if (document.documentElement.mozRequestFullScreen) {
-                document.documentElement.mozRequestFullScreen();
-            } else if (document.documentElement.webkitRequestFullscreen) {
-                document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        // Is there a current fullscreen element?
+        let fullscreenElement = Modernizr.prefixed('fullscreenElement', document) || Modernizr.prefixed('fullScreenElement', document);
+        if (!fullscreenElement) {
+            // Special case for webkit
+            if (document.documentElement.webkitRequestFullscreen) {
+                requestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
             }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
+            // All other browsers
+            else if (requestFullscreen) {
+                requestFullscreen();
+            }
+        }
+        else {
+            if (exitFullscreen) {
+                exitFullscreen();
             }
         }
     }

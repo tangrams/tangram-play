@@ -6,7 +6,7 @@ export default class ErrorsManager {
     constructor() {
         //  private variables
         this.widgets = [];
-        this.block_errors = new Set();
+        this.blockErrors = new Set();
 
         // EVENTS
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
@@ -29,7 +29,7 @@ export default class ErrorsManager {
                 TangramPlay.editor.removeLineWidget(this.widgets[i]);
             }
             this.widgets.length = 0;
-            this.block_errors.clear();
+            this.blockErrors.clear();
         }
     }
 
@@ -60,10 +60,10 @@ export default class ErrorsManager {
                 let block = errors[i].block;
 
                 // De-dupe errors per block
-                if (this.block_errors.has(JSON.stringify(block))) {
+                if (this.blockErrors.has(JSON.stringify(block))) {
                     continue;
                 }
-                this.block_errors.add(JSON.stringify(block));
+                this.blockErrors.add(JSON.stringify(block));
 
                 let address = '/styles/' + style + '/shaders/blocks/';
                 let nLine = TangramPlay.getKeyForAddress(address + block.name).pos.line + 1 + block.line;

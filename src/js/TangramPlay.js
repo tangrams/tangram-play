@@ -117,13 +117,13 @@ class TangramPlay {
         this.editor.doc.markClean();
     }
 
-    loadScene (url, { reset = false } = {}) {
+    loadScene (url, options = { reset: false }) {
         if (!this.map.scene) {
             return;
         }
 
         // Preserve scene base path unless reset requested (e.g. reset on new file load)
-        return this.map.scene.load(url, !reset && this.map.scene.config_path);
+        return this.map.scene.load(url, !options.reset && this.map.scene.config_path);
     }
 
     loadFile (path) {
@@ -187,12 +187,14 @@ class TangramPlay {
                         if (key.range.to.ch > from.ch) {
                             keys.push(key);
                         }
-                    } else if (key.range.to.line === to.line ) {
+                    }
+                    else if (key.range.to.line === to.line) {
                         // is in the end line
                         if (key.range.from.ch < to.ch) {
                             keys.push(key);
                         }
-                    } else {
+                    }
+                    else {
                         // is in the sandwich lines
                         keys.push(key);
                     }

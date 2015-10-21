@@ -24,7 +24,7 @@ export default class ColorPalette {
 
         TangramPlay.addons.widgetsManager.on('widget_updated', (args) => {
             TangramPlay.addons.colorPalette.update(args);
-        });        
+        });
 
         // If is a new file load all colors by going to the end and comeback
         TangramPlay.on('url_loaded', (args) => {
@@ -44,9 +44,7 @@ export default class ColorPalette {
 
         // check for color picker widgets
         for (let bkm of bookmarks) {
-            if (bkm.widget &&
-                bkm.widget.definition.type === 'color') {
-
+            if (bkm.widget && bkm.widget.definition.type === 'color') {
                 let color = bkm.widget.el.style.backgroundColor;
                 if (this.colors[color] === undefined) {
                     this.colors[color] = new Color(color);

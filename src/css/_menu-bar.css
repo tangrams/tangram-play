@@ -14,12 +14,21 @@
 /* For some reason, nesting this in .tp-menu-bar causes
    some properties of .tp-menu-items to disappear */
 .tp-menu-bar h1 {
+    position: relative;
     display: inline-block;
     margin: 0 15px;
     font-size: 16px;
     font-weight: 300;
     line-height: 44px;
     color: var(--ui-component-text-color);
+}
+
+.tp-beta-tag {
+    position: absolute;
+    left: 2px;
+    top: 12px;
+    color: var(--ui-highlight-color);
+    font-size: 9px;
 }
 
 .tp-menu-items {

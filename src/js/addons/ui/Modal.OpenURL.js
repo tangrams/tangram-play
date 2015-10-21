@@ -24,7 +24,7 @@ export default class OpenUrlModal extends Modal {
             else {
                 this.el.querySelector('.tp-modal-confirm').disabled = true;
             }
-        })
+        });
     }
 
     show () {

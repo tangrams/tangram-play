@@ -7,7 +7,8 @@
   "scripts": {
     "postinstall": "ln -s -f ../src/js node_modules/app",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "jshint *.js src/ || true; jscs *.js src/ || true"
+    "lint": "jshint *.js src/ || true; jscs *.js src/ || true",
+    "build": "modernizr -c modernizr-config.json -d build/js; gulp build"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "gulp-util": "^3.0.6",
     "jscs": "^2.1.1",
     "jshint": "^2.8.0",
+    "modernizr": "^3.1.0",
     "postcss-color-hex-alpha": "^2.0.0",
     "postcss-custom-properties": "^5.0.0",
     "postcss-import": "^7.0.0",
@@ -43,9 +45,9 @@
   },
   "dependencies": {
     "babel": "^5.8.23",
-    "codemirror": "5.6.0",
+    "codemirror": "5.8.0",
     "gsap": "^1.18.0",
-    "leaflet": "^1.0.0-beta.1",
+    "leaflet": "^1.0.0-beta.2",
     "leaflet-hash": "^0.2.1"
   },
   "browserify-shim": {
