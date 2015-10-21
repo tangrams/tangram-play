@@ -327,6 +327,30 @@
             "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/interactive$",
             "type": "boolean",
             "defaultValue": "false"
+        },
+
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/capitalized$",
+            "type": "boolean",
+            "defaultValue": "false"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/style$",
+            "type": "string",
+            "options": ["normal", "bold", "italic", "oblique"],
+            "defaultValue": "normal"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/weight$",
+            "type": "string",
+            "options": ["100", "200", "300", "400", "500", "600"],
+            "defaultValue": "normal"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/family$",
+            "type": "string",
+            "options": ["serif", "Georgia", "Palatino", "Times", "sans-serif", "Arial", "Helvetica", "Gadget", "cursive", "Impact", "Charcoal", "Tahoma", "Geneva", "Verdana", "monospace", "Courier", "Monaco"],
+            "defaultValue": "Helvetica"
         }
     ]
 }

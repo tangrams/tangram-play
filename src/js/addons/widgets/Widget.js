@@ -37,24 +37,47 @@ export default class Widget {
         }
     }
 
-    update () {
+    updateKey() {
         // Update key
-        this.key = TangramPlay.getKeyForKey(this.key);
+        if (this.bookmark && 
+            this.bookmark.lines &&
+            this.bookmark.lines.length === 1 &&
+            this.bookmark.lines[0] && 
+            this.bookmark.lines[0].stateAfter &&
+            this.bookmark.lines[0].stateAfter.yamlState &&
+            this.bookmark.lines[0].stateAfter.yamlState.keys &&
+            this.bookmark.lines[0].stateAfter.yamlState.keys.length > 0 ) {
+
+            if (this.bookmark.lines[0].stateAfter.yamlState.keys.length === 1) {
+                this.key = this.bookmark.lines[0].stateAfter.yamlState.keys[0];
+            } else {
+                for (let key of this.bookmark.lines[0].stateAfter.yamlState.keys) {
+                    if (this.key.address === key.address) {
+                        this.key = key;
+                        break;
+                    }
+                }
+            }
+        } else {
+            this.key = TangramPlay.getKeyForAddress(this.key.address);
+        }
+    }
+
+    update () {
+        this.updateKey();
         this.value = this.key.value;
     }
 
     insert () {
-        this.key = TangramPlay.getKeyForKey(this.key);
+        this.updateKey();
         let pos = getValueRange(this.key).to;
 
-        // cm.addWidget() overlays DOM objects on the page, so its position
-        // won't update automatically. It is better to use
-        // cm.doc.setBookmark(), which inserts the widget into CodeMirror DOM.
-        let bookmark = editor.doc.setBookmark(pos, {
+        // inserts the widget into CodeMirror DOM
+        this.bookmark = editor.doc.setBookmark(pos, {
             widget: this.el,
             insertLeft: true
         });
-        bookmark.widget = this;
+        this.bookmark.widget = this;
     }
 
     /**
@@ -75,8 +98,9 @@ export default class Widget {
      *  back to the Tangram Play editor.
      */
     setEditorValue(string) {
+        this.updateKey();
+
         // Send the value to editor
-        this.key = TangramPlay.getKeyForKey(this.key);
         TangramPlay.setValue(this.key, string);
 
         // Change the value attached to this widget instance

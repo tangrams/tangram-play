@@ -14,7 +14,6 @@ export default class WidgetsManager {
         subscribeMixin(this);
 
         this.data = []; // tokens to check
-        this.totalLines = 0; // keep track of linesf
         this.pairedUntilLine = 0;
 
         // Load data file

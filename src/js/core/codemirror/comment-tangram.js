@@ -13,6 +13,12 @@ function firstNonWS(str) {
 }
 
 CodeMirror.commands.toggleComment = function(cm) {
+    cm.toggleComment();
+};
+
+CodeMirror.defineExtension("toggleComment", function(options) {
+    if (!options) options = noOptions;
+    let cm = this;
     let minLine = Infinity,
         ranges = cm.listSelections(),
         mode = null;
@@ -42,7 +48,7 @@ CodeMirror.commands.toggleComment = function(cm) {
             cm.lineComment(from, to);
         }
     }
-};
+});
 
 CodeMirror.defineExtension('lineComment', function(from, to, options) {
     if (!options) {

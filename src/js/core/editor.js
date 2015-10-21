@@ -18,12 +18,14 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/addon/display/rulers';
 import 'codemirror/addon/display/panel';
-import 'codemirror/keymap/sublime';
 import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
 import 'app/core/codemirror/comment-tangram';
 import 'app/core/codemirror/hint-tangram';
+
+// Keymap
+import 'codemirror/keymap/sublime';
 
 // Import Utils
 import { getLineInd, unfoldAll, foldByLevel } from 'app/core/codemirror/tools';
