@@ -2,6 +2,7 @@
 
 const TIME_BEFORE_DISPLAY = 500; // in milliseconds, the amount of time elapsed before a tooltip is shown
 const TIME_BEFORE_RESET = 100; // in milliseconds, the amount of time elapsed after a tooltip disappears that it should appear to animate in instead of appearing instantly
+const VIEWPORT_EDGE_BUFFER = 6; // in pixels, minimum distance the edge of a tooltip should be from edge of the viewport
 
 const Tooltip = {
     // Declare variables for tooltip lifetime management
@@ -85,18 +86,14 @@ const Tooltip = {
         const alignment = this.target.getAttribute('data-tooltip-alignment') || 'left';
 
         if (alignment === 'right') {
-            // Because there is currently only one menu item on the right,
-            // we're cheating by aligning the tooltip to the right side of window (with
-            // some margin) rather than right side of element position.
-            // This will need to change if / when there are more menu items to the
-            // right (or adjusted for arbitrary positioning so that elements do not
-            // disappear out of the viewport.)
-            this.el.style.right = '6px';
+            let rightXPos = (targetPos.right + VIEWPORT_EDGE_BUFFER < window.innerWidth) ? targetPos.right : (window.innerWidth - VIEWPORT_EDGE_BUFFER);
+            this.el.style.right = Math.floor(window.innerWidth - rightXPos) + 'px';
             this.el.style.left = 'auto';
             this.pointerEl.classList.add('tp-tooltip-pointer-right');
         }
         else {
-            this.el.style.left = Math.floor(targetPos.left) + 'px';
+            let leftXPos = (targetPos.left - VIEWPORT_EDGE_BUFFER > 0) ? targetPos.left : VIEWPORT_EDGE_BUFFER;
+            this.el.style.left = Math.floor(leftXPos) + 'px';
             this.el.style.right = 'auto';
             this.pointerEl.classList.remove('tp-tooltip-pointer-right');
         }
