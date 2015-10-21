@@ -18,7 +18,7 @@
     <!-- Tangram -->
     <link rel="stylesheet" href="src/js/vendor/leaflet/leaflet.css">
     <script type="text/javascript" src="src/js/vendor/leaflet/leaflet.js"></script>
-    <script type="text/javascript" src="https://mapzen.com/tangram/0.3.3/tangram.min.js"></script>
+    <script type="text/javascript" src="https://mapzen.com/tangram/0.3/tangram.min.js"></script>
 
     <!-- Glsl Sandbox in a canvas -->
     <script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/build/GlslCanvas.min.js"></script>
@@ -75,7 +75,8 @@
                 </div>
                 <div class='tp-menu-dropdown tp-menu-dropdown-help'>
                     <ul>
-                        <li class='tp-menu-view-docs'><i class='btm bt-book'></i><span class='tp-menu-item-label'>View Tangram documentation</span><a href='https://github.com/tangrams/tangram-docs#tangram-documentation' target='_blank'></a></li>
+                        <li class='tp-menu-about'><i class='btm bt-info-circle'></i><span class='tp-menu-item-label'>About</span></li>
+                        <li class='tp-menu-view-docs'><i class='btm bt-book'></i><span class='tp-menu-item-label'>Documentation</span><a href='https://mapzen.com/documentation/tangram' target='_blank'></a></li>
                         <li class='tp-menu-feedback'><i class='btm bt-comments'></i><span class='tp-menu-item-label'>Feedback</span><a href='https://github.com/tangrams/tangram-play/issues/' target='_blank'></a></li>
                     </ul>
                 </div>
@@ -129,6 +130,25 @@
                     <button class='tp-modal-confirm'><i class='btm bt-check'></i> Continue</button>
                 </div>
             </div>
+            <div class='tp-modal tp-about-modal'>
+                <div class='tp-modal-text tp-modal-about-text'>
+                    <h3>About Tangram Play (BETA)</h3>
+                    <p>
+                        Tangram <span class='about-tangram-version'>(unknown version)</span>
+                        <br>Leaflet <span class='about-leaflet-version'>(unknown version)</span>
+                        <br>CodeMirror <span class='about-cm-version'>(unknown version)</span>
+                    </p>
+                    <p>
+                        This is a <a href='https://mapzen.com/' target='_blank'>Mapzen</a> project and it is maintained by Patricio Gonzalez Vivo and Lou Huang.
+                    </p>
+                    <p>
+                        <a href='https://github.com/tangrams/tangram-play' target='_blank'>View source on GitHub</a>
+                    </p>
+                </div>
+                <div class='tp-modal-buttons'>
+                    <button class='tp-modal-confirm'>Got it</button>
+                </div>
+            </div>
             <div class='tp-modal tp-modal-alt tp-example-modal'>
                 <p class='tp-modal-text'></p>
                 <div class='tp-modal-content tp-example-list'></div>
@@ -140,7 +160,7 @@
             <div class='tp-modal tp-modal-alt tp-open-url-modal'>
                 <p class='tp-modal-text'></p>
                 <div class='tp-modal-content tp-open-url-input'>
-                    <input type='text' placeholder='https://' spellcheck='false'>
+                    <input type='url' placeholder='https://' spellcheck='false' id='tp-open-url-input'>
                 </div>
                 <div class='tp-modal-buttons'>
                     <button id='example-cancel' class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>

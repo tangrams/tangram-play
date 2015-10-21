@@ -7,6 +7,7 @@ import EditorIO from 'app/addons/ui/EditorIO';
 import FileOpen from 'app/addons/ui/FileOpen';
 import ExamplesModal from 'app/addons/ui/Modal.Examples';
 import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
+import AboutModal from 'app/addons/ui/Modal.About';
 import Tooltip from 'app/addons/ui/Tooltip';
 import MapToolbar from 'app/addons/ui/MapToolbar';
 import fullscreen from 'app/addons/ui/fullscreen';
@@ -29,6 +30,7 @@ export default class Menu {
         this.fileopen = new FileOpen();
         this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
         this.openUrlModal = new OpenURLModal();
+        this.aboutModal = new AboutModal();
 
         Tooltip.init();
 
@@ -41,6 +43,9 @@ export default class Menu {
         container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
             this.examplesModal.show();
         }, false);
+        container.querySelector('.tp-menu-about').addEventListener('click', () => {
+            this.aboutModal.show();
+        }, false);
     }
 }
 
@@ -51,6 +56,11 @@ export class MenuItem {
         // Attach listeners, including those for tooltip behavior
         this.el.addEventListener('click', (event) => {
             this.el.setAttribute('data-tooltip-state', 'disabled');
+
+            // Hide currently open menus, if any
+            _loseMenuFocus();
+
+            // Execute onClick callback
             onClick(event);
         }, true);
         this.el.addEventListener('mouseenter', (e) => {

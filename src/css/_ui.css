@@ -4,3 +4,11 @@
 .tp-active {
   color: var(--ui-highlight-color);
 }
+
+/* Links ? */
+a,
+a:visited,
+a:hover,
+a:active {
+  color: var(--ui-link-text-color);
+}

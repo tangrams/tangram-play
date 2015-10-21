@@ -117,13 +117,13 @@ class TangramPlay {
         this.editor.doc.markClean();
     }
 
-    loadScene (url, options = { reset: false }) {
+    loadScene (url, { reset = false } = {}) {
         if (!this.map.scene) {
             return;
         }
 
         // Preserve scene base path unless reset requested (e.g. reset on new file load)
-        return this.map.scene.load(url, !options.reset && this.map.scene.config_path);
+        return this.map.scene.load(url, !reset && this.map.scene.config_path);
     }
 
     loadFile (path) {
@@ -288,14 +288,10 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     colors: true,
 });
 
-let map = tangramPlay.map.leaflet;
-let container = tangramPlay.container;
-let editor = tangramPlay.editor;
-
 export default tangramPlay;
-export { map };
-export { container };
-export { editor };
+export let map = tangramPlay.map.leaflet;
+export let container = tangramPlay.container;
+export let editor = tangramPlay.editor;
 
 tangramPlay.initAddons();
 new UI();

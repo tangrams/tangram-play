@@ -24,14 +24,13 @@
     "unused": "vars",
     "globals": {
         "L": true,
+        "Modernizr": true,
         "describe": true,
         "it": true,
         "sinon": true,
         "_": true,
         "before": true,
         "beforeEach": true,
-        "afterEach": true,
-        "WebGLRenderingContext": true,
-        "makeScene": true
+        "afterEach": true
     }
 }

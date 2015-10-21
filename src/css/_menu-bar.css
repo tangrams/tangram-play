@@ -119,3 +119,8 @@
     font-size: 14px;
     margin-right: 0.5em;
 }
+
+/* Hides the fullscreen button if feature is not present in browser */
+html.mdnzr-no-fullscreen .tp-menu-button-fullscreen {
+    display: none;
+}

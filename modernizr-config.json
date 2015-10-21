@@ -1,8 +1,9 @@
 {
   "minify": true,
-  "classPrefix": "mod-",
+  "classPrefix": "mdnzr-",
   "options": [
-    "prefixed"
+    "prefixed",
+    "setClasses"
   ],
   "feature-detects": [
     "test/fullscreen-api",
