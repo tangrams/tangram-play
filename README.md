@@ -3,13 +3,13 @@
 
 ![](data/imgs/screenshot.png)
 
-# Style Editor for Tangram Styles
+# Editor for Tangram scene files
 
 ## Query string API
 
 * ```lines=[number]/[number-number]```: you highlight a line or a range of lines. Example ```lines=10-12```.
 
-* ```style=[url.yaml]```: load a specific ```.yaml``` file using a valid url
+* ```scene=[url.yaml]```: load a specific ```.yaml``` file using a valid url
 
 ## Keys
 

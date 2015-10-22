@@ -12,7 +12,7 @@ import 'leaflet-hash';
 let takeScreenshot = false;
 
 export default class Map {
-    constructor(mapElement, styleFile) {
+    constructor(mapElement, sceneFile) {
         // Get map start position
         let mapStartLocation = _getMapStartLocation();
 
@@ -28,7 +28,7 @@ export default class Map {
 
         // Add Tangram Layer
         let layer = window.Tangram.leafletLayer({
-            scene: styleFile,
+            scene: sceneFile,
             postUpdate: postUpdate,
             attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
         });
@@ -83,7 +83,7 @@ function _getMapStartLocation () {
     };
 
     // URL Parsing
-    // Leaflet-style URL hash pattern: ?style.yaml#[zoom],[lat],[lng]
+    // Leaflet-style URL hash pattern: ?scene.yaml#[zoom],[lat],[lng]
     let urlHash = window.location.hash.slice(1).split('/');
     if (urlHash.length === 3) {
         // Convert from strings
