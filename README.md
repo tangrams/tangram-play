@@ -5,6 +5,10 @@
 
 # Editor for Tangram scene files
 
+Tangram Play is an editor for Mapzen's [Tangram map-rendering library](https://github.com/tangrams/tangram) that makes it easy to build or modify Tangram scene files and see your changes right away. It runs entirely in your browser and can be accessed at https://tangrams.github.io/tangram-play.
+
+This project is currently in active development (think public _beta_) and so functionality may change or break without prior notice. This doesn't mean you can't use it, but please keep this in mind and feel free to send feedback on [the issues tracker](https://github.com/tangrams/tangram-play/issues).
+
 ## Query string API
 
 * ```lines=[number]/[number-number]```: you highlight a line or a range of lines. Example ```lines=10-12```.
