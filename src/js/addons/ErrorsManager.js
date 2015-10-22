@@ -61,7 +61,6 @@ export default class ErrorsManager {
                 if (this.blockErrors.has(JSON.stringify(block))) {
                     continue;
                 }
-                this.blockErrors.add(JSON.stringify(block));
 
                 let address = '/styles/' + style + '/shaders/blocks/';
                 let nLine = TangramPlay.getKeyForAddress(address + block.name).pos.line + 1 + block.line;
@@ -72,6 +71,7 @@ export default class ErrorsManager {
                 msg.appendChild(document.createTextNode(errors[i].message));
                 msg.className = 'tp-warning';
                 this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
+                this.blockErrors.add(JSON.stringify(block)); // track unique errors
             }
         }
     }
