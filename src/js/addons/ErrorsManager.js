@@ -24,13 +24,11 @@ export default class ErrorsManager {
     }
 
     clean() {
-        if (this.widgets.length > 0) {
-            for (let i = 0; i < this.widgets.length; i++) {
-                TangramPlay.editor.removeLineWidget(this.widgets[i]);
-            }
-            this.widgets.length = 0;
-            this.blockErrors.clear();
+        for (let i = 0; i < this.widgets.length; i++) {
+            TangramPlay.editor.removeLineWidget(this.widgets[i]);
         }
+        this.widgets.length = 0;
+        this.blockErrors.clear();
     }
 
     addError(args) {
