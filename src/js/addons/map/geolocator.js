@@ -46,9 +46,9 @@ function onGeolocateSuccess (position) {
     const longitude = position.coords.longitude;
 
     // Zoom in a bit only if user's view is very zoomed out
-    let zoom = (map.getZoom() < 16) ? 16 : map.getZoom();
+    let zoom = (map.leaflet.getZoom() < 16) ? 16 : map.leaflet.getZoom();
 
-    map.setView([latitude, longitude], zoom);
+    map.leaflet.setView([latitude, longitude], zoom);
     resetGeolocateButton();
 }
 

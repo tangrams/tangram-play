@@ -289,7 +289,7 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
 });
 
 export default tangramPlay;
-export let map = tangramPlay.map.leaflet;
+export let map = tangramPlay.map;
 export let container = tangramPlay.container;
 export let editor = tangramPlay.editor;
 

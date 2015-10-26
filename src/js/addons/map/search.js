@@ -188,14 +188,14 @@ let makeRequest = debounce(function (endpoint) {
 
 // Get autocomplete suggestions
 function autocomplete (query) {
-    const center = map.getCenter();
+    const center = map.leaflet.getCenter();
     const endpoint = `//${PELIAS_HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
     makeRequest(endpoint);
 }
 
 // Get search results
 function search (query) {
-    const center = map.getCenter();
+    const center = map.leaflet.getCenter();
     const endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
     makeRequest(endpoint);
 }
@@ -262,7 +262,7 @@ function gotoSelectedResult (selectedEl) {
     // Set placeholder immediately so there isn't a lag between the selection
     // and the reverse geocoder kicking in with the right location
     input.placeholder = selectedEl.textContent.trim();
-    map.setView({ lat: coords[1], lng: coords[0] });
+    map.leaflet.setView({ lat: coords[1], lng: coords[0] });
     clearResults();
     clearInput();
 }
@@ -302,8 +302,8 @@ function resetSaveIcon () {
 }
 
 function getCurrentMapViewData () {
-    let center = map.getCenter();
-    let zoom = map.getZoom();
+    let center = map.leaflet.getCenter();
+    let zoom = map.leaflet.getZoom();
     let label = input.placeholder || 'Unknown location';
     return {
         label,
@@ -330,7 +330,7 @@ function setLabelPrecision (width) {
 
 function onDividerMove (event) {
     setLabelPrecision(event.mapX);
-    setCurrentLatLng(map.getCenter());
+    setCurrentLatLng(map.leaflet.getCenter());
 }
 
 function highlight (text, focus) {
