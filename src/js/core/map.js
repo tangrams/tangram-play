@@ -9,7 +9,7 @@ import MapLoading from 'app/addons/ui/MapLoading';
 //import L from 'leaflet';
 import 'leaflet-hash';
 
-let takeScreenshot = false;
+let screenshotRequested = false;
 
 export default class Map {
     constructor(mapElement, sceneFile) {
@@ -41,8 +41,6 @@ export default class Map {
             }
         });
 
-        this.takeScreenshot = false;
-
         // Debug access
         window.Lmap = map;
         window.layer = layer;
@@ -67,9 +65,9 @@ export default class Map {
         this.scene = layer.scene;
     }
 
-    takeScreenshot() {
-        if (!takeScreenshot) {
-            takeScreenshot = true;
+    takeScreenshot () {
+        if (!screenshotRequested) {
+            screenshotRequested = true;
             this.layer.scene.requestRedraw();
         }
     }
@@ -112,7 +110,7 @@ function _getMapStartLocation () {
 }
 
 function postUpdate() {
-    if (takeScreenshot) {
+    if (screenshotRequested) {
         // Adapted from: https://gist.github.com/unconed/4370822
         let image = TangramPlay.map.scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
         let data = atob(image); // convert base64 to binary without UTF-8 mangling
@@ -123,6 +121,6 @@ function postUpdate() {
         let blob = new Blob([buf], { type: 'image/png' });
         saveAs(blob, 'tangram-' + (new Date()).toString() + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
 
-        takeScreenshot = false;
+        screenshotRequested = false;
     }
 }

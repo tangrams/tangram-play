@@ -72,11 +72,13 @@
         margin-right: 0.5em;
     }
 
-    button > i.bt-check {
+    /* Any icon of confirm button is green */
+    .tp-modal-confirm > i.btm {
         color: green;
     }
 
-    button > i.bt-times {
+    /* Any icon of cancel button is red */
+    .tp-modal-cancel > i.btm {
         color: red;
     }
 

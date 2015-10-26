@@ -84,7 +84,7 @@ export default class Divider {
     update() {
         // We update the map on the end of the drag because
         // of horrible flickering of the map in Chrome
-        map.invalidateSize({
+        map.leaflet.invalidateSize({
             pan: {
                 animate: false
             },

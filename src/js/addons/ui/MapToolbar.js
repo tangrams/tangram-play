@@ -23,7 +23,7 @@ const MapToolbar = {
         setInitialDisplayState();
         setZoomLabel();
 
-        currentLocation = map.getCenter();
+        currentLocation = map.leaflet.getCenter();
         search.setCurrentLatLng(currentLocation);
         search.reverseGeocode(currentLocation);
     },
@@ -42,11 +42,11 @@ export default MapToolbar;
 
 function setupEventListeners () {
     el.querySelector('#zoom-in').addEventListener('click', e => {
-        map.zoomIn(1, { animate: true });
+        map.leaflet.zoomIn(1, { animate: true });
         setZoomLabel();
     }, false);
     el.querySelector('#zoom-out').addEventListener('click', e => {
-        map.zoomOut(1, { animate: true });
+        map.leaflet.zoomOut(1, { animate: true });
         setZoomLabel();
     }, false);
 
@@ -56,16 +56,16 @@ function setupEventListeners () {
     });
 
     // Make sure that map zoom label changes when the map is done zooming
-    map.on('zoomend', function (e) {
+    map.leaflet.on('zoomend', function (e) {
         setZoomLabel();
     });
-    map.on('moveend', function (e) {
+    map.leaflet.on('moveend', function (e) {
         // Only update location if the map center has moved more than a given delta
         // This is actually really necessary because EVERY update in the editor reloads
         // the map, which fires moveend events despite not actually moving the map
         // But we also have the bonus of not needing to make a reverse geocode request
         // for small changes of the map center.
-        let center = map.getCenter();
+        let center = map.leaflet.getCenter();
         search.setCurrentLatLng(center);
         if (getMapChangeDelta(currentLocation, center) > MAP_UPDATE_DELTA) {
             search.reverseGeocode(center);
@@ -110,7 +110,7 @@ function setInitialDisplayState () {
 
 function setZoomLabel () {
     let label = el.querySelector('.tp-map-zoom-quantity');
-    let currentZoom = map.getZoom();
+    let currentZoom = map.leaflet.getZoom();
     let fractionalNumber = Math.floor(currentZoom * 10) / 10;
     label.textContent = fractionalNumber.toFixed(1);
 }

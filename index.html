@@ -51,9 +51,9 @@
             <div class='tp-menu-bar'>
                 <h1>Tangram Play<span class='tp-beta-tag'>BETA</span></h1>
                 <ul class='tp-menu-items'>
-                    <li class='tp-menu-item tp-menu-button-new' data-tooltip='New scene'><i class='btm bt-file'></i><span class='tp-menu-item-label'>New scene</span></li>
-                    <li class='tp-menu-item tp-menu-button-open' data-tooltip='Open scene'><i class='btm bt-plus-square'></i><span class='tp-menu-item-label'>Open scene</span></li>
-                    <li class='tp-menu-item tp-menu-button-export' data-tooltip='Export scene'><i class='btm bt-download'></i><span class='tp-menu-item-label'>Export scene</span></li>
+                    <li class='tp-menu-item tp-menu-button-new' data-tooltip='New scene'><i class='btm bt-file'></i><span class='tp-menu-item-label'>New</span></li>
+                    <li class='tp-menu-item tp-menu-button-open' data-tooltip='Open scene'><i class='btm bt-upload'></i><span class='tp-menu-item-label'>Open</span></li>
+                    <li class='tp-menu-item tp-menu-button-save' data-tooltip='Save scene'><i class='btm bt-download'></i><span class='tp-menu-item-label'>Save</span></li>
                     <li class='tp-menu-item tp-menu-button-map' data-tooltip='Map toolbar'><i class='btm bt-globe'></i><span class='tp-menu-item-label'>Map toolbar</span></li>
                     <li class='tp-menu-item tp-menu-item-private' data-tooltip='Share'><i class='btm bt-share'></i></li>
                 </ul>
@@ -71,6 +71,13 @@
                         <li class='tp-menu-open-file'><i class='btm bt-folder'></i><span class='tp-menu-item-label'>Open a file</span></li>
                         <li class='tp-menu-open-url'><i class='btm bt-link'></i><span class='tp-menu-item-label'>Open from URL</span></li>
                         <li class='tp-menu-open-example'><i class='btm bt-map'></i><span class='tp-menu-item-label'>Choose example</span></li>
+                    </ul>
+                </div>
+                <div class='tp-menu-dropdown tp-menu-dropdown-save'>
+                    <ul>
+                        <li class='tp-menu-save-file'><i class='btm bt-folder'></i><span class='tp-menu-item-label'>Save to file</span></li>
+                        <li class='tp-menu-save-gist'><i class='btm bt-code'></i><span class='tp-menu-item-label'>Save to Gist</span></li>
+                        <li class='tp-menu-screenshot'><i class='btm bt-camera'></i><span class='tp-menu-item-label'>Take a screenshot</span></li>
                     </ul>
                 </div>
                 <div class='tp-menu-dropdown tp-menu-dropdown-help'>
@@ -92,18 +99,18 @@
                         <button class='tp-map-zoom-in' id='zoom-in' data-tooltip='Zoom in'><i class='btm bt-plus'></i></button>
                         <button class='tp-map-zoom-out' id='zoom-out' data-tooltip='Zoom out'><i class='btm bt-minus'></i></button>
                     </div>
-                    <div class='tp-map-search'>
+                    <div class='tp-map-location-bar'>
                         <div class='tp-map-search-icon'><i class='btm bt-search'></i></div>
                         <input class='tp-map-search-input' placeholder='' spellcheck='false'>
                         <div class='tp-map-latlng-label'></div>
                         <div class='tp-map-save-icon'><i class='btm bt-star'></i></div>
+                        <div class='tp-map-bookmarks'>
+                            <button class='tp-map-bookmarks-button' id='bookmarks' title='Bookmarks'>
+                                <i class='btm bt-bookmark'></i>
+                            </button>
+                            <div class='tp-map-bookmarks-menu'></div>
+                        </div>
                         <div class='tp-map-search-results'></div>
-                    </div>
-                    <div class='tp-map-bookmarks'>
-                        <button class='tp-map-bookmarks-button' id='bookmarks' title='Bookmarks'>
-                            <i class='btm bt-bookmark'></i>
-                        </button>
-                        <div class='tp-map-bookmarks-menu'></div>
                     </div>
                     <div class='tp-geolocator'>
                         <button class='tp-geolocator-button' id='geolocator' title='Get current location'>
@@ -147,6 +154,15 @@
                 </div>
                 <div class='tp-modal-buttons'>
                     <button class='tp-modal-confirm'>Got it</button>
+                </div>
+            </div>
+            <div class='tp-modal tp-save-gist-modal'>
+                <div class='tp-modal-text tp-modal-save-gist-text'>
+                    Saving to GitHub Gist is a Tangram Play Premium feature.
+                </div>
+                <div class='tp-modal-buttons'>
+                    <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                    <button class='tp-modal-confirm'><i class='btm bt-money'></i> Upgrade now</button>
                 </div>
             </div>
             <div class='tp-modal tp-modal-alt tp-example-modal'>

@@ -1,13 +1,13 @@
 'use strict';
 
-import TangramPlay from 'app/TangramPlay';
-import { container } from 'app/TangramPlay';
+import TangramPlay, { container, map } from 'app/TangramPlay';
 import { noop } from 'app/addons/ui/Helpers';
 import EditorIO from 'app/addons/ui/EditorIO';
 import FileOpen from 'app/addons/ui/FileOpen';
 import ExamplesModal from 'app/addons/ui/Modal.Examples';
 import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import AboutModal from 'app/addons/ui/Modal.About';
+import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
 import Tooltip from 'app/addons/ui/Tooltip';
 import MapToolbar from 'app/addons/ui/MapToolbar';
 import fullscreen from 'app/addons/ui/fullscreen';
@@ -20,9 +20,9 @@ export default class Menu {
     }
 
     initMenuItems () {
-        this.menus.open = new MenuItem('.tp-menu-button-open', _onClickOpen);
         this.menus.new = new MenuItem('.tp-menu-button-new', _onClickNew);
-        this.menus.export = new MenuItem('.tp-menu-button-export', _onClickExport);
+        this.menus.open = new MenuItem('.tp-menu-button-open', _onClickOpen);
+        this.menus.save = new MenuItem('.tp-menu-button-save', _onClickSave);
         this.menus.map = new MenuItem('.tp-menu-button-map', _onClickMap);
         this.menus.fullscreen = new MenuItem('.tp-menu-button-fullscreen', _onClickFullscreen);
         this.menus.help = new MenuItem('.tp-menu-button-help', _onClickHelp);
@@ -31,9 +31,12 @@ export default class Menu {
         this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
         this.openUrlModal = new OpenURLModal();
         this.aboutModal = new AboutModal();
+        this.saveGistModal = new SaveGistModal();
 
         Tooltip.init();
 
+        // Set up events on dropdown buttons
+        // Open menu
         container.querySelector('.tp-menu-open-file').addEventListener('click', () => {
             this.fileopen.activate();
         }, false);
@@ -43,6 +46,19 @@ export default class Menu {
         container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
             this.examplesModal.show();
         }, false);
+
+        // Save menu
+        container.querySelector('.tp-menu-save-file').addEventListener('click', () => {
+            EditorIO.export();
+        }, false);
+        container.querySelector('.tp-menu-save-gist').addEventListener('click', () => {
+            this.saveGistModal.show();
+        }, false);
+        container.querySelector('.tp-menu-screenshot').addEventListener('click', () => {
+            map.takeScreenshot();
+        }, false);
+
+        // About
         container.querySelector('.tp-menu-about').addEventListener('click', () => {
             this.aboutModal.show();
         }, false);
@@ -72,9 +88,22 @@ export class MenuItem {
     }
 }
 
+// Dropdown menus
+
 function _onClickOpen (event) {
     let menuEl = container.querySelector('.tp-menu-dropdown-open');
     let posX = container.querySelector('.tp-menu-button-open').getBoundingClientRect().left;
+    menuEl.style.left = posX + 'px';
+    menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
+    if (menuEl.style.display === 'none') {
+        _resetTooltipState();
+    }
+    container.addEventListener('click', _onClickOutsideDropdown, false);
+}
+
+function _onClickSave (event) {
+    let menuEl = container.querySelector('.tp-menu-dropdown-save');
+    let posX = container.querySelector('.tp-menu-button-save').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
@@ -93,13 +122,10 @@ function _onClickHelp (event) {
     container.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
+// Single action buttons
+
 function _onClickNew (event) {
     EditorIO.new();
-    _resetTooltipState();
-}
-
-function _onClickExport (event) {
-    EditorIO.export();
     _resetTooltipState();
 }
 
@@ -110,6 +136,8 @@ function _onClickMap (event) {
 function _onClickFullscreen (event) {
     fullscreen.toggle();
 }
+
+// Resetting state
 
 function _onClickOutsideDropdown (event) {
     let target = event.target;
