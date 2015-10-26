@@ -69,6 +69,7 @@
     cursor: default;
     white-space: nowrap;
 
+    /* Nested for specificity */
     .tp-map-zoom-out {
         border-left: 1px solid var(--ui-component-color);
     }
@@ -82,7 +83,7 @@
     margin-right: 4px;
 }
 
-.tp-map-search {
+.tp-map-location-bar {
     position: relative;
     display: flex;
     flex-grow: 1;
@@ -215,6 +216,10 @@
     left: 0;
     top: 38px;
     width: 100%;
+}
+
+.tp-map-bookmarks {
+    border-left: 1px solid var(--ui-component-color);
 }
 
 .tp-map-bookmarks-menu {

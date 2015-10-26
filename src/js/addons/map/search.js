@@ -9,7 +9,7 @@ const PELIAS_KEY = 'search-xFAc9NI';
 const PELIAS_HOST = 'search.mapzen.com';
 const PELIAS_THROTTLE = 300; // in ms, time to wait before repeating a request
 
-let searchEl;
+let locationBarEl;
 let input;
 let latlngLabel;
 let latlngLabelPrecision = 4;
@@ -19,11 +19,11 @@ let maxReqTimestampRendered = new Date().getTime();
 
 function init () {
     // Cache reference to elements
-    searchEl = container.querySelector('.tp-map-search');
-    input = searchEl.querySelector('.tp-map-search-input');
-    latlngLabel = searchEl.querySelector('.tp-map-latlng-label');
-    resultsEl = searchEl.querySelector('.tp-map-search-results');
-    saveEl = searchEl.querySelector('.tp-map-save-icon');
+    locationBarEl = container.querySelector('.tp-map-location-bar');
+    input = locationBarEl.querySelector('.tp-map-search-input');
+    latlngLabel = locationBarEl.querySelector('.tp-map-latlng-label');
+    resultsEl = locationBarEl.querySelector('.tp-map-search-results');
+    saveEl = locationBarEl.querySelector('.tp-map-save-icon');
 
     input.addEventListener('keyup', onInputKeyupHandler, false);
     input.addEventListener('keydown', onInputKeydownHandler, false);
@@ -31,7 +31,7 @@ function init () {
     resultsEl.addEventListener('click', onResultsClickHandler, false);
     saveEl.addEventListener('click', onSaveClickHandler, false);
 
-    searchEl.querySelector('.tp-map-search-icon').addEventListener('click', e => {
+    locationBarEl.querySelector('.tp-map-search-icon').addEventListener('click', e => {
         input.focus();
     });
 
