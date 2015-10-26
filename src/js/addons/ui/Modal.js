@@ -23,6 +23,7 @@ export default class Modal {
         // callbacks remain attached to the buttons, which is not great.
         this._handleConfirm = this._handleConfirm.bind(this);
         this._handleAbort = this._handleAbort.bind(this);
+        this._handleEsc = this._handleEsc.bind(this);
     }
 
     get message () {
@@ -33,6 +34,7 @@ export default class Modal {
         this.el.querySelector('.tp-modal-text').textContent = value;
     }
 
+    // Shows modal and attaches events.
     show () {
         this.shield.show();
         this.el.style.display = 'block';
@@ -48,9 +50,11 @@ export default class Modal {
             this.cancelButton.addEventListener('click', this._handleAbort, false);
         }
 
-        container.addEventListener('keydown', this._handleEsc.bind(this), false);
+        // Add the listener for the escape key
+        window.addEventListener('keydown', this._handleEsc, false);
     }
 
+    // Hides modal and resets events
     hide () {
         this.shield.hide();
         this.el.style.display = 'none';
@@ -63,7 +67,7 @@ export default class Modal {
             this.cancelButton.removeEventListener('click', this._handleAbort, false);
         }
 
-        container.removeEventListener('keydown', this._handleEsc.bind(this), false);
+        window.removeEventListener('keydown', this._handleEsc, false);
     }
 
     // Pass through events to callbacks
@@ -77,13 +81,13 @@ export default class Modal {
         this.abort(event);
     }
 
-    // Listen for escape key, which functions the same as hide & abort
+    // Function to handle when the escape key is pressed.
+    // Does the same thing as if you pressed the Cancel button.
     // Events are passed through to the abort callback as well.
     _handleEsc (event) {
         let key = event.keyCode || event.which;
         if (key === 27) {
-            this.hide();
-            this.abort(event);
+            this._handleAbort(event);
         }
     }
 }
