@@ -7,6 +7,7 @@ import FileOpen from 'app/addons/ui/FileOpen';
 import ExamplesModal from 'app/addons/ui/Modal.Examples';
 import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import AboutModal from 'app/addons/ui/Modal.About';
+import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
 import Tooltip from 'app/addons/ui/Tooltip';
 import MapToolbar from 'app/addons/ui/MapToolbar';
 import fullscreen from 'app/addons/ui/fullscreen';
@@ -30,6 +31,7 @@ export default class Menu {
         this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
         this.openUrlModal = new OpenURLModal();
         this.aboutModal = new AboutModal();
+        this.saveGistModal = new SaveGistModal();
 
         Tooltip.init();
 
@@ -48,6 +50,9 @@ export default class Menu {
         // Save menu
         container.querySelector('.tp-menu-save-file').addEventListener('click', () => {
             EditorIO.export();
+        }, false);
+        container.querySelector('.tp-menu-save-gist').addEventListener('click', () => {
+            this.saveGistModal.show();
         }, false);
         container.querySelector('.tp-menu-screenshot').addEventListener('click', () => {
             map.takeScreenshot();
