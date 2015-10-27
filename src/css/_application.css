@@ -31,6 +31,7 @@ body {
     font-family: var(--font-family);
     font-weight: 400;
     background-color: lightyellow;
+    z-index: var(--z10-mobile-message);
 }
 
 .mobile-message strong {

@@ -9,7 +9,7 @@
 	/*-moz-border-radius: 12px;*/
 	/*border-radius: 12px;*/
 	box-shadow: 5px 5px 10px #111;
-	z-index: 100;
+	z-index: var(--z01-sandbox);
 }
 
 #tp-a-sandbox:after {
@@ -20,14 +20,14 @@
 	border-color: transparent #FFCC00;
 	display: block;
 	width: 0;
-	z-index: 100;
+	z-index: var(--z01-sandbox);
 	right: -10px;
 	top: 14px;
 }
 
 #tp-a-sandbox-canvas {
 	margin: 2px;
-    z-index: 100;
+    z-index: var(--z01-sandbox);
     overflow: hidden;
     -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
     /*border-radius: 12px;*/
@@ -45,5 +45,4 @@
     box-shadow: inset 0 0 0px 2px white;
     cursor: pointer;
     background-color: white;
-    z-index: 101;
 }

@@ -16,7 +16,7 @@
     margin-top: -24px;
     margin-left: 4px;
 
-    z-index: 100;
+    z-index: var(--z01-suggest);
 }
 
 .tangram-play-suggested-menu-btn {

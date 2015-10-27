@@ -20,7 +20,7 @@
     background-color: var(--ui-component-color);
     transition: 120ms top ease-out;
     user-select: none;
-    z-index: 401; /* Leaflet map at 400 */
+    z-index: var(--z04-map-toolbar);
 
     & > div:not(:last-child) {
         margin-right: 4px;

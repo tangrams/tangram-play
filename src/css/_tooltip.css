@@ -4,7 +4,7 @@
     position: fixed;
     user-select: none;
     pointer-events: none;
-    z-index: 1020; /* TODO z-index hierarchy */
+    z-index: var(--z09-tooltip);
     transform: translateY(-10px);
     opacity: 0;
 

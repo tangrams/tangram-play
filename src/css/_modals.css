@@ -13,7 +13,7 @@
     color: var(--ui-component-text-color);
     background-color: var(--ui-base-color);
     box-shadow: var(--modal-shadow);
-    z-index: 1;
+    z-index: var(--z01-modal);
     user-select: none;
     pointer-events: auto;
 }
