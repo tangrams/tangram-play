@@ -125,7 +125,7 @@
             </div>
             <div class='tp-modal tp-about-modal'>
                 <div class='tp-modal-text tp-modal-about-text'>
-                    <h3>About Tangram Play (BETA)</h3>
+                    <h4>About Tangram Play (BETA)</h4>
                     <p>
                         Tangram <span class='about-tangram-version'>(unknown version)</span>
                         <br>Leaflet <span class='about-leaflet-version'>(unknown version)</span>
@@ -142,12 +142,34 @@
                     <button class='tp-modal-confirm'>Got it</button>
                 </div>
             </div>
-            <div class='tp-modal tp-save-gist-modal'>
+            <div class='tp-modal tp-modal-alt tp-save-gist-modal'>
                 <div class='tp-modal-text tp-modal-save-gist-text'>
-                    Coming soon!
+                    <h4>
+                        Save this scene to gist
+                    </h4>
+                    <p>
+                        This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Do not lose this URL! <a href='https://help.github.com/articles/about-gists/' target='_blank'>Learn more about anonymous gists</a>.
+                    </p>
+                </div>
+                <hr>
+                <div class='tp-modal-content'>
+                    <label for='gist-filename'>Filename</label>
+                    <input type='text' id='gist-filename' placeholder='scene.yaml'>
+                    <p>
+                        <label for='gist-description'>Scene description</label>
+                        <input type='text' id='gist-description' placeholder='(optional description)'>
+                    </p>
+                    <p>
+                        <label for='gist-private'>Secret gist</label>
+                        <input type='checkbox' id='gist-private'>
+                    </p>
                 </div>
                 <div class='tp-modal-buttons'>
-                    <button class='tp-modal-confirm'><i class='btm bt-check'></i> Got it</button>
+                    <div class='tp-modal-thinking'>
+                        <i class='bts bt-spinner bt-pulse'></i> Working...
+                    </div>
+                    <button class='tp-modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                    <button class='tp-modal-confirm'><i class='btm bt-check'></i> Save to gist</button>
                 </div>
             </div>
             <div class='tp-modal tp-modal-alt tp-example-modal'>

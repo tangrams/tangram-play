@@ -15,7 +15,7 @@ export default class OpenUrlModal extends Modal {
         this.input = this.el.querySelector('.tp-open-url-input input');
         this.input.addEventListener('keyup', (event) => {
             if (this.input.value && this.input.validity.valid === true && this.input.value.match(/\.y(a?)ml$/)) {
-                this.el.querySelector('.tp-modal-confirm').disabled = false;
+                this.el.querySelector('.tp-modal-confirm').removeAttribute('disabled');
                 let key = event.keyCode || event.which;
                 if (key === 13) {
                     this._handleConfirm();

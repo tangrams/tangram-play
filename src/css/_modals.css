@@ -16,13 +16,56 @@
     z-index: var(--z01-modal);
     user-select: none;
     pointer-events: auto;
+
+    h4 {
+        margin-top: 0;
+        font-weight: 400;
+    }
+
+    input[type=text],
+    input[type=url] {
+        background-color: var(--ui-element-color);
+        appearance: none;
+        outline: none;
+        border: 0;
+        color: var(--ui-component-text-color);
+        font-size: 12px;
+        font-family: var(--font-family);
+        font-weight: 200;
+        line-height: 28px;
+        padding: 4px 8px 4px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        box-shadow: 0px 0px 0px 1px var(--ui-highlight-color-2) inset;
+    }
+
+    input:invalid {
+        box-shadow: 0px 0px 0px 1px red inset;
+    }
+
+    input::selection {
+        background-color: var(--ui-component-color);
+    }
+
+    label + input {
+        margin-top: 6px;
+    }
+
+    label {
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--ui-subtext-color);
+    }
 }
 
 .tp-modal-alt {
     text-align: left;
 
     .tp-modal-buttons {
-        text-align: right;
+        justify-content: flex-end;
     }
 }
 
@@ -39,9 +82,11 @@
 }
 
 .tp-modal-buttons {
-    text-align: center;
     width: 100%;
     margin-top: 30px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
 
     button {
         padding: 16px;
@@ -95,6 +140,23 @@
 
     button:disabled > i {
         color: gray !important;
+    }
+}
+
+.tp-modal-thinking {
+    margin-right: 30px;
+    line-height: 54px;
+    color: var(--ui-subtext-color);
+    opacity: 0;
+    visibility: hidden;
+
+    &.tp-modal-thinking-cap-on {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .bt-spinner {
+        margin-right: 0.25em;
     }
 }
 
@@ -164,37 +226,19 @@
 
 .tp-open-url-modal {
     width: 600px;
-
-    input {
-        background-color: var(--ui-element-color);
-        appearance: none;
-        border: 0;
-        color: var(--ui-component-text-color);
-        font-size: 12px;
-        font-family: var(--font-family);
-        font-weight: 200;
-        line-height: 28px;
-        padding: 4px 8px 4px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    input:focus {
-        box-shadow: 0px 0px 0px 1px var(--ui-highlight-color-2) inset;
-    }
 }
 
 .tp-modal-about-text {
     margin-left: 40px;
     margin-right: 40px;
 
-    h3 {
-        font-weight: normal;
-        margin: 0;
-    }
     p {
         font-size: 12px;
         margin-top: 16px;
         margin-bottom: 0;
     }
+}
+
+.tp-save-gist-modal {
+    width: 600px;
 }

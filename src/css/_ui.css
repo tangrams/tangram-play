@@ -12,3 +12,7 @@ a:hover,
 a:active {
   color: var(--ui-link-text-color);
 }
+
+hr {
+    border: 1px solid var(--ui-element-color);
+}
