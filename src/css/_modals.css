@@ -178,6 +178,10 @@
         width: 100%;
         box-sizing: border-box;
     }
+
+    input:focus {
+        box-shadow: 0px 0px 0px 1px var(--ui-highlight-color-2) inset;
+    }
 }
 
 .tp-modal-about-text {
