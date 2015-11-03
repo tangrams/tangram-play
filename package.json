@@ -49,8 +49,7 @@
     "codemirror": "5.8.0",
     "gsap": "^1.18.0",
     "leaflet": "^1.0.0-beta.2",
-    "leaflet-hash": "^0.2.1",
-    "tangram": "https://github.com/tangrams/tangram/archive/v0.3.3.tar.gz"
+    "leaflet-hash": "^0.2.1"
   },
   "browserify-shim": {
     "./src/js/vendor/colors.js": "Colors"
