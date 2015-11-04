@@ -88,7 +88,7 @@
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font$",
             "level": 5,
-            "options": ["fill", "typeface", "weight", "family", "type", "stroke", "capitalized", "style"]
+            "options": ["fill", "typeface", "weight", "family", "type", "stroke", "capitalized", "move_into_tile", "align", "style", "text_wrap", "anchor"]
         }
     ],
 
@@ -345,6 +345,31 @@
             "type": "string",
             "options": ["100", "200", "300", "400", "500", "600"],
             "defaultValue": "normal"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/move_into_tile$",
+            "type": "boolean",
+            "defaultValue": "true"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/align$",
+            "type": "string",
+            "options": ["center", "left", "right"],
+            "defaultValue": "center"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/text_wrap$",
+            "type": "string",
+            "options": ["false", "true", "10", "20"],
+            "defaultValue": "false"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/anchor$",
+            "type": "string",
+            "options": ["center", "top", "bottom",
+                        "left", "top-left", "bottom-left",
+                        "right", "top-right", "bottom-right" ],
+            "defaultValue": "center"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/family$",
