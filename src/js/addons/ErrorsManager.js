@@ -63,15 +63,21 @@ export default class ErrorsManager {
                 }
 
                 let address = '/styles/' + style + '/shaders/blocks/';
-                let nLine = TangramPlay.getKeyForAddress(address + block.name).pos.line + 1 + block.line;
+                let key = TangramPlay.getKeyForAddress(address + block.name);
 
-                let msg = document.createElement('div');
-                let icon = msg.appendChild(document.createElement('span'));
-                icon.className = 'btm bt-exclamation-circle tp-warning-icon';
-                msg.appendChild(document.createTextNode(errors[i].message));
-                msg.className = 'tp-warning';
-                this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
-                this.blockErrors.add(JSON.stringify(block)); // track unique errors
+                if (key) {
+                    let nLine = key.pos.line + 1 + block.line;
+
+                    let msg = document.createElement('div');
+                    let icon = msg.appendChild(document.createElement('span'));
+                    icon.className = 'btm bt-exclamation-circle tp-warning-icon';
+                    msg.appendChild(document.createTextNode(errors[i].message));
+                    msg.className = 'tp-warning';
+                    this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
+                    this.blockErrors.add(JSON.stringify(block)); // track unique errors
+                } else {
+                    console.log("Key", address + block.name, "was not found");
+                }
             }
         }
     }
