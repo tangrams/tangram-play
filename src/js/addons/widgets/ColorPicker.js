@@ -2,7 +2,7 @@
 
 import Widget from 'app/addons/widgets/Widget';
 import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
-import { toCSS } from 'app/core/common';
+import { toCSS, toColorVec } from 'app/core/common';
 
 // When presenting the modal, offset X, Y of the the modal by
 // these values, in pixels
@@ -96,11 +96,18 @@ export default class ColorPicker extends Widget {
      *  Handles when user selects a new color on the colorpicker
      */
     onPickerChange (event) {
+        let original = toColorVec(super['value'])
         this.color = this.picker.getCSS();
 
         // Convert the CSS color value to Tangram format for editor.
         let color = this.picker.getRGB();
-        let rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}]`;
+        let rgbString = [1,1,1];
+        if (original.a !== undefined) {
+            rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}, ${original.a}]`;
+        } else {
+            rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}]`;
+        }
+        
         this.setEditorValue(rgbString);
     }
 }
