@@ -52,6 +52,7 @@
     "leaflet-hash": "^0.2.1"
   },
   "browserify-shim": {
+    "tangram": "global:Tangram",
     "./src/js/vendor/colors.js": "Colors"
   }
 }
