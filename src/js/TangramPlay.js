@@ -14,7 +14,7 @@ import ColorPalette from 'app/addons/ColorPalette';
 // Import Utils
 import { httpGet, StopWatch, subscribeMixin } from 'app/core/common';
 import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
-import { getKeyPairs, getValueRange, getAddressSceneContent } from 'app/core/codemirror/yaml-tangram';
+import { getKeyPairs, getValueRange, getAddressSceneContent, parseYamlString } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
@@ -240,7 +240,24 @@ class TangramPlay {
     }
 
     getKeyForAddress (address) {
+        let lastState = undefined;
         for (let line = 0; line < this.editor.getDoc().size; line++) {
+            if (!this.editor.getLineHandle(line).stateAfter || !this.editor.getLineHandle(line).stateAfter.yamlState ) {
+                // If the line is not parsed (do it your self)
+                let handle = this.editor.getLineHandle(line);
+                if (!this.editor.getLineHandle(line).stateAfter) {
+                    handle.stateAfter = {};
+                }
+                // Copy the last parsed state
+                handle.stateAfter.yamlState = JSON.parse(JSON.stringify(lastState));
+                // Parse the current state
+                parseYamlString( this.editor.getLineHandle(line).text, handle.stateAfter.yamlState, 4);
+                // Record the state
+                lastState = this.editor.getLineHandle(line).stateAfter.yamlState;
+            } else if ( this.editor.getLineHandle(line).stateAfter.yamlState ) {
+                lastState = this.editor.getLineHandle(line).stateAfter.yamlState;
+            }
+
             let keys = this.getKeysOnLine(line);
             for (let i = 0; i < keys.length; i++) {
                 if (keys[i].address === address) {
@@ -248,6 +265,7 @@ class TangramPlay {
                 }
             }
         }
+        console.log("Fail searching", address);
     }
 
     getAddressContent (address) {

@@ -233,119 +233,124 @@ function getInlineKeys(str, nLine) {
 function yamlAddressing(stream, state) {
     // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
     if (stream.pos === 0) {
-        // TODO:
-        //  - add an extra \s* before the :
-        //  - break all this into smaller and reusable functions
-        //  - get rid of the pos
-        //
-        let regex = /(^\s*)([\w|\-|\_]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
-        let key = regex.exec(stream.string);
+        parseYamlString(stream.string,state,stream.tabSize);
+    }
+}
 
-        // key[0] = all the matching line
-        // key[1] = spaces
-        // key[2] = key
-        // key[3] = "\s*:\s*"
-        // key[4] = value (if there is one)
-        //
-        if (key) {
-            //  If looks like a key
-            //  Calculate the number of spaces and indentation level
-            let spaces = (key[1].match(/\s/g) || []).length;
-            let level = Math.floor(spaces / stream.tabSize);
+// Add Address to token states
+export function parseYamlString(string, state, tabSize) {
+    // TODO:
+    //  - add an extra \s* before the :
+    //  - break all this into smaller and reusable functions
+    //  - get rid of the pos
+    //
+    let regex = /(^\s*)([\w|\-|\_]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
+    let key = regex.exec(string);
 
-            //  Update the keyS tree
-            if (level > state.keyLevel) {
-                state.keyStack.push(key[2]);
-            }
-            else if (level === state.keyLevel) {
-                state.keyStack[level] = key[2];
-            }
-            else if (level < state.keyLevel) {
-                let diff = state.keyLevel - level;
-                for (let i = 0; i < diff; i++) {
-                    state.keyStack.pop();
-                }
-                state.keyStack[level] = key[2];
-            }
+    // key[0] = all the matching line
+    // key[1] = spaces
+    // key[2] = key
+    // key[3] = "\s*:\s*"
+    // key[4] = value (if there is one)
+    //
+    if (key) {
+        //  If looks like a key
+        //  Calculate the number of spaces and indentation level
+        let spaces = (key[1].match(/\s/g) || []).length;
+        let level = Math.floor(spaces / tabSize);
 
-            //  Record all that in the state value
-            state.keyLevel = level;
-
-            let address = getAddressFromKeys(state.keyStack);
-            let ch = spaces + key[2].length;
-            let fromCh = spaces;
-            let toCh = spaces + key[2].length + key[3].length;
-
-            if (key[4].substr(0, 1) === '{') {
-                state.keys = [ {
-                    address: address,
-                    key: key[2],
-                    value: '',
-                    pos: {
-                        line: state.line,
-                        ch: ch },
-                    range: {
-                        from: {
-                            line: state.line,
-                            ch: fromCh },
-                        to: {
-                            line: state.line,
-                            ch: toCh }
-                    },
-                    index: 0
-                } ];
-
-                let subKeys = getInlineKeys(key[4],
-                    state.line);
-                for (let i = 0; i < subKeys.length; i++) {
-                    subKeys[i].address = address + subKeys[i].address;
-                    subKeys[i].pos.ch += spaces + key[2].length + key[3].length;
-                    subKeys[i].range.from.ch += spaces + key[2].length + key[3].length;
-                    subKeys[i].range.to.ch += spaces + key[2].length + key[3].length;
-                    state.keys.push(subKeys[i]);
-                }
-            }
-            else {
-                toCh += key[4].length;
-                state.keys = [ {
-                    address: address,
-                    key: key[2],
-                    value: key[4],
-                    pos: {
-                        line: state.line,
-                        ch: ch },
-                    range: {
-                        from: {
-                            line: state.line,
-                            ch: fromCh },
-                        to: {
-                            line: state.line,
-                            ch: toCh }
-                    },
-                    index: 0
-                } ];
-            }
+        //  Update the keyS tree
+        if (level > state.keyLevel) {
+            state.keyStack.push(key[2]);
         }
-        else {
-            // Commented or empty lines lines
+        else if (level === state.keyLevel) {
+            state.keyStack[level] = key[2];
+        }
+        else if (level < state.keyLevel) {
+            let diff = state.keyLevel - level;
+            for (let i = 0; i < diff; i++) {
+                state.keyStack.pop();
+            }
+            state.keyStack[level] = key[2];
+        }
+
+        //  Record all that in the state value
+        state.keyLevel = level;
+
+        let address = getAddressFromKeys(state.keyStack);
+        let ch = spaces + key[2].length;
+        let fromCh = spaces;
+        let toCh = spaces + key[2].length + key[3].length;
+
+        if (key[4].substr(0, 1) === '{') {
             state.keys = [ {
-                address: getAddressFromKeys(state.keyStack),
-                key: '',
+                address: address,
+                key: key[2],
                 value: '',
                 pos: {
                     line: state.line,
-                    ch: 0 },
+                    ch: ch },
                 range: {
                     from: {
                         line: state.line,
-                        ch: 0 },
+                        ch: fromCh },
                     to: {
                         line: state.line,
-                        ch: 0 }
+                        ch: toCh }
+                },
+                index: 0
+            } ];
+
+            let subKeys = getInlineKeys(key[4],
+                state.line);
+            for (let i = 0; i < subKeys.length; i++) {
+                subKeys[i].address = address + subKeys[i].address;
+                subKeys[i].pos.ch += spaces + key[2].length + key[3].length;
+                subKeys[i].range.from.ch += spaces + key[2].length + key[3].length;
+                subKeys[i].range.to.ch += spaces + key[2].length + key[3].length;
+                state.keys.push(subKeys[i]);
+            }
+        }
+        else {
+            toCh += key[4].length;
+            state.keys = [ {
+                address: address,
+                key: key[2],
+                value: key[4],
+                pos: {
+                    line: state.line,
+                    ch: ch },
+                range: {
+                    from: {
+                        line: state.line,
+                        ch: fromCh },
+                    to: {
+                        line: state.line,
+                        ch: toCh }
                 },
                 index: 0
             } ];
         }
+    }
+    else {
+        // Commented or empty lines lines
+        state.keys = [ {
+            address: getAddressFromKeys(state.keyStack),
+            key: '',
+            value: '',
+            pos: {
+                line: state.line,
+                ch: 0 },
+            range: {
+                from: {
+                    line: state.line,
+                    ch: 0 },
+                to: {
+                    line: state.line,
+                    ch: 0 }
+            },
+            index: 0
+        } ];
     }
 }
 
