@@ -102,7 +102,7 @@ export default class ColorPicker extends Widget {
         // Convert the CSS color value to Tangram format for editor.
         let color = this.picker.getRGB();
         let rgbString = [1,1,1];
-        if (original.a !== undefined) {
+        if ( typeof(original) === "object" && original.a !== undefined) {
             rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}, ${original.a}]`;
         } else {
             rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}]`;
