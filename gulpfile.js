@@ -56,7 +56,10 @@ gulp.task('js', function () {
     var bundle = browserify({
         entries: 'src/js/TangramPlay.js',
         debug: true,
-        transform: [babelify, shim]
+        transform: [
+            babelify.configure({ optional: ['runtime'] }),
+            shim
+        ]
     });
 
     return bundle.bundle()
