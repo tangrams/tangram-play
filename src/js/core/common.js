@@ -56,11 +56,19 @@ export function isNumber(n) {
 }
 
 export function toCSS(str) {
-    let match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/);
+    let match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?\]/);
     if (match) {
-        str = 'rgb(' + Math.round(match[1] * 255) + ',' +
+        console.log(match);
+        if (match[5]) {
+            str = 'rgba(' + Math.round(match[1] * 255) + ',' +
+                        Math.round(match[2] * 255) + ',' +
+                        Math.round(match[3] * 255) + ',' +
+                        Math.round(match[5] * 255) + ')';
+        } else {
+            str = 'rgb(' + Math.round(match[1] * 255) + ',' +
                         Math.round(match[2] * 255) + ',' +
                         Math.round(match[3] * 255) + ')';
+        }
     }
     else if (isNumber(str)) {
         let val = Math.round(parseFloat(str) * 255);
