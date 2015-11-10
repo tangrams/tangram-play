@@ -7,7 +7,6 @@ import { saveAs } from 'app/vendor/FileSaver.min.js';
 import MapLoading from 'app/addons/ui/MapLoading';
 
 import L from 'leaflet';
-import Tangram from 'tangram';
 import 'leaflet-hash';
 
 let screenshotRequested = false;

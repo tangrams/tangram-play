@@ -75,8 +75,9 @@ export default class ErrorsManager {
                     msg.className = 'tp-warning';
                     this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
                     this.blockErrors.add(JSON.stringify(block)); // track unique errors
-                } else {
-                    console.log("Key", address + block.name, "was not found");
+                }
+                else {
+                    console.log('Key', address + block.name, 'was not found');
                 }
             }
         }

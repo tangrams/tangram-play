@@ -16,8 +16,10 @@ CodeMirror.commands.toggleComment = function(cm) {
     cm.toggleComment();
 };
 
-CodeMirror.defineExtension("toggleComment", function(options) {
-    if (!options) options = noOptions;
+CodeMirror.defineExtension('toggleComment', function(options) {
+    if (!options) {
+        options = noOptions;
+    }
     let cm = this;
     let minLine = Infinity,
         ranges = cm.listSelections(),

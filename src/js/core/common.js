@@ -63,7 +63,8 @@ export function toCSS(str) {
                         Math.round(match[2] * 255) + ',' +
                         Math.round(match[3] * 255) + ',' +
                         Math.round(match[5] * 255) + ')';
-        } else {
+        }
+        else {
             str = 'rgb(' + Math.round(match[1] * 255) + ',' +
                         Math.round(match[2] * 255) + ',' +
                         Math.round(match[3] * 255) + ')';
@@ -84,18 +85,19 @@ export function toColorVec(str) {
     let match = str.match(/\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?\]/);
     if (match) {
         if (match[5]) {
-            return {r:match[1],g:match[2],b:match[3],a:match[5]}; 
-        } else {
-            return {r:match[1],g:match[2],b:match[3]}; 
+            return { r:match[1],g:match[2],b:match[3],a:match[5] };
+        }
+        else {
+            return { r:match[1],g:match[2],b:match[3] };
         }
     }
     else if (isNumber(str)) {
         let val = parseFloat(str);
-        return {r:val,g:val,b:val};
+        return { r:val,g:val,b:val };
     }
     else if (/^\s*[\'|\"]#[0-9a-f]{3}(?:[0-9a-f]{3})?[\'|\"]\s*$/i.test(str)) {
         let value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
-        return value ? {w:value[1]} : {};
+        return value ? { w:value[1] } : {};
     }
 }
 

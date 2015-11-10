@@ -96,18 +96,18 @@ export default class ColorPicker extends Widget {
      *  Handles when user selects a new color on the colorpicker
      */
     onPickerChange (event) {
-        let original = toColorVec(super['value'])
+        let original = toColorVec(super['value']);
         this.color = this.picker.getCSS();
 
         // Convert the CSS color value to Tangram format for editor.
         let color = this.picker.getRGB();
         let rgbString = [1,1,1];
-        if ( typeof(original) === "object" && original.a !== undefined) {
+        if (typeof(original) === 'object' && original.a !== undefined) {
             rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}, ${original.a}]`;
-        } else {
+        }
+        else {
             rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}]`;
         }
-        
         this.setEditorValue(rgbString);
     }
 }

@@ -233,7 +233,7 @@ function getInlineKeys(str, nLine) {
 function yamlAddressing(stream, state) {
     // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
     if (stream.pos === 0) {
-        parseYamlString(stream.string,state,stream.tabSize);
+        parseYamlString(stream.string, state, stream.tabSize);
     }
 }
 

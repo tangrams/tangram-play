@@ -80,7 +80,7 @@ export default class WidgetsManager {
             to.line = changeObj.from.line + changeObj.text.length - 1;
         }
 
-        to.ch = TangramPlay.editor.getLine(to.line)? TangramPlay.editor.getLine(to.line).length : 0;
+        to.ch = TangramPlay.editor.getLine(to.line) ? TangramPlay.editor.getLine(to.line).length : 0;
 
         // If is a new line move the range FROM the begining of the line
         if (changeObj.text.length === 2 &&

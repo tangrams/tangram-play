@@ -14,7 +14,7 @@ import ColorPalette from 'app/addons/ColorPalette';
 // Import Utils
 import { httpGet, StopWatch, subscribeMixin } from 'app/core/common';
 import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
-import { getKeyPairs, getValueRange, getAddressSceneContent, parseYamlString } from 'app/core/codemirror/yaml-tangram';
+import { getKeyPairs, getValueRange, parseYamlString } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
@@ -211,41 +211,28 @@ class TangramPlay {
         return getKeyPairs(this.editor, nLine);
     }
 
-    // getKey (nLine, nIndex) {
-    //     if (nIndex === undefined) {
-    //         return this.getKeysOnLine(nLine);
-    //     }
-
-    //     let keys = this.getKeysOnLine(nLine);
-    //     if (keys && nIndex < keys.length) {
-    //         return keys[nIndex];
-    //     }
-
-    //     return [];
-    // }
-
     getKeyForAddress (address) {
         // NOTE:
-        // This is an expensive process because for each call need to iterate through each line until it founds the right 
+        // This is an expensive process because for each call need to iterate through each line until it founds the right
         // address. Could be optimize if we store addresses in a map... but then the question is about how to keep it sync
         //
-        let lastState = undefined;
+        let lastState;
         for (let line = 0; line < this.editor.getDoc().size; line++) {
-            if (!this.editor.getLineHandle(line).stateAfter || !this.editor.getLineHandle(line).stateAfter.yamlState ) {
+            if (!this.editor.getLineHandle(line).stateAfter || !this.editor.getLineHandle(line).stateAfter.yamlState) {
                 // If the line is NOT parsed.
                 // ======================================================
-
+                //
                 // NOTE:
                 // Manually parse it in a temporal buffer to avoid conflicts with codemirror parser.
                 // This means outside the Line Handle
-
+                //
                 // Copy the last parsed state
                 var state = JSON.parse(JSON.stringify(lastState));
                 state.line = line;
                 console.log(state);
 
                 // Parse the current state
-                parseYamlString( this.editor.getLineHandle(line).text, state, 4);
+                parseYamlString(this.editor.getLineHandle(line).text, state, 4);
 
                 // Iterate through keys in this line
                 for (let key of state.keys) {
@@ -253,15 +240,13 @@ class TangramPlay {
                         return key;
                     }
                 }
-
                 // if nothing was found. Record the state and try again
                 lastState = state;
-
-                // TODO: 
-                // We might want to have two different parsers, a simpler one without keys and just address for 
-                // the higliting and another more roboust that keep tracks of: pairs (key/values), their ranges (from-to positions), 
+                // TODO:
+                // We might want to have two different parsers, a simpler one without keys and just address for
+                // the higliting and another more roboust that keep tracks of: pairs (key/values), their ranges (from-to positions),
                 // address and a some functions like getValue, setValue which could be use by widgets or others addons to modify content
-            } 
+            }
             else {
                 // it the line HAVE BEEN parsed (use the stateAfter)
                 // ======================================================
@@ -273,10 +258,8 @@ class TangramPlay {
                     }
                 }
             }
-
-            
         }
-        console.log("Fail searching", address);
+        console.log('Fail searching', address);
     }
 
     // Other actions
