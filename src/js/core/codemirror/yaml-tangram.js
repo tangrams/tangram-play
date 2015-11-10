@@ -70,7 +70,7 @@ export function getAddressSceneContent(tangramScene, address) {
 }
 
 // Make an folder style address from an array of keys
-export function getAddressFromKeys(keys) {
+function getAddressFromKeys(keys) {
     if (keys && keys.length > 0) {
         let address = '';
         for (let i = 0; i < keys.length; i++) {
@@ -107,13 +107,13 @@ function endsWith(str, suffix) {
 }
 
 //  Function that check if a line is inside a Color Shader Block
-export function isGlobalBlock(address) {
+function isGlobalBlock(address) {
     return endsWith(address, 'shaders/blocks/global');
 }
-export function isWidthBlock(address) {
+function isWidthBlock(address) {
     return endsWith(address, 'shaders/blocks/width');
 }
-export function isPositionBlock(address) {
+function isPositionBlock(address) {
     return endsWith(address, 'shaders/blocks/position');
 }
 export function isNormalBlock(address) {
@@ -122,10 +122,10 @@ export function isNormalBlock(address) {
 export function isColorBlock(address) {
     return endsWith(address, 'shaders/blocks/color');
 }
-export function isFilterBlock(address) {
+function isFilterBlock(address) {
     return endsWith(address, 'shaders/blocks/filter');
 }
-export function isShader(address) {
+function isShader(address) {
     return (
         isGlobalBlock(address) ||
         isWidthBlock(address) ||

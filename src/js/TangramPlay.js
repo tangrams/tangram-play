@@ -211,68 +211,73 @@ class TangramPlay {
         return getKeyPairs(this.editor, nLine);
     }
 
-    getKeyForStr (str) {
-        let pos = str.split('-');
-        if (pos.length === 2) {
-            let keys = this.getKeysOnLine(parseInt(pos[0]));
-            let index = parseInt(pos[1]);
-            if (keys && index < keys.length) {
-                return keys[index];
-            }
-        }
-    }
+    // getKey (nLine, nIndex) {
+    //     if (nIndex === undefined) {
+    //         return this.getKeysOnLine(nLine);
+    //     }
 
-    getKeyForKey (key) {
-        return this.getKey(key.pos.line, key.index);
-    }
+    //     let keys = this.getKeysOnLine(nLine);
+    //     if (keys && nIndex < keys.length) {
+    //         return keys[nIndex];
+    //     }
 
-    getKey (nLine, nIndex) {
-        if (nIndex === undefined) {
-            return this.getKeysOnLine(nLine);
-        }
-
-        let keys = this.getKeysOnLine(nLine);
-        if (keys && nIndex < keys.length) {
-            return keys[nIndex];
-        }
-
-        return [];
-    }
+    //     return [];
+    // }
 
     getKeyForAddress (address) {
+        // NOTE:
+        // This is an expensive process because for each call need to iterate through each line until it founds the right 
+        // address. Could be optimize if we store addresses in a map... but then the question is about how to keep it sync
+        //
         let lastState = undefined;
         for (let line = 0; line < this.editor.getDoc().size; line++) {
             if (!this.editor.getLineHandle(line).stateAfter || !this.editor.getLineHandle(line).stateAfter.yamlState ) {
-                // If the line is not parsed (do it your self)
-                let handle = this.editor.getLineHandle(line);
-                if (!this.editor.getLineHandle(line).stateAfter) {
-                    handle.stateAfter = {};
-                }
+                // If the line is NOT parsed.
+                // ======================================================
+
+                // NOTE:
+                // Manually parse it in a temporal buffer to avoid conflicts with codemirror parser.
+                // This means outside the Line Handle
+
                 // Copy the last parsed state
-                handle.stateAfter.yamlState = JSON.parse(JSON.stringify(lastState));
+                var state = JSON.parse(JSON.stringify(lastState));
+                state.line = line;
+                console.log(state);
+
                 // Parse the current state
-                parseYamlString( this.editor.getLineHandle(line).text, handle.stateAfter.yamlState, 4);
-                // Record the state
+                parseYamlString( this.editor.getLineHandle(line).text, state, 4);
+
+                // Iterate through keys in this line
+                for (let key of state.keys) {
+                    if (key.address === address) {
+                        return key;
+                    }
+                }
+
+                // if nothing was found. Record the state and try again
+                lastState = state;
+
+                // TODO: 
+                // We might want to have two different parsers, a simpler one without keys and just address for 
+                // the higliting and another more roboust that keep tracks of: pairs (key/values), their ranges (from-to positions), 
+                // address and a some functions like getValue, setValue which could be use by widgets or others addons to modify content
+            } 
+            else {
+                // it the line HAVE BEEN parsed (use the stateAfter)
+                // ======================================================
                 lastState = this.editor.getLineHandle(line).stateAfter.yamlState;
-            } else if ( this.editor.getLineHandle(line).stateAfter.yamlState ) {
-                lastState = this.editor.getLineHandle(line).stateAfter.yamlState;
+                let keys = this.getKeysOnLine(line);
+                for (let key of keys) {
+                    if (key.address === address) {
+                        return key;
+                    }
+                }
             }
 
-            let keys = this.getKeysOnLine(line);
-            for (let i = 0; i < keys.length; i++) {
-                if (keys[i].address === address) {
-                    return keys[i];
-                }
-            }
+            
         }
         console.log("Fail searching", address);
     }
-
-    getAddressContent (address) {
-        return getAddressSceneContent(this.scene, address);
-    }
-
-    // Check
 
     // Other actions
     selectLines (strRange) {
