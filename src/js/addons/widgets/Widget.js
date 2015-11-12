@@ -76,7 +76,7 @@ export default class Widget {
         if (this.bookmark &&
             this.bookmark.lines &&
             this.bookmark.lines.length === 1) {
-            this.key.pos.line = this.key.range.from.line = this.key.range.to.line = this.bookmark.lines[0].lineNo();
+            this.key.range.from.line = this.key.range.to.line = this.bookmark.lines[0].lineNo();
         }
     }
 
@@ -87,7 +87,7 @@ export default class Widget {
 
     insert () {
         this.updateKey();
-        let pos = getValueRange(this.key).to;
+        let pos = this.key.range.to;
 
         // inserts the widget into CodeMirror DOM
         this.bookmark = editor.doc.setBookmark(pos, {

@@ -112,7 +112,7 @@ export default class WidgetsManager {
         // If there is only one key and the change happen on the value
         if (keys.length === 1 &&
             bookmarks.length === 1 &&
-            from.ch > keys[0].pos.ch &&
+            from.ch > (keys[0].range.from.ch + keys[0].key.length + 2 ) &&
             bookmarks[0].widget) {
             // console.log("Updating value of ", bookmarks[0]);
             // Update the widget
@@ -171,7 +171,7 @@ export default class WidgetsManager {
         let newWidgets = [];
         for (let key of keys) {
             let val = key.value;
-            if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.pos.line))) {
+            if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.range.from.line))) {
                 continue;
             }
 
@@ -182,8 +182,8 @@ export default class WidgetsManager {
                     widget.insert();
                     newWidgets.push(widget);
 
-                    if (this.pairedUntilLine < key.pos.line) {
-                        this.pairedUntilLine = key.pos.line;
+                    if (this.pairedUntilLine < key.range.from.line) {
+                        this.pairedUntilLine = key.range.from.line;
                     }
                     break;
                 }

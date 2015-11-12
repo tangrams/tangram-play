@@ -4,7 +4,6 @@ import TangramPlay from 'app/TangramPlay';
 
 import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
 import { toCSS } from 'app/core/common';
-import { getValueRange } from 'app/core/codemirror/yaml-tangram';
 import { jumpToLine } from 'app/core/codemirror/tools';
 
 export default class ColorPalette {
@@ -99,8 +98,8 @@ class Color {
         let selections = [];
         for (let i = 0; i < this.widgets.length; i++) {
             selections.push({
-                anchor: getValueRange(this.widgets[i].key).from,
-                head: getValueRange(this.widgets[i].key).to
+                anchor: this.widgets[i].key.range.from,
+                head: this.widgets[i].key.range.to
             });
         }
         TangramPlay.editor.getDoc().setSelections(selections);

@@ -17,7 +17,6 @@ export function getKeyPairs(cm, nLine) {
         // TEMPORAL_FIX: Fix line parsing error
         let keys = cm.getLineHandle(nLine).stateAfter.yamlState.keys;
         for (let i = 0 ; i < keys.length; i++) {
-            keys[i].pos.line = nLine;
             keys[i].range.from.line = nLine;
             keys[i].range.to.line = nLine;
         }
@@ -27,17 +26,6 @@ export function getKeyPairs(cm, nLine) {
         // return [ {address: "/", key: '', value: '', pos: { line: 0, ch: 0 }, index: 0} ];
         return [];
     }
-}
-
-export function getValueRange(keyPair) {
-    return {
-        from: {
-            line: keyPair.pos.line,
-            ch: keyPair.pos.ch + 2 },
-        to: {
-            line: keyPair.pos.line,
-            ch: keyPair.pos.ch + 2 + keyPair.value.length }
-    };
 }
 
 export function getAddressSceneContent(tangramScene, address) {
@@ -202,10 +190,6 @@ function getInlineKeys(str, nLine) {
                     address: getAddressFromKeys(keys),
                     key: isKey[1],
                     value: isKey[3],
-                    pos: {
-                        line: nLine,
-                        ch: i + 1 // TODO make this smarter!!!!
-                    },
                     range: {
                         from: {
                             line: nLine,
@@ -287,9 +271,6 @@ export function parseYamlString(string, state, tabSize) {
                 address: address,
                 key: key[2],
                 value: '',
-                pos: {
-                    line: state.line,
-                    ch: ch },
                 range: {
                     from: {
                         line: state.line,
@@ -305,7 +286,6 @@ export function parseYamlString(string, state, tabSize) {
                 state.line);
             for (let i = 0; i < subKeys.length; i++) {
                 subKeys[i].address = address + subKeys[i].address;
-                subKeys[i].pos.ch += spaces + key[2].length + key[3].length;
                 subKeys[i].range.from.ch += spaces + key[2].length + key[3].length;
                 subKeys[i].range.to.ch += spaces + key[2].length + key[3].length;
                 state.keys.push(subKeys[i]);
@@ -317,9 +297,6 @@ export function parseYamlString(string, state, tabSize) {
                 address: address,
                 key: key[2],
                 value: key[4],
-                pos: {
-                    line: state.line,
-                    ch: ch },
                 range: {
                     from: {
                         line: state.line,
@@ -338,9 +315,6 @@ export function parseYamlString(string, state, tabSize) {
             address: getAddressFromKeys(state.keyStack),
             key: '',
             value: '',
-            pos: {
-                line: state.line,
-                ch: 0 },
             range: {
                 from: {
                     line: state.line,

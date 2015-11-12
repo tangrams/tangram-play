@@ -14,7 +14,7 @@ import ColorPalette from 'app/addons/ColorPalette';
 // Import Utils
 import { httpGet, StopWatch, subscribeMixin } from 'app/core/common';
 import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
-import { getKeyPairs, getValueRange, parseYamlString } from 'app/core/codemirror/yaml-tangram';
+import { getKeyPairs, parseYamlString } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
@@ -146,11 +146,12 @@ class TangramPlay {
 
     // SET
     setValue (KeyPair, str) {
-        let range = getValueRange(KeyPair);
         if (KeyPair.value === '') {
             str = ' ' + str;
         }
-        this.editor.doc.replaceRange(str, range.from, range.to);
+        let from = { line: KeyPair.range.from.line,
+                     ch: KeyPair.range.from.ch + KeyPair.key.length + 2 }; // [key]:_[value]
+        this.editor.doc.replaceRange(str, from, KeyPair.range.to);
     }
 
     // GET

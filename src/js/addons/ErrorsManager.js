@@ -66,7 +66,7 @@ export default class ErrorsManager {
                 let key = TangramPlay.getKeyForAddress(address + block.name);
 
                 if (key) {
-                    let nLine = key.pos.line + 1 + block.line;
+                    let nLine = key.range.from.line + 1 + block.line;
 
                     let msg = document.createElement('div');
                     let icon = msg.appendChild(document.createElement('span'));
