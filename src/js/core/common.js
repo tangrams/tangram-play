@@ -60,14 +60,14 @@ export function toCSS(str) {
     if (match) {
         if (match[5]) {
             str = 'rgba(' + Math.round(match[1] * 255) + ',' +
-                        Math.round(match[2] * 255) + ',' +
-                        Math.round(match[3] * 255) + ',' +
-                        Math.round(match[5] * 255) + ')';
+                            Math.round(match[2] * 255) + ',' +
+                            Math.round(match[3] * 255) + ',' +
+                            Math.round(match[5] * 255) + ')';
         }
         else {
             str = 'rgb(' + Math.round(match[1] * 255) + ',' +
-                        Math.round(match[2] * 255) + ',' +
-                        Math.round(match[3] * 255) + ')';
+                            Math.round(match[2] * 255) + ',' +
+                            Math.round(match[3] * 255) + ')';
         }
     }
     else if (isNumber(str)) {
@@ -77,7 +77,11 @@ export function toCSS(str) {
     else if (/^\s*[\'|\"]#[0-9a-f]{3}(?:[0-9a-f]{3})?[\'|\"]\s*$/i.test(str)) {
         let value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
         return value ? value[1] : '';
+    } else if (/\'(\w+)\'/.test(str)) {
+        let value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
+        return value ? value[1] : '';
     }
+    
     return str;
 }
 
