@@ -81,15 +81,16 @@ export default class Widget {
 
     update () {
         this.updateKey();
-        this.value = this.key.value;
+        // This looks weird but is to force the use of 'get value ()' which
+        // clean the anchors 
+        this.value = this.value;
     }
 
     insert () {
         this.updateKey();
-        let pos = this.key.range.to;
 
         // inserts the widget into CodeMirror DOM
-        this.bookmark = editor.doc.setBookmark(pos, {
+        this.bookmark = editor.doc.setBookmark(this.key.range.to, {
             widget: this.el,
             insertLeft: true
         });
@@ -102,7 +103,13 @@ export default class Widget {
      *  TODO: Experimental
      */
     get value () {
-        return this.key.value;
+        let value = this.key.value;
+        // Except links
+        if (/(^\s*(&\w+)\s+)/.test(value)) {
+            let link = /(^\s*(&\w+)\s+)/gm.exec(value);
+            value = value.substr(link[1].length);
+        }
+        return value;
     }
 
     set value (val) {

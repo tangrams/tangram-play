@@ -178,6 +178,8 @@ export default class WidgetsManager {
             // Check for widgets to add
             for (let datum of this.data) {
                 if (datum.match(key)) {
+
+                    // Create key
                     let widget = datum.create(key);
                     widget.insert();
                     newWidgets.push(widget);
