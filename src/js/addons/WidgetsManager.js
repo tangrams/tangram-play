@@ -112,7 +112,7 @@ export default class WidgetsManager {
         // If there is only one key and the change happen on the value
         if (keys.length === 1 &&
             bookmarks.length === 1 &&
-            from.ch > (keys[0].range.from.ch + keys[0].key.length + 2 ) &&
+            from.ch > (keys[0].range.from.ch + keys[0].key.length + 2) &&
             bookmarks[0].widget) {
             // console.log("Updating value of ", bookmarks[0]);
             // Update the widget

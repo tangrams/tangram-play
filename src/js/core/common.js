@@ -77,11 +77,11 @@ export function toCSS(str) {
     else if (/^\s*[\'|\"]#[0-9a-f]{3}(?:[0-9a-f]{3})?[\'|\"]\s*$/i.test(str)) {
         let value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
         return value ? value[1] : '';
-    } else if (/\'(\w+)\'/.test(str)) {
+    }
+    else if (/\'(\w+)\'/.test(str)) {
         let value = /[\'|\"]([\w|\W|\s]+)[\'|\"]/gm.exec(str);
         return value ? value[1] : '';
     }
-    
     return str;
 }
 

@@ -11,7 +11,6 @@
 
 import TangramPlay from 'app/TangramPlay';
 import { editor } from 'app/TangramPlay';
-import { getValueRange } from 'app/core/codemirror/yaml-tangram';
 
 export default class Widget {
     constructor (def, key) {

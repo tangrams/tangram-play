@@ -262,7 +262,6 @@ export function parseYamlString(string, state, tabSize) {
         state.keyLevel = level;
 
         let address = getAddressFromKeys(state.keyStack);
-        let ch = spaces + key[2].length;
         let fromCh = spaces;
         let toCh = spaces + key[2].length + key[3].length;
 
