@@ -229,7 +229,6 @@ class TangramPlay {
                 // Copy the last parsed state
                 var state = JSON.parse(JSON.stringify(lastState));
                 state.line = line;
-                console.log(state);
 
                 // Parse the current state
                 parseYamlString(this.editor.getLineHandle(line).text, state, 4);
