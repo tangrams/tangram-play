@@ -19,12 +19,12 @@ export default class ExamplesModal extends Modal {
             const selected = this.el.querySelectorAll('.tp-example-option.tp-example-selected')[0];
             const value = selected.getAttribute('data-value');
             EditorIO.loadContentFromPath(value);
-        }
+        };
 
         this.onAbort = () => {
             resetExampleSelection();
             this.el.querySelector('.tp-modal-confirm').disabled = true;
-        }
+        };
     }
 
     show () {

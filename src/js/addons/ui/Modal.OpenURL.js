@@ -30,11 +30,11 @@ export default class OpenUrlModal extends Modal {
             const value = this.input.value;
             this.clearInput();
             EditorIO.loadContentFromPath(value);
-        }
+        };
 
         this.onAbort = () => {
             this.clearInput();
-        }
+        };
     }
 
     show () {
