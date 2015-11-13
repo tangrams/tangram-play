@@ -1,10 +1,14 @@
 'use strict';
 
 import TangramPlay, { container, editor } from 'app/TangramPlay';
+import LocalStorage from 'app/addons/LocalStorage';
 import Modal from 'app/addons/ui/Modal';
+import request from 'request';
 
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
 const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Play.';
+const STORAGE_SAVED_GISTS = 'gists';
+const SAVE_TIMEOUT = 6000; // ms before we assume saving is failure
 
 export default class SaveGistModal extends Modal {
     constructor () {
@@ -20,39 +24,62 @@ export default class SaveGistModal extends Modal {
         this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
         this.filenameInput.value = DEFAULT_GIST_SCENE_FILENAME;
 
-        this.onConfirm = () => {
+        this.onConfirm = (event) => {
             // Waiting state
             this.waitStateOn();
 
-            // Blank inputs are set to default values
+            // Blank filename is set to default value
             if (this.filenameInput.value.length === 0) {
                 this.filenameInput.value = DEFAULT_GIST_SCENE_FILENAME;
             }
-            if (this.descriptionInput.value.length === 0) {
-                this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
+
+            // Description is either set to default (if blank)
+            // or appended to the user-produced value
+            let description;
+            if (this.descriptionInput.value.length === 0 || this.descriptionInput.value.trim() === DEFAULT_GIST_DESCRIPTION) {
+                description = `[${DEFAULT_GIST_DESCRIPTION}]`;
+            }
+            else {
+                // Newlines are not accepted on gist descriptions, apparently.
+                description = this.descriptionInput.value + `[${DEFAULT_GIST_DESCRIPTION}]`;
             }
 
             // Package up the data we want to post to gist
             let data = {
-                description: this.descriptionInput.value,
+                description: description,
                 public: this.publicCheckbox.checked,
                 files: [{
                     filename: this.filenameInput.value,
                     content: TangramPlay.getContent()
                 }]
             };
-            let payload = formatGistPayload(data);
-            console.log(payload);
 
-            this.waitStateOff();
+            // Make the post
+            request({
+                url: 'https://api.github.com/gists',
+                method: 'POST',
+                body: formatGistPayload(data)
+            }, (error, response, body) => {
+                if (!error && response.statusCode === 201) {
+                    let gist = JSON.parse(response.body);
+                    this.onSaveSuccess(gist);
+                }
+                if (error) {
+                    console.log(error);
+                    this.onSaveError(error);
+                }
+            });
 
-            // Mark as clean state in the editor
-            editor.doc.markClean();
+            // Start save timeout
+            this._timeout = window.setTimeout(() => {
+                this.onSaveError('timed out trying to contact the gist server.')
+            }, SAVE_TIMEOUT);
         };
 
-        this.onAbort = () => {
+        this.onAbort = (event) => {
             this.resetInputs();
             this.waitStateOff();
+            window.clearTimeout(this._timeout);
         };
     }
 
@@ -75,6 +102,44 @@ export default class SaveGistModal extends Modal {
         this.el.querySelector('.tp-modal-cancel').removeAttribute('disabled');
     }
 
+    // If successful, turn off wait state,
+    // mark as clean state in the editor,
+    // remember the success response,
+    // and display a helpful message
+    onSaveSuccess (gist) {
+        // Store response in localstorage
+        LocalStorage.pushItem(STORAGE_SAVED_GISTS, gist.url);
+
+        // Turn on wait state and close the modal
+        this.waitStateOff();
+        this.hide();
+        window.clearTimeout(this._timeout);
+
+        // Mark as clean state in the editor
+        editor.doc.markClean();
+
+        // Show success modal
+        const successModal = new Modal(`Your scene has been saved to ${gist.url}`);
+        successModal.show();
+    }
+
+    // If not successful, turn off wait state,
+    // and display the error message.
+    onSaveError (error) {
+        // Turn off wait state and close the modal
+        this.waitStateOff();
+        this.hide();
+        window.clearTimeout(this._timeout);
+
+        // Show error modal
+        const errorModal = new Modal(`There was an error saving your scene: ${error}`);
+        errorModal.show();
+    }
+
+    _handleConfirm (event) {
+        // Override default behavior: do not hide modal immediately.
+        this.onConfirm(event);
+    }
 }
 
 // POSTing to /gists API requires a JSON blob of MIME type 'application/json'
