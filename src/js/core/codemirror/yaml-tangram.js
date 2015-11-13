@@ -9,18 +9,18 @@ import { getInd } from 'app/core/codemirror/tools';
 //  ===============================================================================
 
 // Get array of YAML keys parent tree of a particular line
-export function getKeyPairs(cm, nLine) {
+export function getNodes(cm, nLine) {
     if (cm.getLineHandle(nLine) &&
         cm.getLineHandle(nLine).stateAfter &&
         cm.getLineHandle(nLine).stateAfter.yamlState &&
-        cm.getLineHandle(nLine).stateAfter.yamlState.keys) {
+        cm.getLineHandle(nLine).stateAfter.yamlState.nodes) {
         // TEMPORAL_FIX: Fix line parsing error
-        let keys = cm.getLineHandle(nLine).stateAfter.yamlState.keys;
-        for (let i = 0 ; i < keys.length; i++) {
-            keys[i].range.from.line = nLine;
-            keys[i].range.to.line = nLine;
+        let nodes = cm.getLineHandle(nLine).stateAfter.yamlState.nodes;
+        for (let i = 0 ; i < nodes.length; i++) {
+            nodes[i].range.from.line = nLine;
+            nodes[i].range.to.line = nLine;
         }
-        return keys;
+        return nodes;
     }
     else {
         // return [ {address: "/", key: '', value: '', pos: { line: 0, ch: 0 }, index: 0} ];
@@ -148,9 +148,9 @@ function isAfterKey(str, pos) {
 
 //  Get the address of a line state ( usually from the first key of a line )
 function getKeyAddressFromState(state) {
-    if (state.keys) {
-        if (state.keys.length > 0) {
-            return state.keys[0].address;
+    if (state.nodes) {
+        if (state.nodes.length > 0) {
+            return state.nodes[0].address;
         }
         else {
             return '/';
@@ -172,9 +172,9 @@ function getAnchorFromValue (value) {
 }
 
 // Given a YAML string return an array of keys
-function getInlineKeys(str, nLine) {
+function getInlineNodes(str, nLine) {
     let rta = [];
-    let keys = [];
+    let stack = [];
     let i = 0;
     let level = -1;
 
@@ -182,33 +182,33 @@ function getInlineKeys(str, nLine) {
         let curr = str.substr(i, 1);
         if (curr === '{') {
             // Go one level up
-            keys.push('/');
+            stack.push('/');
             level++;
         }
         else if (curr === '}') {
             // Go one level down
-            keys.pop();
+            stack.pop();
             level--;
         }
         else {
             // check for keypair
-            let isKey = /^\s*([\w|\-|\_|\$]+)(\s*:\s*)([\w|\'|\#]*)\s*/gm.exec(str.substr(i));
-            if (isKey) {
-                keys[level] = isKey[1];
-                i += isKey[1].length;
-                let anchor = getAnchorFromValue(isKey[3]);
+            let isNode = /^\s*([\w|\-|\_|\$]+)(\s*:\s*)([\w|\'|\#]*)\s*/gm.exec(str.substr(i));
+            if (isNode) {
+                stack[level] = isNode[1];
+                i += isNode[1].length;
+                let anchor = getAnchorFromValue(isNode[3]);
                 rta.push({
-                    address: getAddressFromKeys(keys),
-                    key: isKey[1],
-                    value: isKey[3].substr(anchor.length),
+                    address: getAddressFromKeys(stack),
+                    key: isNode[1],
+                    value: isNode[3].substr(anchor.length),
                     anchor: anchor,
                     range: {
                         from: {
                             line: nLine,
-                            ch: i + 1 - isKey[1].length },
+                            ch: i + 1 - isNode[1].length },
                         to: {
                             line: nLine,
-                            ch: i + isKey[2].length + isKey[3].length + 1 },
+                            ch: i + isNode[2].length + isNode[3].length + 1 },
                     },
                     index: rta.length + 1
                 });
@@ -241,33 +241,33 @@ export function parseYamlString(string, state, tabSize) {
     //  - get rid of the pos
     //
     let regex = /(^\s*)([\w|\-|\_]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
-    let key = regex.exec(string);
+    let node = regex.exec(string);
 
-    // key[0] = all the matching line
-    // key[1] = spaces
-    // key[2] = key
-    // key[3] = "\s*:\s*"
-    // key[4] = value (if there is one)
+    // node[0] = all the matching line
+    // node[1] = spaces
+    // node[2] = key
+    // node[3] = "\s*:\s*"
+    // node[4] = value (if there is one)
     //
-    if (key) {
-        //  If looks like a key
+    if (node) {
+        //  If looks like a node
         //  Calculate the number of spaces and indentation level
-        let spaces = (key[1].match(/\s/g) || []).length;
+        let spaces = (node[1].match(/\s/g) || []).length;
         let level = Math.floor(spaces / tabSize);
 
-        //  Update the keyS tree
+        //  Update the nodeS tree
         if (level > state.keyLevel) {
-            state.keyStack.push(key[2]);
+            state.keyStack.push(node[2]);
         }
         else if (level === state.keyLevel) {
-            state.keyStack[level] = key[2];
+            state.keyStack[level] = node[2];
         }
         else if (level < state.keyLevel) {
             let diff = state.keyLevel - level;
             for (let i = 0; i < diff; i++) {
                 state.keyStack.pop();
             }
-            state.keyStack[level] = key[2];
+            state.keyStack[level] = node[2];
         }
 
         //  Record all that in the state value
@@ -275,13 +275,13 @@ export function parseYamlString(string, state, tabSize) {
 
         let address = getAddressFromKeys(state.keyStack);
         let fromCh = spaces;
-        let toCh = spaces + key[2].length + key[3].length;
+        let toCh = spaces + node[2].length + node[3].length;
 
-        if (key[4].substr(0, 1) === '{') {
+        if (node[4].substr(0, 1) === '{') {
             // If there are multiple keys
-            state.keys = [ {
+            state.nodes = [ {
                 address: address,
-                key: key[2],
+                key: node[2],
                 value: '',
                 anchor: '',
                 range: {
@@ -295,23 +295,23 @@ export function parseYamlString(string, state, tabSize) {
                 index: 0
             } ];
 
-            let subKeys = getInlineKeys(key[4],
+            let subNodes = getInlineNodes(node[4],
                 state.line);
-            for (let i = 0; i < subKeys.length; i++) {
-                subKeys[i].address = address + subKeys[i].address;
-                subKeys[i].range.from.ch += spaces + key[2].length + key[3].length;
-                subKeys[i].range.to.ch += spaces + key[2].length + key[3].length;
-                state.keys.push(subKeys[i]);
+            for (let i = 0; i < subNodes.length; i++) {
+                subNodes[i].address = address + subNodes[i].address;
+                subNodes[i].range.from.ch += spaces + node[2].length + node[3].length;
+                subNodes[i].range.to.ch += spaces + node[2].length + node[3].length;
+                state.nodes.push(subNodes[i]);
             }
         }
         else {
-            let anchor = getAnchorFromValue(key[4]);
-            toCh += key[4].length;
-            state.keys = [ {
+            let anchor = getAnchorFromValue(node[4]);
+            toCh += node[4].length;
+            state.nodes = [ {
                 address: address,
-                key: key[2],
+                key: node[2],
                 anchor: anchor,
-                value: key[4].substr(anchor.length),
+                value: node[4].substr(anchor.length),
                 range: {
                     from: {
                         line: state.line,
@@ -326,7 +326,7 @@ export function parseYamlString(string, state, tabSize) {
     }
     else {
         // Commented or empty lines lines
-        state.keys = [ {
+        state.nodes = [ {
             address: getAddressFromKeys(state.keyStack),
             key: '',
             value: '',

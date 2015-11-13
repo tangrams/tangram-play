@@ -63,7 +63,7 @@ export default class ErrorsManager {
                 }
 
                 let address = '/styles/' + style + '/shaders/blocks/';
-                let key = TangramPlay.getKeyForAddress(address + block.name);
+                let key = TangramPlay.getNodesForAddress(address + block.name);
 
                 if (key) {
                     let nLine = key.range.from.line + 1 + block.line;

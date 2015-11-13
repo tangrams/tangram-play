@@ -44,20 +44,20 @@ export default class Widget {
             this.bookmark.lines[0] &&
             this.bookmark.lines[0].stateAfter &&
             this.bookmark.lines[0].stateAfter.yamlState &&
-            this.bookmark.lines[0].stateAfter.yamlState.keys &&
-            this.bookmark.lines[0].stateAfter.yamlState.keys.length > 0) {
-            if (this.bookmark.lines[0].stateAfter.yamlState.keys.length === 1) {
-                if (this.key.address === this.bookmark.lines[0].stateAfter.yamlState.keys[0].address) {
+            this.bookmark.lines[0].stateAfter.yamlState.nodes &&
+            this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
+            if (this.bookmark.lines[0].stateAfter.yamlState.nodes.length === 1) {
+                if (this.key.address === this.bookmark.lines[0].stateAfter.yamlState.nodes[0].address) {
                     // console.log("key for widget easy to find");
-                    this.key = this.bookmark.lines[0].stateAfter.yamlState.keys[0];
+                    this.key = this.bookmark.lines[0].stateAfter.yamlState.nodes[0];
                 }
                 else {
                     // console.log("key for widget hard to find 2");
-                    this.key = TangramPlay.getKeyForAddress(this.key.address);
+                    this.key = TangramPlay.getNodesForAddress(this.key.address);
                 }
             }
             else {
-                for (let key of this.bookmark.lines[0].stateAfter.yamlState.keys) {
+                for (let key of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
                     if (this.key.address === key.address) {
                         // console.log("key for widget not so easy to find");
                         this.key = key;
@@ -68,7 +68,7 @@ export default class Widget {
         }
         else {
             // console.log("key for widget hard to find");
-            this.key = TangramPlay.getKeyForAddress(this.key.address);
+            this.key = TangramPlay.getNodesForAddress(this.key.address);
         }
 
         // Fix empty line parser error

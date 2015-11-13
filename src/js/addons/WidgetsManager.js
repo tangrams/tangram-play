@@ -90,7 +90,7 @@ export default class WidgetsManager {
         }
 
         // Get the matching keys for the FROM/TO range
-        let keys = TangramPlay.getKeys(from, to);
+        let keys = TangramPlay.getNodes(from, to);
         // If there is no keys there nothing to do
         if (!keys || keys.length === 0) {
             return;
@@ -132,7 +132,7 @@ export default class WidgetsManager {
     }
 
     clearRange (from, to) {
-        let keys = TangramPlay.getKeys(from, to);
+        let keys = TangramPlay.getNodes(from, to);
 
         if (!keys || keys.length === 0) {
             return;
@@ -158,7 +158,7 @@ export default class WidgetsManager {
 
     createRange (from, to) {
         // Search for keys between FROM and TO
-        let keys = TangramPlay.getKeys(from, to);
+        let keys = TangramPlay.getNodes(from, to);
 
         if (!keys || keys.length === 0) {
             return;
