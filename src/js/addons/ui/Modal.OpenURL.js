@@ -25,6 +25,16 @@ export default class OpenUrlModal extends Modal {
                 this.el.querySelector('.tp-modal-confirm').disabled = true;
             }
         });
+
+        this.onConfirm = () => {
+            const value = this.input.value;
+            this.clearInput();
+            EditorIO.loadContentFromPath(value);
+        }
+
+        this.onAbort = () => {
+            this.clearInput();
+        }
     }
 
     show () {
@@ -38,17 +48,5 @@ export default class OpenUrlModal extends Modal {
         this.input.value = '';
         this.input.blur();
         this.el.querySelector('.tp-modal-confirm').disabled = true;
-    }
-
-    _handleConfirm () {
-        const value = this.input.value;
-        this.clearInput();
-        EditorIO.loadContentFromPath(value);
-        super._handleConfirm();
-    }
-
-    _handleAbort () {
-        this.clearInput();
-        super._handleAbort();
     }
 }

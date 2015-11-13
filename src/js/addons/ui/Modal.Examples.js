@@ -14,25 +14,23 @@ export default class ExamplesModal extends Modal {
         this.el = examplesEl = container.querySelector('.tp-example-modal');
         this.message = 'Choose an example to open';
         loadExamples(configFile);
+
+        this.onConfirm = () => {
+            const selected = this.el.querySelectorAll('.tp-example-option.tp-example-selected')[0];
+            const value = selected.getAttribute('data-value');
+            EditorIO.loadContentFromPath(value);
+        }
+
+        this.onAbort = () => {
+            resetExampleSelection();
+            this.el.querySelector('.tp-modal-confirm').disabled = true;
+        }
     }
 
     show () {
         EditorIO.checkSaveStateThen(() => {
             super.show();
         });
-    }
-
-    _handleConfirm () {
-        const selected = this.el.querySelectorAll('.tp-example-option.tp-example-selected')[0];
-        const value = selected.getAttribute('data-value');
-        EditorIO.loadContentFromPath(value);
-        super._handleConfirm();
-    }
-
-    _handleAbort () {
-        resetExampleSelection();
-        this.el.querySelector('.tp-modal-confirm').disabled = true;
-        super._handleAbort();
     }
 }
 

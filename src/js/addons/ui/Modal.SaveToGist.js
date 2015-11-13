@@ -13,6 +13,18 @@ export default class SaveGistModal extends Modal {
         this.descInput = this.el.querySelector('#gist-description');
         this.descInput.value = DEFAULT_GIST_DESCRIPTION;
         this.privateInput = this.el.querySelector('#gist-private');
+
+        this.onConfirm = () => {
+            const description = this.descInput.value;
+            this.el.querySelector('.tp-modal-thinking').classList.add('tp-modal-thinking-cap-on');
+            this.el.querySelector('.tp-modal-confirm').disabled = true;
+            this.el.querySelector('.tp-modal-cancel').disabled = true;
+            //this.resetInputs();
+        }
+
+        this.onAbort = () => {
+            this.resetInputs();
+        }
     }
 
     resetInputs () {
@@ -24,19 +36,4 @@ export default class SaveGistModal extends Modal {
         this.el.querySelector('.tp-modal-cancel').removeAttribute('disabled');
         this.el.querySelector('.tp-modal-thinking').classList.remove('tp-modal-thinking-cap-on');
     }
-
-    _handleConfirm () {
-        const description = this.descInput.value;
-        this.el.querySelector('.tp-modal-thinking').classList.add('tp-modal-thinking-cap-on');
-        this.el.querySelector('.tp-modal-confirm').disabled = true;
-        this.el.querySelector('.tp-modal-cancel').disabled = true;
-        //this.resetInputs();
-        // super._handleConfirm();
-    }
-
-    _handleAbort () {
-        this.resetInputs();
-        super._handleAbort();
-    }
-    //     .tp-modal-thinking-cap-on
 }
