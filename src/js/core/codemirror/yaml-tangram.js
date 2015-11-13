@@ -161,6 +161,16 @@ function getKeyAddressFromState(state) {
     }
 }
 
+function getAnchorFromValue (value) {
+    if (/(^\s*(&\w+)\s+)/.test(value)) {
+        let link = /(^\s*(&\w+)\s+)/gm.exec(value);
+        return link[1];
+    }
+    else {
+        return "";
+    }
+}
+
 // Given a YAML string return an array of keys
 function getInlineKeys(str, nLine) {
     let rta = [];
@@ -186,10 +196,12 @@ function getInlineKeys(str, nLine) {
             if (isKey) {
                 keys[level] = isKey[1];
                 i += isKey[1].length;
+                let anchor = getAnchorFromValue(isKey[3]);
                 rta.push({
                     address: getAddressFromKeys(keys),
                     key: isKey[1],
-                    value: isKey[3],
+                    value: isKey[3].substr(anchor.length),
+                    anchor: anchor,
                     range: {
                         from: {
                             line: nLine,
@@ -266,10 +278,12 @@ export function parseYamlString(string, state, tabSize) {
         let toCh = spaces + key[2].length + key[3].length;
 
         if (key[4].substr(0, 1) === '{') {
+            // If there are multiple keys
             state.keys = [ {
                 address: address,
                 key: key[2],
                 value: '',
+                anchor: '',
                 range: {
                     from: {
                         line: state.line,
@@ -291,11 +305,13 @@ export function parseYamlString(string, state, tabSize) {
             }
         }
         else {
+            let anchor = getAnchorFromValue(key[4]);
             toCh += key[4].length;
             state.keys = [ {
                 address: address,
                 key: key[2],
-                value: key[4],
+                anchor: anchor,
+                value: key[4].substr(anchor.length),
                 range: {
                     from: {
                         line: state.line,
@@ -314,6 +330,7 @@ export function parseYamlString(string, state, tabSize) {
             address: getAddressFromKeys(state.keyStack),
             key: '',
             value: '',
+            anchor: '',
             range: {
                 from: {
                     line: state.line,

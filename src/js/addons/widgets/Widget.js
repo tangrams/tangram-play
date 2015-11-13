@@ -104,16 +104,11 @@ export default class Widget {
      */
     get value () {
         let value = this.key.value;
-        // Except links
-        if (/(^\s*(&\w+)\s+)/.test(value)) {
-            let link = /(^\s*(&\w+)\s+)/gm.exec(value);
-            value = value.substr(link[1].length);
-        }
         return value;
     }
 
-    set value (val) {
-        this.key.value = val;
+    set value (value) {
+        this.key.value = value;
     }
 
     /**

@@ -152,20 +152,15 @@ class TangramPlay {
         }
 
         // Calculate begining character of the value
-        //               key:_[link]value
+        //               key:_[anchor]value
         //               ^ ^^^^ 
-        //               | ||||__ + link.length
+        //               | ||||__ + anchor.length
         //               | |||___ + 1 
         //               | | `--- + 1
         //  range.from.ch  key.lenght
 
         let from = { line: KeyPair.range.from.line,
-                     ch: KeyPair.range.from.ch + KeyPair.key.length + 2 };
-
-        if (/(^\s*(&\w+)\s+)/.test(KeyPair.value)){
-            let link = /(^\s*(&\w+)\s+)/gm.exec(KeyPair.value);
-            from.ch += link[1].length;
-        }
+                     ch: KeyPair.range.from.ch + KeyPair.anchor.length + KeyPair.key.length + 2 };
 
         this.editor.doc.replaceRange(str, from, KeyPair.range.to);
     }
