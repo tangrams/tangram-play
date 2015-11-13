@@ -26,6 +26,32 @@ const LocalStorage = {
     },
 
     /**
+     *  pushItem()
+     *  Store values as an array. If the key doesn't exist as an object, create it.
+     *  Note that this overwrites an old value if it is present and not a JSON object!
+     *  If it exists, retreive it, serialize it into JSON, push the new value,
+     *  re-encode to a string and then set it back in localStorage.
+     *  No other array methods are implemented. If you need to delete items, etc
+     *  then retrieve the string as normal, do the work in your script, and then
+     *  set it to the new stringified array instead of pushing it.
+     */
+    pushItem (key, value) {
+        let stored;
+        stored = this.getItem(key);
+        // In case there is a previously stored item here that is not
+        // parseable JSON, don't fail
+        try {
+            stored = JSON.parse(stored);
+            stored.arr = stored.arr || [];
+        }
+        catch (e) {
+            stored = { arr: [] };
+        }
+        stored.arr.push(value);
+        this.setItem(key, JSON.stringify(stored));
+    },
+
+    /**
      *  getItem()
      *  Retrieves value for the given key name and application namespace.
      */

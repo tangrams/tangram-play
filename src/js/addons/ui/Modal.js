@@ -5,11 +5,13 @@ import Shield from 'app/addons/ui/Shield';
 import { noop } from 'app/addons/ui/Helpers';
 
 export default class Modal {
-    constructor (message = 'Dude.', callback = noop, abort = noop) {
+    constructor (message = 'Dude.', confirm = noop, abort = noop) {
         this.el = container.querySelector('.tp-modal');
         this.message = message;
-        this.callback = callback;
-        this.abort = abort;
+
+        // Set callback methods
+        this.onConfirm = confirm;
+        this.onAbort = abort;
 
         this.shield = new Shield();
 
@@ -73,12 +75,12 @@ export default class Modal {
     // Pass through events to callbacks
     _handleConfirm (event) {
         this.hide();
-        this.callback(event);
+        this.onConfirm(event);
     }
 
     _handleAbort (event) {
         this.hide();
-        this.abort(event);
+        this.onAbort(event);
     }
 
     // Function to handle when the escape key is pressed.

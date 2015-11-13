@@ -15,7 +15,7 @@ export default class OpenUrlModal extends Modal {
         this.input = this.el.querySelector('.tp-open-url-input input');
         this.input.addEventListener('keyup', (event) => {
             if (this.input.value && this.input.validity.valid === true && this.input.value.match(/\.y(a?)ml$/)) {
-                this.el.querySelector('.tp-modal-confirm').disabled = false;
+                this.el.querySelector('.tp-modal-confirm').removeAttribute('disabled');
                 let key = event.keyCode || event.which;
                 if (key === 13) {
                     this._handleConfirm();
@@ -25,6 +25,16 @@ export default class OpenUrlModal extends Modal {
                 this.el.querySelector('.tp-modal-confirm').disabled = true;
             }
         });
+
+        this.onConfirm = () => {
+            const value = this.input.value;
+            this.clearInput();
+            EditorIO.loadContentFromPath(value);
+        };
+
+        this.onAbort = () => {
+            this.clearInput();
+        };
     }
 
     show () {
@@ -38,17 +48,5 @@ export default class OpenUrlModal extends Modal {
         this.input.value = '';
         this.input.blur();
         this.el.querySelector('.tp-modal-confirm').disabled = true;
-    }
-
-    _handleConfirm () {
-        const value = this.input.value;
-        this.clearInput();
-        EditorIO.loadContentFromPath(value);
-        super._handleConfirm();
-    }
-
-    _handleAbort () {
-        this.clearInput();
-        super._handleAbort();
     }
 }
