@@ -14,7 +14,7 @@ import ColorPalette from 'app/addons/ColorPalette';
 // Import Utils
 import { httpGet, StopWatch, subscribeMixin } from 'app/core/common';
 import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
-import { getKeyPairs, parseYamlString } from 'app/core/codemirror/yaml-tangram';
+import { getNodes, parseYamlString } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
@@ -145,13 +145,24 @@ class TangramPlay {
     }
 
     // SET
-    setValue (KeyPair, str) {
-        if (KeyPair.value === '') {
+    setValue (node, str) {
+        // Force space between the ':' and the value
+        if (node.value === '') {
             str = ' ' + str;
         }
-        let from = { line: KeyPair.range.from.line,
-                     ch: KeyPair.range.from.ch + KeyPair.key.length + 2 }; // [key]:_[value]
-        this.editor.doc.replaceRange(str, from, KeyPair.range.to);
+
+        // Calculate begining character of the value
+        //               key:_[anchor]value
+        //               ^ ^^^^
+        //               | ||||__ + anchor.length
+        //               | |||___ + 1
+        //               | | `--- + 1
+        //  range.from.ch  key.lenght
+
+        let from = { line: node.range.from.line,
+                     ch: node.range.from.ch + node.anchor.length + node.key.length + 2 };
+
+        this.editor.doc.replaceRange(str, from, node.range.to);
     }
 
     // GET
@@ -163,56 +174,56 @@ class TangramPlay {
         return content;
     }
 
-    getKeys (from, to) {
-        let keys = [];
+    getNodes (from, to) {
+        let nodes = [];
 
         if (from.line === to.line) {
-            // If the searched keys are in a same line
+            // If the searched nodes are in a same line
             let line = from.line;
-            let inLineKeys = this.getKeysOnLine(line);
+            let inLineNodes = this.getNodesOnLine(line);
 
-            for (let key of inLineKeys) {
-                if (key.range.to.ch > from.ch || key.range.from < to.ch) {
-                    keys.push(key);
+            for (let node of inLineNodes) {
+                if (node.range.to.ch > from.ch || node.range.from < to.ch) {
+                    nodes.push(node);
                 }
             }
         }
         else {
-            // If the searched keys are in a range of lines
+            // If the searched nodes are in a range of lines
             for (let i = from.line; i <= to.line; i++) {
-                let inLineKeys = this.getKeysOnLine(i);
+                let inLineNodes = this.getNodesOnLine(i);
 
-                for (let key of inLineKeys) {
-                    if (key.range.from.line === from.line) {
+                for (let node of inLineNodes) {
+                    if (node.range.from.line === from.line) {
                         // Is in the beginning line
-                        if (key.range.to.ch > from.ch) {
-                            keys.push(key);
+                        if (node.range.to.ch > from.ch) {
+                            nodes.push(node);
                         }
                     }
-                    else if (key.range.to.line === to.line) {
+                    else if (node.range.to.line === to.line) {
                         // is in the end line
-                        if (key.range.from.ch < to.ch) {
-                            keys.push(key);
+                        if (node.range.from.ch < to.ch) {
+                            nodes.push(node);
                         }
                     }
                     else {
                         // is in the sandwich lines
-                        keys.push(key);
+                        nodes.push(node);
                     }
                 }
             }
         }
-        return keys;
+        return nodes;
     }
 
-    getKeysOnLine (nLine) {
+    getNodesOnLine (nLine) {
         if (isStrEmpty(this.editor.getLine(nLine))) {
             return [];
         }
-        return getKeyPairs(this.editor, nLine);
+        return getNodes(this.editor, nLine);
     }
 
-    getKeyForAddress (address) {
+    getNodesForAddress (address) {
         // NOTE:
         // This is an expensive process because for each call need to iterate through each line until it founds the right
         // address. Could be optimize if we store addresses in a map... but then the question is about how to keep it sync
@@ -235,7 +246,7 @@ class TangramPlay {
                 parseYamlString(this.editor.getLineHandle(line).text, state, 4);
 
                 // Iterate through keys in this line
-                for (let key of state.keys) {
+                for (let key of state.nodes) {
                     if (key.address === address) {
                         return key;
                     }
@@ -251,7 +262,7 @@ class TangramPlay {
                 // it the line HAVE BEEN parsed (use the stateAfter)
                 // ======================================================
                 lastState = this.editor.getLineHandle(line).stateAfter.yamlState;
-                let keys = this.getKeysOnLine(line);
+                let keys = this.getNodesOnLine(line);
                 for (let key of keys) {
                     if (key.address === address) {
                         return key;

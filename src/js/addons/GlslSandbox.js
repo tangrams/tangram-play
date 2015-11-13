@@ -101,7 +101,7 @@ export default class GlslSandbox {
         }
 
         if (!isEmpty(TangramPlay.editor, nLine)) {
-            let keys = TangramPlay.getKeysOnLine(nLine);
+            let keys = TangramPlay.getNodesOnLine(nLine);
             if (keys && keys[0]) {
                 this.address = keys[0].address;
                 let isNormal = isNormalBlock(this.address);

@@ -44,20 +44,20 @@ export default class Widget {
             this.bookmark.lines[0] &&
             this.bookmark.lines[0].stateAfter &&
             this.bookmark.lines[0].stateAfter.yamlState &&
-            this.bookmark.lines[0].stateAfter.yamlState.keys &&
-            this.bookmark.lines[0].stateAfter.yamlState.keys.length > 0) {
-            if (this.bookmark.lines[0].stateAfter.yamlState.keys.length === 1) {
-                if (this.key.address === this.bookmark.lines[0].stateAfter.yamlState.keys[0].address) {
+            this.bookmark.lines[0].stateAfter.yamlState.nodes &&
+            this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
+            if (this.bookmark.lines[0].stateAfter.yamlState.nodes.length === 1) {
+                if (this.key.address === this.bookmark.lines[0].stateAfter.yamlState.nodes[0].address) {
                     // console.log("key for widget easy to find");
-                    this.key = this.bookmark.lines[0].stateAfter.yamlState.keys[0];
+                    this.key = this.bookmark.lines[0].stateAfter.yamlState.nodes[0];
                 }
                 else {
                     // console.log("key for widget hard to find 2");
-                    this.key = TangramPlay.getKeyForAddress(this.key.address);
+                    this.key = TangramPlay.getNodesForAddress(this.key.address);
                 }
             }
             else {
-                for (let key of this.bookmark.lines[0].stateAfter.yamlState.keys) {
+                for (let key of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
                     if (this.key.address === key.address) {
                         // console.log("key for widget not so easy to find");
                         this.key = key;
@@ -68,7 +68,7 @@ export default class Widget {
         }
         else {
             // console.log("key for widget hard to find");
-            this.key = TangramPlay.getKeyForAddress(this.key.address);
+            this.key = TangramPlay.getNodesForAddress(this.key.address);
         }
 
         // Fix empty line parser error
@@ -81,15 +81,16 @@ export default class Widget {
 
     update () {
         this.updateKey();
-        this.value = this.key.value;
+        // This looks weird but is to force the use of 'get value ()' which
+        // clean the anchors
+        this.value = this.value;
     }
 
     insert () {
         this.updateKey();
-        let pos = this.key.range.to;
 
         // inserts the widget into CodeMirror DOM
-        this.bookmark = editor.doc.setBookmark(pos, {
+        this.bookmark = editor.doc.setBookmark(this.key.range.to, {
             widget: this.el,
             insertLeft: true
         });
@@ -102,11 +103,12 @@ export default class Widget {
      *  TODO: Experimental
      */
     get value () {
-        return this.key.value;
+        let value = this.key.value;
+        return value;
     }
 
-    set value (val) {
-        this.key.value = val;
+    set value (value) {
+        this.key.value = value;
     }
 
     /**
