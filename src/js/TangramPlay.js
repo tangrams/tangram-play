@@ -144,10 +144,6 @@ class TangramPlay {
         this.loadFile(src);
     }
 
-    registerAnchor (key) {
-
-    }
-
     // SET
     setValue (node, str) {
         // Force space between the ':' and the value
@@ -157,9 +153,9 @@ class TangramPlay {
 
         // Calculate begining character of the value
         //               key:_[anchor]value
-        //               ^ ^^^^ 
+        //               ^ ^^^^
         //               | ||||__ + anchor.length
-        //               | |||___ + 1 
+        //               | |||___ + 1
         //               | | `--- + 1
         //  range.from.ch  key.lenght
 

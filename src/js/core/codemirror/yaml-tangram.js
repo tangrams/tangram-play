@@ -167,7 +167,7 @@ function getAnchorFromValue (value) {
         return link[1];
     }
     else {
-        return "";
+        return '';
     }
 }
 

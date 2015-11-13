@@ -82,7 +82,7 @@ export default class Widget {
     update () {
         this.updateKey();
         // This looks weird but is to force the use of 'get value ()' which
-        // clean the anchors 
+        // clean the anchors
         this.value = this.value;
     }
 
