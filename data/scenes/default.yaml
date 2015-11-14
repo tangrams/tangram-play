@@ -18,7 +18,7 @@ styles:
         shaders:
             blocks:
                 color: |
-                    color.rgb *= vec3(min((v_world_position.z*.001 + .5),1.));
+                    color.rgb *= vec3(min((worldPosition().z*.001 + .5),1.));
 layers:
     water:
         data: { source: osm }
