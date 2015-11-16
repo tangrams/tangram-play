@@ -25,41 +25,6 @@
     & > div:not(:last-child) {
         margin-right: 4px;
     }
-
-    ::-webkit-input-placeholder { color: #909195 }
-    :-moz-placeholder { color: #909195 }
-    ::-moz-placeholder { color: #909195 }
-    :-ms-input-placeholder { color: #909195 }
-
-    /* Much dislike Black Tie's pick of font smoothing */
-    .btm {
-        -webkit-font-smoothing: auto;
-        -moz-osx-font-smoothing: auto;
-    }
-
-    button {
-        appearance: none;
-        box-sizing: border-box;
-        border: 0;
-        padding: 0;
-        height: 38px;
-        width: 38px;
-        font-size: 12px;
-        background-color: var(--ui-element-color);
-        color: var(--ui-component-text-color);
-        cursor: pointer;
-        outline: none;
-    }
-
-    button.tp-active {
-        background-color: var(--ui-active-color);
-        color: var(--ui-highlight-color);
-    }
-
-    button:hover {
-        background-color: var(--ui-active-color);
-        color: var(--ui-highlight-color);
-    }
 }
 
 .tp-map-zoom {

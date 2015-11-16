@@ -242,3 +242,19 @@
 .tp-save-gist-modal {
     width: 600px;
 }
+
+.tp-save-gist-success-modal {
+    /* Overrides for this modal.
+        TODO: Consider refactoring modal so we don't need any of this */
+    .tp-modal-text {
+        display: none;
+    }
+    .tp-modal-content {
+        margin-top: 0;
+    }
+    /* Inputs */
+    .tp-gist-saved-copy-btn {
+        margin-left: 1px;
+        width: 44px;
+    }
+}

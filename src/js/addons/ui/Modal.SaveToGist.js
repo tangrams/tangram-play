@@ -4,6 +4,7 @@ import TangramPlay, { container, editor } from 'app/TangramPlay';
 import LocalStorage from 'app/addons/LocalStorage';
 import Modal from 'app/addons/ui/Modal';
 import request from 'request';
+import Clipboard from 'clipboard';
 
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
 const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Play.';
@@ -60,19 +61,26 @@ export default class SaveGistModal extends Modal {
                 method: 'POST',
                 body: formatGistPayload(data)
             }, (error, response, body) => {
-                if (!error && response.statusCode === 201) {
-                    let gist = JSON.parse(response.body);
-                    this.onSaveSuccess(gist);
-                }
                 if (error) {
-                    console.log(error);
-                    this.onSaveError(error);
+                    return this.onSaveError(error);
+                }
+
+                switch (response.statusCode) {
+                    case 201:
+                        this.onSaveSuccess(JSON.parse(response.body));
+                        break;
+                    case 403:
+                        this.onSaveError('API limit reached. Please try again later.');
+                        break;
+                    default:
+                        this.onSaveError(`Response ${response.statusCode} obtained but there is nothing to handle it.`);
+                        break;
                 }
             });
 
             // Start save timeout
             this._timeout = window.setTimeout(() => {
-                this.onSaveError('timed out trying to contact the gist server.')
+                this.onSaveError('Timed out trying to contact the gist server.');
             }, SAVE_TIMEOUT);
         };
 
@@ -121,8 +129,31 @@ export default class SaveGistModal extends Modal {
         editor.doc.markClean();
 
         // Show success modal
-        const successModal = new Modal(`Your scene has been saved to ${gist.url}`);
-        successModal.show();
+        let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: container.querySelector('.tp-save-gist-success-modal') });
+        SaveGistSuccessModal.urlInput = SaveGistSuccessModal.el.querySelector('#gist-saved-url');
+        SaveGistSuccessModal.urlInput.value = gist.url;
+        SaveGistSuccessModal.show();
+        SaveGistSuccessModal.urlInput.select();
+
+        // Initiate clipboard button
+        var clipboard = new Clipboard('.tp-gist-saved-copy-btn');
+
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            console.info('Text:', e.text);
+            console.info('Trigger:', e.trigger);
+
+            e.clearSelection();
+        });
+
+        clipboard.on('error', function (e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
+
+        SaveGistSuccessModal.onConfirm = () => {
+            clipboard.destroy();
+        }
     }
 
     // If not successful, turn off wait state,
@@ -143,6 +174,20 @@ export default class SaveGistModal extends Modal {
         this.onConfirm(event);
     }
 }
+
+//     constructor () {
+//         super();
+
+//         // Cache elements
+//         this.el = container.querySelector('.tp-save-gist-success-modal');
+//         this.urlInput = this.el.querySelector('#gist-saved-url');
+//     }
+
+//     show (url) {
+//         super.show();
+//         this.urlInput.value = url;
+//     }
+// }
 
 // POSTing to /gists API requires a JSON blob of MIME type 'application/json'
 function formatGistPayload (data) {
