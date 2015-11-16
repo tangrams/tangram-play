@@ -5,7 +5,7 @@ import Shield from 'app/addons/ui/Shield';
 import { noop } from 'app/addons/ui/Helpers';
 
 export default class Modal {
-    constructor (message = 'Dude.', confirm = noop, abort = noop) {
+    constructor (message = 'Dude.', confirm = noop, abort = noop, options = {}) {
         this.el = container.querySelector('.tp-modal');
         this.message = message;
 
@@ -14,6 +14,10 @@ export default class Modal {
         this.onAbort = abort;
 
         this.shield = new Shield();
+
+        // Set up options
+        this.options = options;
+        // this.options.disableEsc = false;
 
         // Setup proper "this" binding to these callback functions
         // This is necessary so that these functions have the proper
@@ -88,7 +92,7 @@ export default class Modal {
     // Events are passed through to the abort callback as well.
     _handleEsc (event) {
         let key = event.keyCode || event.which;
-        if (key === 27) {
+        if (key === 27 && !this.options.disableEsc) {
             this._handleAbort(event);
         }
     }

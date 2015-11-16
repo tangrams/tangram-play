@@ -94,12 +94,14 @@ export default class SaveGistModal extends Modal {
         this.el.querySelector('.tp-modal-thinking').classList.add('tp-modal-thinking-cap-on');
         this.el.querySelector('.tp-modal-confirm').disabled = true;
         this.el.querySelector('.tp-modal-cancel').disabled = true;
+        this.options.disableEsc = true;
     }
 
     waitStateOff () {
         this.el.querySelector('.tp-modal-thinking').classList.remove('tp-modal-thinking-cap-on');
         this.el.querySelector('.tp-modal-confirm').removeAttribute('disabled');
         this.el.querySelector('.tp-modal-cancel').removeAttribute('disabled');
+        this.options.disableEsc = false;
     }
 
     // If successful, turn off wait state,
