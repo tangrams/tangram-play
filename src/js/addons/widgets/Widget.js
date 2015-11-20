@@ -92,7 +92,8 @@ export default class Widget {
         // inserts the widget into CodeMirror DOM
         this.bookmark = editor.doc.setBookmark(this.key.range.to, {
             widget: this.el,
-            insertLeft: true
+            insertLeft: true,
+            handleMouseEvents: true
         });
         this.bookmark.widget = this;
     }
