@@ -19,6 +19,28 @@ const Tooltip = {
         // Cache references to child elements
         this.pointerEl = this.el.querySelector('.tp-tooltip-pointer');
         this.contentEl = this.el.querySelector('.tp-tooltip-content');
+
+        // Look for any tooltips in DOM and attach
+        // event listeners immediately.
+        let els = document.querySelectorAll('[data-tooltip]');
+        for (let el of els) {
+            this.setupTarget(el);
+        }
+    },
+
+    setupTarget (target) {
+        // Given a DOM target, set up mouse events on it
+        // This is automatically called on init() for all targets
+        // that already have the [data-tooltip] attribute on it
+        // If you dynamically create elements that require a tooltip,
+        // call this specifically for those elements.
+        target.addEventListener('mouseenter', (e) => {
+            Tooltip.considerShowing(target);
+        }, false);
+
+        target.addEventListener('mouseleave', (e) => {
+            Tooltip.hide();
+        }, false);
     },
 
     considerShowing (target) {
@@ -27,7 +49,7 @@ const Tooltip = {
             return;
         }
 
-        // Assign target element
+        // Assign current target element
         this.target = target;
 
         // If tooltips are already visible, just show the next one immediately
@@ -58,9 +80,10 @@ const Tooltip = {
         this.isCurrentlyShowing = true;
 
         // Set global listener to hide a tooltip on click
-        window.addEventListener('click', (e) => {
+        this._globalEventHandler = (e) => {
             this.hide();
-        }, false);
+        };
+        window.addEventListener('click', this._globalEventHandler, false);
     },
 
     hide () {
@@ -76,9 +99,7 @@ const Tooltip = {
             }
         }, TIME_BEFORE_RESET);
 
-        window.removeEventListener('click', (e) => {
-            this.hide();
-        }, false);
+        window.removeEventListener('click', this._globalEventHandler, false);
     },
 
     applyPosition () {

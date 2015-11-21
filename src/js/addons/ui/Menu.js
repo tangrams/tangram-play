@@ -8,7 +8,6 @@ import ExamplesModal from 'app/addons/ui/Modal.Examples';
 import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import AboutModal from 'app/addons/ui/Modal.About';
 import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
-import Tooltip from 'app/addons/ui/Tooltip';
 import MapToolbar from 'app/addons/ui/MapToolbar';
 import fullscreen from 'app/addons/ui/fullscreen';
 
@@ -32,8 +31,6 @@ export default class Menu {
         this.openUrlModal = new OpenURLModal();
         this.aboutModal = new AboutModal();
         this.saveGistModal = new SaveGistModal();
-
-        Tooltip.init();
 
         // Set up events on dropdown buttons
         // Open menu
@@ -79,12 +76,6 @@ export class MenuItem {
             // Execute onClick callback
             onClick(event);
         }, true);
-        this.el.addEventListener('mouseenter', (e) => {
-            Tooltip.considerShowing(this.el);
-        }, false);
-        this.el.addEventListener('mouseleave', (e) => {
-            Tooltip.hide();
-        }, false);
     }
 }
 
