@@ -1,6 +1,7 @@
 /* TYPOGRAPHY */
-@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,200,600);
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:400,200,600');
 
+/*
 @font-face {
     font-family: 'Montserrat';
     src: url('../../data/fonts/montserrat-ultralight-webfont.woff2') format('woff2'),
@@ -18,3 +19,4 @@
     font-weight: 400;
     font-style: normal;
 }
+*/
