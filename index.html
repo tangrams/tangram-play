@@ -86,12 +86,12 @@
                         <button class='tp-map-zoom-out' id='zoom-out' data-tooltip='Zoom out'><i class='btm bt-minus'></i></button>
                     </div>
                     <div class='tp-map-location-bar'>
-                        <div class='tp-map-search-icon'><i class='btm bt-search'></i></div>
+                        <div class='tp-map-search-icon' data-tooltip='Search for location'><i class='btm bt-search'></i></div>
                         <input class='tp-map-search-input' placeholder='' spellcheck='false'>
                         <div class='tp-map-latlng-label'></div>
-                        <div class='tp-map-save-icon'><i class='btm bt-star'></i></div>
+                        <div class='tp-map-save-icon' data-tooltip='Remember location' data-tooltip-alignment='right'><i class='btm bt-star'></i></div>
                         <div class='tp-map-bookmarks'>
-                            <button class='tp-map-bookmarks-button' id='bookmarks' title='Bookmarks'>
+                            <button class='tp-map-bookmarks-button' id='bookmarks' data-tooltip='Bookmarks' data-tooltip-alignment='right'>
                                 <i class='btm bt-bookmark'></i>
                             </button>
                             <div class='tp-map-bookmarks-menu'></div>
@@ -99,12 +99,12 @@
                         <div class='tp-map-search-results'></div>
                     </div>
                     <div class='tp-geolocator'>
-                        <button class='tp-geolocator-button' id='geolocator' title='Get current location'>
+                        <button class='tp-geolocator-button' id='geolocator' data-tooltip='Locate me' data-tooltip-alignment='right'>
                             <i class='btm bt-map-arrow'></i>
                             <i class='btm bt-sync bt-spin'></i>
                         </button>
                     </div>
-                    <div class='tp-map-toolbar-toggle' id='tp-map-toolbar-toggle'></div>
+                    <div class='tp-map-toolbar-toggle' id='tp-map-toolbar-toggle' data-tooltip='Toogle map toolbar' data-tooltip-alignment='right'></div>
                 </div>
                 <div class='tp-map-loading' id='map-loading'></div>
             </div>
@@ -183,7 +183,7 @@
                     </p>
                     <div class='tp-input-bar'>
                         <input type='text' id='gist-saved-url'>
-                        <button class='tp-gist-saved-copy-btn' data-clipboard-target='#gist-saved-url' title='copy to clipboard'>
+                        <button class='tp-gist-saved-copy-btn' data-clipboard-target='#gist-saved-url' data-tooltip='Copy to clipboard' data-tooltip-alignment='right'>
                             <i class='btm bt-copy'></i>
                         </button>
                     </div>

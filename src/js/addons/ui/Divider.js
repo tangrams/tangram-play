@@ -14,10 +14,10 @@ const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
 const STORAGE_POSITION_KEY = 'divider-position-x';
 
 export default class Divider {
-    constructor(dividerId) {
+    constructor() {
         let transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
 
-        this.el = document.getElementById(dividerId);
+        this.el = document.getElementById('divider');
 
         if (this.el.style.hasOwnProperty('transform')) {
             this.el.style.transform = transformStyle;
