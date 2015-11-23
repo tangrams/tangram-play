@@ -40,7 +40,6 @@
                     <li class='tp-menu-item tp-menu-button-new' data-tooltip='New scene'><i class='btm bt-file'></i><span class='tp-menu-item-label'>New</span></li>
                     <li class='tp-menu-item tp-menu-button-open' data-tooltip='Open scene'><i class='btm bt-upload'></i><span class='tp-menu-item-label'>Open</span></li>
                     <li class='tp-menu-item tp-menu-button-save' data-tooltip='Save scene'><i class='btm bt-download'></i><span class='tp-menu-item-label'>Save</span></li>
-                    <li class='tp-menu-item tp-menu-button-map' data-tooltip='Map toolbar'><i class='btm bt-globe'></i><span class='tp-menu-item-label'>Map toolbar</span></li>
                     <li class='tp-menu-item tp-menu-item-private' data-tooltip='Share'><i class='btm bt-share'></i></li>
                 </ul>
                 <ul class='tp-menu-items tp-menu-right'>
@@ -79,7 +78,13 @@
         <div class='tp-core-container'>
             <div class='tp-map-container' id='map-container'>
                 <div class='tp-map-view' id='map'></div>
-                <div class='tp-map-toolbar'>
+                <div class='tp-map-toolbar tp-map-toolbar-collapsed' data-tooltip='Toggle map toolbar' data-tooltip-alignment='right'>
+                  <div class='tp-map-toolbar-button'>
+                      <i class='btm bt-globe'></i>
+                  </div>
+                  <div class='tp-map-toolbar-toggle'></div>
+                </div>
+                <div class='tp-map-toolbar tp-map-toolbar-bar' id='map-toolbar'>
                     <div class='tp-map-zoom'>
                         <div class='tp-map-zoom-indicator'>z&#8202;<span class='tp-map-zoom-quantity'></span></div>
                         <button class='tp-map-zoom-in' id='zoom-in' data-tooltip='Zoom in'><i class='btm bt-plus'></i></button>

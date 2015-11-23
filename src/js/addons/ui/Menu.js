@@ -8,7 +8,6 @@ import ExamplesModal from 'app/addons/ui/Modal.Examples';
 import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import AboutModal from 'app/addons/ui/Modal.About';
 import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
-import MapToolbar from 'app/addons/ui/MapToolbar';
 import fullscreen from 'app/addons/ui/fullscreen';
 
 export default class Menu {
@@ -22,7 +21,6 @@ export default class Menu {
         this.menus.new = new MenuItem('.tp-menu-button-new', _onClickNew);
         this.menus.open = new MenuItem('.tp-menu-button-open', _onClickOpen);
         this.menus.save = new MenuItem('.tp-menu-button-save', _onClickSave);
-        this.menus.map = new MenuItem('.tp-menu-button-map', _onClickMap);
         this.menus.fullscreen = new MenuItem('.tp-menu-button-fullscreen', _onClickFullscreen);
         this.menus.help = new MenuItem('.tp-menu-button-help', _onClickHelp);
 
@@ -118,10 +116,6 @@ function _onClickHelp (event) {
 function _onClickNew (event) {
     EditorIO.new();
     _resetTooltipState();
-}
-
-function _onClickMap (event) {
-    MapToolbar.toggle();
 }
 
 function _onClickFullscreen (event) {
