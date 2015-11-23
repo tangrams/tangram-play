@@ -16,7 +16,7 @@ export default class ColorPicker extends Widget {
         super(...args);
 
         // Set the color property from editor value
-        this.color = toCSS(this.key.value);
+        this.color = toCSS(this.node.value);
     }
 
     /**
@@ -33,7 +33,7 @@ export default class ColorPicker extends Widget {
         super.update();
 
         // Set the color property from editor value
-        this.color = toCSS(this.key.value);
+        this.color = toCSS(this.node.value);
     }
 
     /**

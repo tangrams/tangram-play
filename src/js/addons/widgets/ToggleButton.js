@@ -10,7 +10,7 @@ export default class ToggleButton extends Widget {
         inputEl.type = 'checkbox';
         inputEl.className = 'tp-widget-toggle';
         inputEl.id = id;
-        inputEl.checked = (this.key.value === 'true') ? true : false;
+        inputEl.checked = (this.node.value === 'true') ? true : false;
 
         inputEl.addEventListener('change', (event) => {
             this.setEditorValue((inputEl.checked) ? 'true' : 'false');

@@ -13,10 +13,10 @@ import TangramPlay from 'app/TangramPlay';
 import { editor } from 'app/TangramPlay';
 
 export default class Widget {
-    constructor (def, key) {
-        this.key = key;
+    constructor (def, node) {
+        this.node = node;
         this.definition = def;
-        this.el = this.createEl(key);
+        this.el = this.createEl(node);
     }
 
     /**
@@ -24,9 +24,9 @@ export default class Widget {
      *  This is a simple bare-bones example.
      *  Widgets that extend from this should create
      *  their own DOM and avoid calling super()
-     *  @param key in case the element needs to know something about the source
+     *  @param node in case the element needs to know something about the source
      */
-    createEl (key) {
+    createEl (node) {
         return document.createDocumentFragment();
     }
 
@@ -36,8 +36,8 @@ export default class Widget {
         }
     }
 
-    updateKey() {
-        // Update key
+    updateNode() {
+        // Update node
         if (this.bookmark &&
             this.bookmark.lines &&
             this.bookmark.lines.length === 1 &&
@@ -46,56 +46,79 @@ export default class Widget {
             this.bookmark.lines[0].stateAfter.yamlState &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
+
             if (this.bookmark.lines[0].stateAfter.yamlState.nodes.length === 1) {
-                if (this.key.address === this.bookmark.lines[0].stateAfter.yamlState.nodes[0].address) {
-                    // console.log("key for widget easy to find");
-                    this.key = this.bookmark.lines[0].stateAfter.yamlState.nodes[0];
+                console.log(this.node, this.bookmark.lines[0].stateAfter.yamlState.nodes);
+                if (this.node.address === this.bookmark.lines[0].stateAfter.yamlState.nodes[0].address) {
+                    // UPDATE value
+                    // console.log("node for widget EASY to find");
+                    this.node = this.bookmark.lines[0].stateAfter.yamlState.nodes[0];
                 }
                 else {
-                    // console.log("key for widget hard to find 2");
-                    this.key = TangramPlay.getNodesForAddress(this.key.address);
+                    // console.log("node for widget HARD to find 2");
+                    this.node = TangramPlay.getNodesForAddress(this.node.address);
                 }
             }
             else {
-                for (let key of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
-                    if (this.key.address === key.address) {
-                        // console.log("key for widget not so easy to find");
-                        this.key = key;
+                for (let node of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
+                    if (this.node.address === node.address) {
+                        // console.log("node for widget not so easy to find");
+                        this.node = node;
                         break;
                     }
                 }
             }
         }
         else {
-            // console.log("key for widget hard to find");
-            this.key = TangramPlay.getNodesForAddress(this.key.address);
+            // console.log("node for widget HARD to find");
+
+            // Here is a good place to detect duplicates
+            
+            // let others = TangramPlay.editor.getDoc().findMarksAt(this.node.range.to);
+            // let node = TangramPlay.getNodesForAddress(this.node.address);
+            // this.node =
         }
 
         // Fix empty line parser error
         if (this.bookmark &&
             this.bookmark.lines &&
             this.bookmark.lines.length === 1) {
-            this.key.range.from.line = this.key.range.to.line = this.bookmark.lines[0].lineNo();
+            console.log("Fix line")
+            this.node.range.from.line = this.node.range.to.line = this.bookmark.lines[0].lineNo();
         }
     }
 
     update () {
-        this.updateKey();
+        this.updateNode();
         // This looks weird but is to force the use of 'get value ()' which
         // clean the anchors
         this.value = this.value;
     }
 
     insert () {
-        this.updateKey();
+        this.updateNode();
+
+        let others = TangramPlay.editor.getDoc().findMarksAt(this.node.range.to);
+        if (others.length > 0) {
+            console.log('Avoiding duplication');
+            // if (TangramPlay.addons.errorsManager) {
+            //     TangramPlay.addons.errorsManager.addWarning({
+            //         type:'duplicate',
+            //         nodes: others
+            //     });
+            // }
+            return false;
+        }
 
         // inserts the widget into CodeMirror DOM
-        this.bookmark = editor.doc.setBookmark(this.key.range.to, {
+        this.bookmark = editor.doc.setBookmark(this.node.range.to, {
             widget: this.el,
             insertLeft: true,
             handleMouseEvents: true
         });
         this.bookmark.widget = this;
+
+        return true
     }
 
     /**
@@ -104,12 +127,12 @@ export default class Widget {
      *  TODO: Experimental
      */
     get value () {
-        let value = this.key.value;
+        let value = this.node.value;
         return value;
     }
 
     set value (value) {
-        this.key.value = value;
+        this.node.value = value;
     }
 
     /**
@@ -117,12 +140,12 @@ export default class Widget {
      *  back to the Tangram Play editor.
      */
     setEditorValue(string) {
-        this.updateKey();
+        this.updateNode();
 
         // Send the value to editor
-        TangramPlay.setValue(this.key, string);
+        TangramPlay.setValue(this.node, string);
 
         // Change the value attached to this widget instance
-        this.key.value = string;
+        this.node.value = string;
     }
 }

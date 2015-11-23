@@ -171,6 +171,39 @@ function getAnchorFromValue (value) {
     }
 }
 
+// function isNodeDuplicated(A) {
+//     let B = TangramPlay.getNodesForAddress(A);
+//     if (B === undefined){
+//         return false;
+//     }
+//     return isNodeEqual(A, B);
+// }
+
+function isNodeEqual(A, B){
+    if (A && B && A.address && B.address && A.value && B.value) {
+        if (A.address !== B.address) {
+            return false;
+        }
+        if (A.value !== B.value) {
+            return false;
+        }
+        else if (A.range.from.line !== B.range.from.line) {
+            return false;
+        }
+        else if (A.range.to.line !== B.range.to.line) {
+            return false;
+        }
+        else if (A.range.to.ch !== B.range.to.ch) {
+            return false;
+        }
+        else if (A.range.from.ch !== B.range.from.ch) {
+            return false;
+        }
+        return true;
+    }
+    return true;
+}
+
 // Given a YAML string return an array of keys
 function getInlineNodes(str, nLine) {
     let rta = [];

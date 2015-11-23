@@ -63,10 +63,10 @@ export default class ErrorsManager {
                 }
 
                 let address = '/styles/' + style + '/shaders/blocks/';
-                let key = TangramPlay.getNodesForAddress(address + block.name);
+                let node = TangramPlay.getNodesForAddress(address + block.name);
 
-                if (key) {
-                    let nLine = key.range.from.line + 1 + block.line;
+                if (node) {
+                    let nLine = node.range.from.line + 1 + block.line;
 
                     let msg = document.createElement('div');
                     let icon = msg.appendChild(document.createElement('span'));
@@ -77,8 +77,19 @@ export default class ErrorsManager {
                     this.blockErrors.add(JSON.stringify(block)); // track unique errors
                 }
                 else {
-                    console.log('Key', address + block.name, 'was not found');
+                    console.log('Node', address + block.name, 'was not found');
                 }
+            }
+        } else if (args.type === 'duplicate') {
+            for (let node of args['nodes']){
+                console.log(node);
+                let nLine = node.widget.range.to.line + 1;
+                let msg = document.createElement('div');
+                let icon = msg.appendChild(document.createElement('span'));
+                icon.className = 'btm bt-exclamation-circle tp-warning-icon';
+                msg.appendChild(document.createTextNode("Duplicate key " + node.key + " (" + node.address + ")" ));
+                msg.className = 'tp-warning';
+                this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
             }
         }
     }

@@ -153,7 +153,7 @@ export default class SaveGistModal extends Modal {
 
         SaveGistSuccessModal.onConfirm = () => {
             clipboard.destroy();
-        }
+        };
     }
 
     // If not successful, turn off wait state,

@@ -89,30 +89,30 @@ export default class WidgetsManager {
             from.ch = 0;
         }
 
-        // Get the matching keys for the FROM/TO range
-        let keys = TangramPlay.getNodes(from, to);
-        // If there is no keys there nothing to do
-        if (!keys || keys.length === 0) {
+        // Get the matching nodes for the FROM/TO range
+        let nodes = TangramPlay.getNodes(from, to);
+        // If there is no nodes there nothing to do
+        if (!nodes || nodes.length === 0) {
             return;
         }
 
         // Get affected bookmarks
         let bookmarks = [];
         if (from.line === to.line && from.ch === to.ch) {
-            // If the FROM/TO range is to narrow search using keys
-            for (let key of keys) {
+            // If the FROM/TO range is to narrow search using nodes
+            for (let node of nodes) {
                 // Find and concatenate bookmarks between FROM/TO range
-                bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarks(key.range.from, key.range.to));
+                bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarks(node.range.from, node.range.to));
             }
         }
         else {
             bookmarks = TangramPlay.editor.getDoc().findMarks(from, to);
         }
 
-        // If there is only one key and the change happen on the value
-        if (keys.length === 1 &&
+        // If there is only one node and the change happen on the value
+        if (nodes.length === 1 &&
             bookmarks.length === 1 &&
-            from.ch > (keys[0].range.from.ch + keys[0].key.length + 2) &&
+            from.ch > (nodes[0].range.from.ch + nodes[0].key.length + 2) &&
             bookmarks[0].widget) {
             // console.log("Updating value of ", bookmarks[0]);
             // Update the widget
@@ -126,27 +126,27 @@ export default class WidgetsManager {
                 bkm.clear();
             }
 
-            // Create widgets from keys
-            this.createKeys(keys);
+            // Create widgets from nodes
+            this.createWidget(nodes);
         }
     }
 
     clearRange (from, to) {
-        let keys = TangramPlay.getNodes(from, to);
+        let nodes = TangramPlay.getNodes(from, to);
 
-        if (!keys || keys.length === 0) {
+        if (!nodes || nodes.length === 0) {
             return;
         }
 
-        this.clearKeys(keys);
+        this.clearNodes(nodes);
     }
 
-    clearKeys (keys) {
+    clearNodes (nodes) {
         let doc = TangramPlay.editor.getDoc();
-        for (let key of keys) {
+        for (let node of nodes) {
             // Find bookmarks between FROM and TO
-            let from = key.range.from.line;
-            let to = key.range.to.line;
+            let from = node.range.from.line;
+            let to = node.range.to.line;
             let bookmarks = doc.findMarks({ line: from }, { line: to });
 
             // Delete those with widgets
@@ -157,34 +157,36 @@ export default class WidgetsManager {
     }
 
     createRange (from, to) {
-        // Search for keys between FROM and TO
-        let keys = TangramPlay.getNodes(from, to);
+        // Search for nodes between FROM and TO
+        let nodes = TangramPlay.getNodes(from, to);
 
-        if (!keys || keys.length === 0) {
+        if (!nodes || nodes.length === 0) {
             return;
         }
 
-        this.createKeys(keys);
+        this.createWidget(nodes);
     }
 
-    createKeys (keys) {
+    createWidget (nodes) {
         let newWidgets = [];
-        for (let key of keys) {
-            let val = key.value;
-            if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(key.range.from.line))) {
+        for (let node of nodes) {
+            let val = node.value;
+            if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(node.range.from.line))) {
                 continue;
             }
 
             // Check for widgets to add
             for (let datum of this.data) {
-                if (datum.match(key)) {
-                    // Create key
-                    let widget = datum.create(key);
-                    widget.insert();
-                    newWidgets.push(widget);
+                if (datum.match(node)) {
 
-                    if (this.pairedUntilLine < key.range.from.line) {
-                        this.pairedUntilLine = key.range.from.line;
+                    // Create node
+                    let widget = datum.create(node);
+                    if (widget.insert()) {
+                        newWidgets.push(widget);
+                    }
+
+                    if (this.pairedUntilLine < node.range.from.line) {
+                        this.pairedUntilLine = node.range.from.line;
                     }
                     break;
                 }

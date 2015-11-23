@@ -12,7 +12,7 @@ export default class DropDownMenu extends Widget {
         // Add empty option
         let newOption = document.createElement('option');
 
-        if (this.key.value === '') {
+        if (this.node.value === '') {
             newOption.selected = true;
         }
 
@@ -24,7 +24,7 @@ export default class DropDownMenu extends Widget {
         for (let value of this.definition.options) {
             let newOption = document.createElement('option');
 
-            if (this.key.value === value) {
+            if (this.node.value === value) {
                 newOption.selected = true;
             }
 
@@ -41,7 +41,7 @@ export default class DropDownMenu extends Widget {
             for (let j = 0; j < keys.length; j++) {
                 let newOption = document.createElement('option');
 
-                if (this.key.value === keys[j]) {
+                if (this.node.value === keys[j]) {
                     newOption.selected = true;
                 }
 
