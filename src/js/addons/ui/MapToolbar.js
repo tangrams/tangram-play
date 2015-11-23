@@ -10,11 +10,14 @@ const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 const MAP_UPDATE_DELTA = 0.002;
 
 let el;
+let menuButtonEl;
 let currentLocation;
 
 const MapToolbar = {
     init () {
-        el = container.querySelector('.tp-map-toolbar');
+        el = container.querySelector('.tp-map-toolbar-bar');
+        menuButtonEl = container.querySelector('.tp-map-toolbar-collapsed');
+
         search.init();
         geolocator.init();
         bookmarks.init();
@@ -26,6 +29,10 @@ const MapToolbar = {
         currentLocation = map.leaflet.getCenter();
         search.setCurrentLatLng(currentLocation);
         search.reverseGeocode(currentLocation);
+
+        menuButtonEl.addEventListener('click', e => {
+            this.toggle();
+        })
     },
 
     toggle () {
@@ -84,11 +91,13 @@ function setupEventListeners () {
 
 function showToolbar () {
     el.style.top = '0';
+    //menuButtonEl.style.top = '-40px';
     saveDisplayState('true');
 }
 
 function hideToolbar () {
     el.style.top = '-50px';
+    //menuButtonEl.style.top = '0';
     saveDisplayState('false');
 }
 

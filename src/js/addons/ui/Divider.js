@@ -32,6 +32,8 @@ export default class Divider {
         }
 
         let divider = this;
+        // Override starting position
+        this.el.style.left = 'auto';
         this.draggable = Draggable.create(this.el, {
             type: 'x',
             bounds: getBounds(),

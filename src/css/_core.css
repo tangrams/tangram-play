@@ -6,4 +6,5 @@
   left: 0;
   width: 100%;
   bottom: 0;
+  background-color: var(--ui-editor-background-color); /* Background color during loading */
 }

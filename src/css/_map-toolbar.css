@@ -6,9 +6,7 @@
     display: flex;
     padding: 6px;
     padding-right: 4px;
-    width: 100%;
     height: 50px;
-    top: -50px; /* starting condition */
     left: 0;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -18,13 +16,41 @@
     font-weight: 200;
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
-    transition: 120ms top ease-out;
+    transition: 90ms top ease-in-out;
     user-select: none;
     z-index: var(--z04-map-toolbar);
 
     & > div:not(:last-child) {
         margin-right: 4px;
     }
+}
+
+.tp-map-toolbar-collapsed {
+    width: 54px;
+    height: 34px;
+    top: 0;
+    left: auto;
+    right: 0;
+    cursor: pointer;
+    font-size: 12px;
+
+    &:hover {
+        color: var(--ui-highlight-color);
+        background-color: var(--ui-active-color);
+    }
+}
+
+.tp-map-toolbar-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tp-map-toolbar-bar {
+    width: 100%;
+    top: -50px; /* starting condition */
 }
 
 .tp-map-zoom {
@@ -124,12 +150,17 @@
     }
 
     &::after {
-        /* The up arrow is not a perfect mirror of the down arrow */
         display: block;
-        transform: rotateX(180deg);
         content: "\25BE";
         font-size: 14px;
         color: #777; /* match CM folding arrows */
+    }
+}
+
+.tp-map-toolbar-bar .tp-map-toolbar-toggle {
+    &::after {
+        /* The up arrow is not a perfect mirror of the down arrow */
+        transform: rotateX(180deg);
     }
 }
 
