@@ -47,19 +47,13 @@ gulp.task('css', function () {
 // Build Javascripts
 gulp.task('js', function () {
     var browserify = require('browserify');
-    var shim = require('browserify-shim');
-    var babelify = require('babelify');
     var source = require('vinyl-source-stream');
     var buffer = require('vinyl-buffer');
     // var uglify = require('gulp-uglify');
 
     var bundle = browserify({
         entries: 'src/js/TangramPlay.js',
-        debug: true,
-        transform: [
-            babelify.configure({ optional: ['runtime'] }),
-            shim
-        ]
+        debug: true
     });
 
     return bundle.bundle()
