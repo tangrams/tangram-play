@@ -48,7 +48,7 @@ export default class Widget {
             this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
 
             if (this.bookmark.lines[0].stateAfter.yamlState.nodes.length === 1) {
-                console.log(this.node, this.bookmark.lines[0].stateAfter.yamlState.nodes);
+                // console.log(this.node, this.bookmark.lines[0].stateAfter.yamlState.nodes);
                 if (this.node.address === this.bookmark.lines[0].stateAfter.yamlState.nodes[0].address) {
                     // UPDATE value
                     // console.log("node for widget EASY to find");
@@ -75,15 +75,14 @@ export default class Widget {
             // Here is a good place to detect duplicates
             
             // let others = TangramPlay.editor.getDoc().findMarksAt(this.node.range.to);
-            // let node = TangramPlay.getNodesForAddress(this.node.address);
-            // this.node =
+            let node = TangramPlay.getNodesForAddress(this.node.address);
+            this.node = node;
         }
 
         // Fix empty line parser error
         if (this.bookmark &&
             this.bookmark.lines &&
             this.bookmark.lines.length === 1) {
-            console.log("Fix line")
             this.node.range.from.line = this.node.range.to.line = this.bookmark.lines[0].lineNo();
         }
     }
