@@ -7,20 +7,22 @@
     font-size: 12px;
     background-color: var(--ui-base-color);
     height: 44px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     user-select: none;
     cursor: default;
-}
 
-/* For some reason, nesting this in .tp-menu-bar causes
-   some properties of .tp-menu-items to disappear */
-.tp-menu-bar h1 {
-    position: relative;
-    display: inline-block;
-    margin: 0 15px;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 44px;
-    color: var(--ui-component-text-color);
+    h1 {
+        position: relative;
+        display: inline-block;
+        margin: 0 15px;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 44px;
+        color: var(--ui-component-text-color);
+        white-space: nowrap;
+    }
 }
 
 .tp-beta-tag {
@@ -41,9 +43,8 @@
     vertical-align: top; /* Fix Firefox pushing this down by 1px */
 }
 
-.tp-menu-right {
-    position: absolute;
-    right: 0;
+.tp-menu-left {
+    flex-grow: 1;
 }
 
 .tp-menu-item {
@@ -82,6 +83,19 @@
 
 .tp-menu-item-label {
     margin-left: 10px;
+}
+
+
+/* When below viewport breakpoint width */
+@media (max-width: 767px) {
+    .tp-menu-bar {
+        .tp-menu-item {
+            padding: 0;
+        }
+        .tp-menu-item-label {
+            display: none;
+        }
+    }
 }
 
 .tp-menu-item-disabled {
