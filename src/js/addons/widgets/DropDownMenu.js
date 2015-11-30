@@ -8,6 +8,7 @@ export default class DropDownMenu extends Widget {
     createEl () {
         let el = document.createElement('select');
         el.className = 'tp-widget tp-widget-dropdown';
+        el.setAttribute('cm-ignore-events', 'true');
 
         // Add empty option
         let newOption = document.createElement('option');
