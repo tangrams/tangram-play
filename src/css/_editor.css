@@ -1,11 +1,16 @@
 /* EDITOR */
 
-#content {
+.tp-editor-container {
     position: absolute;
     right: 0;
     width: 50%;
+    height: 100%;
     min-width: 160px;
     vertical-align: top;
+}
+
+.tp-editor {
+    height: 100%;
 }
 
 .CodeMirror {
