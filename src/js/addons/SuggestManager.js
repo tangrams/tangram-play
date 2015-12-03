@@ -34,7 +34,7 @@ export default class SuggestManager {
         });
 
         // Trigger hint after each time the scene is uploaded
-        TangramPlay.on('scene_updated', (args) => {
+        TangramPlay.on('sceneupdate', (args) => {
             let bOpen = true;
 
             let line = TangramPlay.editor.getCursor().line;

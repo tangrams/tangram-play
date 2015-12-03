@@ -13,6 +13,19 @@ export default class ErrorsManager {
             TangramPlay.addons.errorsManager.clean();
         });
 
+        // TODO
+        // There should be a better way to handle this race condition
+        if (TangramPlay.map.layer) {
+            this.subscribeToTangramEvents();
+        }
+        else {
+            TangramPlay.on('sceneinit', () => {
+                this.subscribeToTangramEvents();
+            })
+        }
+    }
+
+    subscribeToTangramEvents () {
         TangramPlay.map.layer.scene.subscribe({
             error: (args) => {
                 this.addError(args);

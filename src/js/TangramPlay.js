@@ -5,6 +5,7 @@ import { initEditor } from 'app/core/editor';
 // Addons
 import UI from 'app/addons/UI';
 import MapLoading from 'app/addons/ui/MapLoading';
+import Modal from 'app/addons/ui/Modal';
 import WidgetsManager from 'app/addons/WidgetsManager';
 import SuggestManager from 'app/addons/SuggestManager';
 import GlslSandbox from 'app/addons/GlslSandbox';
@@ -13,7 +14,8 @@ import ColorPalette from 'app/addons/ColorPalette';
 import LocalStorage from 'app/addons/LocalStorage';
 
 // Import Utils
-import { httpGet, StopWatch, subscribeMixin, debounce, createObjectURL } from 'app/core/common';
+import xhr from 'xhr';
+import { StopWatch, subscribeMixin, debounce, createObjectURL } from 'app/core/common';
 import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
 import { getNodes, parseYamlString } from 'app/core/codemirror/yaml-tangram';
 
@@ -37,20 +39,17 @@ class TangramPlay {
 
         this.container = document.querySelector(selector);
         this.editor = initEditor('editor');
+        this.map = new Map('map');
         this.options = options;
         this.addons = {};
 
         // Wrap this.updateContent() in a debounce function
         this.updateContent = debounce(this.updateContent, 500);
 
-        // LOAD SCENE FILE
-        let scene = determineScene();
-        this.load(scene);
-
         // TODO: Manage history / routing in its own module
         window.onpopstate = (e) => {
             if (e.state && e.state.sceneUrl) {
-                this.load({ url: sceneUrl });
+                this.load({ url: e.state.sceneUrl });
             }
         };
 
@@ -68,16 +67,6 @@ class TangramPlay {
         window.addEventListener('beforeunload', (event) => {
             let contents = this.getContent();
             saveSceneContentsToLocalMemory(contents);
-        })
-
-        // for debug
-        window.tangramPlay = this;
-
-        // Events
-        this.map.layer.scene.subscribe({
-            load: (args) => {
-                this.trigger('scene_updated', args);
-            }
         });
     }
 
@@ -124,33 +113,41 @@ class TangramPlay {
     load (scene) {
         console.log('Loading scene', scene);
 
-        // Turn on loading indicator. This is shut off later
-        // once the map reports that it's done.
+        // Turn on loading indicator. This is turned off later
+        // when Tangram reports that it's done.
         MapLoading.show();
 
+        // Either we are passed a url path, or scene file contents
         if (scene.url) {
-            if (!this.map) {
-                this.map = new Map('map', scene.url);
-            }
-            this.loadSceneFromPath(scene.url);
+            xhr.get(scene.url, (error, response, body) => {
+                if (error) {
+                    let errorModal = new Modal(error);
+                    return errorModal.show();
+                }
+                this._doLoadProcess(scene.url, body);
+            });
         }
         else if (scene.contents) {
-            let url = createObjectURL(scene.contents);
-            if (!this.map) {
-                this.map = new Map('map', url);
-            }
-            this.map.loadScene(url, { reset: true })
-                .then(() => this.loadSceneFromFileContents(scene.contents));
+            this._doLoadProcess(null, scene.contents);
         }
+    }
+
+    _doLoadProcess (path, contents) {
+        let url = path || createObjectURL(contents);
+
+        // Send url to map and contents to editor
+        // TODO: get contents from Tangram instead of another xhr request.
+        this.map.loadScene(url, { reset: true });
+        this._setSceneContentsInEditor(contents);
 
         // Update history
         let locationPrefix = '.';
-        if (scene.url) {
-            locationPrefix += '?scene=' + scene.url;
+        if (path) {
+            locationPrefix += '?scene=' + path;
         }
 
         window.history.pushState({
-            sceneUrl: (scene.url) ? scene.url : null
+            sceneUrl: (path) ? path : null
         }, null, locationPrefix + window.location.hash);
 
         // Trigger Events
@@ -158,14 +155,7 @@ class TangramPlay {
         this.trigger('sceneload', {});
     }
 
-    loadSceneFromPath (path) {
-        httpGet(path, (err, res) => {
-            this.map.loadScene(path, { reset: true })
-                .then(() => this.loadSceneFromFileContents(res));
-        });
-    }
-
-    loadSceneFromFileContents (contents) {
+    _setSceneContentsInEditor (contents) {
         // Remove any instances of Tangram Play's default API key
         contents = suppressAPIKeys(contents);
 
@@ -405,5 +395,11 @@ export let map = tangramPlay.map;
 export let container = tangramPlay.container;
 export let editor = tangramPlay.editor;
 
+// LOAD SCENE FILE
+let scene = determineScene();
+tangramPlay.load(scene);
 tangramPlay.initAddons();
 new UI();
+
+// for debug
+window.tangramPlay = tangramPlay;

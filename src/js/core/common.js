@@ -178,6 +178,6 @@ export function subscribeMixin (target) {
 }
 
 export function createObjectURL (string) {
-    let createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
-    return createObjectURL(new Blob([string]));
+    let create = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
+    return create(new Blob([string]));
 }
