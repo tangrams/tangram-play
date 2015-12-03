@@ -65,6 +65,24 @@ export default class Map {
         this.scene = layer.scene;
     }
 
+    // Sends a scene path and base path to Tangram.
+    loadScene (url, { reset = false } = {}) {
+        let basePath;
+
+        // If scene is already set, re-use the internal path
+        // (unless reset is true; see below)
+        if (this.scene) {
+            basePath = this.scene.config_path;
+        }
+        // If scene is not set, default to current path
+        else {
+            basePath = window.location.path;
+        }
+
+        // Preserve scene base path unless reset requested (e.g. reset on new file load)
+        return this.scene.load(url, !reset && basePath);
+    }
+
     takeScreenshot () {
         if (!screenshotRequested) {
             screenshotRequested = true;

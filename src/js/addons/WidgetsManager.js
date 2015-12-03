@@ -62,7 +62,7 @@ export default class WidgetsManager {
         });
 
         // If a new files is loaded reset the tracked line
-        TangramPlay.on('url_loaded', (url) => {
+        TangramPlay.on('sceneload', (event) => {
             this.pairedUntilLine = 0;
         });
     }

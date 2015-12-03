@@ -1,6 +1,6 @@
 'use strict';
 
-import { container } from 'app/TangramPlay';
+import TangramPlay, { container } from 'app/TangramPlay';
 import Modal from 'app/addons/ui/Modal';
 import EditorIO from 'app/addons/ui/EditorIO';
 import { httpGet } from 'app/core/common';
@@ -18,7 +18,7 @@ export default class ExamplesModal extends Modal {
         this.onConfirm = () => {
             const selected = this.el.querySelectorAll('.tp-example-option.tp-example-selected')[0];
             const value = selected.getAttribute('data-value');
-            EditorIO.loadContentFromPath(value);
+            TangramPlay.load({ url: value });
         };
 
         this.onAbort = () => {

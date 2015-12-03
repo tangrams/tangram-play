@@ -15,7 +15,7 @@ const EditorIO = {
     },
     new () {
         this.checkSaveStateThen(() => {
-            this.loadContentFromPath(NEW_SCENE_PATH);
+            TangramPlay.load({ url: NEW_SCENE_PATH });
         });
     },
     export () {
@@ -33,19 +33,10 @@ const EditorIO = {
             unsavedModal.show();
         }
     },
-    loadContentFromPath (path) {
-        window.history.pushState({
-            sceneUrl: path
-        }, null, '.?scene=' + path + window.location.hash);
-        TangramPlay.loadSceneFromPath(path);
-    },
     loadContentFromFile (content) {
         const reader = new FileReader();
         reader.onload = function (event) {
-            window.history.pushState({
-                sceneUrl: null
-            }, null, '.' + window.location.hash);
-            TangramPlay.loadContent(event.target.result);
+            TangramPlay.load({ contents: event.target.result });
         };
         reader.readAsText(content);
     }

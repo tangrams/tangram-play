@@ -109,9 +109,9 @@ export function initEditor(place) {
 
     // Update widgets & content after a batch of changes
     cm.on('changes', function (cm, changes) {
-        if (TangramPlay) {
+        //if (TangramPlay) {
             TangramPlay.updateContent();
-        }
+        //}
     });
 
     cm.getLineInd = function (nLine) {

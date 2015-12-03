@@ -26,7 +26,7 @@ export default class ColorPalette {
         });
 
         // If is a new file load all colors by going to the end and comeback
-        TangramPlay.on('url_loaded', (args) => {
+        TangramPlay.on('sceneload', (event) => {
             for (let i = 0; i < TangramPlay.editor.getDoc().size; i++) {
                 jumpToLine(TangramPlay.editor, i);
             }

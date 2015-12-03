@@ -13,7 +13,7 @@ import ColorPalette from 'app/addons/ColorPalette';
 import LocalStorage from 'app/addons/LocalStorage';
 
 // Import Utils
-import { httpGet, StopWatch, subscribeMixin, debounce } from 'app/core/common';
+import { httpGet, StopWatch, subscribeMixin, debounce, createObjectURL } from 'app/core/common';
 import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
 import { getNodes, parseYamlString } from 'app/core/codemirror/yaml-tangram';
 
@@ -79,9 +79,6 @@ class TangramPlay {
                 this.trigger('scene_updated', args);
             }
         });
-
-        // Add-ons
-        this.initAddons();
     }
 
     //  ADDONS
@@ -126,55 +123,56 @@ class TangramPlay {
     // LOADers
     load (scene) {
         console.log('Loading scene', scene);
+
+        // Turn on loading indicator. This is shut off later
+        // once the map reports that it's done.
+        MapLoading.show();
+
         if (scene.url) {
-            this.map = new Map('map', scene.url);
+            if (!this.map) {
+                this.map = new Map('map', scene.url);
+            }
             this.loadSceneFromPath(scene.url);
         }
         else if (scene.contents) {
-            let createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
-            let url = createObjectURL(new Blob([scene.contents]));
-            this.map = new Map('map', url);
-            this.loadScene(url, { reset: true })
-                .then(() => this.loadContent(scene.contents));
-        }
-    }
-
-    loadContent (str) {
-        MapLoading.show();
-
-        // Remove any instances of Tangram Play's default API key
-        str = suppressAPIKeys(str);
-
-        this.editor.setValue(str);
-        this.editor.clearHistory();
-        this.editor.doc.markClean();
-    }
-
-    loadScene (url, { reset = false } = {}) {
-        let basePath;
-
-        if (this.map.scene) {
-            basePath = this.map.scene.config_path;
-        }
-        // If all else fails, default to current path
-        else {
-            basePath = window.location.path;
+            let url = createObjectURL(scene.contents);
+            if (!this.map) {
+                this.map = new Map('map', url);
+            }
+            this.map.loadScene(url, { reset: true })
+                .then(() => this.loadSceneFromFileContents(scene.contents));
         }
 
-        // Preserve scene base path unless reset requested (e.g. reset on new file load)
-        return this.map.scene.load(url, !reset && basePath);
+        // Update history
+        let locationPrefix = '.';
+        if (scene.url) {
+            locationPrefix += '?scene=' + scene.url;
+        }
+
+        window.history.pushState({
+            sceneUrl: (scene.url) ? scene.url : null
+        }, null, locationPrefix + window.location.hash);
+
+        // Trigger Events
+        // Event object is empty right now.
+        this.trigger('sceneload', {});
     }
 
     loadSceneFromPath (path) {
-        MapLoading.show();
-
         httpGet(path, (err, res) => {
-            this.loadScene(path, { reset: true }).
-                then(() => this.loadContent(res));
-
-            // Trigger Events
-            this.trigger('url_loaded', { url: path });
+            this.map.loadScene(path, { reset: true })
+                .then(() => this.loadSceneFromFileContents(res));
         });
+    }
+
+    loadSceneFromFileContents (contents) {
+        // Remove any instances of Tangram Play's default API key
+        contents = suppressAPIKeys(contents);
+
+        // Set content in CodeMirror
+        this.editor.setValue(contents);
+        this.editor.clearHistory();
+        this.editor.doc.markClean();
     }
 
     // SET
@@ -200,10 +198,9 @@ class TangramPlay {
 
     // If editor is updated, send it to the map.
     updateContent () {
-        let createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
         let content = this.getContent();
-        let url = createObjectURL(new Blob([content]));
-        this.loadScene(url);
+        let url = createObjectURL(content);
+        this.map.loadScene(url);
     }
 
     // GET
@@ -408,4 +405,5 @@ export let map = tangramPlay.map;
 export let container = tangramPlay.container;
 export let editor = tangramPlay.editor;
 
+tangramPlay.initAddons();
 new UI();
