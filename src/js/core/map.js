@@ -62,7 +62,7 @@ export default class Map {
 
         this.scene = layer.scene;
         window.layer = layer;
-        window.scene = scene;
+        window.scene = layer.scene;
 
         return layer;
     }

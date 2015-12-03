@@ -14,7 +14,7 @@ export default class ErrorsManager {
         });
 
         // TODO
-        // There should be a better way to handle this race condition
+        // Make this rely on promises
         if (TangramPlay.map.layer) {
             this.subscribeToTangramEvents();
         }

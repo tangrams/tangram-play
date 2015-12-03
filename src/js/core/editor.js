@@ -33,7 +33,7 @@ import { getLineInd, unfoldAll, foldByLevel } from 'app/core/codemirror/tools';
 //  Main CM functions
 //  ===============================================================================
 
-export function initEditor(place) {
+export function initEditor (id) {
     // Add rulers
     let rulers = [];
     for (let i = 1; i < 10; i++) {
@@ -44,7 +44,7 @@ export function initEditor(place) {
     }
 
     // Create DOM (TODO)
-    let dom = document.getElementById(place);
+    let dom = document.getElementById(id);
 
     // Initialize CodeMirror
     let cm = CodeMirror(dom, {
@@ -106,13 +106,6 @@ export function initEditor(place) {
     });
 
     // Hook events
-
-    // Update widgets & content after a batch of changes
-    cm.on('changes', function (cm, changes) {
-        if (TangramPlay) {
-            TangramPlay.updateContent();
-        }
-    });
 
     cm.getLineInd = function (nLine) {
         return getLineInd(this, nLine);

@@ -46,6 +46,9 @@ class TangramPlay {
         // Wrap this.updateContent() in a debounce function
         this.updateContent = debounce(this.updateContent, 500);
 
+        // Bind callback function to correct context
+        this._watchEditorForChanges = this._watchEditorForChanges.bind(this);
+
         // TODO: Manage history / routing in its own module
         window.onpopstate = (e) => {
             if (e.state && e.state.sceneUrl) {
@@ -117,6 +120,9 @@ class TangramPlay {
         // when Tangram reports that it's done.
         MapLoading.show();
 
+        // Turn off watching for changes in editor.
+        this.editor.off('changes', this._watchEditorForChanges);
+
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
             xhr.get(scene.url, (error, response, body) => {
@@ -155,6 +161,11 @@ class TangramPlay {
         this.trigger('sceneload', {});
     }
 
+    // Update widgets & content after a batch of changes
+    _watchEditorForChanges (cm, changes) {
+        this.updateContent();
+    }
+
     _setSceneContentsInEditor (contents) {
         // Remove any instances of Tangram Play's default API key
         contents = suppressAPIKeys(contents);
@@ -163,6 +174,9 @@ class TangramPlay {
         this.editor.setValue(contents);
         this.editor.clearHistory();
         this.editor.doc.markClean();
+
+        // Turn change watching back on.
+        this.editor.on('changes', this._watchEditorForChanges);
     }
 
     // SET
