@@ -68,7 +68,7 @@ export default class Map {
     }
 
     // Sends a scene path and base path to Tangram.
-    loadScene (pathToSceneFile, { reset = false } = {}) {
+    loadScene (pathToSceneFile, { reset = false, basePath = null } = {}) {
         // Initialize Tangram if it's not already set.
         // Tangram must be initialized with a scene file.
         // We only initialize Tangram when Tangram Play
@@ -80,10 +80,9 @@ export default class Map {
             // If scene is already set, re-use the internal path
             // If scene is not set, default to current path
             // This is ignored if reset is true; see below)
-            let basePath = this.scene.config_path;
-
+            let path = basePath || this.scene.config_path;
             // Preserve scene base path unless reset requested (e.g. reset on new file load)
-            return this.scene.load(pathToSceneFile, !reset && basePath);
+            return this.scene.load(pathToSceneFile, !reset && path);
         }
     }
 

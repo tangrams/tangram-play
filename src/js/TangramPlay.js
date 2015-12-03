@@ -68,8 +68,17 @@ class TangramPlay {
         // with our own UI and logic, since this allows for widespread abuse
         // of normal browser functionality.
         window.addEventListener('beforeunload', (event) => {
-            let contents = this.getContent();
-            saveSceneContentsToLocalMemory(contents);
+            // TODO:
+            // Don't take original url or original base path from
+            // Tangram (it may be wrong). Instead, remember this
+            // in a "session" variable
+            let sceneData = {
+                'original_url': this.map.scene.config_source,
+                'original_base_path': this.map.scene.config_path,
+                'contents': this.getContent(),
+                'is_clean': this.editor.isClean()
+            }
+            saveSceneContentsToLocalMemory(sceneData);
         });
     }
 
@@ -130,30 +139,35 @@ class TangramPlay {
                     let errorModal = new Modal(error);
                     return errorModal.show();
                 }
-                this._doLoadProcess(scene.url, body);
+                scene.contents = body;
+                this._doLoadProcess(scene);
             });
         }
         else if (scene.contents) {
-            this._doLoadProcess(null, scene.contents);
+            this._doLoadProcess(scene);
         }
     }
 
-    _doLoadProcess (path, contents) {
-        let url = path || createObjectURL(contents);
+    _doLoadProcess (scene) {
+        let url = scene.url || createObjectURL(scene.contents);
 
         // Send url to map and contents to editor
         // TODO: get contents from Tangram instead of another xhr request.
-        this.map.loadScene(url, { reset: true });
-        this._setSceneContentsInEditor(contents);
+        console.log(scene)
+        this.map.loadScene(url, {
+            reset: true,
+            basePath: scene['original_base_path']
+        });
+        this._setSceneContentsInEditor(scene);
 
         // Update history
         let locationPrefix = '.';
-        if (path) {
-            locationPrefix += '?scene=' + path;
+        if (scene.url) {
+            locationPrefix += '?scene=' + scene.url;
         }
 
         window.history.pushState({
-            sceneUrl: (path) ? path : null
+            sceneUrl: (scene.url) ? scene.url : null
         }, null, locationPrefix + window.location.hash);
 
         // Trigger Events
@@ -166,14 +180,16 @@ class TangramPlay {
         this.updateContent();
     }
 
-    _setSceneContentsInEditor (contents) {
+    _setSceneContentsInEditor (sceneData) {
         // Remove any instances of Tangram Play's default API key
-        contents = suppressAPIKeys(contents);
+        let contents = suppressAPIKeys(sceneData.contents);
 
         // Set content in CodeMirror
         this.editor.setValue(contents);
         this.editor.clearHistory();
-        this.editor.doc.markClean();
+        if (!!sceneData['is_clean']) {
+            this.editor.doc.markClean();
+        }
 
         // Turn change watching back on.
         this.editor.on('changes', this._watchEditorForChanges);
@@ -347,10 +363,9 @@ function determineScene () {
     }
 
     // Else if there is something saved in memory (LocalStorage), return that
-    let contents = getSceneContentsFromLocalMemory();
-    if (contents) {
-        scene.contents = contents;
-        return scene;
+    let sceneData = getSceneContentsFromLocalMemory();
+    if (sceneData) {
+        return sceneData;
     }
 
     // Else load the default scene file.
@@ -358,18 +373,27 @@ function determineScene () {
     return scene;
 }
 
-function saveSceneContentsToLocalMemory (contents) {
-    LocalStorage.setItem(STORAGE_LAST_EDITOR_CONTENT, contents);
+function saveSceneContentsToLocalMemory (sceneData) {
+    // Expects an object of format:
+    // {
+    //     original_url: 'http://valid.url/path/scene.yaml',
+    //     original_base_path: 'http://valid.url/path/',
+    //     contents: 'Contents of scene.yaml',
+    //     is_clean: boolean value; false indicates original contents were modified without saving
+    // }
+    LocalStorage.setItem(STORAGE_LAST_EDITOR_CONTENT, JSON.stringify(sceneData));
 }
 
 function getSceneContentsFromLocalMemory () {
-    let contents = LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT);
+    let sceneData = JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
+    let contents = sceneData.contents;
 
     // TODO: Verify that contents are valid/parse-able YAML before returning it.
     // Throw away saved contents if it's "Loading..." or empty.
-    // If we check for parse-ability, we won't to hard-code the Loading check
+    // If we check for parse-ability, we won't need to hard-code the Loading check
+    // (The alternative strategy is to not have the placeholder)
     if (contents && contents !== 'Loading...' && contents.trim().length > 0) {
-        return contents;
+        return sceneData;
     }
     else {
         return null;
