@@ -386,18 +386,20 @@ function saveSceneContentsToLocalMemory (sceneData) {
 
 function getSceneContentsFromLocalMemory () {
     let sceneData = JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
-    let contents = sceneData.contents;
 
-    // TODO: Verify that contents are valid/parse-able YAML before returning it.
-    // Throw away saved contents if it's "Loading..." or empty.
-    // If we check for parse-ability, we won't need to hard-code the Loading check
-    // (The alternative strategy is to not have the placeholder)
-    if (contents && contents !== 'Loading...' && contents.trim().length > 0) {
-        return sceneData;
+    if (sceneData) {
+        let contents = sceneData.contents;
+
+        // TODO: Verify that contents are valid/parse-able YAML before returning it.
+        // Throw away saved contents if it's "Loading..." or empty.
+        // If we check for parse-ability, we won't need to hard-code the Loading check
+        // (The alternative strategy is to not have the placeholder)
+        if (contents && contents !== 'Loading...' && contents.trim().length > 0) {
+            return sceneData;
+        }
     }
-    else {
-        return null;
-    }
+
+    return null;
 }
 
 // Files loaded without API keys need to have "our own" key injected so that
