@@ -29,25 +29,11 @@ import 'codemirror/keymap/sublime';
 
 // Import Utils
 import { getLineInd, unfoldAll, foldByLevel } from 'app/core/codemirror/tools';
-import { debounce } from 'app/core/common';
 
 //  Main CM functions
 //  ===============================================================================
-var updateContent = debounce(function(cm, changes) {
-    let createObjectURL = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
 
-    //  If doesn't have a API key
-    //  inject a Tangram-Play one: vector-tiles-x4i7gmA ( Patricio is the owner )
-    let content = cm.getValue();
-    let pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-    let result = '$1?api_key=vector-tiles-P6dkVl4';
-    content = content.replace(pattern, result);
-
-    let url = createObjectURL(new Blob([content]));
-    TangramPlay.loadScene(url);
-}, 500);
-
-export function initEditor(place) {
+export function initEditor (id) {
     // Add rulers
     let rulers = [];
     for (let i = 1; i < 10; i++) {
@@ -58,7 +44,7 @@ export function initEditor(place) {
     }
 
     // Create DOM (TODO)
-    let dom = document.getElementById(place);
+    let dom = document.getElementById(id);
 
     // Initialize CodeMirror
     let cm = CodeMirror(dom, {
@@ -119,14 +105,9 @@ export function initEditor(place) {
         indentUnit: 4
     });
 
-    //  Hook events
+    // Hook events
 
-    // Update widgets & content after a batch of changes
-    cm.on('changes', function(cm, changes) {
-        updateContent(cm, changes);
-    });
-
-    cm.getLineInd = function(nLine) {
+    cm.getLineInd = function (nLine) {
         return getLineInd(this, nLine);
     };
 

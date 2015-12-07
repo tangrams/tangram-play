@@ -1,7 +1,6 @@
 'use strict';
 
-import TangramPlay from 'app/TangramPlay';
-import { editor } from 'app/TangramPlay';
+import TangramPlay, { editor } from 'app/TangramPlay';
 import { saveAs } from 'app/vendor/FileSaver.min.js';
 import { noop } from 'app/addons/ui/Helpers';
 import Modal from 'app/addons/ui/Modal';
@@ -16,7 +15,7 @@ const EditorIO = {
     },
     new () {
         this.checkSaveStateThen(() => {
-            this.loadContentFromPath(NEW_SCENE_PATH);
+            TangramPlay.load({ url: NEW_SCENE_PATH });
         });
     },
     export () {
@@ -34,19 +33,10 @@ const EditorIO = {
             unsavedModal.show();
         }
     },
-    loadContentFromPath (path) {
-        window.history.pushState({
-            loadSceneURL: path
-        }, null, '.?scene=' + path + window.location.hash);
-        TangramPlay.loadQuery();
-    },
     loadContentFromFile (content) {
         const reader = new FileReader();
         reader.onload = function (event) {
-            window.history.pushState({
-                loadSceneURL: null
-            }, null, '.' + window.location.hash);
-            TangramPlay.loadContent(event.target.result);
+            TangramPlay.load({ contents: event.target.result });
         };
         reader.readAsText(content);
     }

@@ -3,7 +3,7 @@
 import TangramPlay, { container, editor } from 'app/TangramPlay';
 import LocalStorage from 'app/addons/LocalStorage';
 import Modal from 'app/addons/ui/Modal';
-import request from 'request';
+import xhr from 'xhr';
 import Clipboard from 'clipboard';
 
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
@@ -56,9 +56,8 @@ export default class SaveGistModal extends Modal {
             };
 
             // Make the post
-            request({
+            xhr.post({
                 url: 'https://api.github.com/gists',
-                method: 'POST',
                 body: formatGistPayload(data)
             }, (error, response, body) => {
                 if (error) {

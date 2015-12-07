@@ -1,26 +1,34 @@
 // Core elements
 import Map from 'app/core/Map';
-import {initEditor} from 'app/core/editor';
+import { initEditor } from 'app/core/editor';
 
 // Addons
 import UI from 'app/addons/UI';
 import MapLoading from 'app/addons/ui/MapLoading';
+import Modal from 'app/addons/ui/Modal';
 import WidgetsManager from 'app/addons/WidgetsManager';
 import SuggestManager from 'app/addons/SuggestManager';
 import GlslSandbox from 'app/addons/GlslSandbox';
 import ErrorsManager from 'app/addons/ErrorsManager';
 import ColorPalette from 'app/addons/ColorPalette';
+import LocalStorage from 'app/addons/LocalStorage';
 
 // Import Utils
-import { httpGet, StopWatch, subscribeMixin } from 'app/core/common';
+import xhr from 'xhr';
+import { StopWatch, subscribeMixin, debounce, createObjectURL } from 'app/core/common';
 import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
 import { getNodes, parseYamlString } from 'app/core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
+
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
+const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
+
+// Default API key to use in scene files that do not provide one (Patricio is the owner)
+const DEFAULT_API_KEY = 'vector-tiles-P6dkVl4';
 
 class TangramPlay {
-    constructor(selector, options) {
+    constructor (selector, options) {
         subscribeMixin(this);
 
         //Benchmark & Debuggin
@@ -29,15 +37,24 @@ class TangramPlay {
             window.watch.start();
         }
 
-        if (options.scene === undefined) {
-            options.scene = DEFAULT_SCENE;
-        }
-
         this.container = document.querySelector(selector);
-        this.map = new Map('map', options.scene);
         this.editor = initEditor('editor');
+        this.map = new Map('map');
         this.options = options;
         this.addons = {};
+
+        // Wrap this.updateContent() in a debounce function
+        this.updateContent = debounce(this.updateContent, 500);
+
+        // Bind callback function to correct context
+        this._watchEditorForChanges = this._watchEditorForChanges.bind(this);
+
+        // TODO: Manage history / routing in its own module
+        window.onpopstate = (e) => {
+            if (e.state && e.state.sceneUrl) {
+                this.load({ url: e.state.sceneUrl });
+            }
+        };
 
         setTimeout(() => {
             if (query['lines']) {
@@ -45,24 +62,23 @@ class TangramPlay {
             }
         }, 500);
 
-        // LOAD SCENE FILE
-        this.loadFile(options.scene);
-
-        // TODO: Manage history / routing in its own module
-        window.onpopstate = (e) => {
-            if (e.state && e.state.loadSceneURL) {
-                this.loadQuery();
+        // If the user bails for whatever reason, hastily shove the contents of
+        // the editor into some kind of storage. This overwrites whatever was
+        // there before. Note that there is not really a way of handling unload
+        // with our own UI and logic, since this allows for widespread abuse
+        // of normal browser functionality.
+        window.addEventListener('beforeunload', (event) => {
+            // TODO:
+            // Don't take original url or original base path from
+            // Tangram (it may be wrong). Instead, remember this
+            // in a "session" variable
+            let sceneData = {
+                'original_url': this.map.scene.config_source,
+                'original_base_path': this.map.scene.config_path,
+                'contents': this.getContent(),
+                'is_clean': this.editor.isClean()
             }
-        };
-
-        // for debug
-        window.tangramPlay = this;
-
-        // Events
-        this.map.layer.scene.subscribe({
-            load: (args) => {
-                this.trigger('scene_updated', args);
-            }
+            saveSceneContentsToLocalMemory(sceneData);
         });
     }
 
@@ -74,7 +90,7 @@ class TangramPlay {
         }
     }
 
-    initAddon(addon, ...data) {
+    initAddon (addon, ...data) {
         console.log('Loading addon', addon, ...data);
         switch(addon) {
             case 'widgets':
@@ -106,42 +122,77 @@ class TangramPlay {
     }
 
     // LOADers
-    loadContent(str) {
+    load (scene) {
+        console.log('Loading scene', scene);
+
+        // Turn on loading indicator. This is turned off later
+        // when Tangram reports that it's done.
         MapLoading.show();
 
-        //  Delete API Key (TODO: check with the actual user and take out the onces that don't belong to the user)
-        str = str.replace(/\?api_key\=(\w|\-)*$/gm, '');
+        // Turn off watching for changes in editor.
+        this.editor.off('changes', this._watchEditorForChanges);
 
-        this.editor.setValue(str);
-        this.editor.clearHistory();
-        this.editor.doc.markClean();
+        // Either we are passed a url path, or scene file contents
+        if (scene.url) {
+            xhr.get(scene.url, (error, response, body) => {
+                if (error) {
+                    let errorModal = new Modal(error);
+                    return errorModal.show();
+                }
+                scene.contents = body;
+                this._doLoadProcess(scene);
+            });
+        }
+        else if (scene.contents) {
+            this._doLoadProcess(scene);
+        }
     }
 
-    loadScene (url, { reset = false } = {}) {
-        if (!this.map.scene) {
-            return;
+    _doLoadProcess (scene) {
+        let url = scene.url || createObjectURL(scene.contents);
+
+        // Send url to map and contents to editor
+        // TODO: get contents from Tangram instead of another xhr request.
+        console.log(scene)
+        this.map.loadScene(url, {
+            reset: true,
+            basePath: scene['original_base_path']
+        });
+        this._setSceneContentsInEditor(scene);
+
+        // Update history
+        let locationPrefix = '.';
+        if (scene.url) {
+            locationPrefix += '?scene=' + scene.url;
         }
 
-        // Preserve scene base path unless reset requested (e.g. reset on new file load)
-        return this.map.scene.load(url, !reset && this.map.scene.config_path);
+        window.history.pushState({
+            sceneUrl: (scene.url) ? scene.url : null
+        }, null, locationPrefix + window.location.hash);
+
+        // Trigger Events
+        // Event object is empty right now.
+        this.trigger('sceneload', {});
     }
 
-    loadFile (path) {
-        MapLoading.show();
-
-        httpGet(path, (err, res) => {
-            this.loadScene(path, { reset: true }).
-                then(() => this.loadContent(res));
-
-            // Trigger Events
-            this.trigger('url_loaded', { url: path });
-        });
+    // Update widgets & content after a batch of changes
+    _watchEditorForChanges (cm, changes) {
+        this.updateContent();
     }
 
-    loadQuery () {
-        let query = parseQuery(window.location.search.slice(1));
-        let src = query['scene'] ? query['scene'] : DEFAULT_SCENE;
-        this.loadFile(src);
+    _setSceneContentsInEditor (sceneData) {
+        // Remove any instances of Tangram Play's default API key
+        let contents = suppressAPIKeys(sceneData.contents);
+
+        // Set content in CodeMirror
+        this.editor.setValue(contents);
+        this.editor.clearHistory();
+        if (!!sceneData['is_clean']) {
+            this.editor.doc.markClean();
+        }
+
+        // Turn change watching back on.
+        this.editor.on('changes', this._watchEditorForChanges);
     }
 
     // SET
@@ -165,12 +216,19 @@ class TangramPlay {
         this.editor.doc.replaceRange(str, from, node.range.to);
     }
 
+    // If editor is updated, send it to the map.
+    updateContent () {
+        let content = this.getContent();
+        let url = createObjectURL(content);
+        this.map.loadScene(url);
+    }
+
     // GET
+    // Get the contents of the editor (with injected API keys)
     getContent () {
         let content = this.editor.getValue();
-        let pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-        let result = '$1?api_key=vector-tiles-P6dkVl4';
-        content = content.replace(pattern, result);
+        //  If API keys are missing, inject one
+        content = injectAPIKeys(content);
         return content;
     }
 
@@ -293,10 +351,75 @@ function parseQuery (qstr) {
     return query;
 }
 
+// Determine what is the scene url and content to load during start-up
+function determineScene () {
+    let scene = {};
+
+    // If there is a query, return it
+    let query = parseQuery(window.location.search.slice(1));
+    if (query.scene) {
+        scene.url = query.scene;
+        return scene;
+    }
+
+    // Else if there is something saved in memory (LocalStorage), return that
+    let sceneData = getSceneContentsFromLocalMemory();
+    if (sceneData) {
+        return sceneData;
+    }
+
+    // Else load the default scene file.
+    scene.url = DEFAULT_SCENE;
+    return scene;
+}
+
+function saveSceneContentsToLocalMemory (sceneData) {
+    // Expects an object of format:
+    // {
+    //     original_url: 'http://valid.url/path/scene.yaml',
+    //     original_base_path: 'http://valid.url/path/',
+    //     contents: 'Contents of scene.yaml',
+    //     is_clean: boolean value; false indicates original contents were modified without saving
+    // }
+    LocalStorage.setItem(STORAGE_LAST_EDITOR_CONTENT, JSON.stringify(sceneData));
+}
+
+function getSceneContentsFromLocalMemory () {
+    let sceneData = JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
+    let contents = sceneData.contents;
+
+    // TODO: Verify that contents are valid/parse-able YAML before returning it.
+    // Throw away saved contents if it's "Loading..." or empty.
+    // If we check for parse-ability, we won't need to hard-code the Loading check
+    // (The alternative strategy is to not have the placeholder)
+    if (contents && contents !== 'Loading...' && contents.trim().length > 0) {
+        return sceneData;
+    }
+    else {
+        return null;
+    }
+}
+
+// Files loaded without API keys need to have "our own" key injected so that
+// the scene can be rendered by Tangram.
+function injectAPIKeys (content) {
+    const pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
+    const result = `$1?api_key=${DEFAULT_API_KEY}`;
+    return content.replace(pattern, result);
+}
+
+// Before displaying scene file content, scrub it for keys that match the
+// default internal Tangram Play API key.
+// (TODO: check with the actual user and take out the ones that don't belong to the user)
+function suppressAPIKeys (content) {
+    const escapedApiKey = DEFAULT_API_KEY.replace(/\-/g, '\\-');
+    const re = new RegExp(`\\?api_key\\=${escapedApiKey}`, 'gm');
+    return content.replace(re, '');
+}
+
 // Export an instance of TangramPlay with the following modules
 
 let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
-    scene: query['scene'] ? query['scene'] : DEFAULT_SCENE,
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
@@ -310,5 +433,11 @@ export let map = tangramPlay.map;
 export let container = tangramPlay.container;
 export let editor = tangramPlay.editor;
 
+// LOAD SCENE FILE
+let scene = determineScene();
+tangramPlay.load(scene);
 tangramPlay.initAddons();
 new UI();
+
+// for debug
+window.tangramPlay = tangramPlay;

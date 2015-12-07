@@ -1,6 +1,6 @@
 'use strict';
 
-import { container } from 'app/TangramPlay';
+import TangramPlay, { container } from 'app/TangramPlay';
 import Modal from 'app/addons/ui/Modal';
 import EditorIO from 'app/addons/ui/EditorIO';
 
@@ -29,7 +29,7 @@ export default class OpenUrlModal extends Modal {
         this.onConfirm = () => {
             const value = this.input.value;
             this.clearInput();
-            EditorIO.loadContentFromPath(value);
+            TangramPlay.load({ url: value });
         };
 
         this.onAbort = () => {
