@@ -1,6 +1,42 @@
 {
 	"examples" : [
 		{
+			"name"	: "refill-style.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/refill-style/gh-pages/refill-style.yaml"
+		},
+		{
+			"name"	: "refill-style-more-labels.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/refill-style-more-labels/gh-pages/refill-style-more-labels.yaml"
+		},
+		{
+			"name"	: "refill-style-no-labels.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/refill-style-no-labels/gh-pages/refill-style-no-labels.yaml"
+		},
+		{
+			"name"	: "cinnabar-style.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/cinnabar-style/gh-pages/cinnabar-style.yaml"
+		},
+		{
+			"name"	: "cinnabar-style-more-labels.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/cinnabar-style-more-labels/gh-pages/cinnabar-style-more-labels.yaml"
+		},
+		{
+			"name"	: "cinnabar-style-no-labels.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/cinnabar-style-no-labels/gh-pages/cinnabar-style-no-labels.yaml"
+		},
+		{
+			"name"	: "zinc-style.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/zinc-style/gh-pages/zinc-style.yaml"
+		},
+		{
+			"name"	: "zinc-style-more-labels.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/zinc-style-more-labels/gh-pages/zinc-style-more-labels.yaml"
+		},
+		{
+			"name"	: "zinc-style-no-labels.yaml",
+			"url"	: "https://raw.githubusercontent.com/tangrams/zinc-style-no-labels/gh-pages/zinc-style-no-labels.yaml"
+		},
+		{
 			"name"	: "default.yaml",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.yaml"
 		},
