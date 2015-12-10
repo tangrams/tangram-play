@@ -51,7 +51,7 @@ function loadExamples (configFile) {
             nameEl.textContent = name.replace(/-/g, ' ');
             thumbnailEl.className = 'tp-example-thumbnail';
             thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
-            thumbnailEl.style.backgroundImage = 'url(https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/' + name + '.png)';
+            thumbnailEl.style.backgroundImage = 'url(' + example['thumb'] +')';
             newOption.appendChild(nameEl);
             newOption.appendChild(thumbnailEl);
             newOption.addEventListener('click', selectExample);

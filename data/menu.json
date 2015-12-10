@@ -1,67 +1,128 @@
 {
 	"examples" : [
 		{
+			"name"	: "refill-style.yaml",
+			"thumb" : "https://cloud.githubusercontent.com/assets/853051/11160181/87349950-8a1b-11e5-8559-5c6d95cb84d5.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/refill-style/gh-pages/refill-style.yaml"
+		},
+		{
+			"name"	: "refill-style-more-labels.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11160179/86f64d26-8a1b-11e5-8939-5c34f69ad895.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/refill-style-more-labels/gh-pages/refill-style-more-labels.yaml"
+		},
+		{
+			"name"	: "refill-style-no-labels.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11160180/87324d4e-8a1b-11e5-84b3-b64c8e866194.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/refill-style-no-labels/gh-pages/refill-style-no-labels.yaml"
+		},
+		{
+			"name"	: "cinnabar-style.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11084429/f615a860-87ef-11e5-8ca9-6c46cec3534b.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/cinnabar-style/gh-pages/cinnabar-style.yaml"
+		},
+		{
+			"name"	: "cinnabar-style-more-labels.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11080646/c7c6fd26-87ca-11e5-8a04-7316d8721fc4.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/cinnabar-style-more-labels/gh-pages/cinnabar-style-more-labels.yaml"
+		},
+		{
+			"name"	: "cinnabar-style-no-labels.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11084428/f5c7567e-87ef-11e5-95cd-a4ae66e52f8c.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/cinnabar-style-no-labels/gh-pages/cinnabar-style-no-labels.yaml"
+		},
+		{
+			"name"	: "zinc-style.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11136794/c8c54190-8966-11e5-9017-b7f06d6841bb.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/zinc-style/gh-pages/zinc-style.yaml"
+		},
+		{
+			"name"	: "zinc-style-more-labels.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11136795/c8c7b916-8966-11e5-81e3-8db20c26ffb0.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/zinc-style-more-labels/gh-pages/zinc-style-more-labels.yaml"
+		},
+		{
+			"name"	: "zinc-style-no-labels.yaml",
+			"thumb"	: "https://cloud.githubusercontent.com/assets/853051/11136796/c8c8c2ac-8966-11e5-96a3-998f68ba3642.png",
+			"url"	: "https://raw.githubusercontent.com/tangrams/zinc-style-no-labels/gh-pages/zinc-style-no-labels.yaml"
+		},
+		{
 			"name"	: "default.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.yaml"
 		},
 		{
 			"name"	: "grain.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain.yaml"
 		},
 		{
 			"name"	: "grain-roads.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-roads.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-roads.yaml"
 		},
 		{
 			"name"	: "grain-area.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-area.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-area.yaml"
 		},
 		{
 			"name"	: "gotham.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/gotham.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/gotham.yaml"
 		},
 		{
 			"name" : "blueprint.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.png",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.yaml"
 		},
 		{
 			"name" : "tron.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.png",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.yaml"
 		},
 		{
 			"name" : "matrix.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.png",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.yaml"
 		},
 		{
 			"name" : "ikeda.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/ikeda.png",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/ikeda.yaml"
 		},
 		{
 			"name"	: "9845C.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/9845C.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/9845C.yaml"
 		},
 		{
 			"name"	: "press.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/press.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/press.yaml"
 		},
 		{
 			"name"	: "radar.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/radar.png",
 			"url"	: "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/radar.yaml"
 		},
 		{
 			"name" : "crosshatch.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.png",
 			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml"
 		},
 		{
 			"name" : "pericoli.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.png",
 			"url" : "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml"
 		},
 		{
 			"name" : "patterns.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.png",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
 		},
 		{
 			"name" : "lego.yaml",
+			"thumb"	: "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.png",
 			"url" : "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
 		}
 	]
