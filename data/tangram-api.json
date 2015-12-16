@@ -40,7 +40,7 @@
         {
             "address": "^/styles/(\\w|\\_|\\-)+$",
             "level": 2,
-            "options": ["base", "mix", "blend", "lighting", "texcoords", "animated", "material", "shaders", "texture", "url"]
+            "options": ["base", "mix", "blend", "blend_order", "lighting", "texcoords", "animated", "material", "shaders", "texture", "url"]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/material$",
@@ -60,7 +60,7 @@
         {
             "address": "^/styles/(\\w|\\_|\\-)+/shaders/blocks$",
             "level": 4,
-            "options": ["global","position","width","normal","color","filter"]
+            "options": ["global", "position", "width", "normal", "color", "filter"]
         },
         
         {
@@ -82,13 +82,13 @@
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)+/draw/(\\w|\\_|\\-)+$",
             "level": 4,
-            "options": ["style", "order", "interactive", "width", "outline", "extrude", "font", "text_source", "priority", "color", "sprite", "size", "sprite_default", "cap", "join", "tile_edges"],
+            "options": ["style", "order", "interactive", "width", "outline", "extrude", "font", "text_source", "collide", "repeat_distance", "repeat_group","priority", "color", "sprite", "size", "sprite_default", "cap", "join", "tile_edges"],
             "source": "/styles"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font$",
             "level": 5,
-            "options": ["fill", "typeface", "weight", "family", "type", "stroke", "capitalized", "move_into_tile", "align", "style", "text_wrap", "anchor"]
+            "options": ["fill", "typeface", "weight", "family", "type", "stroke", "size", "capitalized", "move_into_tile", "align", "style", "text_wrap", "anchor"]
         }
     ],
 
@@ -241,6 +241,11 @@
             "options": ["add","multiply", "overlay", "inlay"],
             "defaultValue": "none"
         },
+        {
+            "address": "^/styles/(\\w|\\_|\\-)+/blend_order$",
+            "type": "number",
+            "defaultValue": "0"
+        },
         {   
             "address": "^/styles/(\\w|\\_|\\-)+/lighting$",
             "type": "string",
@@ -376,6 +381,16 @@
             "type": "string",
             "options": ["serif", "Georgia", "Palatino", "Times", "sans-serif", "Arial", "Helvetica", "Gadget", "cursive", "Impact", "Charcoal", "Tahoma", "Geneva", "Verdana", "monospace", "Courier", "Monaco"],
             "defaultValue": "Helvetica"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/size$",
+            "type": "int",
+            "defaultValue": "14"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/collide$",
+            "type": "boolean",
+            "defaultValue": "true"
         }
     ]
 }

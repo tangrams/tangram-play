@@ -153,7 +153,7 @@ class TangramPlay {
 
         // Send url to map and contents to editor
         // TODO: get contents from Tangram instead of another xhr request.
-        console.log(scene)
+        // console.log(scene)
         this.map.loadScene(url, {
             reset: true,
             basePath: scene['original_base_path']
