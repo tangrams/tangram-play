@@ -64,7 +64,7 @@ export function initEditor (id) {
                 cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
             } ,
             'Alt-P': function(cm) {
-                TangramPlay.takeScreenshot();
+                TangramPlay.map.takeScreenshot();
             },
             'Ctrl-0': function(cm) {
                 unfoldAll(cm);
