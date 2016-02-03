@@ -439,7 +439,7 @@ export let editor = tangramPlay.editor;
 let scene = determineScene();
 tangramPlay.load(scene);
 tangramPlay.initAddons();
-new UI();
+tangramPlay.ui = new UI();
 
 // for debug
 window.tangramPlay = tangramPlay;

@@ -13,7 +13,8 @@ export default class UI {
         MapToolbar.init();
 
         new FileDrop();
-        new Menu();
+        // TODO: less inheritance
+        this.menu = new Menu();
         new Divider();
     }
 }
