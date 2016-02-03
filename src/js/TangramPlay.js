@@ -335,10 +335,6 @@ class TangramPlay {
     selectLines (strRange) {
         selectLines(this.editor, strRange);
     }
-
-    takeScreenshot () {
-        this.map.takeScreenshot();
-    }
 }
 
 function parseQuery (qstr) {

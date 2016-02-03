@@ -3,13 +3,11 @@
 import TangramPlay from 'app/TangramPlay';
 
 import LocalStorage from 'app/addons/LocalStorage';
-import { saveAs } from 'app/vendor/FileSaver.min.js';
 import MapLoading from 'app/addons/ui/MapLoading';
 
 import L from 'leaflet';
 import 'leaflet-hash';
-
-let screenshotRequested = false;
+import { saveAs } from 'app/vendor/FileSaver.min.js';
 
 export default class Map {
     constructor (mapElement) {
@@ -45,7 +43,6 @@ export default class Map {
         // Add Tangram Layer
         let layer = this.layer = window.Tangram.leafletLayer({
             scene: pathToSceneFile,
-            postUpdate: postUpdate,
             attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
         });
         layer.addTo(this.leaflet);
@@ -86,11 +83,19 @@ export default class Map {
         }
     }
 
+    /**
+     * Uses Tangram's native screenshot functionality to download an image.
+     * @public
+     * @method
+     * @requires FileSaver
+     */
     takeScreenshot () {
-        if (!screenshotRequested) {
-            screenshotRequested = true;
-            this.layer.scene.requestRedraw();
-        }
+        this.scene.screenshot().then(function (result) {
+            let slug = new Date().toString();
+
+            // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
+            saveAs(result.blob, `tangram-${slug}.png`);
+        });
     }
 }
 
@@ -130,18 +135,3 @@ function _getMapStartLocation () {
     return startLocation;
 }
 
-function postUpdate() {
-    if (screenshotRequested) {
-        // Adapted from: https://gist.github.com/unconed/4370822
-        let image = TangramPlay.map.scene.canvas.toDataURL('image/png').slice(22); // slice strips host/mimetype/etc.
-        let data = atob(image); // convert base64 to binary without UTF-8 mangling
-        let buf = new Uint8Array(data.length);
-        for (let i = 0; i < data.length; ++i) {
-            buf[i] = data.charCodeAt(i);
-        }
-        let blob = new Blob([buf], { type: 'image/png' });
-        saveAs(blob, 'tangram-' + (new Date()).toString() + '.png'); // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
-
-        screenshotRequested = false;
-    }
-}
