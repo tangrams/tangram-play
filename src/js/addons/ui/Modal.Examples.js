@@ -7,13 +7,19 @@ import { httpGet } from 'app/core/common';
 
 let examplesEl;
 
+// TODO: Make this more self contained.
+// This exports a class that does not need to be reused. It should just be a singleton object
+// whose methods can be referred to within this module. Right now the class is instantiated
+// elsewhere in Menu.js and means functions need to refer back to the TangramPlay object to
+// access anything. (Alternative: everything is on the class, but, meh)
+
 export default class ExamplesModal extends Modal {
-    constructor (configFile) {
+    constructor (config) {
         super();
 
         this.el = examplesEl = container.querySelector('.tp-example-modal');
         this.message = 'Choose an example to open';
-        loadExamples(configFile);
+        loadExamples(config);
 
         this.onConfirm = () => {
             const selected = this.el.querySelectorAll('.tp-example-option.tp-example-selected')[0];
@@ -68,6 +74,21 @@ function selectExample (event) {
     resetExampleSelection();
     target.classList.add('tp-example-selected');
     examplesEl.querySelector('.tp-modal-confirm').disabled = false;
+
+    // Set up a timer to listen for a double click, on which it would
+    // automatically open this selected example
+    target.addEventListener('click', doubleClick, false);
+
+    let interval = 500; // Interval to listen for, in ms
+    let timer = window.setTimeout(function (e) {
+        target.removeEventListener('click', doubleClick, false);
+        window.clearTimeout(timer);
+    }, interval);
+
+    function doubleClick () {
+        // This is a bit ridiculous
+        TangramPlay.ui.menu.examplesModal._handleConfirm();
+    }
 }
 
 function resetExampleSelection () {
