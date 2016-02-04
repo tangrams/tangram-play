@@ -179,7 +179,7 @@ function getAnchorFromValue (value) {
 //     return isNodeEqual(A, B);
 // }
 
-function isNodeEqual(A, B){
+function isNodeEqual (A, B) {
     if (A && B && A.address && B.address && A.value && B.value) {
         if (A.address !== B.address) {
             return false;
@@ -386,7 +386,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
     let jsMode = CodeMirror.getMode(config, 'javascript');
     yamlMode.lineComment = '#';
 
-    function yaml(stream, state) {
+    function yaml (stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
         if (address !== undefined) {
             let key = /^\s+(\w*)\:\s+\|/gm.exec(stream.string);
@@ -417,7 +417,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
         return yamlMode.token(stream, state.yamlState);
     }
 
-    function glsl(stream, state) {
+    function glsl (stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
         if (!isShader(address) || (/^\|$/g.test(stream.string))) {
             state.token = yaml;
@@ -433,7 +433,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
     //  TODO:
     //        Replace global scene by a local
     //
-    function js(stream, state) {
+    function js (stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
         if ((!isContentJS(window.scene, address) || /^\|$/g.test(stream.string))) {
             state.token = yaml;

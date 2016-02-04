@@ -178,7 +178,6 @@ export default class WidgetsManager {
             // Check for widgets to add
             for (let datum of this.data) {
                 if (datum.match(node)) {
-
                     // Create node
                     let widget = datum.create(node);
                     if (widget.insert()) {

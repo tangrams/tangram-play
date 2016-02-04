@@ -32,7 +32,7 @@ const MapToolbar = {
 
         menuButtonEl.addEventListener('click', e => {
             this.toggle();
-        })
+        });
     },
 
     toggle () {

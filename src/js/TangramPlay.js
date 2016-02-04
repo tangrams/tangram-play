@@ -73,11 +73,11 @@ class TangramPlay {
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
             let sceneData = {
-                'original_url': this.map.scene.config_source,
-                'original_base_path': this.map.scene.config_path,
-                'contents': this.getContent(),
-                'is_clean': this.editor.isClean()
-            }
+                original_url: this.map.scene.config_source,
+                original_base_path: this.map.scene.config_path,
+                contents: this.getContent(),
+                is_clean: this.editor.isClean()
+            };
             saveSceneContentsToLocalMemory(sceneData);
         });
     }

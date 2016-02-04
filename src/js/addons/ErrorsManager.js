@@ -21,7 +21,7 @@ export default class ErrorsManager {
         else {
             TangramPlay.on('sceneinit', () => {
                 this.subscribeToTangramEvents();
-            })
+            });
         }
     }
 
@@ -93,14 +93,15 @@ export default class ErrorsManager {
                     console.log('Node', address + block.name, 'was not found');
                 }
             }
-        } else if (args.type === 'duplicate') {
-            for (let node of args['nodes']){
+        }
+        else if (args.type === 'duplicate') {
+            for (let node of args['nodes']) {
                 console.log(node);
                 let nLine = node.widget.range.to.line + 1;
                 let msg = document.createElement('div');
                 let icon = msg.appendChild(document.createElement('span'));
                 icon.className = 'btm bt-exclamation-circle tp-warning-icon';
-                msg.appendChild(document.createTextNode("Duplicate key " + node.key + " (" + node.address + ")" ));
+                msg.appendChild(document.createTextNode(`Duplicate key ${node.key} (${node.address})`));
                 msg.className = 'tp-warning';
                 this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
             }

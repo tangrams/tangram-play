@@ -46,7 +46,6 @@ export default class Widget {
             this.bookmark.lines[0].stateAfter.yamlState &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
-
             if (this.bookmark.lines[0].stateAfter.yamlState.nodes.length === 1) {
                 // console.log(this.node, this.bookmark.lines[0].stateAfter.yamlState.nodes);
                 if (this.node.address === this.bookmark.lines[0].stateAfter.yamlState.nodes[0].address) {
@@ -71,9 +70,7 @@ export default class Widget {
         }
         else {
             // console.log("node for widget HARD to find");
-
             // Here is a good place to detect duplicates
-            
             // let others = TangramPlay.editor.getDoc().findMarksAt(this.node.range.to);
             let node = TangramPlay.getNodesForAddress(this.node.address);
             this.node = node;
@@ -117,7 +114,7 @@ export default class Widget {
         });
         this.bookmark.widget = this;
 
-        return true
+        return true;
     }
 
     /**
