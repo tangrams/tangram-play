@@ -1,22 +1,2 @@
 /* TYPOGRAPHY */
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:400,200,600');
-
-/*
-@font-face {
-    font-family: 'Montserrat';
-    src: url('../../data/fonts/montserrat-ultralight-webfont.woff2') format('woff2'),
-         url('../../data/fonts/montserrat-ultralight-webfont.woff') format('woff'),
-         url('../../data/fonts/montserrat-ultralight-webfont.ttf') format('truetype');
-    font-weight: 200;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Montserrat';
-    src: url('../../data/fonts/montserrat-regular-webfont.woff2') format('woff2'),
-         url('../../data/fonts/montserrat-regular-webfont.woff') format('woff'),
-         url('../../data/fonts/montserrat-regular-webfont.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-}
-*/
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700,300|Source+Code+Pro:400,200,600');
