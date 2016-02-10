@@ -1,17 +1,13 @@
 'use strict';
 
-import { container } from 'app/TangramPlay';
+const el = document.getElementById('shield');
 
 export default class Shield {
-    constructor () {
-        this.el = container.getElementsByClassName('tp-shield')[0];
+    static show () {
+        el.style.display = 'block';
     }
 
-    show () {
-        this.el.style.display = 'block';
-    }
-
-    hide () {
-        this.el.style.display = 'none';
+    static hide () {
+        el.style.display = 'none';
     }
 }
