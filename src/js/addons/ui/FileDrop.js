@@ -26,6 +26,20 @@ export default class FileDrop {
             // Required to prevent browser from navigating to a file
             // instead of receiving a data transfer
             event.preventDefault();
+
+            // On Mac + Chrome, drag-and-dropping a scene file from the downloads bar
+            // will silently fail. The drop event is never fired on the drop area.
+            // This issue is tracked here: https://github.com/tangrams/tangram-play/issues/228
+            // The Chrome bug is tracked here:
+            // https://code.google.com/p/chromium/issues/detail?id=234931
+            // Based on a comment in that thread, manually setting the dropEffect in this
+            // way will solve this problem.
+            let effect = event.dataTransfer && event.dataTransfer.dropEffect;
+            let effectAllowed = event.dataTransfer && event.dataTransfer.effectAllowed;
+            if (effect !== 'none' || effectAllowed === 'none') {
+                return;
+            }
+            event.dataTransfer.dropEffect = 'copy';
         }, false);
 
         this.el.addEventListener('dragleave', (event) => {
