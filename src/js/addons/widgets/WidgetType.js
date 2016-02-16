@@ -1,4 +1,4 @@
-import ColorPicker from 'app/addons/widgets/ColorPicker';
+import ColorButton from 'app/addons/widgets/ColorButton';
 import ToggleButton from 'app/addons/widgets/ToggleButton';
 import DropDownMenu from 'app/addons/widgets/DropDownMenu';
 
@@ -37,7 +37,7 @@ export default class WidgetType {
 
         switch (this.type) {
             case 'color':
-                widgetObj = new ColorPicker(this, keyPair);
+                widgetObj = new ColorButton(this, keyPair);
                 break;
             case 'boolean':
                 widgetObj = new ToggleButton(this, keyPair);

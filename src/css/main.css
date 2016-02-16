@@ -98,7 +98,8 @@
 
 /* + Widgets */
 @import '_widgets';
-@import '_colorpicker';
+@import '_pickers';
+/*@import '_colorpicker';*/
 
 /* + Suggest */
 @import '_suggest';
