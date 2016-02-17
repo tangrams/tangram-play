@@ -4,7 +4,7 @@ import { debounce, getDOMOffset } from 'app/core/common';
 import { isEmpty } from 'app/core/codemirror/tools';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from 'app/core/codemirror/yaml-tangram';
 
-import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
+import ColorPicker from 'app/addons/pickers/ColorPicker';
 
 /* global GlslCanvas */
 
@@ -258,7 +258,7 @@ export default class GlslSandbox {
         pos.x += 30;
         pos.y = TangramPlay.editor.heightAtLine(this.line) - 15;
 
-        this.picker = new ColorPickerModal(this.colorPicker.style.backgroundColor);
+        this.picker = new ColorPicker(this.colorPicker.style.backgroundColor);
 
         this.picker.presentModal(pos.x, pos.y);
         this.picker.on('changed', this.onColorChange.bind(this));
@@ -268,8 +268,9 @@ export default class GlslSandbox {
      *  Handles when user selects a new color on the colorpicker
      */
     onColorChange (event) {
-        let color = this.picker.getRGB();
-        this.setColor([color.r, color.g, color.b, 1]);
+        let color = event.get('vec');
+
+        this.setColor([color.v, color.e, color.c, 1]);
     }
 
     onCursorMove() {

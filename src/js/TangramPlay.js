@@ -9,6 +9,7 @@ import Modal from 'app/addons/ui/Modal';
 import WidgetsManager from 'app/addons/WidgetsManager';
 import SuggestManager from 'app/addons/SuggestManager';
 import GlslSandbox from 'app/addons/GlslSandbox';
+import GlslHelpers from 'app/addons/GlslHelpers';
 import ErrorsManager from 'app/addons/ErrorsManager';
 import ColorPalette from 'app/addons/ColorPalette';
 import LocalStorage from 'app/addons/LocalStorage';
@@ -106,6 +107,11 @@ class TangramPlay {
             case 'sandbox':
                 if (this.addons.glslSandbox === undefined) {
                     this.addons.glslSandbox = new GlslSandbox();
+                }
+                break;
+            case 'helpers':
+                if (this.addons.glslHelpers === undefined) {
+                    this.addons.glslHelpers = new GlslHelpers();
                 }
                 break;
             case 'errors':
@@ -424,6 +430,7 @@ let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
     // sandbox: true,
     errors: true,
     colors: true,
+    helpers: true
 });
 
 export default tangramPlay;

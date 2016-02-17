@@ -37,7 +37,6 @@ export default class Color {
 	}
 
 	set (color, type) { // color only full range
-		console.log(typeof color, type, color)
 		if (typeof color === 'number') {
 			type = type ? type : 'rgb';
 			this.colors[type] = {};
@@ -54,7 +53,8 @@ export default class Color {
 				type = type ? type : (parts[1] ? parts[0].substr(0, 3) : 'rgb');
 				this.set(values,type);
 			} else {
-				this.colors.rgb = ColorConverter.HEX2rgb(parts[0]);
+				this.set(getColorAsRGB(color),'rgb');
+				// this.colors.rgb = ColorConverter.HEX2rgb(parts[0]);
 			}
 		}
 		else if (color) {
@@ -81,6 +81,10 @@ export default class Color {
 			}
 		}
 
+		if (!type) {
+			return;
+		}
+
 		if (type !== 'rgb') {
 			var convert = ColorConverter;
 			this.colors.rgb = convert[type+'2rgb'](this.colors[type]);
@@ -88,8 +92,6 @@ export default class Color {
 		this.convert(type);
 		this.colors.hueRGB = ColorConverter.hue2RGB(this.colors.hsv.h);
 		this.colors.luminance = getLuminance(this.colors.rgb);
-
-		console.log(this);
 	}
 
 	convert (type) {
@@ -453,3 +455,34 @@ function getLuminance(rgb, normalized) {
 	}
 	return ((luminance.r * RGB[0]) + (luminance.g * RGB[1]) + (luminance.b * RGB[2]));
 }
+
+function getColorAsRGB (color) {
+    // Create a test element to apply a CSS color and retrieve
+    // a normalized value from.
+    let test = document.createElement('div');
+    test.style.backgroundColor = color;
+
+    // Chrome requires the element to be in DOM for styles to be computed.
+    document.body.appendChild(test);
+
+    // Get the computed style from the browser, in the format of
+    // rgb(x, x, x)
+    let normalized = window.getComputedStyle(test).backgroundColor;
+
+    // In certain cases getComputedStyle() may return
+    // 'transparent' as a value, which is useless(?) for the current
+    // color picker. According to specifications, transparent
+    // is a black with 0 alpha - rgba(0, 0, 0, 0) - but because
+    // the picker does not currently handle alpha, we return the
+    // black value.
+    if (normalized === 'transparent') {
+        normalized = 'rgb(0, 0, 0)';
+    }
+
+    // Garbage collection
+    test.parentNode.removeChild(test);
+
+    return normalized;
+}
+
+
