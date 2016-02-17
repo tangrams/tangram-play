@@ -1,7 +1,7 @@
 'use strict';
 
 import Widget from 'app/addons/widgets/Widget';
-import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
+import ColorPicker from 'app/addons/pickers/ColorPicker';
 import { toCSS, toColorVec } from 'app/core/common';
 
 // When presenting the modal, offset X, Y of the the modal by
@@ -9,7 +9,7 @@ import { toCSS, toColorVec } from 'app/core/common';
 const MODAL_X_OFFSET = 0;
 const MODAL_Y_OFFSET = 5;
 
-export default class ColorPicker extends Widget {
+export default class ColorButton extends Widget {
     // There must be a constructor call here because
     // ColorPicker sets its own properties for color
     constructor (...args) {
@@ -79,7 +79,8 @@ export default class ColorPicker extends Widget {
         }
         // If no picker is created yet, do it now
         else if (!this.picker) {
-            this.picker = new ColorPickerModal(this.color);
+            this.picker = new ColorPicker(this.color);
+            // this.picker.value.set(this.color,'rgb');
         }
 
         // Turn the picker on and present modal at the desired position
@@ -97,16 +98,16 @@ export default class ColorPicker extends Widget {
      */
     onPickerChange (event) {
         let original = toColorVec(super['value']);
-        this.color = this.picker.getCSS();
+        this.color = event.getString('rgb');//this.picker.getCSS();
 
         // Convert the CSS color value to Tangram format for editor.
-        let color = this.picker.getRGB();
+        let color = event.get('vec');//this.picker.getRGB();
         let rgbString = [1,1,1];
         if (typeof(original) === 'object' && original.a !== undefined) {
-            rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}, ${original.a}]`;
+            rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}, ${original.a}]`;
         }
         else {
-            rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}]`;
+            rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}]`;
         }
         this.setEditorValue(rgbString);
     }

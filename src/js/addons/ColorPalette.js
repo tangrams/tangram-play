@@ -2,7 +2,7 @@
 
 import TangramPlay from 'app/TangramPlay';
 
-import ColorPickerModal from 'app/addons/widgets/ColorPickerModal';
+import ColorPicker from 'app/addons/pickers/ColorPicker';
 import { toCSS } from 'app/core/common';
 import { jumpToLine } from 'app/core/codemirror/tools';
 
@@ -115,7 +115,7 @@ class Color {
         }
         // If no picker is created yet, do it now
         else if (!this.picker) {
-            this.picker = new ColorPickerModal(this.color);
+            this.picker = new ColorPicker(this.color);
         }
 
         // Turn the picker on and present modal
@@ -143,11 +143,17 @@ class Color {
      *  Handles when user selects a new color on the colorpicker
      */
     onPickerChange (event) {
-        this.color = this.picker.getCSS();
+        this.color = event.getString('rgb');//this.picker.getCSS();
 
         // Convert the CSS color value to Tangram format for editor.
-        let color = this.picker.getRGB();
-        let rgbString = `[${color.r.toFixed(3)}, ${color.g.toFixed(3)}, ${color.b.toFixed(3)}]`;
+        let color = event.get('vec');//this.picker.getRGB();
+        let rgbString = [1,1,1];
+        if (typeof(original) === 'object' && original.a !== undefined) {
+            rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}, ${original.a}]`;
+        }
+        else {
+            rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}]`;
+        }
 
         for (let i = 0; i < this.widgets.length; i++) {
             this.widgets[i].setEditorValue(rgbString);
