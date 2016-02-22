@@ -62,6 +62,10 @@ function loadExamples (configFile) {
             newOption.appendChild(thumbnailEl);
             newOption.addEventListener('click', selectExample);
             listEl.appendChild(newOption);
+            newOption.addEventListener('dblclick', function (e) {
+                // This is a bit ridiculous
+                TangramPlay.ui.menu.examplesModal._handleConfirm();
+            })
         }
     });
 }
@@ -74,21 +78,6 @@ function selectExample (event) {
     resetExampleSelection();
     target.classList.add('tp-example-selected');
     examplesEl.querySelector('.tp-modal-confirm').disabled = false;
-
-    // Set up a timer to listen for a double click, on which it would
-    // automatically open this selected example
-    target.addEventListener('click', doubleClick, false);
-
-    let interval = 500; // Interval to listen for, in ms
-    let timer = window.setTimeout(function (e) {
-        target.removeEventListener('click', doubleClick, false);
-        window.clearTimeout(timer);
-    }, interval);
-
-    function doubleClick () {
-        // This is a bit ridiculous
-        TangramPlay.ui.menu.examplesModal._handleConfirm();
-    }
 }
 
 function resetExampleSelection () {
