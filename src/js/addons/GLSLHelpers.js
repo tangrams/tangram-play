@@ -1,8 +1,9 @@
 import TangramPlay from 'app/TangramPlay';
 
 import ColorPicker from 'app/addons/pickers/ColorPicker';
-import PositionPicker from 'app/addons/pickers//PositionPicker';
-import ValuePicker from 'app/addons/pickers/ValuePicker';
+import Vec3Picker from 'app/addons/pickers/Vec3Picker';
+import Vec2Picker from 'app/addons/pickers/Vec2Picker';
+import FloatPicker from 'app/addons/pickers/FloatPicker';
 
 // Return all pattern matches with captured groups
 RegExp.prototype.execAll = function(string) {
@@ -53,7 +54,7 @@ export default class GLSLHelpers {
                 }
 
                 if (match.type === 'color') {
-                    this.activeModal = new ColorPicker(match.string);
+                    this.activeModal = new ColorPicker(match.string, { link_button: true });
                     this.activeModal.showAt(TangramPlay.editor);
                     this.activeModal.on('changed',(color) => {
                         let newColor = color.getString('vec');
@@ -62,9 +63,32 @@ export default class GLSLHelpers {
                         match.end = match.start+newColor.length;
                         TangramPlay.editor.replaceRange(newColor, start, end);
                     });
+
+                    this.activeModal.on('link_button', (color) => {
+                        this.activeModal = new Vec3Picker(color.getString('vec'));
+                        this.activeModal.showAt(TangramPlay.editor);
+                        this.activeModal.on('changed',(dir) => {
+                            let newDir = dir.getString('vec3');
+                            let start = {'line':cursor.line, 'ch':match.start};
+                            let end = {'line':cursor.line, 'ch':match.end};
+                            match.end = match.start+newDir.length;
+                            TangramPlay.editor.replaceRange(newDir, start, end);
+                        });
+                    });
                 }
-                else if (match.type === 'position') {
-                    this.activeModal = new PositionPicker(match.string);
+                if (match.type === 'vec3') {
+                    this.activeModal = new Vec3Picker(match.string);
+                    this.activeModal.showAt(TangramPlay.editor);
+                    this.activeModal.on('changed',(dir) => {
+                        let newDir = dir.getString('vec3');
+                        let start = {'line':cursor.line, 'ch':match.start};
+                        let end = {'line':cursor.line, 'ch':match.end};
+                        match.end = match.start+newDir.length;
+                        TangramPlay.editor.replaceRange(newDir, start, end);
+                    });
+                }
+                else if (match.type === 'vec2') {
+                    this.activeModal = new Vec2Picker(match.string);
                     this.activeModal.showAt(TangramPlay.editor);
                     this.activeModal.on('changed',(pos) => {
                         let newpos = pos.getString();
@@ -75,7 +99,7 @@ export default class GLSLHelpers {
                     });
                 }
                 else if (match.type === 'number') {
-                    this.activeModal = new ValuePicker(match.string);
+                    this.activeModal = new FloatPicker(match.string);
                     this.activeModal.showAt(TangramPlay.editor);
                     this.activeModal.on('changed', (string) => {
                         let start = {'line':cursor.line, 'ch':match.start};
@@ -89,7 +113,7 @@ export default class GLSLHelpers {
     }
 
     getMatch (cursor) {
-        let types = ['color', 'position', 'number'];
+        let types = ['color', 'vec3' ,'vec2', 'number'];
         let rta = undefined;
         for (let i in types) {
             rta = this.getTypeMatch(cursor, types[i]);
@@ -104,14 +128,17 @@ export default class GLSLHelpers {
         if (!type) return;
         let re;
         switch(type.toLowerCase()) {
-            case 'number':
-                re = /[-]?\d*\.\d*/g;
-                break;
-            case 'position':
-                re = /vec2\([-|\d|.|,\s]*\)/g;
-                break;
             case 'color':
                 re = /vec[3|4]\([\d|.|,\s]*\)/g;
+                break;
+            case 'vec3':
+                re = /vec3\([-|\d|.|,\s]*\)/g;
+                break;
+            case 'vec2':
+                re = /vec2\([-|\d|.|,\s]*\)/g;
+                break;
+            case 'number':
+                re = /[-]?\d*\.\d*/g;
                 break;
             default:
                 throw new Error('invalid match selection');

@@ -42,8 +42,7 @@ export default class Color {
 			this.colors[type] = {};
 			for (var n = 3; n--; ) {
 				m = type[n] || type.charAt(n); // IE7
-				// this.colors[type][m] = +color[n];
-				this.colors[type][m] = color;// / valueRanges[type][m][1];
+				this.colors[type][m] = color;
 			}
 		}
 		else if (typeof color === 'string') {
@@ -54,7 +53,6 @@ export default class Color {
 				this.set(values,type);
 			} else {
 				this.set(getColorAsRGB(color),'rgb');
-				// this.colors.rgb = ColorConverter.HEX2rgb(parts[0]);
 			}
 		}
 		else if (color) {
@@ -66,7 +64,7 @@ export default class Color {
 				for (var n = 3; n--; ) {
 					m = type[n] || type.charAt(n); // IE7
 					let i = color.length >= 3 ? n : 0;
-					this.colors[type][m] = +color[i];// / valueRanges[type][m][1];
+					this.colors[type][m] = +color[i];
 				}
 
 				if (color.length === 4) {
@@ -75,7 +73,6 @@ export default class Color {
 			}
 			else if (type) {
 				for (var n in color) {
-					// this.colors[type][n] = limitValue(color[n]/valueRanges[type][n][1], 0 ,1)*valueRanges[type][n][1];
 					this.colors[type][n] = limitValue(color[n]/valueRanges[type][n][1], 0 ,1)*valueRanges[type][n][1];
 				}
 			}
@@ -484,5 +481,3 @@ function getColorAsRGB (color) {
 
     return normalized;
 }
-
-

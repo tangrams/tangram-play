@@ -7,7 +7,7 @@ Author: Lou Huang (@saikofish)
 
 import Picker from './Picker'
 import Color from './Color';
-import { addEvent, removeEvent } from './events'
+import { getDevicePixelRatio, addEvent, removeEvent } from './common'
 
 // Some common use variables
 let currentTarget;
@@ -21,8 +21,11 @@ export default class ColorPicker extends Picker {
     constructor (color = 'vec3(1.0,0.0,0.0)', properties) {
         super('colorpicker-', properties);
         
-        this.width = 260;  // in pixels
+        this.width = 250;  // in pixels
         this.height = 250; // in pixels
+
+        this.disc = {width: 200, height: 200 };
+        this.barlum = {width: 25, height: 200};
 
         this.setValue(color);
         this.init();
@@ -42,7 +45,7 @@ export default class ColorPicker extends Picker {
             let barcursors = document.createElement('div');
             let leftcursor = document.createElement('div');
             let rightcursor = document.createElement('div');
-
+            
             modal.className = this.CSS_PREFIX + 'modal picker-modal';
             patch.className = this.CSS_PREFIX + 'patch';
             map.className = this.CSS_PREFIX + 'hsv-map';
@@ -55,16 +58,17 @@ export default class ColorPicker extends Picker {
             barcursors.className = this.CSS_PREFIX + 'bar-cursors';
             leftcursor.className = this.CSS_PREFIX + 'bar-cursor-left';
             rightcursor.className = this.CSS_PREFIX + 'bar-cursor-right';
-
-            disc.width = 200;
-            disc.height = 200;
-            barlum.width = 25;
-            barlum.height = 200;
+            
+            // disc.width = this.disc.width;
+            // disc.height = this.disc.height;
+            // barlum.width = this.barlum.width;
+            // barlum.height = this.barlum.height;
             map.id = 'cp-map';
             barcursors.id = 'cp-bar';
 
             modal.appendChild(patch);
             modal.appendChild(map);
+            
             map.appendChild(disc);
             map.appendChild(cover);
             map.appendChild(cursor);
@@ -92,9 +96,24 @@ export default class ColorPicker extends Picker {
         this.dom.hsvBarCursors = this.dom.hsvMap.children[6];
         this.dom.hsvLeftCursor = this.dom.hsvBarCursors.children[0];
         this.dom.hsvRightCursor = this.dom.hsvBarCursors.children[1];
-
+        
         this.dom.colorDisc = this.el.querySelector('.colorpicker-disc');
         this.dom.luminanceBar = this.el.querySelector('.colorpicker-bar-luminance');
+
+        if (this.link_button) {
+            let lbutton = document.createElement('div');
+            lbutton.innerHTML = '+';
+            lbutton.className = this.CSS_PREFIX + 'link-button';
+            this.el.appendChild(lbutton);
+            // this.dom.lbutton = this.el.querySelector('.colorpicker-link-button');
+            lbutton.addEventListener("click", () => {
+                this.trigger('link_button', this.value);
+                if (typeof this.link_button === 'function') {
+                    this.link_button(this.value);
+                }
+                this.removeModal();
+            });
+        }
     }
 
     draw () {     
@@ -137,7 +156,7 @@ export default class ColorPicker extends Picker {
 
     presentModal (x, y) {
         super.presentModal(x,y);
-
+    
         // // Listen for interaction on the HSV map
         this.onHsvDownHandler = addEvent(this.dom.hsvMap, 'mousedown', this.onHsvDown, this);
 
@@ -145,10 +164,18 @@ export default class ColorPicker extends Picker {
 
         if (colorDisc.getContext) {
             // HSV color wheel with white center
+            let diskContex = colorDisc.getContext('2d');
+            let ratio = getDevicePixelRatio(diskContex);
+            let width = this.disc.width / ratio;
+            let height = this.disc.height / ratio;
+            this.dom.colorDisc.width = width * ratio;
+            this.dom.colorDisc.height = height* ratio;
+            diskContex.scale(ratio, ratio);
+
             drawDisk(
-                colorDisc.getContext('2d'),
-                [colorDisc.width / 2, colorDisc.height / 2],
-                [colorDisc.width / 2 - 1, colorDisc.height / 2 - 1],
+                diskContex,
+                [width/2, height/2],
+                [width/2 - 1, height/2 - 1],
                 360,
                 function (ctx, angle) {
                     let gradient = ctx.createRadialGradient(1, 1, 1, 1, 1, 0);
@@ -159,18 +186,22 @@ export default class ColorPicker extends Picker {
                     ctx.fill();
                 }
             );
+
             // gray border
             drawCircle(
-                colorDisc.getContext('2d'),
-                [colorDisc.width / 2, colorDisc.height / 2],
-                [colorDisc.width / 2, colorDisc.height / 2],
+                diskContex,
+                [width/2, height/2],
+                [width/2, height/2],
                 '#303030',
-                2
+                2/ratio
             );
 
             // draw the luminanceBar bar
             let ctx = this.dom.luminanceBar.getContext('2d');
-            let gradient = ctx.createLinearGradient(0, 0, 0, 200);
+            this.dom.luminanceBar.width = this.barlum.width ;
+            this.dom.luminanceBar.height = this.barlum.height * ratio;
+            ctx.scale(ratio, ratio);
+            let gradient = ctx.createLinearGradient(0, 0, 0, this.barlum.height/ratio);
 
             gradient.addColorStop(0, 'transparent');
             gradient.addColorStop(1, 'black');
@@ -233,10 +264,7 @@ export default class ColorPicker extends Picker {
             this.value.set({ v: v }, 'hsv');
         }
 
-        // fire 'changed'
-        if (this.listeners.changed && typeof this.listeners.changed === 'function') {
-            this.listeners.changed(this.value);
-        }
+        this.trigger('changed', this.value);
     }
 
     // Actions when user mouses up on HSV color map

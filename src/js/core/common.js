@@ -143,19 +143,42 @@ export class StopWatch {
         console.log(currentName, '[' + this.getElapsedMilliseconds() + 'ms]', '[' + this.getElapsedSeconds() + 's]');
     }
 }
-
 export function subscribeMixin (target) {
     var listeners = new Set();
 
     return Object.assign(target, {
 
-        subscribe(listener) {
+        on (type, f) {
+            let listener = {};
+            listener[type] = f;
             listeners.add(listener);
         },
 
-        on(type, f) {
-            let listener = {};
-            listener[type] = f;
+        off (type, f) {
+            if (f) {
+                let listener = {};
+                listener[type] = f;
+                listeners.delete(listener);
+            }
+            else {
+                for (let item of listeners) {
+                    for (let key of Object.keys(item)) {
+                        if (key === type) {
+                            listeners.delete(item);
+                            return;
+                        }
+                    }
+                } 
+            }
+        },
+
+        listSubscriptions () {
+            for (let item of listeners) {
+                console.log(item);
+            } 
+        },
+
+        subscribe(listener) {
             listeners.add(listener);
         },
 
