@@ -2,7 +2,7 @@
 
 import TangramPlay from 'app/TangramPlay';
 import { map, container } from 'app/TangramPlay';
-import { httpGet, debounce } from 'app/core/common';
+import { httpGet, debounce } from 'app/tools/common';
 import bookmarks from 'app/addons/map/bookmarks';
 
 const PELIAS_KEY = 'search-xFAc9NI';

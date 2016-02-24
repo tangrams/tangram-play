@@ -132,3 +132,12 @@
 .colorpicker-dark .colorpicker-bar-cursor-right {
     border-right-color: #333;
 }
+
+.colorpicker-link-button {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}

@@ -3,7 +3,7 @@
 import TangramPlay from 'app/TangramPlay';
 
 import ColorPicker from 'app/addons/pickers/ColorPicker';
-import { toCSS } from 'app/core/common';
+import { toCSS } from 'app/tools/common';
 import { jumpToLine } from 'app/core/codemirror/tools';
 
 export default class ColorPalette {
@@ -98,8 +98,8 @@ class Color {
         let selections = [];
         for (let i = 0; i < this.widgets.length; i++) {
             selections.push({
-                anchor: this.widgets[i].key.range.from,
-                head: this.widgets[i].key.range.to
+                anchor: this.widgets[i].node.range.from,
+                head: this.widgets[i].node.range.to
             });
         }
         TangramPlay.editor.getDoc().setSelections(selections);
@@ -148,12 +148,8 @@ class Color {
         // Convert the CSS color value to Tangram format for editor.
         let color = event.get('vec');//this.picker.getRGB();
         let rgbString = [1,1,1];
-        if (typeof(original) === 'object' && original.a !== undefined) {
-            rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}, ${original.a}]`;
-        }
-        else {
-            rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}]`;
-        }
+
+        rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}]`;
 
         for (let i = 0; i < this.widgets.length; i++) {
             this.widgets[i].setEditorValue(rgbString);
