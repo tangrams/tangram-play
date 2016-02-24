@@ -8,7 +8,7 @@ import FloatPicker from 'app/addons/pickers/FloatPicker';
 // Return all pattern matches with captured groups
 RegExp.prototype.execAll = function(string) {
     let match = null;
-    let matches = new Array();
+    let matches = [];
     while (match = this.exec(string)) {
         let matchArray = [];
         for (let i in match) {
@@ -20,10 +20,10 @@ RegExp.prototype.execAll = function(string) {
         matches.push(matchArray);
     }
     return matches;
-}
+};
 
-export default class GLSLHelpers {
-    constructor () {
+export default class Helpers {
+    constructor (main) {
         // EVENTS
         let wrapper = TangramPlay.editor.getWrapperElement();
         wrapper.addEventListener('mouseup', (event) => {
@@ -37,14 +37,12 @@ export default class GLSLHelpers {
             let cursor = TangramPlay.editor.getCursor(true);
 
             // see if there is a match on the cursor click
-            
+            let match = this.getMatch(cursor);
             let token = TangramPlay.editor.getTokenAt(cursor);
 
-            if ( token.state.localMode === null || token.state.localMode.helperType !== 'glsl') {
+            if (token.state.localMode === null || token.state.localMode.helperType !== 'glsl') {
                 return;
             }
-
-            let match = this.getMatch(cursor);
 
             if (match) {
                 // Toggles the trackpad to be off if it's already present.
@@ -56,22 +54,22 @@ export default class GLSLHelpers {
                 if (match.type === 'color') {
                     this.activeModal = new ColorPicker(match.string, { link_button: true });
                     this.activeModal.showAt(TangramPlay.editor);
-                    this.activeModal.on('changed',(color) => {
+                    this.activeModal.on('changed', (color) => {
                         let newColor = color.getString('vec');
-                        let start = {'line':cursor.line, 'ch':match.start};
-                        let end = {'line':cursor.line, 'ch':match.end};
-                        match.end = match.start+newColor.length;
+                        let start = { line: cursor.line, ch: match.start };
+                        let end = { line: cursor.line, ch: match.end };
+                        match.end = match.start + newColor.length;
                         TangramPlay.editor.replaceRange(newColor, start, end);
                     });
 
                     this.activeModal.on('link_button', (color) => {
                         this.activeModal = new Vec3Picker(color.getString('vec'));
                         this.activeModal.showAt(TangramPlay.editor);
-                        this.activeModal.on('changed',(dir) => {
+                        this.activeModal.on('changed', (dir) => {
                             let newDir = dir.getString('vec3');
-                            let start = {'line':cursor.line, 'ch':match.start};
-                            let end = {'line':cursor.line, 'ch':match.end};
-                            match.end = match.start+newDir.length;
+                            let start = { line: cursor.line, ch: match.start };
+                            let end = { line: cursor.line, ch: match.end };
+                            match.end = match.start + newDir.length;
                             TangramPlay.editor.replaceRange(newDir, start, end);
                         });
                     });
@@ -79,22 +77,22 @@ export default class GLSLHelpers {
                 if (match.type === 'vec3') {
                     this.activeModal = new Vec3Picker(match.string);
                     this.activeModal.showAt(TangramPlay.editor);
-                    this.activeModal.on('changed',(dir) => {
+                    this.activeModal.on('changed', (dir) => {
                         let newDir = dir.getString('vec3');
-                        let start = {'line':cursor.line, 'ch':match.start};
-                        let end = {'line':cursor.line, 'ch':match.end};
-                        match.end = match.start+newDir.length;
+                        let start = { line: cursor.line, ch: match.start };
+                        let end = { line: cursor.line, ch: match.end };
+                        match.end = match.start + newDir.length;
                         TangramPlay.editor.replaceRange(newDir, start, end);
                     });
                 }
                 else if (match.type === 'vec2') {
                     this.activeModal = new Vec2Picker(match.string);
                     this.activeModal.showAt(TangramPlay.editor);
-                    this.activeModal.on('changed',(pos) => {
+                    this.activeModal.on('changed', (pos) => {
                         let newpos = pos.getString();
-                        let start = {'line':cursor.line, 'ch':match.start};
-                        let end = {'line':cursor.line, 'ch':match.end};
-                        match.end = match.start+newpos.length;
+                        let start = { line: cursor.line, ch: match.start };
+                        let end = { line: cursor.line, ch: match.end };
+                        match.end = match.start + newpos.length;
                         TangramPlay.editor.replaceRange(newpos, start, end);
                     });
                 }
@@ -102,30 +100,37 @@ export default class GLSLHelpers {
                     this.activeModal = new FloatPicker(match.string);
                     this.activeModal.showAt(TangramPlay.editor);
                     this.activeModal.on('changed', (string) => {
-                        let start = {'line':cursor.line, 'ch':match.start};
-                        let end = {'line':cursor.line, 'ch':match.end};
-                        match.end = match.start+string.length;
+                        let start = { line: cursor.line, ch: match.start };
+                        let end = { line: cursor.line, ch: match.end };
+                        match.end = match.start + string.length;
                         TangramPlay.editor.replaceRange(string, start, end);
                     });
                 }
-            } 
+            }
+            else if (token.type === 'variable') {
+                if (TangramPlay.visualDebugger) {
+                    TangramPlay.visualDebugger.iluminate(token.string);
+                }
+            }
         });
     }
 
     getMatch (cursor) {
         let types = ['color', 'vec3' ,'vec2', 'number'];
-        let rta = undefined;
+        let rta;
         for (let i in types) {
             rta = this.getTypeMatch(cursor, types[i]);
             if (rta) {
                 return rta;
             }
-        }   
+        }
         return;
     }
 
     getTypeMatch (cursor, type) {
-        if (!type) return;
+        if (!type) {
+            return;
+        }
         let re;
         switch(type.toLowerCase()) {
             case 'color':
@@ -141,7 +146,7 @@ export default class GLSLHelpers {
                 re = /[-]?\d*\.\d*/g;
                 break;
             default:
-                throw new Error('invalid match selection');
+                console.error('invalid match selection');
                 return;
         }
         let line = TangramPlay.editor.getLine(cursor.line);

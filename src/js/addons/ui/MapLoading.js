@@ -1,6 +1,6 @@
 'use strict';
 
-import { debounce } from 'app/core/common';
+import { debounce } from 'app/tools/common';
 
 const MapLoading = {
     el: document.getElementById('map-loading'),

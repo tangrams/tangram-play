@@ -3,7 +3,8 @@
 import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
-import { httpGet, subscribeMixin } from 'app/core/common';
+import { subscribeMixin } from 'app/tools/mixin';
+import { httpGet } from 'app/tools/common';
 import { isStrEmpty } from 'app/core/codemirror/tools';
 
 // Load addons modules

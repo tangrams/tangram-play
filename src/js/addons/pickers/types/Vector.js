@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 export default class Vector {
     constructor (vec, type) {
@@ -10,7 +10,7 @@ export default class Vector {
     set (vec, type) {
         if (typeof vec === 'number') {
             type = type || 'vec2';
-            this.set([vec],type);
+            this.set([vec], type);
         }
         else if (typeof vec === 'string') {
             let parts = vec.replace(/(?:#|\)|%)/g, '').split('(');
@@ -18,9 +18,9 @@ export default class Vector {
             type = type || (parts[1] ? parts[0].substr(0, 4) : 'vec2');
             let values = [];
             for (let i in strValues) {
-                values.push(parseFloat(strValues[i])); 
+                values.push(parseFloat(strValues[i]));
             }
-            this.set(values,type);
+            this.set(values, type);
         }
         else if (vec) {
             if (Array.isArray(vec)) {
@@ -85,15 +85,15 @@ export default class Vector {
 
     getString(type) {
         type = type || 'vec' + this.dim;
-        
+
         let str = type + '(';
         for (let n = 0; n < this.dim; n++) {
             str += this.value[n].toFixed(3);
-            if (n !== this.dim-1) {
-                str +=',';
+            if (n !== this.dim - 1) {
+                str += ',';
             }
         }
-        return str+= ')';
+        return str += ')';
     }
 
     // VECTOR OPERATIONS
@@ -193,10 +193,10 @@ export default class Vector {
 
     getLengthSq () {
         if (this.dim === 2) {
-            return (this.value[0]*this.value[0] + this.value[1]*this.value[1]);
+            return (this.value[0] * this.value[0] + this.value[1] * this.value[1]);
         }
         else {
-            return (this.value[0]*this.value[0] + this.value[1]*this.value[1] + this.value[2]*this.value[2]);
+            return (this.value[0] * this.value[0] + this.value[1] * this.value[1] + this.value[2] * this.value[2]);
         }
     }
 

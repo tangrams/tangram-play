@@ -1,7 +1,7 @@
 import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
-import { httpGet } from 'app/core/common';
+import { httpGet } from 'app/tools/common';
 import { getLineInd, isCommented, isEmpty, regexEscape } from 'app/core/codemirror/tools';
 import { getAddressSceneContent, getAddressForLevel } from 'app/core/codemirror/yaml-tangram';
 

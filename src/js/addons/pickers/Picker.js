@@ -5,13 +5,17 @@ Author: Lou Huang (@saikofish)
 
 'use strict';
 
-import { getDevicePixelRatio, addEvent, removeEvent } from './common'
-import { subscribeMixin } from 'app/core/common';
+import { getDevicePixelRatio } from 'app/tools/common';
+import { subscribeMixin } from 'app/tools/mixin';
 
 export default class Picker {
     constructor (CSS_PREFIX, properties) {
         subscribeMixin(this);
         this.CSS_PREFIX = CSS_PREFIX;
+
+        this.fnColor = 'rgb(230, 230, 230)';
+        this.selColor = 'rgb(40, 168, 107)';
+        this.dimColor = 'rgb(100, 100, 100)';
 
         properties = properties || {};
         for (let prop in properties) {
@@ -27,7 +31,9 @@ export default class Picker {
             frame: null,
 
             drawFrame: () => {
-                if (!this.el) { return }
+                if (!this.el) {
+                    return;
+                }
                 this.draw();
             },
 
@@ -48,21 +54,17 @@ export default class Picker {
     create () {
         this.el = document.createElement('div');
         this.el.className = this.CSS_PREFIX + 'modal picker-modal';
-        
+
         this.canvas = document.createElement('canvas');
         this.canvas.className = this.CSS_PREFIX + 'canvas picker-canvas';
-        // this.canvas.width = this.width;
-        // this.canvas.height = this.width;
 
         this.el.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
 
-        // Sets canvas to the proper dimensions and at the correct pixel density
-        // Thanks Lou https://github.com/louh/bart/blob/gh-pages/main.js#L19-L23
-        let ratio = getDevicePixelRatio(this.ctx)
-        this.canvas.width = this.width * ratio
-        this.canvas.height = this.height * ratio
-        this.ctx.scale(ratio, ratio)
+        let ratio = getDevicePixelRatio(this.ctx);
+        this.canvas.width = this.width * ratio;
+        this.canvas.height = this.height * ratio;
+        this.ctx.scale(ratio, ratio);
     }
 
     draw () {
@@ -71,6 +73,16 @@ export default class Picker {
 
     close () {
         // Close rutine
+        this.destroyEvents();
+        removeEvent(this.el, 'mousedown', this.onMouseDownHandler);
+        this.onMouseDownHandler = null;
+    }
+
+    destroyEvents () {
+        removeEvent(this.el, 'mousemove', this.onMouseMoveHandler);
+        this.onMouseMoveHandler = null;
+        removeEvent(window, 'mouseup', this.onMouseUpHandler);
+        this.onMouseUpHandler = null;
     }
 
     setValue (value) {
@@ -82,16 +94,19 @@ export default class Picker {
     }
 
     showAt (cm) {
-        let cursor = cm.cursorCoords(true, "page");
-        let x = cursor.left - this.width*.5;
-        let y = cursor.bottom + 20;
+        let cursor = cm.cursorCoords(true, 'page');
+        let x = cursor.left;
+        let y = cursor.top;
 
-        // // Check if desired x, y will be outside the viewport.
-        // // Do not allow the modal to disappear off the edge of the window.
-        let modalXPos = (x + this.width < window.innerWidth) ? x : (window.innerWidth - 20 - this.width);
-        let modalYPos = (y + this.height < window.innerHeight) ? y : (window.innerHeight - 20 - this.height);
+        x -= this.width * 0.5;
+        y += 30;
 
-        this.presentModal(modalXPos, modalYPos);
+        // Check if desired x, y will be outside the viewport.
+        // Do not allow the modal to disappear off the edge of the window.
+        x = (x + this.width < window.innerWidth) ? x : (window.innerWidth - 20 - this.width);
+        y = (y + this.height < window.innerHeight) ? y : (window.innerHeight - 20 - this.height);
+
+        this.presentModal(x, y);
     }
 
     presentModal (x, y) {
@@ -123,7 +138,7 @@ export default class Picker {
         removeEvent(document.body, 'click', this.onClickOutsideHandler);
         this.onClickOutsideHandler = null;
         removeEvent(document.body, 'keypress', this.onKeyPressHandler);
-        this.onKeyPressHandler = null
+        this.onKeyPressHandler = null;
 
         this.close();
         this.isVisible = false;
@@ -150,17 +165,16 @@ export default class Picker {
 
         let target = event.target;
 
-        while (target !== document.documentElement && !target.classList.contains(this.CSS_PREFIX+'modal')) {
+        while (target !== document.documentElement && !target.classList.contains(this.CSS_PREFIX + 'modal')) {
             target = target.parentNode;
         }
 
-        if (!target.classList.contains(this.CSS_PREFIX+'modal')) {
+        if (!target.classList.contains(this.CSS_PREFIX + 'modal')) {
             this.removeModal();
         }
     }
 
     onMouseDown (event) {
-        let target = event.target || event.srcElement;
         event.preventDefault();
 
         // Starts listening for mousemove and mouseup events
@@ -179,18 +193,17 @@ export default class Picker {
         this.renderer.stop();
         this.destroyEvents();
     }
+}
 
+/* Event handling */
+export function addEvent (element, event, callback, caller) {
+    let handler;
+    element.addEventListener(event, handler = function (e) {
+        callback.call(caller, e);
+    }, false);
+    return handler;
+}
 
-    destroyEvents () {
-        removeEvent(this.el, 'mousemove', this.onMouseMoveHandler);
-        this.onMouseMoveHandler = null;
-        removeEvent(window, 'mouseup', this.onMouseUpHandler);
-        this.onMouseUpHandler = null;
-    }
-
-    close () {
-        this.destroyEvents();
-        removeEvent(this.el, 'mousedown', this.onMouseDownHandler);
-        this.onMouseDownHandler = null;
-    }
+export function removeEvent (element, event, callback) {
+    element.removeEventListener(event, callback, false);
 }

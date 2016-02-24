@@ -2,7 +2,7 @@
 
 import Widget from 'app/addons/widgets/Widget';
 import ColorPicker from 'app/addons/pickers/ColorPicker';
-import { toCSS, toColorVec } from 'app/core/common';
+import { toCSS, toColorVec } from 'app/tools/common';
 
 // When presenting the modal, offset X, Y of the the modal by
 // these values, in pixels
@@ -80,7 +80,6 @@ export default class ColorButton extends Widget {
         // If no picker is created yet, do it now
         else if (!this.picker) {
             this.picker = new ColorPicker(this.color);
-            // this.picker.value.set(this.color,'rgb');
         }
 
         // Turn the picker on and present modal at the desired position

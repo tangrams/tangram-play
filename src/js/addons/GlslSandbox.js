@@ -1,6 +1,6 @@
 import TangramPlay from 'app/TangramPlay';
 
-import { debounce, getDOMOffset } from 'app/core/common';
+import { debounce, getDOMOffset } from 'app/tools/common';
 import { isEmpty } from 'app/core/codemirror/tools';
 import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from 'app/core/codemirror/yaml-tangram';
 
