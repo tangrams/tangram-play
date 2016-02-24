@@ -229,30 +229,34 @@ function getInlineNodes(str, nLine) {
             if (isNode) {
                 stack[level] = isNode[1];
                 i += isNode[1].length;
-                let anchor = getAnchorFromValue(isNode[3]);
+
+                let key = isNode[1];
+                let colon = isNode[2];
+                let value = isNode[3];
+                var isVector = str.substr(i+1+colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/gm);
+                if (isVector) {
+                    value = isVector[0];
+                }
+                let anchor = getAnchorFromValue(value);
+                value = value.substr(anchor.length);
+                
                 rta.push({
                     address: getAddressFromKeys(stack),
-                    key: isNode[1],
-                    value: isNode[3].substr(anchor.length),
+                    key: key,
+                    value: value,
                     anchor: anchor,
                     range: {
                         from: {
                             line: nLine,
-                            ch: i + 1 - isNode[1].length },
+                            ch: i + 1 - key.length },
                         to: {
                             line: nLine,
-                            ch: i + isNode[2].length + isNode[3].length + 1 },
+                            ch: i + colon.length + value.length + 1 },
                     },
                     index: rta.length + 1
                 });
             }
         }
-
-        var isVector = str.substr(i).match(/^\s*\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/gm);
-        if (isVector && rta.length > 0) {
-            rta[rta.length - 1].value = isVector[0];
-        }
-
         i++;
     }
     return rta;
