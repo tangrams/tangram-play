@@ -16,7 +16,6 @@ export default class VectorButton extends Widget {
     }
 
     onClick (event) {
-        console.log(this.value);
         let value = this.value;
 
         // Toggles the picker to be off if it's already present.

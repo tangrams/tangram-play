@@ -13,12 +13,9 @@ export default class Vector {
             this.set([vec], type);
         }
         else if (typeof vec === 'string') {
-
             let parts = vec.replace(/(?:#|\)|\]|%)/g, '').split('(');
             let strValues = (parts[1] || parts[0].replace(/(\[)/g, '') ).split(/,\s*/);
-            type = type || (parts[1] ? parts[0].substr(0, 4) : 'vec'+strValues.length);
-            console.log(parts,strValues,type);
-            
+            type = type || (parts[1] ? parts[0].substr(0, 4) : 'vec'+strValues.length);            
             let values = [];
             for (let i in strValues) {
                 values.push(parseFloat(strValues[i]));
