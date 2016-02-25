@@ -189,7 +189,7 @@
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/direction$",
-            "type": "vector3",
+            "type": "vector",
             "defaultValue": "[0.2, 0.7, -0.5]"
         },
         {

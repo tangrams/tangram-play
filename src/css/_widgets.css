@@ -12,11 +12,23 @@
 
 .tp-widget-colorpicker {
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 50%;
+    /*border-radius: 50%;*/
     width: 14px;
     height: 14px;
     box-sizing: border-box;
     background-color: white;
+    cursor: pointer;
+    /* position override */
+    vertical-align: middle;
+}
+
+.tp-widget-vector {
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    box-sizing: border-box;
+    background-color: var(--ui-element-color);
     cursor: pointer;
 
     /* position override */

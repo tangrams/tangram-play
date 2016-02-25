@@ -152,6 +152,9 @@ export default class Vec3Picker extends Picker {
             vel.mult(2);
             this.value.add(vel);
             this.point = [this.value.x * this.scale, this.value.y * this.scale, this.value.z * this.scale];
+            
+            // fire 'changed'
+            this.trigger('changed', this.value);
         }
         else {
             this.camera.rotateX(dy);
@@ -160,8 +163,7 @@ export default class Vec3Picker extends Picker {
 
         this.dragOffset = [x, y];
 
-        // fire 'changed'
-        this.trigger('changed', this.value);
+        
     }
 
     onDbClick (event) {
