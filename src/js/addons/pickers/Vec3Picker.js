@@ -160,10 +160,7 @@ export default class Vec3Picker extends Picker {
             this.camera.rotateX(dy);
             this.camera.rotateY(dx);
         }
-
         this.dragOffset = [x, y];
-
-        
     }
 
     onDbClick (event) {

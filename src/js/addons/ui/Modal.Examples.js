@@ -65,7 +65,7 @@ function loadExamples (configFile) {
             newOption.addEventListener('dblclick', function (e) {
                 // This is a bit ridiculous
                 TangramPlay.ui.menu.examplesModal._handleConfirm();
-            })
+            });
         }
     });
 }
