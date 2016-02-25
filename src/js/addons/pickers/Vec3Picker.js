@@ -148,11 +148,11 @@ export default class Vec3Picker extends Picker {
 
         if (this.overPoint) {
             let invM = this.camera.getInv();
-            let vel = invM.getMult([dx, -dy, -0.00001]);
+            let vel = invM.getMult([dx, -dy, 0.0]);
             vel.mult(2);
             this.value.add(vel);
             this.point = [this.value.x * this.scale, this.value.y * this.scale, this.value.z * this.scale];
-            
+
             // fire 'changed'
             this.trigger('changed', this.value);
         }

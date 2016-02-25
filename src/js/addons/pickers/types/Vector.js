@@ -99,7 +99,6 @@ export default class Vector {
             len = Number(type.substr(3, 4));
         }
 
-        console.log(len, head,end);
         str = head;
         for (let i = 0; i < len; i++) {
             str += this.value[i].toFixed(3);
