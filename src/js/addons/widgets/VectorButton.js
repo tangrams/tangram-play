@@ -9,7 +9,7 @@ const MODAL_Y_OFFSET = 5;
 export default class VectorButton extends Widget {
     createEl () {
         let el = document.createElement('div');
-        el.innerHTML = '+';
+        el.innerHTML = '<span class="tp-widget-vector-text">+</span>';
         el.className = 'tp-widget tp-widget-vector';
         el.addEventListener('click', this.onClick.bind(this));
         return el;
