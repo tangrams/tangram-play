@@ -1,6 +1,7 @@
 import ColorButton from 'app/addons/widgets/ColorButton';
 import ToggleButton from 'app/addons/widgets/ToggleButton';
 import DropDownMenu from 'app/addons/widgets/DropDownMenu';
+import VectorButton from 'app/addons/widgets/VectorButton';
 
 export default class WidgetType {
     constructor (datum) {
@@ -44,6 +45,9 @@ export default class WidgetType {
                 break;
             case 'string':
                 widgetObj = new DropDownMenu(this, keyPair);
+                break;
+            case 'vector':
+                widgetObj = new VectorButton(this, keyPair);
                 break;
             default:
                 // Nothing

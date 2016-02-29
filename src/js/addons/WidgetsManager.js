@@ -23,7 +23,7 @@ export default class WidgetsManager {
 
             // Initialize tokens
             for (let datum of widgetsData) {
-                if (datum.type === 'color' || datum.type === 'boolean' || datum.type === 'string') {
+                if (datum.type === 'color' || datum.type === 'vector' || datum.type === 'boolean' || datum.type === 'string') {
                     this.data.push(new WidgetType(datum));
                 }
             }

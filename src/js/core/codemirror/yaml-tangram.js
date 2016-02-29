@@ -233,13 +233,13 @@ function getInlineNodes(str, nLine) {
                 let key = isNode[1];
                 let colon = isNode[2];
                 let value = isNode[3];
-                var isVector = str.substr(i+1+colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/gm);
+                var isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/gm);
                 if (isVector) {
                     value = isVector[0];
                 }
                 let anchor = getAnchorFromValue(value);
                 value = value.substr(anchor.length);
-                
+
                 rta.push({
                     address: getAddressFromKeys(stack),
                     key: key,

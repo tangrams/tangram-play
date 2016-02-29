@@ -18,9 +18,28 @@
     box-sizing: border-box;
     background-color: white;
     cursor: pointer;
-
     /* position override */
     vertical-align: middle;
+}
+
+.tp-widget-vector {
+    border: 1px solid rgba(255,255,255,0.15);
+    width: 14px;
+    height: 14px;
+    box-sizing: border-box;
+    background-color: var(--ui-element-color);
+    cursor: pointer;
+    /* position override */
+    vertical-align: middle;
+    /*text-align: center;*/
+}
+
+.tp-widget-vector-text {
+    position: relative;
+    top: -4px;
+    left: 1px;
+    font-size: 15px;
+    font-weight: 100;
 }
 
 select.tp-widget-dropdown {
