@@ -13,4 +13,5 @@ test:
 general:
   artifacts:
     - "build"
+    - "data"
     - "index.html"
