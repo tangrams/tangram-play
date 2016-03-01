@@ -19,6 +19,7 @@ export default class Menu {
         this.menus.new = new MenuItem('.tp-menu-button-new', _onClickNew);
         this.menus.open = new MenuItem('.tp-menu-button-open', _onClickOpen);
         this.menus.save = new MenuItem('.tp-menu-button-save', _onClickSave);
+        this.menus.pause = new MenuItem('.menu-button-pause', _onClickPause);
         this.menus.fullscreen = new MenuItem('.tp-menu-button-fullscreen', _onClickFullscreen);
         this.menus.help = new MenuItem('.tp-menu-button-help', _onClickHelp);
 
@@ -118,6 +119,30 @@ function _onClickNew (event) {
 
 function _onClickFullscreen (event) {
     fullscreen.toggle();
+}
+
+function _onClickPause (event) {
+    let el = document.querySelector('.menu-button-pause');
+
+    _togglePauseButtonState();
+
+    function _togglePauseButtonState () {
+        if (el.getAttribute('data-paused') === 'true') {
+            el.querySelector('.tp-menu-item-label').textContent = 'Pause';
+            el.querySelector('i').className = 'btb bt-pause';
+            el.setAttribute('data-tooltip', 'Pause map updates');
+            el.setAttribute('data-paused', 'false');
+            TangramPlay.paused = false;
+            TangramPlay.updateContent();
+        }
+        else {
+            el.querySelector('.tp-menu-item-label').textContent = 'Play';
+            el.querySelector('i').className = 'btb bt-play';
+            el.setAttribute('data-tooltip', 'Turn on map updates');
+            el.setAttribute('data-paused', 'true');
+            TangramPlay.paused = true;
+        }
+    }
 }
 
 // Resetting state
