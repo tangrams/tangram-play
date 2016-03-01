@@ -1,5 +1,5 @@
 // Core elements
-import Map from 'app/core/Map';
+import Map from 'app/core/map';
 import { initEditor } from 'app/core/editor';
 
 // Addons
