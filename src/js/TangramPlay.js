@@ -1,5 +1,5 @@
 // Core elements
-import Map from 'app/core/Map';
+import Map from 'app/core/map';
 import { initEditor } from 'app/core/editor';
 
 // Addons
@@ -8,8 +8,8 @@ import MapLoading from 'app/addons/ui/MapLoading';
 import Modal from 'app/addons/ui/Modal';
 import WidgetsManager from 'app/addons/WidgetsManager';
 import SuggestManager from 'app/addons/SuggestManager';
-import GlslSandbox from 'app/addons/GlslSandbox';
-import GlslHelpers from 'app/addons/GlslHelpers';
+import GlslSandbox from 'app/addons/GLSLSandbox';
+import GlslHelpers from 'app/addons/GLSLHelpers';
 import ErrorsManager from 'app/addons/ErrorsManager';
 import ColorPalette from 'app/addons/ColorPalette';
 import LocalStorage from 'app/addons/LocalStorage';

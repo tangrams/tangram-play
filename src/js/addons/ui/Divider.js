@@ -5,7 +5,7 @@ import { map, editor } from 'app/TangramPlay';
 import LocalStorage from 'app/addons/LocalStorage';
 
 // Import Greensock (GSAP)
-import 'gsap/src/uncompressed/Tweenlite.js';
+import 'gsap/src/uncompressed/TweenLite.js';
 import 'gsap/src/uncompressed/plugins/CSSPlugin.js';
 import Draggable from 'gsap/src/uncompressed/utils/Draggable.js';
 
