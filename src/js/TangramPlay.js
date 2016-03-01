@@ -30,7 +30,7 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 const DEFAULT_API_KEY = 'vector-tiles-P6dkVl4';
 
 class TangramPlay {
-    constructor (selector, options) {
+    constructor (options) {
         subscribeMixin(this);
 
         //Benchmark & Debuggin
@@ -39,7 +39,7 @@ class TangramPlay {
             window.watch.start();
         }
 
-        this.container = document.querySelector(selector);
+        this.container = document.body; // TODO: Refactor out.
         this.editor = initEditor('editor');
         this.map = new Map('map');
         this.options = options;
@@ -424,7 +424,7 @@ function suppressAPIKeys (content) {
 
 // Export an instance of TangramPlay with the following modules
 
-let tangramPlay = new TangramPlay('#tangram_play_wrapper', {
+let tangramPlay = new TangramPlay({
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',

@@ -1,7 +1,7 @@
 'use strict';
 
 import { container } from 'app/TangramPlay';
-import Shield from 'app/addons/ui/Shield';
+import shield from 'app/addons/ui/shield';
 import { noop } from 'app/addons/ui/Helpers';
 
 export default class Modal {
@@ -18,8 +18,6 @@ export default class Modal {
         // Set callback methods
         this.onConfirm = confirm;
         this.onAbort = abort;
-
-        this.shield = new Shield();
 
         // Setup proper "this" binding to these callback functions
         // This is necessary so that these functions have the proper
@@ -44,7 +42,7 @@ export default class Modal {
 
     // Shows modal and attaches events.
     show () {
-        this.shield.show();
+        shield.show();
         this.el.style.display = 'block';
 
         this.confirmButton = this.el.querySelector('.tp-modal-confirm');
@@ -64,7 +62,7 @@ export default class Modal {
 
     // Hides modal and resets events
     hide () {
-        this.shield.hide();
+        shield.hide();
         this.el.style.display = 'none';
 
         if (this.confirmButton) {
