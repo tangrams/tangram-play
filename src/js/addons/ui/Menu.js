@@ -133,6 +133,7 @@ function _onClickPause (event) {
             el.setAttribute('data-tooltip', 'Pause map updates');
             el.setAttribute('data-paused', 'false');
             TangramPlay.paused = false;
+            // Updating content turns scene.animated to true automatically
             TangramPlay.updateContent();
         }
         else {
@@ -141,6 +142,8 @@ function _onClickPause (event) {
             el.setAttribute('data-tooltip', 'Turn on map updates');
             el.setAttribute('data-paused', 'true');
             TangramPlay.paused = true;
+            // Also, turn off animation in Tangram
+            map.scene.animated = false;
         }
     }
 }
