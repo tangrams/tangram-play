@@ -9,9 +9,5 @@ dependencies:
 test:
   override:
     - npm run lint
-
-general:
-  artifacts:
-    - "build"
-    - "data"
-    - "index.html"
+  post:
+    - cp -R build data index.html $CIRCLE_ARTIFACTS
