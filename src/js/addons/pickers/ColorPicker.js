@@ -1,8 +1,3 @@
-/*
-Original: https://github.com/tangrams/tangram-play/blob/gh-pages/src/js/addons/ui/widgets/ColorPickerModal.js
-Author: Lou Huang (@saikofish)
-*/
-
 import Picker from './Picker';
 import Color from './types/Color';
 import { addEvent, removeEvent } from './Picker';
