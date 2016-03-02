@@ -1,16 +1,10 @@
-/*
-Original: https://github.com/tangrams/tangram-play/blob/gh-pages/src/js/addons/ui/widgets/ColorPickerModal.js
-Author: Lou Huang (@saikofish)
-*/
-
-'use strict';
-
 import Picker from './Picker';
 import Color from './types/Color';
 import { addEvent, removeEvent } from './Picker';
 import { getDevicePixelRatio } from 'app/tools/common';
 
 // Some common use variables
+let startPoint;
 let currentTarget;
 let currentTargetHeight = 0;
 let domCache;
@@ -19,8 +13,8 @@ export default class ColorPicker extends Picker {
     constructor (color = 'vec3(1.0,0.0,0.0)', properties = {}) {
         super('colorpicker-', properties);
 
-        this.width = 250; // in pixels
-        this.height = 250; // in pixels
+        this.width = 260; // in pixels
+        this.height = 270; // in pixels
 
         this.disc = { width: 200, height: 200 };
         this.barlum = { width: 25, height: 200 };
@@ -227,10 +221,11 @@ export default class ColorPicker extends Picker {
         event.preventDefault();
 
         currentTarget = target.id ? target : target.parentNode;
+        startPoint = Tools.getOrigin(currentTarget);
         currentTargetHeight = currentTarget.offsetHeight; // as diameter of circle
 
         // Starts listening for mousemove and mouseup events
-        this.onHsvMoveHandler = addEvent(this.el, 'mousemove', this.onHsvMove, this);
+        this.onHsvMoveHandler = addEvent(window, 'mousemove', this.onHsvMove, this);
         this.onHsvUpHandler = addEvent(window, 'mouseup', this.onHsvUp, this);
 
         this.onHsvMove(event);
@@ -243,16 +238,18 @@ export default class ColorPicker extends Picker {
     // Actions when user moves around on HSV color map
     onHsvMove (event) {
         let r, x, y, h, s;
-        if (event.target === this.dom.hsvMapCover && currentTarget === this.dom.hsvMap) { // the circle
+        if (currentTarget === this.dom.hsvMap) { // the circle
             r = currentTargetHeight / 2,
-            x = event.offsetX - r,
-            y = event.offsetY - r,
+            // x = event.offsetX - r,
+            // y = event.offsetY - r,
+            x = event.clientX - startPoint.left - r,
+            y = event.clientY - startPoint.top - r,
             h = (360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0))) / 360,
             s = (Math.sqrt((x * x) + (y * y)) / r);
             this.value.set({ h, s }, 'hsv');
         }
-        else if (event.target === this.dom.hsvBarCursors && currentTarget === this.dom.hsvBarCursors) { // the luminanceBar
-            let v = (currentTargetHeight - (event.offsetY)) / currentTargetHeight;
+        else if (currentTarget === this.dom.hsvBarCursors) { // the luminanceBar
+            let v = (currentTargetHeight - (event.clientY - startPoint.top)) / currentTargetHeight;
             v = Math.max(0, Math.min(1, v)) * 255;
             this.value.set({ v: v }, 'hsv');
         }
@@ -270,7 +267,7 @@ export default class ColorPicker extends Picker {
 
     // Destroy event listeners that exist during mousedown colorpicker interaction
     destroyEvents () {
-        removeEvent(this.el, 'mousemove', this.onHsvMoveHandler);
+        removeEvent(window, 'mousemove', this.onHsvMoveHandler);
         this.onHsvMoveHandler = null;
         removeEvent(window, 'mouseup', this.onHsvUpHandler);
         this.onHsvUpHandler = null;
@@ -331,3 +328,31 @@ function drawCircle (ctx, coords, radius, color, width) { // uses drawDisk
         ctx.stroke();
     });
 }
+
+const Tools = {
+    getOrigin (el) {
+        const box = (el.getBoundingClientRect) ? el.getBoundingClientRect() : { top: 0, left: 0 };
+        const doc = el && el.ownerDocument;
+        const body = doc.body;
+        const win = doc.defaultView || doc.parentWindow || window;
+        const docElem = doc.documentElement || body.parentNode;
+        const clientTop = docElem.clientTop || body.clientTop || 0; // border on html or body or both
+        const clientLeft = docElem.clientLeft || body.clientLeft || 0;
+
+        return {
+            left: box.left + (win.pageXOffset || docElem.scrollLeft) - clientLeft,
+            top: box.top + (win.pageYOffset || docElem.scrollTop) - clientTop
+        };
+    },
+    eventCache: null,
+    addEvent (element, event, callback, caller) {
+        var handler;
+        element.addEventListener(event, handler = function (e) {
+            callback.call(caller, e);
+        }, false);
+        return handler;
+    },
+    removeEvent (element, event, callback) {
+        element.removeEventListener(event, callback, false);
+    }
+};

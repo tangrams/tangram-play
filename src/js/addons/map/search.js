@@ -1,5 +1,3 @@
-'use strict';
-
 import TangramPlay from 'app/TangramPlay';
 import { map, container } from 'app/TangramPlay';
 import { httpGet, debounce } from 'app/tools/common';

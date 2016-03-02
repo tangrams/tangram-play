@@ -1,5 +1,3 @@
-'use strict';
-
 import TangramPlay from 'app/TangramPlay';
 
 import LocalStorage from 'app/addons/LocalStorage';

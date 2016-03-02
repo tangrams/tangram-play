@@ -19,6 +19,10 @@
     cursor: crosshair;
 }
 
+.colorpicker-modal {
+    padding: 10px;
+}
+
 .colorpicker-patch {
     position: absolute;
     left: 0;

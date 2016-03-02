@@ -1,5 +1,3 @@
-'use strict';
-
 import TangramPlay, { container, editor } from 'app/TangramPlay';
 import LocalStorage from 'app/addons/LocalStorage';
 import Modal from 'app/addons/ui/Modal';

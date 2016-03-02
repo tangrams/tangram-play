@@ -1,5 +1,3 @@
-'use strict';
-
 export default class Vector {
     constructor (vec, type) {
         this.value = [0,0];

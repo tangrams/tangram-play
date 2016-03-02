@@ -1,5 +1,3 @@
-'use strict';
-
 /* global Modernizr */
 // Mozilla (Firefox) has its own language for fullscreen API
 const requestFullscreen = Modernizr.prefixed('requestFullscreen', document.documentElement) ||

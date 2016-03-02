@@ -1,5 +1,3 @@
-'use strict';
-
 import EditorIO from 'app/addons/ui/EditorIO';
 
 export default class FileOpen {

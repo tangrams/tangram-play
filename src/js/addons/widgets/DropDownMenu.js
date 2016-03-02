@@ -1,5 +1,3 @@
-'use strict';
-
 import TangramPlay from 'app/TangramPlay';
 import Widget from 'app/addons/widgets/Widget';
 import { getAddressSceneContent } from 'app/core/codemirror/yaml-tangram';

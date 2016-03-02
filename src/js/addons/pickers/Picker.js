@@ -1,10 +1,3 @@
-/*
-Original: https://github.com/tangrams/tangram-play/blob/gh-pages/src/js/addons/ui/widgets/ColorPickerModal.js
-Author: Lou Huang (@saikofish)
-*/
-
-'use strict';
-
 import { getDevicePixelRatio } from 'app/tools/common';
 import { subscribeMixin } from 'app/tools/mixin';
 
