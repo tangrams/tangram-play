@@ -39,7 +39,7 @@ export default class ExamplesModal extends Modal {
 
 // TODO: Refactor
 function loadExamples (configFile) {
-    window.fetch(configFile)
+    window.fetch(configFile, { credentials: 'include' })
         .then((response) => {
             if (response.status !== 200) {
                 throw response.status;
