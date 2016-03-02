@@ -1,6 +1,8 @@
 import { getDevicePixelRatio } from 'app/tools/common';
 import { subscribeMixin } from 'app/tools/mixin';
 
+import { subscribeInteractiveDom } from 'app/tools/interactiveDom';
+
 export default class Picker {
     constructor (CSS_PREFIX, properties) {
         subscribeMixin(this);
@@ -47,6 +49,7 @@ export default class Picker {
     create () {
         this.el = document.createElement('div');
         this.el.className = this.CSS_PREFIX + 'modal picker-modal';
+        subscribeInteractiveDom(this.el, { move: true, resize: false, snap: false });
 
         this.canvas = document.createElement('canvas');
         this.canvas.className = this.CSS_PREFIX + 'canvas picker-canvas';
@@ -94,15 +97,15 @@ export default class Picker {
         x -= this.width * 0.5;
         y += 30;
 
-        // Check if desired x, y will be outside the viewport.
-        // Do not allow the modal to disappear off the edge of the window.
-        x = (x + this.width < window.innerWidth) ? x : (window.innerWidth - 20 - this.width);
-        y = (y + this.height < window.innerHeight) ? y : (window.innerHeight - 20 - this.height);
-
         this.presentModal(x, y);
     }
 
     presentModal (x, y) {
+        // Check if desired x, y will be outside the viewport.
+        // Do not allow the modal to disappear off the edge of the window.
+        x = (x + this.width < window.innerWidth) ? x : (window.innerWidth - 20 - this.width);
+        y = (y + this.height < window.innerHeight) ? y : (window.innerHeight - 20 - this.height);
+        
         // Listen for interaction outside of the modal
         window.setTimeout(() => {
             this.onClickOutsideHandler = addEvent(document.body, 'click', this.onClickOutside, this);

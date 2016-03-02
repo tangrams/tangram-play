@@ -95,6 +95,9 @@ export default class Vec2Picker extends Picker {
 
     // Actions when user moves around on HSV color map
     onMouseMove (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
         let x = event.offsetX;
         let y = event.offsetY;
 
