@@ -143,7 +143,7 @@ export default class Helpers {
                 re = /vec2\([-|\d|.|,\s]*\)/g;
                 break;
             case 'number':
-                re = /[-]?\d*\.\d*/g;
+                re = /[-]?\d+\.\d+|\d+\.|\.\d+/g;
                 break;
             default:
                 console.error('invalid match selection');
