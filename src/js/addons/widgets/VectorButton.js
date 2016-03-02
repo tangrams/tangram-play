@@ -1,3 +1,5 @@
+'use strict';
+
 import Widget from 'app/addons/widgets/Widget.js';
 import Vec3Picker from 'app/addons/pickers/Vec3Picker';
 
@@ -7,11 +9,16 @@ const MODAL_X_OFFSET = 0;
 const MODAL_Y_OFFSET = 5;
 
 export default class VectorButton extends Widget {
+
+    constructor (...args) {
+        super(...args);
+    }
+
     createEl () {
         let el = document.createElement('div');
         el.innerHTML = '<span class="tp-widget-vector-text">+</span>';
         el.className = 'tp-widget tp-widget-vector';
-        el.addEventListener('click', this.onClick.bind(this));
+        el.addEventListener('mousedown', this.onClick.bind(this));
         return el;
     }
 
