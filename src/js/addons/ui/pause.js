@@ -13,35 +13,55 @@ const pauseButtonEl = document.querySelector('.menu-button-pause');
 const labelEl = pauseButtonEl.querySelector('.tp-menu-item-label');
 const iconEl = pauseButtonEl.querySelector('i');
 
-const pause = {
-    toggle: function () {
-        if (TangramPlay.paused === false) {
-            // Record the state on the app. TangramPlay.updateContent() will
-            // do nothing if the paused property is set to true.
-            TangramPlay.paused = true;
-
-            // Turn off animation in Tangram
-            map.scene.animated = false;
-
-            // Change the button's state
-            labelEl.textContent = 'Play';
-            iconEl.className = 'btb bt-play';
-            pauseButtonEl.setAttribute('data-tooltip', 'Turn on map updates');
-        }
-        else {
-            // Record the state on the app
-            TangramPlay.paused = false;
-
-            // Immediately send current editor contents to get the map going
-            // Updating content turns scene.animated to true automatically
-            TangramPlay.updateContent();
-
-            // Change the button's state
-            labelEl.textContent = 'Pause';
-            iconEl.className = 'btb bt-pause';
-            pauseButtonEl.setAttribute('data-tooltip', 'Pause map updates');
-        }
+/**
+ * This toggles pause state in the application. It is the only export.
+ */
+export function togglePause () {
+    if (TangramPlay.paused === true) {
+        unpauseUpdates();
+        showPauseButton();
     }
-};
+    else {
+        pauseUpdates();
+        showPlayButton();
+    }
+}
 
-export default pause;
+/**
+ * Records pause state as true on TangramPlay app object.
+ * TangramPlay.updateContent() will do nothing as a result.
+ * Also, turn off animation in Tangram.
+ */
+function pauseUpdates () {
+    TangramPlay.paused = true;
+    map.scene.animated = false;
+}
+
+/**
+ * Records pause state as false on TangramPlay app object.
+ * Then immediately call updateContent() to send the editor's
+ * current contents to update the map, which also turns animation
+ * back on automatically.
+ */
+function unpauseUpdates () {
+    TangramPlay.paused = false;
+    TangramPlay.updateContent();
+}
+
+/**
+ * Changes the button to read 'Pause'
+ */
+function showPauseButton () {
+    labelEl.textContent = 'Pause';
+    iconEl.className = 'btb bt-pause';
+    pauseButtonEl.setAttribute('data-tooltip', 'Pause map updates');
+}
+
+/**
+ * Changes the button to read 'Play'
+ */
+function showPlayButton () {
+    labelEl.textContent = 'Play';
+    iconEl.className = 'btb bt-play';
+    pauseButtonEl.setAttribute('data-tooltip', 'Turn on map updates');
+}

@@ -7,7 +7,7 @@ import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import AboutModal from 'app/addons/ui/Modal.About';
 import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
 import fullscreen from 'app/addons/ui/fullscreen';
-import pause from 'app/addons/ui/pause';
+import { togglePause } from 'app/addons/ui/pause';
 
 export default class Menu {
     constructor () {
@@ -123,7 +123,7 @@ function _onClickFullscreen (event) {
 }
 
 function _onClickPause (event) {
-    pause.toggle();
+    togglePause();
 }
 
 // Resetting state
