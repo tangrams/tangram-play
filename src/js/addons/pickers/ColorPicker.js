@@ -3,6 +3,8 @@ import Color from './types/Color';
 import { addEvent, removeEvent } from './Picker';
 import { getDevicePixelRatio } from 'app/tools/common';
 
+import { subscribeInteractiveDom } from 'app/tools/interactiveDom';
+
 // Some common use variables
 let startPoint;
 let currentTarget;
@@ -72,6 +74,7 @@ export default class ColorPicker extends Picker {
 
         // Returns a clone of the cached document fragment
         this.el = domCache.cloneNode(true);
+        subscribeInteractiveDom(this.el, { move: true, resize: false, snap: false });
 
         // TODO: Improve these references
         // The caching of references is likely to be important for speed
@@ -217,7 +220,6 @@ export default class ColorPicker extends Picker {
     // Actions when user mouses down on HSV color map
     onHsvDown (event) {
         let target = event.target || event.srcElement;
-
         event.preventDefault();
 
         currentTarget = target.id ? target : target.parentNode;
@@ -237,6 +239,9 @@ export default class ColorPicker extends Picker {
 
     // Actions when user moves around on HSV color map
     onHsvMove (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
         let r, x, y, h, s;
         if (currentTarget === this.dom.hsvMap) { // the circle
             r = currentTargetHeight / 2,
