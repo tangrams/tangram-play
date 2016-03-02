@@ -1,7 +1,6 @@
 import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
-import { httpGet } from 'app/tools/common';
 import { getLineInd, isCommented, isEmpty, regexEscape } from 'app/core/codemirror/tools';
 import { getAddressSceneContent, getAddressForLevel } from 'app/core/codemirror/yaml-tangram';
 
@@ -16,22 +15,29 @@ export default class SuggestManager {
         this.valueSuggestions = [];
         this.active = undefined;
 
-        //  Load data file
-        httpGet(configFile, (err, res) => {
-            let keys = JSON.parse(res)['keys'];
+        // Load data file
+        window.fetch(configFile)
+            .then((response) => {
+                if (response.status !== 200) {
+                    throw response.status;
+                }
 
-            // Initialize tokens
-            for (let datum of keys) {
-                this.keySuggestions.push(new Suggestion(datum));
-            }
+                return response.json();
+            })
+            .then((data) => {
+                // Initialize tokens
+                for (let datum of data.keys) {
+                    this.keySuggestions.push(new Suggestion(datum));
+                }
 
-            let values = JSON.parse(res)['values'];
-
-            // Initialize tokens
-            for (let datum of values) {
-                this.valueSuggestions.push(new Suggestion(datum));
-            }
-        });
+                // Initialize tokens
+                for (let datum of data.values) {
+                    this.valueSuggestions.push(new Suggestion(datum));
+                }
+            })
+            .catch((error) => {
+                console.error('Error retrieving config file.', error);
+            });
 
         // Trigger hint after each time the scene is uploaded
         TangramPlay.on('sceneupdate', (args) => {
