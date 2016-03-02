@@ -8,8 +8,8 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/search/searchcursor';
 import 'codemirror/addon/search/search';
 import 'codemirror/addon/dialog/dialog';
-// import 'codemirror/addon/edit/matchbrackets';
-// import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/wrap/hardwrap';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
@@ -51,7 +51,7 @@ export function initEditor (id) {
         value: 'Loading...',
         rulers: rulers,
         lineNumbers: true,
-        // matchBrackets: true,
+        matchBrackets: true,
         mode: 'text/x-yaml-tangram',
         keyMap: 'sublime',
         autoCloseBrackets: true,
