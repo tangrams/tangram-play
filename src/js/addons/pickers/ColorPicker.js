@@ -19,8 +19,8 @@ export default class ColorPicker extends Picker {
     constructor (color = 'vec3(1.0,0.0,0.0)', properties = {}) {
         super('colorpicker-', properties);
 
-        this.width = 250; // in pixels
-        this.height = 250; // in pixels
+        this.width = 260; // in pixels
+        this.height = 270; // in pixels
 
         this.disc = { width: 200, height: 200 };
         this.barlum = { width: 25, height: 200 };
