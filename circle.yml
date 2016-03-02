@@ -17,6 +17,6 @@ test:
 # For hosting on mapzen.com. Only deploy if tests pass.
 deployment:
   production:
-    branch: gh-pages
+    branch: master
     commands:
       - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DESTINATION --delete
