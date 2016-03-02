@@ -1,5 +1,3 @@
-'use strict';
-
 import TangramPlay, { editor } from 'app/TangramPlay';
 import { saveAs } from 'app/vendor/FileSaver.min.js';
 import { noop } from 'app/addons/ui/Helpers';

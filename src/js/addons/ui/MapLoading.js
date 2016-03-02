@@ -1,5 +1,3 @@
-'use strict';
-
 import { debounce } from 'app/tools/common';
 
 const MapLoading = {

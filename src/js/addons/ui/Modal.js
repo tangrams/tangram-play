@@ -1,5 +1,3 @@
-'use strict';
-
 import { container } from 'app/TangramPlay';
 import shield from 'app/addons/ui/shield';
 import { noop } from 'app/addons/ui/Helpers';

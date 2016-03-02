@@ -7,7 +7,6 @@
  *  with any additional functionality.
  *
  */
-'use strict';
 
 import TangramPlay from 'app/TangramPlay';
 import { editor } from 'app/TangramPlay';

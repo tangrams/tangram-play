@@ -3,8 +3,6 @@ Original: https://github.com/tangrams/tangram-play/blob/gh-pages/src/js/addons/u
 Author: Lou Huang (@saikofish)
 */
 
-'use strict';
-
 import Picker from './Picker';
 import Color from './types/Color';
 import { addEvent, removeEvent } from './Picker';

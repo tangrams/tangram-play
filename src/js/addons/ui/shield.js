@@ -1,5 +1,3 @@
-'use strict';
-
 const el = document.getElementById('shield');
 
 export default class Shield {

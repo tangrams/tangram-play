@@ -1,5 +1,3 @@
-'use strict';
-
 import TangramPlay, { container, map } from 'app/TangramPlay';
 import { noop } from 'app/addons/ui/Helpers';
 import EditorIO from 'app/addons/ui/EditorIO';

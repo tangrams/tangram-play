@@ -1,5 +1,3 @@
-'use strict';
-
 import Widget from 'app/addons/widgets/Widget.js';
 import Vec3Picker from 'app/addons/pickers/Vec3Picker';
 

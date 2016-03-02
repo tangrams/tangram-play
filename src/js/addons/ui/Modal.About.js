@@ -1,5 +1,3 @@
-'use strict';
-
 import { container } from 'app/TangramPlay';
 import Modal from 'app/addons/ui/Modal';
 import CodeMirror from 'codemirror';

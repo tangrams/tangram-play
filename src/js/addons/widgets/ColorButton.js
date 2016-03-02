@@ -1,5 +1,3 @@
-'use strict';
-
 import Widget from 'app/addons/widgets/Widget';
 import ColorPicker from 'app/addons/pickers/ColorPicker';
 import { toCSS, toColorVec } from 'app/tools/common';

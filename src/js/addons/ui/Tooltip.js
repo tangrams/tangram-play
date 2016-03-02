@@ -1,5 +1,3 @@
-'use strict';
-
 const TIME_BEFORE_DISPLAY = 500; // in milliseconds, the amount of time elapsed before a tooltip is shown
 const TIME_BEFORE_RESET = 100; // in milliseconds, the amount of time elapsed after a tooltip disappears that it should appear to animate in instead of appearing instantly
 const VIEWPORT_EDGE_BUFFER = 6; // in pixels, minimum distance the edge of a tooltip should be from edge of the viewport

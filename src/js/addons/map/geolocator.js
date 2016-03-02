@@ -1,5 +1,3 @@
-'use strict';
-
 import { map } from 'app/TangramPlay';
 import Modal from 'app/addons/ui/Modal';
 

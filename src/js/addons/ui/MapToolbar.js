@@ -1,5 +1,3 @@
-'use strict';
-
 import LocalStorage from 'app/addons/LocalStorage';
 import { map, container } from 'app/TangramPlay';
 import search from 'app/addons/map/search';
