@@ -3,7 +3,6 @@
 import TangramPlay, { container } from 'app/TangramPlay';
 import Modal from 'app/addons/ui/Modal';
 import EditorIO from 'app/addons/ui/EditorIO';
-import { httpGet } from 'app/tools/common';
 
 let examplesEl;
 
@@ -42,32 +41,42 @@ export default class ExamplesModal extends Modal {
 
 // TODO: Refactor
 function loadExamples (configFile) {
-    httpGet(configFile, function (err, res) {
-        const data = JSON.parse(res);
-        const listEl = examplesEl.querySelector('.tp-example-list');
+    window.fetch(configFile)
+        .then((response) => {
+            if (response.status !== 200) {
+                throw response.status;
+            }
 
-        for (let example of data['examples']) {
-            let newOption = document.createElement('div');
-            let nameEl = document.createElement('div');
-            let name = example['name'].split('.')[0];
-            let thumbnailEl = document.createElement('div');
-            newOption.className = 'tp-example-option';
-            newOption.setAttribute('data-value', example['url']);
-            nameEl.className = 'tp-example-option-name';
-            nameEl.textContent = name.replace(/-/g, ' ');
-            thumbnailEl.className = 'tp-example-thumbnail';
-            thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
-            thumbnailEl.style.backgroundImage = 'url(' + example['thumb'] + ')';
-            newOption.appendChild(nameEl);
-            newOption.appendChild(thumbnailEl);
-            newOption.addEventListener('click', selectExample);
-            listEl.appendChild(newOption);
-            newOption.addEventListener('dblclick', function (e) {
-                // This is a bit ridiculous
-                TangramPlay.ui.menu.examplesModal._handleConfirm();
+            return response.json();
+        })
+        .then((data) => {
+            const listEl = examplesEl.querySelector('.tp-example-list');
+
+            data.examples.forEach(function (example) {
+                let newOption = document.createElement('div');
+                let nameEl = document.createElement('div');
+                let name = example['name'].split('.')[0];
+                let thumbnailEl = document.createElement('div');
+                newOption.className = 'tp-example-option';
+                newOption.setAttribute('data-value', example['url']);
+                nameEl.className = 'tp-example-option-name';
+                nameEl.textContent = name.replace(/-/g, ' ');
+                thumbnailEl.className = 'tp-example-thumbnail';
+                thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                thumbnailEl.style.backgroundImage = 'url(' + example['thumb'] + ')';
+                newOption.appendChild(nameEl);
+                newOption.appendChild(thumbnailEl);
+                newOption.addEventListener('click', selectExample);
+                listEl.appendChild(newOption);
+                newOption.addEventListener('dblclick', function (e) {
+                    // This is a bit ridiculous
+                    TangramPlay.ui.menu.examplesModal._handleConfirm();
+                });
             });
-        }
-    });
+        })
+        .catch((error) => {
+            console.error('Error retrieving config file.', error);
+        });
 }
 
 function selectExample (event) {

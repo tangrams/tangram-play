@@ -1,3 +1,6 @@
+// Polyfills
+import 'whatwg-fetch';
+
 // Core elements
 import Map from 'app/core/map';
 import { initEditor } from 'app/core/editor';

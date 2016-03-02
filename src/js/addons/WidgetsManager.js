@@ -4,7 +4,6 @@ import TangramPlay from 'app/TangramPlay';
 
 // Load some common functions
 import { subscribeMixin } from 'app/tools/mixin';
-import { httpGet } from 'app/tools/common';
 import { isStrEmpty } from 'app/core/codemirror/tools';
 
 // Load addons modules
@@ -18,23 +17,32 @@ export default class WidgetsManager {
         this.pairedUntilLine = 0;
 
         // Load data file
-        httpGet(configFile, (err, res) => {
-            let widgetsData = JSON.parse(res)['values'];
-
-            // Initialize tokens
-            for (let datum of widgetsData) {
-                if (datum.type === 'color' || datum.type === 'vector' || datum.type === 'boolean' || datum.type === 'string') {
-                    this.data.push(new WidgetType(datum));
+        window.fetch(configFile)
+            .then((response) => {
+                if (response.status !== 200) {
+                    throw response.status;
                 }
-            }
 
-            let from = { line:0, ch:0 };
-            let to = {
-                line: TangramPlay.editor.getDoc().size - 1,
-                ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
-            };
-            this.createRange(from, to);
-        });
+                return response.json();
+            })
+            .then((data) => {
+                // Initialize tokens
+                for (let datum of data.values) {
+                    if (datum.type === 'color' || datum.type === 'vector' || datum.type === 'boolean' || datum.type === 'string') {
+                        this.data.push(new WidgetType(datum));
+                    }
+                }
+
+                let from = { line:0, ch:0 };
+                let to = {
+                    line: TangramPlay.editor.getDoc().size - 1,
+                    ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
+                };
+                this.createRange(from, to);
+            })
+            .catch((error) => {
+                console.error('Error retrieving config file.', error);
+            });
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {
