@@ -7,6 +7,7 @@ import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import AboutModal from 'app/addons/ui/Modal.About';
 import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
 import fullscreen from 'app/addons/ui/fullscreen';
+import pause from 'app/addons/ui/pause';
 
 export default class Menu {
     constructor () {
@@ -122,30 +123,7 @@ function _onClickFullscreen (event) {
 }
 
 function _onClickPause (event) {
-    let el = document.querySelector('.menu-button-pause');
-
-    _togglePauseButtonState();
-
-    function _togglePauseButtonState () {
-        if (el.getAttribute('data-paused') === 'true') {
-            el.querySelector('.tp-menu-item-label').textContent = 'Pause';
-            el.querySelector('i').className = 'btb bt-pause';
-            el.setAttribute('data-tooltip', 'Pause map updates');
-            el.setAttribute('data-paused', 'false');
-            TangramPlay.paused = false;
-            // Updating content turns scene.animated to true automatically
-            TangramPlay.updateContent();
-        }
-        else {
-            el.querySelector('.tp-menu-item-label').textContent = 'Play';
-            el.querySelector('i').className = 'btb bt-play';
-            el.setAttribute('data-tooltip', 'Turn on map updates');
-            el.setAttribute('data-paused', 'true');
-            TangramPlay.paused = true;
-            // Also, turn off animation in Tangram
-            map.scene.animated = false;
-        }
-    }
+    pause.toggle();
 }
 
 // Resetting state
