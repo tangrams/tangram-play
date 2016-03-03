@@ -19,6 +19,20 @@
     "url": "https://github.com/tangrams/tangram-play/issues"
   },
   "homepage": "https://github.com/tangrams/tangram-play",
+  "contributors": [
+    {
+      "name": "Patricio Gonzalez Vivo",
+      "email": "patricio@mapzen.com"
+    },
+    {
+      "name": "Lou Huang",
+      "email": "lou@mapzen.com"
+    },
+    {
+      "name": "Brett Camper",
+      "email": "brett@mapzen.com"
+    }
+  ],
   "devDependencies": {
     "autoprefixer": "^6.0.3",
     "babelify": "^6.4.0",
