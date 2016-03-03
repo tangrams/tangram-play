@@ -15,7 +15,7 @@ export default class WidgetsManager {
         this.pairedUntilLine = 0;
 
         // Load data file
-        window.fetch(configFile)
+        window.fetch(configFile, { credentials: 'include' })
             .then((response) => {
                 if (response.status !== 200) {
                     throw response.status;
