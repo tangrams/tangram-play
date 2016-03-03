@@ -16,7 +16,7 @@ export default class SuggestManager {
         this.active = undefined;
 
         // Load data file
-        window.fetch(configFile)
+        window.fetch(configFile, { credentials: 'include' })
             .then((response) => {
                 if (response.status !== 200) {
                     throw response.status;

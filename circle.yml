@@ -4,7 +4,7 @@ machine:
 
 dependencies:
   post:
-    - npm install -g gulp-cli && gulp build
+    - npm install -g gulp-cli && npm run build
     - npm install -g aws-cli
 
 test:
@@ -17,6 +17,6 @@ test:
 # For hosting on mapzen.com. Only deploy if tests pass.
 deployment:
   production:
-    branch: gh-pages
+    branch: master
     commands:
       - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DESTINATION --delete

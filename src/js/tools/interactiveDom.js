@@ -210,13 +210,13 @@ export function subscribeInteractiveDom (dom, options) {
                 if (x < 0) {
                     x = 0;
                 }
-                else if (y < 0) {
+                if (y < 0) {
                     y = 0;
                 }
-                else if (x + dom.offsetWidth > window.innerWidth) {
+                if (x + dom.offsetWidth > window.innerWidth) {
                     x = window.innerWidth - dom.offsetWidth;
                 }
-                else if (y + dom.offsetHeight > window.innerHeight) {
+                if (y + dom.offsetHeight > window.innerHeight) {
                     y = window.innerHeight - dom.offsetHeight;
                 }
 
