@@ -37,6 +37,16 @@ If a [LiveReload](http://livereload.com/) browser plugin is active, Gulp will al
 
 Tangram Play is a static site, and can be viewed by any static fileserver, such as Python's [SimpleHTTPServer](https://docs.python.org/2/library/simplehttpserver.html) or Node's [http-server module](https://www.npmjs.com/package/http-server).
 
+Download this repo, then start a web server in its directory:
+
+    python -m SimpleHTTPServer 8000
+    
+If that doesn't work, try:
+
+    python -m http.server 8000
+    
+Then navigate to: [http://localhost:8000](http://localhost:8000)
+
 ### Deployment process
 
 The `build/` directory is not committed to the source code. We use Circle.CI's configuration to compile all the files for deployment.
