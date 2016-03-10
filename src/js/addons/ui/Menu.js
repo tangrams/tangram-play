@@ -7,6 +7,7 @@ import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
 import AboutModal from 'app/addons/ui/Modal.About';
 import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
 import fullscreen from 'app/addons/ui/fullscreen';
+import { togglePause } from 'app/addons/ui/pause';
 
 export default class Menu {
     constructor () {
@@ -19,6 +20,7 @@ export default class Menu {
         this.menus.new = new MenuItem('.tp-menu-button-new', _onClickNew);
         this.menus.open = new MenuItem('.tp-menu-button-open', _onClickOpen);
         this.menus.save = new MenuItem('.tp-menu-button-save', _onClickSave);
+        this.menus.pause = new MenuItem('.menu-button-pause', _onClickPause);
         this.menus.fullscreen = new MenuItem('.tp-menu-button-fullscreen', _onClickFullscreen);
         this.menus.help = new MenuItem('.tp-menu-button-help', _onClickHelp);
 
@@ -118,6 +120,10 @@ function _onClickNew (event) {
 
 function _onClickFullscreen (event) {
     fullscreen.toggle();
+}
+
+function _onClickPause (event) {
+    togglePause();
 }
 
 // Resetting state

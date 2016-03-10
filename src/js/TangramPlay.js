@@ -47,6 +47,7 @@ class TangramPlay {
         this.map = new Map('map');
         this.options = options;
         this.addons = {};
+        this.paused = false; // Controls whether map live-updates in response to editor changes.
 
         // Wrap this.updateContent() in a debounce function
         this.updateContent = debounce(this.updateContent, 500);
@@ -228,6 +229,11 @@ class TangramPlay {
 
     // If editor is updated, send it to the map.
     updateContent () {
+        // If paused, don't do anything!
+        if (this.paused === true) {
+            return;
+        }
+
         let content = this.getContent();
         let url = createObjectURL(content);
         this.map.loadScene(url);
