@@ -1,7 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
-// var gutil = require('gulp-util');
+var gutil = require('gulp-util');
 var livereload = require('gulp-livereload');
 var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
@@ -51,7 +51,7 @@ gulp.task('js', function () {
     var babelify = require('babelify');
     var source = require('vinyl-source-stream');
     var buffer = require('vinyl-buffer');
-    // var uglify = require('gulp-uglify');
+    var uglify = require('gulp-uglify');
 
     var bundle = browserify({
         entries: 'src/js/TangramPlay.js',
@@ -62,16 +62,24 @@ gulp.task('js', function () {
         ]
     });
 
-    return bundle.bundle()
-        .pipe(plumber())
-        .pipe(source('tangram-play.js'))
-        .pipe(buffer())
-        // .pipe(sourcemaps.init({ loadMaps: true }))
-            // Add transformation tasks to the pipeline here.
-            // .pipe(uglify())
-            // .on('error', gutil.log)
-        // .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./build/js'));
+    // Only uglify in production, because
+    // this doubles build time locally!
+    if (process.env.NODE_ENV === 'production') {
+        return bundle.bundle()
+            .pipe(plumber())
+            .pipe(source('tangram-play.js'))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({ loadMaps: true }))
+                // Add transformation tasks to the pipeline here.
+                .pipe(uglify())
+                .on('error', gutil.log)
+            .pipe(sourcemaps.write('.'))
+            .pipe(gulp.dest('./build/js'));
+    } else {
+        return bundle.bundle()
+            .pipe(source('tangram-play.js'))
+            .pipe(gulp.dest('./build/js'));
+    }
 });
 
 // Rerun the task when a file changes
