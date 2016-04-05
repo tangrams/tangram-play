@@ -62,9 +62,9 @@ gulp.task('js', function () {
         ]
     });
 
-    // Only uglify in production, because
-    // this doubles build time locally!
-    if (process.env.NODE_ENV === 'production') {
+    // Only uglify for deployment/production build,
+    // because this doubles build time locally!
+    if (process.env.NODE_ENV === 'deployment') {
         return bundle.bundle()
             .pipe(plumber())
             .pipe(source('tangram-play.js'))
