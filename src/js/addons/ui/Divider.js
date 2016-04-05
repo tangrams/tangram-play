@@ -1,6 +1,6 @@
-import TangramPlay from 'app/TangramPlay';
-import { map, editor } from 'app/TangramPlay';
-import LocalStorage from 'app/addons/LocalStorage';
+import TangramPlay from '../../TangramPlay';
+import { map, editor } from '../../TangramPlay';
+import LocalStorage from '../LocalStorage';
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/TweenLite.js';

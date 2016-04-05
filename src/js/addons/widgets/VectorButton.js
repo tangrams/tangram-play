@@ -1,5 +1,5 @@
-import Widget from 'app/addons/widgets/Widget.js';
-import Vec3Picker from 'app/addons/pickers/Vec3Picker';
+import Widget from './Widget.js';
+import Vec3Picker from '../pickers/Vec3Picker';
 
 // When presenting the modal, offset X, Y of the the modal by
 // these values, in pixels

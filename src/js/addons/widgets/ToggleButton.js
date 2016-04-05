@@ -1,4 +1,4 @@
-import Widget from 'app/addons/widgets/Widget.js';
+import Widget from './Widget.js';
 
 export default class ToggleButton extends Widget {
     createEl (key) {

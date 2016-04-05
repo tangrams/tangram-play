@@ -1,8 +1,8 @@
-import LocalStorage from 'app/addons/LocalStorage';
-import { map, container } from 'app/TangramPlay';
-import search from 'app/addons/map/search';
-import geolocator from 'app/addons/map/geolocator';
-import bookmarks from 'app/addons/map/bookmarks';
+import LocalStorage from '../LocalStorage';
+import { map, container } from '../../TangramPlay';
+import search from '../map/search';
+import geolocator from '../map/geolocator';
+import bookmarks from '../map/bookmarks';
 
 const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 const MAP_UPDATE_DELTA = 0.002;

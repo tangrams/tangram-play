@@ -1,6 +1,6 @@
-import { container } from 'app/TangramPlay';
-import shield from 'app/addons/ui/shield';
-import { noop } from 'app/addons/ui/Helpers';
+import { container } from '../../TangramPlay';
+import shield from './shield';
+import { noop } from './Helpers';
 
 export default class Modal {
     constructor (message, confirm = noop, abort = noop, options = {}) {

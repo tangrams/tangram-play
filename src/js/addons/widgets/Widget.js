@@ -8,8 +8,8 @@
  *
  */
 
-import TangramPlay from 'app/TangramPlay';
-import { editor } from 'app/TangramPlay';
+import TangramPlay from '../../TangramPlay';
+import { editor } from '../../TangramPlay';
 
 export default class Widget {
     constructor (def, node) {

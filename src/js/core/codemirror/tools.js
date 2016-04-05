@@ -1,4 +1,4 @@
-import { isNumber } from 'app/tools/common';
+import { isNumber } from '../../tools/common';
 
 //  GET Functions
 //  ===============================================================================

@@ -1,6 +1,6 @@
-import TangramPlay, { container, editor } from 'app/TangramPlay';
-import LocalStorage from 'app/addons/LocalStorage';
-import Modal from 'app/addons/ui/Modal';
+import TangramPlay, { container, editor } from '../../TangramPlay';
+import LocalStorage from '../LocalStorage';
+import Modal from './Modal';
 import xhr from 'xhr';
 import Clipboard from 'clipboard';
 

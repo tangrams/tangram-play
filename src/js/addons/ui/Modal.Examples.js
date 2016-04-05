@@ -1,6 +1,6 @@
-import TangramPlay, { container } from 'app/TangramPlay';
-import Modal from 'app/addons/ui/Modal';
-import EditorIO from 'app/addons/ui/EditorIO';
+import TangramPlay, { container } from '../../TangramPlay';
+import Modal from './Modal';
+import EditorIO from './EditorIO';
 
 let examplesEl;
 

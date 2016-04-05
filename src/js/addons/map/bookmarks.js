@@ -1,6 +1,6 @@
-import { map, container } from 'app/TangramPlay';
-import LocalStorage from 'app/addons/LocalStorage';
-import Modal from 'app/addons/ui/Modal';
+import { map, container } from '../../TangramPlay';
+import LocalStorage from '../LocalStorage';
+import Modal from '../ui/Modal';
 
 const STORAGE_BOOKMARKS_KEY = 'bookmarks';
 const DEFAULT_BOOKMARKS_OBJECT = {

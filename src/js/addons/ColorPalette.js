@@ -1,8 +1,8 @@
-import TangramPlay from 'app/TangramPlay';
+import TangramPlay from '../TangramPlay';
 
-import ColorPicker from 'app/addons/pickers/ColorPicker';
-import { toCSS } from 'app/tools/common';
-import { jumpToLine } from 'app/core/codemirror/tools';
+import ColorPicker from './pickers/ColorPicker';
+import { toCSS } from '../tools/common';
+import { jumpToLine } from '../core/codemirror/tools';
 
 export default class ColorPalette {
     constructor() {

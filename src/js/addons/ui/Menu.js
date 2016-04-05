@@ -1,12 +1,12 @@
-import TangramPlay, { container, map } from 'app/TangramPlay';
-import { noop } from 'app/addons/ui/Helpers';
-import EditorIO from 'app/addons/ui/EditorIO';
-import FileOpen from 'app/addons/ui/FileOpen';
-import ExamplesModal from 'app/addons/ui/Modal.Examples';
-import OpenURLModal from 'app/addons/ui/Modal.OpenURL';
-import AboutModal from 'app/addons/ui/Modal.About';
-import SaveGistModal from 'app/addons/ui/Modal.SaveToGist';
-import fullscreen from 'app/addons/ui/fullscreen';
+import TangramPlay, { container, map } from '../../TangramPlay';
+import { noop } from './Helpers';
+import EditorIO from './EditorIO';
+import FileOpen from './FileOpen';
+import ExamplesModal from './Modal.Examples';
+import OpenURLModal from './Modal.OpenURL';
+import AboutModal from './Modal.About';
+import SaveGistModal from './Modal.SaveToGist';
+import fullscreen from './fullscreen';
 
 export default class Menu {
     constructor () {

@@ -1,7 +1,7 @@
-import TangramPlay, { editor } from 'app/TangramPlay';
-import { saveAs } from 'app/vendor/FileSaver.min.js';
-import { noop } from 'app/addons/ui/Helpers';
-import Modal from 'app/addons/ui/Modal';
+import TangramPlay, { editor } from '../../TangramPlay';
+import { saveAs } from '../../vendor/FileSaver.min.js';
+import { noop } from '../ui/Helpers';
+import Modal from '../ui/Modal';
 
 const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
 

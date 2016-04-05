@@ -1,7 +1,7 @@
-import { getDevicePixelRatio } from 'app/tools/common';
-import { subscribeMixin } from 'app/tools/mixin';
+import { getDevicePixelRatio } from '../../tools/common';
+import { subscribeMixin } from '../../tools/mixin';
 
-import { subscribeInteractiveDom } from 'app/tools/interactiveDom';
+import { subscribeInteractiveDom } from '../../tools/interactiveDom';
 
 export default class Picker {
     constructor (CSS_PREFIX, properties) {

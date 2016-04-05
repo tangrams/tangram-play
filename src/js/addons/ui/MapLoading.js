@@ -1,4 +1,4 @@
-import { debounce } from 'app/tools/common';
+import { debounce } from '../../tools/common';
 
 const MapLoading = {
     el: document.getElementById('map-loading'),

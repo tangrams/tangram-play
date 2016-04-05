@@ -1,5 +1,5 @@
-import TangramPlay from 'app/TangramPlay';
-import EditorIO from 'app/addons/ui/EditorIO';
+import TangramPlay from '../../TangramPlay';
+import EditorIO from './EditorIO';
 
 export default class FileDrop {
     constructor () {

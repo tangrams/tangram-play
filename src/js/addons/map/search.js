@@ -1,7 +1,7 @@
-import TangramPlay from 'app/TangramPlay';
-import { map, container } from 'app/TangramPlay';
-import { httpGet, debounce } from 'app/tools/common';
-import bookmarks from 'app/addons/map/bookmarks';
+import TangramPlay from '../../TangramPlay';
+import { map, container } from '../../TangramPlay';
+import { httpGet, debounce } from '../../tools/common';
+import bookmarks from './bookmarks';
 
 const PELIAS_KEY = 'search-xFAc9NI';
 const PELIAS_HOST = 'search.mapzen.com';

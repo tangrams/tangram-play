@@ -1,5 +1,5 @@
-import { map } from 'app/TangramPlay';
-import Modal from 'app/addons/ui/Modal';
+import { map } from '../../TangramPlay';
+import Modal from '../ui/Modal';
 
 let buttonEl;
 

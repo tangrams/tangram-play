@@ -3,27 +3,27 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Core elements
-import Map from 'app/core/map';
-import { initEditor } from 'app/core/editor';
+import Map from './core/map';
+import { initEditor } from './core/editor';
 
 // Addons
-import UI from 'app/addons/UI';
-import MapLoading from 'app/addons/ui/MapLoading';
-import Modal from 'app/addons/ui/Modal';
-import WidgetsManager from 'app/addons/WidgetsManager';
-import SuggestManager from 'app/addons/SuggestManager';
-import GlslSandbox from 'app/addons/GLSLSandbox';
-import GlslHelpers from 'app/addons/GLSLHelpers';
-import ErrorsManager from 'app/addons/ErrorsManager';
-import ColorPalette from 'app/addons/ColorPalette';
-import LocalStorage from 'app/addons/LocalStorage';
+import UI from './addons/UI';
+import MapLoading from './addons/ui/MapLoading';
+import Modal from './addons/ui/Modal';
+import WidgetsManager from './addons/WidgetsManager';
+import SuggestManager from './addons/SuggestManager';
+import GlslSandbox from './addons/GLSLSandbox';
+import GlslHelpers from './addons/GLSLHelpers';
+import ErrorsManager from './addons/ErrorsManager';
+import ColorPalette from './addons/ColorPalette';
+import LocalStorage from './addons/LocalStorage';
 
 // Import Utils
 import xhr from 'xhr';
-import { subscribeMixin } from 'app/tools/mixin';
-import { StopWatch, debounce, createObjectURL } from 'app/tools/common';
-import { selectLines, isStrEmpty } from 'app/core/codemirror/tools';
-import { getNodes, parseYamlString } from 'app/core/codemirror/yaml-tangram';
+import { subscribeMixin } from './tools/mixin';
+import { StopWatch, debounce, createObjectURL } from './tools/common';
+import { selectLines, isStrEmpty } from './core/codemirror/tools';
+import { getNodes, parseYamlString } from './core/codemirror/yaml-tangram';
 
 const query = parseQuery(window.location.search.slice(1));
 
