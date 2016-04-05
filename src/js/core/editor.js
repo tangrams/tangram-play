@@ -28,7 +28,7 @@ import './codemirror/hint-tangram';
 import 'codemirror/keymap/sublime';
 
 // Import Utils
-import { getLineInd, unfoldAll, foldByLevel } from 'app/core/codemirror/tools';
+import { getLineInd, unfoldAll, foldByLevel } from './codemirror/tools';
 
 //  Main CM functions
 //  ===============================================================================
