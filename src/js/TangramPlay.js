@@ -1,4 +1,5 @@
 // Polyfills
+import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Core elements

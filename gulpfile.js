@@ -55,12 +55,8 @@ gulp.task('js', function () {
 
     var bundle = browserify({
         entries: 'src/js/TangramPlay.js',
-        debug: true,
-        transform: [
-            babelify.configure({ optional: ['runtime'] }),
-            shim
-        ]
-    });
+        debug: true
+    }).transform('babelify', { presets: ['es2015'] })
 
     // Only uglify in production, because
     // this doubles build time locally!
