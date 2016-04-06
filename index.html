@@ -1,10 +1,4 @@
 <!DOCTYPE html>
-<!--
-    Tangram: real-time WebGL rendering for OpenStreetMap
-
-    http://github.com/tangrams/tangram
-    http://mapzen.com
--->
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
@@ -32,197 +26,196 @@
   </head>
 
   <body>
-    <div class='tangram-play-container'>
-        <div class='menu-container'>
-            <div class='menu-bar'>
-                <h1>Tangram Play<span class='beta-tag'>BETA</span></h1>
-                <ul class='menu-items menu-left'>
-                    <li class='menu-item menu-button-new' data-tooltip='New scene'><i class='btm bt-file'></i><span class='menu-item-label'>New</span></li>
-                    <li class='menu-item menu-button-open' data-tooltip='Open scene'><i class='btm bt-upload'></i><span class='menu-item-label'>Open</span></li>
-                    <li class='menu-item menu-button-save' data-tooltip='Save scene'><i class='btm bt-download'></i><span class='menu-item-label'>Save</span></li>
-                    <li class='menu-item menu-item-private' data-tooltip='Share'><i class='btm bt-share'></i></li>
-                </ul>
-                <ul class='menu-items menu-right'>
-                    <li class='menu-item menu-item-private' data-tooltip='Refresh map'><i class='btm bt-sync'></i></li>
-                    <li class='menu-item menu-item-private' data-tooltip='Settings'><i class='btm bt-gear'></i></li>
-                    <li class='menu-item menu-button-fullscreen' data-tooltip='View fullscreen' data-tooltip-alignment='right'><i class='btm bt-maximize'></i><span class='menu-item-label'>Fullscreen</span></li>
-                    <li class='menu-item menu-button-help' data-tooltip='Documentation and help' data-tooltip-alignment='right'><i class='btm bt-question-circle'></i><span class='menu-item-label'>Help</span></li>
-                    <li class='menu-item menu-item-private menu-sign-in' data-tooltip='Sign in'><span class='menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
-                </ul>
-            </div>
-            <div class='menu-dropdowns'>
-                <div class='menu-dropdown menu-dropdown-open'>
-                    <ul>
-                        <li class='menu-open-file'><i class='btm bt-folder'></i><span class='menu-item-label'>Open a file</span></li>
-                        <li class='menu-open-url'><i class='btm bt-link'></i><span class='menu-item-label'>Open from URL</span></li>
-                        <li class='menu-open-example'><i class='btm bt-map'></i><span class='menu-item-label'>Choose example</span></li>
-                    </ul>
-                </div>
-                <div class='menu-dropdown menu-dropdown-save'>
-                    <ul>
-                        <li class='menu-save-file'><i class='btm bt-folder'></i><span class='menu-item-label'>Save to file</span></li>
-                        <li class='menu-save-gist'><i class='btm bt-code'></i><span class='menu-item-label'>Save to Gist</span></li>
-                        <li class='menu-screenshot'><i class='btm bt-camera'></i><span class='menu-item-label'>Take a screenshot</span></li>
-                    </ul>
-                </div>
-                <div class='menu-dropdown menu-dropdown-help'>
-                    <ul>
-                        <li class='menu-about'><i class='btm bt-info-circle'></i><span class='menu-item-label'>About</span></li>
-                        <li class='menu-view-docs'><i class='btm bt-book'></i><span class='menu-item-label'>Documentation</span><a href='https://mapzen.com/documentation/tangram' target='_blank'></a></li>
-                        <li class='menu-feedback'><i class='btm bt-comments'></i><span class='menu-item-label'>Feedback</span><a href='https://github.com/tangrams/tangram-play/issues/' target='_blank'></a></li>
-                    </ul>
-                </div>
-            </div>
+    <div class='menu-container'>
+        <div class='menu-bar'>
+            <h1>Tangram Play<span class='beta-tag'>BETA</span></h1>
+            <ul class='menu-items menu-left'>
+                <li class='menu-item menu-button-new' data-tooltip='New scene'><i class='btm bt-file'></i><span class='menu-item-label'>New</span></li>
+                <li class='menu-item menu-button-open' data-tooltip='Open scene'><i class='btm bt-upload'></i><span class='menu-item-label'>Open</span></li>
+                <li class='menu-item menu-button-save' data-tooltip='Save scene'><i class='btm bt-download'></i><span class='menu-item-label'>Save</span></li>
+                <li class='menu-item menu-item-private' data-tooltip='Share'><i class='btm bt-share'></i></li>
+            </ul>
+            <ul class='menu-items menu-right'>
+                <li class='menu-item menu-item-private' data-tooltip='Refresh map'><i class='btm bt-sync'></i></li>
+                <li class='menu-item menu-item-private' data-tooltip='Settings'><i class='btm bt-gear'></i></li>
+                <li class='menu-item menu-button-fullscreen' data-tooltip='View fullscreen' data-tooltip-alignment='right'><i class='btm bt-maximize'></i><span class='menu-item-label'>Fullscreen</span></li>
+                <li class='menu-item menu-button-help' data-tooltip='Documentation and help' data-tooltip-alignment='right'><i class='btm bt-question-circle'></i><span class='menu-item-label'>Help</span></li>
+                <li class='menu-item menu-item-private menu-sign-in' data-tooltip='Sign in'><span class='menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
+            </ul>
         </div>
-
-        <div class='core-container'>
-            <div class='map-container' id='map-container'>
-                <div class='map-view' id='map'></div>
-                <div class='map-toolbar map-toolbar-collapsed' data-tooltip='Toggle map toolbar' data-tooltip-alignment='right'>
-                  <div class='map-toolbar-button'>
-                      <i class='btm bt-globe'></i>
-                  </div>
-                  <div class='map-toolbar-toggle'></div>
-                </div>
-                <div class='map-toolbar map-toolbar-bar' id='map-toolbar'>
-                    <div class='map-zoom'>
-                        <div class='map-zoom-indicator'>z&#8202;<span class='map-zoom-quantity'></span></div>
-                        <button class='map-zoom-in' id='zoom-in' data-tooltip='Zoom in'><i class='btm bt-plus'></i></button>
-                        <button class='map-zoom-out' id='zoom-out' data-tooltip='Zoom out'><i class='btm bt-minus'></i></button>
-                    </div>
-                    <div class='map-location-bar'>
-                        <div class='map-search-icon' data-tooltip='Search for location'><i class='btm bt-search'></i></div>
-                        <input class='map-search-input' placeholder='' spellcheck='false'>
-                        <div class='map-latlng-label'></div>
-                        <div class='map-save-icon' data-tooltip='Remember location' data-tooltip-alignment='right'><i class='btm bt-star'></i></div>
-                        <div class='map-bookmarks'>
-                            <button class='map-bookmarks-button' id='bookmarks' data-tooltip='Bookmarks' data-tooltip-alignment='right'>
-                                <i class='btm bt-bookmark'></i>
-                            </button>
-                            <div class='map-bookmarks-menu'></div>
-                        </div>
-                        <div class='map-search-results'></div>
-                    </div>
-                    <div class='geolocator'>
-                        <button class='geolocator-button' id='geolocator' data-tooltip='Locate me' data-tooltip-alignment='right'>
-                            <i class='btm bt-map-arrow'></i>
-                            <i class='btm bt-sync bt-spin'></i>
-                        </button>
-                    </div>
-                    <div class='map-toolbar-toggle' id='map-toolbar-toggle' data-tooltip='Toogle map toolbar' data-tooltip-alignment='right'></div>
-                </div>
-                <div class='map-loading' id='map-loading'></div>
+        <div class='menu-dropdowns'>
+            <div class='menu-dropdown menu-dropdown-open'>
+                <ul>
+                    <li class='menu-open-file'><i class='btm bt-folder'></i><span class='menu-item-label'>Open a file</span></li>
+                    <li class='menu-open-url'><i class='btm bt-link'></i><span class='menu-item-label'>Open from URL</span></li>
+                    <li class='menu-open-example'><i class='btm bt-map'></i><span class='menu-item-label'>Choose example</span></li>
+                </ul>
             </div>
-            <div class='divider' id='divider'><span class='divider-affordance'></span></div>
-            <div class='editor-container' id='content'>
-                <div class='editor' id='editor'></div>
+            <div class='menu-dropdown menu-dropdown-save'>
+                <ul>
+                    <li class='menu-save-file'><i class='btm bt-folder'></i><span class='menu-item-label'>Save to file</span></li>
+                    <li class='menu-save-gist'><i class='btm bt-code'></i><span class='menu-item-label'>Save to Gist</span></li>
+                    <li class='menu-screenshot'><i class='btm bt-camera'></i><span class='menu-item-label'>Take a screenshot</span></li>
+                </ul>
             </div>
-        </div>
-
-        <div class='overlay-container'>
-            <div class='shield' id='shield'></div>
-            <div class='modal'>
-                <p class='modal-text'></p>
-                <div class='modal-buttons'>
-                    <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                    <button class='modal-confirm'><i class='btm bt-check'></i> Continue</button>
-                </div>
-            </div>
-            <div class='modal about-modal'>
-                <div class='modal-text modal-about-text'>
-                    <h4>About Tangram Play (BETA)</h4>
-                    <p>
-                        Tangram <span class='about-tangram-version'>(unknown version)</span>
-                        <br>Leaflet <span class='about-leaflet-version'>(unknown version)</span>
-                        <br>CodeMirror <span class='about-cm-version'>(unknown version)</span>
-                    </p>
-                    <p>
-                        This is a <a href='https://mapzen.com/' target='_blank'>Mapzen</a> project and it is maintained by Patricio Gonzalez Vivo and Lou Huang.
-                    </p>
-                    <p>
-                        <a href='https://github.com/tangrams/tangram-play' target='_blank'>View source on GitHub</a>
-                    </p>
-                </div>
-                <div class='modal-buttons'>
-                    <button class='modal-confirm'>Got it</button>
-                </div>
-            </div>
-            <div class='modal modal-alt save-gist-modal'>
-                <div class='modal-text modal-save-gist-text'>
-                    <h4>
-                        Save this scene to gist
-                    </h4>
-                    <p>
-                        This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href='https://help.github.com/articles/about-gists/' target='_blank'>Learn more about anonymous gists</a>.
-                    </p>
-                </div>
-                <hr>
-                <div class='modal-content'>
-                    <label for='gist-filename'>Filename</label>
-                    <input type='text' id='gist-filename' placeholder='(default: scene.yaml)'>
-                    <p>
-                        <label for='gist-description'>Scene description</label>
-                        <input type='text' id='gist-description' placeholder='(optional description)'>
-                    </p>
-                    <p>
-                        <label for='gist-public'>Public gist</label>
-                        <input type='checkbox' id='gist-public' checked>
-                    </p>
-                </div>
-                <div class='modal-buttons'>
-                    <div class='modal-thinking'>
-                        <i class='bts bt-spinner bt-pulse'></i> Working...
-                    </div>
-                    <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                    <button class='modal-confirm'><i class='btm bt-check'></i> Save to gist</button>
-                </div>
-            </div>
-            <div class='modal save-gist-success-modal'>
-                <div class='modal-text'></div>
-                <div class='modal-content'>
-                    <h4>
-                        Your gist has been saved.
-                    </h4>
-                    <p>
-                        Remember this URL!
-                    </p>
-                    <div class='input-bar'>
-                        <input type='text' id='gist-saved-url'>
-                        <button class='gist-saved-copy-btn' data-clipboard-target='#gist-saved-url' data-tooltip='Copy to clipboard' data-tooltip-alignment='right'>
-                            <i class='btm bt-copy'></i>
-                        </button>
-                    </div>
-                </div>
-                <div class='modal-buttons'>
-                    <button class='modal-confirm'>Got it</button>
-                </div>
-            </div>
-            <div class='modal modal-alt example-modal'>
-                <p class='modal-text'></p>
-                <div class='modal-content example-list'></div>
-                <div class='modal-buttons'>
-                    <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                    <button class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
-                </div>
-            </div>
-            <div class='modal modal-alt open-url-modal'>
-                <p class='modal-text'></p>
-                <div class='modal-content open-url-input'>
-                    <input type='url' placeholder='https://' spellcheck='false' id='open-url-input'>
-                </div>
-                <div class='modal-buttons'>
-                    <button id='example-cancel' class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                    <button id='example-confirm' class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
-                </div>
-            </div>
-            <div class='filedrop-container'>
-                <div class='filedrop-indicator'>
-                    <div class='filedrop-icon'><i class='btm bt-upload'></i></div>
-                    <div class='filedrop-label'>Drop a file here to open</div>
-                </div>
+            <div class='menu-dropdown menu-dropdown-help'>
+                <ul>
+                    <li class='menu-about'><i class='btm bt-info-circle'></i><span class='menu-item-label'>About</span></li>
+                    <li class='menu-view-docs'><i class='btm bt-book'></i><span class='menu-item-label'>Documentation</span><a href='https://mapzen.com/documentation/tangram' target='_blank'></a></li>
+                    <li class='menu-feedback'><i class='btm bt-comments'></i><span class='menu-item-label'>Feedback</span><a href='https://github.com/tangrams/tangram-play/issues/' target='_blank'></a></li>
+                </ul>
             </div>
         </div>
     </div>
+
+    <div class='workspace-container'>
+        <div class='map-container' id='map-container'>
+            <div class='map-view' id='map'></div>
+            <div class='map-toolbar map-toolbar-collapsed' data-tooltip='Toggle map toolbar' data-tooltip-alignment='right'>
+              <div class='map-toolbar-button'>
+                  <i class='btm bt-globe'></i>
+              </div>
+              <div class='map-toolbar-toggle'></div>
+            </div>
+            <div class='map-toolbar map-toolbar-bar' id='map-toolbar'>
+                <div class='map-zoom'>
+                    <div class='map-zoom-indicator'>z&#8202;<span class='map-zoom-quantity'></span></div>
+                    <button class='map-zoom-in' id='zoom-in' data-tooltip='Zoom in'><i class='btm bt-plus'></i></button>
+                    <button class='map-zoom-out' id='zoom-out' data-tooltip='Zoom out'><i class='btm bt-minus'></i></button>
+                </div>
+                <div class='map-location-bar'>
+                    <div class='map-search-icon' data-tooltip='Search for location'><i class='btm bt-search'></i></div>
+                    <input class='map-search-input' placeholder='' spellcheck='false'>
+                    <div class='map-latlng-label'></div>
+                    <div class='map-save-icon' data-tooltip='Remember location' data-tooltip-alignment='right'><i class='btm bt-star'></i></div>
+                    <div class='map-bookmarks'>
+                        <button class='map-bookmarks-button' id='bookmarks' data-tooltip='Bookmarks' data-tooltip-alignment='right'>
+                            <i class='btm bt-bookmark'></i>
+                        </button>
+                        <div class='map-bookmarks-menu'></div>
+                    </div>
+                    <div class='map-search-results'></div>
+                </div>
+                <div class='geolocator'>
+                    <button class='geolocator-button' id='geolocator' data-tooltip='Locate me' data-tooltip-alignment='right'>
+                        <i class='btm bt-map-arrow'></i>
+                        <i class='btm bt-sync bt-spin'></i>
+                    </button>
+                </div>
+                <div class='map-toolbar-toggle' id='map-toolbar-toggle' data-tooltip='Toogle map toolbar' data-tooltip-alignment='right'></div>
+            </div>
+            <div class='map-loading' id='map-loading'></div>
+        </div>
+        <div class='divider' id='divider'><span class='divider-affordance'></span></div>
+        <div class='editor-container' id='content'>
+            <div class='editor' id='editor'></div>
+        </div>
+    </div>
+
+    <div class='overlay-container'>
+        <div class='shield' id='shield'></div>
+        <div class='modal'>
+            <p class='modal-text'></p>
+            <div class='modal-buttons'>
+                <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button class='modal-confirm'><i class='btm bt-check'></i> Continue</button>
+            </div>
+        </div>
+        <div class='modal about-modal'>
+            <div class='modal-text modal-about-text'>
+                <h4>About Tangram Play (BETA)</h4>
+                <p>
+                    Tangram <span class='about-tangram-version'>(unknown version)</span>
+                    <br>Leaflet <span class='about-leaflet-version'>(unknown version)</span>
+                    <br>CodeMirror <span class='about-cm-version'>(unknown version)</span>
+                </p>
+                <p>
+                    This is a <a href='https://mapzen.com/' target='_blank'>Mapzen</a> project and it is maintained by Patricio Gonzalez Vivo and Lou Huang.
+                </p>
+                <p>
+                    <a href='https://github.com/tangrams/tangram-play' target='_blank'>View source on GitHub</a>
+                </p>
+            </div>
+            <div class='modal-buttons'>
+                <button class='modal-confirm'>Got it</button>
+            </div>
+        </div>
+        <div class='modal modal-alt save-gist-modal'>
+            <div class='modal-text modal-save-gist-text'>
+                <h4>
+                    Save this scene to gist
+                </h4>
+                <p>
+                    This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href='https://help.github.com/articles/about-gists/' target='_blank'>Learn more about anonymous gists</a>.
+                </p>
+            </div>
+            <hr>
+            <div class='modal-content'>
+                <label for='gist-filename'>Filename</label>
+                <input type='text' id='gist-filename' placeholder='(default: scene.yaml)'>
+                <p>
+                    <label for='gist-description'>Scene description</label>
+                    <input type='text' id='gist-description' placeholder='(optional description)'>
+                </p>
+                <p>
+                    <label for='gist-public'>Public gist</label>
+                    <input type='checkbox' id='gist-public' checked>
+                </p>
+            </div>
+            <div class='modal-buttons'>
+                <div class='modal-thinking'>
+                    <i class='bts bt-spinner bt-pulse'></i> Working...
+                </div>
+                <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button class='modal-confirm'><i class='btm bt-check'></i> Save to gist</button>
+            </div>
+        </div>
+        <div class='modal save-gist-success-modal'>
+            <div class='modal-text'></div>
+            <div class='modal-content'>
+                <h4>
+                    Your gist has been saved.
+                </h4>
+                <p>
+                    Remember this URL!
+                </p>
+                <div class='input-bar'>
+                    <input type='text' id='gist-saved-url'>
+                    <button class='gist-saved-copy-btn' data-clipboard-target='#gist-saved-url' data-tooltip='Copy to clipboard' data-tooltip-alignment='right'>
+                        <i class='btm bt-copy'></i>
+                    </button>
+                </div>
+            </div>
+            <div class='modal-buttons'>
+                <button class='modal-confirm'>Got it</button>
+            </div>
+        </div>
+        <div class='modal modal-alt example-modal'>
+            <p class='modal-text'></p>
+            <div class='modal-content example-list'></div>
+            <div class='modal-buttons'>
+                <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
+            </div>
+        </div>
+        <div class='modal modal-alt open-url-modal'>
+            <p class='modal-text'></p>
+            <div class='modal-content open-url-input'>
+                <input type='url' placeholder='https://' spellcheck='false' id='open-url-input'>
+            </div>
+            <div class='modal-buttons'>
+                <button id='example-cancel' class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button id='example-confirm' class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
+            </div>
+        </div>
+        <div class='filedrop-container' id='filedrop'>
+            <div class='filedrop-indicator'>
+                <div class='filedrop-icon'><i class='btm bt-upload'></i></div>
+                <div class='filedrop-label'>Drop a file here to open</div>
+            </div>
+        </div>
+    </div>
+
     <div id='mobile-message' class='mobile-message'>
         <div id='dismiss-mobile-message' class='mobile-message-close'>&#215;</div>
         <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>

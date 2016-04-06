@@ -1,5 +1,5 @@
 import LocalStorage from '../LocalStorage';
-import { map, container } from '../../TangramPlay';
+import { map } from '../../TangramPlay';
 import search from '../map/search';
 import geolocator from '../map/geolocator';
 import bookmarks from '../map/bookmarks';
@@ -13,8 +13,8 @@ let currentLocation;
 
 const MapToolbar = {
     init () {
-        el = container.querySelector('.map-toolbar-bar');
-        menuButtonEl = container.querySelector('.map-toolbar-collapsed');
+        el = document.body.querySelector('.map-toolbar-bar');
+        menuButtonEl = document.body.querySelector('.map-toolbar-collapsed');
 
         search.init();
         geolocator.init();

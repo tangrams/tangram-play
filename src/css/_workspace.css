@@ -1,6 +1,6 @@
-/* EDITOR CORE */
+/* Editor workspace */
 
-.core-container {
+.workspace-container {
   position: absolute;
   height: calc(100% - 44px);
   left: 0;

@@ -1,4 +1,4 @@
-import TangramPlay, { container } from '../../TangramPlay';
+import TangramPlay from '../../TangramPlay';
 import Modal from './Modal';
 import EditorIO from './EditorIO';
 
@@ -8,7 +8,7 @@ export default class OpenUrlModal extends Modal {
     constructor () {
         super();
 
-        this.el = modalEl = container.querySelector('.open-url-modal');
+        this.el = modalEl = document.body.querySelector('.open-url-modal');
         this.message = 'Open a scene file from URL';
         this.input = this.el.querySelector('.open-url-input input');
         this.input.addEventListener('keyup', (event) => {

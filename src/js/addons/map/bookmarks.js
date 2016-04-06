@@ -1,4 +1,4 @@
-import { map, container } from '../../TangramPlay';
+import { map } from '../../TangramPlay';
 import LocalStorage from '../LocalStorage';
 import Modal from '../ui/Modal';
 
@@ -10,7 +10,7 @@ const DEFAULT_BOOKMARKS_OBJECT = {
 let el, buttonEl, menuEl;
 
 function init () {
-    el = container.querySelector('.map-bookmarks');
+    el = document.body.querySelector('.map-bookmarks');
     buttonEl = el.querySelector('.map-bookmarks-button');
     menuEl = el.querySelector('.map-bookmarks-menu');
 
@@ -89,14 +89,14 @@ function showMenu () {
 
     buttonEl.classList.add('active');
 
-    container.addEventListener('click', onClickOutsideMenu, false);
+    window.addEventListener('click', onClickOutsideMenu, false);
 }
 
 function clearMenu () {
     menuEl.innerHTML = '';
     menuEl.style.display = 'none';
     buttonEl.classList.remove('active');
-    container.removeEventListener('click', onClickOutsideMenu, false);
+    document.body.removeEventListener('click', onClickOutsideMenu, false);
 }
 
 function onMenuClickHandler (event) {
@@ -135,7 +135,7 @@ function gotoBookmark (selectedEl) {
     // it's a location you saved.
     // TODO: This is hacky, do this better, elsewhere
     window.setTimeout(function () {
-        container.querySelector('.map-save-icon').classList.add('active');
+        document.body.querySelector('.map-save-icon').classList.add('active');
     }, 0);
 }
 

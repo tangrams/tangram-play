@@ -1,4 +1,4 @@
-import TangramPlay, { container, map } from '../../TangramPlay';
+import TangramPlay, { map } from '../../TangramPlay';
 import { noop } from './Helpers';
 import EditorIO from './EditorIO';
 import FileOpen from './FileOpen';
@@ -10,7 +10,7 @@ import fullscreen from './fullscreen';
 
 export default class Menu {
     constructor () {
-        this.el = container.querySelector('.menu-bar');
+        this.el = document.body.querySelector('.menu-bar');
         this.menus = {};
         this.initMenuItems();
     }
@@ -30,29 +30,29 @@ export default class Menu {
 
         // Set up events on dropdown buttons
         // Open menu
-        container.querySelector('.menu-open-file').addEventListener('click', () => {
+        document.body.querySelector('.menu-open-file').addEventListener('click', () => {
             this.fileopen.activate();
         }, false);
-        container.querySelector('.menu-open-url').addEventListener('click', () => {
+        document.body.querySelector('.menu-open-url').addEventListener('click', () => {
             this.openUrlModal.show();
         }, false);
-        container.querySelector('.menu-open-example').addEventListener('click', () => {
+        document.body.querySelector('.menu-open-example').addEventListener('click', () => {
             this.examplesModal.show();
         }, false);
 
         // Save menu
-        container.querySelector('.menu-save-file').addEventListener('click', () => {
+        document.body.querySelector('.menu-save-file').addEventListener('click', () => {
             EditorIO.export();
         }, false);
-        container.querySelector('.menu-save-gist').addEventListener('click', () => {
+        document.body.querySelector('.menu-save-gist').addEventListener('click', () => {
             this.saveGistModal.show();
         }, false);
-        container.querySelector('.menu-screenshot').addEventListener('click', () => {
+        document.body.querySelector('.menu-screenshot').addEventListener('click', () => {
             map.takeScreenshot();
         }, false);
 
         // About
-        container.querySelector('.menu-about').addEventListener('click', () => {
+        document.body.querySelector('.menu-about').addEventListener('click', () => {
             this.aboutModal.show();
         }, false);
     }
@@ -60,7 +60,7 @@ export default class Menu {
 
 export class MenuItem {
     constructor (classSelector, onClick = noop) {
-        this.el = container.querySelector(classSelector);
+        this.el = document.body.querySelector(classSelector);
 
         // Attach listeners, including those for tooltip behavior
         this.el.addEventListener('click', (event) => {
@@ -78,35 +78,35 @@ export class MenuItem {
 // Dropdown menus
 
 function _onClickOpen (event) {
-    let menuEl = container.querySelector('.menu-dropdown-open');
-    let posX = container.querySelector('.menu-button-open').getBoundingClientRect().left;
+    let menuEl = document.body.querySelector('.menu-dropdown-open');
+    let posX = document.body.querySelector('.menu-button-open').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
     }
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    window.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _onClickSave (event) {
-    let menuEl = container.querySelector('.menu-dropdown-save');
-    let posX = container.querySelector('.menu-button-save').getBoundingClientRect().left;
+    let menuEl = document.body.querySelector('.menu-dropdown-save');
+    let posX = document.body.querySelector('.menu-button-save').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
     }
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    window.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _onClickHelp (event) {
-    let menuEl = container.querySelector('.menu-dropdown-help');
+    let menuEl = document.body.querySelector('.menu-dropdown-help');
     menuEl.style.right = '0px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
     }
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    window.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 // Single action buttons
@@ -131,7 +131,7 @@ function _onClickOutsideDropdown (event) {
 
     if (!target.classList.contains('menu-item')) {
         _loseMenuFocus();
-        container.removeEventListener('click', _onClickOutsideDropdown, false);
+        document.body.removeEventListener('click', _onClickOutsideDropdown, false);
     }
 }
 
@@ -145,7 +145,7 @@ function _hideMenus () {
     for (let el of menus) {
         el.style.display = 'none';
     }
-    container.removeEventListener('click', _onClickOutsideDropdown, false);
+    document.body.removeEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _resetTooltipState () {

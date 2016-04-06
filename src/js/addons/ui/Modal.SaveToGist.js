@@ -1,4 +1,4 @@
-import TangramPlay, { container, editor } from '../../TangramPlay';
+import TangramPlay, { editor } from '../../TangramPlay';
 import LocalStorage from '../LocalStorage';
 import Modal from './Modal';
 import xhr from 'xhr';
@@ -14,7 +14,7 @@ export default class SaveGistModal extends Modal {
         super();
 
         // Cache elements
-        this.el = container.querySelector('.save-gist-modal');
+        this.el = document.body.querySelector('.save-gist-modal');
         this.filenameInput = this.el.querySelector('#gist-filename');
         this.descriptionInput = this.el.querySelector('#gist-description');
         this.publicCheckbox = this.el.querySelector('#gist-public');
@@ -126,7 +126,7 @@ export default class SaveGistModal extends Modal {
         editor.doc.markClean();
 
         // Show success modal
-        let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: container.querySelector('.save-gist-success-modal') });
+        let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: document.body.querySelector('.save-gist-success-modal') });
         SaveGistSuccessModal.urlInput = SaveGistSuccessModal.el.querySelector('#gist-saved-url');
         SaveGistSuccessModal.urlInput.value = gist.url;
         SaveGistSuccessModal.show();
@@ -176,7 +176,7 @@ export default class SaveGistModal extends Modal {
 //         super();
 
 //         // Cache elements
-//         this.el = container.querySelector('.save-gist-success-modal');
+//         this.el = document.body.querySelector('.save-gist-success-modal');
 //         this.urlInput = this.el.querySelector('#gist-saved-url');
 //     }
 

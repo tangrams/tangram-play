@@ -1,12 +1,11 @@
-import TangramPlay from '../../TangramPlay';
 import EditorIO from './EditorIO';
 
 export default class FileDrop {
     constructor () {
-        this.el = TangramPlay.container.getElementsByClassName('filedrop-container')[0];
+        this.el = document.getElementById('filedrop');
 
         // Set up drag/drop file listeners
-        TangramPlay.container.addEventListener('dragenter', (event) => {
+        window.addEventListener('dragenter', (event) => {
             // Check to make sure that dropped items are files.
             // This prevents other drags (e.g. text in editor)
             // from turning on the file drop area.

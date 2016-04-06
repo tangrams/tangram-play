@@ -4,6 +4,55 @@
 
 @import 'vendor/black-tie.css';
 
+@import 'codemirror/lib/codemirror.css';
+@import 'codemirror/addon/dialog/dialog.css';
+@import 'codemirror/addon/fold/foldgutter.css';
+@import 'codemirror/addon/hint/show-hint.css';
+
+/* CORE */
+
+@import '_application';
+@import '_typography';
+@import '_workspace';
+@import '_editor';
+@import '_divider';
+@import '_map';
+@import '_overlay';
+
+/* + Menu */
+@import '_filedrop';
+@import '_menu-bar';
+@import '_menu-dropdown';
+@import '_tooltip';
+@import '_modals';
+@import '_shield';
+@import '_inputs';
+
+/* + Widgets */
+@import '_widgets';
+@import '_pickers';
+/*@import '_colorpicker';*/
+
+/* + Suggest */
+@import '_suggest';
+
+/* + GLSL Sandbox */
+@import '_sandbox';
+
+/* + Errors Manager */
+@import '_errors';
+
+/* + Color Palette*/
+@import '_colorpalette';
+
+/* + Map UI */
+@import '_ui';
+@import '_leaflet-overrides';
+@import '_map-loading';
+@import '_map-toolbar';
+@import '_map-bookmarks';
+@import '_geolocator';
+
 /* VARIABLES */
 
 :root {
@@ -69,54 +118,3 @@
     --z09-tooltip: var(--z09);
     --z10-mobile-message: var(--z10);
 }
-
-/* CORE */
-
-@import 'codemirror/lib/codemirror.css';
-@import 'codemirror/addon/dialog/dialog.css';
-@import 'codemirror/addon/fold/foldgutter.css';
-@import 'codemirror/addon/hint/show-hint.css';
-
-@import '_application';
-@import '_core';
-@import '_editor';
-@import '_divider';
-@import '_map';
-@import '_overlay';
-
-/* ADDONS */
-
-/* + Menu */
-@import '_filedrop';
-@import '_menu-bar';
-@import '_menu-dropdown';
-@import '_tooltip';
-@import '_modals';
-@import '_shield';
-@import '_typography';
-@import '_inputs';
-
-/* + Widgets */
-@import '_widgets';
-@import '_pickers';
-/*@import '_colorpicker';*/
-
-/* + Suggest */
-@import '_suggest';
-
-/* + GLSL Sandbox */
-@import '_sandbox';
-
-/* + Errors Manager */
-@import '_errors';
-
-/* + Color Palette*/
-@import '_colorpalette';
-
-/* + Map UI */
-@import '_ui';
-@import '_leaflet-overrides';
-@import '_map-loading';
-@import '_map-toolbar';
-@import '_map-bookmarks';
-@import '_geolocator';

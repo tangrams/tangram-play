@@ -1,4 +1,3 @@
-import { container } from '../../TangramPlay';
 import shield from './shield';
 import { noop } from './Helpers';
 
@@ -9,7 +8,7 @@ export default class Modal {
         // this.options.disableEsc = false;
 
         // Modal element to use
-        this.el = (this.options.el) ? this.options.el : container.querySelector('.modal');
+        this.el = (this.options.el) ? this.options.el : document.body.querySelector('.modal');
 
         this.message = message;
 

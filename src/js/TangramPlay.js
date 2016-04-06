@@ -43,7 +43,6 @@ class TangramPlay {
             window.watch.start();
         }
 
-        this.container = document.body; // TODO: Refactor out.
         this.editor = initEditor('editor');
         this.map = new Map('map');
         this.options = options;
@@ -440,7 +439,6 @@ let tangramPlay = new TangramPlay({
 
 export default tangramPlay;
 export let map = tangramPlay.map;
-export let container = tangramPlay.container;
 export let editor = tangramPlay.editor;
 
 // LOAD SCENE FILE

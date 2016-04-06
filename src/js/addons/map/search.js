@@ -1,5 +1,5 @@
 import TangramPlay from '../../TangramPlay';
-import { map, container } from '../../TangramPlay';
+import { map } from '../../TangramPlay';
 import { httpGet, debounce } from '../../tools/common';
 import bookmarks from './bookmarks';
 
@@ -17,7 +17,7 @@ let maxReqTimestampRendered = new Date().getTime();
 
 function init () {
     // Cache reference to elements
-    locationBarEl = container.querySelector('.map-location-bar');
+    locationBarEl = document.body.querySelector('.map-location-bar');
     input = locationBarEl.querySelector('.map-search-input');
     latlngLabel = locationBarEl.querySelector('.map-latlng-label');
     resultsEl = locationBarEl.querySelector('.map-search-results');
@@ -252,7 +252,7 @@ function showResults (results) {
         listEl.appendChild(resultItem);
     }
 
-    container.addEventListener('click', onClickOutsideMenu, false);
+    window.addEventListener('click', onClickOutsideMenu, false);
 }
 
 function gotoSelectedResult (selectedEl) {
@@ -268,7 +268,7 @@ function gotoSelectedResult (selectedEl) {
 function clearResults () {
     resultsEl.innerHTML = '';
     resultsEl.style.display = 'none';
-    container.removeEventListener('click', onClickOutsideMenu, false);
+    document.body.removeEventListener('click', onClickOutsideMenu, false);
 }
 
 function clearInput () {

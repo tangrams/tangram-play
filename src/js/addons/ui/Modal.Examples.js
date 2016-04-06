@@ -1,4 +1,4 @@
-import TangramPlay, { container } from '../../TangramPlay';
+import TangramPlay from '../../TangramPlay';
 import Modal from './Modal';
 import EditorIO from './EditorIO';
 
@@ -14,7 +14,7 @@ export default class ExamplesModal extends Modal {
     constructor (config) {
         super();
 
-        this.el = examplesEl = container.querySelector('.example-modal');
+        this.el = examplesEl = document.body.querySelector('.example-modal');
         this.message = 'Choose an example to open';
         loadExamples(config);
 
