@@ -1,4 +1,4 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 // Load some common functions
 import { subscribeMixin } from '../tools/mixin';

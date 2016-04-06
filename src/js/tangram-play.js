@@ -427,7 +427,7 @@ function suppressAPIKeys (content) {
 
 // Export an instance of TangramPlay with the following modules
 
-let tangramPlay = new TangramPlay({
+export let tangramPlay = new TangramPlay({
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
@@ -437,7 +437,6 @@ let tangramPlay = new TangramPlay({
     helpers: true
 });
 
-export default tangramPlay;
 export let map = tangramPlay.map;
 export let editor = tangramPlay.editor;
 

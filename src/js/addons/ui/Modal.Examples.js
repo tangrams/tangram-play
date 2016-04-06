@@ -1,4 +1,4 @@
-import TangramPlay from '../../TangramPlay';
+import TangramPlay from '../../tangram-play';
 import Modal from './Modal';
 import EditorIO from './EditorIO';
 

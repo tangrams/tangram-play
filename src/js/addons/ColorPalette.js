@@ -1,4 +1,4 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 import ColorPicker from './pickers/ColorPicker';
 import { toCSS } from '../tools/common';

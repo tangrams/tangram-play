@@ -1,5 +1,5 @@
 import LocalStorage from '../LocalStorage';
-import { map } from '../../TangramPlay';
+import { map } from '../../tangram-play';
 import search from '../map/search';
 import geolocator from '../map/geolocator';
 import bookmarks from '../map/bookmarks';

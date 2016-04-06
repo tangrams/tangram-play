@@ -1,4 +1,4 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 import { debounce, getDOMOffset } from '../tools/common';
 import { isEmpty } from '../core/codemirror/tools';

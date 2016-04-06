@@ -1,4 +1,4 @@
-import TangramPlay, { editor } from '../../TangramPlay';
+import TangramPlay, { editor } from '../../tangram-play';
 import LocalStorage from '../LocalStorage';
 import Modal from './Modal';
 import xhr from 'xhr';

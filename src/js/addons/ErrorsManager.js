@@ -1,4 +1,4 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 export default class ErrorsManager {
     constructor() {

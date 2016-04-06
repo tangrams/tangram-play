@@ -1,4 +1,4 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 import LocalStorage from '../addons/LocalStorage';
 import MapLoading from '../addons/ui/MapLoading';

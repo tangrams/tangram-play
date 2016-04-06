@@ -1,4 +1,4 @@
-import { map } from '../../TangramPlay';
+import { map } from '../../tangram-play';
 import LocalStorage from '../LocalStorage';
 import Modal from '../ui/Modal';
 

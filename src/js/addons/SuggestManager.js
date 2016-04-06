@@ -1,4 +1,4 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 // Load some common functions
 import { getLineInd, isCommented, isEmpty, regexEscape } from '../core/codemirror/tools';

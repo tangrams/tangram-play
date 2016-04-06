@@ -1,4 +1,4 @@
-import TangramPlay from '../../TangramPlay';
+import TangramPlay from '../../tangram-play';
 import Widget from './Widget';
 import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram';
 

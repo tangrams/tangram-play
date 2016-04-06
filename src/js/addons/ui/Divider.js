@@ -1,5 +1,5 @@
-import TangramPlay from '../../TangramPlay';
-import { map, editor } from '../../TangramPlay';
+import TangramPlay from '../../tangram-play';
+import { map, editor } from '../../tangram-play';
 import LocalStorage from '../LocalStorage';
 
 // Import Greensock (GSAP)

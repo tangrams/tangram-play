@@ -1,4 +1,4 @@
-import TangramPlay, { map } from '../../TangramPlay';
+import TangramPlay, { map } from '../../tangram-play';
 import { noop } from './Helpers';
 import EditorIO from './EditorIO';
 import FileOpen from './FileOpen';

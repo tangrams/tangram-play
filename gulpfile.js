@@ -54,7 +54,7 @@ gulp.task('js', function () {
     var uglify = require('gulp-uglify');
 
     var bundle = browserify({
-        entries: 'src/js/TangramPlay.js',
+        entries: 'src/js/tangram-play.js',
         debug: true,
         transform: [
             babelify.configure({ presets: ['es2015'] }),
