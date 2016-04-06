@@ -1,8 +1,8 @@
 import TangramPlay from '../tangram-play';
 
 // Load some common functions
-import { getLineInd, isCommented, isEmpty, regexEscape } from '../core/codemirror/tools';
-import { getAddressSceneContent, getAddressForLevel } from '../core/codemirror/yaml-tangram';
+import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
+import { getAddressSceneContent, getAddressForLevel } from '../editor/codemirror/yaml-tangram';
 
 // Import CodeMirror
 import CodeMirror from 'codemirror';

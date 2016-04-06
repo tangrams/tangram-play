@@ -3,8 +3,8 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Core elements
-import Map from './core/map';
-import { initEditor } from './core/editor';
+import Map from './map/map';
+import { initEditor } from './editor/editor';
 
 // Addons
 import UI from './addons/UI';
@@ -22,16 +22,14 @@ import LocalStorage from './addons/LocalStorage';
 import xhr from 'xhr';
 import { subscribeMixin } from './tools/mixin';
 import { StopWatch, debounce, createObjectURL } from './tools/common';
-import { selectLines, isStrEmpty } from './core/codemirror/tools';
-import { getNodes, parseYamlString } from './core/codemirror/yaml-tangram';
+import { selectLines, isStrEmpty } from './editor/codemirror/tools';
+import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
+import { injectAPIKeys, suppressAPIKeys } from './editor/api-keys';
 
 const query = parseQuery(window.location.search.slice(1));
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
-
-// Default API key to use in scene files that do not provide one (Patricio is the owner)
-const DEFAULT_API_KEY = 'vector-tiles-P6dkVl4';
 
 class TangramPlay {
     constructor (options) {
@@ -408,26 +406,9 @@ function getSceneContentsFromLocalMemory () {
     return null;
 }
 
-// Files loaded without API keys need to have "our own" key injected so that
-// the scene can be rendered by Tangram.
-function injectAPIKeys (content) {
-    const pattern = /(^\s+url:\s+([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-    const result = `$1?api_key=${DEFAULT_API_KEY}`;
-    return content.replace(pattern, result);
-}
-
-// Before displaying scene file content, scrub it for keys that match the
-// default internal Tangram Play API key.
-// (TODO: check with the actual user and take out the ones that don't belong to the user)
-function suppressAPIKeys (content) {
-    const escapedApiKey = DEFAULT_API_KEY.replace(/\-/g, '\\-');
-    const re = new RegExp(`\\?api_key\\=${escapedApiKey}`, 'gm');
-    return content.replace(re, '');
-}
-
 // Export an instance of TangramPlay with the following modules
 
-export let tangramPlay = new TangramPlay({
+let tangramPlay = new TangramPlay({
     suggest: 'data/tangram-api.json',
     widgets: 'data/tangram-api.json',
     menu: 'data/menu.json',
@@ -437,6 +418,7 @@ export let tangramPlay = new TangramPlay({
     helpers: true
 });
 
+export default tangramPlay;
 export let map = tangramPlay.map;
 export let editor = tangramPlay.editor;
 

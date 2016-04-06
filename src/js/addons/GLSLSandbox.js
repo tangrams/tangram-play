@@ -1,8 +1,8 @@
 import TangramPlay from '../tangram-play';
 
 import { debounce, getDOMOffset } from '../tools/common';
-import { isEmpty } from '../core/codemirror/tools';
-import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from '../core/codemirror/yaml-tangram';
+import { isEmpty } from '../editor/codemirror/tools';
+import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress } from '../editor/codemirror/yaml-tangram';
 
 import ColorPicker from './pickers/ColorPicker';
 

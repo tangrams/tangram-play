@@ -2,7 +2,7 @@ import TangramPlay from '../tangram-play';
 
 import ColorPicker from './pickers/ColorPicker';
 import { toCSS } from '../tools/common';
-import { jumpToLine } from '../core/codemirror/tools';
+import { jumpToLine } from '../editor/codemirror/tools';
 
 export default class ColorPalette {
     constructor() {

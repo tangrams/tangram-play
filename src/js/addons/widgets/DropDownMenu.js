@@ -1,6 +1,6 @@
 import TangramPlay from '../../tangram-play';
 import Widget from './Widget';
-import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram';
+import { getAddressSceneContent } from '../../editor/codemirror/yaml-tangram';
 
 export default class DropDownMenu extends Widget {
     createEl () {
