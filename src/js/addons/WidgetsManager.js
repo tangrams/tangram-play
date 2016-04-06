@@ -1,11 +1,11 @@
-import TangramPlay from 'app/TangramPlay';
+import TangramPlay from '../TangramPlay';
 
 // Load some common functions
-import { subscribeMixin } from 'app/tools/mixin';
-import { isStrEmpty } from 'app/core/codemirror/tools';
+import { subscribeMixin } from '../tools/mixin';
+import { isStrEmpty } from '../core/codemirror/tools';
 
 // Load addons modules
-import WidgetType from 'app/addons/widgets/WidgetType';
+import WidgetType from './widgets/WidgetType';
 
 export default class WidgetsManager {
     constructor (configFile) {

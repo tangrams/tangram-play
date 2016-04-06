@@ -1,4 +1,4 @@
-import TangramPlay from 'app/TangramPlay';
+import TangramPlay from '../../TangramPlay';
 import CodeMirror from 'codemirror';
 
 CodeMirror.registerHelper('hint', 'yaml', function (editor, options) {

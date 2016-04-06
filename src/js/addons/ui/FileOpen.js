@@ -1,4 +1,4 @@
-import EditorIO from 'app/addons/ui/EditorIO';
+import EditorIO from './EditorIO';
 
 export default class FileOpen {
     constructor () {

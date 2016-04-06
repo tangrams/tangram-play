@@ -1,9 +1,9 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
-import 'app/core/codemirror/glsl-tangram';
+import '../codemirror/glsl-tangram';
 
 // Load some common functions
-import { getInd } from 'app/core/codemirror/tools';
+import { getInd } from '../codemirror/tools';
 
 //  GET public functions
 //  ===============================================================================

@@ -1,11 +1,11 @@
-import TangramPlay from 'app/TangramPlay';
+import TangramPlay from '../TangramPlay';
 
-import LocalStorage from 'app/addons/LocalStorage';
-import MapLoading from 'app/addons/ui/MapLoading';
+import LocalStorage from '../addons/LocalStorage';
+import MapLoading from '../addons/ui/MapLoading';
 
 import L from 'leaflet';
 import 'leaflet-hash';
-import { saveAs } from 'app/vendor/FileSaver.min.js';
+import { saveAs } from '../vendor/FileSaver.min.js';
 
 export default class Map {
     constructor (mapElement) {

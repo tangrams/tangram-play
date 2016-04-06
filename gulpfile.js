@@ -57,14 +57,14 @@ gulp.task('js', function () {
         entries: 'src/js/TangramPlay.js',
         debug: true,
         transform: [
-            babelify.configure({ optional: ['runtime'] }),
+            babelify.configure({ presets: ['es2015'] }),
             shim
         ]
     });
 
-    // Only uglify in production, because
-    // this doubles build time locally!
-    if (process.env.NODE_ENV === 'production') {
+    // Only uglify for deployment/production build,
+    // because this doubles build time locally!
+    if (process.env.NODE_ENV === 'deployment') {
         return bundle.bundle()
             .pipe(plumber())
             .pipe(source('tangram-play.js'))

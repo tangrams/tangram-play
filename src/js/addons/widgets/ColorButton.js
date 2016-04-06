@@ -1,6 +1,6 @@
-import Widget from 'app/addons/widgets/Widget';
-import ColorPicker from 'app/addons/pickers/ColorPicker';
-import { toCSS, toColorVec } from 'app/tools/common';
+import Widget from './Widget';
+import ColorPicker from '../pickers/ColorPicker';
+import { toCSS, toColorVec } from '../../tools/common';
 
 // When presenting the modal, offset X, Y of the the modal by
 // these values, in pixels

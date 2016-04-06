@@ -1,9 +1,9 @@
-import TangramPlay from 'app/TangramPlay';
+import TangramPlay from '../TangramPlay';
 
-import ColorPicker from 'app/addons/pickers/ColorPicker';
-import Vec3Picker from 'app/addons/pickers/Vec3Picker';
-import Vec2Picker from 'app/addons/pickers/Vec2Picker';
-import FloatPicker from 'app/addons/pickers/FloatPicker';
+import ColorPicker from './pickers/ColorPicker';
+import Vec3Picker from './pickers/Vec3Picker';
+import Vec2Picker from './pickers/Vec2Picker';
+import FloatPicker from './pickers/FloatPicker';
 
 // Return all pattern matches with captured groups
 RegExp.prototype.execAll = function(string) {

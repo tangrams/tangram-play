@@ -1,5 +1,5 @@
 // Import TangramPlay
-import TangramPlay from 'app/TangramPlay';
+import TangramPlay from '../TangramPlay';
 
 // Import CodeMirror
 import CodeMirror from 'codemirror';
@@ -21,14 +21,14 @@ import 'codemirror/addon/display/panel';
 import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
-import 'app/core/codemirror/comment-tangram';
-import 'app/core/codemirror/hint-tangram';
+import './codemirror/comment-tangram';
+import './codemirror/hint-tangram';
 
 // Keymap
 import 'codemirror/keymap/sublime';
 
 // Import Utils
-import { getLineInd, unfoldAll, foldByLevel } from 'app/core/codemirror/tools';
+import { getLineInd, unfoldAll, foldByLevel } from './codemirror/tools';
 
 //  Main CM functions
 //  ===============================================================================
