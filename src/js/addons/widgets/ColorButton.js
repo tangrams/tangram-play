@@ -22,7 +22,7 @@ export default class ColorButton extends Widget {
      */
     createEl () {
         let el = document.createElement('div');
-        el.className = 'tp-widget tp-widget-colorpicker';
+        el.className = 'widget widget-colorpicker';
         el.addEventListener('click', this.onClick.bind(this));
         return el;
     }

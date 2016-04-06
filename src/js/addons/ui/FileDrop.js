@@ -3,7 +3,7 @@ import EditorIO from './EditorIO';
 
 export default class FileDrop {
     constructor () {
-        this.el = TangramPlay.container.getElementsByClassName('tp-filedrop-container')[0];
+        this.el = TangramPlay.container.getElementsByClassName('filedrop-container')[0];
 
         // Set up drag/drop file listeners
         TangramPlay.container.addEventListener('dragenter', (event) => {

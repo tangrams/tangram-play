@@ -38,7 +38,7 @@ export default class Divider {
             cursor: 'col-resize',
             zIndexBoost: false,
             onPress: function () {
-                this.target.classList.add('tp-divider-is-dragging');
+                this.target.classList.add('divider-is-dragging');
             },
             onDrag: function () {
                 divider.reflow();
@@ -48,7 +48,7 @@ export default class Divider {
                 divider.savePosition();
             },
             onRelease: function () {
-                this.target.classList.remove('tp-divider-is-dragging');
+                this.target.classList.remove('divider-is-dragging');
             }
         });
 
@@ -63,7 +63,7 @@ export default class Divider {
     reflow() {
         let mapEl = document.getElementById('map-container');
         let contentEl = document.getElementById('content');
-        let menuEl = document.querySelector('.tp-menu-container');
+        let menuEl = document.querySelector('.menu-container');
         let menuBottom = menuEl.getBoundingClientRect().bottom;
         let positionX = this.el.getBoundingClientRect().left;
 

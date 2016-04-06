@@ -1,6 +1,6 @@
 /* DRAG & DROP FILE LOADER */
 
-.tp-filedrop-container {
+.filedrop-container {
     display: none;
     position: absolute;
     top: 0;
@@ -14,7 +14,7 @@
     pointer-events: auto;
 }
 
-.tp-filedrop-indicator {
+.filedrop-indicator {
     pointer-events: none;
     position: absolute;
     width: 100%;
@@ -29,11 +29,11 @@
     flex-direction: column;
 }
 
-.tp-filedrop-icon {
+.filedrop-icon {
     font-size: 14em;
 }
 
-.tp-filedrop-label {
+.filedrop-label {
     margin-top: 1.5em;
     font-family: var(--font-family);
     font-weight: 200;

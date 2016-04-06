@@ -47,12 +47,12 @@ export default class GlslSandbox {
         // Constant OBJ
         this.shader = undefined;
         this.element = document.createElement('div');
-        this.element.id = 'tp-a-sandbox';
+        this.element.id = 'a-sandbox';
         this.element.setAttribute('width', '130');
         this.element.setAttribute('height', '130');
 
         this.canvas = document.createElement('canvas');
-        this.canvas.id = 'tp-a-sandbox-canvas';
+        this.canvas.id = 'a-sandbox-canvas';
         this.canvas.className = 'glslSandbox';
         this.canvas.setAttribute('width', '130');
         this.canvas.setAttribute('height', '130');
@@ -66,7 +66,7 @@ export default class GlslSandbox {
 
         this.colorPicker = document.createElement('div');
         this.colorPicker.addEventListener('click', this.onColorClick.bind(this));
-        this.colorPicker.id = 'tp-a-sandbox-colorpicker';
+        this.colorPicker.id = 'a-sandbox-colorpicker';
         this.element.appendChild(this.colorPicker);
 
         // VARIABLES

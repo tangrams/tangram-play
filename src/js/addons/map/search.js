@@ -17,11 +17,11 @@ let maxReqTimestampRendered = new Date().getTime();
 
 function init () {
     // Cache reference to elements
-    locationBarEl = container.querySelector('.tp-map-location-bar');
-    input = locationBarEl.querySelector('.tp-map-search-input');
-    latlngLabel = locationBarEl.querySelector('.tp-map-latlng-label');
-    resultsEl = locationBarEl.querySelector('.tp-map-search-results');
-    saveEl = locationBarEl.querySelector('.tp-map-save-icon');
+    locationBarEl = container.querySelector('.map-location-bar');
+    input = locationBarEl.querySelector('.map-search-input');
+    latlngLabel = locationBarEl.querySelector('.map-latlng-label');
+    resultsEl = locationBarEl.querySelector('.map-search-results');
+    saveEl = locationBarEl.querySelector('.map-save-icon');
 
     input.addEventListener('keyup', onInputKeyupHandler, false);
     input.addEventListener('keydown', onInputKeydownHandler, false);
@@ -29,7 +29,7 @@ function init () {
     resultsEl.addEventListener('click', onResultsClickHandler, false);
     saveEl.addEventListener('click', onSaveClickHandler, false);
 
-    locationBarEl.querySelector('.tp-map-search-icon').addEventListener('click', e => {
+    locationBarEl.querySelector('.map-search-icon').addEventListener('click', e => {
         input.focus();
     });
 
@@ -96,8 +96,8 @@ function onInputKeyupHandler (event) {
 function onInputKeydownHandler (event) {
     const key = event.which || event.keyCode;
 
-    const list = resultsEl.querySelectorAll('.tp-map-search-result');
-    const selected = resultsEl.querySelector('.tp-map-search-active');
+    const list = resultsEl.querySelectorAll('.map-search-result');
+    const selected = resultsEl.querySelector('.map-search-active');
     let selectedPosition;
 
     for (let i = 0; i < list.length; i++) {
@@ -125,16 +125,16 @@ function onInputKeydownHandler (event) {
             }
 
             if (selected) {
-                selected.classList.remove('tp-map-search-active');
+                selected.classList.remove('map-search-active');
             }
 
             let previousItem = list[selectedPosition - 1];
 
             if (selected && previousItem) {
-                previousItem.classList.add('tp-map-search-active');
+                previousItem.classList.add('map-search-active');
             }
             else {
-                list[list.length - 1].classList.add('tp-map-search-active');
+                list[list.length - 1].classList.add('map-search-active');
             }
             break;
         // 40 = down arrow
@@ -147,16 +147,16 @@ function onInputKeydownHandler (event) {
             }
 
             if (selected) {
-                selected.classList.remove('tp-map-search-active');
+                selected.classList.remove('map-search-active');
             }
 
             let nextItem = list[selectedPosition + 1];
 
             if (selected && nextItem) {
-                nextItem.classList.add('tp-map-search-active');
+                nextItem.classList.add('map-search-active');
             }
             else {
-                list[0].classList.add('tp-map-search-active');
+                list[0].classList.add('map-search-active');
             }
             break;
         // all other keys
@@ -240,13 +240,13 @@ function showResults (results) {
     resultsEl.style.display = 'block';
 
     const listEl = document.createElement('ul');
-    listEl.className = 'tp-map-search-results-list';
+    listEl.className = 'map-search-results-list';
     resultsEl.appendChild(listEl);
 
     for (let i = 0, j = features.length; i < j; i++) {
         const feature = features[i];
         const resultItem = document.createElement('li');
-        resultItem.className = 'tp-map-search-result';
+        resultItem.className = 'map-search-result';
         resultItem.coords = feature.geometry.coordinates;
         resultItem.innerHTML += '<i class="bts bt-map-marker"></i> ' + highlight(feature.properties.label, input.value.trim());
         listEl.appendChild(resultItem);
@@ -278,11 +278,11 @@ function clearInput () {
 function onClickOutsideMenu (event) {
     let target = event.target;
 
-    while (target !== document.documentElement && !target.classList.contains('tp-map-search')) {
+    while (target !== document.documentElement && !target.classList.contains('map-search')) {
         target = target.parentNode;
     }
 
-    if (!target.classList.contains('tp-map-search')) {
+    if (!target.classList.contains('map-search')) {
         clearResults();
         clearInput();
     }
@@ -291,12 +291,12 @@ function onClickOutsideMenu (event) {
 function onSaveClickHandler (event) {
     let data = getCurrentMapViewData();
     if (bookmarks.saveBookmark(data) === true) {
-        saveEl.classList.add('tp-active');
+        saveEl.classList.add('active');
     }
 }
 
 function resetSaveIcon () {
-    saveEl.classList.remove('tp-active');
+    saveEl.classList.remove('active');
 }
 
 function getCurrentMapViewData () {

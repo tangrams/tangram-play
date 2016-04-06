@@ -13,8 +13,8 @@ let currentLocation;
 
 const MapToolbar = {
     init () {
-        el = container.querySelector('.tp-map-toolbar-bar');
-        menuButtonEl = container.querySelector('.tp-map-toolbar-collapsed');
+        el = container.querySelector('.map-toolbar-bar');
+        menuButtonEl = container.querySelector('.map-toolbar-collapsed');
 
         search.init();
         geolocator.init();
@@ -56,7 +56,7 @@ function setupEventListeners () {
     }, false);
 
     // Close
-    el.querySelector('.tp-map-toolbar-toggle').addEventListener('click', e => {
+    el.querySelector('.map-toolbar-toggle').addEventListener('click', e => {
         hideToolbar();
     });
 
@@ -116,7 +116,7 @@ function setInitialDisplayState () {
 }
 
 function setZoomLabel () {
-    let label = el.querySelector('.tp-map-zoom-quantity');
+    let label = el.querySelector('.map-zoom-quantity');
     let currentZoom = map.leaflet.getZoom();
     let fractionalNumber = Math.floor(currentZoom * 10) / 10;
     label.textContent = fractionalNumber.toFixed(1);

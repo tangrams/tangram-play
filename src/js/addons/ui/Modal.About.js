@@ -7,7 +7,7 @@ let modalEl;
 export default class AboutModal extends Modal {
     constructor () {
         super();
-        this.el = modalEl = container.querySelector('.tp-about-modal');
+        this.el = modalEl = container.querySelector('.about-modal');
 
         // Get and display version numbers.
         // Tangram version comes with its own "v"

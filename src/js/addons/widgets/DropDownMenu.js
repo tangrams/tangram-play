@@ -5,7 +5,7 @@ import { getAddressSceneContent } from '../../core/codemirror/yaml-tangram';
 export default class DropDownMenu extends Widget {
     createEl () {
         let el = document.createElement('select');
-        el.className = 'tp-widget tp-widget-dropdown';
+        el.className = 'widget widget-dropdown';
         el.setAttribute('cm-ignore-events', 'true');
 
         // Add empty option

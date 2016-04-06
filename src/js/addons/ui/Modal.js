@@ -9,7 +9,7 @@ export default class Modal {
         // this.options.disableEsc = false;
 
         // Modal element to use
-        this.el = (this.options.el) ? this.options.el : container.querySelector('.tp-modal');
+        this.el = (this.options.el) ? this.options.el : container.querySelector('.modal');
 
         this.message = message;
 
@@ -31,11 +31,11 @@ export default class Modal {
     }
 
     get message () {
-        return this.el.querySelector('.tp-modal-text').textContent;
+        return this.el.querySelector('.modal-text').textContent;
     }
 
     set message (value) {
-        this.el.querySelector('.tp-modal-text').textContent = value;
+        this.el.querySelector('.modal-text').textContent = value;
     }
 
     // Shows modal and attaches events.
@@ -43,8 +43,8 @@ export default class Modal {
         shield.show();
         this.el.style.display = 'block';
 
-        this.confirmButton = this.el.querySelector('.tp-modal-confirm');
-        this.cancelButton = this.el.querySelector('.tp-modal-cancel');
+        this.confirmButton = this.el.querySelector('.modal-confirm');
+        this.cancelButton = this.el.querySelector('.modal-cancel');
 
         if (this.confirmButton) {
             this.confirmButton.addEventListener('click', this._handleConfirm, false);

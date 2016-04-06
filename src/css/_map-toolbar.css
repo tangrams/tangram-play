@@ -1,6 +1,6 @@
 /* MAP NAVIGATION BAR */
 
-.tp-map-toolbar {
+.map-toolbar {
     position: absolute;
     box-sizing: border-box;
     display: flex;
@@ -25,7 +25,7 @@
     }
 }
 
-.tp-map-toolbar-collapsed {
+.map-toolbar-collapsed {
     width: 54px;
     height: 34px;
     top: 0;
@@ -40,7 +40,7 @@
     }
 }
 
-.tp-map-toolbar-button {
+.map-toolbar-button {
     width: 100%;
     height: 100%;
     display: flex;
@@ -48,12 +48,12 @@
     justify-content: center;
 }
 
-.tp-map-toolbar-bar {
+.map-toolbar-bar {
     width: 100%;
     top: -50px; /* starting condition */
 }
 
-.tp-map-zoom {
+.map-zoom {
     /* Remove spacing between buttons */
     font-size: 0;
     flex: none;
@@ -61,12 +61,12 @@
     white-space: nowrap;
 
     /* Nested for specificity */
-    .tp-map-zoom-out {
+    .map-zoom-out {
         border-left: 1px solid var(--ui-component-color);
     }
 }
 
-.tp-map-zoom-indicator {
+.map-zoom-indicator {
     display: inline-block;
     width: 38px;
     text-align: center;
@@ -74,15 +74,15 @@
     margin-right: 4px;
 }
 
-.tp-map-location-bar {
+.map-location-bar {
     position: relative;
     display: flex;
     flex-grow: 1;
     background-color: var(--ui-element-color);
 }
 
-.tp-map-search-icon,
-.tp-map-save-icon {
+.map-search-icon,
+.map-save-icon {
     display: inline-block;
     line-height: 38px;
     height: 38px;
@@ -96,8 +96,8 @@
     }
 }
 
-.tp-map-save-icon.tp-active {
-    /* Overrides default .tp-active helper */
+.map-save-icon.active {
+    /* Overrides default .active helper */
     background-color: transparent;
 
     > i {
@@ -105,7 +105,7 @@
     }
 }
 
-.tp-map-search-input {
+.map-search-input {
     background-color: transparent;
     appearance: none;
     border: 0;
@@ -128,7 +128,7 @@
     &:-moz-placeholder { text-overflow: ellipsis; color: var(--ui-border-color); }
 }
 
-.tp-map-latlng-label {
+.map-latlng-label {
     margin: 5px auto;
     font-size: 12px;
     font-family: var(--font-family);
@@ -139,7 +139,7 @@
     user-select: auto;
 }
 
-.tp-map-toolbar-toggle {
+.map-toolbar-toggle {
     width: 18px;
     text-align: center;
     font-size: 8px;
@@ -157,15 +157,15 @@
     }
 }
 
-.tp-map-toolbar-bar .tp-map-toolbar-toggle {
+.map-toolbar-bar .map-toolbar-toggle {
     &::after {
         /* The up arrow is not a perfect mirror of the down arrow */
         transform: rotateX(180deg);
     }
 }
 
-.tp-map-search-results,
-.tp-map-bookmarks-menu {
+.map-search-results,
+.map-bookmarks-menu {
     display: block;
     flex: none;
     position: absolute;
@@ -190,7 +190,7 @@
     }
 
     li:hover,
-    li.tp-map-search-active {
+    li.map-search-active {
         background-color: var(--ui-active-color);
     }
 
@@ -208,17 +208,17 @@
     }
 }
 
-.tp-map-search-results {
+.map-search-results {
     left: 0;
     top: 38px;
     width: 100%;
 }
 
-.tp-map-bookmarks {
+.map-bookmarks {
     border-left: 1px solid var(--ui-component-color);
 }
 
-.tp-map-bookmarks-menu {
+.map-bookmarks-menu {
     right: 0;
     min-width: 200px;
 }

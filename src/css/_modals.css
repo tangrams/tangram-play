@@ -1,6 +1,6 @@
 /* MODALS */
 
-.tp-modal {
+.modal {
     display: none;
     box-sizing: border-box;
     width: 400px;
@@ -61,15 +61,15 @@
     }
 }
 
-.tp-modal-alt {
+.modal-alt {
     text-align: left;
 
-    .tp-modal-buttons {
+    .modal-buttons {
         justify-content: flex-end;
     }
 }
 
-.tp-modal-text {
+.modal-text {
     display: inline-block;
     margin: 0;
     padding: 0;
@@ -77,11 +77,11 @@
     user-select: none;
 }
 
-.tp-modal-content {
+.modal-content {
     margin-top: 20px;
 }
 
-.tp-modal-buttons {
+.modal-buttons {
     width: 100%;
     margin-top: 30px;
     display: flex;
@@ -118,12 +118,12 @@
     }
 
     /* Any icon of confirm button is green */
-    .tp-modal-confirm > i.btm {
+    .modal-confirm > i.btm {
         color: green;
     }
 
     /* Any icon of cancel button is red */
-    .tp-modal-cancel > i.btm {
+    .modal-cancel > i.btm {
         color: red;
     }
 
@@ -143,14 +143,14 @@
     }
 }
 
-.tp-modal-thinking {
+.modal-thinking {
     margin-right: 30px;
     line-height: 54px;
     color: var(--ui-subtext-color);
     opacity: 0;
     visibility: hidden;
 
-    &.tp-modal-thinking-cap-on {
+    &.modal-thinking-cap-on {
         opacity: 1;
         visibility: visible;
     }
@@ -160,12 +160,12 @@
     }
 }
 
-.tp-example-modal {
+.example-modal {
     width: 600px;
     height: 600px;
 }
 
-.tp-example-list {
+.example-list {
     height: 420px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -185,7 +185,7 @@
     }
 }
 
-.tp-example-option {
+.example-option {
     display: inline-block;
     box-sizing: border-box;
     width: 50%;
@@ -197,25 +197,25 @@
         background-color: var(--ui-active-color);
     }
 
-    &.tp-example-selected {
+    &.example-selected {
         border: 1px solid var(--ui-border-color);
         background-color: var(--ui-active-color);
     }
 
     img,
-    .tp-example-thumbnail {
+    .example-thumbnail {
         width: 100%;
         height: 60px;
     }
 
-    .tp-example-thumbnail {
+    .example-thumbnail {
         background-size: 100%;
         background-repeat: no-repeat;
         background-position: center center;
     }
 }
 
-.tp-example-option-name {
+.example-option-name {
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 14px;
@@ -224,11 +224,11 @@
     text-transform: capitalize;
 }
 
-.tp-open-url-modal {
+.open-url-modal {
     width: 600px;
 }
 
-.tp-modal-about-text {
+.modal-about-text {
     margin-left: 40px;
     margin-right: 40px;
 
@@ -239,21 +239,21 @@
     }
 }
 
-.tp-save-gist-modal {
+.save-gist-modal {
     width: 600px;
 }
 
-.tp-save-gist-success-modal {
+.save-gist-success-modal {
     /* Overrides for this modal.
         TODO: Consider refactoring modal so we don't need any of this */
-    .tp-modal-text {
+    .modal-text {
         display: none;
     }
-    .tp-modal-content {
+    .modal-content {
         margin-top: 0;
     }
     /* Inputs */
-    .tp-gist-saved-copy-btn {
+    .gist-saved-copy-btn {
         margin-left: 1px;
         width: 44px;
     }

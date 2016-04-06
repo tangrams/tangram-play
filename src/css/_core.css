@@ -1,6 +1,6 @@
 /* EDITOR CORE */
 
-.tp-core-container {
+.core-container {
   position: absolute;
   height: calc(100% - 44px);
   left: 0;

@@ -1,7 +1,7 @@
 /* MAP VIEWPORT */
 
 /* Container for map and map-related UI */
-.tp-map-container {
+.map-container {
     position: absolute;
     left: 0;
     top: 0;
@@ -11,7 +11,7 @@
 }
 
 /* Container for Leaflet/Tangram */
-.tp-map-view {
+.map-view {
     position: absolute;
     top: 0;
     left: 0;

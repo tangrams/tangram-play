@@ -1,6 +1,6 @@
 /* MENU BAR */
 
-.tp-menu-bar {
+.menu-bar {
     position: relative;
     font-family: var(--font-family);
     font-weight: 200;
@@ -25,7 +25,7 @@
     }
 }
 
-.tp-beta-tag {
+.beta-tag {
     position: absolute;
     left: 2px;
     top: 12px;
@@ -33,7 +33,7 @@
     font-size: 9px;
 }
 
-.tp-menu-items {
+.menu-items {
     display: inline-block;
     padding: 0;
     margin: 0;
@@ -43,11 +43,11 @@
     vertical-align: top; /* Fix Firefox pushing this down by 1px */
 }
 
-.tp-menu-left {
+.menu-left {
     flex-grow: 1;
 }
 
-.tp-menu-item {
+.menu-item {
     display: inline-block;
     min-width: 44px;
     height: 100%;
@@ -81,24 +81,24 @@
     }
 }
 
-.tp-menu-item-label {
+.menu-item-label {
     margin-left: 10px;
 }
 
 
 /* When below viewport breakpoint width */
 @media (max-width: 767px) {
-    .tp-menu-bar {
-        .tp-menu-item {
+    .menu-bar {
+        .menu-item {
             padding: 0;
         }
-        .tp-menu-item-label {
+        .menu-item-label {
             display: none;
         }
     }
 }
 
-.tp-menu-item-disabled {
+.menu-item-disabled {
     color: #888;
     cursor: default;
 
@@ -108,15 +108,15 @@
     }
 }
 
-.tp-menu-item-private {
+.menu-item-private {
     display: none;
 
-    .tp-debug-full-menu & {
+    .debug-full-menu & {
         display: inline-block;
     }
 }
 
-.tp-menu-sign-in {
+.menu-sign-in {
     background-color: #7a0000;
     padding-left: 1em;
     padding-right: 1em;
@@ -128,13 +128,13 @@
     }
 }
 
-.tp-menu-sign-in-label {
+.menu-sign-in-label {
     text-transform: uppercase;
     font-size: 14px;
     margin-right: 0.5em;
 }
 
 /* Hides the fullscreen button if feature is not present in browser */
-html.mdnzr-no-fullscreen .tp-menu-button-fullscreen {
+html.mdnzr-no-fullscreen .menu-button-fullscreen {
     display: none;
 }

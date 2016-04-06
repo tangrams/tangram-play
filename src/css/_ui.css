@@ -1,7 +1,7 @@
 /* GENERAL UI HELPERS */
 
 /* Generic active class */
-.tp-active {
+.active {
   color: var(--ui-highlight-color);
 }
 

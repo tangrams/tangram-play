@@ -10,13 +10,13 @@ const DEFAULT_BOOKMARKS_OBJECT = {
 let el, buttonEl, menuEl;
 
 function init () {
-    el = container.querySelector('.tp-map-bookmarks');
-    buttonEl = el.querySelector('.tp-map-bookmarks-button');
-    menuEl = el.querySelector('.tp-map-bookmarks-menu');
+    el = container.querySelector('.map-bookmarks');
+    buttonEl = el.querySelector('.map-bookmarks-button');
+    menuEl = el.querySelector('.map-bookmarks-menu');
 
     menuEl.addEventListener('click', onMenuClickHandler, false);
     buttonEl.addEventListener('click', event => {
-        if (!buttonEl.classList.contains('tp-active')) {
+        if (!buttonEl.classList.contains('active')) {
             showMenu();
         }
         else {
@@ -57,13 +57,13 @@ function showMenu () {
 
     if (bookmarks.length === 0) {
         const msgEl = document.createElement('div');
-        msgEl.className = 'tp-bookmark-message';
+        msgEl.className = 'bookmark-message';
         msgEl.textContent = 'No bookmarks yet!';
         menuEl.appendChild(msgEl);
     }
     else {
         const listEl = document.createElement('ul');
-        listEl.className = 'tp-bookmark-list';
+        listEl.className = 'bookmark-list';
         menuEl.appendChild(listEl);
 
         for (let i = 0, j = bookmarks.length; i < j; i++) {
@@ -72,22 +72,22 @@ function showMenu () {
 
             let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
 
-            bookmarkEl.className = 'tp-bookmark-item';
+            bookmarkEl.className = 'bookmark-item';
             bookmarkEl.coordinates = { lat: bookmark.lat, lng: bookmark.lng };
             bookmarkEl.zoom = bookmark.zoom;
-            bookmarkEl.innerHTML = `<i class='bts bt-map-marker'></i> <span class='tp-bookmark-label'>${bookmark.label}</span> <br><span class='tp-bookmark-meta'>${bookmark.lat.toFixed(4)}, ${bookmark.lng.toFixed(4)}, z&#8202;${fractionalZoom.toFixed(1)}</span>`;
+            bookmarkEl.innerHTML = `<i class='bts bt-map-marker'></i> <span class='bookmark-label'>${bookmark.label}</span> <br><span class='bookmark-meta'>${bookmark.lat.toFixed(4)}, ${bookmark.lng.toFixed(4)}, z&#8202;${fractionalZoom.toFixed(1)}</span>`;
             listEl.appendChild(bookmarkEl);
         }
 
         // Create a delete bookmarks button
         const deleteEl = document.createElement('li');
-        deleteEl.className = 'tp-bookmark-item tp-bookmark-clear';
+        deleteEl.className = 'bookmark-item bookmark-clear';
         deleteEl.textContent = 'Clear bookmarks';
         deleteEl.addEventListener('click', onClickDeleteBookmarks, false);
         listEl.appendChild(deleteEl);
     }
 
-    buttonEl.classList.add('tp-active');
+    buttonEl.classList.add('active');
 
     container.addEventListener('click', onClickOutsideMenu, false);
 }
@@ -95,7 +95,7 @@ function showMenu () {
 function clearMenu () {
     menuEl.innerHTML = '';
     menuEl.style.display = 'none';
-    buttonEl.classList.remove('tp-active');
+    buttonEl.classList.remove('active');
     container.removeEventListener('click', onClickOutsideMenu, false);
 }
 
@@ -135,7 +135,7 @@ function gotoBookmark (selectedEl) {
     // it's a location you saved.
     // TODO: This is hacky, do this better, elsewhere
     window.setTimeout(function () {
-        container.querySelector('.tp-map-save-icon').classList.add('tp-active');
+        container.querySelector('.map-save-icon').classList.add('active');
     }, 0);
 }
 
@@ -150,11 +150,11 @@ function onClickDeleteBookmarks (event) {
 function onClickOutsideMenu (event) {
     let target = event.target;
 
-    while (target !== document.documentElement && !target.classList.contains('tp-map-bookmarks')) {
+    while (target !== document.documentElement && !target.classList.contains('map-bookmarks')) {
         target = target.parentNode;
     }
 
-    if (!target.classList.contains('tp-map-bookmarks')) {
+    if (!target.classList.contains('map-bookmarks')) {
         clearMenu();
     }
 }

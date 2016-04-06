@@ -15,8 +15,8 @@ const Tooltip = {
         document.body.appendChild(this.el);
 
         // Cache references to child elements
-        this.pointerEl = this.el.querySelector('.tp-tooltip-pointer');
-        this.contentEl = this.el.querySelector('.tp-tooltip-content');
+        this.pointerEl = this.el.querySelector('.tooltip-pointer');
+        this.contentEl = this.el.querySelector('.tooltip-content');
 
         // Look for any tooltips in DOM and attach
         // event listeners immediately.
@@ -57,7 +57,7 @@ const Tooltip = {
         // Otherwise, there is a slight delay, and an animation
         else {
             this.displayTimer = window.setTimeout(() => {
-                this.el.classList.add('tp-tooltip-animate');
+                this.el.classList.add('tooltip-animate');
                 this.show();
             }, TIME_BEFORE_DISPLAY);
         }
@@ -71,7 +71,7 @@ const Tooltip = {
         // Force browsers to end batch reflow computation so that animations work
         window.setTimeout(() => {
             window.getComputedStyle(this.el).cssText;
-            this.el.classList.add('tp-tooltip-show');
+            this.el.classList.add('tooltip-show');
         }, 0);
 
         // Set tooltip management state
@@ -88,11 +88,11 @@ const Tooltip = {
         // Better to clear this timer on hide
         window.clearTimeout(this.displayTimer);
 
-        this.el.classList.remove('tp-tooltip-show');
+        this.el.classList.remove('tooltip-show');
 
         // Reset active state after some amount of time, if it is not being shown elsewhere
         window.setTimeout(() => {
-            if (!this.el.classList.contains('tp-tooltip-show')) {
+            if (!this.el.classList.contains('tooltip-show')) {
                 this.isCurrentlyShowing = false;
             }
         }, TIME_BEFORE_RESET);
@@ -108,13 +108,13 @@ const Tooltip = {
             let rightXPos = (targetPos.right + VIEWPORT_EDGE_BUFFER < window.innerWidth) ? targetPos.right : (window.innerWidth - VIEWPORT_EDGE_BUFFER);
             this.el.style.right = Math.floor(window.innerWidth - rightXPos) + 'px';
             this.el.style.left = 'auto';
-            this.pointerEl.classList.add('tp-tooltip-pointer-right');
+            this.pointerEl.classList.add('tooltip-pointer-right');
         }
         else {
             let leftXPos = (targetPos.left - VIEWPORT_EDGE_BUFFER > 0) ? targetPos.left : VIEWPORT_EDGE_BUFFER;
             this.el.style.left = Math.floor(leftXPos) + 'px';
             this.el.style.right = 'auto';
-            this.pointerEl.classList.remove('tp-tooltip-pointer-right');
+            this.pointerEl.classList.remove('tooltip-pointer-right');
         }
 
         this.el.style.top = Math.floor(targetPos.bottom + 5) + 'px'; // Starting position, animate down
@@ -128,17 +128,17 @@ function createDom () {
     let tooltipEl = document.createElement('div');
     let pointerEl = document.createElement('div');
 
-    tooltipEl.className = 'tp-tooltip-content';
-    pointerEl.className = 'tp-tooltip-pointer';
+    tooltipEl.className = 'tooltip-content';
+    pointerEl.className = 'tooltip-pointer';
 
-    dom.className = 'tp-tooltip';
+    dom.className = 'tooltip';
     dom.appendChild(tooltipEl);
     dom.appendChild(pointerEl);
 
     // Attach an event listener to remove animation class
     // if present, after the animation itself has completed.
     dom.addEventListener('transitionend', function () {
-        dom.classList.remove('tp-tooltip-animate');
+        dom.classList.remove('tooltip-animate');
     });
 
     return dom;

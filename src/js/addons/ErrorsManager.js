@@ -46,9 +46,9 @@ export default class ErrorsManager {
         if (args.type !== undefined) {
             let msg = document.createElement('div');
             let icon = msg.appendChild(document.createElement('span'));
-            icon.className = 'btm bt-exclamation-triangle tp-error-icon';
+            icon.className = 'btm bt-exclamation-triangle error-icon';
             msg.appendChild(document.createTextNode(args.error.reason));
-            msg.className = 'tp-error';
+            msg.className = 'error';
             this.widgets.push(TangramPlay.editor.addLineWidget(args.error.mark.line, msg, { coverGutter: false, noHScroll: true }));
         }
     }
@@ -81,9 +81,9 @@ export default class ErrorsManager {
 
                     let msg = document.createElement('div');
                     let icon = msg.appendChild(document.createElement('span'));
-                    icon.className = 'btm bt-exclamation-circle tp-warning-icon';
+                    icon.className = 'btm bt-exclamation-circle warning-icon';
                     msg.appendChild(document.createTextNode(errors[i].message));
-                    msg.className = 'tp-warning';
+                    msg.className = 'warning';
                     this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
                     this.blockErrors.add(JSON.stringify(block)); // track unique errors
                 }
@@ -98,9 +98,9 @@ export default class ErrorsManager {
                 let nLine = node.widget.range.to.line + 1;
                 let msg = document.createElement('div');
                 let icon = msg.appendChild(document.createElement('span'));
-                icon.className = 'btm bt-exclamation-circle tp-warning-icon';
+                icon.className = 'btm bt-exclamation-circle warning-icon';
                 msg.appendChild(document.createTextNode(`Duplicate key ${node.key} (${node.address})`));
-                msg.className = 'tp-warning';
+                msg.className = 'warning';
                 this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
             }
         }

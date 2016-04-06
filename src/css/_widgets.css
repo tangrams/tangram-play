@@ -1,6 +1,6 @@
 /* EDITOR WIDGETS */
 
-.tp-widget {
+.widget {
     display: inline-block;
     position: relative;
     user-select: none;
@@ -10,7 +10,7 @@
     margin-bottom: 0;
 }
 
-.tp-widget-colorpicker {
+.widget-colorpicker {
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 50%;
     width: 14px;
@@ -22,7 +22,7 @@
     vertical-align: middle;
 }
 
-.tp-widget-vector {
+.widget-vector {
     border: 1px solid rgba(255,255,255,0.15);
     width: 14px;
     height: 14px;
@@ -34,7 +34,7 @@
     /*text-align: center;*/
 }
 
-.tp-widget-vector-text {
+.widget-vector-text {
     position: relative;
     top: -4px;
     left: 1px;
@@ -42,12 +42,12 @@
     font-weight: 100;
 }
 
-select.tp-widget-dropdown {
+select.widget-dropdown {
     /* width: 17px; NTOE THIS IS WEIRD */
     height: 17px;
 }
 
-input.tp-widget-toggle {
+input.widget-toggle {
     position: relative;
     visibility: hidden;
     margin: 0;

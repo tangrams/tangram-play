@@ -16,10 +16,10 @@ function init () {
     // If enabled, attach an event listener to it
     else {
         buttonEl.addEventListener('click', event => {
-            if (buttonEl.classList.contains('tp-active')) {
+            if (buttonEl.classList.contains('active')) {
                 return false;
             }
-            buttonEl.classList.add('tp-active');
+            buttonEl.classList.add('active');
             getCurrentLocation(onGeolocateSuccess, onGeolocateError);
         });
     }
@@ -58,7 +58,7 @@ function onGeolocateError (err) {
 }
 
 function resetGeolocateButton () {
-    buttonEl.classList.remove('tp-active');
+    buttonEl.classList.remove('active');
 }
 
 let geolocator = {
