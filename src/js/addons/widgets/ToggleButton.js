@@ -4,11 +4,11 @@ export default class ToggleButton extends Widget {
     createEl (key) {
         const id = 'toggle-' + key.address;
         const el = document.createElement('div');
-        el.className = 'tp-widget';
+        el.className = 'widget';
 
         const inputEl = document.createElement('input');
         inputEl.type = 'checkbox';
-        inputEl.className = 'tp-widget-toggle';
+        inputEl.className = 'widget-toggle';
         inputEl.id = id;
         inputEl.checked = (this.node.value === 'true') ? true : false;
 

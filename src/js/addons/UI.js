@@ -1,4 +1,4 @@
-import FileDrop from './ui/FileDrop';
+import './ui/file-drop';
 import Menu from './ui/Menu';
 import Divider from './ui/Divider';
 import Tooltip from './ui/Tooltip';
@@ -10,7 +10,6 @@ export default class UI {
         Tooltip.init();
         MapToolbar.init();
 
-        new FileDrop();
         // TODO: less inheritance
         this.menu = new Menu();
         new Divider();

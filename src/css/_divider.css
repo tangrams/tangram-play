@@ -1,6 +1,6 @@
 /* DRAGGABLE LINE */
 
-.tp-divider {
+.divider {
     position: absolute;
     left: 50%; /* Starting position; this is overridden by scripts */
     top: 0;
@@ -14,23 +14,23 @@
     user-select: none;
 }
 
-.tp-divider:hover {
+.divider:hover {
     background-color: var(--ui-active-color);
 }
 
-.tp-divider.tp-divider-is-dragging {
+.divider.divider-is-dragging {
     background-color: var(--ui-active-color);
 
-    .tp-divider-affordance,
-    .tp-divider-affordance::after,
-    .tp-divider-affordance::before {
+    .divider-affordance,
+    .divider-affordance::after,
+    .divider-affordance::before {
         background-color: var(--ui-highlight-color);
     }
 }
 
-.tp-divider-affordance,
-.tp-divider-affordance::after,
-.tp-divider-affordance::before {
+.divider-affordance,
+.divider-affordance::after,
+.divider-affordance::before {
     display: inline-block;
     position: absolute;
     width: 4px;
@@ -40,21 +40,21 @@
     background-color: var(--ui-component-text-color);
 }
 
-.tp-divider-affordance {
+.divider-affordance {
     left: 2px;
 }
 
-.tp-divider-affordance::after,
-.tp-divider-affordance::before {
+.divider-affordance::after,
+.divider-affordance::before {
     content: '';
     position: absolute;
     top: 0; /* Reset position */
 }
 
-.tp-divider-affordance::after {
+.divider-affordance::after {
     transform: translateY(10px);
 }
 
-.tp-divider-affordance::before {
+.divider-affordance::before {
     transform: translateY(-10px);
 }

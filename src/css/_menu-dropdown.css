@@ -1,6 +1,6 @@
 /* MENU DROPDOWNS */
 
-.tp-menu-dropdown {
+.menu-dropdown {
     display: none;
     position: absolute;
     width: 200px;
@@ -12,13 +12,13 @@
     user-select: none;
 }
 
-.tp-menu-dropdown > ul {
+.menu-dropdown > ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
-.tp-menu-dropdown > ul > li {
+.menu-dropdown > ul > li {
     position: relative;
     margin: 0;
     box-sizing: border-box;
@@ -29,12 +29,12 @@
     cursor: pointer;
 }
 
-.tp-menu-dropdown > ul > li:hover {
+.menu-dropdown > ul > li:hover {
     background-color: var(--ui-active-color);
     color: yellow;
 }
 
-.tp-menu-dropdown {
+.menu-dropdown {
     a {
         position: absolute;
         left: 0;

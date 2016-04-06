@@ -1,4 +1,4 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 import ColorPicker from './pickers/ColorPicker';
 import Vec3Picker from './pickers/Vec3Picker';

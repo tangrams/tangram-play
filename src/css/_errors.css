@@ -1,14 +1,14 @@
 
-.tp-error,
-.tp-warning {
+.error,
+.warning {
     position: relative;
     font-family: var(--editor-font-family);
     padding-left: 3em; /* Theoretically, aligns error text to the first tab stop */
     padding-right: 10px;
 }
 
-.tp-error-icon,
-.tp-warning-icon {
+.error-icon,
+.warning-icon {
     position: absolute;
     left: 0;
     top: 3px;
@@ -16,12 +16,12 @@
     text-align: center;
 }
 
-.tp-error {
+.error {
     background: #be1a20;
     color: white;
 }
 
-.tp-warning {
+.warning {
     background: #ffcc00;
     color: black;
 }

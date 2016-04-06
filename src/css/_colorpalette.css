@@ -1,4 +1,4 @@
-.tp-colorpalette {
+.colorpalette {
     position: absolute;
     z-index: var(--z01-colorpalette);
     right: 18px;
@@ -7,7 +7,7 @@
     pointer-events: none;
 }
 
-.tp-colorpalette-element {
+.colorpalette-element {
     display: inline-block;
     width: 20px;
     height: 20px;

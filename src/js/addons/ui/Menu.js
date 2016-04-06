@@ -1,4 +1,4 @@
-import TangramPlay, { container, map } from '../../TangramPlay';
+import TangramPlay, { map } from '../../tangram-play';
 import { noop } from './Helpers';
 import EditorIO from './EditorIO';
 import FileOpen from './FileOpen';
@@ -10,17 +10,17 @@ import fullscreen from './fullscreen';
 
 export default class Menu {
     constructor () {
-        this.el = container.querySelector('.tp-menu-bar');
+        this.el = document.body.querySelector('.menu-bar');
         this.menus = {};
         this.initMenuItems();
     }
 
     initMenuItems () {
-        this.menus.new = new MenuItem('.tp-menu-button-new', _onClickNew);
-        this.menus.open = new MenuItem('.tp-menu-button-open', _onClickOpen);
-        this.menus.save = new MenuItem('.tp-menu-button-save', _onClickSave);
-        this.menus.fullscreen = new MenuItem('.tp-menu-button-fullscreen', _onClickFullscreen);
-        this.menus.help = new MenuItem('.tp-menu-button-help', _onClickHelp);
+        this.menus.new = new MenuItem('.menu-button-new', _onClickNew);
+        this.menus.open = new MenuItem('.menu-button-open', _onClickOpen);
+        this.menus.save = new MenuItem('.menu-button-save', _onClickSave);
+        this.menus.fullscreen = new MenuItem('.menu-button-fullscreen', _onClickFullscreen);
+        this.menus.help = new MenuItem('.menu-button-help', _onClickHelp);
 
         this.fileopen = new FileOpen();
         this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
@@ -30,29 +30,29 @@ export default class Menu {
 
         // Set up events on dropdown buttons
         // Open menu
-        container.querySelector('.tp-menu-open-file').addEventListener('click', () => {
+        document.body.querySelector('.menu-open-file').addEventListener('click', () => {
             this.fileopen.activate();
         }, false);
-        container.querySelector('.tp-menu-open-url').addEventListener('click', () => {
+        document.body.querySelector('.menu-open-url').addEventListener('click', () => {
             this.openUrlModal.show();
         }, false);
-        container.querySelector('.tp-menu-open-example').addEventListener('click', () => {
+        document.body.querySelector('.menu-open-example').addEventListener('click', () => {
             this.examplesModal.show();
         }, false);
 
         // Save menu
-        container.querySelector('.tp-menu-save-file').addEventListener('click', () => {
+        document.body.querySelector('.menu-save-file').addEventListener('click', () => {
             EditorIO.export();
         }, false);
-        container.querySelector('.tp-menu-save-gist').addEventListener('click', () => {
+        document.body.querySelector('.menu-save-gist').addEventListener('click', () => {
             this.saveGistModal.show();
         }, false);
-        container.querySelector('.tp-menu-screenshot').addEventListener('click', () => {
+        document.body.querySelector('.menu-screenshot').addEventListener('click', () => {
             map.takeScreenshot();
         }, false);
 
         // About
-        container.querySelector('.tp-menu-about').addEventListener('click', () => {
+        document.body.querySelector('.menu-about').addEventListener('click', () => {
             this.aboutModal.show();
         }, false);
     }
@@ -60,7 +60,7 @@ export default class Menu {
 
 export class MenuItem {
     constructor (classSelector, onClick = noop) {
-        this.el = container.querySelector(classSelector);
+        this.el = document.body.querySelector(classSelector);
 
         // Attach listeners, including those for tooltip behavior
         this.el.addEventListener('click', (event) => {
@@ -78,35 +78,35 @@ export class MenuItem {
 // Dropdown menus
 
 function _onClickOpen (event) {
-    let menuEl = container.querySelector('.tp-menu-dropdown-open');
-    let posX = container.querySelector('.tp-menu-button-open').getBoundingClientRect().left;
+    let menuEl = document.body.querySelector('.menu-dropdown-open');
+    let posX = document.body.querySelector('.menu-button-open').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
     }
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    window.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _onClickSave (event) {
-    let menuEl = container.querySelector('.tp-menu-dropdown-save');
-    let posX = container.querySelector('.tp-menu-button-save').getBoundingClientRect().left;
+    let menuEl = document.body.querySelector('.menu-dropdown-save');
+    let posX = document.body.querySelector('.menu-button-save').getBoundingClientRect().left;
     menuEl.style.left = posX + 'px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
     }
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    window.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _onClickHelp (event) {
-    let menuEl = container.querySelector('.tp-menu-dropdown-help');
+    let menuEl = document.body.querySelector('.menu-dropdown-help');
     menuEl.style.right = '0px';
     menuEl.style.display = (menuEl.style.display === 'block') ? 'none' : 'block';
     if (menuEl.style.display === 'none') {
         _resetTooltipState();
     }
-    container.addEventListener('click', _onClickOutsideDropdown, false);
+    window.addEventListener('click', _onClickOutsideDropdown, false);
 }
 
 // Single action buttons
@@ -125,13 +125,13 @@ function _onClickFullscreen (event) {
 function _onClickOutsideDropdown (event) {
     let target = event.target;
 
-    while (target !== document.documentElement && !target.classList.contains('tp-menu-item')) {
+    while (target !== document.documentElement && !target.classList.contains('menu-item')) {
         target = target.parentNode;
     }
 
-    if (!target.classList.contains('tp-menu-item')) {
+    if (!target.classList.contains('menu-item')) {
         _loseMenuFocus();
-        container.removeEventListener('click', _onClickOutsideDropdown, false);
+        document.body.removeEventListener('click', _onClickOutsideDropdown, false);
     }
 }
 
@@ -141,15 +141,15 @@ function _loseMenuFocus () {
 }
 
 function _hideMenus () {
-    let menus = document.querySelectorAll('.tp-menu-dropdown');
+    let menus = document.querySelectorAll('.menu-dropdown');
     for (let el of menus) {
         el.style.display = 'none';
     }
-    container.removeEventListener('click', _onClickOutsideDropdown, false);
+    document.body.removeEventListener('click', _onClickOutsideDropdown, false);
 }
 
 function _resetTooltipState () {
-    let items = document.querySelectorAll('.tp-menu-item');
+    let items = document.querySelectorAll('.menu-item');
     for (let el of items) {
         el.removeAttribute('data-tooltip-state');
     }

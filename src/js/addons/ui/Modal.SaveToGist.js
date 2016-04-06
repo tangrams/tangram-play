@@ -1,4 +1,4 @@
-import TangramPlay, { container, editor } from '../../TangramPlay';
+import TangramPlay, { editor } from '../../tangram-play';
 import LocalStorage from '../LocalStorage';
 import Modal from './Modal';
 import xhr from 'xhr';
@@ -14,7 +14,7 @@ export default class SaveGistModal extends Modal {
         super();
 
         // Cache elements
-        this.el = container.querySelector('.tp-save-gist-modal');
+        this.el = document.body.querySelector('.save-gist-modal');
         this.filenameInput = this.el.querySelector('#gist-filename');
         this.descriptionInput = this.el.querySelector('#gist-description');
         this.publicCheckbox = this.el.querySelector('#gist-public');
@@ -96,16 +96,16 @@ export default class SaveGistModal extends Modal {
     }
 
     waitStateOn () {
-        this.el.querySelector('.tp-modal-thinking').classList.add('tp-modal-thinking-cap-on');
-        this.el.querySelector('.tp-modal-confirm').disabled = true;
-        this.el.querySelector('.tp-modal-cancel').disabled = true;
+        this.el.querySelector('.modal-thinking').classList.add('modal-thinking-cap-on');
+        this.el.querySelector('.modal-confirm').disabled = true;
+        this.el.querySelector('.modal-cancel').disabled = true;
         this.options.disableEsc = true;
     }
 
     waitStateOff () {
-        this.el.querySelector('.tp-modal-thinking').classList.remove('tp-modal-thinking-cap-on');
-        this.el.querySelector('.tp-modal-confirm').removeAttribute('disabled');
-        this.el.querySelector('.tp-modal-cancel').removeAttribute('disabled');
+        this.el.querySelector('.modal-thinking').classList.remove('modal-thinking-cap-on');
+        this.el.querySelector('.modal-confirm').removeAttribute('disabled');
+        this.el.querySelector('.modal-cancel').removeAttribute('disabled');
         this.options.disableEsc = false;
     }
 
@@ -126,14 +126,14 @@ export default class SaveGistModal extends Modal {
         editor.doc.markClean();
 
         // Show success modal
-        let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: container.querySelector('.tp-save-gist-success-modal') });
+        let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: document.body.querySelector('.save-gist-success-modal') });
         SaveGistSuccessModal.urlInput = SaveGistSuccessModal.el.querySelector('#gist-saved-url');
         SaveGistSuccessModal.urlInput.value = gist.url;
         SaveGistSuccessModal.show();
         SaveGistSuccessModal.urlInput.select();
 
         // Initiate clipboard button
-        var clipboard = new Clipboard('.tp-gist-saved-copy-btn');
+        var clipboard = new Clipboard('.gist-saved-copy-btn');
 
         clipboard.on('success', function (e) {
             console.info('Action:', e.action);
@@ -176,7 +176,7 @@ export default class SaveGistModal extends Modal {
 //         super();
 
 //         // Cache elements
-//         this.el = container.querySelector('.tp-save-gist-success-modal');
+//         this.el = document.body.querySelector('.save-gist-success-modal');
 //         this.urlInput = this.el.querySelector('#gist-saved-url');
 //     }
 

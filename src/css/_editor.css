@@ -1,6 +1,6 @@
 /* EDITOR */
 
-.tp-editor-container {
+.editor-container {
     position: absolute;
     right: 0;
     width: 50%;
@@ -9,7 +9,7 @@
     vertical-align: top;
 }
 
-.tp-editor {
+.editor {
     height: 100%;
 }
 

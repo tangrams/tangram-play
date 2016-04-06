@@ -1,6 +1,6 @@
 /* MAP LOADING INDICATOR */
 
-.tp-map-loading {
+.map-loading {
     position: fixed;
     height: 10px;
     width: 100%;
@@ -21,7 +21,7 @@
     );
     user-select: none;
 
-    &.tp-map-loading-show {
+    &.map-loading-show {
         bottom: 0;
     }
 }

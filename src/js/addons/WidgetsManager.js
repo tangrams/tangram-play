@@ -1,8 +1,8 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 // Load some common functions
 import { subscribeMixin } from '../tools/mixin';
-import { isStrEmpty } from '../core/codemirror/tools';
+import { isStrEmpty } from '../editor/codemirror/tools';
 
 // Load addons modules
 import WidgetType from './widgets/WidgetType';

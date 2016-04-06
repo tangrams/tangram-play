@@ -1,6 +1,6 @@
 /* TOOLTIP */
 
-.tp-tooltip {
+.tooltip {
     position: fixed;
     user-select: none;
     pointer-events: none;
@@ -8,17 +8,17 @@
     transform: translateY(-10px);
     opacity: 0;
 
-    &.tp-tooltip-animate {
+    &.tooltip-animate {
         transition: 70ms opacity ease-out, 70ms transform ease-out;
     }
 
-    &.tp-tooltip-show {
+    &.tooltip-show {
         transform: translateY(0px);
         opacity: 1;
     }
 }
 
-.tp-tooltip-content {
+.tooltip-content {
     display: block;
     background-color: #000004;
     padding: 1em;
@@ -32,7 +32,7 @@
 }
 
 /* TODO: Align pointers based on target element dimensions */
-.tp-tooltip-pointer {
+.tooltip-pointer {
     display: block;
     position: absolute;
     top: -15px;
@@ -40,7 +40,7 @@
     border-bottom-color: #000004;
     transform: translateX(14px);
 
-    &.tp-tooltip-pointer-right {
+    &.tooltip-pointer-right {
         right: 0;
         transform: translateX(-8px);
     }

@@ -14,8 +14,8 @@ export default class VectorButton extends Widget {
 
     createEl () {
         let el = document.createElement('div');
-        el.innerHTML = '<span class="tp-widget-vector-text">+</span>';
-        el.className = 'tp-widget tp-widget-vector';
+        el.innerHTML = '<span class="widget-vector-text">+</span>';
+        el.className = 'widget widget-vector';
         el.addEventListener('click', this.onClick.bind(this));
         return el;
     }

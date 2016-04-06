@@ -1,4 +1,4 @@
-#tp-a-sandbox {
+#a-sandbox {
 	margin-top: -33px;
 	position: relative;
 	width: 134px;
@@ -12,7 +12,7 @@
 	z-index: var(--z01-sandbox);
 }
 
-#tp-a-sandbox:after {
+#a-sandbox:after {
 	content: '';
 	position: absolute;
 	border-style: solid;
@@ -25,7 +25,7 @@
 	top: 14px;
 }
 
-#tp-a-sandbox-canvas {
+#a-sandbox-canvas {
 	margin: 2px;
     z-index: var(--z01-sandbox);
     overflow: hidden;
@@ -33,7 +33,7 @@
     /*border-radius: 12px;*/
 }
 
-#tp-a-sandbox-colorpicker {
+#a-sandbox-colorpicker {
 	position: relative;
 	top: -132px;
 	left: 112px;

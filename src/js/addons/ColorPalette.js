@@ -1,8 +1,8 @@
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 import ColorPicker from './pickers/ColorPicker';
 import { toCSS } from '../tools/common';
-import { jumpToLine } from '../core/codemirror/tools';
+import { jumpToLine } from '../editor/codemirror/tools';
 
 export default class ColorPalette {
     constructor() {
@@ -12,7 +12,7 @@ export default class ColorPalette {
 
         this.colors = {};
         this.palette = document.createElement('div');
-        this.palette.className = 'tp-colorpalette';
+        this.palette.className = 'colorpalette';
         document.body.appendChild(this.palette);
 
         TangramPlay.addons.widgetsManager.on('widgets_created', (args) => {
@@ -67,7 +67,7 @@ class Color {
 
         // DOM
         this.el = document.createElement('div');
-        this.el.className = 'tp-colorpalette-element';
+        this.el.className = 'colorpalette-element';
         this.el.style.background = color;
         this.el.addEventListener('click', this.onClick.bind(this));
 

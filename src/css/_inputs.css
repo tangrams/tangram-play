@@ -1,7 +1,7 @@
 /* Inputs */
 
-.tp-map-toolbar,
-.tp-input-bar {
+.map-toolbar,
+.input-bar {
     ::-webkit-input-placeholder { color: #909195 }
     :-moz-placeholder { color: #909195 }
     ::-moz-placeholder { color: #909195 }
@@ -27,7 +27,7 @@
         outline: none;
     }
 
-    button.tp-active {
+    button.active {
         background-color: var(--ui-active-color);
         color: var(--ui-highlight-color);
     }
@@ -38,7 +38,7 @@
     }
 }
 
-.tp-input-bar {
+.input-bar {
     display: flex;
     flex-direction: row;
 }

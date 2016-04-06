@@ -1,5 +1,5 @@
 // Import TangramPlay
-import TangramPlay from '../TangramPlay';
+import TangramPlay from '../tangram-play';
 
 // Import CodeMirror
 import CodeMirror from 'codemirror';
