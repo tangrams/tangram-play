@@ -24,7 +24,7 @@ export default class Menu {
         this.menus.help = new MenuItem('.menu-button-help', _onClickHelp);
 
         this.fileopen = new FileOpen();
-        this.examplesModal = new ExamplesModal(TangramPlay.options.menu);
+        this.examplesModal = new ExamplesModal();
         this.openUrlModal = new OpenURLModal();
         this.aboutModal = new AboutModal();
         this.saveGistModal = new SaveGistModal();

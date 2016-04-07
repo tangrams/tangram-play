@@ -14,9 +14,12 @@ export default class ExamplesModal extends Modal {
     constructor (config) {
         super();
 
+        // TODO: Load this another way?
+        const CONFIG_FILE = 'data/menu.json';
+
         this.el = examplesEl = document.body.querySelector('.example-modal');
         this.message = 'Choose an example to open';
-        loadExamples(config);
+        loadExamples(CONFIG_FILE);
 
         this.onConfirm = () => {
             const selected = this.el.querySelectorAll('.example-option.example-selected')[0];

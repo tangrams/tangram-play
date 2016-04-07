@@ -32,18 +32,17 @@ const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 class TangramPlay {
-    constructor (options) {
+    constructor () {
         subscribeMixin(this);
 
         //Benchmark & Debuggin
-        if (options.benchark) {
-            window.watch = new StopWatch();
-            window.watch.start();
-        }
+        // if (options.benchark) {
+        //     window.watch = new StopWatch();
+        //     window.watch.start();
+        // }
 
         this.editor = initEditor('editor');
         initMap();
-        this.options = options;
         this.addons = {};
 
         // Wrap this.updateContent() in a debounce function
@@ -87,46 +86,12 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        let options = Object.keys(this.options);
-        for (let option of options) {
-            this.initAddon(option, this.options[option]);
-        }
-    }
-
-    initAddon (addon, ...data) {
-        console.log('Loading addon', addon, ...data);
-        switch(addon) {
-            case 'widgets':
-                if (this.addons.widgetsManager === undefined) {
-                    this.addons.widgetsManager = new WidgetsManager(...data);
-                }
-                break;
-            case 'suggest':
-                if (this.addons.suggestManager === undefined) {
-                    this.addons.suggestManager = new SuggestManager(...data);
-                }
-                break;
-            case 'sandbox':
-                if (this.addons.glslSandbox === undefined) {
-                    this.addons.glslSandbox = new GlslSandbox();
-                }
-                break;
-            case 'helpers':
-                if (this.addons.glslHelpers === undefined) {
-                    this.addons.glslHelpers = new GlslHelpers();
-                }
-                break;
-            case 'errors':
-                if (this.addons.errorsManager === undefined) {
-                    this.addons.errorsManager = new ErrorsManager();
-                }
-                break;
-            case 'colors':
-                if (this.addons.colorPalette === undefined) {
-                    this.addons.colorPalette = new ColorPalette();
-                }
-                break;
-        }
+        this.addons.widgetsManager = new WidgetsManager('data/tangram-api.json');
+        this.addons.suggestManager = new SuggestManager('data/tangram-api.json');
+        // this.addons.glslSandbox = new GlslSandbox();
+        this.addons.glslHelpers = new GlslHelpers();
+        this.addons.errorsManager = new ErrorsManager();
+        this.addons.colorPalette = new ColorPalette();
     }
 
     // LOADers
@@ -406,17 +371,7 @@ function getSceneContentsFromLocalMemory () {
     return null;
 }
 
-// Export an instance of TangramPlay with the following modules
-
-let tangramPlay = new TangramPlay({
-    suggest: 'data/tangram-api.json',
-    widgets: 'data/tangram-api.json',
-    menu: 'data/menu.json',
-    // sandbox: true,
-    errors: true,
-    colors: true,
-    helpers: true
-});
+let tangramPlay = new TangramPlay();
 
 export default tangramPlay;
 export let editor = tangramPlay.editor;
