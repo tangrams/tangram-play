@@ -1,7 +1,6 @@
 import TangramPlay, { editor } from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import Modal from './modal';
-import xhr from 'xhr';
 import Clipboard from 'clipboard';
 
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
@@ -54,30 +53,30 @@ class SaveGistModal extends Modal {
             };
 
             // Make the post
-            xhr.post({
-                url: 'https://api.github.com/gists',
+            window.fetch('https://api.github.com/gists', {
+                method: 'POST',
                 body: formatGistPayload(data)
-            }, (error, response, body) => {
-                if (error) {
-                    return this.onSaveError(error);
-                }
-
-                switch (response.statusCode) {
+            }).then((response) => {
+                switch(response.status) {
                     case 201:
-                        this.onSaveSuccess(JSON.parse(response.body));
+                        return response.json();
                         break;
                     case 403:
-                        this.onSaveError('API limit reached. Please try again later.');
+                        throw new Error('It looks like somebody (probably not you) was asking GitHub’s servers to do too many things so we’re not allowed to ask them to save your scene right now. Try again a little later when things cool down a bit.')
                         break;
                     default:
-                        this.onSaveError(`Response ${response.statusCode} obtained but there is nothing to handle it.`);
+                        throw new Error(`We got a ${response.status} code back from GitHub’s servers but we don’t know what to do about it. Sorry, it’s a programmer error!`)
                         break;
                 }
+            }).then((data) => {
+                this.onSaveSuccess(data);
+            }).catch((error) => {
+                this.onSaveError(error);
             });
 
             // Start save timeout
             this._timeout = window.setTimeout(() => {
-                this.onSaveError('Timed out trying to contact the gist server.');
+                this.onSaveError('GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!');
             }, SAVE_TIMEOUT);
         };
 
@@ -162,7 +161,7 @@ class SaveGistModal extends Modal {
         window.clearTimeout(this._timeout);
 
         // Show error modal
-        const errorModal = new Modal(`There was an error saving your scene: ${error}`);
+        const errorModal = new Modal(`<p>Woah, we tried to save your scene but something went wrong.</p><p>${error}</p>`);
         errorModal.show();
     }
 

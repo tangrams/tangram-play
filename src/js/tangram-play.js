@@ -18,7 +18,6 @@ import ColorPalette from './widgets/color-palette';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
-import xhr from 'xhr';
 import { subscribeMixin } from './tools/mixin';
 import { StopWatch, debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
@@ -112,14 +111,22 @@ class TangramPlay {
 
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
-            xhr.get(scene.url, (error, response, body) => {
-                if (error) {
+            window.fetch(scene.url)
+                .then((response) => {
+                    if (response.status < 200 || response.status >= 400) {
+                        throw new Error('Something went wrong loading the scene!');
+                    }
+
+                    return response.text();
+                })
+                .then((body) => {
+                    scene.contents = body;
+                    this._doLoadProcess(scene);
+                })
+                .catch((error) => {
                     let errorModal = new Modal(error);
-                    return errorModal.show();
-                }
-                scene.contents = body;
-                this._doLoadProcess(scene);
-            });
+                    errorModal.show();
+                })
         }
         else if (scene.contents) {
             this._doLoadProcess(scene);
