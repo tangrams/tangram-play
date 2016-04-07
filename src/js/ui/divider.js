@@ -1,4 +1,4 @@
-import TangramPlay, { editor } from '../tangram-play';
+import { editor } from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
 

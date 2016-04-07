@@ -60,13 +60,10 @@ class SaveGistModal extends Modal {
                 switch(response.status) {
                     case 201:
                         return response.json();
-                        break;
                     case 403:
-                        throw new Error('It looks like somebody (probably not you) was asking GitHub’s servers to do too many things so we’re not allowed to ask them to save your scene right now. Try again a little later when things cool down a bit.')
-                        break;
+                        throw new Error('It looks like somebody (probably not you) was asking GitHub’s servers to do too many things so we’re not allowed to ask them to save your scene right now. Try again a little later when things cool down a bit.');
                     default:
-                        throw new Error(`We got a ${response.status} code back from GitHub’s servers but we don’t know what to do about it. Sorry, it’s a programmer error!`)
-                        break;
+                        throw new Error(`We got a ${response.status} code back from GitHub’s servers but we don’t know what to do about it. Sorry, it’s a programmer error!`);
                 }
             }).then((data) => {
                 this.onSaveSuccess(data);

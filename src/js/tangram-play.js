@@ -3,7 +3,7 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Core elements
-import { map, tangram, initMap, loadScene } from './map/map';
+import { tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
 
 // Addons
@@ -126,7 +126,7 @@ class TangramPlay {
                 .catch((error) => {
                     let errorModal = new Modal(error);
                     errorModal.show();
-                })
+                });
         }
         else if (scene.contents) {
             this._doLoadProcess(scene);

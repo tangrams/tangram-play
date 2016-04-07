@@ -139,7 +139,7 @@ export default class Vec3Picker extends Picker {
     onMouseMove (event) {
         event.preventDefault();
         event.stopPropagation();
-        
+
         let x = event.offsetX;
         let y = event.offsetY;
 

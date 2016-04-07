@@ -87,7 +87,7 @@ export default class FloatPicker extends Picker {
     onMouseMove (event) {
         event.preventDefault();
         event.stopPropagation();
-        
+
         let x = event.offsetX;
 
         let vel = x - this.prevOffset;

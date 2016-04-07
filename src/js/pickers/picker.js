@@ -104,7 +104,7 @@ export default class Picker {
         // Do not allow the modal to disappear off the edge of the window.
         x = (x + this.width < window.innerWidth) ? x : (window.innerWidth - 20 - this.width);
         y = (y + this.height < window.innerHeight) ? y : (window.innerHeight - 20 - this.height);
-        
+
         // Listen for interaction outside of the modal
         window.setTimeout(() => {
             this.onClickOutsideHandler = addEvent(document.body, 'click', this.onClickOutside, this);
