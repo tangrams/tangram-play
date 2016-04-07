@@ -1,7 +1,7 @@
 import TangramPlay from '../tangram-play';
 
-import LocalStorage from '../addons/LocalStorage';
-import MapLoading from '../addons/ui/MapLoading';
+import LocalStorage from '../storage/localstorage';
+import MapLoading from './loading';
 
 import L from 'leaflet';
 import 'leaflet-hash';

@@ -7,16 +7,16 @@ import Map from './map/map';
 import { initEditor } from './editor/editor';
 
 // Addons
-import UI from './addons/UI';
-import MapLoading from './addons/ui/MapLoading';
-import Modal from './addons/ui/Modal';
-import WidgetsManager from './addons/WidgetsManager';
-import SuggestManager from './addons/SuggestManager';
-import GlslSandbox from './addons/GLSLSandbox';
-import GlslHelpers from './addons/GLSLHelpers';
-import ErrorsManager from './addons/ErrorsManager';
-import ColorPalette from './addons/ColorPalette';
-import LocalStorage from './addons/LocalStorage';
+import UI from './ui/ui';
+import MapLoading from './map/loading';
+import Modal from './modals/modal';
+import WidgetsManager from './widgets/widgets-manager';
+import SuggestManager from './editor/suggest';
+import ErrorsManager from './editor/errors';
+import GlslSandbox from './glsl/sandbox';
+import GlslHelpers from './glsl/helpers';
+import ColorPalette from './widgets/color-palette';
+import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import xhr from 'xhr';
