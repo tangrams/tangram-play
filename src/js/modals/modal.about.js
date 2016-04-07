@@ -3,7 +3,7 @@ import CodeMirror from 'codemirror';
 
 let modalEl;
 
-export default class AboutModal extends Modal {
+class AboutModal extends Modal {
     constructor () {
         super();
         this.el = modalEl = document.body.querySelector('.about-modal');
@@ -16,3 +16,5 @@ export default class AboutModal extends Modal {
         modalEl.querySelector('.about-cm-version').textContent = `v${CodeMirror.version}`;
     }
 }
+
+export const aboutModal = new AboutModal();

@@ -74,13 +74,6 @@ function onDividerPositionChange () {
 
     editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
     dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
-
-    // Triggers resize event to reposition editor widgets
-    // Sends positioning data to subscribers
-    TangramPlay.trigger('resize', {
-        mapX: positionX,
-        contentX: window.innerWidth - positionX
-    });
 }
 
 // We update the map on the end of the drag because

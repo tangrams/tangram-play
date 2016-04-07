@@ -4,13 +4,7 @@ import EditorIO from '../editor/io';
 
 let examplesEl;
 
-// TODO: Make this more self contained.
-// This exports a class that does not need to be reused. It should just be a singleton object
-// whose methods can be referred to within this module. Right now the class is instantiated
-// elsewhere in Menu.js and means functions need to refer back to the TangramPlay object to
-// access anything. (Alternative: everything is on the class, but, meh)
-
-export default class ExamplesModal extends Modal {
+class ExamplesModal extends Modal {
     constructor (config) {
         super();
 
@@ -39,6 +33,8 @@ export default class ExamplesModal extends Modal {
         });
     }
 }
+
+export const examplesModal = new ExamplesModal();
 
 // TODO: Refactor
 function loadExamples (configFile) {
@@ -70,8 +66,7 @@ function loadExamples (configFile) {
                 newOption.addEventListener('click', selectExample);
                 listEl.appendChild(newOption);
                 newOption.addEventListener('dblclick', function (e) {
-                    // This is a bit ridiculous
-                    TangramPlay.ui.menu.examplesModal._handleConfirm();
+                    examplesModal._handleConfirm();
                 });
             });
         })

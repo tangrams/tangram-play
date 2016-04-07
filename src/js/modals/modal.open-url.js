@@ -4,7 +4,7 @@ import EditorIO from '../editor/io';
 
 let modalEl;
 
-export default class OpenUrlModal extends Modal {
+class OpenUrlModal extends Modal {
     constructor () {
         super();
 
@@ -48,3 +48,5 @@ export default class OpenUrlModal extends Modal {
         this.el.querySelector('.modal-confirm').disabled = true;
     }
 }
+
+export const openURLModal = new OpenUrlModal();

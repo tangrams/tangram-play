@@ -7,7 +7,6 @@ import { map, tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
 
 // Addons
-import UI from './ui/ui';
 import MapLoading from './map/loading';
 import Modal from './modals/modal';
 import WidgetsManager from './widgets/widgets-manager';
@@ -25,6 +24,12 @@ import { StopWatch, debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
 import { injectAPIKeys, suppressAPIKeys } from './editor/api-keys';
+
+// Import UI elements
+import { initDivider } from './ui/divider';
+import './file/drop';
+import './menus/menu';
+import './ui/tooltip';
 
 const query = parseQuery(window.location.search.slice(1));
 
@@ -380,7 +385,10 @@ export let editor = tangramPlay.editor;
 let scene = determineScene();
 tangramPlay.load(scene);
 tangramPlay.initAddons();
-tangramPlay.ui = new UI();
+
+// This is called here because right now divider position relies on
+// editor and map being set up already
+initDivider();
 
 // for debug
 window.tangramPlay = tangramPlay;

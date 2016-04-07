@@ -1,62 +1,49 @@
 import _ from 'lodash';
-import TangramPlay from '../tangram-play';
 import EditorIO from '../editor/io';
-import FileOpen from '../file/file-open';
-import ExamplesModal from '../modals/modal.examples';
-import OpenURLModal from '../modals/modal.open-url';
-import AboutModal from '../modals/modal.about';
-import SaveGistModal from '../modals/modal.save-gist';
+import { openLocalFile } from '../file/open-local';
+import { examplesModal } from '../modals/modal.examples';
+import { openURLModal } from '../modals/modal.open-url';
+import { aboutModal } from '../modals/modal.about';
+import { saveGistModal } from '../modals/modal.save-gist';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/map';
 
-export default class Menu {
-    constructor () {
-        this.el = document.body.querySelector('.menu-bar');
-        this.menus = {};
-        this.initMenuItems();
-    }
+const menus = {};
 
-    initMenuItems () {
-        this.menus.new = new MenuItem('.menu-button-new', _onClickNew);
-        this.menus.open = new MenuItem('.menu-button-open', _onClickOpen);
-        this.menus.save = new MenuItem('.menu-button-save', _onClickSave);
-        this.menus.fullscreen = new MenuItem('.menu-button-fullscreen', _onClickFullscreen);
-        this.menus.help = new MenuItem('.menu-button-help', _onClickHelp);
+function initMenuItems () {
+    menus.new = new MenuItem('.menu-button-new', _onClickNew);
+    menus.open = new MenuItem('.menu-button-open', _onClickOpen);
+    menus.save = new MenuItem('.menu-button-save', _onClickSave);
+    menus.fullscreen = new MenuItem('.menu-button-fullscreen', _onClickFullscreen);
+    menus.help = new MenuItem('.menu-button-help', _onClickHelp);
 
-        this.fileopen = new FileOpen();
-        this.examplesModal = new ExamplesModal();
-        this.openUrlModal = new OpenURLModal();
-        this.aboutModal = new AboutModal();
-        this.saveGistModal = new SaveGistModal();
+    // Set up events on dropdown buttons
+    // Open menu
+    document.body.querySelector('.menu-open-file').addEventListener('click', () => {
+        openLocalFile();
+    }, false);
+    document.body.querySelector('.menu-open-url').addEventListener('click', () => {
+        openURLModal.show();
+    }, false);
+    document.body.querySelector('.menu-open-example').addEventListener('click', () => {
+        examplesModal.show();
+    }, false);
 
-        // Set up events on dropdown buttons
-        // Open menu
-        document.body.querySelector('.menu-open-file').addEventListener('click', () => {
-            this.fileopen.activate();
-        }, false);
-        document.body.querySelector('.menu-open-url').addEventListener('click', () => {
-            this.openUrlModal.show();
-        }, false);
-        document.body.querySelector('.menu-open-example').addEventListener('click', () => {
-            this.examplesModal.show();
-        }, false);
+    // Save menu
+    document.body.querySelector('.menu-save-file').addEventListener('click', () => {
+        EditorIO.export();
+    }, false);
+    document.body.querySelector('.menu-save-gist').addEventListener('click', () => {
+        saveGistModal.show();
+    }, false);
+    document.body.querySelector('.menu-screenshot').addEventListener('click', () => {
+        takeScreenshot();
+    }, false);
 
-        // Save menu
-        document.body.querySelector('.menu-save-file').addEventListener('click', () => {
-            EditorIO.export();
-        }, false);
-        document.body.querySelector('.menu-save-gist').addEventListener('click', () => {
-            this.saveGistModal.show();
-        }, false);
-        document.body.querySelector('.menu-screenshot').addEventListener('click', () => {
-            takeScreenshot();
-        }, false);
-
-        // About
-        document.body.querySelector('.menu-about').addEventListener('click', () => {
-            this.aboutModal.show();
-        }, false);
-    }
+    // About
+    document.body.querySelector('.menu-about').addEventListener('click', () => {
+        aboutModal.show();
+    }, false);
 }
 
 export class MenuItem {
@@ -75,6 +62,8 @@ export class MenuItem {
         }, true);
     }
 }
+
+initMenuItems();
 
 // Dropdown menus
 

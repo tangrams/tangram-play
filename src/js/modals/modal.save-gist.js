@@ -9,7 +9,7 @@ const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Pla
 const STORAGE_SAVED_GISTS = 'gists';
 const SAVE_TIMEOUT = 6000; // ms before we assume saving is failure
 
-export default class SaveGistModal extends Modal {
+class SaveGistModal extends Modal {
     constructor () {
         super();
 
@@ -185,6 +185,8 @@ export default class SaveGistModal extends Modal {
 //         this.urlInput.value = url;
 //     }
 // }
+
+export const saveGistModal = new SaveGistModal();
 
 // POSTing to /gists API requires a JSON blob of MIME type 'application/json'
 function formatGistPayload (data) {
