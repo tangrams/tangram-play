@@ -1,6 +1,3 @@
-// TODO: Replace with lodash _.noop
-export function noop () {}
-
 export function returnTrue () {}
 
 export function parseQuery (qstr) {

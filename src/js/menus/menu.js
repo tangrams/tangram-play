@@ -1,5 +1,5 @@
+import _ from 'lodash';
 import TangramPlay, { map } from '../tangram-play';
-import { noop } from '../tools/helpers';
 import EditorIO from '../editor/io';
 import FileOpen from '../file/file-open';
 import ExamplesModal from '../modals/modal.examples';
@@ -59,7 +59,7 @@ export default class Menu {
 }
 
 export class MenuItem {
-    constructor (classSelector, onClick = noop) {
+    constructor (classSelector, onClick = _.noop) {
         this.el = document.body.querySelector(classSelector);
 
         // Attach listeners, including those for tooltip behavior

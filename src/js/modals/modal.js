@@ -1,8 +1,8 @@
+import _ from 'lodash';
 import shield from '../ui/shield';
-import { noop } from '../tools/helpers';
 
 export default class Modal {
-    constructor (message, confirm = noop, abort = noop, options = {}) {
+    constructor (message, confirm = _.noop, abort = _.noop, options = {}) {
         // Set up options
         this.options = options;
         // this.options.disableEsc = false;

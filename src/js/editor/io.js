@@ -1,6 +1,6 @@
+import _ from 'lodash';
 import TangramPlay, { editor } from '../tangram-play';
 import { saveAs } from '../vendor/FileSaver.min.js';
-import { noop } from '../tools/helpers';
 import Modal from '../modals/modal';
 
 const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
@@ -22,7 +22,7 @@ const EditorIO = {
         saveAs(blob, 'scene.yaml');
         editor.doc.markClean();
     },
-    checkSaveStateThen (callback = noop) {
+    checkSaveStateThen (callback = _.noop) {
         if (editor.doc.isClean()) {
             callback();
         }
