@@ -6,7 +6,7 @@ import ExamplesModal from '../modals/modal.examples';
 import OpenURLModal from '../modals/modal.open-url';
 import AboutModal from '../modals/modal.about';
 import SaveGistModal from '../modals/modal.save-gist';
-import fullscreen from '../ui/fullscreen';
+import { toggleFullscreen } from '../ui/fullscreen';
 
 export default class Menu {
     constructor () {
@@ -117,7 +117,7 @@ function _onClickNew (event) {
 }
 
 function _onClickFullscreen (event) {
-    fullscreen.toggle();
+    toggleFullscreen();
 }
 
 // Resetting state
