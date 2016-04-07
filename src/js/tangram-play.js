@@ -3,7 +3,7 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Core elements
-import Map from './map/map';
+import { map, tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
 
 // Addons
@@ -42,7 +42,7 @@ class TangramPlay {
         }
 
         this.editor = initEditor('editor');
-        this.map = new Map('map');
+        initMap();
         this.options = options;
         this.addons = {};
 
@@ -76,8 +76,8 @@ class TangramPlay {
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
             let sceneData = {
-                original_url: this.map.scene.config_source,
-                original_base_path: this.map.scene.config_path,
+                original_url: tangram.scene.config_source,
+                original_base_path: tangram.scene.config_path,
                 contents: this.getContent(),
                 is_clean: this.editor.isClean()
             };
@@ -162,7 +162,7 @@ class TangramPlay {
         // Send url to map and contents to editor
         // TODO: get contents from Tangram instead of another xhr request.
         // console.log(scene)
-        this.map.loadScene(url, {
+        loadScene(url, {
             reset: true,
             basePath: scene['original_base_path']
         });
@@ -226,9 +226,9 @@ class TangramPlay {
 
     // If editor is updated, send it to the map.
     updateContent () {
-        let content = this.getContent();
-        let url = createObjectURL(content);
-        this.map.loadScene(url);
+        const content = this.getContent();
+        const url = createObjectURL(content);
+        loadScene(url);
     }
 
     // GET
@@ -419,7 +419,6 @@ let tangramPlay = new TangramPlay({
 });
 
 export default tangramPlay;
-export let map = tangramPlay.map;
 export let editor = tangramPlay.editor;
 
 // LOAD SCENE FILE

@@ -1,4 +1,5 @@
 import TangramPlay from '../tangram-play';
+import { tangram } from '../map/map';
 
 // Load some common functions
 import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
@@ -246,7 +247,7 @@ class Suggestion {
     }
 
     getList(node) {
-        let scene = TangramPlay.map.scene;
+        let scene = tangram.scene;
         let list = [];
         let presentNodes = [];
 

@@ -1,6 +1,7 @@
-import TangramPlay, { map } from '../tangram-play';
+import TangramPlay from '../tangram-play';
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from './bookmarks';
+import { map } from '../map/map';
 
 const PELIAS_KEY = 'search-xFAc9NI';
 const PELIAS_HOST = 'search.mapzen.com';
@@ -32,7 +33,7 @@ function init () {
         input.focus();
     });
 
-    TangramPlay.on('resize', onDividerMove);
+    window.addEventListener('divider:dragend', onDividerMove);
 }
 
 function setCurrentLatLng (latlng) {
@@ -185,14 +186,14 @@ let makeRequest = debounce(function (endpoint) {
 
 // Get autocomplete suggestions
 function autocomplete (query) {
-    const center = map.leaflet.getCenter();
+    const center = map.getCenter();
     const endpoint = `//${PELIAS_HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
     makeRequest(endpoint);
 }
 
 // Get search results
 function search (query) {
-    const center = map.leaflet.getCenter();
+    const center = map.getCenter();
     const endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
     makeRequest(endpoint);
 }
@@ -259,7 +260,7 @@ function gotoSelectedResult (selectedEl) {
     // Set placeholder immediately so there isn't a lag between the selection
     // and the reverse geocoder kicking in with the right location
     input.placeholder = selectedEl.textContent.trim();
-    map.leaflet.setView({ lat: coords[1], lng: coords[0] });
+    map.setView({ lat: coords[1], lng: coords[0] });
     clearResults();
     clearInput();
 }
@@ -299,8 +300,8 @@ function resetSaveIcon () {
 }
 
 function getCurrentMapViewData () {
-    let center = map.leaflet.getCenter();
-    let zoom = map.leaflet.getZoom();
+    let center = map.getCenter();
+    let zoom = map.getZoom();
     let label = input.placeholder || 'Unknown location';
     return {
         label,
@@ -327,7 +328,7 @@ function setLabelPrecision (width) {
 
 function onDividerMove (event) {
     setLabelPrecision(event.mapX);
-    setCurrentLatLng(map.leaflet.getCenter());
+    setCurrentLatLng(map.getCenter());
 }
 
 function highlight (text, focus) {

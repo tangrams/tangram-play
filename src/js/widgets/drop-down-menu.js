@@ -1,4 +1,4 @@
-import TangramPlay from '../tangram-play';
+import { tangram } from '../map/map';
 import Widget from './widget';
 import { getAddressSceneContent } from '../editor/codemirror/yaml-tangram';
 
@@ -34,7 +34,7 @@ export default class DropDownMenu extends Widget {
 
         // Add dinamic options from source
         if (this.definition.source) {
-            let obj = getAddressSceneContent(TangramPlay.map.scene, this.definition.source);
+            let obj = getAddressSceneContent(tangram.scene, this.definition.source);
             let keys = (obj) ? Object.keys(obj) : {};
 
             for (let j = 0; j < keys.length; j++) {

@@ -1,11 +1,9 @@
 const el = document.getElementById('shield');
 
-export default class Shield {
-    static show () {
-        el.style.display = 'block';
-    }
+export function showShield () {
+    el.style.display = 'block';
+}
 
-    static hide () {
-        el.style.display = 'none';
-    }
+export function hideShield () {
+    el.style.display = 'none';
 }

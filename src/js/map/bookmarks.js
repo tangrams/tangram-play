@@ -1,4 +1,4 @@
-import { map } from '../tangram-play';
+import { map } from '../map/map';
 import LocalStorage from '../storage/localstorage';
 import Modal from '../modals/modal';
 
@@ -128,7 +128,7 @@ function gotoBookmark (selectedEl) {
         return;
     }
 
-    map.leaflet.setView(coordinates, zoom);
+    map.setView(coordinates, zoom);
     clearMenu();
 
     // When you select a bookmark, highlight the star to indicate that

@@ -1,6 +1,3 @@
-// Import TangramPlay
-import TangramPlay from '../tangram-play';
-
 // Import CodeMirror
 import CodeMirror from 'codemirror';
 
@@ -29,6 +26,9 @@ import 'codemirror/keymap/sublime';
 
 // Import Utils
 import { getLineInd, unfoldAll, foldByLevel } from './codemirror/tools';
+
+// Import Tangram Play functions
+import { takeScreenshot } from '../map/map';
 
 //  Main CM functions
 //  ===============================================================================
@@ -64,7 +64,7 @@ export function initEditor (id) {
                 cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
             } ,
             'Alt-P': function(cm) {
-                TangramPlay.map.takeScreenshot();
+                takeScreenshot();
             },
             'Ctrl-0': function(cm) {
                 unfoldAll(cm);

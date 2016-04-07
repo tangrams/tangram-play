@@ -1,4 +1,4 @@
-import { map } from '../tangram-play';
+import { map } from '../map/map';
 import Modal from '../modals/modal';
 
 let buttonEl;
@@ -44,9 +44,9 @@ function onGeolocateSuccess (position) {
     const longitude = position.coords.longitude;
 
     // Zoom in a bit only if user's view is very zoomed out
-    let zoom = (map.leaflet.getZoom() < 16) ? 16 : map.leaflet.getZoom();
+    let zoom = (map.getZoom() < 16) ? 16 : map.getZoom();
 
-    map.leaflet.setView([latitude, longitude], zoom);
+    map.setView([latitude, longitude], zoom);
     resetGeolocateButton();
 }
 

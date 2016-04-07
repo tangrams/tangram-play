@@ -1,4 +1,5 @@
 import TangramPlay from '../tangram-play';
+import { tangram } from '../map/map';
 
 export default class ErrorsManager {
     constructor() {
@@ -13,7 +14,7 @@ export default class ErrorsManager {
 
         // TODO
         // Make this rely on promises
-        if (TangramPlay.map.layer) {
+        if (tangram) {
             this.subscribeToTangramEvents();
         }
         else {
@@ -24,7 +25,7 @@ export default class ErrorsManager {
     }
 
     subscribeToTangramEvents () {
-        TangramPlay.map.layer.scene.subscribe({
+        tangram.scene.subscribe({
             error: (args) => {
                 this.addError(args);
             },

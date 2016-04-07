@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import shield from '../ui/shield';
+import { showShield, hideShield } from '../ui/shield';
 
 export default class Modal {
     constructor (message, confirm = _.noop, abort = _.noop, options = {}) {
@@ -39,7 +39,7 @@ export default class Modal {
 
     // Shows modal and attaches events.
     show () {
-        shield.show();
+        showShield();
         this.el.style.display = 'block';
 
         this.confirmButton = this.el.querySelector('.modal-confirm');
@@ -59,7 +59,7 @@ export default class Modal {
 
     // Hides modal and resets events
     hide () {
-        shield.hide();
+        hideShield();
         this.el.style.display = 'none';
 
         if (this.confirmButton) {

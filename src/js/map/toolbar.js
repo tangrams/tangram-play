@@ -1,5 +1,5 @@
 import LocalStorage from '../storage/localstorage';
-import { map } from '../tangram-play';
+import { map } from './map';
 import search from './search';
 import geolocator from './geolocator';
 import bookmarks from './bookmarks';
@@ -11,47 +11,34 @@ let el;
 let menuButtonEl;
 let currentLocation;
 
-const MapToolbar = {
-    init () {
-        el = document.body.querySelector('.map-toolbar-bar');
-        menuButtonEl = document.body.querySelector('.map-toolbar-collapsed');
+export function initMapToolbar () {
+    el = document.body.querySelector('.map-toolbar-bar');
+    menuButtonEl = document.body.querySelector('.map-toolbar-collapsed');
 
-        search.init();
-        geolocator.init();
-        bookmarks.init();
+    search.init();
+    geolocator.init();
+    bookmarks.init();
 
-        setupEventListeners();
-        setInitialDisplayState();
-        setZoomLabel();
+    setupEventListeners();
+    setInitialDisplayState();
+    setZoomLabel();
 
-        currentLocation = map.leaflet.getCenter();
-        search.setCurrentLatLng(currentLocation);
-        search.reverseGeocode(currentLocation);
+    currentLocation = map.getCenter();
+    search.setCurrentLatLng(currentLocation);
+    search.reverseGeocode(currentLocation);
 
-        menuButtonEl.addEventListener('click', e => {
-            this.toggle();
-        });
-    },
-
-    toggle () {
-        if (el.getBoundingClientRect().top > 0) {
-            hideToolbar();
-        }
-        else {
-            showToolbar();
-        }
-    }
-};
-
-export default MapToolbar;
+    menuButtonEl.addEventListener('click', e => {
+        toggleMapToolbar();
+    });
+}
 
 function setupEventListeners () {
     el.querySelector('#zoom-in').addEventListener('click', e => {
-        map.leaflet.zoomIn(1, { animate: true });
+        map.zoomIn(1, { animate: true });
         setZoomLabel();
     }, false);
     el.querySelector('#zoom-out').addEventListener('click', e => {
-        map.leaflet.zoomOut(1, { animate: true });
+        map.zoomOut(1, { animate: true });
         setZoomLabel();
     }, false);
 
@@ -61,16 +48,16 @@ function setupEventListeners () {
     });
 
     // Make sure that map zoom label changes when the map is done zooming
-    map.leaflet.on('zoomend', function (e) {
+    map.on('zoomend', function (e) {
         setZoomLabel();
     });
-    map.leaflet.on('moveend', function (e) {
+    map.on('moveend', function (e) {
         // Only update location if the map center has moved more than a given delta
         // This is actually really necessary because EVERY update in the editor reloads
         // the map, which fires moveend events despite not actually moving the map
         // But we also have the bonus of not needing to make a reverse geocode request
         // for small changes of the map center.
-        let center = map.leaflet.getCenter();
+        let center = map.getCenter();
         search.setCurrentLatLng(center);
         if (getMapChangeDelta(currentLocation, center) > MAP_UPDATE_DELTA) {
             search.reverseGeocode(center);
@@ -85,6 +72,15 @@ function setupEventListeners () {
             currentLocation = center;
         }
     });
+}
+
+function toggleMapToolbar () {
+    if (el.getBoundingClientRect().top > 0) {
+        hideToolbar();
+    }
+    else {
+        showToolbar();
+    }
 }
 
 function showToolbar () {
@@ -117,7 +113,7 @@ function setInitialDisplayState () {
 
 function setZoomLabel () {
     let label = el.querySelector('.map-zoom-quantity');
-    let currentZoom = map.leaflet.getZoom();
+    let currentZoom = map.getZoom();
     let fractionalNumber = Math.floor(currentZoom * 10) / 10;
     label.textContent = fractionalNumber.toFixed(1);
 }

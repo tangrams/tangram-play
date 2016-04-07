@@ -1,5 +1,6 @@
-import TangramPlay, { map, editor } from '../tangram-play';
+import TangramPlay, { editor } from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
+import { map } from '../map/map';
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/TweenLite.js';
@@ -49,6 +50,7 @@ export function initDivider () {
         onDragEnd: function () {
             updateMapState();
             saveDividerPosition();
+            window.dispatchEvent(new CustomEvent('divider:dragend'));
         },
         onRelease: function () {
             this.target.classList.remove('divider-is-dragging');
@@ -84,7 +86,7 @@ function onDividerPositionChange () {
 // We update the map on the end of the drag because
 // of horrible flickering of the map in Chrome
 function updateMapState () {
-    map.leaflet.invalidateSize({
+    map.invalidateSize({
         pan: {
             animate: false
         },

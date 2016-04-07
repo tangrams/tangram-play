@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import TangramPlay, { map } from '../tangram-play';
+import TangramPlay from '../tangram-play';
 import EditorIO from '../editor/io';
 import FileOpen from '../file/file-open';
 import ExamplesModal from '../modals/modal.examples';
@@ -7,6 +7,7 @@ import OpenURLModal from '../modals/modal.open-url';
 import AboutModal from '../modals/modal.about';
 import SaveGistModal from '../modals/modal.save-gist';
 import { toggleFullscreen } from '../ui/fullscreen';
+import { takeScreenshot } from '../map/map';
 
 export default class Menu {
     constructor () {
@@ -48,7 +49,7 @@ export default class Menu {
             this.saveGistModal.show();
         }, false);
         document.body.querySelector('.menu-screenshot').addEventListener('click', () => {
-            map.takeScreenshot();
+            takeScreenshot();
         }, false);
 
         // About

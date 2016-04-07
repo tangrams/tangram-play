@@ -1,4 +1,5 @@
 import TangramPlay from '../tangram-play';
+import { tangram } from '../map/map';
 
 import { debounce, getDOMOffset } from '../tools/common';
 import { isEmpty } from '../editor/codemirror/tools';
@@ -109,7 +110,7 @@ export default class GlslSandbox {
 
                 if (isNormal || isColor) {
                     // Store address and states
-                    this.styleObj = getStyleObj(TangramPlay.map.scene, this.address);
+                    this.styleObj = getStyleObj(tangram.scene, this.address);
 
                     if (this.styleObj === undefined || this.styleObj === null ||
                         this.styleObj.shaders === undefined || this.styleObj.shaders === null) {
@@ -144,12 +145,12 @@ export default class GlslSandbox {
 
                     if (this.change) {
                         // Common HEADER
-                        this.vertexCode = getVertex(TangramPlay.map.scene, this.shader.uniforms, this.styleObj);
-                        this.fragmentCode = getFramgmentHeader(TangramPlay.map.scene, this.shader.uniforms, this.styleObj);
+                        this.vertexCode = getVertex(tangram.scene, this.shader.uniforms, this.styleObj);
+                        this.fragmentCode = getFramgmentHeader(tangram.scene, this.shader.uniforms, this.styleObj);
 
                         if (isNormal) {
                             // NORMAL CORE & ENDING
-                            this.fragmentCode += getAddressSceneContent(TangramPlay.map.scene, this.address) +
+                            this.fragmentCode += getAddressSceneContent(tangram.scene, this.address) +
                                             '\ngl_FragColor = vec4(normal,1.0);\n}';
                         }
                         else if (isColor) {
@@ -160,7 +161,7 @@ export default class GlslSandbox {
                                     this.fragmentCode += this.styleObj.shaders.blocks.normal[i] + '\n';
                                 }
                             }
-                            this.fragmentCode += getAddressSceneContent(TangramPlay.map.scene, this.address) +
+                            this.fragmentCode += getAddressSceneContent(tangram.scene, this.address) +
                                             '\ngl_FragColor = color;\n}';
                         }
 
@@ -213,10 +214,10 @@ export default class GlslSandbox {
     update() {
         // Update uniforms
         this.uniforms['u_device_pixel_ratio'] = window.devicePixelRatio;
-        this.uniforms['u_meters_per_pixel'] = TangramPlay.map.scene['meters_per_pixel'];
-        this.uniforms['u_map_position'] = [TangramPlay.map.scene['center_meters'].x, TangramPlay.map.scene['center_meters'].y, TangramPlay.map.scene.zoom];
-        this.uniforms['u_tile_origin'] = [TangramPlay.map.scene['center_tile'].x, TangramPlay.map.scene['center_tile'].y, TangramPlay.map.scene['center_tile'].z];
-        this.uniforms['u_vanishing_point'] = TangramPlay.map.scene.camera['vanishing_point'];
+        this.uniforms['u_meters_per_pixel'] = tangram.scene['meters_per_pixel'];
+        this.uniforms['u_map_position'] = [tangram.scene['center_meters'].x, tangram.scene['center_meters'].y, tangram.scene.zoom];
+        this.uniforms['u_tile_origin'] = [tangram.scene['center_tile'].x, tangram.scene['center_tile'].y, tangram.scene['center_tile'].z];
+        this.uniforms['u_vanishing_point'] = tangram.scene.camera['vanishing_point'];
 
         this.shader.setUniforms(this.uniforms);
     }
