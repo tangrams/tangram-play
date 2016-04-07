@@ -7,9 +7,7 @@
  *  with any additional functionality.
  *
  */
-
-import TangramPlay from '../tangram-play';
-import { editor } from '../tangram-play';
+import TangramPlay, { editor } from '../tangram-play';
 
 export default class Widget {
     constructor (def, node) {

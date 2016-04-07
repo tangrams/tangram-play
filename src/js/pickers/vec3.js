@@ -1,7 +1,6 @@
-import Picker from './picker';
+import Picker, { addEvent, removeEvent } from './picker';
 import Vector from './types/vector';
 import Matrix from './types/matrix';
-import { addEvent, removeEvent } from './picker';
 
 export default class Vec3Picker extends Picker {
     constructor (dir, properties) {

@@ -1,5 +1,4 @@
 import TangramPlay from '../tangram-play';
-
 import LocalStorage from '../storage/localstorage';
 import MapLoading from './loading';
 

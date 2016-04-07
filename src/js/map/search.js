@@ -1,5 +1,4 @@
-import TangramPlay from '../tangram-play';
-import { map } from '../tangram-play';
+import TangramPlay, { map } from '../tangram-play';
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from './bookmarks';
 

@@ -1,5 +1,4 @@
-import ColorConverter from './color-converter';
-import { getColorAsRGB, getValueRanges, getLuminance, limitValue } from './color-converter';
+import ColorConverter, { getColorAsRGB, getValueRanges, getLuminance, limitValue } from './color-converter';
 
 export default class Color {
     constructor (color) {

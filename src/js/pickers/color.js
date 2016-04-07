@@ -1,6 +1,5 @@
-import Picker from './picker';
-import { addEvent, removeEvent } from './picker';
-import Color from './types/Color';
+import Picker, { addEvent, removeEvent } from './picker';
+import Color from './types/color';
 import { getDevicePixelRatio } from '../tools/common';
 
 import { subscribeInteractiveDom } from '../tools/interactive-dom';

@@ -1,6 +1,5 @@
 import { getDevicePixelRatio } from '../tools/common';
 import { subscribeMixin } from '../tools/mixin';
-
 import { subscribeInteractiveDom } from '../tools/interactive-dom';
 
 export default class Picker {
