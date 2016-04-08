@@ -7,7 +7,7 @@ import { tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
 
 // Addons
-import MapLoading from './map/loading';
+import { showSceneLoadingIndicator } from './map/loading';
 import Modal from './modals/modal';
 import WidgetsManager from './widgets/widgets-manager';
 import SuggestManager from './editor/suggest';
@@ -98,13 +98,26 @@ class TangramPlay {
         this.addons.colorPalette = new ColorPalette();
     }
 
-    // LOADers
+    /**
+     * This function is the canonical way to load a scene in Tangram Play.
+     * We want to avoid situations where we load scene files directly
+     * into either Tangram or in CodeMirror and then have to handle
+     * updating other parts of Tangram Play. Instead, we want Tangram Play
+     * to ingest new scenes in a single way so that all the different parts
+     * of the application can be updated predictably. The load function takes
+     * either a URL path (for remote / external scenes), or the contents
+     * of a Tangram YAML file itself.
+     *
+     * @param {Object} scene - an object containing one of two properties:
+     *      scene.url - a URL path to load a scene from
+     *      scene.contents - Tangram YAML as a text blob
+     *      Do not pass in both! Currently `url` takes priority, but
+     *      this is not guaranteed behaviour.
+     */
     load (scene) {
-        console.log('Loading scene', scene);
-
         // Turn on loading indicator. This is turned off later
         // when Tangram reports that it's done.
-        MapLoading.show();
+        showSceneLoadingIndicator();
 
         // Turn off watching for changes in editor.
         this.editor.off('changes', this._watchEditorForChanges);

@@ -4,7 +4,7 @@ import { saveAs } from '../vendor/FileSaver.min.js';
 
 import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
-import MapLoading from './loading';
+import { hideSceneLoadingIndicator } from './loading';
 import { initMapToolbar } from './toolbar';
 
 export const map = L.map('map', {
@@ -59,7 +59,8 @@ function initTangram (pathToSceneFile) {
     tangram.scene.subscribe({
         load: function (args) {
             // Hide loading indicator
-            MapLoading.hide();
+            // TODO: Hide only after vector tiles are downloaded and rendered?
+            hideSceneLoadingIndicator();
             TangramPlay.trigger('sceneupdate', args);
         }
     });
