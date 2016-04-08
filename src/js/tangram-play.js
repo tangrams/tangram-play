@@ -3,28 +3,32 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Core elements
-import Map from './map/map';
+import { tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
 
 // Addons
-import UI from './addons/UI';
-import MapLoading from './addons/ui/MapLoading';
-import Modal from './addons/ui/Modal';
-import WidgetsManager from './addons/WidgetsManager';
-import SuggestManager from './addons/SuggestManager';
-import GlslSandbox from './addons/GLSLSandbox';
-import GlslHelpers from './addons/GLSLHelpers';
-import ErrorsManager from './addons/ErrorsManager';
-import ColorPalette from './addons/ColorPalette';
-import LocalStorage from './addons/LocalStorage';
+import MapLoading from './map/loading';
+import Modal from './modals/modal';
+import WidgetsManager from './widgets/widgets-manager';
+import SuggestManager from './editor/suggest';
+import ErrorsManager from './editor/errors';
+import GlslSandbox from './glsl/sandbox';
+import GlslHelpers from './glsl/helpers';
+import ColorPalette from './widgets/color-palette';
+import LocalStorage from './storage/localstorage';
 
 // Import Utils
-import xhr from 'xhr';
 import { subscribeMixin } from './tools/mixin';
 import { StopWatch, debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
 import { injectAPIKeys, suppressAPIKeys } from './editor/api-keys';
+
+// Import UI elements
+import { initDivider } from './ui/divider';
+import './file/drop';
+import './menus/menu';
+import './ui/tooltip';
 
 const query = parseQuery(window.location.search.slice(1));
 
@@ -32,18 +36,17 @@ const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 class TangramPlay {
-    constructor (options) {
+    constructor () {
         subscribeMixin(this);
 
         //Benchmark & Debuggin
-        if (options.benchark) {
-            window.watch = new StopWatch();
-            window.watch.start();
-        }
+        // if (options.benchark) {
+        //     window.watch = new StopWatch();
+        //     window.watch.start();
+        // }
 
         this.editor = initEditor('editor');
-        this.map = new Map('map');
-        this.options = options;
+        initMap();
         this.addons = {};
 
         // Wrap this.updateContent() in a debounce function
@@ -76,8 +79,8 @@ class TangramPlay {
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
             let sceneData = {
-                original_url: this.map.scene.config_source,
-                original_base_path: this.map.scene.config_path,
+                original_url: tangram.scene.config_source,
+                original_base_path: tangram.scene.config_path,
                 contents: this.getContent(),
                 is_clean: this.editor.isClean()
             };
@@ -87,46 +90,12 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        let options = Object.keys(this.options);
-        for (let option of options) {
-            this.initAddon(option, this.options[option]);
-        }
-    }
-
-    initAddon (addon, ...data) {
-        console.log('Loading addon', addon, ...data);
-        switch(addon) {
-            case 'widgets':
-                if (this.addons.widgetsManager === undefined) {
-                    this.addons.widgetsManager = new WidgetsManager(...data);
-                }
-                break;
-            case 'suggest':
-                if (this.addons.suggestManager === undefined) {
-                    this.addons.suggestManager = new SuggestManager(...data);
-                }
-                break;
-            case 'sandbox':
-                if (this.addons.glslSandbox === undefined) {
-                    this.addons.glslSandbox = new GlslSandbox();
-                }
-                break;
-            case 'helpers':
-                if (this.addons.glslHelpers === undefined) {
-                    this.addons.glslHelpers = new GlslHelpers();
-                }
-                break;
-            case 'errors':
-                if (this.addons.errorsManager === undefined) {
-                    this.addons.errorsManager = new ErrorsManager();
-                }
-                break;
-            case 'colors':
-                if (this.addons.colorPalette === undefined) {
-                    this.addons.colorPalette = new ColorPalette();
-                }
-                break;
-        }
+        this.addons.widgetsManager = new WidgetsManager('data/tangram-api.json');
+        this.addons.suggestManager = new SuggestManager('data/tangram-api.json');
+        // this.addons.glslSandbox = new GlslSandbox();
+        this.addons.glslHelpers = new GlslHelpers();
+        this.addons.errorsManager = new ErrorsManager();
+        this.addons.colorPalette = new ColorPalette();
     }
 
     // LOADers
@@ -142,14 +111,22 @@ class TangramPlay {
 
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
-            xhr.get(scene.url, (error, response, body) => {
-                if (error) {
+            window.fetch(scene.url)
+                .then((response) => {
+                    if (response.status < 200 || response.status >= 400) {
+                        throw new Error('Something went wrong loading the scene!');
+                    }
+
+                    return response.text();
+                })
+                .then((body) => {
+                    scene.contents = body;
+                    this._doLoadProcess(scene);
+                })
+                .catch((error) => {
                     let errorModal = new Modal(error);
-                    return errorModal.show();
-                }
-                scene.contents = body;
-                this._doLoadProcess(scene);
-            });
+                    errorModal.show();
+                });
         }
         else if (scene.contents) {
             this._doLoadProcess(scene);
@@ -162,7 +139,7 @@ class TangramPlay {
         // Send url to map and contents to editor
         // TODO: get contents from Tangram instead of another xhr request.
         // console.log(scene)
-        this.map.loadScene(url, {
+        loadScene(url, {
             reset: true,
             basePath: scene['original_base_path']
         });
@@ -226,9 +203,9 @@ class TangramPlay {
 
     // If editor is updated, send it to the map.
     updateContent () {
-        let content = this.getContent();
-        let url = createObjectURL(content);
-        this.map.loadScene(url);
+        const content = this.getContent();
+        const url = createObjectURL(content);
+        loadScene(url);
     }
 
     // GET
@@ -406,27 +383,19 @@ function getSceneContentsFromLocalMemory () {
     return null;
 }
 
-// Export an instance of TangramPlay with the following modules
-
-let tangramPlay = new TangramPlay({
-    suggest: 'data/tangram-api.json',
-    widgets: 'data/tangram-api.json',
-    menu: 'data/menu.json',
-    // sandbox: true,
-    errors: true,
-    colors: true,
-    helpers: true
-});
+let tangramPlay = new TangramPlay();
 
 export default tangramPlay;
-export let map = tangramPlay.map;
 export let editor = tangramPlay.editor;
 
 // LOAD SCENE FILE
 let scene = determineScene();
 tangramPlay.load(scene);
 tangramPlay.initAddons();
-tangramPlay.ui = new UI();
+
+// This is called here because right now divider position relies on
+// editor and map being set up already
+initDivider();
 
 // for debug
 window.tangramPlay = tangramPlay;

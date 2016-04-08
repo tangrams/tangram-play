@@ -75,7 +75,8 @@ gulp.task('js', function () {
                 .on('error', gutil.log)
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest('./build/js'));
-    } else {
+    }
+    else {
         return bundle.bundle()
             .pipe(source('tangram-play.js'))
             .pipe(gulp.dest('./build/js'));

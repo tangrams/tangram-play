@@ -1,103 +1,110 @@
-import TangramPlay from '../tangram-play';
-
-import LocalStorage from '../addons/LocalStorage';
-import MapLoading from '../addons/ui/MapLoading';
-
 import L from 'leaflet';
 import 'leaflet-hash';
 import { saveAs } from '../vendor/FileSaver.min.js';
 
-export default class Map {
-    constructor (mapElement) {
-        // Get map start position
-        let mapStartLocation = _getMapStartLocation();
+import TangramPlay from '../tangram-play';
+import LocalStorage from '../storage/localstorage';
+import MapLoading from './loading';
+import { initMapToolbar } from './toolbar';
 
-        // Create Leaflet map
-        let map = this.leaflet = L.map(mapElement, {
-            zoomControl: false,
-            attributionControl: false,
-            maxZoom: 24,
-            keyboardZoomOffset: 0.05
-        });
-        map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
-        this.hash = new L.Hash(map);
+export const map = L.map('map', {
+    zoomControl: false,
+    attributionControl: false,
+    maxZoom: 24,
+    keyboardZoomOffset: 0.05
+});
 
-        // Force Leaflet to update itself.
-        // This resolves an issue where the map may sometimes not appear
-        // or only partially appear when this app is first loaded.
-        window.setTimeout(function () {
-            map.invalidateSize(false);
-        }, 0);
+// Declare this export now, but Tangram is set up later. See initTangram() and loadScene().
+export let tangram = null;
 
-        // Set up a listener to record current map view settings when user leaves
-        window.addEventListener('unload', function (event) {
-            LocalStorage.setItem('latitude', map.getCenter().lat);
-            LocalStorage.setItem('longitude', map.getCenter().lng);
-            LocalStorage.setItem('zoom', map.getZoom());
-        });
-    }
+// Initializes Leaflet-based map
+export function initMap () {
+    // Get map start position
+    const mapStartLocation = getMapStartLocation();
 
-    initTangram (pathToSceneFile) {
-        // Add Tangram Layer
-        let layer = this.layer = window.Tangram.leafletLayer({
-            scene: pathToSceneFile,
-            attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
-        });
-        layer.addTo(this.leaflet);
+    // Create Leaflet map
+    map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
+    const hash = new L.Hash(map);
 
-        layer.scene.subscribe({
-            load: function (args) {
-                // Hide loading indicator
-                MapLoading.hide();
-                TangramPlay.trigger('sceneupdate', args);
-            }
-        });
+    // Force Leaflet to update itself.
+    // This resolves an issue where the map may sometimes not appear
+    // or only partially appear when this app is first loaded.
+    window.setTimeout(function () {
+        map.invalidateSize(false);
+    }, 0);
 
-        TangramPlay.trigger('sceneinit');
+    // Set up a listener to record current map view settings when user leaves
+    window.addEventListener('unload', function (event) {
+        LocalStorage.setItem('latitude', map.getCenter().lat);
+        LocalStorage.setItem('longitude', map.getCenter().lng);
+        LocalStorage.setItem('zoom', map.getZoom());
+    });
 
-        this.scene = layer.scene;
-        window.layer = layer;
-        window.scene = layer.scene;
+    initMapToolbar();
+}
 
-        return layer;
-    }
+/**
+ * Initializes Tangram
+ * Tangram must be initialized with a scene file. Only initialize Tangram when
+ * Tangram Play knows what scene to load, not before. See loadScene().
+ */
+function initTangram (pathToSceneFile) {
+    // Add Tangram Layer
+    tangram = window.Tangram.leafletLayer({
+        scene: pathToSceneFile,
+        attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
+    });
+    tangram.addTo(map);
 
-    // Sends a scene path and base path to Tangram.
-    loadScene (pathToSceneFile, { reset = false, basePath = null } = {}) {
-        // Initialize Tangram if it's not already set.
-        // Tangram must be initialized with a scene file.
-        // We only initialize Tangram when Tangram Play
-        // knows what scene to load, not before.
-        if (!this.layer) {
-            this.initTangram(pathToSceneFile);
+    tangram.scene.subscribe({
+        load: function (args) {
+            // Hide loading indicator
+            MapLoading.hide();
+            TangramPlay.trigger('sceneupdate', args);
         }
-        else {
-            // If scene is already set, re-use the internal path
-            // If scene is not set, default to current path
-            // This is ignored if reset is true; see below)
-            let path = basePath || this.scene.config_path;
-            // Preserve scene base path unless reset requested (e.g. reset on new file load)
-            return this.scene.load(pathToSceneFile, !reset && path);
-        }
+    });
+
+    TangramPlay.trigger('sceneinit');
+
+    window.layer = tangram;
+    window.scene = tangram.scene;
+}
+
+// Sends a scene path and base path to Tangram.
+export function loadScene (pathToSceneFile, { reset = false, basePath = null } = {}) {
+    // Initialize Tangram if it's not already set.
+    // Tangram must be initialized with a scene file.
+    // We only initialize Tangram when Tangram Play
+    // knows what scene to load, not before.
+    if (!tangram) {
+        initTangram(pathToSceneFile);
     }
-
-    /**
-     * Uses Tangram's native screenshot functionality to download an image.
-     * @public
-     * @method
-     * @requires FileSaver
-     */
-    takeScreenshot () {
-        this.scene.screenshot().then(function (result) {
-            let slug = new Date().toString();
-
-            // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
-            saveAs(result.blob, `tangram-${slug}.png`);
-        });
+    else {
+        // If scene is already set, re-use the internal path
+        // If scene is not set, default to current path
+        // This is ignored if reset is true; see below)
+        const path = basePath || tangram.scene.config_path;
+        // Preserve scene base path unless reset requested (e.g. reset on new file load)
+        return tangram.scene.load(pathToSceneFile, !reset && path);
     }
 }
 
-function _getMapStartLocation () {
+/**
+ * Uses Tangram's native screenshot functionality to download an image.
+ * @public
+ * @method
+ * @requires FileSaver
+ */
+export function takeScreenshot () {
+    tangram.scene.screenshot().then(function (result) {
+        let slug = new Date().toString();
+
+        // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
+        saveAs(result.blob, `tangram-${slug}.png`);
+    });
+}
+
+function getMapStartLocation () {
     // Set default location
     let startLocation = {
         latlng: [0.0, 0.0],
