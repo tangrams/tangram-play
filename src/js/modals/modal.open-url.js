@@ -1,7 +1,7 @@
 import TangramPlay from '../tangram-play';
 import Modal from './modal';
 import EditorIO from '../editor/io';
-import { parseForGistURL, isGistURL } from '../tools/gist-url';
+import { isGistURL, getGistURL } from '../tools/gist-url';
 
 let modalEl;
 
@@ -32,22 +32,14 @@ class OpenUrlModal extends Modal {
 
         this.onConfirm = () => {
             let value = this.input.value.trim();
-            value = parseForGistURL(value);
-            // TODO: If it's a Gist URL:
-            // Grab the manifest from the API. (We'll call the response object "gist")
-            // Iterate through gist.files, an object whose keys are the filenames of each file.
-            // Find the first file with type "text/x-yaml".
-            //      gist.files[file].type === 'text/x-yaml'
-            // In the future, we will have to be smarter than this -- there might be
-            // multiple files, or it might be in a different format. But for now,
-            // we assume there's one Tangram YAML file and that the MIME-type is correct.
-            // Grab that file's raw_url property and read it in.
-            // Alternatively, the content property might be read directly (if truncated is false)?
-            // Because this requires several successive API calls, we need to wrap
-            // TangramPlay.load() in a Promise wrapper.
 
-            this.clearInput();
-            TangramPlay.load({ url: value });
+            // If it appears to be a Gist URL:
+            if (isGistURL(value) === true) {
+                this.fetchGistURL(value);
+            }
+            else {
+                this.openUrl(value);
+            }
         };
 
         this.onAbort = () => {
@@ -66,6 +58,86 @@ class OpenUrlModal extends Modal {
         this.input.value = '';
         this.input.blur();
         this.el.querySelector('.modal-confirm').disabled = true;
+    }
+
+    waitStateOn () {
+        this.el.querySelector('.modal-thinking').classList.add('modal-thinking-cap-on');
+        this.el.querySelector('.modal-confirm').disabled = true;
+        this.el.querySelector('.modal-cancel').disabled = true;
+        this.options.disableEsc = true;
+    }
+
+    waitStateOff () {
+        this.el.querySelector('.modal-thinking').classList.remove('modal-thinking-cap-on');
+        this.el.querySelector('.modal-confirm').removeAttribute('disabled');
+        this.el.querySelector('.modal-cancel').removeAttribute('disabled');
+        this.options.disableEsc = false;
+    }
+
+    fetchGistURL (url) {
+        // Grab the manifest from the API.
+        url = getGistURL(url);
+        this.waitStateOn();
+
+        window.fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`the Gist server gave us an error code of ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(gist => {
+                let yamlFile;
+
+                // Iterate through gist.files, an object whose keys are the filenames of each file.
+                // Find the first file with type "text/x-yaml".
+                for (let id in gist.files) {
+                    const file = gist.files[id];
+                    if (file.type === 'text/x-yaml') {
+                        yamlFile = file;
+                        break;
+                    }
+                }
+
+                // In the future, we will have to be smarter than this -- there might be
+                // multiple files, or it might be in a different format. But for now,
+                // we assume there's one Tangram YAML file and that the MIME-type is correct.
+
+                if (!yamlFile) {
+                    throw new Error('this Gist URL doesn’t appear to have a YAML file in it!');
+                }
+                else {
+                    // Grab that file's raw_url property and read it in.
+                    // This preserves the original URL location, which is preferable
+                    // for Tangram. Don't read the "content" property directly because
+                    // (a) it may be truncated and (b) we would have to construct a Blob
+                    // URL for it anyway for Tangram, so there's no use saving an HTTP
+                    // request here.
+                    this.openUrl(yamlFile.raw_url);
+                }
+            })
+            .catch(error => {
+                this.onGetError(error);
+            });
+    }
+
+    openUrl (url) {
+        this.waitStateOff();
+        this.clearInput();
+        TangramPlay.load({ url: url });
+    }
+
+    // If not successful, turn off wait state,
+    // and display the error message.
+    onGetError (error) {
+        // Turn off wait state and close the modal
+        this.waitStateOff();
+        this.hide();
+        window.clearTimeout(this._timeout);
+
+        // Show error modal
+        const errorModal = new Modal(`Something went wrong. ${error}`);
+        errorModal.show();
     }
 }
 

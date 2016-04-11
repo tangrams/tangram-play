@@ -8,16 +8,6 @@
 
 const gistIdRegexp = /\/\/(?:(?:gist.github.com|gist.githubusercontent.com)(?:\/[A-Za-z0-9_-]+){0,1}|api.github.com\/gists)\/([a-z0-9]+)(?:$|\/|.)/;
 
-export function parseForGistURL (value) {
-  if (isGistURL(value) === true) {
-    // The last capture group of the RegExp should be the gistID
-    const gistId = value.match(gistIdRegexp).pop();
-    return 'https://api.github.com/gists/' + gistId;
-  } else {
-    return value;
-  }
-}
-//https://gist.githubusercontent.com/anonymous/6cd74ed889519d7426179ceec1e287d7/raw/2694028ba2263a79b450e1fab14bc2a02839fc1d/scene.yaml
 /**
  * Is this a generic GitHub Gist URL?
  * This should test whether the URL provided matches signatures of:
@@ -45,3 +35,10 @@ export function isGistURL (value) {
     return false;
   }
 }
+
+export function getGistURL (value) {
+  // The last capture group of the RegExp should be the gistID
+  const gistId = value.match(gistIdRegexp).pop();
+  return 'https://api.github.com/gists/' + gistId;
+}
+//https://gist.githubusercontent.com/anonymous/6cd74ed889519d7426179ceec1e287d7/raw/2694028ba2263a79b450e1fab14bc2a02839fc1d/scene.yaml
