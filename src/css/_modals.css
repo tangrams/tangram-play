@@ -162,11 +162,15 @@
 
 .example-modal {
     width: 600px;
-    height: 600px;
+    /* Allow the height of this modal to expand on larger screens */
+    height: calc(100% - 400px);
+    min-height: 600px;
 }
 
 .example-list {
-    height: 420px;
+    /* Ensure this fits within a variable-height modal.
+       TODO: Don't use a magic number */
+    height: calc(100% - 120px);
     overflow-x: hidden;
     overflow-y: auto;
     background-color: var(--ui-component-color);
@@ -182,6 +186,19 @@
 
     &::-webkit-scrollbar-thumb {
         background-color: #b9b9bd;
+    }
+
+    .example-list-header {
+        padding: 0 10px;
+        margin-top: 15px;
+        margin-bottom: 0;
+        font-weight: 300;
+        font-size: 1.35rem;
+    }
+
+    hr {
+        margin-left: 10px;
+        margin-right: 10px;
     }
 }
 
