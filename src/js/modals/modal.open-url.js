@@ -131,8 +131,12 @@ class OpenUrlModal extends Modal {
         TangramPlay.load({ url: url });
     }
 
-    // If not successful, turn off wait state,
-    // and display the error message.
+    /**
+     * If opening a URL is not successful, turn off wait state,
+     * and display the error message.
+     *
+     * @param {Error} Thrown by something else
+     */
     onGetError (error) {
         // Turn off wait state and close the modal
         this.waitStateOff();
