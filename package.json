@@ -61,6 +61,7 @@
     "babel-polyfill": "^6.7.4",
     "clipboard": "^1.5.5",
     "codemirror": "5.13.2",
+    "glslCanvas": "0.0.9",
     "gsap": "^1.18.0",
     "leaflet": "^1.0.0-beta.2",
     "leaflet-hash": "^0.2.1",

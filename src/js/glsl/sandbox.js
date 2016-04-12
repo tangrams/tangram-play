@@ -7,7 +7,7 @@ import { isNormalBlock, isColorBlock, getAddressSceneContent, getKeysFromAddress
 
 import ColorPicker from '../pickers/color';
 
-/* global GlslCanvas */
+import GlslCanvas from 'glslCanvas';
 
 (function() {
     var lastTime = 0;
