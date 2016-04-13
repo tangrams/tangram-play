@@ -19,6 +19,7 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
+import { parseQuery } from './tools/helpers';
 import { StopWatch, debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
@@ -333,16 +334,6 @@ class TangramPlay {
     selectLines (strRange) {
         selectLines(this.editor, strRange);
     }
-}
-
-function parseQuery (qstr) {
-    let query = {};
-    let a = qstr.split('&');
-    for (let i in a) {
-        let b = a[i].split('=');
-        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
-    }
-    return query;
 }
 
 // Determine what is the scene url and content to load during start-up
