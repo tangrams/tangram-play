@@ -4,6 +4,7 @@ import ErrorModal from './modal.error';
 import EditorIO from '../editor/io';
 import LocalStorage from '../storage/localstorage';
 import { getSceneURLFromGistAPI } from '../tools/gist-url';
+import { emptyDOMElement } from '../tools/helpers';
 
 const STORAGE_SAVED_GISTS = 'gists';
 
@@ -35,6 +36,10 @@ class OpenGistModal extends Modal {
     show () {
         EditorIO.checkSaveStateThen(() => {
             super.show();
+
+            // Always load new set of saved Gists from memory each
+            // time this modal is opened, in case it has changed
+            // during use
             this._loadSavedGists();
         });
     }
@@ -48,6 +53,9 @@ class OpenGistModal extends Modal {
             listEl.appendChild(document.createTextNode('No gists have been saved!'));
             return;
         }
+
+        // Clear what's in the list element first
+        emptyDOMElement(listEl);
 
         for (let url of gists.arr) {
             const newOption = document.createElement('div');
