@@ -49,24 +49,40 @@ function loadExamples (configFile) {
         .then((data) => {
             const listEl = examplesEl.querySelector('.example-list');
 
-            data.examples.forEach(function (example) {
-                let newOption = document.createElement('div');
-                let nameEl = document.createElement('div');
-                let name = example['name'].split('.')[0];
-                let thumbnailEl = document.createElement('div');
-                newOption.className = 'example-option';
-                newOption.setAttribute('data-value', example['url']);
-                nameEl.className = 'example-option-name';
-                nameEl.textContent = name.replace(/-/g, ' ');
-                thumbnailEl.className = 'example-thumbnail';
-                thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
-                thumbnailEl.style.backgroundImage = 'url(' + example['thumb'] + ')';
-                newOption.appendChild(nameEl);
-                newOption.appendChild(thumbnailEl);
-                newOption.addEventListener('click', selectExample);
-                listEl.appendChild(newOption);
-                newOption.addEventListener('dblclick', function (e) {
-                    examplesModal._handleConfirm();
+            data.examples.forEach(category => {
+                const categoryHeaderEl = document.createElement('h2');
+                const categoryUnderlineEl = document.createElement('hr');
+
+                categoryHeaderEl.className = 'example-list-header';
+                categoryHeaderEl.textContent = category.category;
+
+                listEl.appendChild(categoryHeaderEl);
+                listEl.appendChild(categoryUnderlineEl);
+
+                category.scenes.forEach(scene => {
+                    const newOption = document.createElement('div');
+                    const nameEl = document.createElement('div');
+                    const thumbnailEl = document.createElement('div');
+
+                    newOption.className = 'example-option';
+                    newOption.setAttribute('data-value', scene.url);
+
+                    nameEl.className = 'example-option-name';
+                    nameEl.textContent = scene.name;
+
+                    thumbnailEl.className = 'example-thumbnail';
+                    thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                    thumbnailEl.style.backgroundImage = 'url(' + scene.thumb + ')';
+
+                    newOption.appendChild(nameEl);
+                    newOption.appendChild(thumbnailEl);
+                    newOption.addEventListener('click', selectExample);
+
+                    listEl.appendChild(newOption);
+
+                    newOption.addEventListener('dblclick', function (e) {
+                        examplesModal._handleConfirm();
+                    });
                 });
             });
         })
