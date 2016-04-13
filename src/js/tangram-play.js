@@ -8,7 +8,7 @@ import { initEditor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
-import Modal from './modals/modal';
+import ErrorModal from './modals/modal.error';
 import WidgetsManager from './widgets/widgets-manager';
 import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
@@ -145,7 +145,7 @@ class TangramPlay {
                     this._doLoadProcess(scene);
                 })
                 .catch(error => {
-                    const errorModal = new Modal(error.message);
+                    const errorModal = new ErrorModal(error.message);
                     errorModal.show();
                     hideSceneLoadingIndicator();
 

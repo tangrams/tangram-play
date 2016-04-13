@@ -3,13 +3,11 @@ import Modal from './modal';
 import EditorIO from '../editor/io';
 import { isGistURL, getGistURL } from '../tools/gist-url';
 
-let modalEl;
-
 class OpenUrlModal extends Modal {
     constructor () {
         super();
 
-        this.el = modalEl = document.body.querySelector('.open-url-modal');
+        this.el = document.body.querySelector('.open-url-modal');
         this.message = 'Open a scene file from URL';
         this.input = this.el.querySelector('.open-url-input input');
         this.input.addEventListener('keyup', (event) => {
