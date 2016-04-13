@@ -19,7 +19,7 @@ class OpenUrlModal extends Modal {
             else {
                 this.openUrl(value);
             }
-        }
+        };
 
         const onAbort = () => {
             this.clearInput();
