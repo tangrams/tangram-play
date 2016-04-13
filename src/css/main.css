@@ -25,6 +25,7 @@
 @import '_menu-dropdown';
 @import '_tooltip';
 @import '_modals';
+@import '_modals.examples';
 @import '_shield';
 @import '_inputs';
 
