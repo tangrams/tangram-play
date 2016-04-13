@@ -1,14 +1,34 @@
 import TangramPlay from '../tangram-play';
 import Modal from './modal';
+import ErrorModal from './modal.error';
 import EditorIO from '../editor/io';
 import { isGistURL, getGistURL } from '../tools/gist-url';
 
 class OpenUrlModal extends Modal {
     constructor () {
-        super();
+        const message = 'Open a scene file from URL';
+        // const el = document.body.querySelector('.open-url-modal');
 
-        this.el = document.body.querySelector('.open-url-modal');
-        this.message = 'Open a scene file from URL';
+        const onConfirm = () => {
+            let value = this.input.value.trim();
+
+            // If it appears to be a Gist URL:
+            if (isGistURL(value) === true) {
+                this.fetchGistURL(value);
+            }
+            else {
+                this.openUrl(value);
+            }
+        }
+
+        const onAbort = () => {
+            this.clearInput();
+        };
+
+        super(message, onConfirm, onAbort, {
+            el: document.body.querySelector('.open-url-modal')
+        });
+
         this.input = this.el.querySelector('.open-url-input input');
         this.input.addEventListener('keyup', (event) => {
             // Check for valid URL.
@@ -27,22 +47,6 @@ class OpenUrlModal extends Modal {
                 this.el.querySelector('.modal-confirm').disabled = true;
             }
         });
-
-        this.onConfirm = () => {
-            let value = this.input.value.trim();
-
-            // If it appears to be a Gist URL:
-            if (isGistURL(value) === true) {
-                this.fetchGistURL(value);
-            }
-            else {
-                this.openUrl(value);
-            }
-        };
-
-        this.onAbort = () => {
-            this.clearInput();
-        };
     }
 
     show () {
@@ -80,7 +84,12 @@ class OpenUrlModal extends Modal {
         window.fetch(url)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`the Gist server gave us an error code of ${response.status}`);
+                    if (response.status === 404) {
+                        throw new Error('This Gist could not be found.');
+                    }
+                    else {
+                        throw new Error(`The Gist server gave us an error code of ${response.status}`);
+                    }
                 }
                 return response.json();
             })
@@ -102,7 +111,7 @@ class OpenUrlModal extends Modal {
                 // we assume there's one Tangram YAML file and that the MIME-type is correct.
 
                 if (!yamlFile) {
-                    throw new Error('this Gist URL doesn’t appear to have a YAML file in it!');
+                    throw new Error('This Gist URL doesn’t appear to have a YAML file in it!');
                 }
                 else {
                     // Grab that file's raw_url property and read it in.
@@ -134,7 +143,7 @@ class OpenUrlModal extends Modal {
         window.clearTimeout(this._timeout);
 
         // Show error modal
-        const errorModal = new Modal(`Something went wrong. ${error}`);
+        const errorModal = new ErrorModal(`Something went wrong. ${error.message}`);
         errorModal.show();
     }
 }

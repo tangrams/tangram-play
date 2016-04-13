@@ -11,7 +11,8 @@ export default class ErrorModal extends Modal {
     }
 
     /**
-     * On show, focus on the confirm button for this modal
+     * On show, focus on the confirm button for this modal.
+     * TODO: Consider whether this should be default behavior for modals.
      */
     show () {
         super.show();
