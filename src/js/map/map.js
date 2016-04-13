@@ -58,10 +58,15 @@ function initTangram (pathToSceneFile) {
 
     tangram.scene.subscribe({
         load: function (args) {
-            // Hide loading indicator
-            // TODO: Hide only after vector tiles are downloaded and rendered?
-            hideSceneLoadingIndicator();
             TangramPlay.trigger('sceneupdate', args);
+        },
+
+        // Hides loading indicator after vector tiles have downloaded and rendered
+        // Plus a short delay to ease the transition
+        view_complete: function () {
+            window.setTimeout(() => {
+                hideSceneLoadingIndicator();
+            }, 250);
         }
     });
 
