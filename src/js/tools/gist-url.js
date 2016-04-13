@@ -24,13 +24,13 @@ const gistIdRegexp = /\/\/(?:(?:gist.github.com|gist.githubusercontent.com)(?:\/
  * string or that the gist exists.
  */
 export function isGistURL (url) {
-  if ((url.includes('api.github.com/gists') || url.includes('gist.github.com')) &&
-    url.match(gistIdRegexp).length > 1) {
-    return true;
-  }
-  else {
-    return false;
-  }
+    if ((url.includes('api.github.com/gists') || url.includes('gist.github.com')) &&
+        url.match(gistIdRegexp).length > 1) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 /**
@@ -43,7 +43,7 @@ export function isGistURL (url) {
  *    https://api.github.com/gists/{gistId}
  */
 export function getGistURL (url) {
-  // The last capture group of the RegExp should be the gistID
-  const gistId = url.match(gistIdRegexp).pop();
-  return 'https://api.github.com/gists/' + gistId;
+    // The last capture group of the RegExp should be the gistID
+    const gistId = url.match(gistIdRegexp).pop();
+    return 'https://api.github.com/gists/' + gistId;
 }
