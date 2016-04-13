@@ -47,3 +47,60 @@ export function getGistURL (url) {
     const gistId = url.match(gistIdRegexp).pop();
     return 'https://api.github.com/gists/' + gistId;
 }
+
+/**
+ * Given any Gist URL (it should pass the isGistURL() test, above),
+ * this initiates a Fetch request for the Gist API's single gist
+ * manifest endpoint. Returns a promise that is fulfilled with the
+ * value that is the Tangram YAML scene file's raw URL.
+ *
+ * Errors should be caught by the calling module.
+ */
+export function getSceneURLFromGistAPI (url) {
+    // Make sure that the URL is the Gist API's single gist manifest endpoint.
+    url = getGistURL(url);
+
+    return window.fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('This Gist could not be found.');
+                }
+                else {
+                    throw new Error(`The Gist server gave us an error code of ${response.status}`);
+                }
+            }
+            return response.json();
+        })
+        .then(gist => {
+            let yamlFile;
+
+            // Iterate through gist.files, an object whose keys are the filenames of each file.
+            // Find the first file with type "text/x-yaml".
+            for (let id in gist.files) {
+                const file = gist.files[id];
+                if (file.type === 'text/x-yaml') {
+                    yamlFile = file;
+                    break;
+                }
+            }
+
+            // In the future, we will have to be smarter than this -- there might be
+            // multiple files, or it might be in a different format. But for now,
+            // we assume there's one Tangram YAML file and that the MIME-type is correct.
+
+            if (!yamlFile) {
+                throw new Error('This Gist URL doesn’t appear to have a YAML file in it!');
+            }
+            else {
+                // Returns the file's raw_url property.
+                // Loading this URL in Tangram instead of returning the "content"
+                // property will preserve the original URL location, which is preferable
+                // for Tangram. Don't read the "content" property directly because
+                // (a) it may be truncated and (b) we would have to construct a Blob
+                // URL for it anyway for Tangram, so there's no use saving an HTTP
+                // request here.
+                return yamlFile.raw_url;
+            }
+        });
+}
