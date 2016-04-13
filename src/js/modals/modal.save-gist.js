@@ -1,6 +1,7 @@
 import TangramPlay, { editor } from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import Modal from './modal';
+import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
 
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
@@ -158,7 +159,7 @@ class SaveGistModal extends Modal {
         window.clearTimeout(this._timeout);
 
         // Show error modal
-        const errorModal = new Modal(`<p>Woah, we tried to save your scene but something went wrong.</p><p>${error}</p>`);
+        const errorModal = new ErrorModal(`Woah, we tried to save your scene but something went wrong. ${error.message}`);
         errorModal.show();
     }
 

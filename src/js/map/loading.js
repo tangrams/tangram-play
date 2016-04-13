@@ -1,6 +1,4 @@
-import { debounce } from '../tools/common';
-
-const loadingEl = document.getElementById('map-loading')
+const loadingEl = document.getElementById('map-loading');
 
 /**
  * Shows the scene loading indicator.

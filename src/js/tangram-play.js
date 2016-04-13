@@ -7,8 +7,8 @@ import { tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
 
 // Addons
-import { showSceneLoadingIndicator } from './map/loading';
-import Modal from './modals/modal';
+import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
+import ErrorModal from './modals/modal.error';
 import WidgetsManager from './widgets/widgets-manager';
 import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
@@ -35,6 +35,8 @@ const query = parseQuery(window.location.search.slice(1));
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
+
+let initialLoad = true;
 
 class TangramPlay {
     constructor () {
@@ -126,20 +128,32 @@ class TangramPlay {
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
             window.fetch(scene.url)
-                .then((response) => {
-                    if (response.status < 200 || response.status >= 400) {
-                        throw new Error('Something went wrong loading the scene!');
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error('The scene you requested could not be found.');
+                        }
+                        else {
+                            throw new Error('Something went wrong loading the scene!');
+                        }
                     }
 
                     return response.text();
                 })
-                .then((body) => {
+                .then(body => {
                     scene.contents = body;
                     this._doLoadProcess(scene);
                 })
-                .catch((error) => {
-                    let errorModal = new Modal(error);
+                .catch(error => {
+                    const errorModal = new ErrorModal(error.message);
                     errorModal.show();
+                    hideSceneLoadingIndicator();
+
+                    // TODO: editor should not be attached to this
+                    if (initialLoad === true) {
+                        showUnloadedState(this.editor);
+                        this.editor.doc.markClean();
+                    }
                 });
         }
         else if (scene.contents) {
@@ -158,6 +172,11 @@ class TangramPlay {
             basePath: scene['original_base_path']
         });
         this._setSceneContentsInEditor(scene);
+
+        hideUnloadedState();
+
+        // This should only be true once
+        initialLoad = false;
 
         // Update history
         let locationPrefix = '.';
@@ -336,6 +355,15 @@ class TangramPlay {
     }
 }
 
+function showUnloadedState (editor) {
+    document.querySelector('.map-view').classList.add('map-view-not-loaded');
+    editor.setValue('No scene loaded.');
+}
+
+function hideUnloadedState () {
+    document.querySelector('.map-view').classList.remove('map-view-not-loaded');
+}
+
 // Determine what is the scene url and content to load during start-up
 function determineScene () {
     let scene = {};
@@ -376,10 +404,10 @@ function getSceneContentsFromLocalMemory () {
         let contents = sceneData.contents;
 
         // TODO: Verify that contents are valid/parse-able YAML before returning it.
-        // Throw away saved contents if it's "Loading..." or empty.
+        // Throw away saved contents if it's "Loading...", "No scene loaded." or empty.
         // If we check for parse-ability, we won't need to hard-code the Loading check
         // (The alternative strategy is to not have the placeholder)
-        if (contents && contents !== 'Loading...' && contents.trim().length > 0) {
+        if (contents && contents !== 'Loading...' && contents !== 'No scene loaded.' && contents.trim().length > 0) {
             return sceneData;
         }
     }

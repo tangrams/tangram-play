@@ -113,6 +113,12 @@
         color: var(--ui-highlight-color);
     }
 
+    button:focus {
+        outline: none;
+        border: 1px solid var(--ui-highlight-color);
+        background-color: var(--ui-active-color);
+    }
+
     button > i {
         margin-right: 0.5em;
     }
