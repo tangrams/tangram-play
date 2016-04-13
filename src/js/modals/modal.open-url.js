@@ -7,8 +7,6 @@ import { isGistURL, getGistURL } from '../tools/gist-url';
 class OpenUrlModal extends Modal {
     constructor () {
         const message = 'Open a scene file from URL';
-        // const el = document.body.querySelector('.open-url-modal');
-
         const onConfirm = () => {
             let value = this.input.value.trim();
 
@@ -20,7 +18,6 @@ class OpenUrlModal extends Modal {
                 this.openUrl(value);
             }
         };
-
         const onAbort = () => {
             this.clearInput();
         };

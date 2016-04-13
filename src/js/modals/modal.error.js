@@ -16,8 +16,6 @@ export default class ErrorModal extends Modal {
      */
     show () {
         super.show();
-        let button = this.el.querySelector('.modal-confirm');
-        console.log(button);
-        button.focus();
+        this.el.querySelector('.modal-confirm').focus();
     }
 }
