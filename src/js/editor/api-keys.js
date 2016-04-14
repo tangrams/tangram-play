@@ -13,6 +13,13 @@
 // This key is owned by Mapzen
 const DEFAULT_API_KEY = 'vector-tiles-P6dkVl4';
 
+// A list of all Mapzen-owned API keys to suppress
+const SUPPRESSED_API_KEYS = [
+  DEFAULT_API_KEY,
+  'vector-tiles-HqUVidw', // Tangram & "house styles"
+  'vector-tiles-JUsa0Gc', // Patricio's sandbox
+];
+
 /**
  * Parses Tangram YAML content for URL references to Mapzen vector tile service
  * and injects an API key if it does not have one.
@@ -36,6 +43,10 @@ export function injectAPIKeys (content) {
 /**
  * Parses Tangram YAML content for the default vector tile service API key
  * and masks it. Do this before displaying a scene file in the editor.
+ * Note that this does not PREVENT the suppressed key from being used. In
+ * Tangram's internal memory, the suppressed key persists and will be used
+ * to make requests until the scene is reloaded, either with the user's own
+ * key or with the injected DEFAULT_API_KEY.
  *
  * @todo In future, this can be extended to mask other API keys that the user
  *    should not be seeing, e.g. keys that do not belong to a logged-in user
@@ -44,7 +55,11 @@ export function injectAPIKeys (content) {
  * @returns {string} content - Tangram YAML with API keys suppressed, if needed
 */
 export function suppressAPIKeys (content) {
-    const escapedApiKey = DEFAULT_API_KEY.replace(/\-/g, '\\-');
-    const re = new RegExp(`\\?api_key\\=${escapedApiKey}`, 'gm');
+    // Creates a string for the regex, e.g.
+    // "vector\-tiles\-P6dkVl4|vector\-tiles\-HqUVidw|vector\-tiles\-JUsa0Gc"
+    const escapedKeys = SUPPRESSED_API_KEYS.map(function (key) {
+        return key.replace(/\-/g, '\\-');
+    }).join('|');
+    const re = new RegExp(`\\?api_key\\=(${escapedKeys})`, 'gm');
     return content.replace(re, '');
 }
