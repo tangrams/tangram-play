@@ -20,7 +20,7 @@ import LocalStorage from './storage/localstorage';
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
 import { parseQuery } from './tools/helpers';
-import { StopWatch, debounce, createObjectURL } from './tools/common';
+import { debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
 import { injectAPIKeys, suppressAPIKeys } from './editor/api-keys';
@@ -41,12 +41,6 @@ let initialLoad = true;
 class TangramPlay {
     constructor () {
         subscribeMixin(this);
-
-        //Benchmark & Debuggin
-        // if (options.benchark) {
-        //     window.watch = new StopWatch();
-        //     window.watch.start();
-        // }
 
         this.editor = initEditor('editor');
         initMap();
@@ -95,7 +89,7 @@ class TangramPlay {
     initAddons () {
         this.addons.widgetsManager = new WidgetsManager('data/tangram-api.json');
         this.addons.suggestManager = new SuggestManager('data/tangram-api.json');
-        // this.addons.glslSandbox = new GlslSandbox();
+        this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslHelpers();
         this.addons.errorsManager = new ErrorsManager();
         this.addons.colorPalette = new ColorPalette();
@@ -205,7 +199,14 @@ class TangramPlay {
         // Set content in CodeMirror
         this.editor.setValue(contents);
         this.editor.clearHistory();
-        if (!!sceneData['is_clean']) {
+
+        // Mark as "clean" if the contents are freshly loaded
+        // (there is no is_clean property defined) or if contents
+        // have been restored with the is_clean property set to "true"
+        // This is converted from JSON so the value is a string, not
+        // a Boolean. Otherwise, the document has not been previously
+        // saved and it is left in the "dirty" state.
+        if (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true') {
             this.editor.doc.markClean();
         }
 

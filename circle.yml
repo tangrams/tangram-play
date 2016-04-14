@@ -10,8 +10,6 @@ dependencies:
     - npm install -g aws-cli
 
 test:
-  override:
-    - npm run lint
   post:
     # For Precog. This should run even if tests fail.
     - cp -R build data index.html $CIRCLE_ARTIFACTS

@@ -5,8 +5,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "jshint *.js src/ || true; jscs *.js src/ || true",
+    "test": "npm run lint --silent",
+    "lint": "jshint *.js src/; jscs *.js src/",
     "build": "modernizr -c modernizr-config.json -d build/js; gulp build"
   },
   "repository": {
