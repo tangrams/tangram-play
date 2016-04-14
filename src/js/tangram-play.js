@@ -19,7 +19,7 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
-import { parseQuery } from './tools/helpers';
+import { getQueryStringObject, serializeToQueryString } from './tools/helpers';
 import { debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
@@ -31,7 +31,7 @@ import './file/drop';
 import './menus/menu';
 import './ui/tooltip';
 
-const query = parseQuery(window.location.search.slice(1));
+const query = getQueryStringObject();
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
@@ -239,7 +239,21 @@ class TangramPlay {
     updateContent () {
         const content = this.getContent();
         const url = createObjectURL(content);
+
+        // Send scene data to Tangram
         loadScene(url);
+
+        // Update the page URL. For editor changes in particular,
+        // the ?scene=parameter should be erased. This prevents
+        // reloading (or copy-pasting the URL) from directing to
+        // the wrong scene.
+        const queryObj = getQueryStringObject();
+        if (queryObj.scene) {
+            delete queryObj.scene;
+            const url = window.location.href.split('?')[0];
+            const queryString = serializeToQueryString(queryObj);
+            window.history.replaceState({}, null, url + queryString + window.location.hash);
+        }
     }
 
     // GET
@@ -370,7 +384,7 @@ function determineScene () {
     let scene = {};
 
     // If there is a query, return it
-    let query = parseQuery(window.location.search.slice(1));
+    let query = getQueryStringObject();
     if (query.scene) {
         scene.url = query.scene;
         return scene;
