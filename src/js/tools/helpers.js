@@ -11,7 +11,7 @@ export function parseQuery (qstr) {
 }
 
 export function emptyDOMElement (el) {
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
-  }
+    while (el.firstChild) {
+        el.removeChild(el.firstChild);
+    }
 }
