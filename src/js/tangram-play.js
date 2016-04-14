@@ -205,7 +205,14 @@ class TangramPlay {
         // Set content in CodeMirror
         this.editor.setValue(contents);
         this.editor.clearHistory();
-        if (!!sceneData['is_clean']) {
+
+        // Mark as "clean" if the contents are freshly loaded
+        // (there is no is_clean property defined) or if contents
+        // have been restored with the is_clean property set to "true"
+        // This is converted from JSON so the value is a string, not
+        // a Boolean. Otherwise, the document has not been previously
+        // saved and it is left in the "dirty" state.
+        if (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true') {
             this.editor.doc.markClean();
         }
 
