@@ -2,7 +2,7 @@ import TangramPlay from '../tangram-play';
 import Modal from './modal';
 import ErrorModal from './modal.error';
 import EditorIO from '../editor/io';
-import { isGistURL, getGistURL } from '../tools/gist-url';
+import { isGistURL, getSceneURLFromGistAPI } from '../tools/gist-url';
 
 class OpenUrlModal extends Modal {
     constructor () {
@@ -74,51 +74,11 @@ class OpenUrlModal extends Modal {
     }
 
     fetchGistURL (url) {
-        // Grab the manifest from the API.
-        url = getGistURL(url);
         this.waitStateOn();
 
-        window.fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('This Gist could not be found.');
-                    }
-                    else {
-                        throw new Error(`The Gist server gave us an error code of ${response.status}`);
-                    }
-                }
-                return response.json();
-            })
-            .then(gist => {
-                let yamlFile;
-
-                // Iterate through gist.files, an object whose keys are the filenames of each file.
-                // Find the first file with type "text/x-yaml".
-                for (let id in gist.files) {
-                    const file = gist.files[id];
-                    if (file.type === 'text/x-yaml') {
-                        yamlFile = file;
-                        break;
-                    }
-                }
-
-                // In the future, we will have to be smarter than this -- there might be
-                // multiple files, or it might be in a different format. But for now,
-                // we assume there's one Tangram YAML file and that the MIME-type is correct.
-
-                if (!yamlFile) {
-                    throw new Error('This Gist URL doesn’t appear to have a YAML file in it!');
-                }
-                else {
-                    // Grab that file's raw_url property and read it in.
-                    // This preserves the original URL location, which is preferable
-                    // for Tangram. Don't read the "content" property directly because
-                    // (a) it may be truncated and (b) we would have to construct a Blob
-                    // URL for it anyway for Tangram, so there's no use saving an HTTP
-                    // request here.
-                    this.openUrl(yamlFile.raw_url);
-                }
+        getSceneURLFromGistAPI(url)
+            .then(url => {
+                this.openUrl(url);
             })
             .catch(error => {
                 this.onGetError(error);
@@ -131,8 +91,12 @@ class OpenUrlModal extends Modal {
         TangramPlay.load({ url: url });
     }
 
-    // If not successful, turn off wait state,
-    // and display the error message.
+    /**
+     * If opening a URL is not successful, turn off wait state,
+     * and display the error message.
+     *
+     * @param {Error} Thrown by something else
+     */
     onGetError (error) {
         // Turn off wait state and close the modal
         this.waitStateOff();

@@ -3,8 +3,9 @@ import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
 import { examplesModal } from '../modals/modal.examples';
 import { openURLModal } from '../modals/modal.open-url';
-import { aboutModal } from '../modals/modal.about';
+import { openGistModal } from '../modals/modal.open-gist';
 import { saveGistModal } from '../modals/modal.save-gist';
+import { aboutModal } from '../modals/modal.about';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/map';
 
@@ -21,6 +22,9 @@ function initMenuItems () {
     // Open menu
     document.body.querySelector('.menu-open-file').addEventListener('click', () => {
         openLocalFile();
+    }, false);
+    document.body.querySelector('.menu-open-gist').addEventListener('click', () => {
+        openGistModal.show();
     }, false);
     document.body.querySelector('.menu-open-url').addEventListener('click', () => {
         openURLModal.show();

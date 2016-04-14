@@ -9,3 +9,9 @@ export function parseQuery (qstr) {
     }
     return query;
 }
+
+export function emptyDOMElement (el) {
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+}

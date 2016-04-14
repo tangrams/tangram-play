@@ -47,6 +47,7 @@
             <div class='menu-dropdown menu-dropdown-open'>
                 <ul>
                     <li class='menu-open-file'><i class='btm bt-folder'></i><span class='menu-item-label'>Open a file</span></li>
+                    <li class='menu-open-gist'><i class='btm bt-code'></i><span class='menu-item-label'>Open a saved Gist</span></li>
                     <li class='menu-open-url'><i class='btm bt-link'></i><span class='menu-item-label'>Open from URL</span></li>
                     <li class='menu-open-example'><i class='btm bt-map'></i><span class='menu-item-label'>Choose example</span></li>
                 </ul>
@@ -213,8 +214,16 @@
                 <div class='modal-thinking'>
                     <i class='bts bt-spinner bt-pulse'></i> Working...
                 </div>
-                <button id='example-cancel' class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                <button id='example-confirm' class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
+                <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
+            </div>
+        </div>
+         <div class='modal modal-alt open-gist-modal'>
+            <p class='modal-text'></p>
+            <div class='modal-content open-gist-list'></div>
+            <div class='modal-buttons'>
+                <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
+                <button class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
             </div>
         </div>
         <div class='filedrop-container' id='filedrop'>

@@ -58,10 +58,15 @@ function initTangram (pathToSceneFile) {
 
     tangram.scene.subscribe({
         load: function (args) {
-            // Hide loading indicator
-            // TODO: Hide only after vector tiles are downloaded and rendered?
-            hideSceneLoadingIndicator();
             TangramPlay.trigger('sceneupdate', args);
+        },
+
+        // Hides loading indicator after vector tiles have downloaded and rendered
+        // Plus a short delay to ease the transition
+        view_complete: function () {
+            window.setTimeout(() => {
+                hideSceneLoadingIndicator();
+            }, 250);
         }
     });
 
@@ -92,8 +97,8 @@ export function loadScene (pathToSceneFile, { reset = false, basePath = null } =
 
 /**
  * Uses Tangram's native screenshot functionality to download an image.
+ *
  * @public
- * @method
  * @requires FileSaver
  */
 export function takeScreenshot () {
@@ -103,6 +108,22 @@ export function takeScreenshot () {
         // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
         saveAs(result.blob, `tangram-${slug}.png`);
     });
+}
+
+/**
+ * Uses Tangram's native screenshot functionality to return a Promise
+ * whose resolve function passes in an object containing two properities:
+ *      blob - a Blob object representing the image binary
+ *      url - a string containing a base64 data-URI
+ *
+ * @public
+ * @returns Promise
+ */
+export function getScreenshotData () {
+    return tangram.scene.screenshot()
+        .then(function (result) {
+            return result;
+        });
 }
 
 function getMapStartLocation () {

@@ -1,0 +1,54 @@
+
+.open-gist-modal {
+    width: 600px;
+    height: 600px;
+}
+
+.open-gist-list {
+    /* Ensure this fits within a variable-height modal.
+       TODO: Don't use a magic number */
+    height: calc(100% - 120px);
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: var(--ui-component-color);
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: var(--ui-element-color);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #b9b9bd;
+    }
+}
+
+.open-gist-option {
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+
+    &.open-gist-selected {
+        background-color: var(--ui-active-color);
+    }
+}
+
+.open-gist-option-name {
+    font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 14px;
+    line-height: 24px;
+    color: var(--ui-component-text-color);
+
+    .open-gist-selected & {
+        color: var(--ui-highlight-color);
+    }
+}
