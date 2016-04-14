@@ -20,7 +20,7 @@ import LocalStorage from './storage/localstorage';
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
 import { parseQuery } from './tools/helpers';
-import { StopWatch, debounce, createObjectURL } from './tools/common';
+import { debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
 import { injectAPIKeys, suppressAPIKeys } from './editor/api-keys';
@@ -41,12 +41,6 @@ let initialLoad = true;
 class TangramPlay {
     constructor () {
         subscribeMixin(this);
-
-        //Benchmark & Debuggin
-        // if (options.benchark) {
-        //     window.watch = new StopWatch();
-        //     window.watch.start();
-        // }
 
         this.editor = initEditor('editor');
         initMap();
@@ -95,7 +89,7 @@ class TangramPlay {
     initAddons () {
         this.addons.widgetsManager = new WidgetsManager('data/tangram-api.json');
         this.addons.suggestManager = new SuggestManager('data/tangram-api.json');
-        // this.addons.glslSandbox = new GlslSandbox();
+        this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslHelpers();
         this.addons.errorsManager = new ErrorsManager();
         this.addons.colorPalette = new ColorPalette();

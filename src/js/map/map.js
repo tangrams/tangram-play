@@ -24,7 +24,7 @@ export function initMap () {
 
     // Create Leaflet map
     map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
-    const hash = new L.Hash(map);
+    const hash = new L.Hash(map); // jshint ignore:line
 
     // Force Leaflet to update itself.
     // This resolves an issue where the map may sometimes not appear

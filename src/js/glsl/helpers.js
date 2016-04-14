@@ -6,13 +6,13 @@ import Vec2Picker from '../pickers/vec2';
 import FloatPicker from '../pickers/float';
 
 // Return all pattern matches with captured groups
-RegExp.prototype.execAll = function(string) {
+function execAll (re, string) {
     let match = null;
     let matches = [];
-    while (match = this.exec(string)) {
+    while (match = re.exec(string)) {
         let matchArray = [];
         for (let i in match) {
-            if (parseInt(i) == i) {
+            if (parseInt(i) === i) {
                 matchArray.push(match[i]);
             }
         }
@@ -20,7 +20,7 @@ RegExp.prototype.execAll = function(string) {
         matches.push(matchArray);
     }
     return matches;
-};
+}
 
 export default class Helpers {
     constructor (main) {
@@ -150,7 +150,7 @@ export default class Helpers {
                 return;
         }
         let line = TangramPlay.editor.getLine(cursor.line);
-        let matches = re.execAll(line);
+        let matches = execAll(re, line);
 
         if (matches) {
             for (let i = 0; i < matches.length; i++) {
