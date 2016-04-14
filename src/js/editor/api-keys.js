@@ -28,8 +28,8 @@ const DEFAULT_API_KEY = 'vector-tiles-P6dkVl4';
  * @returns {string} content - Tangram YAML with API keys injected, if needed
 */
 export function injectAPIKeys (content) {
-    const pattern = /(^\s+url:\s+(https?:\/\/)vector.mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
-    const result = `$1?api_key=${DEFAULT_API_KEY}`;
+    const pattern = /(^\s+url:\s+(https?:)?\/\/vector.mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt)$)/gm;
+    const result = '$1?api_key=' + DEFAULT_API_KEY;
     return content.replace(pattern, result);
 }
 
