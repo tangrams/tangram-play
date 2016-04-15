@@ -2,21 +2,15 @@ import TangramPlay from '../tangram-play';
 import Modal from './modal';
 import ErrorModal from './modal.error';
 import EditorIO from '../editor/io';
-import { isGistURL, getSceneURLFromGistAPI } from '../tools/gist-url';
 
 class OpenUrlModal extends Modal {
     constructor () {
         const message = 'Open a scene file from URL';
         const onConfirm = () => {
-            let value = this.input.value.trim();
+            this.waitStateOn();
 
-            // If it appears to be a Gist URL:
-            if (isGistURL(value) === true) {
-                this.fetchGistURL(value);
-            }
-            else {
-                this.openUrl(value);
-            }
+            const value = this.input.value.trim();
+            this.openUrl(value);
         };
         const onAbort = () => {
             this.clearInput();
@@ -28,14 +22,12 @@ class OpenUrlModal extends Modal {
 
         this.input = this.el.querySelector('.open-url-input input');
         this.input.addEventListener('keyup', (event) => {
-            // Check for valid URL.
-            // Reported as valid by the form element AND
-            // either ends with a YAML extension or matches a Gist URL
-            if (this.input.value && this.input.validity.valid === true &&
-                (this.input.value.match(/\.y(a?)ml$/) ||
-                isGistURL(this.input.value))) {
+            // We no longer check for valid URL signatures.
+            // It is easier to attempt to fetch an input URL and see what happens.
+            if (this.input.value) {
                 this.el.querySelector('.modal-confirm').removeAttribute('disabled');
-                let key = event.keyCode || event.which;
+
+                const key = event.keyCode || event.which;
                 if (key === 13) {
                     this._handleConfirm();
                 }
@@ -73,22 +65,10 @@ class OpenUrlModal extends Modal {
         this.options.disableEsc = false;
     }
 
-    fetchGistURL (url) {
-        this.waitStateOn();
-
-        getSceneURLFromGistAPI(url)
-            .then(url => {
-                this.openUrl(url);
-            })
-            .catch(error => {
-                this.onGetError(error);
-            });
-    }
-
     openUrl (url) {
         this.waitStateOff();
         this.clearInput();
-        TangramPlay.load({ url: url });
+        TangramPlay.load({ url });
     }
 
     /**

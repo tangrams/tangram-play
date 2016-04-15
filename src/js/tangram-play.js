@@ -20,6 +20,7 @@ import LocalStorage from './storage/localstorage';
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
 import { getQueryStringObject, serializeToQueryString } from './tools/helpers';
+import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
@@ -121,37 +122,73 @@ class TangramPlay {
 
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
-            window.fetch(scene.url)
-                .then(response => {
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            throw new Error('The scene you requested could not be found.');
+            // If it appears to be a Gist URL:
+            // TODO: Don't duplicate window.fetch process
+            if (isGistURL(scene.url) === true) {
+                getSceneURLFromGistAPI(scene.url)
+                    .then(url => {
+                        // Update the scene URL property with the correct URL
+                        // to the raw YAML to ensure safe loading
+                        scene.url = url;
+                        return window.fetch(url);
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            if (response.status === 404) {
+                                throw new Error('The scene you requested could not be found.');
+                            }
+                            else {
+                                throw new Error('Something went wrong loading the scene!');
+                            }
                         }
-                        else {
-                            throw new Error('Something went wrong loading the scene!');
+
+                        return response.text();
+                    })
+                    .then(contents => {
+                        this._doLoadProcess({ url: scene.url, contents });
+                    })
+                    .catch(error => {
+                        this._onLoadError(error);
+                    });
+            }
+            // Fetch the contents of a YAML file directly. This step
+            // allows us to verify contents (TODO) or error status.
+            else {
+                window.fetch(scene.url)
+                    .then(response => {
+                        if (!response.ok) {
+                            if (response.status === 404) {
+                                throw new Error('The scene you requested could not be found.');
+                            }
+                            else {
+                                throw new Error('Something went wrong loading the scene!');
+                            }
                         }
-                    }
 
-                    return response.text();
-                })
-                .then(body => {
-                    scene.contents = body;
-                    this._doLoadProcess(scene);
-                })
-                .catch(error => {
-                    const errorModal = new ErrorModal(error.message);
-                    errorModal.show();
-                    hideSceneLoadingIndicator();
-
-                    // TODO: editor should not be attached to this
-                    if (initialLoad === true) {
-                        showUnloadedState(this.editor);
-                        this.editor.doc.markClean();
-                    }
-                });
+                        return response.text();
+                    })
+                    .then(contents => {
+                        this._doLoadProcess({ url: scene.url, contents });
+                    })
+                    .catch(error => {
+                        this._onLoadError(error);
+                    });
+            }
         }
         else if (scene.contents) {
             this._doLoadProcess(scene);
+        }
+    }
+
+    _onLoadError (error) {
+        const errorModal = new ErrorModal(error.message);
+        errorModal.show();
+        hideSceneLoadingIndicator();
+
+        // TODO: editor should not be attached to this
+        if (initialLoad === true) {
+            showUnloadedState(this.editor);
+            this.editor.doc.markClean();
         }
     }
 
@@ -160,7 +197,6 @@ class TangramPlay {
 
         // Send url to map and contents to editor
         // TODO: get contents from Tangram instead of another xhr request.
-        // console.log(scene)
         loadScene(url, {
             reset: true,
             basePath: scene['original_base_path']
