@@ -209,7 +209,9 @@ class TangramPlay {
         initialLoad = false;
 
         // Update history
-        let locationPrefix = '.';
+        // Can't do a pushstate where the URL includes 'http://localhost' due to security
+        // problems. So we have to let the browser do the routing relative to the server
+        let locationPrefix = window.location.pathname;
         if (scene.url) {
             locationPrefix += '?scene=' + scene.url;
         }
@@ -286,7 +288,7 @@ class TangramPlay {
         const queryObj = getQueryStringObject();
         if (queryObj.scene) {
             delete queryObj.scene;
-            const url = window.location.href.split('?')[0];
+            const url = window.location.pathname;
             const queryString = serializeToQueryString(queryObj);
             window.history.replaceState({}, null, url + queryString + window.location.hash);
         }

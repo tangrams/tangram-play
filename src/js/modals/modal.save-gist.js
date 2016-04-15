@@ -168,7 +168,7 @@ class SaveGistModal extends Modal {
         // tangram-play.js updateContent()
         const queryObj = getQueryStringObject();
         queryObj.scene = gist.url;
-        const url = window.location.href.split('?')[0];
+        const url = window.location.pathname;
         const queryString = serializeToQueryString(queryObj);
         window.history.replaceState({}, null, url + queryString + window.location.hash);
 
