@@ -19,8 +19,12 @@ export function getQueryStringObject (queryString = window.location.search) {
         const key = decodeURIComponent(keyValue[0]);
         const value = decodeURIComponent(keyValue[1]);
 
-        // Assign key and value to object
-        object[key] = value;
+        // Do not assign if key is a blank string or
+        // if value is undefined. Do not test for 'falsy'
+        // values, which are valid keys and values.
+        if (key !== '' && typeof value !== 'undefined') {
+            object[key] = value;
+        }
 
         return object;
     }, {});
