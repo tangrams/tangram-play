@@ -63,12 +63,7 @@ export function getSceneURLFromGistAPI (url) {
     return window.fetch(url)
         .then(response => {
             if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error('This Gist could not be found.');
-                }
-                else {
-                    throw new Error(`The Gist server gave us an error code of ${response.status}`);
-                }
+                throw new Error(response.status);
             }
             return response.json();
         })
