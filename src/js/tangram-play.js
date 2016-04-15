@@ -12,7 +12,7 @@ import ErrorModal from './modals/modal.error';
 import WidgetsManager from './widgets/widgets-manager';
 import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
-import GlslSandbox from './glsl/sandbox';
+// import GlslSandbox from './glsl/sandbox';
 import GlslHelpers from './glsl/helpers';
 import ColorPalette from './widgets/color-palette';
 import LocalStorage from './storage/localstorage';
@@ -89,7 +89,7 @@ class TangramPlay {
     initAddons () {
         this.addons.widgetsManager = new WidgetsManager('data/tangram-api.json');
         this.addons.suggestManager = new SuggestManager('data/tangram-api.json');
-        this.addons.glslSandbox = new GlslSandbox();
+        // this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslHelpers();
         this.addons.errorsManager = new ErrorsManager();
         this.addons.colorPalette = new ColorPalette();
