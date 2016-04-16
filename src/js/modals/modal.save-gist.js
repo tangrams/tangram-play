@@ -9,7 +9,7 @@ import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
 const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Play.';
 const STORAGE_SAVED_GISTS = 'gists';
-const SAVE_TIMEOUT = 6000; // ms before we assume saving is failure
+const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
 class SaveGistModal extends Modal {
     constructor () {
@@ -106,8 +106,9 @@ class SaveGistModal extends Modal {
                 });
 
                 // Start save timeout
+                // TODO: This does not cancel the request if it is in progress
                 this._timeout = window.setTimeout(() => {
-                    this.onSaveError('GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!');
+                    this.onSaveError({ message: 'GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!' });
                 }, SAVE_TIMEOUT);
             });
         };

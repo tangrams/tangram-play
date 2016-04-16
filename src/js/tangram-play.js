@@ -122,58 +122,42 @@ class TangramPlay {
 
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
+            let fetchPromise;
+
             // If it appears to be a Gist URL:
-            // TODO: Don't duplicate window.fetch process
             if (isGistURL(scene.url) === true) {
-                getSceneURLFromGistAPI(scene.url)
+                fetchPromise = getSceneURLFromGistAPI(scene.url)
                     .then(url => {
                         // Update the scene URL property with the correct URL
                         // to the raw YAML to ensure safe loading
                         scene.url = url;
                         return window.fetch(url);
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            if (response.status === 404) {
-                                throw new Error('The scene you requested could not be found.');
-                            }
-                            else {
-                                throw new Error('Something went wrong loading the scene!');
-                            }
-                        }
-
-                        return response.text();
-                    })
-                    .then(contents => {
-                        this._doLoadProcess({ url: scene.url, contents });
-                    })
-                    .catch(error => {
-                        this._onLoadError(error);
                     });
             }
             // Fetch the contents of a YAML file directly. This step
             // allows us to verify contents (TODO) or error status.
             else {
-                window.fetch(scene.url)
-                    .then(response => {
-                        if (!response.ok) {
-                            if (response.status === 404) {
-                                throw new Error('The scene you requested could not be found.');
-                            }
-                            else {
-                                throw new Error('Something went wrong loading the scene!');
-                            }
-                        }
-
-                        return response.text();
-                    })
-                    .then(contents => {
-                        this._doLoadProcess({ url: scene.url, contents });
-                    })
-                    .catch(error => {
-                        this._onLoadError(error);
-                    });
+                fetchPromise = window.fetch(scene.url);
             }
+
+            fetchPromise.then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('The scene you requested could not be found.');
+                    }
+                    else {
+                        throw new Error('Something went wrong loading the scene!');
+                    }
+                }
+
+                return response.text();
+            })
+            .then(contents => {
+                this._doLoadProcess({ url: scene.url, contents });
+            })
+            .catch(error => {
+                this._onLoadError(error);
+            });
         }
         else if (scene.contents) {
             this._doLoadProcess(scene);
