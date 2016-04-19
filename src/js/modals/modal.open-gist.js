@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import TangramPlay from '../tangram-play';
 import Modal from './modal';
 import ErrorModal from './modal.error';
@@ -20,7 +21,7 @@ class OpenGistModal extends Modal {
                     TangramPlay.load({ url });
                 })
                 .catch(error => {
-                    this._onError(error);
+                    this._onError(error, value);
                 });
         };
         const onAbort = () => {
@@ -99,17 +100,48 @@ class OpenGistModal extends Modal {
     /**
      * If opening a URL is not successful
      *
-     * @param {Error} Thrown by something else
+     * @param {Error} error - thrown by something else
+     *    if error.message is a number, then it is a status code from Fetch
+     *    but status code numbers are converted to strings
+     *    there must be a better way of doing this
+     * @param {string} url - the Gist URL that was attempted
      */
-    _onError (error) {
+    _onError (error, url) {
         // Close the modal
         this.hide();
 
+        let message = '';
+
+        if (error.message === '404') {
+            message = 'This Gist could not be found.';
+        }
+        else if (error.message === '403') {
+            message = 'We exceeded the rate limit for GitHub’s non-authenticated request API.';
+        }
+        else if (Number.isInteger(window.parseInt(error.message, 10))) {
+            message = `The Gist server gave us an error code of ${error.message}`;
+        }
+
         // Show error modal
-        const errorModal = new ErrorModal(`Could not load the Gist! ${error.message}`);
+        const errorModal = new ErrorModal(`Could not load the Gist! ${message}`);
         errorModal.show();
+
+        if (error.message === '404') {
+            removeNonexistentGistFromLocalStorage(url);
+        }
     }
 }
 
 // Instantiate this modal ASAP and export it!
 export const openGistModal = new OpenGistModal();
+
+function removeNonexistentGistFromLocalStorage (url) {
+    const gists = JSON.parse(LocalStorage.getItem(STORAGE_SAVED_GISTS));
+
+    // Filter the unfound gist URL from the gist list
+    gists.arr = _.reject(gists.arr, (str) => {
+        return str === url;
+    });
+
+    LocalStorage.setItem(STORAGE_SAVED_GISTS, JSON.stringify(gists));
+}

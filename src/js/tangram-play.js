@@ -19,7 +19,8 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
-import { parseQuery } from './tools/helpers';
+import { getQueryStringObject, serializeToQueryString } from './tools/helpers';
+import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
@@ -31,7 +32,7 @@ import './file/drop';
 import './menus/menu';
 import './ui/tooltip';
 
-const query = parseQuery(window.location.search.slice(1));
+const query = getQueryStringObject();
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
@@ -121,37 +122,57 @@ class TangramPlay {
 
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
-            window.fetch(scene.url)
-                .then(response => {
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            throw new Error('The scene you requested could not be found.');
-                        }
-                        else {
-                            throw new Error('Something went wrong loading the scene!');
-                        }
-                    }
+            let fetchPromise;
 
-                    return response.text();
-                })
-                .then(body => {
-                    scene.contents = body;
-                    this._doLoadProcess(scene);
-                })
-                .catch(error => {
-                    const errorModal = new ErrorModal(error.message);
-                    errorModal.show();
-                    hideSceneLoadingIndicator();
+            // If it appears to be a Gist URL:
+            if (isGistURL(scene.url) === true) {
+                fetchPromise = getSceneURLFromGistAPI(scene.url)
+                    .then(url => {
+                        // Update the scene URL property with the correct URL
+                        // to the raw YAML to ensure safe loading
+                        scene.url = url;
+                        return window.fetch(url);
+                    });
+            }
+            // Fetch the contents of a YAML file directly. This step
+            // allows us to verify contents (TODO) or error status.
+            else {
+                fetchPromise = window.fetch(scene.url);
+            }
 
-                    // TODO: editor should not be attached to this
-                    if (initialLoad === true) {
-                        showUnloadedState(this.editor);
-                        this.editor.doc.markClean();
+            fetchPromise.then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('The scene you requested could not be found.');
                     }
-                });
+                    else {
+                        throw new Error('Something went wrong loading the scene!');
+                    }
+                }
+
+                return response.text();
+            })
+            .then(contents => {
+                this._doLoadProcess({ url: scene.url, contents });
+            })
+            .catch(error => {
+                this._onLoadError(error);
+            });
         }
         else if (scene.contents) {
             this._doLoadProcess(scene);
+        }
+    }
+
+    _onLoadError (error) {
+        const errorModal = new ErrorModal(error.message);
+        errorModal.show();
+        hideSceneLoadingIndicator();
+
+        // TODO: editor should not be attached to this
+        if (initialLoad === true) {
+            showUnloadedState(this.editor);
+            this.editor.doc.markClean();
         }
     }
 
@@ -160,7 +181,6 @@ class TangramPlay {
 
         // Send url to map and contents to editor
         // TODO: get contents from Tangram instead of another xhr request.
-        // console.log(scene)
         loadScene(url, {
             reset: true,
             basePath: scene['original_base_path']
@@ -173,7 +193,9 @@ class TangramPlay {
         initialLoad = false;
 
         // Update history
-        let locationPrefix = '.';
+        // Can't do a pushstate where the URL includes 'http://localhost' due to security
+        // problems. So we have to let the browser do the routing relative to the server
+        let locationPrefix = window.location.pathname;
         if (scene.url) {
             locationPrefix += '?scene=' + scene.url;
         }
@@ -239,7 +261,21 @@ class TangramPlay {
     updateContent () {
         const content = this.getContent();
         const url = createObjectURL(content);
+
+        // Send scene data to Tangram
         loadScene(url);
+
+        // Update the page URL. For editor changes in particular,
+        // the ?scene=parameter should be erased. This prevents
+        // reloading (or copy-pasting the URL) from directing to
+        // the wrong scene.
+        const queryObj = getQueryStringObject();
+        if (queryObj.scene) {
+            delete queryObj.scene;
+            const url = window.location.pathname;
+            const queryString = serializeToQueryString(queryObj);
+            window.history.replaceState({}, null, url + queryString + window.location.hash);
+        }
     }
 
     // GET
@@ -370,7 +406,7 @@ function determineScene () {
     let scene = {};
 
     // If there is a query, return it
-    let query = parseQuery(window.location.search.slice(1));
+    let query = getQueryStringObject();
     if (query.scene) {
         scene.url = query.scene;
         return scene;

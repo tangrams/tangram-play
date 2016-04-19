@@ -4,11 +4,12 @@ import Modal from './modal';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
 import { getScreenshotData } from '../map/map';
+import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
 
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
 const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Play.';
 const STORAGE_SAVED_GISTS = 'gists';
-const SAVE_TIMEOUT = 6000; // ms before we assume saving is failure
+const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
 class SaveGistModal extends Modal {
     constructor () {
@@ -105,8 +106,9 @@ class SaveGistModal extends Modal {
                 });
 
                 // Start save timeout
+                // TODO: This does not cancel the request if it is in progress
                 this._timeout = window.setTimeout(() => {
-                    this.onSaveError('GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!');
+                    this.onSaveError({ message: 'GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!' });
                 }, SAVE_TIMEOUT);
             });
         };
@@ -160,6 +162,16 @@ class SaveGistModal extends Modal {
 
         // Mark as clean state in the editor
         editor.doc.markClean();
+
+        // Update the page URL. The scene parameter should
+        // reflect the new scene URL.
+        // TODO: Combine with similar functionality in
+        // tangram-play.js updateContent()
+        const queryObj = getQueryStringObject();
+        queryObj.scene = gist.url;
+        const url = window.location.pathname;
+        const queryString = serializeToQueryString(queryObj);
+        window.history.replaceState({}, null, url + queryString + window.location.hash);
 
         // Show success modal
         let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: document.body.querySelector('.save-gist-success-modal') });
