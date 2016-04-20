@@ -5,7 +5,7 @@
     "boss": true,
     "curly": true,
     "devel": true,
-    "esnext": true,
+    "esversion": 6,
     "eqnull": true,
     "eqeqeq": true,
     "expr": true,

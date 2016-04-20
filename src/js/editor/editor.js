@@ -38,9 +38,11 @@ export function initEditor (id) {
     let rulers = [];
     for (let i = 1; i < 10; i++) {
         let b = Math.round((0.88 + i / 90) * 255);
-        rulers.push({ color: 'rgba(' + b + ',' + b + ',' + b + ', 0.08)',
-                      column: i * 4,
-                      lineStyle: 'dotted' });
+        rulers.push({
+            color: 'rgba(' + b + ',' + b + ',' + b + ', 0.08)',
+            column: i * 4,
+            lineStyle: 'dotted'
+        });
     }
 
     // Create DOM (TODO)
