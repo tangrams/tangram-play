@@ -32,8 +32,8 @@
 .CodeMirror-vscrollbar,
 .CodeMirror-hscrollbar {
     &::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 12px;
+        height: 12px;
     }
 
     &::-webkit-scrollbar-track {
@@ -47,8 +47,8 @@
 
 .CodeMirror-scrollbar-filler {
     background-color: var(--ui-component-color);
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
 }
 
 .cm-s-tangram.CodeMirror {
