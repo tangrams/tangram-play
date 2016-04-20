@@ -1,3 +1,4 @@
+[![CircleCI](https://img.shields.io/circleci/project/tangrams/tangram-play.svg?style=flat-square)](https://circleci.com/gh/tangrams/tangram-play/)
 [![David Dependencies](https://img.shields.io/david/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play)
 [![David devDependencies](https://img.shields.io/david/dev/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play#info=devDependencies)
 

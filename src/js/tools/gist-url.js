@@ -22,6 +22,9 @@ const gistIdRegexp = /\/\/(?:(?:gist.github.com|gist.githubusercontent.com)(?:\/
  * If the URL matches, it returns true. Otherwise, this returns false.
  * Note that this does not test whether the URL is actually a valid URL
  * string or that the gist exists.
+ *
+ * @param {string} url - any possible variation of a Gist URL
+ * @returns {Boolean}
  */
 export function isGistURL (url) {
     if ((url.includes('api.github.com/gists') || url.includes('gist.github.com')) &&
@@ -41,6 +44,11 @@ export function isGistURL (url) {
  * to know to load a Gist, so all Gist URLs must convert to this
  * format:
  *    https://api.github.com/gists/{gistId}
+ *
+ * @param {string} url - any possible variation of a Gist URL
+ * @returns {string} url - https://api.github.com/gists/{gistId}
+ * @todo This function does not respect requests for specific commit
+ *      SHAs or different files within a gist.
  */
 export function getGistURL (url) {
     // The last capture group of the RegExp should be the gistID
@@ -55,6 +63,9 @@ export function getGistURL (url) {
  * value that is the Tangram YAML scene file's raw URL.
  *
  * Errors should be caught by the calling module.
+ *
+ * @param {string} url - any possible variation of a Gist URL
+ * @returns {Promise} fulfilled with scene file's raw URL value
  */
 export function getSceneURLFromGistAPI (url) {
     // Make sure that the URL is the Gist API's single gist manifest endpoint.
