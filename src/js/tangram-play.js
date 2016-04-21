@@ -5,6 +5,7 @@ import 'whatwg-fetch';
 // Core elements
 import { tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
+import { config } from './config';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
@@ -24,7 +25,7 @@ import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
-import { injectAPIKeys, suppressAPIKeys } from './editor/api-keys';
+import { injectAPIKey, suppressAPIKeys } from './editor/api-keys';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
@@ -216,7 +217,7 @@ class TangramPlay {
 
     _setSceneContentsInEditor (sceneData) {
         // Remove any instances of Tangram Play's default API key
-        let contents = suppressAPIKeys(sceneData.contents);
+        let contents = suppressAPIKeys(sceneData.contents, config.API_KEY.SUPPRESSED);
 
         // Set content in CodeMirror
         this.editor.setValue(contents);
@@ -283,7 +284,7 @@ class TangramPlay {
     getContent () {
         let content = this.editor.getValue();
         //  If API keys are missing, inject one
-        content = injectAPIKeys(content);
+        content = injectAPIKey(content, config.API_KEY.DEFAULT);
         return content;
     }
 
