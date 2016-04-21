@@ -1,129 +1,247 @@
 {
     "keys": [
-        
         {
             "address": "^/$",
             "level": 0,
-            "options": ["cameras","lights", "styles", "sources","layers"]
+            "options": [
+                "cameras",
+                "lights",
+                "styles",
+                "sources",
+                "layers"
+            ]
         },
-
         {
             "address": "^/scene$",
             "level": 1,
-            "options": ["background","animated"]
+            "options": [
+                "background",
+                "animated"
+            ]
         },
-
         {
             "address": "^/scene/background$",
             "level": 2,
-            "options": ["color"]
+            "options": [
+                "color"
+            ]
         },
-
         {
             "address": "^/sources/(\\w|\\_|\\-)+$",
             "level": 2,
-            "options": ["type", "url", "max_zoom", "enforce_winding"]
+            "options": [
+                "type",
+                "url",
+                "max_zoom",
+                "enforce_winding"
+            ]
         },
-
         {
             "address": "^/cameras/(\\w|\\_|\\-)+$",
             "level": 2,
-            "options": ["type","position","zoom","active","fov","vanishing_point", "focal_length", "axis"]
+            "options": [
+                "type",
+                "position",
+                "zoom",
+                "active",
+                "fov",
+                "vanishing_point",
+                "focal_length",
+                "axis"
+            ]
         },
-
         {
             "address": "^/lights/(\\w|\\_|\\-)+$",
             "level": 2,
-            "options": ["type","diffuse", "ambient","specular","direction", "position", "origin", "radius", "attenuation", "exponent", "visible", "angle"]
+            "options": [
+                "type",
+                "diffuse",
+                "ambient",
+                "specular",
+                "direction",
+                "position",
+                "origin",
+                "radius",
+                "attenuation",
+                "exponent",
+                "visible",
+                "angle"
+            ]
         },
-        
         {
             "address": "^/styles/(\\w|\\_|\\-)+$",
             "level": 2,
-            "options": ["base", "mix", "blend", "blend_order", "lighting", "texcoords", "animated", "material", "shaders", "texture", "url"]
+            "options": [
+                "base",
+                "mix",
+                "blend",
+                "blend_order",
+                "lighting",
+                "texcoords",
+                "animated",
+                "material",
+                "shaders",
+                "texture",
+                "url"
+            ]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/material$",
             "level": 3,
-            "options": ["normal","emission","ambient","diffuse","specular","shininess"]
+            "options": [
+                "normal",
+                "emission",
+                "ambient",
+                "diffuse",
+                "specular",
+                "shininess"
+            ]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/material/(normal|emission|ambient|diffuse|specular)$",
             "level": 4,
-            "options": ["texture","mapping","scale","amount"]
+            "options": [
+                "texture",
+                "mapping",
+                "scale",
+                "amount"
+            ]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/shaders$",
             "level": 3,
-            "options": ["blocks"]
+            "options": [
+                "blocks"
+            ]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/shaders/blocks$",
             "level": 4,
-            "options": ["global", "position", "width", "normal", "color", "filter"]
+            "options": [
+                "global",
+                "position",
+                "width",
+                "normal",
+                "color",
+                "filter"
+            ]
         },
-        
         {
             "address": "^/layers/(\\w|\\_|\\-)+$",
             "level": 2,
-            "options": ["data", "filter", "visible", "draw"]
+            "options": [
+                "data",
+                "filter",
+                "visible",
+                "draw"
+            ]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data$",
             "level": 3,
-            "options": ["source", "layer"]
+            "options": [
+                "source",
+                "layer"
+            ]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/draw$",
             "level": 3,
-            "options": ["points", "lines", "polygons", "text"],
+            "options": [
+                "points",
+                "lines",
+                "polygons",
+                "text"
+            ],
             "source": "/styles"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)+/draw/(\\w|\\_|\\-)+$",
             "level": 4,
-            "options": ["style", "order", "interactive", "width", "outline", "extrude", "font", "text_source", "collide", "repeat_distance", "repeat_group","priority", "color", "sprite", "size", "sprite_default", "cap", "join", "tile_edges"],
+            "options": [
+                "style",
+                "order",
+                "interactive",
+                "width",
+                "outline",
+                "extrude",
+                "font",
+                "text_source",
+                "collide",
+                "repeat_distance",
+                "repeat_group",
+                "priority",
+                "color",
+                "sprite",
+                "size",
+                "sprite_default",
+                "cap",
+                "join",
+                "tile_edges"
+            ],
             "source": "/styles"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font$",
             "level": 5,
-            "options": ["fill", "typeface", "weight", "family", "type", "stroke", "size", "capitalized", "move_into_tile", "align", "style", "text_wrap", "anchor"]
+            "options": [
+                "fill",
+                "typeface",
+                "weight",
+                "family",
+                "type",
+                "stroke",
+                "size",
+                "capitalized",
+                "move_into_tile",
+                "align",
+                "style",
+                "text_wrap",
+                "anchor"
+            ]
         }
     ],
-
     "values": [
         {
             "address": "^/scene/background/color$",
             "type": "color",
-            "defaultValue": "[0., 0., 0.]" 
+            "defaultValue": "[0., 0., 0.]"
         },
         {
             "key": "^animated$",
             "type": "boolean",
-            "defaultValue": "false" 
+            "defaultValue": "false"
         },
-
         {
             "address": "^/sources/(\\w|\\_|\\-)+/type$",
             "type": "string",
-            "options": ["GeoJSON","TopoJSON", "MVT"]
+            "options": [
+                "GeoJSON",
+                "TopoJSON",
+                "MVT"
+            ]
         },
         {
             "address": "^/sources/(\\w|\\_|\\-)+/max_zoom$",
             "type": "number",
-            "range": [0,22]
+            "range": [
+                0,
+                22
+            ]
         },
         {
             "address": "^/sources/(\\w|\\_|\\-)+/enforce_winding$",
             "type": "boolean",
-            "defaultValue": "false" 
+            "defaultValue": "false"
         },
-
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/type$",
             "type": "string",
-            "options": ["flat","perspective", "isometric"]
+            "options": [
+                "flat",
+                "perspective",
+                "isometric"
+            ]
         },
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/position$",
@@ -153,7 +271,10 @@
         {
             "address": "^/cameras/(\\w|\\_|\\-)+/fov$",
             "type": "number",
-            "range": [0,90],
+            "range": [
+                0,
+                90
+            ],
             "defaultValue": 80
         },
         {
@@ -161,11 +282,15 @@
             "type": "vector2",
             "defaultValue": "[0, 1]"
         },
-
         {
             "address": "^/lights/(\\w|\\_|\\-)+/type$",
             "type": "string",
-            "options": ["ambient","directional", "point", "spotlight"]
+            "options": [
+                "ambient",
+                "directional",
+                "point",
+                "spotlight"
+            ]
         },
         {
             "key": "^ambient$",
@@ -183,9 +308,9 @@
             "defaultValue": "[0., 0., 0.]"
         },
         {
-            "key": "visible", 
+            "key": "visible",
             "type": "boolean",
-            "defaultValue": "true" 
+            "defaultValue": "true"
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/direction$",
@@ -199,7 +324,11 @@
         {
             "address": "^/lights/(\\w|\\_|\\-)+/origin$",
             "type": "string",
-            "options": ["camera", "world","ground"],
+            "options": [
+                "camera",
+                "world",
+                "ground"
+            ],
             "defaultValue": "world"
         },
         {
@@ -209,26 +338,39 @@
         {
             "address": "^/lights/(\\w|\\_|\\-)+/attenuation$",
             "type": "number",
-            "range":[0,2],
+            "range": [
+                0,
+                2
+            ],
             "defaultValue": 1
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/angle$",
             "type": "number",
-            "range": [0,90],
+            "range": [
+                0,
+                90
+            ],
             "defaultValue": 20
         },
         {
             "address": "^/lights/(\\w|\\_|\\-)+/exponent$",
             "type": "number",
-            "range": [0,10],
+            "range": [
+                0,
+                10
+            ],
             "defaultValue": 0.2
         },
-
         {
             "address": "^/styles/(\\w|\\_|\\-)+/base",
             "type": "string",
-            "options": ["points", "lines", "polygons", "text"]
+            "options": [
+                "points",
+                "lines",
+                "polygons",
+                "text"
+            ]
         },
         {
             "address": "^/styles/(\\w|\\_|\\-)+/mix$",
@@ -238,7 +380,12 @@
         {
             "address": "^/styles/(\\w|\\_|\\-)+/blend$",
             "type": "string",
-            "options": ["add","multiply", "overlay", "inlay"],
+            "options": [
+                "add",
+                "multiply",
+                "overlay",
+                "inlay"
+            ],
             "defaultValue": "none"
         },
         {
@@ -246,18 +393,21 @@
             "type": "number",
             "defaultValue": "0"
         },
-        {   
+        {
             "address": "^/styles/(\\w|\\_|\\-)+/lighting$",
             "type": "string",
-            "options": ["fragment", "vertex", "false"],
+            "options": [
+                "fragment",
+                "vertex",
+                "false"
+            ],
             "defaultValue": "fragment"
         },
-        {   
+        {
             "address": "^/styles/(\\w|\\_|\\-)+/texcoords$",
             "type": "boolean",
             "defaultValue": "false"
         },
-
         {
             "key": "^emission$",
             "type": "color"
@@ -265,13 +415,22 @@
         {
             "address": "/(ambient|diffuse|specular|emission)/mapping$",
             "type": "string",
-            "options": ["uv","spheremap", "planar", "triplanar"],
+            "options": [
+                "uv",
+                "spheremap",
+                "planar",
+                "triplanar"
+            ],
             "defaultValue": "spheremap"
         },
         {
             "address": "/normal/mapping$",
             "type": "string",
-            "options": ["uv", "planar", "triplanar"],
+            "options": [
+                "uv",
+                "planar",
+                "triplanar"
+            ],
             "defaultValue": "triplanar"
         },
         {
@@ -284,7 +443,6 @@
             "type": "number",
             "defaultValue": 1
         },
-
         {
             "address": "/draw/(\\w|\\_|\\-|\\/)+/color$",
             "type": "color",
@@ -293,31 +451,39 @@
         {
             "key": "^fill$",
             "type": "color",
-            "defaultValue": "[0., 0., 0.]" 
+            "defaultValue": "[0., 0., 0.]"
         },
-
         {
-            "key": "join", 
+            "key": "join",
             "type": "string",
-            "options": ["none","miter","round", "bevel"],
-            "defaultValue": "true" 
+            "options": [
+                "none",
+                "miter",
+                "round",
+                "bevel"
+            ],
+            "defaultValue": "true"
         },
         {
             "key": "cap",
             "type": "string",
-            "options": ["butt","square", "round"] 
+            "options": [
+                "butt",
+                "square",
+                "round"
+            ]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
             "type": "string",
             "source": "/sources"
         },
-        {   
+        {
             "address": "^/layers/(\\w|\\_|\\-|\\/)+/extrude$",
             "type": "boolean",
             "defaultValue": "true"
         },
-        { 
+        {
             "address": "^/layers/(\\w|\\_|\\-|\\/)+/tile_edges$",
             "type": "boolean",
             "defaultValue": "true"
@@ -326,14 +492,18 @@
             "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/style$",
             "type": "string",
             "source": "/styles",
-            "options": ["points", "lines", "polygons", "text"]
+            "options": [
+                "points",
+                "lines",
+                "polygons",
+                "text"
+            ]
         },
         {
             "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/interactive$",
             "type": "boolean",
             "defaultValue": "false"
         },
-
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/capitalized$",
             "type": "boolean",
@@ -342,13 +512,25 @@
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/style$",
             "type": "string",
-            "options": ["normal", "bold", "italic", "oblique"],
+            "options": [
+                "normal",
+                "bold",
+                "italic",
+                "oblique"
+            ],
             "defaultValue": "normal"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/weight$",
             "type": "string",
-            "options": ["100", "200", "300", "400", "500", "600"],
+            "options": [
+                "100",
+                "200",
+                "300",
+                "400",
+                "500",
+                "600"
+            ],
             "defaultValue": "normal"
         },
         {
@@ -359,27 +541,62 @@
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/align$",
             "type": "string",
-            "options": ["center", "left", "right"],
+            "options": [
+                "center",
+                "left",
+                "right"
+            ],
             "defaultValue": "center"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/text_wrap$",
             "type": "string",
-            "options": ["false", "true", "10", "20"],
+            "options": [
+                "false",
+                "true",
+                "10",
+                "20"
+            ],
             "defaultValue": "false"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/anchor$",
             "type": "string",
-            "options": ["center", "top", "bottom",
-                        "left", "top-left", "bottom-left",
-                        "right", "top-right", "bottom-right" ],
+            "options": [
+                "center",
+                "top",
+                "bottom",
+                "left",
+                "top-left",
+                "bottom-left",
+                "right",
+                "top-right",
+                "bottom-right"
+            ],
             "defaultValue": "center"
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/family$",
             "type": "string",
-            "options": ["serif", "Georgia", "Palatino", "Times", "sans-serif", "Arial", "Helvetica", "Gadget", "cursive", "Impact", "Charcoal", "Tahoma", "Geneva", "Verdana", "monospace", "Courier", "Monaco"],
+            "options": [
+                "serif",
+                "Georgia",
+                "Palatino",
+                "Times",
+                "sans-serif",
+                "Arial",
+                "Helvetica",
+                "Gadget",
+                "cursive",
+                "Impact",
+                "Charcoal",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "monospace",
+                "Courier",
+                "Monaco"
+            ],
             "defaultValue": "Helvetica"
         },
         {
