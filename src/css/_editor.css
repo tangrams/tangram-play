@@ -31,6 +31,11 @@
 /* Stylized scroll bars, webkit only */
 .CodeMirror-vscrollbar,
 .CodeMirror-hscrollbar {
+    /* Sometimes, CodeMirror sets these scrollbars
+       to pointer-events: none, making them unselectable.
+       See discussion in issue #313 */
+    pointer-events: auto !important;
+
     &::-webkit-scrollbar {
         width: 12px;
         height: 12px;
