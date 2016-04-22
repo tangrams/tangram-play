@@ -126,8 +126,12 @@ class SaveGistModal extends Modal {
                         default:
                             throw new Error(`We got a ${response.status} code back from GitHub’s servers and don’t know what to do about it. Sorry, it’s a programmer error!`);
                     }
-                }).then(data => {
-                    this.onSaveSuccess(data);
+                }).then(gist => {
+                    this.onSaveSuccess({
+                        metadata: metadata,
+                        gist: gist,
+                        thumbnail: thumbnail
+                    });
                 }).catch(error => {
                     this.onSaveError(error);
                 });
@@ -180,9 +184,24 @@ class SaveGistModal extends Modal {
     // mark as clean state in the editor,
     // remember the success response,
     // and display a helpful message
-    onSaveSuccess (gist) {
+    onSaveSuccess (data) {
+        const gist = data.gist;
+
+        // Create storage object
+        const saveData = {
+            name: data.metadata.name,
+            description: data.gist.description,
+            view: data.metadata.view,
+            user: data.gist.user,
+            url: data.gist.url,
+            public: data.gist.public,
+            created_at: data.gist.created_at,
+            updated_at: data.gist.updated_at,
+            thumbnail: data.thumbnail
+        }
+
         // Store response in localstorage
-        LocalStorage.pushItem(STORAGE_SAVED_GISTS, gist.url);
+        LocalStorage.pushItem(STORAGE_SAVED_GISTS, JSON.stringify(saveData));
 
         // Close the modal
         this.hide();
