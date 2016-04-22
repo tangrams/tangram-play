@@ -206,12 +206,20 @@ class OpenGistModal extends Modal {
 // Instantiate this modal ASAP and export it!
 export const openGistModal = new OpenGistModal();
 
+/**
+ * Utility function for removing gists that match a url string.
+ *
+ * @param {string} url - the Gist to remove
+ */
 function removeNonexistentGistFromLocalStorage (url) {
     const gists = JSON.parse(LocalStorage.getItem(STORAGE_SAVED_GISTS));
 
     // Filter the unfound gist URL from the gist list
-    gists.arr = _.reject(gists.arr, (str) => {
-        return str === url;
+    gists.arr = _.reject(gists.arr, (item) => {
+        // Each item in the array is a string. Instead of checking whether
+        // the string is JSON-parsable, however, we'll assume that if any part
+        // of the string contains the url, then we can reject that item.
+        return new RegExp(url).test(item);
     });
 
     LocalStorage.setItem(STORAGE_SAVED_GISTS, JSON.stringify(gists));

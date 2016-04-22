@@ -76,6 +76,7 @@
 .open-gist-option-thumbnail {
     position: relative;
     margin-right: 10px;
+    line-height: 0; /* Removes baseline from image */
 
     img {
         width: 144px;
