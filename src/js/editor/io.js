@@ -29,6 +29,7 @@ const EditorIO = {
         else {
             const unsavedModal = new Modal('Your scene has not been saved. Continue?', callback);
             unsavedModal.show();
+            unsavedModal.confirmButton.focus();
         }
     },
     loadContentFromFile (content) {

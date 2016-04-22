@@ -5,7 +5,7 @@ export function returnTrue () {}
  * It breaks down the query string, e.g. '?scene=foo.yaml'
  * into this: { scene: "foo.yaml" }
  *
- * @param {string} window.location.search
+ * @param {string} queryString - defaults to window.location.search
  * @returns {Object} deserialized key-value pairs
  */
 export function getQueryStringObject (queryString = window.location.search) {
@@ -39,7 +39,7 @@ export function getQueryStringObject (queryString = window.location.search) {
  * into a valid query string. It turns { scene: "foo.yaml", bar: "baz" }
  * into '?scene=foo.yaml&bar=baz'
  *
- * @param {Object} set of key-value pairs
+ * @param {Object} obj - set of key-value pairs
  * @returns {string} valid facsimile for window.location.search
  */
 export function serializeToQueryString (obj = {}) {
@@ -68,10 +68,35 @@ export function serializeToQueryString (obj = {}) {
  * This is purportedly faster than clearning an element's
  * innerHTML property, e.g. el.innerHTML = '';
  *
- * @param {Node} the element to empty
+ * @param {Node} el - the element to empty
  */
 export function emptyDOMElement (el) {
     while (el.firstChild) {
         el.removeChild(el.firstChild);
+    }
+}
+
+/**
+ * Prepends a relative-protocol string to the beginning of a url.
+ *
+ * @param {string} url
+ */
+export function prependProtocolToUrl (url) {
+    // Look for whether or not the url string appears to begin with a valid
+    // scheme. "The scheme consists of a sequence of characters beginning with
+    // a letter and followed by any combination of letters, digits, plus (+),
+    // period (.), or hyphen (-)." (Wikipedia)
+    const schemePattern = /([a-zA-Z0-9+.-]+:)?\/\//;
+
+    // The string MUST start with this pattern. If not, append only the slashes
+    // to make this a protocol-relative URL. This is because we cannot necessarily
+    // guess whether the protocol is https://, http:// or something else. However,
+    // we can let the browser decide.
+    if (url.search(schemePattern) !== 0) {
+        return '//' + url;
+    }
+    // If the string does already start with a protocol (scheme), return it as is.
+    else {
+        return url;
     }
 }

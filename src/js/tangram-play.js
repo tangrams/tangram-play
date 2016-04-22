@@ -19,7 +19,7 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
-import { getQueryStringObject, serializeToQueryString } from './tools/helpers';
+import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { selectLines, isStrEmpty } from './editor/codemirror/tools';
@@ -123,6 +123,9 @@ class TangramPlay {
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
             let fetchPromise;
+
+            // Provide protocol if it appears to be protocol-less URL
+            scene.url = prependProtocolToUrl(scene.url);
 
             // If it appears to be a Gist URL:
             if (isGistURL(scene.url) === true) {
