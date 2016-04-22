@@ -198,7 +198,7 @@ class SaveGistModal extends Modal {
             created_at: data.gist.created_at,
             updated_at: data.gist.updated_at,
             thumbnail: data.thumbnail
-        }
+        };
 
         // Store response in localstorage
         LocalStorage.pushItem(STORAGE_SAVED_GISTS, JSON.stringify(saveData));
