@@ -40,16 +40,18 @@ Tangram Play is a static site, and can be viewed by any static fileserver, such 
 Download this repo, then start a web server in its directory:
 
     python -m SimpleHTTPServer 8000
-    
+
 If that doesn't work, try:
 
     python -m http.server 8000
-    
+
 Then navigate to: [http://localhost:8000](http://localhost:8000)
 
 ### Deployment process
 
 The `build/` directory is not committed to the source code. We use Circle.CI's configuration to compile all the files for deployment.
+
+Circle.CI also runs tests and lints code. If the code fails to lint, or tests fail, Circle.CI will refuse to deploy that code.
 
 ### Submitting a pull request
 
@@ -67,11 +69,22 @@ Like the [Tangram](https://github.com/tangrams/tangram) library itself, JavaScri
 
 ## Testing
 
-TODO
+Tangram Play has low test coverage, but we intend for this to improve dramatically over time. Pull requests that have tests included are more likely to be reviewed and approved quicker. The test stack is very similar to Tangram: it uses the [Karma][karma] test runner, the [Mocha][mocha] test framework, the [Chai][chai] assertion library (with the `assert` assertion style), and [Sinon][sinon] for stubs and mocks. The test environment is also transpiled with Babel and assumes the presence of ES2015 language features.
+
+To run tests:
+
+```sh
+npm run karma
+```
+
+[karma]: https://karma-runner.github.io/
+[mocha]: https://mochajs.org/
+[chai]: http://chaijs.com/
+[sinon]: http://sinonjs.org/
 
 ## Code style and linting
 
-This project has not been aggressively linted but we do have a code style. Tangram Play borrows [JSHint](http://jshint.com/docs/) rules from Tangram, and also attempts to codify Tangram code style into [JSCS](http://jscs.info/) rules, but this is still in need of a review. For Javascript / ES6 best-practices we refer to the [Airbnb Javascript style guide](https://github.com/airbnb/javascript) but we do not yet have any meaningful opinions on whether we need to differ from it.
+Tangram Play borrows [JSHint](http://jshint.com/docs/) rules from Tangram, and also attempts to codify Tangram code style into [JSCS](http://jscs.info/) rules, but this is still in need of a review. For Javascript / ES6 best-practices we refer to the [Airbnb Javascript style guide](https://github.com/airbnb/javascript) but we do not yet have any meaningful opinions on whether we need to differ from it.
 
 To run the linter, there is an npm script that runs both JSHint and JSCS on non-vendor-sourced Javascript files in the `src/` folder. This assumes that the CLI for JSHint and JSCS are also available:
 

@@ -6,7 +6,7 @@
 
 # Editor for Tangram scene files
 
-Tangram Play is an editor for Mapzen's [Tangram map-rendering library](https://github.com/tangrams/tangram) that makes it easy to build or modify Tangram scene files and see your changes right away. It runs entirely in your browser and can be accessed at https://tangrams.github.io/tangram-play.
+Tangram Play is an editor for Mapzen's [Tangram map-rendering library](https://github.com/tangrams/tangram) that makes it easy to build or modify Tangram scene files and see your changes right away. It runs entirely in your browser and can be accessed at https://mapzen.com/tangram/play/.
 
 Here is [a clip of Patricio's live demo](https://twitter.com/ajturner/status/652186516194762752/video/1) at [JS.Geo](http://www.jsgeo.com/) (October 2015) ([notes are here](https://github.com/mapzen/presentations/tree/master/08-2015-JSGEO)).
 
