@@ -3,9 +3,12 @@ import LocalStorage from '../storage/localstorage';
 import Modal from './modal';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
-import { getScreenshotData } from '../map/map';
+import { map, getScreenshotData } from '../map/map';
+import { getLocationLabel } from '../map/search';
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
+import { createThumbnail } from '../tools/thumbnail';
 
+const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
 const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Play.';
 const STORAGE_SAVED_GISTS = 'gists';
@@ -17,25 +20,28 @@ class SaveGistModal extends Modal {
 
         // Cache elements
         this.el = document.body.querySelector('.save-gist-modal');
-        this.filenameInput = this.el.querySelector('#gist-filename');
+        this.nameInput = this.el.querySelector('#gist-name');
         this.descriptionInput = this.el.querySelector('#gist-description');
         this.publicCheckbox = this.el.querySelector('#gist-public');
 
         // Set default values in UI
+        this.nameInput.value = DEFAULT_GIST_SCENE_NAME;
         this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
-        this.filenameInput.value = DEFAULT_GIST_SCENE_FILENAME;
 
         this.onConfirm = (event) => {
             // Waiting state
             this.waitStateOn();
 
-            // Only read from the filename input once
-            let filename = this.filenameInput.value;
-
-            // Blank filename is set to default value
-            if (filename.length === 0) {
-                filename = DEFAULT_GIST_SCENE_FILENAME;
+            // Name of the scene
+            let sceneName = this.nameInput.value;
+            if (sceneName.length === 0) {
+                sceneName = DEFAULT_GIST_SCENE_NAME;
             }
+
+            // Filename
+            // Currently, set it to default value.
+            // We will re-address filenames in multi-tab scenario.
+            let filename = DEFAULT_GIST_SCENE_FILENAME;
 
             // Append ".yaml" to the end of a filename if it does not
             // end with either ".yaml" or ".yml". GitHub Gist needs this
@@ -54,15 +60,30 @@ class SaveGistModal extends Modal {
             }
             else {
                 // Newlines are not accepted on gist descriptions, apparently.
-                description = this.descriptionInput.value + `[${DEFAULT_GIST_DESCRIPTION}]`;
+                description = this.descriptionInput.value + ` [${DEFAULT_GIST_DESCRIPTION}]`;
             }
 
             // Package up the data we want to post to gist
-            // TODO: Screenshot / thumbnail should be a fixed
-            // size and dimension. This makes saving and loading
-            // much more predictable.
+            // The first step is to grab a screenshot from the map and
+            // convert it to a thumbnail at a fixed dimension. This
+            // makes file sizes and layout more predictable.
             getScreenshotData().then(screenshot => {
+                const THUMBNAIL_WIDTH = 144;
+                const THUMBNAIL_HEIGHT = 81;
+
+                return createThumbnail(screenshot.url, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+            }).then(thumbnail => {
                 const files = {};
+                const metadata = {
+                    name: sceneName,
+                    view: {
+                        label: getLocationLabel(),
+                        lat: map.getCenter().lat,
+                        lng: map.getCenter().lng,
+                        zoom: map.getZoom()
+                    },
+                    date: new Date().toJSON()
+                };
 
                 // This is a single YAML file
                 // The key is its filename and it takes a content property
@@ -72,10 +93,16 @@ class SaveGistModal extends Modal {
                     content: TangramPlay.getContent()
                 };
 
-                // TODO: Does GitHub Gist have a limit on filesize?
-                // Test is currently ~900kb and it worked
-                files['screenshot.png'] = {
-                    content: screenshot.url
+                // GitHub Gist does not appear to have a limit on filesize,
+                // but this thumbnail image should clock in at around ~90kb to ~120kb
+                // (unoptimized, but that's the limitations of our thumbnail function)
+                files['thumbnail.png'] = {
+                    content: thumbnail
+                };
+
+                // Store metadata
+                files['.tangramplay'] = {
+                    content: JSON.stringify(metadata)
                 };
 
                 const data = {
@@ -90,7 +117,7 @@ class SaveGistModal extends Modal {
                     // POSTing to /gists API requires a JSON blob of
                     // MIME-type 'application/json'
                     body: JSON.stringify(data)
-                }).then((response) => {
+                }).then(response => {
                     switch(response.status) {
                         case 201:
                             return response.json();
@@ -99,9 +126,13 @@ class SaveGistModal extends Modal {
                         default:
                             throw new Error(`We got a ${response.status} code back from GitHub’s servers and don’t know what to do about it. Sorry, it’s a programmer error!`);
                     }
-                }).then((data) => {
-                    this.onSaveSuccess(data);
-                }).catch((error) => {
+                }).then(gist => {
+                    this.onSaveSuccess({
+                        metadata: metadata,
+                        gist: gist,
+                        thumbnail: thumbnail
+                    });
+                }).catch(error => {
                     this.onSaveError(error);
                 });
 
@@ -129,8 +160,8 @@ class SaveGistModal extends Modal {
     resetInputs () {
         this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
         this.descriptionInput.blur();
-        this.filenameInput.value = DEFAULT_GIST_SCENE_FILENAME;
-        this.filenameInput.blur();
+        this.nameInput.value = DEFAULT_GIST_SCENE_NAME;
+        this.nameInput.blur();
         this.publicCheckbox.checked = true;
         this.publicCheckbox.blur();
     }
@@ -153,9 +184,24 @@ class SaveGistModal extends Modal {
     // mark as clean state in the editor,
     // remember the success response,
     // and display a helpful message
-    onSaveSuccess (gist) {
+    onSaveSuccess (data) {
+        const gist = data.gist;
+
+        // Create storage object
+        const saveData = {
+            name: data.metadata.name,
+            description: data.gist.description,
+            view: data.metadata.view,
+            user: data.gist.user,
+            url: data.gist.url,
+            public: data.gist.public,
+            created_at: data.gist.created_at,
+            updated_at: data.gist.updated_at,
+            thumbnail: data.thumbnail
+        };
+
         // Store response in localstorage
-        LocalStorage.pushItem(STORAGE_SAVED_GISTS, gist.url);
+        LocalStorage.pushItem(STORAGE_SAVED_GISTS, JSON.stringify(saveData));
 
         // Close the modal
         this.hide();
@@ -177,8 +223,11 @@ class SaveGistModal extends Modal {
         let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: document.body.querySelector('.save-gist-success-modal') });
         SaveGistSuccessModal.urlInput = SaveGistSuccessModal.el.querySelector('#gist-saved-url');
         SaveGistSuccessModal.urlInput.value = gist.url;
+        SaveGistSuccessModal.urlInput.readOnly = true;
         SaveGistSuccessModal.show();
         SaveGistSuccessModal.urlInput.select();
+
+        document.querySelector('.gist-saved-copy-btn').focus();
 
         // Initiate clipboard button
         var clipboard = new Clipboard('.gist-saved-copy-btn');
@@ -214,6 +263,14 @@ class SaveGistModal extends Modal {
         // Show error modal
         const errorModal = new ErrorModal(`Uh oh! We tried to save your scene but something went wrong. ${error.message}`);
         errorModal.show();
+    }
+
+    show () {
+        super.show();
+
+        // Put the cursor on 'Scene name' immediately
+        this.nameInput.focus();
+        this.nameInput.select();
     }
 
     hide () {

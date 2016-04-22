@@ -335,6 +335,10 @@ function highlight (text, focus) {
     return text.replace(r, '<strong>$1</strong>');
 }
 
+export function getLocationLabel () {
+    return input.placeholder;
+}
+
 export default {
     init,
     setCurrentLatLng,

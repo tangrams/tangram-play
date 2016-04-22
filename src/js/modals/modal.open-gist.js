@@ -58,17 +58,88 @@ class OpenGistModal extends Modal {
         // Clear what's in the list element first
         emptyDOMElement(listEl);
 
-        for (let url of gists.arr) {
+        // Reverse-sort the gists; most recent will display up top
+        _.reverse(gists.arr);
+
+        for (let item of gists.arr) {
             const newOption = document.createElement('div');
-            const nameEl = document.createElement('div');
-
             newOption.className = 'open-gist-option';
-            newOption.setAttribute('data-value', url);
 
-            nameEl.className = 'open-gist-option-name';
-            nameEl.textContent = url;
+            // We have two types of things in this array.
+            // LEGACY: it's just a string for the gist URL.
+            // CURRENT: an object that has information in it.
+            // We'll try to JSON.parse the item first; if it works,
+            // then we can create a new entry for it. Otherwise,
+            // fallback to the string-only url.
+            let gist;
+            let isLegacy;
+            try {
+                gist = JSON.parse(item);
+                isLegacy = false;
+            }
+            // Not JSON-parseable; LEGACY gist url format.
+            catch (e) {
+                gist = item;
+                isLegacy = true;
+            }
 
-            newOption.appendChild(nameEl);
+            if (isLegacy === false) {
+                // TODO:
+                // There is actually a lot more info stored than is currently being
+                // displayed. We have date, user, public gist or not, and map view.
+                const thumbnailImgEl = new Image();
+                thumbnailImgEl.src = gist.thumbnail;
+
+                // A container element for the image is necessary for us to be
+                // able to do border highlighting around it
+                const thumbnailContainerEl = document.createElement('div');
+                thumbnailContainerEl.className = 'open-gist-option-thumbnail';
+                thumbnailContainerEl.appendChild(thumbnailImgEl);
+
+                const infoEl = document.createElement('div');
+                infoEl.className = 'open-gist-option-info';
+
+                const nameEl = document.createElement('div');
+                nameEl.className = 'open-gist-option-name';
+                nameEl.textContent = gist.name;
+
+                const descriptionEl = document.createElement('div');
+                descriptionEl.className = 'open-gist-option-description';
+
+                // TODO: don't hardcode
+                const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
+                let description = gist.description.replace(descPlaceholder, '');
+                if (description.length === 0) {
+                    descriptionEl.textContent = 'No description provided.';
+                }
+                else {
+                    descriptionEl.textContent = description;
+                }
+
+                // Show the date this was saved. TODO: better formatting;
+                // maybe use moment.js
+                const dateEl = document.createElement('div');
+                dateEl.className = 'open-gist-option-date';
+                dateEl.textContent = 'Saved on ' + new Date(gist['created_at']).toLocaleString();
+
+                infoEl.appendChild(nameEl);
+                infoEl.appendChild(descriptionEl);
+                infoEl.appendChild(dateEl);
+
+                newOption.setAttribute('data-value', gist.url);
+
+                newOption.appendChild(thumbnailContainerEl);
+                newOption.appendChild(infoEl);
+            }
+            else {
+                const nameEl = document.createElement('div');
+                nameEl.className = 'open-gist-option-legacy-name';
+                nameEl.textContent = gist;
+
+                newOption.setAttribute('data-value', gist);
+                newOption.appendChild(nameEl);
+            }
+
             newOption.addEventListener('click', event => {
                 this._selectExample(event.target);
             });
@@ -135,12 +206,20 @@ class OpenGistModal extends Modal {
 // Instantiate this modal ASAP and export it!
 export const openGistModal = new OpenGistModal();
 
+/**
+ * Utility function for removing gists that match a url string.
+ *
+ * @param {string} url - the Gist to remove
+ */
 function removeNonexistentGistFromLocalStorage (url) {
     const gists = JSON.parse(LocalStorage.getItem(STORAGE_SAVED_GISTS));
 
     // Filter the unfound gist URL from the gist list
-    gists.arr = _.reject(gists.arr, (str) => {
-        return str === url;
+    gists.arr = _.reject(gists.arr, (item) => {
+        // Each item in the array is a string. Instead of checking whether
+        // the string is JSON-parsable, however, we'll assume that if any part
+        // of the string contains the url, then we can reject that item.
+        return new RegExp(url).test(item);
     });
 
     LocalStorage.setItem(STORAGE_SAVED_GISTS, JSON.stringify(gists));
