@@ -5,7 +5,9 @@ import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
 import { getScreenshotData } from '../map/map';
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
+import { createThumbnail } from '../tools/thumbnail';
 
+const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
 const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
 const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Play.';
 const STORAGE_SAVED_GISTS = 'gists';
@@ -58,10 +60,15 @@ class SaveGistModal extends Modal {
             }
 
             // Package up the data we want to post to gist
-            // TODO: Screenshot / thumbnail should be a fixed
-            // size and dimension. This makes saving and loading
-            // much more predictable.
+            // The first step is to grab a screenshot from the map and
+            // convert it to a thumbnail at a fixed dimension. This
+            // makes file sizes and layout more predictable.
             getScreenshotData().then(screenshot => {
+                const THUMBNAIL_WIDTH = 144;
+                const THUMBNAIL_HEIGHT = 81;
+
+                return createThumbnail(screenshot.url, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+            }).then(thumbnail => {
                 const files = {};
 
                 // This is a single YAML file
@@ -72,10 +79,11 @@ class SaveGistModal extends Modal {
                     content: TangramPlay.getContent()
                 };
 
-                // TODO: Does GitHub Gist have a limit on filesize?
-                // Test is currently ~900kb and it worked
-                files['screenshot.png'] = {
-                    content: screenshot.url
+                // GitHub Gist does not appear to have a limit on filesize,
+                // but this thumbnail image should clock in at around ~90kb to ~120kb
+                // (unoptimized, but that's the limitations of our thumbnail function)
+                files['thumbnail.png'] = {
+                    content: thumbnail
                 };
 
                 const data = {
