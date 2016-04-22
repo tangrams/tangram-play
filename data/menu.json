@@ -5,23 +5,23 @@
 			"scenes": [
 				{
 					"name": "Default",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/default.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/default.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/default.yaml"
 				},
 				{
 					"name": "Grain",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain.yaml"
 				},
 				{
 					"name": "Grain Roads",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-roads.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-roads.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain-roads.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain-roads.yaml"
 				},
 				{
 					"name": "Grain Area",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-area.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/grain-area.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain-area.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain-area.yaml"
 				}
 			]
 		},
@@ -55,63 +55,63 @@
 			"scenes": [
 				{
 					"name": "Gotham",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/gotham.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/gotham.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/gotham.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/gotham.yaml"
 				},
 				{
 					"name": "Blueprint",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/blueprint.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/blueprint.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/blueprint.yaml"
 				},
 				{
 					"name": "TRON",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/tron.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/tron.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/tron.yaml"
 				},
 				{
 					"name": "Matrix",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/matrix.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/matrix.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/matrix.yaml"
 				},
 				{
 					"name": "Ikeda",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/ikeda.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/ikeda.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/ikeda.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/ikeda.yaml"
 				},
 				{
 					"name": "9845C",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/9845C.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/9845C.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/9845C.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/9845C.yaml"
 				},
 				{
 					"name": "Press",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/press.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/press.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/press.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/press.yaml"
 				},
 				{
 					"name": "Radar",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/radar.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/radar.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/radar.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/radar.yaml"
 				},
 				{
 					"name": "Crosshatch",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.png",
-					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/crosshatch.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/crosshatch.yaml"
 				},
 				{
 					"name": "Pericoli",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.png",
-					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/pericoli.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/pericoli.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/pericoli.yaml"
 				},
 				{
 					"name": "Patterns",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/patterns.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/patterns.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/patterns.yaml"
 				},
 				{
 					"name": "LEGO",
-					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.png",
-					"url": "https://rawgit.com/tangrams/tangram-sandbox/gh-pages/styles/lego.yaml"
+					"thumb": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/lego.png",
+					"url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/lego.yaml"
 				}
 			]
 		}
