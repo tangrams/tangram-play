@@ -223,8 +223,11 @@ class SaveGistModal extends Modal {
         let SaveGistSuccessModal = new Modal(undefined, undefined, undefined, { el: document.body.querySelector('.save-gist-success-modal') });
         SaveGistSuccessModal.urlInput = SaveGistSuccessModal.el.querySelector('#gist-saved-url');
         SaveGistSuccessModal.urlInput.value = gist.url;
+        SaveGistSuccessModal.urlInput.readOnly = true;
         SaveGistSuccessModal.show();
         SaveGistSuccessModal.urlInput.select();
+
+        document.querySelector('.gist-saved-copy-btn').focus();
 
         // Initiate clipboard button
         var clipboard = new Clipboard('.gist-saved-copy-btn');
@@ -260,6 +263,14 @@ class SaveGistModal extends Modal {
         // Show error modal
         const errorModal = new ErrorModal(`Uh oh! We tried to save your scene but something went wrong. ${error.message}`);
         errorModal.show();
+    }
+
+    show () {
+        super.show();
+
+        // Put the cursor on 'Scene name' immediately
+        this.nameInput.focus();
+        this.nameInput.select();
     }
 
     hide () {
