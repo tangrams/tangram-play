@@ -3,7 +3,8 @@ import LocalStorage from '../storage/localstorage';
 import Modal from './modal';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
-import { getScreenshotData } from '../map/map';
+import { map, getScreenshotData } from '../map/map';
+import { getLocationLabel } from '../map/search';
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
 import { createThumbnail } from '../tools/thumbnail';
 
@@ -19,25 +20,28 @@ class SaveGistModal extends Modal {
 
         // Cache elements
         this.el = document.body.querySelector('.save-gist-modal');
-        this.filenameInput = this.el.querySelector('#gist-filename');
+        this.nameInput = this.el.querySelector('#gist-name');
         this.descriptionInput = this.el.querySelector('#gist-description');
         this.publicCheckbox = this.el.querySelector('#gist-public');
 
         // Set default values in UI
+        this.nameInput.value = DEFAULT_GIST_SCENE_NAME;
         this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
-        this.filenameInput.value = DEFAULT_GIST_SCENE_FILENAME;
 
         this.onConfirm = (event) => {
             // Waiting state
             this.waitStateOn();
 
-            // Only read from the filename input once
-            let filename = this.filenameInput.value;
-
-            // Blank filename is set to default value
-            if (filename.length === 0) {
-                filename = DEFAULT_GIST_SCENE_FILENAME;
+            // Name of the scene
+            let sceneName = this.nameInput.value;
+            if (sceneName.length === 0) {
+                sceneName = DEFAULT_GIST_SCENE_NAME;
             }
+
+            // Filename
+            // Currently, set it to default value.
+            // We will re-address filenames in multi-tab scenario.
+            let filename = DEFAULT_GIST_SCENE_FILENAME;
 
             // Append ".yaml" to the end of a filename if it does not
             // end with either ".yaml" or ".yml". GitHub Gist needs this
@@ -56,7 +60,7 @@ class SaveGistModal extends Modal {
             }
             else {
                 // Newlines are not accepted on gist descriptions, apparently.
-                description = this.descriptionInput.value + `[${DEFAULT_GIST_DESCRIPTION}]`;
+                description = this.descriptionInput.value + ` [${DEFAULT_GIST_DESCRIPTION}]`;
             }
 
             // Package up the data we want to post to gist
@@ -70,6 +74,16 @@ class SaveGistModal extends Modal {
                 return createThumbnail(screenshot.url, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
             }).then(thumbnail => {
                 const files = {};
+                const metadata = {
+                    name: sceneName,
+                    view: {
+                        label: getLocationLabel(),
+                        lat: map.getCenter().lat,
+                        lng: map.getCenter().lng,
+                        zoom: map.getZoom()
+                    },
+                    date: new Date().toJSON()
+                };
 
                 // This is a single YAML file
                 // The key is its filename and it takes a content property
@@ -86,6 +100,11 @@ class SaveGistModal extends Modal {
                     content: thumbnail
                 };
 
+                // Store metadata
+                files['.tangramplay'] = {
+                    content: JSON.stringify(metadata)
+                };
+
                 const data = {
                     description: description,
                     public: this.publicCheckbox.checked,
@@ -98,7 +117,7 @@ class SaveGistModal extends Modal {
                     // POSTing to /gists API requires a JSON blob of
                     // MIME-type 'application/json'
                     body: JSON.stringify(data)
-                }).then((response) => {
+                }).then(response => {
                     switch(response.status) {
                         case 201:
                             return response.json();
@@ -107,9 +126,9 @@ class SaveGistModal extends Modal {
                         default:
                             throw new Error(`We got a ${response.status} code back from GitHub’s servers and don’t know what to do about it. Sorry, it’s a programmer error!`);
                     }
-                }).then((data) => {
+                }).then(data => {
                     this.onSaveSuccess(data);
-                }).catch((error) => {
+                }).catch(error => {
                     this.onSaveError(error);
                 });
 
@@ -137,8 +156,8 @@ class SaveGistModal extends Modal {
     resetInputs () {
         this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
         this.descriptionInput.blur();
-        this.filenameInput.value = DEFAULT_GIST_SCENE_FILENAME;
-        this.filenameInput.blur();
+        this.nameInput.value = DEFAULT_GIST_SCENE_NAME;
+        this.nameInput.blur();
         this.publicCheckbox.checked = true;
         this.publicCheckbox.blur();
     }
