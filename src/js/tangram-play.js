@@ -217,7 +217,7 @@ class TangramPlay {
 
     _setSceneContentsInEditor (sceneData) {
         // Remove any instances of Tangram Play's default API key
-        let contents = suppressAPIKeys(sceneData.contents, config.API_KEY.SUPPRESSED);
+        let contents = suppressAPIKeys(sceneData.contents, config.TILES.API_KEYS.SUPPRESSED);
 
         // Set content in CodeMirror
         this.editor.setValue(contents);
@@ -284,7 +284,7 @@ class TangramPlay {
     getContent () {
         let content = this.editor.getValue();
         //  If API keys are missing, inject one
-        content = injectAPIKey(content, config.API_KEY.DEFAULT);
+        content = injectAPIKey(content, config.TILES.API_KEYS.DEFAULT);
         return content;
     }
 
