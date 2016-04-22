@@ -8,8 +8,8 @@ import FloatPicker from '../pickers/float';
 
 export default class Helpers {
     constructor (main) {
-        // EVENTS
-        let wrapper = editor.getWrapperElement();
+        const wrapper = editor.getWrapperElement();
+
         wrapper.addEventListener('mouseup', (event) => {
             editor.clearGutter('var-in');
 
@@ -38,59 +38,21 @@ export default class Helpers {
             if (match) {
                 switch (match.type) {
                     case 'color':
-                        this.activeModal = new ColorPicker(match.string, { link_button: true });
-                        this.activeModal.showAt(editor);
-                        this.activeModal.on('changed', (color) => {
-                            let newColor = color.getString('vec');
-                            let start = { line: cursor.line, ch: match.start };
-                            let end = { line: cursor.line, ch: match.end };
-                            match.end = match.start + newColor.length;
-                            editor.replaceRange(newColor, start, end);
-                        });
+                        this.activeModal = newColorPicker(cursor, match);
 
+                        // This picker has an additional toggle for a vec3
                         this.activeModal.on('link_button', (color) => {
-                            this.activeModal = new Vec3Picker(color.getString('vec'));
-                            this.activeModal.showAt(editor);
-                            this.activeModal.on('changed', (dir) => {
-                                let newDir = dir.getString('vec3');
-                                let start = { line: cursor.line, ch: match.start };
-                                let end = { line: cursor.line, ch: match.end };
-                                match.end = match.start + newDir.length;
-                                editor.replaceRange(newDir, start, end);
-                            });
+                            this.activeModal = newVec3Picker(cursor, match);
                         });
                         break;
                     case 'vec3':
-                        this.activeModal = new Vec3Picker(match.string);
-                        this.activeModal.showAt(editor);
-                        this.activeModal.on('changed', (dir) => {
-                            let newDir = dir.getString('vec3');
-                            let start = { line: cursor.line, ch: match.start };
-                            let end = { line: cursor.line, ch: match.end };
-                            match.end = match.start + newDir.length;
-                            editor.replaceRange(newDir, start, end);
-                        });
+                        this.activeModal = newVec3Picker(cursor, match);
                         break;
                     case 'vec2':
-                        this.activeModal = new Vec2Picker(match.string);
-                        this.activeModal.showAt(editor);
-                        this.activeModal.on('changed', (pos) => {
-                            let newpos = pos.getString();
-                            let start = { line: cursor.line, ch: match.start };
-                            let end = { line: cursor.line, ch: match.end };
-                            match.end = match.start + newpos.length;
-                            editor.replaceRange(newpos, start, end);
-                        });
+                        this.activeModal = newVec2Picker(cursor, match);
                         break;
                     case 'number':
-                        this.activeModal = new FloatPicker(match.string);
-                        this.activeModal.showAt(editor);
-                        this.activeModal.on('changed', (string) => {
-                            let start = { line: cursor.line, ch: match.start };
-                            let end = { line: cursor.line, ch: match.end };
-                            match.end = match.start + string.length;
-                            editor.replaceRange(string, start, end);
-                        });
+                        this.activeModal = newFloatPicker(cursor, match);
                         break;
                     default:
                         break;
@@ -120,10 +82,9 @@ export default class Helpers {
         for (let type of types) {
             const matches = findAllMatches(type.pattern, line);
 
-            // If there are matches, determine if the cursor
-            // is in one of them.
-            // If so, return that widget type, otherwise,
-            // we test the next type to see if it matches.
+            // If there are matches, determine if the cursor is in one of them.
+            // If so, return that widget type, otherwise, we test the next type
+            // to see if it matches.
             for (let match of matches) {
                 let val = match[0];
                 let len = val.length;
@@ -153,8 +114,8 @@ export default class Helpers {
  * may not be the correct one. This function returns an array of
  * all the matches for the given regular expression.
  *
- * @param {RegExp} regular expression to test
- * @param {string} the string to test against
+ * @param {RegExp} pattern - regular expression to test
+ * @param {string} string - the string to test against
  */
 function findAllMatches (pattern, string) {
     const matches = [];
@@ -177,4 +138,69 @@ function findAllMatches (pattern, string) {
     }
 
     return matches;
+}
+
+/**
+ * Create and return picker modals
+ *
+ * @param {Object} cursor - CodeMirror cursor object
+ * @param {Object} match - Match information returned from getMatch()
+ */
+function newColorPicker (cursor, match) {
+    const picker = new ColorPicker(match.string, { link_button: true });
+
+    picker.showAt(editor);
+    picker.on('changed', (color) => {
+        let newColor = color.getString('vec');
+        let start = { line: cursor.line, ch: match.start };
+        let end = { line: cursor.line, ch: match.end };
+        match.end = match.start + newColor.length;
+        editor.replaceRange(newColor, start, end);
+    });
+
+    return picker;
+}
+
+function newVec3Picker (cursor, match) {
+    const picker = new Vec3Picker(match.string);
+
+    picker.showAt(editor);
+    picker.on('changed', (dir) => {
+        let newDir = dir.getString('vec3');
+        let start = { line: cursor.line, ch: match.start };
+        let end = { line: cursor.line, ch: match.end };
+        match.end = match.start + newDir.length;
+        editor.replaceRange(newDir, start, end);
+    });
+
+    return picker;
+}
+
+function newVec2Picker (cursor, match) {
+    const picker = new Vec2Picker(match.string);
+
+    picker.showAt(editor);
+    picker.on('changed', (pos) => {
+        let newpos = pos.getString();
+        let start = { line: cursor.line, ch: match.start };
+        let end = { line: cursor.line, ch: match.end };
+        match.end = match.start + newpos.length;
+        editor.replaceRange(newpos, start, end);
+    });
+
+    return picker;
+}
+
+function newFloatPicker (cursor, match) {
+    const picker = new FloatPicker(match.string);
+
+    picker.showAt(editor);
+    picker.on('changed', (string) => {
+        let start = { line: cursor.line, ch: match.start };
+        let end = { line: cursor.line, ch: match.end };
+        match.end = match.start + string.length;
+        editor.replaceRange(string, start, end);
+    });
+
+    return picker;
 }
