@@ -83,7 +83,6 @@
     "whatwg-fetch": "0.11.0"
   },
   "browserify-shim": {
-    "tangram": "global:Tangram",
-    "./src/js/vendor/colors.js": "Colors"
+    "tangram": "global:Tangram"
   }
 }
