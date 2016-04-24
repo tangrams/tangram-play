@@ -80,7 +80,9 @@ class TangramPlay {
                 original_url: tangram.scene.config_source,
                 original_base_path: tangram.scene.config_path,
                 contents: this.getContent(),
-                is_clean: this.editor.isClean()
+                is_clean: this.editor.isClean(),
+                scrollInfo: this.editor.getScrollInfo(),
+                cursor: this.editor.doc.getCursor()
             };
             saveSceneContentsToLocalMemory(sceneData);
         });
@@ -233,6 +235,20 @@ class TangramPlay {
         // saved and it is left in the "dirty" state.
         if (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true') {
             this.editor.doc.markClean();
+        }
+
+        // Restore cursor position, if provided.
+        if (sceneData.cursor) {
+            this.editor.doc.setCursor(sceneData.cursor, {
+                scroll: false
+            });
+        }
+
+        // Restores the part of the document that was scrolled to, if provided.
+        if (sceneData.scrollInfo) {
+            let left = sceneData.scrollInfo.left || 0;
+            let top = sceneData.scrollInfo.top || 0;
+            this.editor.scrollTo(left, top);
         }
 
         // Turn change watching back on.
