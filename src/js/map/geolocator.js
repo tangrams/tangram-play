@@ -1,5 +1,5 @@
 import { map } from '../map/map';
-import Modal from '../modals/modal';
+import ErrorModal from '../modals/modal.error';
 
 let buttonEl;
 
@@ -50,9 +50,31 @@ function onGeolocateSuccess (position) {
     resetGeolocateButton();
 }
 
+/**
+ * Handles geolocation error. Reports a user friendly error message
+ * if PositionError has provided the reason why it did not work.
+ *
+ * @param {PositionError} err - a PositionError object representing the
+ *      reason for the geolocation failure. It contains an error code
+ *      and a user-agent defined message. See also:
+ *      see https://developer.mozilla.org/en-US/docs/Web/API/PositionError
+ */
 function onGeolocateError (err) {
-    console.log(err);
-    const modal = new Modal('Unable to retrieve current position. Geolocation may be disabled on this browser or unavailable on this system.');
+    let message = 'Tangram Play could not retrieve your current position and we do not have enough information to know why.';
+    switch (err.code) {
+        case 1: // PERMISSION_DENIED
+            message = 'Tangram Play could not retrieve your current position because we do not have permission to use your browser’s geolocation feature. To get your current location, please turn it back on in your browser settings.';
+            break;
+        case 2: // POSITION_UNAVAILABLE
+            message = 'Tangram Play could not retrieve your current position because your browser’s geolocation feature reported an internal error.';
+            break;
+        case 3: // TIMEOUT
+            message = 'Tangram Play could not retrieve your current position because your browser’s geolocation feature did not respond.';
+            break;
+        default:
+            break;
+    }
+    const modal = new ErrorModal({ message });
     modal.show();
     resetGeolocateButton();
 }
