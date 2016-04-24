@@ -1,14 +1,11 @@
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
 
-let buttonEl;
+const geolocator = window.navigator.geolocation;
+const buttonEl = document.getElementById('geolocator');
 
-function init () {
-    const geolocator = window.navigator.geolocation;
-
-    // Cache a reference to the element
-    buttonEl = document.getElementById('geolocator');
-
+// Initializes the geocoder component
+export function initGeolocator () {
     // Hide the geolocator button if geolocation is not supported on the browser
     if (!geolocator) {
         buttonEl.parentNode.style.display = 'none';
@@ -42,11 +39,36 @@ function getCurrentLocation (success, error) {
 function onGeolocateSuccess (position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
+    const accuracy = position.coords.accuracy || 0;
 
-    // Zoom in a bit only if user's view is very zoomed out
-    let zoom = (map.getZoom() < 16) ? 16 : map.getZoom();
+    let originalZoom = map.getZoom();
+    let desiredZoom = originalZoom;
 
-    map.setView([latitude, longitude], zoom);
+    // Only zoom to a radius if the accuracy is actually a number or present
+    if (accuracy) {
+        // The circle needs to be added to the map in order for .getBounds() to work
+        let circle = L.circle([latitude, longitude], accuracy).addTo(map);
+        let bounds = circle.getBounds();
+
+        // Fit view to the accuracy diameter
+        map.fitBounds(bounds);
+
+        // If the new zoom level is within a +/- 1 range of the original
+        // zoom level, keep it the same
+        let newZoom = map.getZoom();
+        desiredZoom = (newZoom >= originalZoom - 1 && newZoom <= originalZoom + 1) ?
+            originalZoom : newZoom;
+
+        // Clean up
+        circle.remove();
+    }
+    else {
+        // Zoom in a bit only if user's view is very zoomed out
+        desiredZoom = (originalZoom < 16) ? 16 : originalZoom;
+    }
+
+    map.setZoom(desiredZoom);
+
     resetGeolocateButton();
 }
 
@@ -82,9 +104,3 @@ function onGeolocateError (err) {
 function resetGeolocateButton () {
     buttonEl.classList.remove('active');
 }
-
-let geolocator = {
-    init
-};
-
-export default geolocator;
