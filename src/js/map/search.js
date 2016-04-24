@@ -1,10 +1,9 @@
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from './bookmarks';
 import { map } from '../map/map';
+import { config } from '../config';
 
-const PELIAS_KEY = 'search-xFAc9NI';
-const PELIAS_HOST = 'search.mapzen.com';
-const PELIAS_THROTTLE = 300; // in ms, time to wait before repeating a request
+const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
 
 let locationBarEl;
 let input;
@@ -42,7 +41,7 @@ function setCurrentLatLng (latlng) {
 function reverseGeocode (latlng) {
     const lat = latlng.lat;
     const lng = latlng.lng;
-    const endpoint = `//${PELIAS_HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${PELIAS_KEY}`;
+    const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
     debounce(httpGet(endpoint, (err, res) => {
         if (err) {
@@ -58,7 +57,7 @@ function reverseGeocode (latlng) {
         else {
             input.placeholder = response.features[0].properties.label;
         }
-    }), PELIAS_THROTTLE);
+    }), SEARCH_THROTTLE);
 }
 
 function onInputKeyupHandler (event) {
@@ -181,19 +180,19 @@ let makeRequest = debounce(function (endpoint) {
             showResults(JSON.parse(res));
         }
     });
-}, PELIAS_THROTTLE);
+}, SEARCH_THROTTLE);
 
 // Get autocomplete suggestions
 function autocomplete (query) {
     const center = map.getCenter();
-    const endpoint = `//${PELIAS_HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
+    const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
     makeRequest(endpoint);
 }
 
 // Get search results
 function search (query) {
     const center = map.getCenter();
-    const endpoint = `//${PELIAS_HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${PELIAS_KEY}`;
+    const endpoint = `//${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
     makeRequest(endpoint);
 }
 
