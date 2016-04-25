@@ -6,12 +6,11 @@ describe('Helpers', () => {
         it('makes a protocol-less url protocol-relative', () => {
             const test1 = 'mapzen.com/carto/refill-style/2.0/refill-style.yaml';
             const test2 = 'api.github.com/gists/f00bar';
+            const test3 = 'localhost:8000/scene.yaml';
 
-            const result1 = prependProtocolToUrl(test1);
-            const result2 = prependProtocolToUrl(test2);
-
-            assert.strictEqual(result1, '//' + test1);
-            assert.strictEqual(result2, '//' + test2);
+            assert.strictEqual(prependProtocolToUrl(test1), '//' + test1);
+            assert.strictEqual(prependProtocolToUrl(test2), '//' + test2);
+            assert.strictEqual(prependProtocolToUrl(test3), '//' + test3);
         });
 
         it('ignores urls that already have a scheme', () => {

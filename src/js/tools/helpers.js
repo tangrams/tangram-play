@@ -91,7 +91,8 @@ export function prependProtocolToUrl (url) {
     // If the url string does not begin with a valid scheme, next check if it
     // looks like a domain name. This test expects the domain name to be
     // followed by a slash, otherwise file extension will look like a TLD.
-    const domainPattern = /([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+\//;
+    // Be sure to take into account "localhost" and port numbers.
+    const domainPattern = /((([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+)|localhost)(:[0-9]+)?\//;
 
     // The string MUST start with this pattern. If not, append only the slashes
     // to make this a protocol-relative URL. This is because we cannot necessarily
