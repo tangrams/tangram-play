@@ -95,8 +95,8 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        this.addons.widgetsManager = new WidgetsManager('data/tangram-api.json');
-        this.addons.suggestManager = new SuggestManager('data/tangram-api.json');
+        this.addons.widgetsManager = new WidgetsManager();
+        this.addons.suggestManager = new SuggestManager();
         // this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslHelpers();
         this.addons.errorsManager = new ErrorsManager();

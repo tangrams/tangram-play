@@ -2,6 +2,8 @@ import TangramPlay from '../tangram-play';
 import Modal from './modal';
 import EditorIO from '../editor/io';
 
+import EXAMPLES_DATA from './examples.json';
+
 class ExamplesModal extends Modal {
     constructor (config) {
         const message = 'Choose an example to open';
@@ -28,63 +30,48 @@ class ExamplesModal extends Modal {
         });
     }
 
-    // TODO: Refactor
     _loadExamples () {
-        const CONFIG_FILE = 'data/menu.json';
+        const listEl = this.el.querySelector('.example-list');
 
-        window.fetch(CONFIG_FILE, { credentials: 'include' })
-            .then(response => {
-                if (response.status !== 200) {
-                    throw response.status;
-                }
+        // TODO: Refactor DOM building
+        EXAMPLES_DATA.forEach(category => {
+            const categoryHeaderEl = document.createElement('h2');
+            const categoryUnderlineEl = document.createElement('hr');
 
-                return response.json();
-            })
-            .then(data => {
-                const listEl = this.el.querySelector('.example-list');
+            categoryHeaderEl.className = 'example-list-header';
+            categoryHeaderEl.textContent = category.category;
 
-                data.examples.forEach(category => {
-                    const categoryHeaderEl = document.createElement('h2');
-                    const categoryUnderlineEl = document.createElement('hr');
+            listEl.appendChild(categoryHeaderEl);
+            listEl.appendChild(categoryUnderlineEl);
 
-                    categoryHeaderEl.className = 'example-list-header';
-                    categoryHeaderEl.textContent = category.category;
+            category.scenes.forEach(scene => {
+                const newOption = document.createElement('div');
+                const nameEl = document.createElement('div');
+                const thumbnailEl = document.createElement('div');
 
-                    listEl.appendChild(categoryHeaderEl);
-                    listEl.appendChild(categoryUnderlineEl);
+                newOption.className = 'example-option';
+                newOption.setAttribute('data-value', scene.url);
 
-                    category.scenes.forEach(scene => {
-                        const newOption = document.createElement('div');
-                        const nameEl = document.createElement('div');
-                        const thumbnailEl = document.createElement('div');
+                nameEl.className = 'example-option-name';
+                nameEl.textContent = scene.name;
 
-                        newOption.className = 'example-option';
-                        newOption.setAttribute('data-value', scene.url);
+                thumbnailEl.className = 'example-thumbnail';
+                thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                thumbnailEl.style.backgroundImage = 'url(' + scene.thumb + ')';
 
-                        nameEl.className = 'example-option-name';
-                        nameEl.textContent = scene.name;
-
-                        thumbnailEl.className = 'example-thumbnail';
-                        thumbnailEl.style.backgroundColor = 'rgba(255,255,255,0.05)';
-                        thumbnailEl.style.backgroundImage = 'url(' + scene.thumb + ')';
-
-                        newOption.appendChild(nameEl);
-                        newOption.appendChild(thumbnailEl);
-                        newOption.addEventListener('click', event => {
-                            this._selectExample(event.target);
-                        });
-
-                        listEl.appendChild(newOption);
-
-                        newOption.addEventListener('dblclick', event => {
-                            this._handleConfirm();
-                        });
-                    });
+                newOption.appendChild(nameEl);
+                newOption.appendChild(thumbnailEl);
+                newOption.addEventListener('click', event => {
+                    this._selectExample(event.target);
                 });
-            })
-            .catch(error => {
-                console.error('Error retrieving config file.', error);
+
+                listEl.appendChild(newOption);
+
+                newOption.addEventListener('dblclick', event => {
+                    this._handleConfirm();
+                });
             });
+        });
     }
 
     _selectExample (target) {

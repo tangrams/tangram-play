@@ -1,7 +1,6 @@
 import TangramPlay from '../tangram-play';
+import TANGRAM_API from '../tangram-api.json';
 import { tangram } from '../map/map';
-
-// Load some common functions
 import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
 import { getAddressSceneContent, getAddressForLevel } from '../editor/codemirror/yaml-tangram';
 
@@ -10,35 +9,21 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 export default class SuggestManager {
-    constructor (configFile) {
+    constructor () {
         //  private variables
         this.keySuggestions = [];
         this.valueSuggestions = [];
         this.active = undefined;
 
-        // Load data file
-        window.fetch(configFile, { credentials: 'include' })
-            .then((response) => {
-                if (response.status !== 200) {
-                    throw response.status;
-                }
+        // Initialize tokens
+        for (let datum of TANGRAM_API.keys) {
+            this.keySuggestions.push(new Suggestion(datum));
+        }
 
-                return response.json();
-            })
-            .then((data) => {
-                // Initialize tokens
-                for (let datum of data.keys) {
-                    this.keySuggestions.push(new Suggestion(datum));
-                }
-
-                // Initialize tokens
-                for (let datum of data.values) {
-                    this.valueSuggestions.push(new Suggestion(datum));
-                }
-            })
-            .catch((error) => {
-                console.error('Error retrieving config file.', error);
-            });
+        // Initialize tokens
+        for (let datum of TANGRAM_API.values) {
+            this.valueSuggestions.push(new Suggestion(datum));
+        }
 
         // Trigger hint after each time the scene is uploaded
         TangramPlay.on('sceneupdate', (args) => {
