@@ -15,16 +15,7 @@ export function getNodes(cm, nLine) {
         lineHandle.stateAfter &&
         lineHandle.stateAfter.yamlState &&
         lineHandle.stateAfter.yamlState.nodes) {
-        // TEMPORAL_FIX:
-        // the nodes report line numbers as if blank lines do not exist,
-        // which is not where they actually are in the document. This fixes
-        // the line numbers to be the actual line number.
-        const nodes = lineHandle.stateAfter.yamlState.nodes;
-        for (let node of nodes) {
-            node.range.from.line = nLine;
-            node.range.to.line = nLine;
-        }
-        return nodes;
+        return lineHandle.stateAfter.yamlState.nodes;
     }
     else {
         // return [ {address: "/", key: '', value: '', pos: { line: 0, ch: 0 }, index: 0} ];
@@ -455,7 +446,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
     }
 
     return {
-        startState: function() {
+        startState: function () {
             let state = yamlMode.startState();
             state.keyStack = [];
             state.keyLevel = -1;
@@ -467,7 +458,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
                 yamlState: state
             };
         },
-        copyState: function(state) {
+        copyState: function (state) {
             if (state.localState) {
                 var local = CodeMirror.copyState(state.localMode, state.localState);
             }
@@ -478,13 +469,21 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
                 yamlState: CodeMirror.copyState(yamlMode, state.yamlState),
             };
         },
-        innerMode: function(state) {
+        innerMode: function (state) {
             return {
                 state: state.localState || state.yamlState,
                 mode: state.localMode || yamlMode
             };
         },
-        token: function(stream, state) {
+        // By default, CodeMirror skips blank lines when tokenizing a document.
+        // We need to know the exact line number for our YAML addressing system.
+        // CodeMirror allows a blankLine(state) method for languages with significant
+        // blank lines, which we use solely to increment the line number on our state
+        // object when a blank line is encountered by CodeMirror's parser.
+        blankLine: function (state) {
+            state.yamlState.line++
+        },
+        token: function (stream, state) {
             yamlAddressing(stream, state.yamlState);
             return state.token(stream, state);
         },
