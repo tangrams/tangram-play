@@ -141,14 +141,9 @@ function isAfterKey(str, pos) {
 //  ===============================================================================
 
 //  Get the address of a line state ( usually from the first key of a line )
-function getKeyAddressFromState(state) {
-    if (state.nodes) {
-        if (state.nodes.length > 0) {
-            return state.nodes[0].address;
-        }
-        else {
-            return '/';
-        }
+function getKeyAddressFromState (state) {
+    if (state.nodes && state.nodes.length > 0) {
+        return state.nodes[0].address;
     }
     else {
         return '/';
