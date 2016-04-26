@@ -1,7 +1,7 @@
 import LocalStorage from '../storage/localstorage';
 import { map } from './map';
 import search from './search';
-import geolocator from './geolocator';
+import { initGeolocator } from './geolocator';
 import bookmarks from './bookmarks';
 
 const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
@@ -16,7 +16,7 @@ export function initMapToolbar () {
     menuButtonEl = document.body.querySelector('.map-toolbar-collapsed');
 
     search.init();
-    geolocator.init();
+    initGeolocator();
     bookmarks.init();
 
     setupEventListeners();
