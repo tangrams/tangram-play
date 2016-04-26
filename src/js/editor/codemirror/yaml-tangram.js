@@ -10,15 +10,19 @@ import { getInd } from '../codemirror/tools';
 
 // Get array of YAML keys parent tree of a particular line
 export function getNodes(cm, nLine) {
-    if (cm.getLineHandle(nLine) &&
-        cm.getLineHandle(nLine).stateAfter &&
-        cm.getLineHandle(nLine).stateAfter.yamlState &&
-        cm.getLineHandle(nLine).stateAfter.yamlState.nodes) {
-        // TEMPORAL_FIX: Fix line parsing error
-        let nodes = cm.getLineHandle(nLine).stateAfter.yamlState.nodes;
-        for (let i = 0 ; i < nodes.length; i++) {
-            nodes[i].range.from.line = nLine;
-            nodes[i].range.to.line = nLine;
+    const lineHandle = cm.getLineHandle(nLine);
+    if (lineHandle &&
+        lineHandle.stateAfter &&
+        lineHandle.stateAfter.yamlState &&
+        lineHandle.stateAfter.yamlState.nodes) {
+        // TEMPORAL_FIX:
+        // the nodes report line numbers as if blank lines do not exist,
+        // which is not where they actually are in the document. This fixes
+        // the line numbers to be the actual line number.
+        const nodes = lineHandle.stateAfter.yamlState.nodes;
+        for (let node of nodes) {
+            node.range.from.line = nLine;
+            node.range.to.line = nLine;
         }
         return nodes;
     }
