@@ -366,8 +366,10 @@ class TangramPlay {
         // address. Could be optimize if we store addresses in a map... but then the question is about how to keep it sync
         //
         let lastState;
-        for (let line = 0; line < this.editor.getDoc().size; line++) {
-            if (!this.editor.getLineHandle(line).stateAfter || !this.editor.getLineHandle(line).stateAfter.yamlState) {
+        for (let line = 0, size = this.editor.getDoc().size; line < size; line++) {
+            const lineHandle = this.editor.getLineHandle(line);
+
+            if (!lineHandle.stateAfter || !lineHandle.stateAfter.yamlState) {
                 // If the line is NOT parsed.
                 // ======================================================
                 //
@@ -380,7 +382,7 @@ class TangramPlay {
                 state.line = line;
 
                 // Parse the current state
-                parseYamlString(this.editor.getLineHandle(line).text, state, 4);
+                parseYamlString(lineHandle.text, state, 4);
 
                 // Iterate through keys in this line
                 for (let key of state.nodes) {
