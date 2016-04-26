@@ -11,14 +11,13 @@ import { getInd } from '../codemirror/tools';
 // Get array of YAML keys parent tree of a particular line
 export function getNodes(cm, nLine) {
     const lineHandle = cm.getLineHandle(nLine);
-    if (lineHandle &&
-        lineHandle.stateAfter &&
-        lineHandle.stateAfter.yamlState &&
-        lineHandle.stateAfter.yamlState.nodes) {
+
+    // Return the nodes. If any property in the chain is not defined,
+    // return an empty array.
+    try {
         return lineHandle.stateAfter.yamlState.nodes;
     }
-    else {
-        // return [ {address: "/", key: '', value: '', pos: { line: 0, ch: 0 }, index: 0} ];
+    catch (e) {
         return [];
     }
 }
