@@ -33,8 +33,8 @@ export default class Widget {
         }
     }
 
-    updateNode() {
-        // Update node
+    updateNode () {
+        // Update a widget on a single-node line
         if (this.bookmark &&
             this.bookmark.lines &&
             this.bookmark.lines.length === 1 &&
@@ -43,41 +43,19 @@ export default class Widget {
             this.bookmark.lines[0].stateAfter.yamlState &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
-            if (this.bookmark.lines[0].stateAfter.yamlState.nodes.length === 1) {
-                // console.log(this.node, this.bookmark.lines[0].stateAfter.yamlState.nodes);
-                if (this.node.address === this.bookmark.lines[0].stateAfter.yamlState.nodes[0].address) {
-                    // UPDATE value
-                    // console.log("node for widget EASY to find");
-                    this.node = this.bookmark.lines[0].stateAfter.yamlState.nodes[0];
-                }
-                else {
-                    // console.log("node for widget HARD to find 2");
-                    this.node = TangramPlay.getNodesForAddress(this.node.address);
-                }
-            }
-            else {
                 for (let node of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
                     if (this.node.address === node.address) {
-                        // console.log("node for widget not so easy to find");
                         this.node = node;
                         break;
                     }
                 }
-            }
         }
+        // Find the right widget to update if a line has multiple nodes
         else {
-            // console.log("node for widget HARD to find");
             // Here is a good place to detect duplicates
             // let others = TangramPlay.editor.getDoc().findMarksAt(this.node.range.to);
             let node = TangramPlay.getNodesForAddress(this.node.address);
             this.node = node;
-        }
-
-        // Fix empty line parser error
-        if (this.bookmark &&
-            this.bookmark.lines &&
-            this.bookmark.lines.length === 1) {
-            this.node.range.from.line = this.node.range.to.line = this.bookmark.lines[0].lineNo();
         }
     }
 

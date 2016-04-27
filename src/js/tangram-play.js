@@ -400,7 +400,7 @@ class TangramPlay {
             else {
                 // it the line HAVE BEEN parsed (use the stateAfter)
                 // ======================================================
-                lastState = this.editor.getLineHandle(line).stateAfter.yamlState;
+                lastState = lineHandle.stateAfter.yamlState;
                 let keys = this.getNodesOnLine(line);
                 for (let key of keys) {
                     if (key.address === address) {
