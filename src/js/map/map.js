@@ -6,6 +6,7 @@ import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 import { initMapToolbar } from './toolbar';
+import { handleSelectionEvent } from './selection-events';
 
 export const map = L.map('map', {
     zoomControl: false,
@@ -15,7 +16,7 @@ export const map = L.map('map', {
 });
 
 // Declare this export now, but Tangram is set up later. See initTangram() and loadScene().
-export let tangram = null;
+export let tangramLayer = null;
 
 // Initializes Leaflet-based map
 export function initMap () {
@@ -50,13 +51,16 @@ export function initMap () {
  */
 function initTangram (pathToSceneFile) {
     // Add Tangram Layer
-    tangram = window.Tangram.leafletLayer({
+    tangramLayer = window.Tangram.leafletLayer({
         scene: pathToSceneFile,
-        attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
+        events: {
+            hover: handleSelectionEvent,
+            click: handleSelectionEvent
+        }
     });
-    tangram.addTo(map);
+    tangramLayer.addTo(map);
 
-    tangram.scene.subscribe({
+    tangramLayer.scene.subscribe({
         load: function (args) {
             TangramPlay.trigger('sceneupdate', args);
         },
@@ -72,8 +76,8 @@ function initTangram (pathToSceneFile) {
 
     TangramPlay.trigger('sceneinit');
 
-    window.layer = tangram;
-    window.scene = tangram.scene;
+    window.layer = tangramLayer;
+    window.scene = tangramLayer.scene;
 }
 
 // Sends a scene path and base path to Tangram.
@@ -82,16 +86,16 @@ export function loadScene (pathToSceneFile, { reset = false, basePath = null } =
     // Tangram must be initialized with a scene file.
     // We only initialize Tangram when Tangram Play
     // knows what scene to load, not before.
-    if (!tangram) {
+    if (!tangramLayer) {
         initTangram(pathToSceneFile);
     }
     else {
         // If scene is already set, re-use the internal path
         // If scene is not set, default to current path
         // This is ignored if reset is true; see below)
-        const path = basePath || tangram.scene.config_path;
+        const path = basePath || tangramLayer.scene.config_path;
         // Preserve scene base path unless reset requested (e.g. reset on new file load)
-        return tangram.scene.load(pathToSceneFile, !reset && path);
+        return tangramLayer.scene.load(pathToSceneFile, !reset && path);
     }
 }
 
@@ -102,7 +106,7 @@ export function loadScene (pathToSceneFile, { reset = false, basePath = null } =
  * @requires FileSaver
  */
 export function takeScreenshot () {
-    tangram.scene.screenshot().then(function (result) {
+    tangramLayer.scene.screenshot().then(function (result) {
         let slug = new Date().toString();
 
         // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
@@ -120,7 +124,7 @@ export function takeScreenshot () {
  * @returns Promise
  */
 export function getScreenshotData () {
-    return tangram.scene.screenshot()
+    return tangramLayer.scene.screenshot()
         .then(function (result) {
             return result;
         });

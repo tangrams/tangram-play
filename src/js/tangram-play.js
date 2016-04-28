@@ -7,7 +7,7 @@ import Raven from 'raven-js';
 Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467').install();
 
 // Core elements
-import { tangram, initMap, loadScene } from './map/map';
+import { tangramLayer, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
 import { config } from './config';
 
@@ -82,8 +82,8 @@ class TangramPlay {
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
             let sceneData = {
-                original_url: tangram.scene.config_source,
-                original_base_path: tangram.scene.config_path,
+                original_url: tangramLayer.scene.config_source,
+                original_base_path: tangramLayer.scene.config_path,
                 contents: this.getContent(),
                 is_clean: this.editor.isClean(),
                 scrollInfo: this.editor.getScrollInfo(),
