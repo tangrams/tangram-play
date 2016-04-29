@@ -109,11 +109,11 @@ export default class WidgetsManager {
             // If the FROM/TO range is to narrow search using nodes
             for (let node of nodes) {
                 // Find and concatenate bookmarks between FROM/TO range
-                bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarks(node.range.from, node.range.to));
+                bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(node.range.to));
             }
         }
         else {
-            bookmarks = TangramPlay.editor.getDoc().findMarks(from, to);
+            bookmarks = TangramPlay.editor.getDoc().findMarksAt(to);
         }
 
         // If there is only one node and the change happen on the value
