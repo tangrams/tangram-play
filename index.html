@@ -1,31 +1,23 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+<html lang='en-us'>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
     <title>Tangram Play</title>
-
-    <script type="text/javascript" src="build/js/modernizr.js"></script>
-
-    <!-- CodeMirror-Tangram specific -->
-    <link type="text/css" rel="stylesheet" href="build/css/main.css">
-
-    <!-- Google Analytics -->
+    <link type='text/css' rel='stylesheet' href='build/css/main.css'>
+    <script src='build/js/modernizr.js'></script>
     <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-47035811-5', 'auto');
-      ga('send', 'pageview');
-
+        ga('create', 'UA-47035811-5', 'auto');
+        ga('send', 'pageview');
     </script>
-  </head>
-
-  <body>
+</head>
+<body>
     <div class='menu-container'>
         <div class='menu-bar'>
             <h1>Tangram Play<span class='beta-tag'>BETA</span></h1>
@@ -239,10 +231,8 @@
         <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
     </div>
 
-    <script type='text/javascript' src='https://mapzen.com/tangram/0.7/tangram.min.js'></script>
-
-    <!-- IDE -->
-    <script type="text/javascript" src="build/js/tangram-play.js"></script>
+    <script src='https://mapzen.com/tangram/0.7/tangram.min.js'></script>
+    <script src='build/js/tangram-play.js'></script>
     <script>
         if (isMobile() === true) {
             document.getElementById('mobile-message').style.display = 'block';
@@ -259,5 +249,5 @@
             return false;
         };
     </script>
-  </body>
+</body>
 </html>
