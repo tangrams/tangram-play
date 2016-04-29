@@ -52,6 +52,7 @@
 @import '_leaflet-overrides';
 @import '_map-loading';
 @import '_map-toolbar';
+@import '_map-selection';
 @import '_map-bookmarks';
 @import '_geolocator';
 
@@ -108,6 +109,7 @@
 
     /* 04: Anything that should display on top of Leaflet overlays */
     --z04-map-toolbar: var(--z04);
+    --z04-map-selection: var(--z04);
 
     /* 07: Anything that should display on top of all Leaflet elements */
     --z07-menu-dropdown: var(--z07);

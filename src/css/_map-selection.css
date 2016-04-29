@@ -1,0 +1,37 @@
+/* MAP SELECTION EVENTS */
+
+.map-selection-preview {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 6px;
+    padding-right: 18px;
+    font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 0.75rem; /* TODO: create & associate with global font scale */
+    color: var(--ui-component-text-color);
+    z-index: var(--z04-map-selection);
+    min-width: 85px;
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 12px solid rgba(0, 0, 0, 0.75);
+        left: 50%;
+        margin-left: -12px;
+        top: 100%;
+    }
+}
+
+.map-selection-kind-label {
+    font-weight: 400;
+    font-size: 1.25em;
+    margin-bottom: 0.25em;
+}
+
+.map-selection-name-label-blank {
+    opacity: 0.5;
+}
