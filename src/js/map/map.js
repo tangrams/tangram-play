@@ -6,7 +6,7 @@ import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 import { initMapToolbar } from './toolbar';
-import { handleSelectionEvent } from './selection-events';
+import { handleSelectionHoverEvent, handleSelectionClickEvent } from './selection-events';
 
 export const map = L.map('map', {
     zoomControl: false,
@@ -54,8 +54,8 @@ function initTangram (pathToSceneFile) {
     tangramLayer = window.Tangram.leafletLayer({
         scene: pathToSceneFile,
         events: {
-            hover: handleSelectionEvent,
-            click: handleSelectionEvent
+            hover: handleSelectionHoverEvent,
+            click: handleSelectionClickEvent
         }
     });
     tangramLayer.addTo(map);

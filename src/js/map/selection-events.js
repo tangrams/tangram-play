@@ -1,11 +1,19 @@
+import _ from 'lodash';
+import { emptyDOMElement } from '../tools/helpers';
+
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
 
 class TangramSelectionHover {
     constructor () {
+        this.isDoingStuff = false;
+
         let el = this.el = document.createElement('div');
         el.className = 'map-selection-preview';
         el.style.display = 'none';
+
+        let headerEl = this._headerEl = document.createElement('div');
+        headerEl.className = 'map-selection-header';
 
         let kindEl = this._kindEl = document.createElement('div');
         kindEl.className = 'map-selection-kind-label';
@@ -13,8 +21,15 @@ class TangramSelectionHover {
         let nameEl = this._nameEl = document.createElement('div');
         nameEl.className = 'map-selection-name-label';
 
-        el.appendChild(kindEl);
-        el.appendChild(nameEl);
+        headerEl.appendChild(kindEl);
+        headerEl.appendChild(nameEl);
+
+        let propertiesEl = this._propertiesEl = document.createElement('div');
+        propertiesEl.className = 'map-selection-properties';
+        propertiesEl.style.display = 'none';
+
+        el.appendChild(headerEl);
+        el.appendChild(propertiesEl);
 
         document.getElementById('map-container').appendChild(el);
     }
@@ -52,17 +67,13 @@ class TangramSelectionHover {
     set kind (text) {
         if (typeof text === 'string') {
             text = text.replace(/_/g, ' ');
-            text = _capitalizeFirstLetter(text);
+            text = _.capitalize(text);
         }
         else {
             text = EMPTY_SELECTION_KIND_LABEL;
         }
 
         this._kindEl.textContent = text;
-
-        function _capitalizeFirstLetter (string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
     }
 
     get kind () {
@@ -100,11 +111,40 @@ class TangramSelectionHover {
         let text = this._nameEl.textContent;
         return text !== EMPTY_SELECTION_NAME_LABEL ? text : null;
     }
+
+    showProperties (properties) {
+        emptyDOMElement(this._propertiesEl);
+
+        // Alphabetize key-value pairs
+        let sorted = [];
+        Object.keys(properties)
+            .sort()
+            .forEach(function (v, i) {
+                sorted.push([v, properties[v]]);
+            });
+
+        for (let x in sorted) {
+            const key = sorted[x][0];
+            const value = sorted[x][1];
+
+            const el = document.createElement('div');
+            el.textContent = `${key}: ${value}`;
+            this._propertiesEl.appendChild(el);
+        }
+
+        this._propertiesEl.style.display = 'block';
+        // Resets scroll position (we don't want it to remember scroll position of the previous set of properties)
+        this._propertiesEl.scrollTop = 0;
+    }
 }
 
 const selectionEl = new TangramSelectionHover();
 
-export function handleSelectionEvent (selection) {
+export function handleSelectionHoverEvent (selection) {
+    if (selectionEl.isDoingStuff) {
+        return;
+    }
+
     // The .feature property does not always exist.
     // For instance, when the map is being dragged, there is no
     // feature being picked. So, make sure it is present.
@@ -114,6 +154,19 @@ export function handleSelectionEvent (selection) {
     }
 
     selectionEl.setLabel(selection.feature.properties);
+    selectionEl.setPosition(selection.pixel.x, selection.pixel.y);
+    selectionEl.show();
+}
+
+export function handleSelectionClickEvent (selection) {
+    if (!selection.feature) {
+        selectionEl.hide();
+        return;
+    }
+
+    selectionEl.isDoingStuff = true;
+    selectionEl.setLabel(selection.feature.properties);
+    selectionEl.showProperties(selection.feature.properties);
     selectionEl.setPosition(selection.pixel.x, selection.pixel.y);
     selectionEl.show();
 }

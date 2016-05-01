@@ -3,8 +3,6 @@
 .map-selection-preview {
     position: fixed;
     background-color: rgba(0, 0, 0, 0.75);
-    padding: 6px;
-    padding-right: 18px;
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 0.75rem; /* TODO: create & associate with global font scale */
@@ -26,12 +24,44 @@
     }
 }
 
+.map-selection-header {
+    padding: 6px;
+    padding-right: 18px;
+}
+
 .map-selection-kind-label {
     font-weight: 400;
     font-size: 1.25em;
     margin-bottom: 0.25em;
 }
 
+.map-selection-name-label {
+}
+
 .map-selection-name-label-blank {
     opacity: 0.5;
+}
+
+.map-selection-properties {
+    box-sizing: border-box;
+    min-width: 200px;
+    max-height: 100px;
+    margin-top: 4px;
+    padding: 8px 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    line-height: 1.4;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: var(--ui-component-color);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #b9b9bd;
+    }
 }
