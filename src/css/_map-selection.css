@@ -2,7 +2,7 @@
 
 .map-selection-preview {
     position: fixed;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.85);
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 0.75rem; /* TODO: create & associate with global font scale */
@@ -17,7 +17,7 @@
         height: 0;
         border-left: 12px solid transparent;
         border-right: 12px solid transparent;
-        border-top: 12px solid rgba(0, 0, 0, 0.75);
+        border-top: 12px solid rgba(0, 0, 0, 0.85);
         left: 50%;
         margin-left: -12px;
         top: 100%;
@@ -26,7 +26,7 @@
 
 .map-selection-header {
     padding: 6px;
-    padding-right: 18px;
+    padding-right: 24px; /* Extra padding looks nicer, plus we put a close button there */
 }
 
 .map-selection-kind-label {
@@ -39,7 +39,7 @@
 }
 
 .map-selection-name-label-blank {
-    opacity: 0.5;
+    color: #999;
 }
 
 .map-selection-properties {
@@ -47,10 +47,10 @@
     min-width: 200px;
     max-height: 100px;
     margin-top: 4px;
-    padding: 8px 6px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     line-height: 1.4;
     overflow-y: auto;
+    overflow-x: hidden;
 
     &::-webkit-scrollbar {
         width: 8px;
@@ -63,5 +63,48 @@
 
     &::-webkit-scrollbar-thumb {
         background-color: #b9b9bd;
+    }
+}
+
+.map-selection-properties-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+
+    tr {
+        cursor: pointer;
+    }
+
+    tr:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    td {
+        padding: 3px;
+    }
+
+    td:first-child {
+        padding-left: 6px;
+    }
+
+    /* Make sure there is enough room on the right for scrollbar too */
+    td:last-child {
+        padding-right: 12px;
+    }
+}
+
+.map-selection-close {
+    display: block;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    right: 6px;
+    top: 4px;
+    color: var(--ui-component-text-color);
+    text-align: right;
+    cursor: pointer;
+
+    &:hover {
+        color: var(--ui-highlight-color);
     }
 }

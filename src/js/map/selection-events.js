@@ -28,8 +28,17 @@ class TangramSelectionHover {
         propertiesEl.className = 'map-selection-properties';
         propertiesEl.style.display = 'none';
 
+        let closeEl = this._closeEl = document.createElement('div');
+        closeEl.className = 'map-selection-close';
+        closeEl.textContent = '×';
+        closeEl.style.display = 'none';
+        closeEl.addEventListener('click', () => {
+            this.hideProperties();
+        });
+
         el.appendChild(headerEl);
         el.appendChild(propertiesEl);
+        el.appendChild(closeEl);
 
         document.getElementById('map-container').appendChild(el);
     }
@@ -115,6 +124,12 @@ class TangramSelectionHover {
     showProperties (properties) {
         emptyDOMElement(this._propertiesEl);
 
+        const tableEl = document.createElement('table');
+        const tbodyEl = document.createElement('tbody');
+
+        tableEl.className = 'map-selection-properties-table';
+        tableEl.appendChild(tbodyEl);
+
         // Alphabetize key-value pairs
         let sorted = [];
         Object.keys(properties)
@@ -127,14 +142,32 @@ class TangramSelectionHover {
             const key = sorted[x][0];
             const value = sorted[x][1];
 
-            const el = document.createElement('div');
-            el.textContent = `${key}: ${value}`;
-            this._propertiesEl.appendChild(el);
+            const tr = document.createElement('tr');
+            const tdKey = document.createElement('td');
+            const tdValue = document.createElement('td');
+            tdKey.textContent = key;
+            tdValue.textContent = value;
+            tr.appendChild(tdKey);
+            tr.appendChild(tdValue);
+
+            tbodyEl.appendChild(tr);
         }
+
+        this._propertiesEl.appendChild(tableEl);
 
         this._propertiesEl.style.display = 'block';
         // Resets scroll position (we don't want it to remember scroll position of the previous set of properties)
         this._propertiesEl.scrollTop = 0;
+
+        this._closeEl.style.display = 'block';
+    }
+
+    hideProperties () {
+        emptyDOMElement(this._propertiesEl);
+        this._closeEl.style.display = 'none';
+        this._propertiesEl.style.display = 'none';
+        this.isDoingStuff = false;
+        this.hide();
     }
 }
 
