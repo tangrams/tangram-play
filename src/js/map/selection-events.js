@@ -28,16 +28,21 @@ class TangramSelectionHover {
         propertiesEl.className = 'map-selection-properties';
         propertiesEl.style.display = 'none';
 
+        let layersEl = this._layersEl = document.createElement('div');
+        layersEl.className = 'map-selection-layers';
+        layersEl.style.display = 'none';
+
         let closeEl = this._closeEl = document.createElement('div');
         closeEl.className = 'map-selection-close';
         closeEl.textContent = '×';
         closeEl.style.display = 'none';
-        closeEl.addEventListener('click', () => {
-            this.hideProperties();
+        closeEl.addEventListener('click', event => {
+            this.hide();
         });
 
         el.appendChild(headerEl);
         el.appendChild(propertiesEl);
+        el.appendChild(layersEl);
         el.appendChild(closeEl);
 
         document.getElementById('map-container').appendChild(el);
@@ -49,12 +54,19 @@ class TangramSelectionHover {
 
     hide () {
         this.el.style.display = 'none';
+        this._closeEl.style.display = 'none';
+        this.isDoingStuff = false;
+        this.hideProperties();
+        this.hideLayers();
     }
 
     setPosition (x, y) {
-        const width = this.el.getBoundingClientRect().width;
+        const rect = this.el.getBoundingClientRect()
+        const width = rect.width;
+        const height = rect.height;
         this.el.style.left = (x - width / 2) + 'px';
-        this.el.style.top = (y - 20) + 'px';
+        // TODO: don't hardcode magic number
+        this.el.style.top = (y - height + 24) + 'px';
     }
 
     setLabel (properties) {
@@ -124,9 +136,19 @@ class TangramSelectionHover {
     showProperties (properties) {
         emptyDOMElement(this._propertiesEl);
 
+        // Add section label
+        const labelEl = document.createElement('div');
+        labelEl.className = 'map-selection-label';
+        labelEl.textContent = 'Properties';
+
+        this._propertiesEl.appendChild(labelEl);
+
+        // Create table element
+        const tableWrapperEl = document.createElement('div');
         const tableEl = document.createElement('table');
         const tbodyEl = document.createElement('tbody');
 
+        tableWrapperEl.className = 'map-selection-properties-table-wrapper';
         tableEl.className = 'map-selection-properties-table';
         tableEl.appendChild(tbodyEl);
 
@@ -153,7 +175,8 @@ class TangramSelectionHover {
             tbodyEl.appendChild(tr);
         }
 
-        this._propertiesEl.appendChild(tableEl);
+        tableWrapperEl.appendChild(tableEl);
+        this._propertiesEl.appendChild(tableWrapperEl);
 
         this._propertiesEl.style.display = 'block';
         // Resets scroll position (we don't want it to remember scroll position of the previous set of properties)
@@ -164,10 +187,52 @@ class TangramSelectionHover {
 
     hideProperties () {
         emptyDOMElement(this._propertiesEl);
-        this._closeEl.style.display = 'none';
         this._propertiesEl.style.display = 'none';
-        this.isDoingStuff = false;
-        this.hide();
+    }
+
+    showLayers (layers) {
+        emptyDOMElement(this._layersEl);
+
+        if (!layers || layers.length === 0) {
+            return;
+        }
+
+        // Add section label
+        const labelEl = document.createElement('div');
+        labelEl.className = 'map-selection-label';
+        labelEl.textContent = 'Layers';
+
+        this._layersEl.appendChild(labelEl);
+
+        // Add layer container
+        const layerContainerEl = document.createElement('div');
+        layerContainerEl.className = 'map-selection-layers-container';
+        this._layersEl.appendChild(layerContainerEl);
+
+        // Create list of layers
+        layers.forEach(item => {
+            let layerEl = document.createElement('div');
+            layerEl.className = 'map-selection-layer-item';
+            layerEl.textContent = item;
+
+            // YAML-Tangram addressing uses forward-slashes ('/') to
+            // delimit nested key names, rather than the colons (':')
+            // returned as layer addresses by Tangram
+            let yamlTangramAddress = '/layers/' + item.replace(/:/g, '/');
+
+            layerEl.addEventListener('click', event => {
+                console.log(yamlTangramAddress);
+            });
+
+            layerContainerEl.appendChild(layerEl);
+        });
+
+        this._layersEl.style.display = 'block';
+    }
+
+    hideLayers () {
+        emptyDOMElement(this._layersEl);
+        this._layersEl.style.display = 'none';
     }
 }
 
@@ -200,6 +265,9 @@ export function handleSelectionClickEvent (selection) {
     selectionEl.isDoingStuff = true;
     selectionEl.setLabel(selection.feature.properties);
     selectionEl.showProperties(selection.feature.properties);
+    selectionEl.showLayers(selection.feature.layers);
     selectionEl.setPosition(selection.pixel.x, selection.pixel.y);
     selectionEl.show();
 }
+
+window.selectionEl = selectionEl;

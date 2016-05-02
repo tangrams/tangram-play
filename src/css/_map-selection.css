@@ -42,13 +42,26 @@
     color: #999;
 }
 
+.map-selection-label {
+    padding: 0.5em 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.75em;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--ui-subtext-color);
+    background-color: var(--ui-base-color);
+    user-select: none;
+}
+
 .map-selection-properties {
     box-sizing: border-box;
-    min-width: 200px;
-    max-height: 100px;
-    margin-top: 4px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
     line-height: 1.4;
+    margin-top: 0.25em;
+}
+
+.map-selection-properties-table-wrapper {
+    min-width: 200px;
+    max-height: 88px; /* should be exactly four rows */
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -69,14 +82,13 @@
 .map-selection-properties-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 8px;
 
     tr {
         cursor: pointer;
     }
 
     tr:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: var(--ui-active-color);
     }
 
     td {
@@ -103,8 +115,30 @@
     color: var(--ui-component-text-color);
     text-align: right;
     cursor: pointer;
+    user-select: none;
 
     &:hover {
+        color: var(--ui-highlight-color);
+    }
+}
+
+.map-selection-layers-container {
+    width: 100%;
+    line-height: 1.4;
+}
+
+.map-selection-layer-item {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+
+    .map-selection-selected {
         color: var(--ui-highlight-color);
     }
 }
