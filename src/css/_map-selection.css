@@ -51,6 +51,7 @@
     color: var(--ui-subtext-color);
     background-color: var(--ui-base-color);
     user-select: none;
+    cursor: default;
 }
 
 .map-selection-properties {

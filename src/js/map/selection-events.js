@@ -53,7 +53,7 @@ class TangramSelectionHover {
         // after DOM content has been placed
         this.el.style.display = 'block';
 
-        const rect = this.el.getBoundingClientRect()
+        const rect = this.el.getBoundingClientRect();
         const width = rect.width;
         const height = rect.height;
 
