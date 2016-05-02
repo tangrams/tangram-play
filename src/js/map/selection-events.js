@@ -48,8 +48,18 @@ class TangramSelectionHover {
         document.getElementById('map-container').appendChild(el);
     }
 
-    show () {
+    showAt (x = 0, y = 0) {
+        // Guarantee that positioning and sizing calculations occur
+        // after DOM content has been placed
         this.el.style.display = 'block';
+
+        const rect = this.el.getBoundingClientRect()
+        const width = rect.width;
+        const height = rect.height;
+
+        this.el.style.left = (x - width / 2) + 'px';
+        // TODO: don't hardcode magic number
+        this.el.style.top = (y - height + 24) + 'px';
     }
 
     hide () {
@@ -58,15 +68,6 @@ class TangramSelectionHover {
         this.isDoingStuff = false;
         this.hideProperties();
         this.hideLayers();
-    }
-
-    setPosition (x, y) {
-        const rect = this.el.getBoundingClientRect()
-        const width = rect.width;
-        const height = rect.height;
-        this.el.style.left = (x - width / 2) + 'px';
-        // TODO: don't hardcode magic number
-        this.el.style.top = (y - height + 24) + 'px';
     }
 
     setLabel (properties) {
@@ -252,12 +253,11 @@ export function handleSelectionHoverEvent (selection) {
     }
 
     selectionEl.setLabel(selection.feature.properties);
-    selectionEl.setPosition(selection.pixel.x, selection.pixel.y);
-    selectionEl.show();
+    selectionEl.showAt(selection.pixel.x, selection.pixel.y);
 }
 
 export function handleSelectionClickEvent (selection) {
-    if (!selection.feature) {
+    if (!selection.feature || selectionEl.isDoingStuff === true) {
         selectionEl.hide();
         return;
     }
@@ -266,8 +266,5 @@ export function handleSelectionClickEvent (selection) {
     selectionEl.setLabel(selection.feature.properties);
     selectionEl.showProperties(selection.feature.properties);
     selectionEl.showLayers(selection.feature.layers);
-    selectionEl.setPosition(selection.pixel.x, selection.pixel.y);
-    selectionEl.show();
+    selectionEl.showAt(selection.pixel.x, selection.pixel.y);
 }
-
-window.selectionEl = selectionEl;
