@@ -475,7 +475,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
         // blank lines, which we use solely to increment the line number on our state
         // object when a blank line is encountered by CodeMirror's parser.
         blankLine: function (state) {
-            state.yamlState.line++
+            state.yamlState.line++;
         },
         token: function (stream, state) {
             yamlAddressing(stream, state.yamlState);

@@ -43,12 +43,12 @@ export default class Widget {
             this.bookmark.lines[0].stateAfter.yamlState &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes &&
             this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
-                for (let node of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
-                    if (this.node.address === node.address) {
-                        this.node = node;
-                        break;
-                    }
+            for (let node of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
+                if (this.node.address === node.address) {
+                    this.node = node;
+                    break;
                 }
+            }
         }
         // Find the right widget to update if a line has multiple nodes
         else {
