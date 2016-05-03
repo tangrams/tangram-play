@@ -1,7 +1,6 @@
 /* MAP SELECTION EVENTS */
 
 .map-selection-preview {
-    position: fixed;
     background-color: rgba(0, 0, 0, 0.85);
     font-family: var(--font-family);
     font-weight: 200;
@@ -9,7 +8,9 @@
     color: var(--ui-component-text-color);
     z-index: var(--z04-map-selection);
     min-width: 85px;
+    line-height: 1; /* Overrides leaflet */
 
+    /* Pointer tip */
     &::after {
         content: '';
         position: absolute;
@@ -24,9 +25,14 @@
     }
 }
 
+.map-selection-popup .map-selection-preview::after {
+    display: none;
+}
+
 .map-selection-header {
     padding: 6px;
     padding-right: 24px; /* Extra padding looks nicer, plus we put a close button there */
+    white-space: nowrap;
 }
 
 .map-selection-kind-label {
@@ -85,6 +91,7 @@
     border-collapse: collapse;
 
     tr {
+        vertical-align: top;
         cursor: pointer;
     }
 
@@ -134,6 +141,10 @@
     padding-left: 6px;
     padding-right: 6px;
     cursor: pointer;
+    white-space: nowrap;
+    max-width: 280px;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
 
     &:hover {
         background-color: var(--ui-active-color);
@@ -143,3 +154,28 @@
         color: var(--ui-highlight-color);
     }
 }
+
+/* LEAFLET OVERRIDES */
+.map-selection-popup.leaflet-popup {
+    .leaflet-popup-content-wrapper {
+        background: transparent;
+        color: var(--ui-component-text-color);
+        box-shadow: none;
+    }
+
+    .leaflet-popup-tip {
+        background-color: rgba(0, 0, 0, 0.85);
+        box-shadow: none;
+    }
+
+    .leaflet-popup-content-wrapper {
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .leaflet-popup-content {
+        margin: 0;
+        width: auto !important;
+    }
+}
+

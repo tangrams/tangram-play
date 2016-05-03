@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import L from 'leaflet';
+import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
@@ -52,6 +54,7 @@ class TangramSelectionHover {
         // Guarantee that positioning and sizing calculations occur
         // after DOM content has been placed
         this.el.style.display = 'block';
+        this.el.style.position = 'absolute';
 
         const rect = this.el.getBoundingClientRect();
         const width = rect.width;
@@ -59,7 +62,14 @@ class TangramSelectionHover {
 
         this.el.style.left = (x - width / 2) + 'px';
         // TODO: don't hardcode magic number
-        this.el.style.top = (y - height + 24) + 'px';
+        this.el.style.top = (y - height - 24) + 'px';
+    }
+
+    resetPosition () {
+        this.el.style.display = null; // Ensures that the absolute positioning from hovers is gone
+        this.el.style.position = null;
+        this.el.style.left = null;
+        this.el.style.top = null;
     }
 
     hide () {
@@ -262,9 +272,37 @@ export function handleSelectionClickEvent (selection) {
         return;
     }
 
+    selectionEl.resetPosition();
     selectionEl.isDoingStuff = true;
     selectionEl.setLabel(selection.feature.properties);
     selectionEl.showProperties(selection.feature.properties);
     selectionEl.showLayers(selection.feature.layers);
-    selectionEl.showAt(selection.pixel.x, selection.pixel.y);
+
+    // Create a clone of the selection element to add to Leaflet's popup
+    // We probably don't want to do this forever because it is a brittle source of bugs
+    // and confusion about how this works
+    const popupEl = selectionEl.el.cloneNode(true);
+
+    const popup = L.popup({
+            closeButton: false,
+            autoPanPadding: [20, 70], // 20 + map toolbar height
+            offset: [0, -6],
+            className: 'map-selection-popup'
+        })
+        .setLatLng({ lat: selection.leaflet_event.latlng.lat, lng: selection.leaflet_event.latlng.lng })
+        .setContent(popupEl)
+        .openOn(map);
+
+    popupEl.querySelector('.map-selection-close').addEventListener('click', event => {
+        map.closePopup(popup);
+    });
+
+    map.on('popupclose', event => {
+        if (event.popup === popup) {
+            selectionEl.isDoingStuff = false;
+            selectionEl.hide(); // Reset
+        }
+    });
+
+    // selectionEl.showAt(selection.pixel.x, selection.pixel.y);
 }

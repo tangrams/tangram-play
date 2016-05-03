@@ -4,6 +4,8 @@
 
 @import 'vendor/black-tie.css';
 
+/* You can import CSS from node_modules */
+@import 'leaflet/dist/leaflet.css';
 @import 'codemirror/lib/codemirror.css';
 @import 'codemirror/addon/dialog/dialog.css';
 @import 'codemirror/addon/fold/foldgutter.css';

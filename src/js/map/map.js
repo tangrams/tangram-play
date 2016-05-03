@@ -8,6 +8,10 @@ import { hideSceneLoadingIndicator } from './loading';
 import { initMapToolbar } from './toolbar';
 import { handleSelectionHoverEvent, handleSelectionClickEvent } from './selection-events';
 
+// We need to manually set the image path when Leaflet is bundled.
+// See https://github.com/Leaflet/Leaflet/issues/766
+L.Icon.Default.imagePath = './data/imgs';
+
 export const map = L.map('map', {
     zoomControl: false,
     attributionControl: false,
