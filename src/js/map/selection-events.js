@@ -297,8 +297,11 @@ export function handleSelectionClickEvent (selection) {
         map.closePopup(popup);
     });
 
+    popup._container.style.transform = 'translateZ(100px)';
+
     map.on('popupclose', event => {
         if (event.popup === popup) {
+            event.popup._container.style.transform = null;
             selectionEl.isDoingStuff = false;
             selectionEl.hide(); // Reset
         }

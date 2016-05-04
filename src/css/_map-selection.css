@@ -179,3 +179,7 @@
     }
 }
 
+.leaflet-fade-anim .leaflet-popup {
+    transition: opacity 120ms ease-in, transform 100ms ease-in;
+    transform: translateY(-20px) translateZ(100px);
+}
