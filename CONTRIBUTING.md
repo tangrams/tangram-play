@@ -4,48 +4,73 @@
 
 Clone this repository to your local machine, and then run the following commands in this repository's root directory:
 
-```sh
-npm install     # Installs Node.js / JavaScript dependencies
-npm run build   # Compiles JavaScript and CSS files to /build
-```
+    npm install     # Installs Node.js / JavaScript dependencies
+    npm run build   # Compiles JavaScript and CSS files to /build
 
 You should only need to do once after cloning, or every once in a while when dependencies change.
 
-### Building and watching with Gulp
+### Building, serving, and watching with Gulp
 
-For day-to-day development, we build the client-side bundles using [Gulp](http://gulpjs.com/). You may need to install this command line tool globally if you do not already have it (and you may need to do this with `sudo`). Unless other specified, assume this and all other command line instructions in this document are run from the repository's root directory.
+For day-to-day development, we build the client-side bundles using [Gulp][gulp]. You may need to install this command line tool globally if you do not already have it (and you may need to do this with `sudo`). Unless other specified, assume this and all other command line instructions in this document are run from the repository's root directory.
 
-```sh
-npm install -g gulp
-```
+    npm install -g gulp
 
 To build JavaScript and CSS once, run:
 
-```sh
-gulp build
-```
+    gulp build
 
-The default behavior of `gulp` is to watch for source file changes and rebuild client-side bundles automatically:
+#### Running a local server with Browsersync
 
-```sh
-gulp
-```
+The default behavior of `gulp` uses [Browsersync][browsersync] to watch for source file changes and rebuild client-side bundles automatically:
 
-If a [LiveReload](http://livereload.com/) browser plugin is active, Gulp will also publish stylesheet updates to it. You may safely kill the `gulp` process at any time by hitting Ctrl-C.
+    gulp
 
-### Running a local server
+When run, your system's default browser will open and point to `http://localhost:8080/`. You may adjust this port by configuring `gulpfile.js`. In addition, you may access the Browsersync UI (default location is `http://localhost:8081/`). Browsersync will automatically reload when JavaScript or the app's entry `index.html` is edited. CSS files will stream into the application without a reload. Tangram Play will save some elements of application state, such as map position, last scene content, and last editor position even while reloading. You may safely kill the `gulp` process at any time by hitting Ctrl-C.
 
-Tangram Play is a static site, and can be viewed by any static fileserver, such as Python's [SimpleHTTPServer](https://docs.python.org/2/library/simplehttpserver.html) or Node's [http-server module](https://www.npmjs.com/package/http-server).
+#### Running a local server manually
+
+If you want to build and watch JavaScript and CSS assets _without_ Browsersync, you can do so with this `gulp` task:
+
+    gulp watch
+
+You can then run a local server manually. The app is a static site, and can be viewed by any static fileserver, such as Python's [SimpleHTTPServer][simplehttpserver] or Node's [http-server module][http-server].
+
+#### SimpleHTTPServer
 
 Download this repo, then start a web server in its directory:
 
-    python -m SimpleHTTPServer 8000
+    python -m SimpleHTTPServer 8080
 
 If that doesn't work, try:
 
-    python -m http.server 8000
+    python -m http.server 8080
 
-Then navigate to: [http://localhost:8000](http://localhost:8000)
+Then navigate to: [http://localhost:8080/][localhost]
+
+#### `http-server`
+
+Download this repo, then install `http-server`:
+
+    npm install -g http-server
+
+Then, from the repository's root directory, run:
+
+    http-server
+
+Then navigate to: [http://localhost:8080/][localhost]
+
+#### Serving scene assets from a local server with `http-server`
+
+You may have Tangram scene files locally and want to load them into a local build of Tangram Play. If you attempt to load them from `http://localhost:xxxx` where `xxxx` is a different port from a local Tangram Play, browsers will block requests unless [CORS][cors] is enabled. The easiest way to run a local server with CORS enabled is with Node's [http-server module][http-server].
+
+    http-server -p xxxx --cors   # Set -p (port) to whatever you like
+
+[gulp]: http://gulpjs.com/
+[browsersync]: https://browsersync.io/
+[localhost]: http://localhost:8080/
+[simplehttpserver]: https://docs.python.org/2/library/simplehttpserver.html
+[http-server]: https://www.npmjs.com/package/http-server
+[cors]: https://karma-runner.github.io/
 
 ### Deployment process
 
@@ -73,9 +98,7 @@ Tangram Play has low test coverage, but we intend for this to improve dramatical
 
 To run tests:
 
-```sh
-npm run karma
-```
+    npm run karma
 
 [karma]: https://karma-runner.github.io/
 [mocha]: https://mochajs.org/
@@ -88,10 +111,8 @@ Tangram Play borrows [JSHint](http://jshint.com/docs/) rules from Tangram, and a
 
 To run the linter, there is an npm script that runs both JSHint and JSCS on non-vendor-sourced Javascript files in the `src/` folder. This assumes that the CLI for JSHint and JSCS are also available:
 
-```sh
-npm install -g jshint jscs    # if you need to
-npm run lint
-```
+    npm install -g jshint jscs    # if you need to
+    npm run lint
 
 You may also run the linters on individual files if you do not want to see the massive list of warnings the script currently outputs on all of the files we have.
 
