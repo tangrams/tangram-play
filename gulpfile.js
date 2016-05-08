@@ -2,13 +2,14 @@
 
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var livereload = require('gulp-livereload');
 var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
+var browserSync = require('browser-sync');
 
 var paths = {
     styles: 'src/css/**/*.css',
-    scripts: 'src/js/**/*.js'
+    scripts: 'src/js/**/*.js',
+    app: 'index.html'
 };
 
 // Build stylesheets
@@ -41,7 +42,7 @@ gulp.task('css', function () {
         .pipe(postcss(plugins))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./build/css'))
-        .pipe(livereload());
+        .pipe(browserSync.stream());
 });
 
 // Build Javascripts
@@ -83,15 +84,35 @@ gulp.task('js', function () {
     }
 });
 
-// Rerun the task when a file changes
-gulp.task('watch', function () {
-    livereload.listen();
-    gulp.watch(paths.styles, ['css']);
-    gulp.watch(paths.scripts, ['js']);
-});
+// Create a task that ensures the `js` task is complete
+// before reloading browsers
+gulp.task('js-watch', ['js'], browserSync.reload);
 
 // Build files, do not watch
 gulp.task('build', ['css', 'js']);
 
+// Watch files, but do not run browsersync
+gulp.task('watch', ['build'], function () {
+    gulp.watch(paths.styles, ['css']);
+    gulp.watch(paths.scripts, ['js']);
+});
+
+// Re-load the browser when a file changes
+gulp.task('serve', ['build'], function () {
+    browserSync.init({
+        port: 8080,
+        server: {
+            baseDir: './'
+        },
+        ui: {
+            port: 8081
+        }
+    });
+
+    gulp.watch(paths.styles, ['css']);
+    gulp.watch(paths.scripts, ['js-watch']);
+    gulp.watch(paths.app).on('change', browserSync.reload);
+});
+
 // The default task (called when you run `gulp` from cli)
-gulp.task('default', ['css', 'js', 'watch']);
+gulp.task('default', ['serve']);
