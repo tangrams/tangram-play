@@ -2,7 +2,7 @@
 
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var plumber = require('gulp-plumber');
+var notify = require('gulp-notify');
 var sourcemaps = require('gulp-sourcemaps');
 var browserSync = require('browser-sync');
 
@@ -11,6 +11,17 @@ var paths = {
     scripts: 'src/js/**/*.js',
     app: 'index.html'
 };
+
+function handleErrors () {
+    /* jshint validthis: true */
+    var args = Array.prototype.slice.call(arguments);
+    notify.onError({
+        title: 'Tangram Play · Compile Error',
+        message: '<%= error.message %>',
+        sound: 'Sosumi' // Mac OSX alert sound
+    }).apply(this, args);
+    this.emit('end'); // Keep gulp from hanging on this task
+}
 
 // Build stylesheets
 gulp.task('css', function () {
@@ -37,7 +48,7 @@ gulp.task('css', function () {
     ];
 
     return gulp.src('./src/css/main.css')
-        .pipe(plumber())
+        .on('error', handleErrors)
         .pipe(sourcemaps.init())
         .pipe(postcss(plugins))
         .pipe(sourcemaps.write('.'))
@@ -67,7 +78,6 @@ gulp.task('js', function () {
     // because this doubles build time locally!
     if (process.env.NODE_ENV === 'deployment') {
         return bundle.bundle()
-            .pipe(plumber())
             .pipe(source('tangram-play.js'))
             .pipe(buffer())
             .pipe(sourcemaps.init({ loadMaps: true }))
@@ -79,6 +89,7 @@ gulp.task('js', function () {
     }
     else {
         return bundle.bundle()
+            .on('error', handleErrors)
             .pipe(source('tangram-play.js'))
             .pipe(gulp.dest('./build/js'));
     }
