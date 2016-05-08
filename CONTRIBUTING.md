@@ -2,12 +2,11 @@
 
 ## Local installation / deployment process
 
-Clone this repository to your local machine, and then run the following commands in this repository's root directory:
+Clone this repository to your local machine, and then run the following command in this repository's root directory:
 
-    npm install     # Installs Node.js / JavaScript dependencies
-    npm run build   # Compiles JavaScript and CSS files to /build
+    npm install
 
-You should only need to do once after cloning, or every once in a while when dependencies change.
+This installs all the required Node.js modules and dependencies, and immediately compiles everything. You should only need to do once after cloning, or every once in a while when dependencies change.
 
 ### Building, serving, and watching with Gulp
 

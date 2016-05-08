@@ -8,7 +8,7 @@
     "test": "npm run lint --silent && npm run karma --silent",
     "lint": "jshint *.js src/ test/; jscs *.js src/ test/",
     "karma": "./node_modules/karma/bin/karma start",
-    "build": "modernizr -c modernizr-config.json -d build/js; gulp build"
+    "postinstall": "modernizr -c modernizr-config.json -d build/js; gulp build"
   },
   "repository": {
     "type": "git",
