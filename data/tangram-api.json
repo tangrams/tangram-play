@@ -234,11 +234,6 @@
             ]
         },
         {
-            "address": "^/sources/(\\w|\\_|\\-)+/enforce_winding$",
-            "type": "boolean",
-            "defaultValue": "false"
-        },
-        {
             "address": "^/cameras/(\\w|\\_|\\-)+/type$",
             "type": "string",
             "options": [
