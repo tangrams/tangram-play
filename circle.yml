@@ -1,12 +1,13 @@
 machine:
   node:
-    version: 4.4.1
+    version: 4.4.4
   environment:
     NODE_ENV: deployment
 
 dependencies:
+  pre:
+    - npm install -g gulp-cli
   post:
-    - npm install -g gulp-cli && npm run build
     - npm install -g aws-cli
 
 test:
