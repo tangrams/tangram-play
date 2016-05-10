@@ -220,7 +220,8 @@
             "options": [
                 "GeoJSON",
                 "TopoJSON",
-                "MVT"
+                "MVT",
+                "Raster"
             ]
         },
         {
