@@ -195,7 +195,6 @@
                 "type",
                 "stroke",
                 "size",
-                "capitalized",
                 "move_into_tile",
                 "align",
                 "style",
@@ -503,11 +502,6 @@
         },
         {
             "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/interactive$",
-            "type": "boolean",
-            "defaultValue": "false"
-        },
-        {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/capitalized$",
             "type": "boolean",
             "defaultValue": "false"
         },
