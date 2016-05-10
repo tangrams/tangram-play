@@ -20,11 +20,11 @@ To build JavaScript and CSS once, run:
 
 #### Running a local server with Browsersync
 
-The default behavior of `gulp` uses [Browsersync][browsersync] to watch for source file changes and rebuild client-side bundles automatically:
+The default behavior of `gulp` uses [Browsersync][browsersync] to watch for source file changes, rebuild client-side bundles, and automatically update browser tabs:
 
     gulp
 
-When run, your system's default browser will open and point to `http://localhost:8080/`. You may adjust this port by configuring `gulpfile.js`. In addition, you may access the Browsersync UI (default location is `http://localhost:8081/`). Browsersync will automatically reload when JavaScript or the app's entry `index.html` is edited. CSS files will stream into the application without a reload. Tangram Play will save some elements of application state, such as map position, last scene content, and last editor position even while reloading. You may safely kill the `gulp` process at any time by hitting Ctrl-C.
+When run, a local server will be opened on `http://localhost:8080/`. You may adjust this port by configuring `gulpfile.js`. In addition, you may access the Browsersync UI (default location is `http://localhost:8081/`). Browsersync will automatically reload when JavaScript or the app's entry `index.html` is edited. CSS files will stream into the application without a reload. Tangram Play will save some elements of application state, such as map position, last scene content, and last editor position even while reloading. You may safely kill the `gulp` process at any time by hitting Ctrl-C.
 
 #### Running a local server manually
 

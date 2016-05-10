@@ -112,6 +112,7 @@ gulp.task('watch', ['build'], function () {
 gulp.task('serve', ['build'], function () {
     browserSync.init({
         port: 8080,
+        open: false,
         server: {
             baseDir: './'
         },
