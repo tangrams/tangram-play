@@ -371,7 +371,8 @@
                 "points",
                 "lines",
                 "polygons",
-                "text"
+                "text",
+                "raster"
             ]
         },
         {
