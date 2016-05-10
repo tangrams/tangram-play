@@ -199,7 +199,8 @@
                 "align",
                 "style",
                 "text_wrap",
-                "anchor"
+                "anchor",
+                "transform"
             ]
         }
     ],
@@ -594,6 +595,15 @@
                 "Monaco"
             ],
             "defaultValue": "Helvetica"
+        },
+        {
+            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/transform$",
+            "type": "string",
+            "options": [
+                "capitalize",
+                "uppercase",
+                "lowercase"
+            ]
         },
         {
             "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/size$",
