@@ -381,6 +381,7 @@
             "address": "^/styles/(\\w|\\_|\\-)+/blend$",
             "type": "string",
             "options": [
+                "opaque",
                 "add",
                 "multiply",
                 "overlay",
