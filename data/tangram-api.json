@@ -110,7 +110,10 @@
             "address": "^/styles/(\\w|\\_|\\-)+/shaders$",
             "level": 3,
             "options": [
-                "blocks"
+                "blocks",
+                "uniforms",
+                "defines",
+                "extensions"
             ]
         },
         {
