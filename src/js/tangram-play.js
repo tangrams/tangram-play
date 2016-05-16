@@ -2,6 +2,10 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
 
+// Error tracking
+import Raven from 'raven-js';
+Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467').install();
+
 // Core elements
 import { tangram, initMap, loadScene } from './map/map';
 import { initEditor } from './editor/editor';
