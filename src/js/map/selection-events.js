@@ -2,14 +2,16 @@ import _ from 'lodash';
 import L from 'leaflet';
 import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
+import TangramPlay from '../tangram-play';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
 
-class TangramSelectionHover {
-    constructor () {
-        this.isDoingStuff = false;
+let isPopupOpen = false;
+let currentPopupX, currentPopupY;
 
+class TangramIntrospectionPopup {
+    constructor () {
         let el = this.el = document.createElement('div');
         el.className = 'map-selection-preview';
         el.style.display = 'none';
@@ -38,9 +40,7 @@ class TangramSelectionHover {
         closeEl.className = 'map-selection-close';
         closeEl.textContent = '×';
         closeEl.style.display = 'none';
-        closeEl.addEventListener('click', event => {
-            this.hide();
-        });
+        // Listeners for this will be added later, during popup creation
 
         el.appendChild(headerEl);
         el.appendChild(propertiesEl);
@@ -75,9 +75,10 @@ class TangramSelectionHover {
     hide () {
         this.el.style.display = 'none';
         this._closeEl.style.display = 'none';
-        this.isDoingStuff = false;
         this.hideProperties();
         this.hideLayers();
+
+        isPopupOpen = false;
     }
 
     setLabel (properties) {
@@ -130,7 +131,7 @@ class TangramSelectionHover {
 
     set name (text) {
         if (!text) {
-            text = EMPTY_SELECTION_NAME_LABEL;
+            // text = EMPTY_SELECTION_NAME_LABEL;
             this._nameEl.classList.add('map-selection-name-label-blank');
         }
         else {
@@ -226,14 +227,33 @@ class TangramSelectionHover {
             layerEl.className = 'map-selection-layer-item';
             layerEl.textContent = item;
 
+            // Layer icon.
+            // A class name will be applied later depending on whether
+            // it's in the scene or imported
+            let iconEl = document.createElement('span');
+            iconEl.className = 'map-selection-layer-icon';
+            layerEl.insertBefore(iconEl, layerEl.childNodes[0]);
+
             // YAML-Tangram addressing uses forward-slashes ('/') to
             // delimit nested key names, rather than the colons (':')
             // returned as layer addresses by Tangram
             let yamlTangramAddress = '/layers/' + item.replace(/:/g, '/');
 
-            layerEl.addEventListener('click', event => {
-                console.log(yamlTangramAddress);
-            });
+            let node = TangramPlay.getNodesForAddress(yamlTangramAddress);
+
+            // `node` will be undefined if it is not found in the current scene
+            if (node) {
+                iconEl.classList.add('icon-layers');
+
+                // If node is present, clicking on it should allow scrolling to
+                // its position in the editor.
+                layerEl.addEventListener('click', event => {
+                    console.log(node);
+                });
+            }
+            else {
+                iconEl.classList.add('icon-imported');
+            }
 
             layerContainerEl.appendChild(layerEl);
         });
@@ -247,10 +267,11 @@ class TangramSelectionHover {
     }
 }
 
-const selectionEl = new TangramSelectionHover();
+// Create an instance only for hovering
+const hoverPopup = new TangramIntrospectionPopup();
 
 export function handleSelectionHoverEvent (selection) {
-    if (selectionEl.isDoingStuff) {
+    if (isPopupOpen === true) {
         return;
     }
 
@@ -258,54 +279,59 @@ export function handleSelectionHoverEvent (selection) {
     // For instance, when the map is being dragged, there is no
     // feature being picked. So, make sure it is present.
     if (!selection.feature) {
-        selectionEl.hide();
+        hoverPopup.hide();
         return;
     }
 
-    selectionEl.setLabel(selection.feature.properties);
-    selectionEl.showAt(selection.pixel.x, selection.pixel.y);
+    hoverPopup.setLabel(selection.feature.properties);
+    hoverPopup.showAt(selection.pixel.x, selection.pixel.y);
 }
 
 export function handleSelectionClickEvent (selection) {
-    if (!selection.feature || selectionEl.isDoingStuff === true) {
-        selectionEl.hide();
+    // Don't display a new popup if the click does not return a feature
+    // (e.g. interactive: false)
+    if (!selection.feature) {
         return;
     }
 
-    selectionEl.resetPosition();
-    selectionEl.isDoingStuff = true;
-    selectionEl.setLabel(selection.feature.properties);
-    selectionEl.showProperties(selection.feature.properties);
-    selectionEl.showLayers(selection.feature.layers);
+    // Don't display a new popup if the click is in the same position as the last one
+    if (selection.pixel.x === currentPopupX && selection.pixel.y === currentPopupY) {
+        return;
+    }
+    currentPopupX = selection.pixel.x;
+    currentPopupY = selection.pixel.y;
 
-    // Create a clone of the selection element to add to Leaflet's popup
-    // We probably don't want to do this forever because it is a brittle source of bugs
-    // and confusion about how this works
-    const popupEl = selectionEl.el.cloneNode(true);
+    const inspectPopup = new TangramIntrospectionPopup();
+
+    hoverPopup.hide();
+
+    inspectPopup.resetPosition();
+    inspectPopup.setLabel(selection.feature.properties);
+    inspectPopup.showProperties(selection.feature.properties);
+    inspectPopup.showLayers(selection.feature.layers);
 
     const popup = L.popup({
             closeButton: false,
+            closeOnClick: false,
             autoPanPadding: [20, 70], // 20 + map toolbar height
             offset: [0, -6],
             className: 'map-selection-popup'
         })
         .setLatLng({ lat: selection.leaflet_event.latlng.lat, lng: selection.leaflet_event.latlng.lng })
-        .setContent(popupEl)
+        .setContent(inspectPopup.el)
         .openOn(map);
 
-    popupEl.querySelector('.map-selection-close').addEventListener('click', event => {
+    // Attach the close listener to the X
+    inspectPopup._closeEl.addEventListener('click', event => {
         map.closePopup(popup);
     });
 
     popup._container.style.transform = 'translateZ(100px)';
+    isPopupOpen = true;
 
     map.on('popupclose', event => {
-        if (event.popup === popup) {
-            event.popup._container.style.transform = null;
-            selectionEl.isDoingStuff = false;
-            selectionEl.hide(); // Reset
-        }
+        // Leaflet will be responsible for destroying the elements
+        event.popup._container.style.transform = null;
+        isPopupOpen = false;
     });
-
-    // selectionEl.showAt(selection.pixel.x, selection.pixel.y);
 }
