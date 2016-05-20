@@ -2,6 +2,8 @@
 [![David Dependencies](https://img.shields.io/david/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play)
 [![David devDependencies](https://img.shields.io/david/dev/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play#info=devDependencies)
 
+# https://mapzen.com/tangram/play/
+
 ![](data/imgs/screenshot.png)
 
 # Editor for Tangram scene files
