@@ -145,3 +145,17 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 .CodeMirror-foldgutter-folded { color: #777; /*cursor: pointer;*/ }
 .CodeMirror-foldgutter-open:after { content: "\25BE"; }
 .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
+
+/* When drawing attention to the editor, e.g. after map introspection
+    TODO: Better class name
+    TODO: Better styles */
+.editor-looky-here {
+    .CodeMirror-line {
+        background-color: var(--ui-active-color);
+    }
+    .CodeMirror-linenumber {
+        background-color: yellow;
+        color: black;
+        font-weight: 600;
+    }
+}

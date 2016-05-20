@@ -264,14 +264,30 @@ class TangramIntrospectionPopup {
                 // If node is present, clicking on it should allow scrolling to
                 // its position in the editor.
                 layerEl.addEventListener('click', event => {
-                    console.log(node);
                     // Be sure to destroy all other `selected` classes on other layers
                     const layersNodeList = this._layersEl.querySelectorAll('.map-selection-layer-item');
                     for (var i = 0; i < layersNodeList.length; i++) {
                         layersNodeList[i].classList.remove('map-selection-selected');
                     }
                     layerEl.classList.add('map-selection-selected');
+
+                    // Scroll line into view.
+                    // This moves the viewport the minimal amount to get it into view.
+                    // TODO: Position this line near the top of the viewport
+                    // TODO: Or show the full height of the block, not just the first line of the address
                     editor.scrollIntoView(node.range, 20);
+
+                    // Highlight the block.
+                    // When selected, destroy all other line classes
+                    for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
+                        editor.doc.removeLineClass(i, 'wrap');
+                    }
+
+                    // TODO: Highlight the entire block and not just the line of the address.
+                    for (let lineNum = node.range.from.line; lineNum <= node.range.to.line; lineNum++) {
+                        let actualLineNumber = lineNum; // TODO: Verify if zero-index or blank lines affect this number
+                        editor.doc.addLineClass(actualLineNumber, 'wrap', 'editor-looky-here');
+                    }
                 });
             }
             else {
@@ -356,5 +372,10 @@ export function handleSelectionClickEvent (selection) {
         // Leaflet will be responsible for destroying the elements
         event.popup._container.style.transform = null;
         isPopupOpen = false;
+
+        // Destroy all active line classes
+        for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
+            editor.doc.removeLineClass(i, 'wrap');
+        }
     });
 }
