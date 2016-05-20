@@ -2,7 +2,7 @@ import _ from 'lodash';
 import L from 'leaflet';
 import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
-import TangramPlay from '../tangram-play';
+import TangramPlay, { editor } from '../tangram-play';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
@@ -245,10 +245,33 @@ class TangramIntrospectionPopup {
             if (node) {
                 iconEl.classList.add('icon-layers');
 
+                // Active highlighting
+                layerEl.addEventListener('mousedown', event => {
+                    // Be sure to destroy all other `active` classes on other layers
+                    const layersNodeList = this._layersEl.querySelectorAll('.map-selection-layer-item');
+                    for (var i = 0; i < layersNodeList.length; i++) {
+                        layersNodeList[i].classList.remove('active');
+                    }
+                    layerEl.classList.add('active');
+                });
+                layerEl.addEventListener('mouseout', event => {
+                    layerEl.classList.remove('active');
+                });
+                layerEl.addEventListener('mouseup', event => {
+                    layerEl.classList.remove('active');
+                });
+
                 // If node is present, clicking on it should allow scrolling to
                 // its position in the editor.
                 layerEl.addEventListener('click', event => {
                     console.log(node);
+                    // Be sure to destroy all other `selected` classes on other layers
+                    const layersNodeList = this._layersEl.querySelectorAll('.map-selection-layer-item');
+                    for (var i = 0; i < layersNodeList.length; i++) {
+                        layersNodeList[i].classList.remove('map-selection-selected');
+                    }
+                    layerEl.classList.add('map-selection-selected');
+                    editor.scrollIntoView(node.range, 20);
                 });
             }
             else {

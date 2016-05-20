@@ -152,7 +152,7 @@
         background-color: var(--ui-active-color);
     }
 
-    .map-selection-selected {
+    &.map-selection-selected {
         color: var(--ui-highlight-color);
     }
 }
