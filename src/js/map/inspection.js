@@ -3,6 +3,8 @@ import L from 'leaflet';
 import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
 import TangramPlay, { editor } from '../tangram-play';
+import { highlightBlock } from '../editor/highlight';
+import { jumpToLine } from '../editor/codemirror/tools';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
@@ -271,34 +273,11 @@ class TangramInspectionPopup {
                     }
                     layerEl.classList.add('map-inspection-selected');
 
-                    // Scroll line into view.
-                    // This moves the viewport the minimal amount to get it into view.
-                    // TODO: Position this line near the top of the viewport
-                    // TODO: Or show the full height of the block, not just the first line of the address
-                    editor.scrollIntoView(node.range, 20);
-
                     // Highlight the block.
-                    // First, destroy all highlight classes and leave it blank
-                    for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
-                        editor.doc.removeLineClass(i, 'wrap', 'editor-looky-here');
-                    }
+                    highlightBlock(node, 'editor-inspection-highlight');
 
-                    // Next, highlight the line number given in the range of the address.
-                    // The range is only one line (it doesn't store the range of the block, just the address)
-                    let blockLine = node.range.from.line;
-                    editor.doc.addLineClass(blockLine, 'wrap', 'editor-looky-here');
-
-                    // Now, go through each subsequent line and highlight the line until the block
-                    // is over.
-                    // TODO: refactor for performance
-                    let blockLevel = editor.doc.getLineHandle(blockLine).stateAfter.yamlState.keyLevel;
-                    let nextLine = blockLine + 1;
-                    let nextLevel = editor.doc.getLineHandle(nextLine).stateAfter.yamlState.keyLevel;
-                    while (nextLevel > blockLevel) {
-                        editor.doc.addLineClass(nextLine, 'wrap', 'editor-looky-here');
-                        nextLine++;
-                        nextLevel = editor.doc.getLineHandle(nextLine).stateAfter.yamlState.keyLevel;
-                    }
+                    // Scroll top of the block into view.
+                    jumpToLine(editor, node.range.from.line);
                 });
             }
             else {

@@ -147,11 +147,12 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
 
 /* When drawing attention to the editor, e.g. after map introspection
-    TODO: Better class name
     TODO: Better styles */
-.editor-looky-here {
+.editor-inspection-highlight {
     .CodeMirror-line {
-        background-color: var(--ui-active-color);
+        /* A background color with alpha=1 overlaps the selection highlight
+           This makes the selection visible through the highlighted line */
+        background-color: rgba(54,56,60,0.5); /*var(--ui-active-color);*/
     }
     .CodeMirror-linenumber {
         background-color: yellow;
