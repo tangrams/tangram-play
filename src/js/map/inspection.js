@@ -278,15 +278,26 @@ class TangramInspectionPopup {
                     editor.scrollIntoView(node.range, 20);
 
                     // Highlight the block.
-                    // When selected, destroy all other line classes
+                    // First, destroy all highlight classes and leave it blank
                     for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
-                        editor.doc.removeLineClass(i, 'wrap');
+                        editor.doc.removeLineClass(i, 'wrap', 'editor-looky-here');
                     }
 
-                    // TODO: Highlight the entire block and not just the line of the address.
-                    for (let lineNum = node.range.from.line; lineNum <= node.range.to.line; lineNum++) {
-                        let actualLineNumber = lineNum; // TODO: Verify if zero-index or blank lines affect this number
-                        editor.doc.addLineClass(actualLineNumber, 'wrap', 'editor-looky-here');
+                    // Next, highlight the line number given in the range of the address.
+                    // The range is only one line (it doesn't store the range of the block, just the address)
+                    let blockLine = node.range.from.line;
+                    editor.doc.addLineClass(blockLine, 'wrap', 'editor-looky-here');
+
+                    // Now, go through each subsequent line and highlight the line until the block
+                    // is over.
+                    // TODO: refactor for performance
+                    let blockLevel = editor.doc.getLineHandle(blockLine).stateAfter.yamlState.keyLevel;
+                    let nextLine = blockLine + 1;
+                    let nextLevel = editor.doc.getLineHandle(nextLine).stateAfter.yamlState.keyLevel;
+                    while (nextLevel > blockLevel) {
+                        editor.doc.addLineClass(nextLine, 'wrap', 'editor-looky-here');
+                        nextLine++;
+                        nextLevel = editor.doc.getLineHandle(nextLine).stateAfter.yamlState.keyLevel;
                     }
                 });
             }
