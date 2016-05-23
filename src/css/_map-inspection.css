@@ -1,12 +1,12 @@
-/* MAP SELECTION EVENTS */
+/* TANGRAM INSPECTION EVENTS */
 
-.map-selection-preview {
+.map-inspection-preview {
     background-color: rgba(0, 0, 0, 0.85);
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 0.75rem; /* TODO: create & associate with global font scale */
     color: var(--ui-component-text-color);
-    z-index: var(--z04-map-selection);
+    z-index: var(--z04-map-inspection);
     min-width: 85px;
     line-height: 1; /* Overrides leaflet */
 
@@ -25,32 +25,32 @@
     }
 }
 
-.map-selection-popup .map-selection-preview::after {
+.map-inspection-popup .map-inspection-preview::after {
     display: none;
 }
 
-.map-selection-header {
+.map-inspection-header {
     padding: 6px;
     padding-right: 24px; /* Extra padding looks nicer, plus we put a close button there */
     white-space: nowrap;
     line-height: 1.2;
 }
 
-.map-selection-kind-label {
+.map-inspection-kind-label {
     font-weight: 400;
     font-size: 1.25em;
 }
 
-.map-selection-name-label {
+.map-inspection-name-label {
     margin-top: 0.25em;
 }
 
-.map-selection-name-label-blank {
+.map-inspection-name-label-blank {
     display: none; /* Hide for now */
     color: #999; /* In another world, this displayed "(unnamed)" grayed out */
 }
 
-.map-selection-label {
+.map-inspection-label {
     padding: 0.5em 6px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.75em;
@@ -62,13 +62,13 @@
     cursor: default;
 }
 
-.map-selection-properties {
+.map-inspection-properties {
     box-sizing: border-box;
     line-height: 1.4;
     margin-top: 0.25em;
 }
 
-.map-selection-properties-table-wrapper {
+.map-inspection-properties-table-wrapper {
     min-width: 200px;
     max-height: 88px; /* should be exactly four rows */
     overflow-y: auto;
@@ -88,7 +88,7 @@
     }
 }
 
-.map-selection-properties-table {
+.map-inspection-properties-table {
     width: 100%;
     border-collapse: collapse;
 
@@ -115,7 +115,7 @@
     }
 }
 
-.map-selection-close {
+.map-inspection-close {
     display: block;
     position: absolute;
     width: 12px;
@@ -132,12 +132,12 @@
     }
 }
 
-.map-selection-layers-container {
+.map-inspection-layers-container {
     width: 100%;
     line-height: 1.4;
 }
 
-.map-selection-layer-item {
+.map-inspection-layer-item {
     padding-top: 3px;
     padding-bottom: 3px;
     padding-left: 6px;
@@ -152,12 +152,12 @@
         background-color: var(--ui-active-color);
     }
 
-    &.map-selection-selected {
+    &.map-inspection-selected {
         color: var(--ui-highlight-color);
     }
 }
 
-.map-selection-layer-icon {
+.map-inspection-layer-icon {
     width: 16px;
     height: 12px;
     display: inline-block;
@@ -177,7 +177,7 @@
 }
 
 /* LEAFLET OVERRIDES */
-.map-selection-popup.leaflet-popup {
+.map-inspection-popup.leaflet-popup {
     .leaflet-popup-content-wrapper {
         background: transparent;
         color: var(--ui-component-text-color);

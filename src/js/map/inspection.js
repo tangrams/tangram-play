@@ -10,34 +10,34 @@ const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
 let isPopupOpen = false;
 let currentPopupX, currentPopupY;
 
-class TangramIntrospectionPopup {
+class TangramInspectionPopup {
     constructor () {
         let el = this.el = document.createElement('div');
-        el.className = 'map-selection-preview';
+        el.className = 'map-inspection-preview';
         el.style.display = 'none';
 
         let headerEl = this._headerEl = document.createElement('div');
-        headerEl.className = 'map-selection-header';
+        headerEl.className = 'map-inspection-header';
 
         let kindEl = this._kindEl = document.createElement('div');
-        kindEl.className = 'map-selection-kind-label';
+        kindEl.className = 'map-inspection-kind-label';
 
         let nameEl = this._nameEl = document.createElement('div');
-        nameEl.className = 'map-selection-name-label';
+        nameEl.className = 'map-inspection-name-label';
 
         headerEl.appendChild(kindEl);
         headerEl.appendChild(nameEl);
 
         let propertiesEl = this._propertiesEl = document.createElement('div');
-        propertiesEl.className = 'map-selection-properties';
+        propertiesEl.className = 'map-inspection-properties';
         propertiesEl.style.display = 'none';
 
         let layersEl = this._layersEl = document.createElement('div');
-        layersEl.className = 'map-selection-layers';
+        layersEl.className = 'map-inspection-layers';
         layersEl.style.display = 'none';
 
         let closeEl = this._closeEl = document.createElement('div');
-        closeEl.className = 'map-selection-close';
+        closeEl.className = 'map-inspection-close';
         closeEl.textContent = '×';
         closeEl.style.display = 'none';
         // Listeners for this will be added later, during popup creation
@@ -132,10 +132,10 @@ class TangramIntrospectionPopup {
     set name (text) {
         if (!text) {
             // text = EMPTY_SELECTION_NAME_LABEL;
-            this._nameEl.classList.add('map-selection-name-label-blank');
+            this._nameEl.classList.add('map-inspection-name-label-blank');
         }
         else {
-            this._nameEl.classList.remove('map-selection-name-label-blank');
+            this._nameEl.classList.remove('map-inspection-name-label-blank');
         }
         this._nameEl.textContent = text;
     }
@@ -150,7 +150,7 @@ class TangramIntrospectionPopup {
 
         // Add section label
         const labelEl = document.createElement('div');
-        labelEl.className = 'map-selection-label';
+        labelEl.className = 'map-inspection-label';
         labelEl.textContent = 'Properties';
 
         this._propertiesEl.appendChild(labelEl);
@@ -160,8 +160,8 @@ class TangramIntrospectionPopup {
         const tableEl = document.createElement('table');
         const tbodyEl = document.createElement('tbody');
 
-        tableWrapperEl.className = 'map-selection-properties-table-wrapper';
-        tableEl.className = 'map-selection-properties-table';
+        tableWrapperEl.className = 'map-inspection-properties-table-wrapper';
+        tableEl.className = 'map-inspection-properties-table';
         tableEl.appendChild(tbodyEl);
 
         // Alphabetize key-value pairs
@@ -211,27 +211,27 @@ class TangramIntrospectionPopup {
 
         // Add section label
         const labelEl = document.createElement('div');
-        labelEl.className = 'map-selection-label';
+        labelEl.className = 'map-inspection-label';
         labelEl.textContent = 'Layers';
 
         this._layersEl.appendChild(labelEl);
 
         // Add layer container
         const layerContainerEl = document.createElement('div');
-        layerContainerEl.className = 'map-selection-layers-container';
+        layerContainerEl.className = 'map-inspection-layers-container';
         this._layersEl.appendChild(layerContainerEl);
 
         // Create list of layers
         layers.forEach(item => {
             let layerEl = document.createElement('div');
-            layerEl.className = 'map-selection-layer-item';
+            layerEl.className = 'map-inspection-layer-item';
             layerEl.textContent = item;
 
             // Layer icon.
             // A class name will be applied later depending on whether
             // it's in the scene or imported
             let iconEl = document.createElement('span');
-            iconEl.className = 'map-selection-layer-icon';
+            iconEl.className = 'map-inspection-layer-icon';
             layerEl.insertBefore(iconEl, layerEl.childNodes[0]);
 
             // YAML-Tangram addressing uses forward-slashes ('/') to
@@ -248,7 +248,7 @@ class TangramIntrospectionPopup {
                 // Active highlighting
                 layerEl.addEventListener('mousedown', event => {
                     // Be sure to destroy all other `active` classes on other layers
-                    const layersNodeList = this._layersEl.querySelectorAll('.map-selection-layer-item');
+                    const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
                     for (var i = 0; i < layersNodeList.length; i++) {
                         layersNodeList[i].classList.remove('active');
                     }
@@ -265,11 +265,11 @@ class TangramIntrospectionPopup {
                 // its position in the editor.
                 layerEl.addEventListener('click', event => {
                     // Be sure to destroy all other `selected` classes on other layers
-                    const layersNodeList = this._layersEl.querySelectorAll('.map-selection-layer-item');
+                    const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
                     for (var i = 0; i < layersNodeList.length; i++) {
-                        layersNodeList[i].classList.remove('map-selection-selected');
+                        layersNodeList[i].classList.remove('map-inspection-selected');
                     }
-                    layerEl.classList.add('map-selection-selected');
+                    layerEl.classList.add('map-inspection-selected');
 
                     // Scroll line into view.
                     // This moves the viewport the minimal amount to get it into view.
@@ -307,9 +307,9 @@ class TangramIntrospectionPopup {
 }
 
 // Create an instance only for hovering
-const hoverPopup = new TangramIntrospectionPopup();
+const hoverPopup = new TangramInspectionPopup();
 
-export function handleSelectionHoverEvent (selection) {
+export function handleInspectionHoverEvent (selection) {
     if (isPopupOpen === true) {
         return;
     }
@@ -326,7 +326,7 @@ export function handleSelectionHoverEvent (selection) {
     hoverPopup.showAt(selection.pixel.x, selection.pixel.y);
 }
 
-export function handleSelectionClickEvent (selection) {
+export function handleInspectionClickEvent (selection) {
     // Don't display a new popup if the click does not return a feature
     // (e.g. interactive: false)
     if (!selection.feature) {
@@ -340,7 +340,7 @@ export function handleSelectionClickEvent (selection) {
     currentPopupX = selection.pixel.x;
     currentPopupY = selection.pixel.y;
 
-    const inspectPopup = new TangramIntrospectionPopup();
+    const inspectPopup = new TangramInspectionPopup();
 
     hoverPopup.hide();
 
@@ -354,7 +354,7 @@ export function handleSelectionClickEvent (selection) {
             closeOnClick: false,
             autoPanPadding: [20, 70], // 20 + map toolbar height
             offset: [0, -6],
-            className: 'map-selection-popup'
+            className: 'map-inspection-popup'
         })
         .setLatLng({ lat: selection.leaflet_event.latlng.lat, lng: selection.leaflet_event.latlng.lng })
         .setContent(inspectPopup.el)

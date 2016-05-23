@@ -6,7 +6,7 @@ import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 import { initMapToolbar } from './toolbar';
-import { handleSelectionHoverEvent, handleSelectionClickEvent } from './selection-events';
+import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
@@ -58,8 +58,8 @@ function initTangram (pathToSceneFile) {
     tangramLayer = window.Tangram.leafletLayer({
         scene: pathToSceneFile,
         events: {
-            hover: handleSelectionHoverEvent,
-            click: handleSelectionClickEvent
+            hover: handleInspectionHoverEvent,
+            click: handleInspectionClickEvent
         }
     });
     tangramLayer.addTo(map);
