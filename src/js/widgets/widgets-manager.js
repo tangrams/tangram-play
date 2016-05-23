@@ -1,46 +1,29 @@
 import TangramPlay from '../tangram-play';
-
-// Load some common functions
+import TANGRAM_API from '../tangram-api.json';
+import WidgetType from './widget-type';
 import { subscribeMixin } from '../tools/mixin';
 import { isStrEmpty } from '../editor/codemirror/tools';
 
-// Load addons modules
-import WidgetType from './widget-type';
-
 export default class WidgetsManager {
-    constructor (configFile) {
+    constructor () {
         subscribeMixin(this);
 
         this.data = []; // tokens to check
         this.pairedUntilLine = 0;
 
-        // Load data file
-        window.fetch(configFile, { credentials: 'include' })
-            .then((response) => {
-                if (response.status !== 200) {
-                    throw response.status;
-                }
+        // Initialize tokens
+        for (let datum of TANGRAM_API.values) {
+            if (datum.type === 'color' || datum.type === 'vector' || datum.type === 'boolean' || datum.type === 'string') {
+                this.data.push(new WidgetType(datum));
+            }
+        }
 
-                return response.json();
-            })
-            .then((data) => {
-                // Initialize tokens
-                for (let datum of data.values) {
-                    if (datum.type === 'color' || datum.type === 'vector' || datum.type === 'boolean' || datum.type === 'string') {
-                        this.data.push(new WidgetType(datum));
-                    }
-                }
-
-                let from = { line:0, ch:0 };
-                let to = {
-                    line: TangramPlay.editor.getDoc().size - 1,
-                    ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
-                };
-                this.createRange(from, to);
-            })
-            .catch((error) => {
-                console.error('Error retrieving config file.', error);
-            });
+        let from = { line:0, ch:0 };
+        let to = {
+            line: TangramPlay.editor.getDoc().size - 1,
+            ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
+        };
+        this.createRange(from, to);
 
         // If something change only update that
         TangramPlay.editor.on('changes', (cm, changesObjs) => {

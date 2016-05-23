@@ -44,7 +44,7 @@ var stopAction = debounce(function(cm) {
 }, 1000);
 
 export default class GlslSandbox {
-    constructor (configFile) {
+    constructor () {
         // Constant OBJ
         this.shader = undefined;
         this.element = document.createElement('div');

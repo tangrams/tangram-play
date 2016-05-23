@@ -10,20 +10,14 @@ import { getInd } from '../codemirror/tools';
 
 // Get array of YAML keys parent tree of a particular line
 export function getNodes(cm, nLine) {
-    if (cm.getLineHandle(nLine) &&
-        cm.getLineHandle(nLine).stateAfter &&
-        cm.getLineHandle(nLine).stateAfter.yamlState &&
-        cm.getLineHandle(nLine).stateAfter.yamlState.nodes) {
-        // TEMPORAL_FIX: Fix line parsing error
-        let nodes = cm.getLineHandle(nLine).stateAfter.yamlState.nodes;
-        for (let i = 0 ; i < nodes.length; i++) {
-            nodes[i].range.from.line = nLine;
-            nodes[i].range.to.line = nLine;
-        }
-        return nodes;
+    const lineHandle = cm.getLineHandle(nLine);
+
+    // Return the nodes. If any property in the chain is not defined,
+    // return an empty array.
+    try {
+        return lineHandle.stateAfter.yamlState.nodes;
     }
-    else {
-        // return [ {address: "/", key: '', value: '', pos: { line: 0, ch: 0 }, index: 0} ];
+    catch (e) {
         return [];
     }
 }
@@ -147,14 +141,9 @@ function isAfterKey(str, pos) {
 //  ===============================================================================
 
 //  Get the address of a line state ( usually from the first key of a line )
-function getKeyAddressFromState(state) {
-    if (state.nodes) {
-        if (state.nodes.length > 0) {
-            return state.nodes[0].address;
-        }
-        else {
-            return '/';
-        }
+function getKeyAddressFromState (state) {
+    if (state.nodes && state.nodes.length > 0) {
+        return state.nodes[0].address;
     }
     else {
         return '/';
@@ -451,7 +440,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
     }
 
     return {
-        startState: function() {
+        startState: function () {
             let state = yamlMode.startState();
             state.keyStack = [];
             state.keyLevel = -1;
@@ -463,7 +452,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
                 yamlState: state
             };
         },
-        copyState: function(state) {
+        copyState: function (state) {
             if (state.localState) {
                 var local = CodeMirror.copyState(state.localMode, state.localState);
             }
@@ -474,13 +463,21 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
                 yamlState: CodeMirror.copyState(yamlMode, state.yamlState),
             };
         },
-        innerMode: function(state) {
+        innerMode: function (state) {
             return {
                 state: state.localState || state.yamlState,
                 mode: state.localMode || yamlMode
             };
         },
-        token: function(stream, state) {
+        // By default, CodeMirror skips blank lines when tokenizing a document.
+        // We need to know the exact line number for our YAML addressing system.
+        // CodeMirror allows a blankLine(state) method for languages with significant
+        // blank lines, which we use solely to increment the line number on our state
+        // object when a blank line is encountered by CodeMirror's parser.
+        blankLine: function (state) {
+            state.yamlState.line++;
+        },
+        token: function (stream, state) {
             yamlAddressing(stream, state.yamlState);
             return state.token(stream, state);
         },
