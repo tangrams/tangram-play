@@ -1,6 +1,6 @@
 /* TANGRAM INSPECTION EVENTS */
 
-.map-inspection-preview {
+.map-inspection {
     background-color: rgba(0, 0, 0, 0.85);
     font-family: var(--font-family);
     font-weight: 200;
@@ -25,8 +25,15 @@
     }
 }
 
-.map-inspection-popup .map-inspection-preview::after {
+.map-inspection-popup .map-inspection::after {
     display: none;
+}
+
+/* A hover-only inspection tooltip has some special properties to it
+   to prevent interactivity quirks */
+.map-inspection-hover {
+    pointer-events: none;
+    cursor: default;
 }
 
 .map-inspection-header {

@@ -13,7 +13,7 @@ let currentPopupX, currentPopupY;
 class TangramInspectionPopup {
     constructor () {
         let el = this.el = document.createElement('div');
-        el.className = 'map-inspection-preview';
+        el.className = 'map-inspection';
         el.style.display = 'none';
 
         let headerEl = this._headerEl = document.createElement('div');
@@ -367,6 +367,7 @@ class TangramInspectionPopup {
 
 // Create an instance only for hovering
 const hoverPopup = new TangramInspectionPopup();
+hoverPopup.el.className += ' map-inspection-hover';
 
 export function handleInspectionHoverEvent (selection) {
     if (isPopupOpen === true) {
