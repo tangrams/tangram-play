@@ -201,6 +201,6 @@
 }
 
 .leaflet-fade-anim .leaflet-popup {
-    transition: opacity 120ms ease-in, transform 100ms ease-in;
+    transition: opacity 120ms ease-out, transform 100ms ease-out;
     transform: translateY(-20px) translateZ(100px);
 }

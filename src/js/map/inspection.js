@@ -304,6 +304,65 @@ class TangramInspectionPopup {
         emptyDOMElement(this._layersEl);
         this._layersEl.style.display = 'none';
     }
+
+    /**
+     * Attaches this content to Leaflet's L.popup object. This allows the inspector to
+     * be attached to the lat/lng coordinate, so that it is in the right position when the
+     * map is panned or zoomed. It also allows the map to be scrolled into place to show
+     * the entire popup when it opens.
+     */
+    showPopup (leafletEvent) {
+        const popup = L.popup({
+                closeButton: false,
+                closeOnClick: false,
+                autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
+                offset: [0, -6],
+                className: 'map-inspection-popup'
+            })
+            .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
+            .setContent(this.el)
+            .openOn(map);
+
+        // Attach the close listener to the X. This is done at this point when
+        // we have a reference to the popup event. We could technically also just
+        // rely on the popup's close button, but the thought is that handling our
+        // own even here gives us greater control in the future. That said, this can
+        // go away if depending on L.popup's internal close button is cleaner.
+        this._closeEl.addEventListener('click', event => {
+            map.closePopup(popup);
+        });
+
+        // Provide an animation in. By itself, the translateZ doesn't mean anything.
+        // It's just a "transition from" point. Leaflet adds an animation class
+        // which we hook into to provide a Y-position transform from zero.
+        popup._container.style.transform = 'translateZ(100px)';
+
+        // Attach a listener to the popup close event to clean up. Note that there
+        // can be various ways of closing this popup: the X button, or by clicking
+        // elsewhere on the map and opening a new popup.
+        map.on('popupclose', onPopupClose);
+
+        function onPopupClose (event) {
+            // Leaflet will be responsible for destroying the elements on close.
+
+            // Provide an animation out. Like the transition in, removing the transform
+            // style here just provides a "transition to" point. We use the Leaflet
+            // popup class to provide the Y-position transform.
+            event.popup._container.style.transform = null;
+            isPopupOpen = false;
+
+            // Destroy all active line classes
+            for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
+                editor.doc.removeLineClass(i, 'wrap');
+            }
+
+            // Clean up this event from the map listeners
+            map.off('popupclose', onPopupClose);
+        }
+
+        // Record this state
+        isPopupOpen = true;
+    }
 }
 
 // Create an instance only for hovering
@@ -348,34 +407,5 @@ export function handleInspectionClickEvent (selection) {
     inspectPopup.setLabel(selection.feature.properties);
     inspectPopup.showProperties(selection.feature.properties);
     inspectPopup.showLayers(selection.feature.layers);
-
-    const popup = L.popup({
-            closeButton: false,
-            closeOnClick: false,
-            autoPanPadding: [20, 70], // 20 + map toolbar height
-            offset: [0, -6],
-            className: 'map-inspection-popup'
-        })
-        .setLatLng({ lat: selection.leaflet_event.latlng.lat, lng: selection.leaflet_event.latlng.lng })
-        .setContent(inspectPopup.el)
-        .openOn(map);
-
-    // Attach the close listener to the X
-    inspectPopup._closeEl.addEventListener('click', event => {
-        map.closePopup(popup);
-    });
-
-    popup._container.style.transform = 'translateZ(100px)';
-    isPopupOpen = true;
-
-    map.on('popupclose', event => {
-        // Leaflet will be responsible for destroying the elements
-        event.popup._container.style.transform = null;
-        isPopupOpen = false;
-
-        // Destroy all active line classes
-        for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
-            editor.doc.removeLineClass(i, 'wrap');
-        }
-    });
+    inspectPopup.showPopup(selection.leaflet_event);
 }
