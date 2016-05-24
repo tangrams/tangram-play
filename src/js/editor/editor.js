@@ -15,6 +15,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/addon/display/rulers';
 import 'codemirror/addon/display/panel';
+import 'codemirror/addon/selection/active-line';
 import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
@@ -52,6 +53,7 @@ export function initEditor (id) {
     let cm = CodeMirror(dom, {
         value: 'Loading...',
         rulers: rulers,
+        styleActiveLine: true,
         lineNumbers: true,
         matchBrackets: true,
         mode: 'text/x-yaml-tangram',

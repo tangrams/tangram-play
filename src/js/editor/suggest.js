@@ -1,6 +1,8 @@
 import TangramPlay from '../tangram-play';
 import TANGRAM_API from '../tangram-api.json';
-import { tangram } from '../map/map';
+import { tangramLayer } from '../map/map';
+
+// Load some common functions
 import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
 import { getAddressSceneContent, getAddressForLevel } from '../editor/codemirror/yaml-tangram';
 
@@ -232,7 +234,7 @@ class Suggestion {
     }
 
     getList(node) {
-        let scene = tangram.scene;
+        let scene = tangramLayer.scene;
         let list = [];
         let presentNodes = [];
 

@@ -116,7 +116,17 @@ div.cm-s-tangram .CodeMirror-cursor { border-left: 1px solid white; }
 .cm-s-tangram span.cm-variable-3, .cm-s-tangram span.cm-def { color: #c792ea; }
 .cm-s-tangram .cm-error { border-bottom: 1px solid red; }
 
-div.cm-s-tangram .CodeMirror-activeline-background { background: #FFF; }
+.cm-s-tangram .CodeMirror-activeline-background {
+    background: var(--ui-base-color);
+}
+.CodeMirror-activeline-gutter.CodeMirror-gutter-background {
+    background: var(--ui-active-color);
+}
+
+.CodeMirror-activeline-gutter .CodeMirror-linenumber {
+    color: var(--ui-highlight-color);
+}
+
 div.cm-s-tangram span.CodeMirror-matchingbracket {
     outline:1px solid #A8ABAA;
     color: #FCD812;
@@ -135,3 +145,18 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 .CodeMirror-foldgutter-folded { color: #777; /*cursor: pointer;*/ }
 .CodeMirror-foldgutter-open:after { content: "\25BE"; }
 .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
+
+/* When drawing attention to the editor, e.g. after map introspection
+    TODO: Better styles */
+.editor-inspection-highlight {
+    .CodeMirror-line {
+        /* A background color with alpha=1 overlaps the selection highlight
+           This makes the selection visible through the highlighted line */
+        background-color: rgba(54,56,60,0.5); /*var(--ui-active-color);*/
+    }
+    .CodeMirror-linenumber {
+        background-color: yellow;
+        color: black;
+        font-weight: 600;
+    }
+}

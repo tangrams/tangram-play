@@ -1,0 +1,213 @@
+/* TANGRAM INSPECTION EVENTS */
+
+.map-inspection {
+    background-color: rgba(0, 0, 0, 0.85);
+    font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 0.75rem; /* TODO: create & associate with global font scale */
+    color: var(--ui-component-text-color);
+    z-index: var(--z04-map-inspection);
+    min-width: 85px;
+    line-height: 1; /* Overrides leaflet */
+
+    /* Pointer tip */
+    &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 12px solid rgba(0, 0, 0, 0.85);
+        left: 50%;
+        margin-left: -12px;
+        top: 100%;
+    }
+}
+
+.map-inspection-popup .map-inspection::after {
+    display: none;
+}
+
+/* A hover-only inspection tooltip has some special properties to it
+   to prevent interactivity quirks */
+.map-inspection-hover {
+    pointer-events: none;
+    cursor: default;
+}
+
+.map-inspection-header {
+    padding: 6px;
+    padding-right: 24px; /* Extra padding looks nicer, plus we put a close button there */
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.map-inspection-kind-label {
+    font-weight: 400;
+    font-size: 1.25em;
+}
+
+.map-inspection-name-label {
+    margin-top: 0.25em;
+}
+
+.map-inspection-name-label-blank {
+    display: none; /* Hide for now */
+    color: #999; /* In another world, this displayed "(unnamed)" grayed out */
+}
+
+.map-inspection-label {
+    padding: 0.5em 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.75em;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--ui-subtext-color);
+    background-color: var(--ui-base-color);
+    user-select: none;
+    cursor: default;
+}
+
+.map-inspection-properties {
+    box-sizing: border-box;
+    line-height: 1.4;
+    margin-top: 0.25em;
+}
+
+.map-inspection-properties-table-wrapper {
+    min-width: 200px;
+    max-height: 88px; /* should be exactly four rows */
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: var(--ui-component-color);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #b9b9bd;
+    }
+}
+
+.map-inspection-properties-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tr {
+        vertical-align: top;
+        cursor: pointer;
+    }
+
+    tr:hover {
+        background-color: var(--ui-active-color);
+    }
+
+    td {
+        padding: 3px;
+    }
+
+    td:first-child {
+        padding-left: 6px;
+    }
+
+    /* Make sure there is enough room on the right for scrollbar too */
+    td:last-child {
+        padding-right: 12px;
+    }
+}
+
+.map-inspection-close {
+    display: block;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    right: 6px;
+    top: 4px;
+    color: var(--ui-component-text-color);
+    text-align: right;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        color: var(--ui-highlight-color);
+    }
+}
+
+.map-inspection-layers-container {
+    width: 100%;
+    line-height: 1.4;
+}
+
+.map-inspection-layer-item {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    max-width: 280px;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+
+    &.map-inspection-selected {
+        color: var(--ui-highlight-color);
+    }
+}
+
+.map-inspection-layer-icon {
+    width: 16px;
+    height: 12px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: left 1px;
+    vertical-align: baseline;
+    opacity: 0.75;
+}
+
+/* TODO: Replace icons */
+.icon-layers {
+    background-image: url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20fill%3D%22white%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%221.414%22%3E%3Cg%20fill-rule%3D%22nonzero%22%3E%3Cpath%20d%3D%22M48.66%2077.887L23.433%2062.743c-.83-.5-1.87-.494-2.696.01l-5.314%203.25c-1.667%201.02-1.657%203.445.02%204.45l33.22%2019.942c.825.495%201.855.495%202.68%200l33.22-19.94c1.676-1.007%201.687-3.432.02-4.45l-5.314-3.25c-.827-.507-1.866-.51-2.696-.012L51.34%2077.887c-.825.495-1.855.495-2.68%200z%22%2F%3E%3Cpath%20d%3D%22M67.258%2050.077l-4.4%202.642-11.52%206.912c-.823.495-1.853.495-2.677%200L37.144%2052.72l-4.4-2.643-8.95-5.37c-.83-.5-1.87-.495-2.695.01l-5.676%203.472c-1.667%201.02-1.657%203.443.02%204.45l6.618%203.972%204.4%202.642%2022.2%2013.326c.825.495%201.855.495%202.68%200l22.2-13.326%204.402-2.642%206.62-3.973c1.674-1.007%201.685-3.432.018-4.45l-5.676-3.473c-.827-.506-1.866-.51-2.696-.01l-8.95%205.37z%22%2F%3E%3Cpath%20d%3D%22M26.82%2041.216l10.3%206.182%204.402%202.642%207.14%204.285c.823.495%201.853.495%202.677%200l7.138-4.285%204.4-2.642%2010.3-6.182%204.402-2.642%206.98-4.19c1.675-1.006%201.686-3.43.02-4.45L51.356%209.614c-.833-.51-1.882-.51-2.715%200l-33.22%2020.32c-1.668%201.02-1.658%203.445.018%204.45l6.98%204.19%204.4%202.642z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+
+.icon-imported {
+    background-image: url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%221.414%22%20fill%3D%22white%22%3E%3Cpath%20d%3D%22M41%2026.38l10.046%2010.043L82.582%205%2095%2017.42%2063.582%2048.96%2073.618%2059H41V26.38zM95%2050v20c0%2014-11%2025-25%2025H30C16%2095%205%2084%205%2070V30C5%2016%2016%205%2030%205h20v13H30c-7%200-12%205-12%2012v40c0%207%205%2012%2012%2012h40c7%200%2012-5%2012-12V50h13z%22%20fill-rule%3D%22nonzero%22%2F%3E%3C%2Fsvg%3E');
+}
+
+/* LEAFLET OVERRIDES */
+.map-inspection-popup.leaflet-popup {
+    .leaflet-popup-content-wrapper {
+        background: transparent;
+        color: var(--ui-component-text-color);
+        box-shadow: none;
+    }
+
+    .leaflet-popup-tip {
+        background-color: rgba(0, 0, 0, 0.85);
+        box-shadow: none;
+    }
+
+    .leaflet-popup-content-wrapper {
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .leaflet-popup-content {
+        margin: 0;
+        width: auto !important;
+    }
+}
+
+.leaflet-fade-anim .leaflet-popup {
+    transition: opacity 120ms ease-out, transform 100ms ease-out;
+    transform: translateY(-20px) translateZ(100px);
+}
