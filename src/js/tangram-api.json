@@ -1,7 +1,7 @@
 {
     "keys": [
         {
-            "address": "^/$",
+            "address": "^$",
             "level": 0,
             "options": [
                 "cameras",
@@ -12,7 +12,7 @@
             ]
         },
         {
-            "address": "^/scene$",
+            "address": "^scene$",
             "level": 1,
             "options": [
                 "background",
@@ -20,14 +20,14 @@
             ]
         },
         {
-            "address": "^/scene/background$",
+            "address": "^scene:background$",
             "level": 2,
             "options": [
                 "color"
             ]
         },
         {
-            "address": "^/sources/(\\w|\\_|\\-)+$",
+            "address": "^sources:(\\w|\\_|\\-|\\/)+$",
             "level": 2,
             "options": [
                 "type",
@@ -36,7 +36,7 @@
             ]
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+$",
             "level": 2,
             "options": [
                 "type",
@@ -50,7 +50,7 @@
             ]
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+$",
             "level": 2,
             "options": [
                 "type",
@@ -68,7 +68,7 @@
             ]
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+$",
             "level": 2,
             "options": [
                 "base",
@@ -85,7 +85,7 @@
             ]
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/material$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:material$",
             "level": 3,
             "options": [
                 "normal",
@@ -97,7 +97,7 @@
             ]
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/material/(normal|emission|ambient|diffuse|specular)$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:material:(normal|emission|ambient|diffuse|specular)$",
             "level": 4,
             "options": [
                 "texture",
@@ -107,7 +107,7 @@
             ]
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/shaders$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:shaders$",
             "level": 3,
             "options": [
                 "blocks",
@@ -117,7 +117,7 @@
             ]
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/shaders/blocks$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:shaders:blocks$",
             "level": 4,
             "options": [
                 "global",
@@ -129,7 +129,7 @@
             ]
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-)+$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)+$",
             "level": 2,
             "options": [
                 "data",
@@ -139,7 +139,7 @@
             ]
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-)+/data$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)+:data$",
             "level": 3,
             "options": [
                 "source",
@@ -147,7 +147,7 @@
             ]
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-)+/draw$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)+:draw$",
             "level": 3,
             "options": [
                 "points",
@@ -156,10 +156,10 @@
                 "text",
                 "raster"
             ],
-            "source": "/styles"
+            "source": "styles"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)+/draw/(\\w|\\_|\\-)+$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)+:draw:(\\w|\\_|\\-|\\/)+$",
             "level": 4,
             "options": [
                 "style",
@@ -182,10 +182,10 @@
                 "join",
                 "tile_edges"
             ],
-            "source": "/styles"
+            "source": ":styles"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font$",
             "level": 5,
             "options": [
                 "fill",
@@ -206,7 +206,7 @@
     ],
     "values": [
         {
-            "address": "^/scene/background/color$",
+            "address": "^scene:background:color$",
             "type": "color",
             "defaultValue": "[0., 0., 0.]"
         },
@@ -216,7 +216,7 @@
             "defaultValue": "false"
         },
         {
-            "address": "^/sources/(\\w|\\_|\\-)+/type$",
+            "address": "^sources:(\\w|\\_|\\-|\\/)+:type$",
             "type": "string",
             "options": [
                 "GeoJSON",
@@ -226,7 +226,7 @@
             ]
         },
         {
-            "address": "^/sources/(\\w|\\_|\\-)+/max_zoom$",
+            "address": "^sources:(\\w|\\_|\\-|\\/)+:max_zoom$",
             "type": "number",
             "range": [
                 0,
@@ -234,7 +234,7 @@
             ]
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/type$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:type$",
             "type": "string",
             "options": [
                 "flat",
@@ -243,32 +243,32 @@
             ]
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/position$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:position$",
             "type": "position",
             "defaultValue": "[-74.00976419448854, 40.70532700869127, 16]"
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/zoom$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:zoom$",
             "type": "number",
             "defaultValue": 15
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/active$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:active$",
             "type": "boolean",
             "defaultValue": "true"
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/focal_length$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:focal_length$",
             "type": "number",
             "defaultValue": "1"
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/vanishing_point$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:vanishing_point$",
             "type": "vector2",
             "defaultValue": "[0, 0]"
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/fov$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:fov$",
             "type": "number",
             "range": [
                 0,
@@ -277,12 +277,12 @@
             "defaultValue": 80
         },
         {
-            "address": "^/cameras/(\\w|\\_|\\-)+/axis$",
+            "address": "^cameras:(\\w|\\_|\\-|\\/)+:axis$",
             "type": "vector2",
             "defaultValue": "[0, 1]"
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/type$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:type$",
             "type": "string",
             "options": [
                 "ambient",
@@ -312,16 +312,16 @@
             "defaultValue": "true"
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/direction$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:direction$",
             "type": "vector",
             "defaultValue": "[0.2, 0.7, -0.5]"
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/position$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:position$",
             "type": "position"
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/origin$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:origin$",
             "type": "string",
             "options": [
                 "camera",
@@ -331,11 +331,11 @@
             "defaultValue": "world"
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/radius$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:radius$",
             "type": "vector2"
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/attenuation$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:attenuation$",
             "type": "number",
             "range": [
                 0,
@@ -344,7 +344,7 @@
             "defaultValue": 1
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/angle$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:angle$",
             "type": "number",
             "range": [
                 0,
@@ -353,7 +353,7 @@
             "defaultValue": 20
         },
         {
-            "address": "^/lights/(\\w|\\_|\\-)+/exponent$",
+            "address": "^lights:(\\w|\\_|\\-|\\/)+:exponent$",
             "type": "number",
             "range": [
                 0,
@@ -362,7 +362,7 @@
             "defaultValue": 0.2
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/base",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:base",
             "type": "string",
             "options": [
                 "points",
@@ -373,12 +373,12 @@
             ]
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/mix$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:mix$",
             "type": "string",
-            "source": "/styles"
+            "source": ":styles"
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/blend$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:blend$",
             "type": "string",
             "options": [
                 "opaque",
@@ -390,12 +390,12 @@
             "defaultValue": "none"
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/blend_order$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:blend_order$",
             "type": "number",
             "defaultValue": "0"
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/lighting$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:lighting$",
             "type": "string",
             "options": [
                 "fragment",
@@ -405,7 +405,7 @@
             "defaultValue": "fragment"
         },
         {
-            "address": "^/styles/(\\w|\\_|\\-)+/texcoords$",
+            "address": "^styles:(\\w|\\_|\\-|\\/)+:texcoords$",
             "type": "boolean",
             "defaultValue": "false"
         },
@@ -414,7 +414,7 @@
             "type": "color"
         },
         {
-            "address": "/(ambient|diffuse|specular|emission)/mapping$",
+            "address": ":(ambient|diffuse|specular|emission):mapping$",
             "type": "string",
             "options": [
                 "uv",
@@ -425,7 +425,7 @@
             "defaultValue": "spheremap"
         },
         {
-            "address": "/normal/mapping$",
+            "address": ":normal:mapping$",
             "type": "string",
             "options": [
                 "uv",
@@ -445,7 +445,7 @@
             "defaultValue": 1
         },
         {
-            "address": "/draw/(\\w|\\_|\\-|\\/)+/color$",
+            "address": ":draw:(\\w|\\_|\\-|\\/)+:color$",
             "type": "color",
             "defaultValue": "[1, 1, 1]"
         },
@@ -475,24 +475,24 @@
             ]
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-)+/data/source$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)+:data:source$",
             "type": "string",
-            "source": "/sources"
+            "source": ":sources"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)+/extrude$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)+:extrude$",
             "type": "boolean",
             "defaultValue": "true"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)+/tile_edges$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)+:tile_edges$",
             "type": "boolean",
             "defaultValue": "true"
         },
         {
-            "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/style$",
+            "address": "^layers:(\\w+|\\_|\\-|\\/):draw:(\\w|\\_|\\-|\\/)+:style$",
             "type": "string",
-            "source": "/styles",
+            "source": ":styles",
             "options": [
                 "points",
                 "lines",
@@ -502,12 +502,12 @@
             ]
         },
         {
-            "address": "^/layers/(\\w+|\\_|\\-|\\/)/draw/(\\w|\\_|\\-)+/interactive$",
+            "address": "^layers:(\\w+|\\_|\\-|\\/):draw:(\\w|\\_|\\-|\\/)+:interactive$",
             "type": "boolean",
             "defaultValue": "false"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/style$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:style$",
             "type": "string",
             "options": [
                 "normal",
@@ -518,7 +518,7 @@
             "defaultValue": "normal"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/weight$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:weight$",
             "type": "string",
             "options": [
                 "100",
@@ -531,12 +531,12 @@
             "defaultValue": "normal"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/move_into_tile$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:move_into_tile$",
             "type": "boolean",
             "defaultValue": "true"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/align$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:align$",
             "type": "string",
             "options": [
                 "center",
@@ -546,7 +546,7 @@
             "defaultValue": "center"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/text_wrap$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:text_wrap$",
             "type": "string",
             "options": [
                 "false",
@@ -557,7 +557,7 @@
             "defaultValue": "false"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/anchor$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:anchor$",
             "type": "string",
             "options": [
                 "center",
@@ -573,7 +573,7 @@
             "defaultValue": "center"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/family$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:family$",
             "type": "string",
             "options": [
                 "serif",
@@ -597,7 +597,7 @@
             "defaultValue": "Helvetica"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/transform$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:transform$",
             "type": "string",
             "options": [
                 "capitalize",
@@ -606,12 +606,12 @@
             ]
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/font/size$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:font:size$",
             "type": "int",
             "defaultValue": "14"
         },
         {
-            "address": "^/layers/(\\w|\\_|\\-|\\/)*/collide$",
+            "address": "^layers:(\\w|\\_|\\-|\\/)*:collide$",
             "type": "boolean",
             "defaultValue": "true"
         }

@@ -5,6 +5,8 @@ import '../codemirror/glsl-tangram';
 // Load some common functions
 import { getInd } from '../codemirror/tools';
 
+const ADDRESS_KEY_DELIMITER = ':';
+
 //  GET public functions
 //  ===============================================================================
 
@@ -52,32 +54,18 @@ export function getAddressSceneContent(tangramScene, address) {
 }
 
 // Make an folder style address from an array of keys
-function getAddressFromKeys(keys) {
-    if (keys && keys.length > 0) {
-        let address = '';
-        for (let i = 0; i < keys.length; i++) {
-            address += '/' + keys[i] ;
-        }
-        return address;
-    }
-    else {
-        return '/';
-    }
+function getAddressFromKeys (keys) {
+    return keys.join(ADDRESS_KEY_DELIMITER);
 }
 
-export function getKeysFromAddress(address) {
-    let keys = address.split('/');
-    keys.shift();
-    return keys;
+export function getKeysFromAddress (address) {
+    return address.split(ADDRESS_KEY_DELIMITER);
 }
 
-export function getAddressForLevel(address, level) {
-    let keys = getKeysFromAddress(address);
-    let newAddress = '';
-    for (let i = 0; i < level; i++) {
-        newAddress += '/' + keys[i] ;
-    }
-    return newAddress;
+export function getAddressForLevel (address, level) {
+    const keys = getKeysFromAddress(address);
+    const newKeys = keys.slice(0, level);
+    return getAddressFromKeys(newKeys);
 }
 
 //  CHECK
@@ -90,22 +78,22 @@ function endsWith(str, suffix) {
 
 //  Function that check if a line is inside a Color Shader Block
 function isGlobalBlock(address) {
-    return endsWith(address, 'shaders/blocks/global');
+    return endsWith(address, 'shaders:blocks:global');
 }
 function isWidthBlock(address) {
-    return endsWith(address, 'shaders/blocks/width');
+    return endsWith(address, 'shaders:blocks:width');
 }
 function isPositionBlock(address) {
-    return endsWith(address, 'shaders/blocks/position');
+    return endsWith(address, 'shaders:blocks:position');
 }
 export function isNormalBlock(address) {
-    return endsWith(address, 'shaders/blocks/normal');
+    return endsWith(address, 'shaders:blocks:normal');
 }
 export function isColorBlock(address) {
-    return endsWith(address, 'shaders/blocks/color');
+    return endsWith(address, 'shaders:blocks:color');
 }
 function isFilterBlock(address) {
-    return endsWith(address, 'shaders/blocks/filter');
+    return endsWith(address, 'shaders:blocks:filter');
 }
 function isShader(address) {
     return (
@@ -146,7 +134,7 @@ function getKeyAddressFromState (state) {
         return state.nodes[0].address;
     }
     else {
-        return '/';
+        return '';
     }
 }
 
@@ -204,7 +192,7 @@ function getInlineNodes(str, nLine) {
         let curr = str.substr(i, 1);
         if (curr === '{') {
             // Go one level up
-            stack.push('/');
+            stack.push(':');
             level++;
         }
         else if (curr === '}') {
@@ -266,7 +254,7 @@ export function parseYamlString(string, state, tabSize) {
     //  - break all this into smaller and reusable functions
     //  - get rid of the pos
     //
-    let regex = /(^\s*)([\w|\-|\_]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
+    let regex = /(^\s*)([\w|\-|\_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
     let node = regex.exec(string);
 
     // node[0] = all the matching line
