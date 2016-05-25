@@ -225,23 +225,18 @@ class TangramInspectionPopup {
 
         // Create list of layers
         layers.forEach(item => {
-            let layerEl = document.createElement('div');
+            const layerEl = document.createElement('div');
             layerEl.className = 'map-inspection-layer-item';
             layerEl.textContent = item;
 
             // Layer icon.
             // A class name will be applied later depending on whether
             // it's in the scene or imported
-            let iconEl = document.createElement('span');
+            const iconEl = document.createElement('span');
             iconEl.className = 'map-inspection-layer-icon';
             layerEl.insertBefore(iconEl, layerEl.childNodes[0]);
 
-            // YAML-Tangram addressing uses forward-slashes ('/') to
-            // delimit nested key names, rather than the colons (':')
-            // returned as layer addresses by Tangram
-            let yamlTangramAddress = '/layers/' + item.replace(/:/g, '/');
-
-            let node = TangramPlay.getNodesForAddress(yamlTangramAddress);
+            const node = TangramPlay.getNodesForAddress('layers:' + item);
 
             // `node` will be undefined if it is not found in the current scene
             if (node) {
