@@ -24,31 +24,30 @@ export function getNodes(cm, nLine) {
     }
 }
 
+/**
+ * Returns the content given an address
+ * If for any reason the content is not found, return an empty string
+ *
+ * @param {Object} tangramScene - Tangram's parsed object tree of scene content
+ * @param {string} address - in the form of 'key1:key2:key3'
+ * @return {mixed} content - Whatever is stored as a value for that key
+ */
 export function getAddressSceneContent(tangramScene, address) {
-    if (tangramScene && tangramScene.config) {
-        let keys = getKeysFromAddress(address);
-        if (keys && keys.length) {
-            let content = tangramScene.config[keys[0]];
-            if (content) {
-                for (let i = 1; i < keys.length; i++) {
-                    if (content[keys[i]]) {
-                        content = content[keys[i]];
-                    }
-                    else {
-                        return content;
-                    }
-                }
-                return content;
-            }
-            else {
-                return '';
-            }
-        }
-        else {
-            return '';
-        }
+    try {
+        const keys = getKeysFromAddress(address);
+
+        // Looks up content in Tangram's scene.config property.
+        // It's a nested object, so to look up from an array of nested keys,
+        // we reduce this array down to a single reference.
+        // e.g. ['a', 'b', 'c'] looks up content in
+        // tangramScene.config['a']['b']['c']
+        const content = keys.reduce((obj, property) => {
+            return obj[property];
+        }, tangramScene.config);
+
+        return content;
     }
-    else {
+    catch (error) {
         return '';
     }
 }
