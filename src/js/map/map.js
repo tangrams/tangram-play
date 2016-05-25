@@ -78,8 +78,6 @@ function initTangram (pathToSceneFile) {
         }
     });
 
-    TangramPlay.trigger('sceneinit');
-
     window.layer = tangramLayer;
     window.scene = tangramLayer.scene;
 }
