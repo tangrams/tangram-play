@@ -53,15 +53,35 @@ export function getAddressSceneContent(tangramScene, address) {
     }
 }
 
-// Make an folder style address from an array of keys
+/**
+ * Return a string address from an array of key names
+ *
+ * @param {Array} keys - an array of keys
+ * @return {string} address - in the form of 'key1:key2:key3'
+ */
 function getAddressFromKeys (keys) {
     return keys.join(ADDRESS_KEY_DELIMITER);
 }
 
+/**
+ * Return an array of key names from an address
+ * An empty string will still return an array whose first item
+ * is the empty string.
+ *
+ * @param {string} address - in the form of 'key1:key2:key3'
+ * @return {Array} keys
+ */
 export function getKeysFromAddress (address) {
     return address.split(ADDRESS_KEY_DELIMITER);
 }
 
+/**
+ * Return a string address, truncated to a certain level
+ *
+ * @param {string} address  - in the form of 'key1:key2:key3'
+ * @param {Number} level - the level of address to obtain
+ * @return {string} address - truncated to maximum of `level`, e.g. 'key1:key2'
+ */
 export function getAddressForLevel (address, level) {
     const keys = getKeysFromAddress(address);
     const newKeys = keys.slice(0, level);
@@ -182,17 +202,18 @@ function getAnchorFromValue (value) {
 // }
 
 // Given a YAML string return an array of keys
+// TODO: We will need a different way of parsing YAML flow notation,
+// since this function does not cover the full range of legal YAML specification
 function getInlineNodes(str, nLine) {
     let rta = [];
     let stack = [];
     let i = 0;
-    let level = -1;
+    let level = 0;
 
     while (i < str.length) {
         let curr = str.substr(i, 1);
         if (curr === '{') {
             // Go one level up
-            stack.push(':');
             level++;
         }
         else if (curr === '}') {
@@ -218,6 +239,9 @@ function getInlineNodes(str, nLine) {
                 value = value.substr(anchor.length);
 
                 rta.push({
+                    // This gets an array starting at index 1. This means that the
+                    // result for address will come back as ':key1:key2:etc' because stack[0]
+                    // is undefined, but it will still be joined in getAddressFromKeys()
                     address: getAddressFromKeys(stack),
                     key: key,
                     value: value,
