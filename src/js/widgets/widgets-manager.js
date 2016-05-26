@@ -65,21 +65,21 @@ export default class WidgetsManager {
         //Simplest case. If a user is typing on a single line
         let bookmarks = [] ;
         if (from.line === to.line) { //Line the user is typing
-          var activeAddress = window.tangramPlay.editor.getStateAfter(from.line).yamlState.nodes[0].address ;
-          bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(to));
+            var activeAddress = window.tangramPlay.editor.getStateAfter(from.line).yamlState.nodes[0].address ;
+            bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(to));
 
-          //If there is a bookmark on that line
-          if(bookmarks[0] != undefined ) {
-            var bookmarkAddress = bookmarks[0].widget.node.address ;
+            //If there is a bookmark on that line
+            if(bookmarks[0] !== undefined) {
+                let bookmarkAddress = bookmarks[0].widget.node.address ;
 
-            //If the widget address does not correspond to the node address, it means user has deleted part of the logic
-            if(activeAddress != bookmarkAddress) {
-              for (let bkm of bookmarks) {
-                   bkm.clear(); // delete the widget
-              }
-              return ;
+                //If the widget address does not correspond to the node address, it means user has deleted part of the logic
+                if(activeAddress !== bookmarkAddress) {
+                    for (let bkm of bookmarks) {
+                        bkm.clear(); // delete the widget
+                    }
+                    return ;
+                }
             }
-          }
         }
 
         if (changeObj.removed.length > changeObj.text.length) {
