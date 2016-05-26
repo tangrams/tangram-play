@@ -196,8 +196,10 @@ class SaveGistModal extends Modal {
             user: data.gist.user,
             url: data.gist.url,
             public: data.gist.public,
+            /* eslint-disable camelcase */
             created_at: data.gist.created_at,
             updated_at: data.gist.updated_at,
+            /* eslint-enable camelcase */
             thumbnail: data.thumbnail
         };
 
