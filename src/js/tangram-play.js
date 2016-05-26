@@ -4,7 +4,9 @@ import 'whatwg-fetch';
 
 // Error tracking
 import Raven from 'raven-js';
-Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467').install();
+Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
+    whitelistUrls: [/mapzen\.com/]
+}).install();
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
