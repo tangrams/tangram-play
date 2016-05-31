@@ -327,6 +327,9 @@ class TangramInspectionPopup {
         // elsewhere on the map and opening a new popup.
         map.on('popupclose', onPopupClose);
 
+        // Attach a listener to clean up the popup when a new scene is loaded.
+        TangramPlay.on('sceneload', onNewScene);
+
         function onPopupClose (event) {
             // Leaflet will be responsible for destroying the elements on close.
 
@@ -341,8 +344,13 @@ class TangramInspectionPopup {
                 editor.doc.removeLineClass(i, 'wrap');
             }
 
-            // Clean up this event from the map listeners
+            // Clean up events from the map listeners
             map.off('popupclose', onPopupClose);
+            TangramPlay.off('sceneload', onNewScene);
+        }
+
+        function onNewScene (event) {
+            map.closePopup(popup);
         }
 
         // Record this state
