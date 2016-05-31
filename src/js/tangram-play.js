@@ -67,11 +67,23 @@ class TangramPlay {
             }
         };
 
-        setTimeout(() => {
+        // LOAD SCENE FILE
+        const initialScene = determineScene();
+        this.load(initialScene);
+
+        // Things we do after Tangram is finished initializing
+        tangramLayer.scene.initializing.then(() => {
+            this.trigger('sceneinit');
+
+            // Initialize addons after Tangram is done, because
+            // some addons depend on Tangram scene config being present
+            this.initAddons();
+
             if (query['lines']) {
-                this.selectLines(query['lines']);
+                // TODO: Highlight instead of select?
+                selectLines(this.editor, query['lines']);
             }
-        }, 500);
+        });
 
         // If the user bails for whatever reason, hastily shove the contents of
         // the editor into some kind of storage. This overwrites whatever was
@@ -413,11 +425,6 @@ class TangramPlay {
         }
         console.log('Fail searching', address);
     }
-
-    // Other actions
-    selectLines (strRange) {
-        selectLines(this.editor, strRange);
-    }
 }
 
 function showUnloadedState (editor) {
@@ -484,11 +491,6 @@ let tangramPlay = new TangramPlay();
 
 export default tangramPlay;
 export let editor = tangramPlay.editor;
-
-// LOAD SCENE FILE
-let scene = determineScene();
-tangramPlay.load(scene);
-tangramPlay.initAddons();
 
 // This is called here because right now divider position relies on
 // editor and map being set up already

@@ -24,44 +24,63 @@ export function getNodes(cm, nLine) {
     }
 }
 
+/**
+ * Returns the content given an address
+ * If for any reason the content is not found, return an empty string
+ *
+ * @param {Object} tangramScene - Tangram's parsed object tree of scene content
+ * @param {string} address - in the form of 'key1:key2:key3'
+ * @return {mixed} content - Whatever is stored as a value for that key
+ */
 export function getAddressSceneContent(tangramScene, address) {
-    if (tangramScene && tangramScene.config) {
-        let keys = getKeysFromAddress(address);
-        if (keys && keys.length) {
-            let content = tangramScene.config[keys[0]];
-            if (content) {
-                for (let i = 1; i < keys.length; i++) {
-                    if (content[keys[i]]) {
-                        content = content[keys[i]];
-                    }
-                    else {
-                        return content;
-                    }
-                }
-                return content;
-            }
-            else {
-                return '';
-            }
-        }
-        else {
-            return '';
-        }
+    try {
+        const keys = getKeysFromAddress(address);
+
+        // Looks up content in Tangram's scene.config property.
+        // It's a nested object, so to look up from an array of nested keys,
+        // we reduce this array down to a single reference.
+        // e.g. ['a', 'b', 'c'] looks up content in
+        // tangramScene.config['a']['b']['c']
+        const content = keys.reduce((obj, property) => {
+            return obj[property];
+        }, tangramScene.config);
+
+        return content;
     }
-    else {
+    catch (error) {
         return '';
     }
 }
 
-// Make an folder style address from an array of keys
+/**
+ * Return a string address from an array of key names
+ *
+ * @param {Array} keys - an array of keys
+ * @return {string} address - in the form of 'key1:key2:key3'
+ */
 function getAddressFromKeys (keys) {
     return keys.join(ADDRESS_KEY_DELIMITER);
 }
 
+/**
+ * Return an array of key names from an address
+ * An empty string will still return an array whose first item
+ * is the empty string.
+ *
+ * @param {string} address - in the form of 'key1:key2:key3'
+ * @return {Array} keys
+ */
 export function getKeysFromAddress (address) {
     return address.split(ADDRESS_KEY_DELIMITER);
 }
 
+/**
+ * Return a string address, truncated to a certain level
+ *
+ * @param {string} address  - in the form of 'key1:key2:key3'
+ * @param {Number} level - the level of address to obtain
+ * @return {string} address - truncated to maximum of `level`, e.g. 'key1:key2'
+ */
 export function getAddressForLevel (address, level) {
     const keys = getKeysFromAddress(address);
     const newKeys = keys.slice(0, level);
@@ -182,17 +201,18 @@ function getAnchorFromValue (value) {
 // }
 
 // Given a YAML string return an array of keys
+// TODO: We will need a different way of parsing YAML flow notation,
+// since this function does not cover the full range of legal YAML specification
 function getInlineNodes(str, nLine) {
     let rta = [];
     let stack = [];
     let i = 0;
-    let level = -1;
+    let level = 0;
 
     while (i < str.length) {
         let curr = str.substr(i, 1);
         if (curr === '{') {
             // Go one level up
-            stack.push(':');
             level++;
         }
         else if (curr === '}') {
@@ -218,6 +238,9 @@ function getInlineNodes(str, nLine) {
                 value = value.substr(anchor.length);
 
                 rta.push({
+                    // This gets an array starting at index 1. This means that the
+                    // result for address will come back as ':key1:key2:etc' because stack[0]
+                    // is undefined, but it will still be joined in getAddressFromKeys()
                     address: getAddressFromKeys(stack),
                     key: key,
                     value: value,

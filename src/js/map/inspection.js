@@ -268,11 +268,12 @@ class TangramInspectionPopup {
                     }
                     layerEl.classList.add('map-inspection-selected');
 
+                    // Scroll the top of the block into view. Do this first so that
+                    // CodeMirror will parse the lines in this viewport.
+                    jumpToLine(editor, node.range.from.line);
+
                     // Highlight the block.
                     highlightBlock(node, 'editor-inspection-highlight');
-
-                    // Scroll top of the block into view.
-                    jumpToLine(editor, node.range.from.line);
                 });
             }
             else {
