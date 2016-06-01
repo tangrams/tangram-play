@@ -10,7 +10,7 @@ import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/map';
 
 const menus = {};
-
+/*
 function initMenuItems () {
     //menus.new = new MenuItem('.menu-button-new', _onClickNew);
     menus.open = new MenuItem('.menu-button-open', _onClickOpen);
@@ -148,3 +148,4 @@ function _resetTooltipState () {
         el.removeAttribute('data-tooltip-state');
     }
 }
+*/

@@ -46,15 +46,6 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
-console.log("hi") ;
-
-// main.js
-var React = require('react');
-var ReactDOM = require('react-dom');
-import Button from './components/button.react';
-import ButtonDropdown from './components/button-dropdown.react';
-
-
 class TangramPlay {
     constructor () {
         subscribeMixin(this);
@@ -507,8 +498,14 @@ initDivider();
 window.tangramPlay = tangramPlay;
 
 
-/* REACT */
+/********************************** REACT **********************************/
 
+// main.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+// import Button from './components/button.react';
+// import ButtonDropdown from './components/button-dropdown.react';
 
 var colours = [{
     name: "Red",
@@ -532,30 +529,50 @@ ReactDOM.render(
 );
 */
 
+
+
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import Button from 'react-bootstrap/lib/Button';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+import Dropdown from 'react-bootstrap/lib/Dropdown';
+import Glyphicon from 'react-bootstrap/lib/Glyphicon';
+import DropdownToggle from 'react-bootstrap/lib/DropdownToggle';
+import DropdownMenu from 'react-bootstrap/lib/DropdownMenu';
+
 
 const tooltip = (
-  <Tooltip id="tooltip"><strong>Holy guacamole!</strong> Check this info.</Tooltip>
+  <Tooltip id="tooltip">Open</Tooltip>
 );
 
-const buttonGroupInstance = (
-  <ButtonGroup>
-  <OverlayTrigger placement="bottom" overlay={tooltip}>
-    <Button>1</Button>
-</OverlayTrigger>
-    <Button>2</Button>
-    <OverlayTrigger placement="bottom" overlay={tooltip}>
-    <DropdownButton title="Dropdown" id="bg-nested-dropdown">
-      <MenuItem eventKey="1">Dropdown link</MenuItem>
-      <MenuItem eventKey="2">Dropdown link</MenuItem>
-    </DropdownButton>
-    </OverlayTrigger>
+let someFn = function() { console.log('new clicked'); } ;
 
-  </ButtonGroup>
+const buttonGroupInstance = (
+    <ButtonToolbar>
+        <ButtonGroup>
+            {/*<Button bsClass="test"><i className='btm bt-file'></i><span> New</span></Button>*/}
+
+            <Button bsClass="test"><Glyphicon glyph="" bsClass="btm bt-file" />New</Button>
+
+            <Button bsClass="test"><Glyphicon glyph="" bsClass="btm bt-upload" />Open</Button>
+        </ButtonGroup>
+
+        <ButtonGroup>
+            <Dropdown id="dropdown-left" >
+              <Dropdown.Toggle bsClass="test">
+                <Glyphicon glyph=""  bsClass="btm bt-download" />  Save
+              </Dropdown.Toggle>
+              <Dropdown.Menu bsClass="test">
+                <MenuItem bsClass="test"><Glyphicon glyph="" bsClass="btm bt-file" />Save to file</MenuItem>
+                <MenuItem ><Glyphicon glyph="" bsClass="btm bt-code" />Save to Gist</MenuItem>
+                <MenuItem ><Glyphicon glyph="" bsClass="btm bt-camera" />Active Item</MenuItem>
+              </Dropdown.Menu>
+            </Dropdown>
+            </ButtonGroup>
+    </ButtonToolbar>
 );
 
 let mountNode = document.getElementsByClassName('menu-items menu-left')[0] ;
