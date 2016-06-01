@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { editor } from '../tangram-play';
+import { editor } from '../editor/editor';
 
 import ColorPicker from '../pickers/color';
 import Vec3Picker from '../pickers/vec3';

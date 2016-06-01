@@ -10,7 +10,7 @@ Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467',
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
-import { initEditor } from './editor/editor';
+import { editor } from './editor/editor';
 import { config } from './config';
 
 // Addons
@@ -50,7 +50,7 @@ class TangramPlay {
     constructor () {
         subscribeMixin(this);
 
-        this.editor = initEditor('editor');
+        this.editor = editor;
         initMap();
         this.addons = {};
 
@@ -498,7 +498,6 @@ function getSceneContentsFromLocalMemory () {
 let tangramPlay = new TangramPlay();
 
 export default tangramPlay;
-export let editor = tangramPlay.editor;
 
 // This is called here because right now divider position relies on
 // editor and map being set up already

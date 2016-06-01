@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import TangramPlay, { editor } from '../tangram-play';
+import TangramPlay from '../tangram-play';
+import { editor } from './editor';
 import { saveAs } from '../vendor/FileSaver.min.js';
 import Modal from '../modals/modal';
 

@@ -1,8 +1,9 @@
-import TangramPlay, { editor } from '../tangram-play';
+import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import Modal from './modal';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
+import { editor } from '../editor/editor';
 import { map, getScreenshotData } from '../map/map';
 import { getLocationLabel } from '../map/search';
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
