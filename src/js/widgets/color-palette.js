@@ -1,5 +1,5 @@
 import TangramPlay from '../tangram-play';
-
+import { editor } from '../editor/editor';
 import ColorPicker from '../pickers/color';
 import { toCSS } from '../tools/common';
 import { jumpToLine } from '../editor/codemirror/tools';
@@ -25,10 +25,10 @@ export default class ColorPalette {
 
         // If is a new file load all colors by going to the end and comeback
         TangramPlay.on('sceneload', (event) => {
-            for (let i = 0; i < TangramPlay.editor.getDoc().size; i++) {
-                jumpToLine(TangramPlay.editor, i);
+            for (let i = 0; i < editor.getDoc().size; i++) {
+                jumpToLine(editor, i);
             }
-            jumpToLine(TangramPlay.editor, 0);
+            jumpToLine(editor, 0);
         });
     }
 
@@ -37,7 +37,7 @@ export default class ColorPalette {
         this.colors = {};
 
         // Find all bookmarks
-        let bookmarks = TangramPlay.editor.getDoc().getAllMarks();
+        let bookmarks = editor.getDoc().getAllMarks();
 
         // check for color picker widgets
         for (let bkm of bookmarks) {
@@ -100,7 +100,7 @@ class Color {
                 head: this.widgets[i].node.range.to
             });
         }
-        TangramPlay.editor.getDoc().setSelections(selections);
+        editor.getDoc().setSelections(selections);
     }
 
     onClick (event) {
@@ -134,7 +134,7 @@ class Color {
         // TODO: Store original value so we can go back to it if the
         // interaction is canceled.
         this.picker.on('changed', this.onPickerChange.bind(this));
-        TangramPlay.editor.focus();
+        editor.focus();
     }
 
     /**

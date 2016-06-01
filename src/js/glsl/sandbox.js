@@ -1,4 +1,5 @@
 import TangramPlay from '../tangram-play';
+import { editor } from '../editor/editor';
 import { tangramLayer } from '../map/map';
 
 import { debounce, getDOMOffset } from '../tools/common';
@@ -87,21 +88,21 @@ export default class GlslSandbox {
         this.uniforms['u_vanishing_point'] = 1;
 
         // EVENTS
-        TangramPlay.editor.on('cursorActivity', function(cm) {
+        editor.on('cursorActivity', function(cm) {
             TangramPlay.addons.glslSandbox.onCursorMove();
         });
 
-        TangramPlay.editor.on('changes', function(cm, changesObj) {
+        editor.on('changes', function(cm, changesObj) {
             stopAction(cm);
         });
     }
 
     reload(nLine) {
         if (nLine === undefined) {
-            nLine = TangramPlay.editor.getCursor().line;
+            nLine = editor.getCursor().line;
         }
 
-        if (!isEmpty(TangramPlay.editor, nLine)) {
+        if (!isEmpty(editor, nLine)) {
             let keys = TangramPlay.getNodesOnLine(nLine);
             if (keys && keys[0]) {
                 this.address = keys[0].address;
@@ -122,7 +123,7 @@ export default class GlslSandbox {
                     if (this.shader === undefined) {
                         this.shader = new GlslCanvas(this.canvas);
                     }
-                    TangramPlay.editor.addWidget({ line: nLine, ch: 0 }, this.element);
+                    editor.addWidget({ line: nLine, ch: 0 }, this.element);
 
                     if (this.styleObj.shaders.uniforms) {
                         for (let name in this.styleObj.shaders.uniforms) {
@@ -257,7 +258,7 @@ export default class GlslSandbox {
     onColorClick (event) {
         let pos = getDOMOffset(this.colorPicker);
         pos.x += 30;
-        pos.y = TangramPlay.editor.heightAtLine(this.line) - 15;
+        pos.y = editor.heightAtLine(this.line) - 15;
 
         this.picker = new ColorPicker(this.colorPicker.style.backgroundColor);
 
@@ -275,10 +276,10 @@ export default class GlslSandbox {
     }
 
     onCursorMove() {
-        let pos = TangramPlay.editor.getCursor();
+        let pos = editor.getCursor();
 
-        let edge = TangramPlay.editor.charCoords({ line:pos.line, ch:20 }).left;
-        let left = TangramPlay.editor.charCoords(pos).left;
+        let edge = editor.charCoords({ line:pos.line, ch:20 }).left;
+        let left = editor.charCoords(pos).left;
 
         if (pos.ch < 20 || left < edge) {
             if (this.active) {

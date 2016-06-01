@@ -50,7 +50,6 @@ class TangramPlay {
     constructor () {
         subscribeMixin(this);
 
-        this.editor = editor;
         initMap();
         this.addons = {};
 
@@ -81,7 +80,7 @@ class TangramPlay {
 
                     if (query['lines']) {
                         // TODO: Highlight instead of select?
-                        selectLines(this.editor, query['lines']);
+                        selectLines(editor, query['lines']);
                     }
                 });
             });
@@ -100,9 +99,9 @@ class TangramPlay {
                 original_url: tangramLayer.scene.config_source,
                 original_base_path: tangramLayer.scene.config_path,
                 contents: this.getContent(),
-                is_clean: this.editor.isClean(),
-                scrollInfo: this.editor.getScrollInfo(),
-                cursor: this.editor.doc.getCursor()
+                is_clean: editor.isClean(),
+                scrollInfo: editor.getScrollInfo(),
+                cursor: editor.doc.getCursor()
             };
             saveSceneContentsToLocalMemory(sceneData);
         });
@@ -141,7 +140,7 @@ class TangramPlay {
         showSceneLoadingIndicator();
 
         // Turn off watching for changes in editor.
-        this.editor.off('changes', this._watchEditorForChanges);
+        editor.off('changes', this._watchEditorForChanges);
 
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
@@ -203,8 +202,8 @@ class TangramPlay {
 
         // TODO: editor should not be attached to this
         if (initialLoad === true) {
-            showUnloadedState(this.editor);
-            this.editor.doc.markClean();
+            showUnloadedState(editor);
+            editor.doc.markClean();
         }
     }
 
@@ -251,8 +250,8 @@ class TangramPlay {
         let contents = suppressAPIKeys(sceneData.contents, config.TILES.API_KEYS.SUPPRESSED);
 
         // Set content in CodeMirror
-        this.editor.setValue(contents);
-        this.editor.clearHistory();
+        editor.setValue(contents);
+        editor.clearHistory();
 
         // Mark as "clean" if the contents are freshly loaded
         // (there is no is_clean property defined) or if contents
@@ -261,12 +260,12 @@ class TangramPlay {
         // a Boolean. Otherwise, the document has not been previously
         // saved and it is left in the "dirty" state.
         if (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true') {
-            this.editor.doc.markClean();
+            editor.doc.markClean();
         }
 
         // Restore cursor position, if provided.
         if (sceneData.cursor) {
-            this.editor.doc.setCursor(sceneData.cursor, {
+            editor.doc.setCursor(sceneData.cursor, {
                 scroll: false
             });
         }
@@ -275,11 +274,11 @@ class TangramPlay {
         if (sceneData.scrollInfo) {
             let left = sceneData.scrollInfo.left || 0;
             let top = sceneData.scrollInfo.top || 0;
-            this.editor.scrollTo(left, top);
+            editor.scrollTo(left, top);
         }
 
         // Turn change watching back on.
-        this.editor.on('changes', this._watchEditorForChanges);
+        editor.on('changes', this._watchEditorForChanges);
     }
 
     // SET
@@ -300,7 +299,7 @@ class TangramPlay {
         let from = { line: node.range.from.line,
                      ch: node.range.from.ch + node.anchor.length + node.key.length + 2 };
 
-        this.editor.doc.replaceRange(str, from, node.range.to);
+        editor.doc.replaceRange(str, from, node.range.to);
     }
 
     // If editor is updated, send it to the map.
@@ -327,7 +326,7 @@ class TangramPlay {
     // GET
     // Get the contents of the editor (with injected API keys)
     getContent () {
-        let content = this.editor.getValue();
+        let content = editor.getValue();
         //  If API keys are missing, inject one
         content = injectAPIKey(content, config.TILES.API_KEYS.DEFAULT);
         return content;
@@ -376,10 +375,10 @@ class TangramPlay {
     }
 
     getNodesOnLine (nLine) {
-        if (isStrEmpty(this.editor.getLine(nLine))) {
+        if (isStrEmpty(editor.getLine(nLine))) {
             return [];
         }
-        return getNodes(this.editor, nLine);
+        return getNodes(editor, nLine);
     }
 
     getNodesForAddress (address) {
@@ -388,8 +387,8 @@ class TangramPlay {
         // address. Could be optimize if we store addresses in a map... but then the question is about how to keep it sync
         //
         let lastState;
-        for (let line = 0, size = this.editor.getDoc().size; line < size; line++) {
-            const lineHandle = this.editor.getLineHandle(line);
+        for (let line = 0, size = editor.getDoc().size; line < size; line++) {
+            const lineHandle = editor.getLineHandle(line);
 
             if (!lineHandle.stateAfter || !lineHandle.stateAfter.yamlState) {
                 // If the line is NOT parsed.
