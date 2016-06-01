@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import 'leaflet-hash';
 import { saveAs } from '../vendor/FileSaver.min.js';
+import Tangram from 'tangram';
 
 import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
@@ -55,7 +56,7 @@ export function initMap () {
  */
 function initTangram (pathToSceneFile) {
     // Add Tangram Layer
-    tangramLayer = window.Tangram.leafletLayer({
+    tangramLayer = Tangram.leafletLayer({
         scene: pathToSceneFile,
         events: {
             hover: handleInspectionHoverEvent,
@@ -167,4 +168,3 @@ function getMapStartLocation () {
 
     return startLocation;
 }
-

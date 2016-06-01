@@ -69,21 +69,22 @@ class TangramPlay {
 
         // LOAD SCENE FILE
         const initialScene = determineScene();
-        this.load(initialScene);
+        this.load(initialScene)
+            .then(() => {
+                // Things we do after Tangram is finished initializing
+                tangramLayer.scene.initializing.then(() => {
+                    this.trigger('sceneinit');
 
-        // Things we do after Tangram is finished initializing
-        tangramLayer.scene.initializing.then(() => {
-            this.trigger('sceneinit');
+                    // Initialize addons after Tangram is done, because
+                    // some addons depend on Tangram scene config being present
+                    this.initAddons();
 
-            // Initialize addons after Tangram is done, because
-            // some addons depend on Tangram scene config being present
-            this.initAddons();
-
-            if (query['lines']) {
-                // TODO: Highlight instead of select?
-                selectLines(this.editor, query['lines']);
-            }
-        });
+                    if (query['lines']) {
+                        // TODO: Highlight instead of select?
+                        selectLines(this.editor, query['lines']);
+                    }
+                });
+            });
 
         // If the user bails for whatever reason, hastily shove the contents of
         // the editor into some kind of storage. This overwrites whatever was
@@ -119,10 +120,9 @@ class TangramPlay {
 
     /**
      * This function is the canonical way to load a scene in Tangram Play.
-     * We want to avoid situations where we load scene files directly
-     * into either Tangram or in CodeMirror and then have to handle
-     * updating other parts of Tangram Play. Instead, we want Tangram Play
-     * to ingest new scenes in a single way so that all the different parts
+     * We want to avoid loading scene files directly into either Tangram
+     * or in CodeMirror and then having to update other parts of Tangram Play.
+     * Instead, we load new scenes here so that all the different parts
      * of the application can be updated predictably. The load function takes
      * either a URL path (for remote / external scenes), or the contents
      * of a Tangram YAML file itself.
@@ -132,6 +132,8 @@ class TangramPlay {
      *      scene.contents - Tangram YAML as a text blob
      *      Do not pass in both! Currently `url` takes priority, but
      *      this is not guaranteed behaviour.
+     * @returns {Promise} A promise which is resolved when a scene's
+     *      contents has been fetched.
      */
     load (scene) {
         // Turn on loading indicator. This is turned off later
@@ -164,7 +166,7 @@ class TangramPlay {
                 fetchPromise = window.fetch(scene.url, { credentials: 'same-origin' });
             }
 
-            fetchPromise.then(response => {
+            return fetchPromise.then(response => {
                 if (!response.ok) {
                     if (response.status === 404) {
                         throw new Error('The scene you requested could not be found.');
@@ -184,7 +186,13 @@ class TangramPlay {
             });
         }
         else if (scene.contents) {
-            this._doLoadProcess(scene);
+            // If scene contents are provided, no asynchronous work is
+            // performed here, but wrap this response in a Promise anyway
+            // so that the return object is always a thenable.
+            return new Promise((resolve, reject) => {
+                this._doLoadProcess(scene);
+                resolve();
+            });
         }
     }
 
