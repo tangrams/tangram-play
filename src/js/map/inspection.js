@@ -2,7 +2,8 @@ import _ from 'lodash';
 import L from 'leaflet';
 import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
-import TangramPlay, { editor } from '../tangram-play';
+import TangramPlay from '../tangram-play';
+import { editor } from '../editor/editor';
 import { highlightBlock } from '../editor/highlight';
 import { jumpToLine } from '../editor/codemirror/tools';
 

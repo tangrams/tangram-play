@@ -1,4 +1,4 @@
-import { editor } from '../tangram-play';
+import { editor } from './editor';
 
 /**
  * Given a node, find all the lines that are part of that entire block, and then

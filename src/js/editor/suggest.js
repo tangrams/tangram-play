@@ -1,3 +1,4 @@
+import { editor } from './editor';
 import TangramPlay from '../tangram-play';
 import TANGRAM_API from '../tangram-api.json';
 import { tangramLayer } from '../map/map';
@@ -31,8 +32,8 @@ export default class SuggestManager {
         TangramPlay.on('sceneupdate', (args) => {
             let bOpen = true;
 
-            let line = TangramPlay.editor.getCursor().line;
-            let stateAfter = TangramPlay.editor.getLineHandle(line).stateAfter;
+            let line = editor.getCursor().line;
+            let stateAfter = editor.getLineHandle(line).stateAfter;
             if (stateAfter && stateAfter.localMode && stateAfter.localMode.helperType) {
                 let helperType = stateAfter.localMode.helperType;
                 if (helperType === 'glsl' || helperType === 'javascript') {
@@ -40,13 +41,13 @@ export default class SuggestManager {
                 }
             }
 
-            if (isCommented(TangramPlay.editor, line) ||
-                isEmpty(TangramPlay.editor, line)) {
+            if (isCommented(editor, line) ||
+                isEmpty(editor, line)) {
                 bOpen = false;
             }
 
-            if (bOpen && TangramPlay.editor.showHint) {
-                TangramPlay.editor.showHint({
+            if (bOpen && editor.showHint) {
+                editor.showHint({
                     completeSingle: false,
                     alignWithWord: true,
                     closeCharacters: /[\s()\[\]{};:>,]/,
@@ -89,7 +90,7 @@ export default class SuggestManager {
         cursor.ch = cursor.ch - 1;
         // console.log("Cursor", cursor);
 
-        let range = TangramPlay.editor.findWordAt(cursor);
+        let range = editor.findWordAt(cursor);
         let from = range.anchor;
         let to = range.head;
         // console.log("RANGE",from,to);
@@ -134,7 +135,7 @@ export default class SuggestManager {
                 // console.log("List",list);
 
                 // What ever the list is suggest using it
-                let string = TangramPlay.editor.getRange(from, to);
+                let string = editor.getRange(from, to);
                 string = regexEscape(string);
 
                 // If the word is already begin to type, filter outcome
@@ -220,7 +221,7 @@ class Suggestion {
         if (node && this.checkAgainst) {
             let rightLevel = true;
             if (!forceLevel && this.level) {
-                rightLevel = getLineInd(TangramPlay.editor, node.pos.line) === this.level;
+                rightLevel = getLineInd(editor, node.pos.line) === this.level;
             }
             return RegExp(this.checkPatern).test(node[this.checkAgainst]) && rightLevel;
         }
