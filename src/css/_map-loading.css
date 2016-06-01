@@ -1,7 +1,7 @@
 /* MAP LOADING INDICATOR */
 
 .map-loading {
-    position: fixed;
+    position: absolute;
     height: 10px;
     width: 100%;
     left: 0;
@@ -20,6 +20,7 @@
         var(--ui-active-color)
     );
     user-select: none;
+    z-index: var(--z04-map-loading);
 
     &.map-loading-show {
         bottom: 0;
