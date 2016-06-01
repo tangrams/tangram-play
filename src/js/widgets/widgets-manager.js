@@ -20,7 +20,9 @@ export default class WidgetsManager {
 
         let from = { line:0, ch:0 };
         let to = {
+            //Last line in viewport CodeMirror
             line: TangramPlay.editor.getDoc().size - 1,
+            //Last character in last line
             ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
         };
         this.createRange(from, to);
@@ -59,12 +61,14 @@ export default class WidgetsManager {
 
     change (changeObj) {
         // Get FROM/TO range of the change
+        console.log("trigger change") ;
         let from = { line: changeObj.from.line, ch: changeObj.from.ch };
         let to = { line: changeObj.to.line, ch: changeObj.to.ch };
 
         //Simplest case. If a user is typing on a single line
         let bookmarks = [] ;
         if (from.line === to.line) { //Line the user is typing
+            //cascade and check up the tree and down the tree
             var activeAddress = window.tangramPlay.editor.getStateAfter(from.line).yamlState.nodes[0].address ;
             bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(to));
 
@@ -82,6 +86,9 @@ export default class WidgetsManager {
             }
         }
 
+        // Cascade up and down using address
+        // Ex: layers:water iterate lines down until match level??
+        //
         if (changeObj.removed.length > changeObj.text.length) {
             from.line -= changeObj.removed.length - 1;
             to.line += 1;
@@ -109,10 +116,13 @@ export default class WidgetsManager {
         // Get affected bookmarks
         bookmarks = [];
         if (from.line === to.line && from.ch === to.ch) {
+            console.log("weird fucntion") ;
+            console.log("from: " + from.ch + " to: " + to.ch) ;
             // If the FROM/TO range is to narrow search using nodes
             for (let node of nodes) {
                 // Find and concatenate bookmarks between FROM/TO range
                 bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(node.range.to));
+
             }
         }
         else {
