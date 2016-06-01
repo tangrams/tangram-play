@@ -515,81 +515,14 @@ window.tangramPlay = tangramPlay;
 
 /********************************** REACT **********************************/
 
-// main.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-// import Button from './components/button.react';
-// import ButtonDropdown from './components/button-dropdown.react';
-
-var colours = [{
-    name: "Red",
-    hex: "#F21B1B"
-}, {
-    name: "Blue",
-    hex: "#1B66F2"
-}, {
-    name: "Green",
-    hex: "#07BA16"
-}];
-/*
-ReactDOM.render(
-    <div>
-        <Button uiclass={"menu-button-new"} tooltip={"New scene"} name={"New"} type={"new"} />
-        <Button uiclass={"menu-button-open"} tooltip={"Open scene"} name={"Open"} type={"open"} />
-        <Button uiclass={"menu-button-save"} tooltip={"Save scene"} name={"Save"} type={"save"} />
-        <ButtonDropdown uiclass={"menu-button-save"} tooltip={"Save scene"} name={"Save"} type={"save"} />
-    </div>,
-    document.getElementsByClassName('menu-items menu-left')[0]
-);
-*/
-
-
-
-import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Button from 'react-bootstrap/lib/Button';
-import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
-import Dropdown from 'react-bootstrap/lib/Dropdown';
-import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import DropdownToggle from 'react-bootstrap/lib/DropdownToggle';
-import DropdownMenu from 'react-bootstrap/lib/DropdownMenu';
-
-
-const tooltip = (
-  <Tooltip id="tooltip">Open</Tooltip>
-);
-
-let someFn = function() { console.log('new clicked'); } ;
-
-const buttonGroupInstance = (
-    <ButtonToolbar>
-        <ButtonGroup>
-            {/*<Button bsClass="test"><i className='btm bt-file'></i><span> New</span></Button>*/}
-
-            <Button bsClass="test"><Glyphicon glyph="" bsClass="btm bt-file" />New</Button>
-
-            <Button bsClass="test"><Glyphicon glyph="" bsClass="btm bt-upload" />Open</Button>
-        </ButtonGroup>
-
-        <ButtonGroup>
-            <Dropdown id="dropdown-left" >
-              <Dropdown.Toggle bsClass="test">
-                <Glyphicon glyph=""  bsClass="btm bt-download" />  Save
-              </Dropdown.Toggle>
-              <Dropdown.Menu bsClass="test">
-                <MenuItem bsClass="test"><Glyphicon glyph="" bsClass="btm bt-file" />Save to file</MenuItem>
-                <MenuItem ><Glyphicon glyph="" bsClass="btm bt-code" />Save to Gist</MenuItem>
-                <MenuItem ><Glyphicon glyph="" bsClass="btm bt-camera" />Active Item</MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-            </ButtonGroup>
-    </ButtonToolbar>
-);
+import LeftMenu from './components/left-menu.react';
 
 let mountNode = document.getElementsByClassName('menu-items menu-left')[0] ;
 
-ReactDOM.render(buttonGroupInstance, mountNode);
+ReactDOM.render(
+    <LeftMenu />,
+    mountNode
+);
