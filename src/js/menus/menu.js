@@ -12,7 +12,7 @@ import { takeScreenshot } from '../map/map';
 const menus = {};
 
 function initMenuItems () {
-    menus.new = new MenuItem('.menu-button-new', _onClickNew);
+    //menus.new = new MenuItem('.menu-button-new', _onClickNew);
     menus.open = new MenuItem('.menu-button-open', _onClickOpen);
     menus.save = new MenuItem('.menu-button-save', _onClickSave);
     menus.fullscreen = new MenuItem('.menu-button-fullscreen', _onClickFullscreen);

@@ -73,14 +73,20 @@
   },
   "dependencies": {
     "babel-polyfill": "6.7.4",
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.3.0",
     "clipboard": "1.5.10",
     "codemirror": "5.14.0",
     "glslCanvas": "0.0.9",
     "gsap": "1.18.3",
+    "gulp-babel": "^6.1.2",
     "leaflet": "1.0.0-beta.2",
     "leaflet-hash": "0.2.1",
     "lodash": "4.11.1",
     "raven-js": "3.0.4",
+    "react": "^15.1.0",
+    "react-bootstrap": "^0.29.4",
+    "react-dom": "^15.1.0",
     "whatwg-fetch": "0.11.0"
   },
   "browserify-shim": {
