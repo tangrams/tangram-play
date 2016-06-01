@@ -50,6 +50,15 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
+console.log("hi") ;
+
+// main.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+import Button from './components/button.react';
+import ButtonDropdown from './components/button-dropdown.react';
+
+
 class TangramPlay {
     constructor () {
         subscribeMixin(this);
@@ -511,3 +520,59 @@ initDivider();
 
 // for debug
 window.tangramPlay = tangramPlay;
+
+
+/* REACT */
+
+
+var colours = [{
+    name: "Red",
+    hex: "#F21B1B"
+}, {
+    name: "Blue",
+    hex: "#1B66F2"
+}, {
+    name: "Green",
+    hex: "#07BA16"
+}];
+/*
+ReactDOM.render(
+    <div>
+        <Button uiclass={"menu-button-new"} tooltip={"New scene"} name={"New"} type={"new"} />
+        <Button uiclass={"menu-button-open"} tooltip={"Open scene"} name={"Open"} type={"open"} />
+        <Button uiclass={"menu-button-save"} tooltip={"Save scene"} name={"Save"} type={"save"} />
+        <ButtonDropdown uiclass={"menu-button-save"} tooltip={"Save scene"} name={"Save"} type={"save"} />
+    </div>,
+    document.getElementsByClassName('menu-items menu-left')[0]
+);
+*/
+
+import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
+import DropdownButton from 'react-bootstrap/lib/DropdownButton';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
+import Tooltip from 'react-bootstrap/lib/Tooltip';
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+
+const tooltip = (
+  <Tooltip id="tooltip"><strong>Holy guacamole!</strong> Check this info.</Tooltip>
+);
+
+const buttonGroupInstance = (
+  <ButtonGroup>
+  <OverlayTrigger placement="bottom" overlay={tooltip}>
+    <Button>1</Button>
+</OverlayTrigger>
+    <Button>2</Button>
+    <OverlayTrigger placement="bottom" overlay={tooltip}>
+    <DropdownButton title="Dropdown" id="bg-nested-dropdown">
+      <MenuItem eventKey="1">Dropdown link</MenuItem>
+      <MenuItem eventKey="2">Dropdown link</MenuItem>
+    </DropdownButton>
+    </OverlayTrigger>
+
+  </ButtonGroup>
+);
+
+let mountNode = document.getElementsByClassName('menu-items menu-left')[0] ;
+
+ReactDOM.render(buttonGroupInstance, mountNode);
