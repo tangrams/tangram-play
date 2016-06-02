@@ -9,7 +9,7 @@ import Icon from './icon.react';
 
 export default React.createClass({
     render: function() {
-        var results = this.props.menu_items;
+        var results = this.props.menuItems;
         return (
             <Dropdown.Menu {...this.props} bsClass="dropdown">
                 {results.map(function(result) {

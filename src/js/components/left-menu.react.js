@@ -8,43 +8,92 @@ import ButtonSimple from './button-simple.react';
 import ButtonDropdownToggle from './button-dropdown-toggle.react';
 import ButtonDropdownMenu from './button-dropdown-menu.react';
 import EditorIO from '../editor/io';
+import { openLocalFile } from '../file/open-local';
+import { examplesModal } from '../modals/modal.examples';
+import { openURLModal } from '../modals/modal.open-url';
 import { openGistModal } from '../modals/modal.open-gist';
+import { saveGistModal } from '../modals/modal.save-gist';
+import { aboutModal } from '../modals/modal.about';
+import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/map';
 
 const clickNew = function() {
     EditorIO.new();
 };
 
-const clickSave = function() {
-    EditorIO.export();
+const clickOpenFile = function() {
+    openLocalFile();
 };
 
-const clickGist = function() {
+const clickOpenGist = function() {
     openGistModal.show();
 };
 
-const clickCamera = function() {
+const clickOpenURL = function() {
+    openURLModal.show();
+};
+
+const clickOpenExample = function() {
+    examplesModal.show();
+};
+
+const clickSaveFile = function() {
+    EditorIO.export();
+};
+
+const clickSaveGist = function() {
+    saveGistModal.show();
+};
+
+const clickSaveCamera = function() {
     takeScreenshot();
 };
+
+const openMenu = [
+    {
+        id: 1,
+        text: "Open a file",
+        icon: "bt-folder",
+        click: clickOpenFile
+    },
+    {
+        id: 2,
+        text: "Open a saved Gist",
+        icon: "bt-code",
+        click: clickOpenGist
+    },
+    {
+        id: 3,
+        text: "Open from URL",
+        icon: "bt-link",
+        click: clickOpenURL
+    },
+    {
+        id: 4,
+        text: "Choose example",
+        icon: "bt-map",
+        click: clickOpenExample
+    }
+];
 
 const saveMenu = [
     {
         id: 1,
         text: "Save to file",
         icon: "bt-folder",
-        click: clickSave
+        click: clickSaveFile
     },
     {
         id: 2,
         text: "Save to Gist",
         icon: "bt-code",
-        click: clickGist
+        click: clickSaveGist
     },
     {
         id: 3,
         text: "Take a screenshot",
         icon: "bt-camera",
-        click: clickCamera
+        click: clickSaveCamera
     }
 ];
 
@@ -53,15 +102,23 @@ export default React.createClass({
         return (
             <ButtonToolbar>
                 <ButtonGroup>
-                    <ButtonSimple button_text={"New"} overlay_text={"New Scene"} icon={"bt-file"} click={clickNew} />
-                    <ButtonSimple button_text={"Open"} overlay_text={"Open Scene"} icon={"bt-upload"} />
+                    <ButtonSimple buttonText={"New"} overlayText={"New Scene"} icon={"bt-file"} click={clickNew} />
+                </ButtonGroup>
+
+                <ButtonGroup>
+                    <Dropdown id="dropdown-open" >
+                        <ButtonDropdownToggle bsRole="toggle" text="Open" overlayText="Open Scene" icon="bt-upload">
+                        </ButtonDropdownToggle>
+                        <ButtonDropdownMenu bsRole="menu" menuItems={openMenu}>
+                        </ButtonDropdownMenu>
+                    </Dropdown>
                 </ButtonGroup>
 
                 <ButtonGroup>
                     <Dropdown id="dropdown-save" >
-                        <ButtonDropdownToggle bsRole="toggle" text="Save" icon="bt-download">
+                        <ButtonDropdownToggle bsRole="toggle" text="Save" overlayText="Save Scene" icon="bt-download">
                         </ButtonDropdownToggle>
-                        <ButtonDropdownMenu bsRole="menu" menu_items={saveMenu}>
+                        <ButtonDropdownMenu bsRole="menu" menuItems={saveMenu}>
                         </ButtonDropdownMenu>
                     </Dropdown>
                 </ButtonGroup>
