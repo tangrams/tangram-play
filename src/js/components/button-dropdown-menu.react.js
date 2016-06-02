@@ -1,4 +1,5 @@
 import React from 'react';
+import EditorIO from '../editor/io';
 
 import Dropdown from 'react-bootstrap/lib/Dropdown';
 import DropdownMenu from 'react-bootstrap/lib/DropdownMenu';
@@ -12,7 +13,7 @@ export default React.createClass({
         return (
             <Dropdown.Menu {...this.props} bsClass="dropdown">
                 {results.map(function(result) {
-                  return <MenuItem bsClass="test" key={result.id}><Icon type={result.icon} />{result.text}</MenuItem>;
+                  return <MenuItem bsClass="test" key={result.id} onClick={result.click}><Icon type={result.icon} />{result.text}</MenuItem>;
                 })}
             </Dropdown.Menu>
 
