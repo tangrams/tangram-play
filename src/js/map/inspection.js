@@ -274,7 +274,7 @@ class TangramInspectionPopup {
                     jumpToLine(editor, node.range.from.line);
 
                     // Highlight the block.
-                    highlightBlock(node, 'editor-inspection-highlight');
+                    highlightBlock(node);
                 });
             }
             else {
