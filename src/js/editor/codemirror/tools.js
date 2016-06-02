@@ -1,5 +1,3 @@
-import { isNumber } from '../../tools/common';
-
 //  GET Functions
 //  ===============================================================================
 
@@ -70,29 +68,6 @@ export function jumpToLine(cm, nLine) {
 export function jumpToLineAt(cm, nLine, offset) {
     let t = cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top;
     cm.scrollTo(null, t);
-}
-
-//  Common SELECTION function on CM
-//  ===============================================================================
-
-//  Select a line or a range of lines
-//
-export function selectLines(cm, rangeString) {
-    let from, to;
-
-    if (isNumber(rangeString)) {
-        from = parseInt(rangeString) - 1;
-        to = from;
-    }
-    else {
-        let lines = rangeString.split('-');
-        from = parseInt(lines[0]) - 1;
-        to = parseInt(lines[1]) - 1;
-    }
-
-    cm.setSelection({ line: from, ch:0 },
-                    { line: to, ch: cm.getLine(to).length });
-    jumpToLine(cm, from);
 }
 
 //  Common FOLD functions on CM
