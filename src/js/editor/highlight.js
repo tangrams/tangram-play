@@ -114,12 +114,7 @@ function updateLinesQueryString (value) {
     const locationPrefix = window.location.pathname;
     const queryObj = getQueryStringObject();
 
-    if (value) {
-        queryObj.lines = value;
-    }
-    else {
-        delete queryObj.lines;
-    }
+    queryObj.lines = value;
 
     const queryString = serializeToQueryString(queryObj);
     window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
