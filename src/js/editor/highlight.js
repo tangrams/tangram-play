@@ -1,5 +1,6 @@
 import { editor } from './editor';
 import { jumpToLine } from './codemirror/tools';
+import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
 
 const HIGHLIGHT_CLASS = 'editor-highlight';
 
@@ -51,6 +52,13 @@ export function highlightLines (from, to) {
         doc.addLineClass(currentLine, 'gutter', HIGHLIGHT_CLASS);
         doc.addLineClass(currentLine, 'background', HIGHLIGHT_CLASS);
     }
+
+    // Update the query string
+    const locationPrefix = window.location.pathname;
+    const queryObj = getQueryStringObject();
+    queryObj.lines = `${startLine}-${endLine}`;
+    const queryString = serializeToQueryString(queryObj);
+    window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
 }
 
 /**
@@ -90,4 +98,11 @@ export function unhighlightAll () {
         doc.removeLineClass(i, 'gutter', HIGHLIGHT_CLASS);
         doc.removeLineClass(i, 'background', HIGHLIGHT_CLASS);
     }
+
+    // Update the query string
+    const locationPrefix = window.location.pathname;
+    const queryObj = getQueryStringObject();
+    delete queryObj.lines;
+    const queryString = serializeToQueryString(queryObj);
+    window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
 }
