@@ -76,7 +76,7 @@ class TangramPlay {
                 if (lines) {
                     lines = lines.split('-');
                     jumpToLine(editor, lines[0]);
-                    highlightLines(lines[0], lines[1]);
+                    highlightLines(lines[0], lines[1], false);
                 }
 
                 // Things we do after Tangram is finished initializing

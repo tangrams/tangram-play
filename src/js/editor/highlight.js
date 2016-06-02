@@ -14,10 +14,15 @@ const HIGHLIGHT_CLASS = 'editor-highlight';
  *          highlighting on, or a CodeMirror.Pos object with the signature
  *          of { line, ch }. If undefined or null, only the "from" line is
  *          highlighted.
+ * @param {Boolean} clear - Optional. Defaults to `true`, where all existing
+ *          highlights are cleared first. If set to false, previous Highlights
+ *          are preserved.
  */
-export function highlightLines (from, to) {
+export function highlightLines (from, to, clear = true) {
     // First, remove all existing instances of the highlight class.
-    unhighlightAll(HIGHLIGHT_CLASS);
+    if (clear === true) {
+        unhighlightAll(HIGHLIGHT_CLASS);
+    }
 
     // Set the line to start highlighting from.
     const startLine = _getLineNumber(from);
@@ -54,11 +59,8 @@ export function highlightLines (from, to) {
     }
 
     // Update the query string
-    const locationPrefix = window.location.pathname;
-    const queryObj = getQueryStringObject();
-    queryObj.lines = `${startLine}-${endLine}`;
-    const queryString = serializeToQueryString(queryObj);
-    window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
+    // Lines are zero-indexed, but in the query string, use 1-indexed values.
+    updateLinesQueryString(`${startLine + 1}-${endLine + 1}`);
 }
 
 /**
@@ -100,9 +102,25 @@ export function unhighlightAll () {
     }
 
     // Update the query string
+    updateLinesQueryString(null);
+}
+
+/**
+ * Updates the ?lines= query string to the given value.
+ *
+ * @param {string} value - the value for ?lines=. Set to null to delete it.
+ */
+function updateLinesQueryString (value) {
     const locationPrefix = window.location.pathname;
     const queryObj = getQueryStringObject();
-    delete queryObj.lines;
+
+    if (value) {
+        queryObj.lines = value;
+    }
+    else {
+        delete queryObj.lines;
+    }
+
     const queryString = serializeToQueryString(queryObj);
     window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
 }
