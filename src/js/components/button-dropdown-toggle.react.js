@@ -1,12 +1,10 @@
 import React from 'react';
 
-//import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-//<Glyphicon glyph="" bsClass="btm bt-file" /> --> another way to do it
-
 import DropdownToggle from 'react-bootstrap/lib/DropdownToggle';
-import Icon from './icon.react';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
+
+import Icon from './icon.react';
 
 export default React.createClass({
     render: function() {
@@ -17,6 +15,6 @@ export default React.createClass({
                 </DropdownToggle>
             </OverlayTrigger>
         );
-    },
+    }
 
 });
