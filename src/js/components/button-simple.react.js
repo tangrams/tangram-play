@@ -11,10 +11,10 @@ let someFn = function() { console.log('new clicked'); } ;
 export default React.createClass({
     render: function() {
         return (
-            <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">{this.props.overlay_text}</Tooltip>}>
+            <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">{this.props.overlayText}</Tooltip>}>
                 <Button onClick={this.props.click} bsClass="test">
                     <Icon type={this.props.icon} />
-                    {this.props.button_text}
+                    {this.props.buttonText}
                 </Button>
             </OverlayTrigger>
         );

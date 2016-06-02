@@ -9,7 +9,7 @@ import Icon from './icon.react';
 export default React.createClass({
     render: function() {
         return (
-            <OverlayTrigger {...this.props} placement="bottom" overlay={<Tooltip id="tooltip">test</Tooltip>}>
+            <OverlayTrigger {...this.props} placement="bottom" overlay={<Tooltip id="tooltip">{this.props.overlayText}</Tooltip>}>
                 <DropdownToggle {...this.props} bsClass="test">
                   <Icon type={this.props.icon} />{this.props.text}
                 </DropdownToggle>
