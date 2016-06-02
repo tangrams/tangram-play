@@ -5,7 +5,6 @@ import { emptyDOMElement } from '../tools/helpers';
 import TangramPlay from '../tangram-play';
 import { editor } from '../editor/editor';
 import { highlightBlock } from '../editor/highlight';
-import { jumpToLine } from '../editor/codemirror/tools';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
@@ -269,11 +268,7 @@ class TangramInspectionPopup {
                     }
                     layerEl.classList.add('map-inspection-selected');
 
-                    // Scroll the top of the block into view. Do this first so that
-                    // CodeMirror will parse the lines in this viewport.
-                    jumpToLine(editor, node.range.from.line);
-
-                    // Highlight the block.
+                    // Highlight the block & jump to line.
                     highlightBlock(node);
                 });
             }

@@ -1,9 +1,10 @@
 import { editor } from './editor';
+import { jumpToLine } from './codemirror/tools';
 
 const HIGHLIGHT_CLASS = 'editor-highlight';
 
 /**
- * Highlights a line or a range of lines by applying a class to that line.
+ * Highlights a line or a range of lines by applying a highlight class.
  *
  * @param {Number|CodeMirror.Pos} from - Required. The line number to start to
  *          highlighting from, or a CodeMirror.Pos object with the signature
@@ -12,12 +13,10 @@ const HIGHLIGHT_CLASS = 'editor-highlight';
  *          highlighting on, or a CodeMirror.Pos object with the signature
  *          of { line, ch }. If undefined or null, only the "from" line is
  *          highlighted.
- * @param {string} className - Optional. The class name to apply to each line.
- *          If not provided, a default class name is used.
  */
-export function highlightLines (from, to, className = HIGHLIGHT_CLASS) {
-    // First, remove all existing instances of this classname.
-    unhighlightAll(className);
+export function highlightLines (from, to) {
+    // First, remove all existing instances of the highlight class.
+    unhighlightAll(HIGHLIGHT_CLASS);
 
     // Set the line to start highlighting from.
     const startLine = _getLineNumber(from);
@@ -49,22 +48,24 @@ export function highlightLines (from, to, className = HIGHLIGHT_CLASS) {
     // If a range is backwards, it is ignored.
     const doc = editor.getDoc();
     for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
-        doc.addLineClass(currentLine, 'gutter', className);
-        doc.addLineClass(currentLine, 'background', className);
+        doc.addLineClass(currentLine, 'gutter', HIGHLIGHT_CLASS);
+        doc.addLineClass(currentLine, 'background', HIGHLIGHT_CLASS);
     }
 }
 
 /**
  * Given a node, find all the lines that are part of that entire block, and then
- * apply a class name to each of those lines. The class might have the effect of
- * 'highlighting' that section.
+ * applies a highlight class to each of those lines.
  *
  * @param {Object} node - YAML-Tangram node object
- * @param {string} className - the class name to apply to each line in the
- *          block.  If not provided, a default class name is used.
  */
-export function highlightBlock (node, className = HIGHLIGHT_CLASS) {
+export function highlightBlock (node) {
     const doc = editor.getDoc();
+
+    // Scroll the top of the block into view. Do this first so that
+    // CodeMirror will parse the lines in this viewport. This is necessary
+    // for the `stateAfter.yamlState.keyLevel` to be available.
+    jumpToLine(editor, node.range.from.line);
 
     // Determine the range to highlight from.
     const blockLine = node.range.from.line;
@@ -81,15 +82,12 @@ export function highlightBlock (node, className = HIGHLIGHT_CLASS) {
 
 /**
  * Removes highlights from all lines in the document.
- *
- * @param {string} className - Optional. The class name to remove from the each
- *          line in the document. If not provided, a default class name is used.
  */
-export function unhighlightAll (className = HIGHLIGHT_CLASS) {
+export function unhighlightAll () {
     const doc = editor.getDoc();
 
     for (let i = 0, j = doc.lineCount(); i <= j; i++) {
-        doc.removeLineClass(i, 'gutter', className);
-        doc.removeLineClass(i, 'background', className);
+        doc.removeLineClass(i, 'gutter', HIGHLIGHT_CLASS);
+        doc.removeLineClass(i, 'background', HIGHLIGHT_CLASS);
     }
 }
