@@ -119,11 +119,13 @@ div.cm-s-tangram .CodeMirror-cursor { border-left: 1px solid white; }
 .cm-s-tangram .CodeMirror-activeline-background {
     background: var(--ui-base-color);
 }
+
 .CodeMirror-activeline-gutter.CodeMirror-gutter-background {
     background: var(--ui-active-color);
 }
 
-.CodeMirror-activeline-gutter .CodeMirror-linenumber {
+.CodeMirror-activeline-gutter .CodeMirror-linenumber,
+.editor-highlight .CodeMirror-activeline-gutter .CodeMirror-linenumber {
     color: var(--ui-highlight-color);
 }
 
@@ -146,16 +148,23 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
 .CodeMirror-foldgutter-open:after { content: "\25BE"; }
 .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
 
-/* When drawing attention to the editor, e.g. after map introspection
-    TODO: Better styles */
-.editor-inspection-highlight {
-    .CodeMirror-line {
+/* Highlighting lines, e.g. after map introspection */
+.editor-highlight {
+    &.CodeMirror-linebackground:not(.CodeMirror-activeline-background) {
         /* A background color with alpha=1 overlaps the selection highlight
            This makes the selection visible through the highlighted line */
         background-color: rgba(54,56,60,0.5); /*var(--ui-active-color);*/
     }
+
+    &.CodeMirror-gutter-background:not(.CodeMirror-activeline-gutter) {
+        background-color: var(--ui-highlight-color);
+    }
+
+    &.CodeMirror-gutter-background.CodeMirror-activeline-gutter {
+        background-color: var(--ui-highlight-color-2);
+    }
+
     .CodeMirror-linenumber {
-        background-color: yellow;
         color: black;
         font-weight: 600;
     }

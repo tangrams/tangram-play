@@ -29,8 +29,9 @@ import { subscribeMixin } from './tools/mixin';
 import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { selectLines, isStrEmpty } from './editor/codemirror/tools';
+import { isStrEmpty, jumpToLine } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
+import { highlightLines } from './editor/highlight';
 import { injectAPIKey, suppressAPIKeys } from './editor/api-keys';
 
 // Import UI elements
@@ -70,6 +71,14 @@ class TangramPlay {
         const initialScene = determineScene();
         this.load(initialScene)
             .then(() => {
+                // Highlight lines if requested by the query string.
+                let lines = query['lines'];
+                if (lines) {
+                    lines = lines.split('-');
+                    jumpToLine(editor, lines[0]);
+                    highlightLines(lines[0], lines[1], false);
+                }
+
                 // Things we do after Tangram is finished initializing
                 tangramLayer.scene.initializing.then(() => {
                     this.trigger('sceneinit');
@@ -77,11 +86,6 @@ class TangramPlay {
                     // Initialize addons after Tangram is done, because
                     // some addons depend on Tangram scene config being present
                     this.initAddons();
-
-                    if (query['lines']) {
-                        // TODO: Highlight instead of select?
-                        selectLines(editor, query['lines']);
-                    }
                 });
             });
 

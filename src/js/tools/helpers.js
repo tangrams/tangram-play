@@ -45,9 +45,10 @@ export function getQueryStringObject (queryString = window.location.search) {
 export function serializeToQueryString (obj = {}) {
     const str = [];
     for (let p in obj) {
-        // Nulls or undefined is just empty string
+        // Nulls or undefined are skipped. Do not test for "falsy" values
+        // here. Values like `0` or `false` should be stored in the query.
         if (obj[p] === null || typeof obj[p] === 'undefined') {
-            obj[p] = '';
+            continue;
         }
 
         if (obj.hasOwnProperty(p)) {

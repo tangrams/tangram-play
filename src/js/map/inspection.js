@@ -4,8 +4,7 @@ import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
 import TangramPlay from '../tangram-play';
 import { editor } from '../editor/editor';
-import { highlightBlock } from '../editor/highlight';
-import { jumpToLine } from '../editor/codemirror/tools';
+import { highlightBlock, unhighlightAll } from '../editor/highlight';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
@@ -269,12 +268,8 @@ class TangramInspectionPopup {
                     }
                     layerEl.classList.add('map-inspection-selected');
 
-                    // Scroll the top of the block into view. Do this first so that
-                    // CodeMirror will parse the lines in this viewport.
-                    jumpToLine(editor, node.range.from.line);
-
-                    // Highlight the block.
-                    highlightBlock(node, 'editor-inspection-highlight');
+                    // Highlight the block & jump to line.
+                    highlightBlock(node);
                 });
             }
             else {
@@ -341,10 +336,8 @@ class TangramInspectionPopup {
             event.popup._container.style.transform = null;
             isPopupOpen = false;
 
-            // Destroy all active line classes
-            for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
-                editor.doc.removeLineClass(i, 'wrap');
-            }
+            // Remove highlights
+            unhighlightAll();
 
             // Clean up events from the map listeners
             map.off('popupclose', onPopupClose);
