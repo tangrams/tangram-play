@@ -336,8 +336,8 @@ class TangramInspectionPopup {
             event.popup._container.style.transform = null;
             isPopupOpen = false;
 
-            // Remove highlights
-            unhighlightAll();
+            // Remove highlights. Defers to user-generated highlighting, if any.
+            unhighlightAll(true);
 
             // Clean up events from the map listeners
             map.off('popupclose', onPopupClose);

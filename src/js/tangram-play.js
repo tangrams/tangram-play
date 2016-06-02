@@ -75,8 +75,14 @@ class TangramPlay {
                 let lines = query['lines'];
                 if (lines) {
                     lines = lines.split('-');
-                    jumpToLine(editor, lines[0]);
-                    highlightLines(lines[0], lines[1], false);
+
+                    // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
+                    // Just in case, the return value is clamped to a minimum value of 0.
+                    const startLine = Math.max(Number(lines[0]) - 1, 0);
+                    const endLine = Math.max(Number(lines[1]) - 1, 0);
+
+                    jumpToLine(editor, startLine);
+                    highlightLines(startLine, endLine, false);
                 }
 
                 // Things we do after Tangram is finished initializing

@@ -169,3 +169,7 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
         font-weight: 600;
     }
 }
+
+.CodeMirror-linenumber {
+    cursor: pointer;
+}
