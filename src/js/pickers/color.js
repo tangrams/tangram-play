@@ -90,16 +90,16 @@ export default class ColorPicker extends Picker {
         this.dom.colorDisc = this.el.querySelector('.colorpicker-disc');
         this.dom.luminanceBar = this.el.querySelector('.colorpicker-bar-luminance');
 
-        if (this.link_button) {
+        if (this.linkButton) {
             let lbutton = document.createElement('div');
             lbutton.innerHTML = '+';
             lbutton.className = this.CSS_PREFIX + 'link-button';
             this.el.appendChild(lbutton);
 
             lbutton.addEventListener('click', () => {
-                this.trigger('link_button', this.value);
-                if (typeof this.link_button === 'function') {
-                    this.link_button(this.value);
+                this.trigger('linkbutton', this.value);
+                if (typeof this.linkButton === 'function') {
+                    this.linkButton(this.value);
                 }
                 this.removeModal();
             });
@@ -243,12 +243,12 @@ export default class ColorPicker extends Picker {
 
         let r, x, y, h, s;
         if (currentTarget === this.dom.hsvMap) { // the circle
-            r = currentTargetHeight / 2,
+            r = currentTargetHeight / 2;
             // x = event.offsetX - r,
             // y = event.offsetY - r,
-            x = event.clientX - startPoint.left - r,
-            y = event.clientY - startPoint.top - r,
-            h = (360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0))) / 360,
+            x = event.clientX - startPoint.left - r;
+            y = event.clientY - startPoint.top - r;
+            h = (360 - ((Math.atan2(y, x) * 180 / Math.PI) + (y < 0 ? 360 : 0))) / 360;
             s = (Math.sqrt((x * x) + (y * y)) / r);
             this.value.set({ h, s }, 'hsv');
         }

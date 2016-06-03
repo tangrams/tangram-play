@@ -116,6 +116,7 @@
     /* 04: Anything that should display on top of Leaflet overlays */
     --z04-map-toolbar: var(--z04);
     --z04-map-inspection: var(--z04);
+    --z04-map-loading: var(--z04);
 
     /* 07: Anything that should display on top of all Leaflet elements */
     --z07-menu-dropdown: var(--z07);

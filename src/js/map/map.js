@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import 'leaflet-hash';
 import { saveAs } from '../vendor/FileSaver.min.js';
+import Tangram from 'tangram';
 
 import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
@@ -29,7 +30,7 @@ export function initMap () {
 
     // Create Leaflet map
     map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
-    const hash = new L.Hash(map); // jshint ignore:line
+    const hash = new L.Hash(map); // eslint-disable-line no-unused-vars
 
     // Force Leaflet to update itself.
     // This resolves an issue where the map may sometimes not appear
@@ -55,7 +56,7 @@ export function initMap () {
  */
 function initTangram (pathToSceneFile) {
     // Add Tangram Layer
-    tangramLayer = window.Tangram.leafletLayer({
+    tangramLayer = Tangram.leafletLayer({
         scene: pathToSceneFile,
         events: {
             hover: handleInspectionHoverEvent,
@@ -71,14 +72,14 @@ function initTangram (pathToSceneFile) {
 
         // Hides loading indicator after vector tiles have downloaded and rendered
         // Plus a short delay to ease the transition
+        /* eslint-disable camelcase */
         view_complete: function () {
             window.setTimeout(() => {
                 hideSceneLoadingIndicator();
             }, 250);
         }
+        /* eslint-enable camelcase */
     });
-
-    TangramPlay.trigger('sceneinit');
 
     window.layer = tangramLayer;
     window.scene = tangramLayer.scene;
@@ -169,4 +170,3 @@ function getMapStartLocation () {
 
     return startLocation;
 }
-

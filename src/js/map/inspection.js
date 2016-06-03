@@ -2,9 +2,8 @@ import _ from 'lodash';
 import L from 'leaflet';
 import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
-import TangramPlay, { editor } from '../tangram-play';
-import { highlightBlock } from '../editor/highlight';
-import { jumpToLine } from '../editor/codemirror/tools';
+import TangramPlay from '../tangram-play';
+import { highlightBlock, unhighlightAll } from '../editor/highlight';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
@@ -268,11 +267,8 @@ class TangramInspectionPopup {
                     }
                     layerEl.classList.add('map-inspection-selected');
 
-                    // Highlight the block.
-                    highlightBlock(node, 'editor-inspection-highlight');
-
-                    // Scroll top of the block into view.
-                    jumpToLine(editor, node.range.from.line);
+                    // Highlight the block & jump to line.
+                    highlightBlock(node);
                 });
             }
             else {
@@ -298,12 +294,14 @@ class TangramInspectionPopup {
      */
     showPopup (leafletEvent) {
         const popup = L.popup({
-                closeButton: false,
-                closeOnClick: false,
-                autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
-                offset: [0, -6],
-                className: 'map-inspection-popup'
-            })
+            closeButton: false,
+            closeOnClick: false,
+            autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
+            offset: [0, -6],
+            className: 'map-inspection-popup'
+        });
+
+        popup
             .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
             .setContent(this.el)
             .openOn(map);
@@ -327,6 +325,9 @@ class TangramInspectionPopup {
         // elsewhere on the map and opening a new popup.
         map.on('popupclose', onPopupClose);
 
+        // Attach a listener to clean up the popup when a new scene is loaded.
+        TangramPlay.on('sceneload', onNewScene);
+
         function onPopupClose (event) {
             // Leaflet will be responsible for destroying the elements on close.
 
@@ -336,13 +337,16 @@ class TangramInspectionPopup {
             event.popup._container.style.transform = null;
             isPopupOpen = false;
 
-            // Destroy all active line classes
-            for (let i = 0, j = editor.doc.lineCount(); i <= j; i++) {
-                editor.doc.removeLineClass(i, 'wrap');
-            }
+            // Remove highlights. Defers to user-generated highlighting, if any.
+            unhighlightAll({ defer: true });
 
-            // Clean up this event from the map listeners
+            // Clean up events from the map listeners
             map.off('popupclose', onPopupClose);
+            TangramPlay.off('sceneload', onNewScene);
+        }
+
+        function onNewScene (event) {
+            map.closePopup(popup);
         }
 
         // Record this state

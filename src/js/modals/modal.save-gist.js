@@ -1,8 +1,9 @@
-import TangramPlay, { editor } from '../tangram-play';
+import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import Modal from './modal';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
+import { editor } from '../editor/editor';
 import { map, getScreenshotData } from '../map/map';
 import { getLocationLabel } from '../map/search';
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
@@ -195,8 +196,10 @@ class SaveGistModal extends Modal {
             user: data.gist.user,
             url: data.gist.url,
             public: data.gist.public,
+            /* eslint-disable camelcase */
             created_at: data.gist.created_at,
             updated_at: data.gist.updated_at,
+            /* eslint-enable camelcase */
             thumbnail: data.thumbnail
         };
 

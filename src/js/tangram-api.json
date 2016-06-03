@@ -182,7 +182,7 @@
                 "join",
                 "tile_edges"
             ],
-            "source": ":styles"
+            "source": "styles"
         },
         {
             "address": "^layers:(\\w|\\_|\\-|\\/)*:font$",
@@ -375,7 +375,7 @@
         {
             "address": "^styles:(\\w|\\_|\\-|\\/)+:mix$",
             "type": "string",
-            "source": ":styles"
+            "source": "styles"
         },
         {
             "address": "^styles:(\\w|\\_|\\-|\\/)+:blend$",
@@ -477,7 +477,7 @@
         {
             "address": "^layers:(\\w|\\_|\\-|\\/)+:data:source$",
             "type": "string",
-            "source": ":sources"
+            "source": "sources"
         },
         {
             "address": "^layers:(\\w|\\_|\\-|\\/)+:extrude$",
@@ -492,7 +492,7 @@
         {
             "address": "^layers:(\\w+|\\_|\\-|\\/):draw:(\\w|\\_|\\-|\\/)+:style$",
             "type": "string",
-            "source": ":styles",
+            "source": "styles",
             "options": [
                 "points",
                 "lines",

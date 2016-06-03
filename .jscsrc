@@ -46,7 +46,9 @@
     "requireSpaceBetweenArguments": true,
     "requireSpacesInConditionalExpression": true,
     "requireSpacesInForStatement": true,
-    "requireSpacesInsideObjectBrackets": "allButNested",
+    "requireSpacesInsideObjectBrackets": {
+        "allExcept": [ "}" ]
+    },
     "validateIndentation": 4,
     "validateLineBreaks": "LF",
     "validateQuoteMarks": { "mark": "'", "escape": true }

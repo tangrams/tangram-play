@@ -10,7 +10,7 @@ Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467',
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
-import { initEditor } from './editor/editor';
+import { editor } from './editor/editor';
 import { config } from './config';
 
 // Addons
@@ -29,8 +29,10 @@ import { subscribeMixin } from './tools/mixin';
 import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { selectLines, isStrEmpty } from './editor/codemirror/tools';
+import { isEmptyString } from './tools/helpers';
+import { jumpToLine } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
+import { highlightLines } from './editor/highlight';
 import { injectAPIKey, suppressAPIKeys } from './editor/api-keys';
 
 // Import UI elements
@@ -49,7 +51,6 @@ class TangramPlay {
     constructor () {
         subscribeMixin(this);
 
-        this.editor = initEditor('editor');
         initMap();
         this.addons = {};
 
@@ -66,11 +67,33 @@ class TangramPlay {
             }
         };
 
-        setTimeout(() => {
-            if (query['lines']) {
-                this.selectLines(query['lines']);
-            }
-        }, 500);
+        // LOAD SCENE FILE
+        const initialScene = determineScene();
+        this.load(initialScene)
+            .then(() => {
+                // Highlight lines if requested by the query string.
+                let lines = query['lines'];
+                if (lines) {
+                    lines = lines.split('-');
+
+                    // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
+                    // Just in case, the return value is clamped to a minimum value of 0.
+                    const startLine = Math.max(Number(lines[0]) - 1, 0);
+                    const endLine = Math.max(Number(lines[1]) - 1, 0);
+
+                    jumpToLine(editor, startLine);
+                    highlightLines(startLine, endLine, false);
+                }
+
+                // Things we do after Tangram is finished initializing
+                tangramLayer.scene.initializing.then(() => {
+                    this.trigger('sceneinit');
+
+                    // Initialize addons after Tangram is done, because
+                    // some addons depend on Tangram scene config being present
+                    this.initAddons();
+                });
+            });
 
         // If the user bails for whatever reason, hastily shove the contents of
         // the editor into some kind of storage. This overwrites whatever was
@@ -82,14 +105,17 @@ class TangramPlay {
             // Don't take original url or original base path from
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
+            /* eslint-disable camelcase */
             let sceneData = {
                 original_url: tangramLayer.scene.config_source,
                 original_base_path: tangramLayer.scene.config_path,
                 contents: this.getContent(),
-                is_clean: this.editor.isClean(),
-                scrollInfo: this.editor.getScrollInfo(),
-                cursor: this.editor.doc.getCursor()
+                is_clean: editor.isClean(),
+                scrollInfo: editor.getScrollInfo(),
+                cursor: editor.doc.getCursor()
             };
+            /* eslint-enable camelcase */
+
             saveSceneContentsToLocalMemory(sceneData);
         });
     }
@@ -106,10 +132,9 @@ class TangramPlay {
 
     /**
      * This function is the canonical way to load a scene in Tangram Play.
-     * We want to avoid situations where we load scene files directly
-     * into either Tangram or in CodeMirror and then have to handle
-     * updating other parts of Tangram Play. Instead, we want Tangram Play
-     * to ingest new scenes in a single way so that all the different parts
+     * We want to avoid loading scene files directly into either Tangram
+     * or in CodeMirror and then having to update other parts of Tangram Play.
+     * Instead, we load new scenes here so that all the different parts
      * of the application can be updated predictably. The load function takes
      * either a URL path (for remote / external scenes), or the contents
      * of a Tangram YAML file itself.
@@ -119,6 +144,8 @@ class TangramPlay {
      *      scene.contents - Tangram YAML as a text blob
      *      Do not pass in both! Currently `url` takes priority, but
      *      this is not guaranteed behaviour.
+     * @returns {Promise} A promise which is resolved when a scene's
+     *      contents has been fetched.
      */
     load (scene) {
         // Turn on loading indicator. This is turned off later
@@ -126,7 +153,7 @@ class TangramPlay {
         showSceneLoadingIndicator();
 
         // Turn off watching for changes in editor.
-        this.editor.off('changes', this._watchEditorForChanges);
+        editor.off('changes', this._watchEditorForChanges);
 
         // Either we are passed a url path, or scene file contents
         if (scene.url) {
@@ -151,7 +178,7 @@ class TangramPlay {
                 fetchPromise = window.fetch(scene.url, { credentials: 'same-origin' });
             }
 
-            fetchPromise.then(response => {
+            return fetchPromise.then(response => {
                 if (!response.ok) {
                     if (response.status === 404) {
                         throw new Error('The scene you requested could not be found.');
@@ -171,7 +198,13 @@ class TangramPlay {
             });
         }
         else if (scene.contents) {
-            this._doLoadProcess(scene);
+            // If scene contents are provided, no asynchronous work is
+            // performed here, but wrap this response in a Promise anyway
+            // so that the return object is always a thenable.
+            return new Promise((resolve, reject) => {
+                this._doLoadProcess(scene);
+                resolve();
+            });
         }
     }
 
@@ -182,8 +215,8 @@ class TangramPlay {
 
         // TODO: editor should not be attached to this
         if (initialLoad === true) {
-            showUnloadedState(this.editor);
-            this.editor.doc.markClean();
+            showUnloadedState(editor);
+            editor.doc.markClean();
         }
     }
 
@@ -206,14 +239,16 @@ class TangramPlay {
         // Update history
         // Can't do a pushstate where the URL includes 'http://localhost' due to security
         // problems. So we have to let the browser do the routing relative to the server
-        let locationPrefix = window.location.pathname;
+        const locationPrefix = window.location.pathname;
+        const queryObj = getQueryStringObject();
         if (scene.url) {
-            locationPrefix += '?scene=' + scene.url;
+            queryObj.scene = scene.url;
         }
+        const queryString = serializeToQueryString(queryObj);
 
         window.history.pushState({
             sceneUrl: (scene.url) ? scene.url : null
-        }, null, locationPrefix + window.location.hash);
+        }, null, locationPrefix + queryString + window.location.hash);
 
         // Trigger Events
         // Event object is empty right now.
@@ -230,8 +265,8 @@ class TangramPlay {
         let contents = suppressAPIKeys(sceneData.contents, config.TILES.API_KEYS.SUPPRESSED);
 
         // Set content in CodeMirror
-        this.editor.setValue(contents);
-        this.editor.clearHistory();
+        editor.setValue(contents);
+        editor.clearHistory();
 
         // Mark as "clean" if the contents are freshly loaded
         // (there is no is_clean property defined) or if contents
@@ -240,12 +275,12 @@ class TangramPlay {
         // a Boolean. Otherwise, the document has not been previously
         // saved and it is left in the "dirty" state.
         if (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true') {
-            this.editor.doc.markClean();
+            editor.doc.markClean();
         }
 
         // Restore cursor position, if provided.
         if (sceneData.cursor) {
-            this.editor.doc.setCursor(sceneData.cursor, {
+            editor.doc.setCursor(sceneData.cursor, {
                 scroll: false
             });
         }
@@ -254,11 +289,11 @@ class TangramPlay {
         if (sceneData.scrollInfo) {
             let left = sceneData.scrollInfo.left || 0;
             let top = sceneData.scrollInfo.top || 0;
-            this.editor.scrollTo(left, top);
+            editor.scrollTo(left, top);
         }
 
         // Turn change watching back on.
-        this.editor.on('changes', this._watchEditorForChanges);
+        editor.on('changes', this._watchEditorForChanges);
     }
 
     // SET
@@ -279,7 +314,7 @@ class TangramPlay {
         let from = { line: node.range.from.line,
                      ch: node.range.from.ch + node.anchor.length + node.key.length + 2 };
 
-        this.editor.doc.replaceRange(str, from, node.range.to);
+        editor.doc.replaceRange(str, from, node.range.to);
     }
 
     // If editor is updated, send it to the map.
@@ -306,7 +341,7 @@ class TangramPlay {
     // GET
     // Get the contents of the editor (with injected API keys)
     getContent () {
-        let content = this.editor.getValue();
+        let content = editor.getValue();
         //  If API keys are missing, inject one
         content = injectAPIKey(content, config.TILES.API_KEYS.DEFAULT);
         return content;
@@ -355,10 +390,10 @@ class TangramPlay {
     }
 
     getNodesOnLine (nLine) {
-        if (isStrEmpty(this.editor.getLine(nLine))) {
+        if (isEmptyString(editor.getLine(nLine))) {
             return [];
         }
-        return getNodes(this.editor, nLine);
+        return getNodes(editor, nLine);
     }
 
     getNodesForAddress (address) {
@@ -367,8 +402,8 @@ class TangramPlay {
         // address. Could be optimize if we store addresses in a map... but then the question is about how to keep it sync
         //
         let lastState;
-        for (let line = 0, size = this.editor.getDoc().size; line < size; line++) {
-            const lineHandle = this.editor.getLineHandle(line);
+        for (let line = 0, size = editor.getDoc().size; line < size; line++) {
+            const lineHandle = editor.getLineHandle(line);
 
             if (!lineHandle.stateAfter || !lineHandle.stateAfter.yamlState) {
                 // If the line is NOT parsed.
@@ -411,11 +446,6 @@ class TangramPlay {
             }
         }
         console.log('Fail searching', address);
-    }
-
-    // Other actions
-    selectLines (strRange) {
-        selectLines(this.editor, strRange);
     }
 }
 
@@ -482,12 +512,6 @@ function getSceneContentsFromLocalMemory () {
 let tangramPlay = new TangramPlay();
 
 export default tangramPlay;
-export let editor = tangramPlay.editor;
-
-// LOAD SCENE FILE
-let scene = determineScene();
-tangramPlay.load(scene);
-tangramPlay.initAddons();
 
 // This is called here because right now divider position relies on
 // editor and map being set up already

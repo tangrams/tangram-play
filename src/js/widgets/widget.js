@@ -7,7 +7,8 @@
  *  with any additional functionality.
  *
  */
-import TangramPlay, { editor } from '../tangram-play';
+import TangramPlay from '../tangram-play';
+import { editor } from '../editor/editor';
 
 export default class Widget {
     constructor (def, node) {
@@ -53,7 +54,7 @@ export default class Widget {
         // Find the right widget to update if a line has multiple nodes
         else {
             // Here is a good place to detect duplicates
-            // let others = TangramPlay.editor.getDoc().findMarksAt(this.node.range.to);
+            // let others = editor.getDoc().findMarksAt(this.node.range.to);
             let node = TangramPlay.getNodesForAddress(this.node.address);
             this.node = node;
         }
@@ -69,7 +70,7 @@ export default class Widget {
     insert () {
         this.updateNode();
 
-        let others = TangramPlay.editor.getDoc().findMarksAt(this.node.range.to);
+        let others = editor.getDoc().findMarksAt(this.node.range.to);
         if (others.length > 0) {
             console.log('Avoiding duplication');
             // if (TangramPlay.addons.errorsManager) {

@@ -1,8 +1,9 @@
 import TangramPlay from '../tangram-play';
 import TANGRAM_API from '../tangram-api.json';
 import WidgetType from './widget-type';
+import { editor } from '../editor/editor';
 import { subscribeMixin } from '../tools/mixin';
-import { isStrEmpty } from '../editor/codemirror/tools';
+import { isEmptyString } from '../tools/helpers';
 
 export default class WidgetsManager {
     constructor () {
@@ -20,15 +21,13 @@ export default class WidgetsManager {
 
         let from = { line:0, ch:0 };
         let to = {
-            //Last line in viewport CodeMirror
-            line: TangramPlay.editor.getDoc().size - 1,
-            //Last character in last line
-            ch: TangramPlay.editor.getLine(TangramPlay.editor.getDoc().size - 1).length
+            line: editor.getDoc().size - 1,
+            ch: editor.getLine(editor.getDoc().size - 1).length
         };
         this.createRange(from, to);
 
         // If something change only update that
-        TangramPlay.editor.on('changes', (cm, changesObjs) => {
+        editor.on('changes', (cm, changesObjs) => {
             for (let obj of changesObjs) {
                 this.change(obj);
             }
@@ -37,8 +36,8 @@ export default class WidgetsManager {
         // Keep track of possible NOT-PARSED lines
         // and in every codemirror 'render update' check if we are approaching a
         // non-parsed area and for it to update by cleaning and creating
-        TangramPlay.editor.on('scroll', (cm) => {
-            let horizon = TangramPlay.editor.getViewport().to - 1;
+        editor.on('scroll', (cm) => {
+            let horizon = editor.getViewport().to - 1;
             if (this.pairedUntilLine < horizon) {
                 let from = {
                     line: this.pairedUntilLine + 1,
@@ -46,7 +45,7 @@ export default class WidgetsManager {
                 };
                 let to = {
                     line: horizon,
-                    ch: TangramPlay.editor.getLine(horizon).length
+                    ch: editor.getLine(horizon).length
                 };
                 this.clearRange(from, to);
                 this.createRange(from, to);
@@ -97,7 +96,7 @@ export default class WidgetsManager {
             to.line = changeObj.from.line + changeObj.text.length - 1;
         }
 
-        to.ch = TangramPlay.editor.getLine(to.line) ? TangramPlay.editor.getLine(to.line).length : 0;
+        to.ch = editor.getLine(to.line) ? editor.getLine(to.line).length : 0;
 
         // If is a new line move the range FROM the begining of the line
         if (changeObj.text.length === 2 &&
@@ -121,11 +120,11 @@ export default class WidgetsManager {
             // If the FROM/TO range is to narrow search using nodes
             for (let node of nodes) {
                 // Find and concatenate bookmarks between FROM/TO range
-                bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(node.range.to));
+                bookmarks = bookmarks.concat(editor.getDoc().findMarksAt(node.range.to));
             }
         }
         else {
-            bookmarks = TangramPlay.editor.getDoc().findMarksAt(to);
+            bookmarks = editor.getDoc().findMarksAt(to);
         }
 
         // If there is only one node and the change happen on the value
@@ -161,7 +160,7 @@ export default class WidgetsManager {
     }
 
     clearNodes (nodes) {
-        let doc = TangramPlay.editor.getDoc();
+        let doc = editor.getDoc();
         for (let node of nodes) {
             // Find bookmarks between FROM and TO
             let from = node.range.from.line;
@@ -190,7 +189,7 @@ export default class WidgetsManager {
         let newWidgets = [];
         for (let node of nodes) {
             let val = node.value;
-            if (val === '|' || isStrEmpty(val) || isStrEmpty(TangramPlay.editor.getLine(node.range.from.line))) {
+            if (val === '|' || isEmptyString(val) || isEmptyString(editor.getLine(node.range.from.line))) {
                 continue;
             }
 

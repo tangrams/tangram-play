@@ -1,3 +1,4 @@
+import { editor } from './editor';
 import TangramPlay from '../tangram-play';
 import { tangramLayer } from '../map/map';
 
@@ -8,7 +9,7 @@ export default class ErrorsManager {
         this.blockErrors = new Set();
 
         // EVENTS
-        TangramPlay.editor.on('changes', (cm, changesObjs) => {
+        editor.on('changes', (cm, changesObjs) => {
             TangramPlay.addons.errorsManager.clean();
         });
 
@@ -37,7 +38,7 @@ export default class ErrorsManager {
 
     clean() {
         for (let i = 0; i < this.widgets.length; i++) {
-            TangramPlay.editor.removeLineWidget(this.widgets[i]);
+            editor.removeLineWidget(this.widgets[i]);
         }
         this.widgets.length = 0;
         this.blockErrors.clear();
@@ -50,7 +51,7 @@ export default class ErrorsManager {
             icon.className = 'btm bt-exclamation-triangle error-icon';
             msg.appendChild(document.createTextNode(args.error.reason));
             msg.className = 'error';
-            this.widgets.push(TangramPlay.editor.addLineWidget(args.error.mark.line, msg, { coverGutter: false, noHScroll: true }));
+            this.widgets.push(editor.addLineWidget(args.error.mark.line, msg, { coverGutter: false, noHScroll: true }));
         }
     }
 
@@ -85,7 +86,7 @@ export default class ErrorsManager {
                     icon.className = 'btm bt-exclamation-circle warning-icon';
                     msg.appendChild(document.createTextNode(errors[i].message));
                     msg.className = 'warning';
-                    this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
+                    this.widgets.push(editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
                     this.blockErrors.add(JSON.stringify(block)); // track unique errors
                 }
                 else {
@@ -102,7 +103,7 @@ export default class ErrorsManager {
                 icon.className = 'btm bt-exclamation-circle warning-icon';
                 msg.appendChild(document.createTextNode(`Duplicate key ${node.key} (${node.address})`));
                 msg.className = 'warning';
-                this.widgets.push(TangramPlay.editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
+                this.widgets.push(editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
             }
         }
     }

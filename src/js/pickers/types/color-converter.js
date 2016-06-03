@@ -1,35 +1,35 @@
-var valueRanges = {
-        rgb: { r: [0, 255], g: [0, 255], b: [0, 255] },
-        hsv: { h: [0, 1], s: [0, 1], v: [0, 255] },
-        hsl: { h: [0, 360], s: [0, 100], l: [0, 100] },
-        cmy: { c: [0, 100], m: [0, 100], y: [0, 100] },
-        cmyk: { c: [0, 100], m: [0, 100], y: [0, 100], k: [0, 100] },
-        Lab: { L: [0, 100], a: [-128, 127], b: [-128, 127] },
-        XYZ: { X: [0, 100], Y: [0, 100], Z: [0, 100] },
-        vec: { v: [0, 1], e: [0, 1], c: [0, 1] },
-        alpha: { alpha: [0, 1] },
-        HEX: { HEX: [0, 16777215] } // maybe we don't need this
-    };
+const valueRanges = {
+    rgb: { r: [0, 255], g: [0, 255], b: [0, 255] },
+    hsv: { h: [0, 1], s: [0, 1], v: [0, 255] },
+    hsl: { h: [0, 360], s: [0, 100], l: [0, 100] },
+    cmy: { c: [0, 100], m: [0, 100], y: [0, 100] },
+    cmyk: { c: [0, 100], m: [0, 100], y: [0, 100], k: [0, 100] },
+    Lab: { L: [0, 100], a: [-128, 127], b: [-128, 127] },
+    XYZ: { X: [0, 100], Y: [0, 100], Z: [0, 100] },
+    vec: { v: [0, 1], e: [0, 1], c: [0, 1] },
+    alpha: { alpha: [0, 1] },
+    HEX: { HEX: [0, 16777215] } // maybe we don't need this
+};
 
 // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html for more
-var XYZMatrix = { // Observer = 2° (CIE 1931), Illuminant = D65
-        X: [ 0.4124564, 0.3575761, 0.1804375],
-        Y: [ 0.2126729, 0.7151522, 0.0721750],
-        Z: [ 0.0193339, 0.1191920, 0.9503041],
-        R: [ 3.2404542, -1.5371385, -0.4985314],
-        G: [-0.9692660, 1.8760108, 0.0415560],
-        B: [ 0.0556434, -0.2040259, 1.0572252]
-    };
+const xyzMatrix = { // Observer = 2° (CIE 1931), Illuminant = D65
+    X: [0.4124564, 0.3575761, 0.1804375],
+    Y: [0.2126729, 0.7151522, 0.0721750],
+    Z: [0.0193339, 0.1191920, 0.9503041],
+    R: [3.2404542, -1.5371385, -0.4985314],
+    G: [-0.9692660, 1.8760108, 0.0415560],
+    B: [0.0556434, -0.2040259, 1.0572252]
+};
 
-var XYZReference = {
-        X: XYZMatrix.X[0] + XYZMatrix.X[1] + XYZMatrix.X[2],
-        Y: XYZMatrix.Y[0] + XYZMatrix.Y[1] + XYZMatrix.Y[2],
-        Z: XYZMatrix.Z[0] + XYZMatrix.Z[1] + XYZMatrix.Z[2]
-    };
+const xyzReference = {
+    X: xyzMatrix.X[0] + xyzMatrix.X[1] + xyzMatrix.X[2],
+    Y: xyzMatrix.Y[0] + xyzMatrix.Y[1] + xyzMatrix.Y[2],
+    Z: xyzMatrix.Z[0] + xyzMatrix.Z[1] + xyzMatrix.Z[2]
+};
 
-var luminance = { r: 0.2126, g: 0.7152, b: 0.0722 }; // W3C 2.0
+const luminance = { r: 0.2126, g: 0.7152, b: 0.0722 }; // W3C 2.0
 
-var _colors;
+let _colors;
 
 export default class ColorConverter {
     // ------------------------ VEC ------------------------ //
@@ -234,8 +234,8 @@ export default class ColorConverter {
 
     // ------------------------ LAB ------------------------ //
 
-    static XYZ2rgb (XYZ) {
-        var M = XYZMatrix,
+    static xyz2rgb (XYZ) {
+        var M = xyzMatrix,
             X = XYZ.X,
             Y = XYZ.Y,
             Z = XYZ.Z,
@@ -257,8 +257,8 @@ export default class ColorConverter {
         };
     }
 
-    static rgb2XYZ (rgb) {
-        var M = XYZMatrix,
+    static rgb2xyz (rgb) {
+        var M = xyzMatrix,
             r = rgb.r,
             g = rgb.g,
             b = rgb.b,
@@ -275,8 +275,8 @@ export default class ColorConverter {
         };
     }
 
-    static XYZ2Lab (XYZ) {
-        var R = XYZReference,
+    static zyx2lab (XYZ) {
+        var R = xyzReference,
             X = XYZ.X / R.X,
             Y = XYZ.Y / R.Y,
             Z = XYZ.Z / R.Z,
@@ -296,11 +296,11 @@ export default class ColorConverter {
         };
     }
 
-    static Lab2XYZ (Lab) {
-        var R = XYZReference,
-            Y = (Lab.L + 16) / 116,
-            X = Lab.a / 500 + Y,
-            Z = Y - Lab.b / 200,
+    static lab2xyz (lab) {
+        var R = xyzReference,
+            Y = (lab.L + 16) / 116,
+            X = lab.a / 500 + Y,
+            Z = Y - lab.b / 200,
             X3 = Math.pow(X, 3),
             Y3 = Math.pow(Y, 3),
             Z3 = Math.pow(Z, 3),
@@ -315,16 +315,16 @@ export default class ColorConverter {
         };
     }
 
-    static rgb2Lab (rgb) {
-        var XYZ = ColorConverter.rgb2XYZ(rgb);
+    static rgb2lab (rgb) {
+        const xyz = ColorConverter.rgb2xyz(rgb);
 
-        return ColorConverter.XYZ2Lab(XYZ);
+        return ColorConverter.zyx2lab(xyz);
     }
 
-    static Lab2rgb (Lab) {
-        var XYZ = ColorConverter.Lab2XYZ(Lab);
+    static lab2rgb (lab) {
+        const xyz = ColorConverter.lab2xyz(lab);
 
-        return ColorConverter.XYZ2rgb(XYZ);
+        return ColorConverter.xyz2rgb(xyz);
     }
 }
 

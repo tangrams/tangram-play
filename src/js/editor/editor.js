@@ -19,6 +19,7 @@ import 'codemirror/addon/selection/active-line';
 import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
+import './codemirror/yaml-tangram';
 import './codemirror/comment-tangram';
 import './codemirror/hint-tangram';
 
@@ -31,14 +32,20 @@ import { getLineInd, unfoldAll, foldByLevel } from './codemirror/tools';
 // Import Tangram Play functions
 import { takeScreenshot } from '../map/map';
 
-//  Main CM functions
+// Export CodeMirror instance
+export const editor = initCodeMirror(document.getElementById('editor'));
+
+// Debug
+window.editor = editor;
+
+//  CodeMirror
 //  ===============================================================================
 
-export function initEditor (id) {
+function initCodeMirror (el) {
     // Add rulers
-    let rulers = [];
+    const rulers = [];
     for (let i = 1; i < 10; i++) {
-        let b = Math.round((0.88 + i / 90) * 255);
+        const b = Math.round((0.88 + i / 90) * 255);
         rulers.push({
             color: 'rgba(' + b + ',' + b + ',' + b + ', 0.08)',
             column: i * 4,
@@ -46,11 +53,8 @@ export function initEditor (id) {
         });
     }
 
-    // Create DOM (TODO)
-    let dom = document.getElementById(id);
-
     // Initialize CodeMirror
-    let cm = CodeMirror(dom, {
+    const cm = new CodeMirror(el, {
         value: 'Loading...',
         rulers: rulers,
         styleActiveLine: true,
