@@ -336,7 +336,7 @@ class TangramInspectionPopup {
             isPopupOpen = false;
 
             // Remove highlights. Defers to user-generated highlighting, if any.
-            unhighlightAll(true);
+            unhighlightAll({ defer: true });
 
             // Clean up events from the map listeners
             map.off('popupclose', onPopupClose);

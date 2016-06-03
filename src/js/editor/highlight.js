@@ -69,7 +69,9 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
 export function highlightLines (from, to, clear = true) {
     // First, remove all existing instances of the highlight class.
     if (clear === true) {
-        unhighlightAll(HIGHLIGHT_CLASS);
+        // Pass `false` as the second parameter to prevent query string
+        // from flashing
+        unhighlightAll({ updateQueryString: false });
     }
 
     // Set the line to start highlighting from.
@@ -129,6 +131,8 @@ export function highlightBlock (node) {
     jumpToLine(editor, node.range.from.line);
 
     // Determine the range to highlight from.
+    // TODO: Refactoring this. This assumes that lines following the "from"
+    // node will have `stateAfter`s, incorrectly.
     const blockLine = node.range.from.line;
     const blockLevel = doc.getLineHandle(blockLine).stateAfter.yamlState.keyLevel;
     let toLine = blockLine + 1;
@@ -145,11 +149,13 @@ export function highlightBlock (node) {
 /**
  * Removes highlights from all lines in the document.
  *
- * @param {Boolean} defer - Optional. If `true`, then this function does not
- *          unhighlight any lines if the current highlighting was created
- *          by a user clicking on the gutters.
+ * @param {Boolean} defer - Optional. Default is false. If `true`, then this
+ *          function does not unhighlight any lines if the current highlighting
+ *          was created by a user clicking on the gutters.
+ * @param {Boolean} updateQueryString - Optional. Default is true. If `false`,
+ *          then the query string is not blanked after unhighlighting lines.
  */
-export function unhighlightAll (defer = false) {
+export function unhighlightAll ({ defer = false, updateQueryString = true } = {}) {
     if (defer === true && manuallyHighlighted === true) {
         return;
     }
@@ -162,7 +168,10 @@ export function unhighlightAll (defer = false) {
     }
 
     // Update the query string
-    updateLinesQueryString(null);
+    // Pass `false` from highlightLines() to prevent query string from flashing
+    if (updateQueryString === true) {
+        updateLinesQueryString(null);
+    }
 }
 
 /**
