@@ -1,10 +1,10 @@
 /* Editor workspace */
 
 .workspace-container {
-    position: absolute;
-    height: calc(100% - 44px);
-    left: 0;
-    width: 100%;
-    bottom: 0;
-    background-color: var(--ui-editor-background-color); /* Background color during loading */
+  position: absolute;
+  height: calc(100% - 50px);
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  background-color: var(--ui-editor-background-color); /* Background color during loading */
 }

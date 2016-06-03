@@ -1,0 +1,80 @@
+/* REACT NAVBAR MENU */
+/*
+#navbar-container .navbar {
+    min-height: 44px ;
+    height: 44px ;
+}
+*/
+
+/* Have to implement this */
+/* Hides the fullscreen button if feature is not present in browser */
+/*
+html.mdnzr-no-fullscreen .menu-button-fullscreen {
+    display: none;
+}
+*/
+
+#navbar-container .container {
+    margin: 0px ;
+    padding-left: 0px ;
+    padding-right: 0px ;
+    width:100% ;
+    background-color: var(--ui-base-color);
+}
+
+#navbar-container .brand {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--ui-component-text-color);
+    margin-left: 15px ;
+    padding-left: 0px ;
+}
+
+.brand-tag {
+    color: var(--ui-highlight-color);
+    font-size: 9px;
+    position: absolute;
+    left: 15px;
+    top: 26px;
+}
+
+#navbar-container a {
+    color: var(--ui-component-text-color);
+    font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 14px;
+
+    &:hover {
+        color: yellow;
+        background-color: var(--ui-active-color);
+    }
+}
+
+#navbar-container li {
+    border-top: 1px solid var(--ui-active-color);
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+}
+
+#navbar-container .dropdown-menu > li > a {
+    line-height: 44px ;
+}
+
+#navbar-container .dropdown-menu {
+    z-index: 2000 ;
+    border-top: 0px ;
+    padding: 0px;
+    width: 200px;
+    background-color: var(--ui-component-color);
+}
+
+#navbar-container .dropdown-toggle {
+    padding-bottom: 14px ;
+}
+
+.btm {
+    padding-right: 8px ;
+    font-size: 17px;
+}

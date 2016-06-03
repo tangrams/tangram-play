@@ -1,5 +1,6 @@
 /* MENU BAR */
 
+/*
 .menu-bar {
     position: relative;
     font-family: var(--font-family);
@@ -40,7 +41,7 @@
     height: 100%;
     color: var(--ui-component-text-color);
     font-size: 0;
-    vertical-align: top; /* Fix Firefox pushing this down by 1px */
+    vertical-align: top;
 }
 
 .menu-left {
@@ -85,7 +86,6 @@
     margin-left: 10px;
 }
 
-/* When below viewport breakpoint width */
 @media (max-width: 767px) {
     .menu-bar {
         .menu-item {
@@ -133,7 +133,7 @@
     margin-right: 0.5em;
 }
 
-/* Hides the fullscreen button if feature is not present in browser */
 html.mdnzr-no-fullscreen .menu-button-fullscreen {
     display: none;
 }
+*/

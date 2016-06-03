@@ -40,7 +40,6 @@ import { injectAPIKey, suppressAPIKeys } from './editor/api-keys';
 // Import UI elements
 import { initDivider } from './ui/divider';
 import './file/drop';
-import './menus/menu';
 import './ui/tooltip';
 
 const query = getQueryStringObject();
@@ -518,11 +517,12 @@ window.tangramPlay = tangramPlay;
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-import LeftMenu from './components/left-menu.react';
+import MenuBar from './components/menu-bar.react';
 
-let mountNode = document.getElementsByClassName('menu-items menu-left')[0] ;
+//let mountNode = document.getElementsByClassName('menu-items menu-left')[0] ;
+let mountNode = document.getElementById('navbar-container') ;
 
 ReactDOM.render(
-    <LeftMenu />,
+    <MenuBar />,
     mountNode
 );
