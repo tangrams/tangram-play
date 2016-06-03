@@ -32,9 +32,6 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
 
         // Remember state of how this happened
         manuallyHighlighted = true;
-
-        // Reset
-        prevHighlightedLine = undefined;
     }
     // If shift key is not pressed or there is not a previously selected line
     // (which you need to do the whole range) then select one line.
@@ -143,6 +140,9 @@ export function highlightBlock (node) {
     }
 
     highlightLines(node.range.from, toLine);
+
+    // Reset
+    prevHighlightedLine = undefined;
     manuallyHighlighted = false;
 }
 
