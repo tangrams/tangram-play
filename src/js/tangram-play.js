@@ -517,7 +517,46 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
+import MapPanelButton from './components/map-panel-button.react';
 
-let mountNode = document.getElementById('navbar-container');
 
-ReactDOM.render(<MenuBar />, mountNode);
+let mountNode1 = document.getElementById('navbar-container');
+let mountNode2 = document.getElementById('map-panel-button');
+//let mountNode2 = document.getElementById('map-toolbar');
+
+
+import Button from 'react-bootstrap/lib/Button';
+import Panel from 'react-bootstrap/lib/Panel';
+
+class Example extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      open: true
+    };
+  }
+
+  render() {
+    return (
+      <div>
+      <Button onClick={ ()=> this.setState({ open: !this.state.open })}>
+        click
+      </Button>
+        <Panel collapsible expanded={this.state.open}>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+          Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+          <Button onClick={ ()=> this.setState({ open: !this.state.open })}>
+            click
+          </Button>
+        </Panel>
+        <MapPanelButton>
+        </MapPanelButton>
+      </div>
+    );
+  }
+}
+
+
+ReactDOM.render(<MenuBar />, mountNode1);
+
+ReactDOM.render(<MapPanelButton />, mountNode2);

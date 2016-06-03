@@ -1,0 +1,25 @@
+#map-panel-button {
+    /*width: 54px;
+    height: 34px;*/
+    z-index: var(--z04-map-toolbar);
+    position: absolute ;
+    left: auto;
+    right: 0;
+}
+
+#map-panel-button > button {
+    color: var(--ui-component-text-color);
+    background-color: var(--ui-component-color);
+    border:none ;
+    border-radius: 0px ;
+    outline:none;
+
+    &:hover {
+        color: var(--ui-highlight-color);
+        background-color: var(--ui-active-color);
+    }
+}
+
+#map-panel-button > button > i.btm {
+    padding-right: 0px ;
+}
