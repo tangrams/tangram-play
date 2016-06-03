@@ -1,5 +1,6 @@
 //  GET Functions
 //  ===============================================================================
+import { isEmptyString } from '../../tools/helpers';
 
 //  Get the spaces of a string
 export function getSpaces(str) {
@@ -22,11 +23,8 @@ export function getLineInd(cm, nLine) {
 }
 
 //  Check if a line is empty
-export function isStrEmpty(str) {
-    return (!str || str.length === 0 || /^(\s)*$/.test(str));
-}
 export function isEmpty(cm, nLine) {
-    return isStrEmpty(cm.lineInfo(nLine).text);
+    return isEmptyString(cm.lineInfo(nLine).text);
 }
 
 //  Check if the line is commented YAML style

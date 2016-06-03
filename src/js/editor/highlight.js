@@ -1,6 +1,6 @@
 import { editor } from './editor';
 import { jumpToLine } from './codemirror/tools';
-import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
+import { isEmptyString, getQueryStringObject, serializeToQueryString } from '../tools/helpers';
 
 const HIGHLIGHT_CLASS = 'editor-highlight';
 
@@ -19,7 +19,7 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
     }
 
     // Shift keys will allow highlighting of multiple lines.
-    if (event.shiftKey === true && typeof prevHighlightedLine !== 'undefined') {
+    if (event.shiftKey === true && prevHighlightedLine !== undefined) {
         if (prevHighlightedLine < line) {
             highlightLines(prevHighlightedLine, line);
         }
@@ -77,7 +77,7 @@ export function highlightLines (from, to, clear = true) {
     // The end line is the same as the start line if `to` is undefined.
     // Lines are zero-indexed, so do not use "falsy" checks -- `0` is a valid
     // value for `line`, so check if value is undefined or null specifically.
-    const endLine = (typeof to !== 'undefined' && to !== null) ?
+    const endLine = (to !== undefined && to !== null) ?
         _getLineNumber(to) : startLine;
 
     function _getLineNumber (arg) {
@@ -116,6 +116,8 @@ export function highlightLines (from, to, clear = true) {
 /**
  * Given a node, find all the lines that are part of that entire block, and then
  * applies a highlight class to each of those lines.
+ * TODO: This can still be pretty buggy because `stateAfter` is still not
+ * guaranteed.
  *
  * @param {Object} node - YAML-Tangram node object
  */
@@ -128,16 +130,31 @@ export function highlightBlock (node) {
     jumpToLine(editor, node.range.from.line);
 
     // Determine the range to highlight from.
-    // TODO: Refactoring this. This assumes that lines following the "from"
-    // node will have `stateAfter`s, incorrectly.
     const blockLine = node.range.from.line;
+    // This can still sometimes fail, for unknown reasons.
     const blockLevel = doc.getLineHandle(blockLine).stateAfter.yamlState.keyLevel;
-    let toLine = blockLine + 1;
-    let thisLevel = doc.getLineHandle(toLine).stateAfter.yamlState.keyLevel;
-    while (thisLevel > blockLevel) {
-        toLine++;
-        thisLevel = doc.getLineHandle(toLine).stateAfter.yamlState.keyLevel;
-    }
+    let toLine = blockLine;
+    let thisLevel = blockLevel;
+    do {
+        const nextLineHandle = doc.getLineHandle(toLine + 1);
+        if (nextLineHandle !== undefined && !isEmptyString(nextLineHandle.text)) {
+            // The nextLineHandle might not have a stateAfter, so wrap in try {}
+            try {
+                thisLevel = nextLineHandle.stateAfter.yamlState.keyLevel;
+            }
+            catch (err) {
+                break;
+            }
+
+            if (thisLevel > blockLevel) {
+                toLine++;
+            }
+        }
+        // Break if no next line. Required to prevent infinite loops.
+        else {
+            break;
+        }
+    } while (thisLevel > blockLevel);
 
     highlightLines(node.range.from, toLine);
 
