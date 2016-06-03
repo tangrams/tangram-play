@@ -3,7 +3,7 @@ import TANGRAM_API from '../tangram-api.json';
 import WidgetType from './widget-type';
 import { editor } from '../editor/editor';
 import { subscribeMixin } from '../tools/mixin';
-import { isStrEmpty } from '../editor/codemirror/tools';
+import { isEmptyString } from '../tools/helpers';
 
 export default class WidgetsManager {
     constructor () {
@@ -162,7 +162,7 @@ export default class WidgetsManager {
         let newWidgets = [];
         for (let node of nodes) {
             let val = node.value;
-            if (val === '|' || isStrEmpty(val) || isStrEmpty(editor.getLine(node.range.from.line))) {
+            if (val === '|' || isEmptyString(val) || isEmptyString(editor.getLine(node.range.from.line))) {
                 continue;
             }
 

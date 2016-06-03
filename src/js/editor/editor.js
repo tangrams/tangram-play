@@ -35,6 +35,9 @@ import { takeScreenshot } from '../map/map';
 // Export CodeMirror instance
 export const editor = initCodeMirror(document.getElementById('editor'));
 
+// Debug
+window.editor = editor;
+
 //  CodeMirror
 //  ===============================================================================
 

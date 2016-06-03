@@ -29,7 +29,8 @@ import { subscribeMixin } from './tools/mixin';
 import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { isStrEmpty, jumpToLine } from './editor/codemirror/tools';
+import { isEmptyString } from './tools/helpers';
+import { jumpToLine } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightLines } from './editor/highlight';
 import { injectAPIKey, suppressAPIKeys } from './editor/api-keys';
@@ -75,8 +76,14 @@ class TangramPlay {
                 let lines = query['lines'];
                 if (lines) {
                     lines = lines.split('-');
-                    jumpToLine(editor, lines[0]);
-                    highlightLines(lines[0], lines[1], false);
+
+                    // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
+                    // Just in case, the return value is clamped to a minimum value of 0.
+                    const startLine = Math.max(Number(lines[0]) - 1, 0);
+                    const endLine = Math.max(Number(lines[1]) - 1, 0);
+
+                    jumpToLine(editor, startLine);
+                    highlightLines(startLine, endLine, false);
                 }
 
                 // Things we do after Tangram is finished initializing
@@ -381,7 +388,7 @@ class TangramPlay {
     }
 
     getNodesOnLine (nLine) {
-        if (isStrEmpty(editor.getLine(nLine))) {
+        if (isEmptyString(editor.getLine(nLine))) {
             return [];
         }
         return getNodes(editor, nLine);
