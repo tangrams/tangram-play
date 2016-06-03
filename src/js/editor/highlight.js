@@ -9,7 +9,14 @@ let manuallyHighlighted = false;
 
 editor.on('gutterClick', function (cm, line, gutter, event) {
     // Do work when the click occurs for the left (or main) mouse button only
-    if (event.button !== 0) return;
+    if (event.button !== 0) {
+        return;
+    }
+
+    // Do work only on the line number target element
+    if (!event.target.classList.contains('CodeMirror-linenumber')) {
+        return;
+    }
 
     // Shift keys will allow highlighting of multiple lines.
     if (event.shiftKey === true && typeof prevHighlightedLine !== 'undefined') {

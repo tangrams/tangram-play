@@ -167,9 +167,18 @@ div.cm-s-tangram span.CodeMirror-matchingbracket {
     .CodeMirror-linenumber {
         color: black;
         font-weight: 600;
+
+        &:hover {
+            color: black;
+        }
     }
 }
 
+/* Line numbers are clickable for highlighting */
 .CodeMirror-linenumber {
     cursor: pointer;
+
+    &:hover {
+        color: white;
+    }
 }

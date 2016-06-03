@@ -3,7 +3,6 @@ import L from 'leaflet';
 import { map } from './map';
 import { emptyDOMElement } from '../tools/helpers';
 import TangramPlay from '../tangram-play';
-import { editor } from '../editor/editor';
 import { highlightBlock, unhighlightAll } from '../editor/highlight';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
