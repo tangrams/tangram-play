@@ -36,7 +36,7 @@ export default class WidgetsManager {
         });
 
         // Keep track of possible NOT-PARSED lines
-        // and in every codemirror "render update" check if we are approaching a
+        // and in every codemirror 'render update' check if we are approaching a
         // non-parsed area and for it to update by cleaning and creating
         editor.on('scroll', (cm) => {
             let horizon = editor.getViewport().to - 1;
@@ -62,7 +62,7 @@ export default class WidgetsManager {
 
     change (changeObj) {
         // Get FROM/TO range of the change
-        console.log("trigger change") ;
+        console.log('trigger change') ;
         let from = { line: changeObj.from.line, ch: changeObj.from.ch };
         let to = { line: changeObj.to.line, ch: changeObj.to.ch };
 
@@ -117,8 +117,8 @@ export default class WidgetsManager {
         // Get affected bookmarks
         bookmarks = [];
         if (from.line === to.line && from.ch === to.ch) {
-            console.log("weird fucntion") ;
-            console.log("from: " + from.ch + " to: " + to.ch) ;
+            console.log('weird fucntion') ;
+            console.log('from: ' + from.ch + ' to: ' + to.ch) ;
             // If the FROM/TO range is to narrow search using nodes
             for (let node of nodes) {
                 // Find and concatenate bookmarks between FROM/TO range
@@ -134,7 +134,7 @@ export default class WidgetsManager {
             bookmarks.length === 1 &&
             from.ch > (nodes[0].range.from.ch + nodes[0].key.length + 2) &&
             bookmarks[0].widget) {
-            // console.log("Updating value of ", bookmarks[0]);
+            // console.log('Updating value of ', bookmarks[0]);
             // Update the widget
             bookmarks[0].widget.update();
             // Trigger Events

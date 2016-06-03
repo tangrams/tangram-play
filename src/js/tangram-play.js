@@ -511,7 +511,6 @@ initDivider();
 // for debug
 window.tangramPlay = tangramPlay;
 
-
 /********************************** REACT **********************************/
 
 var React = require('react');
@@ -519,10 +518,6 @@ var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
 
-//let mountNode = document.getElementsByClassName('menu-items menu-left')[0] ;
-let mountNode = document.getElementById('navbar-container') ;
+let mountNode = document.getElementById('navbar-container');
 
-ReactDOM.render(
-    <MenuBar />,
-    mountNode
-);
+ReactDOM.render(<MenuBar />, mountNode);
