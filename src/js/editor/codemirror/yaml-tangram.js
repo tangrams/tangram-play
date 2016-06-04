@@ -316,7 +316,7 @@ export function parseYamlString(string, state, tabSize) {
 
         if (node[4].substr(0, 1) === '{') {
             // If there are multiple keys
-            state.nodes = [ {
+            state.nodes = [{
                 address: address,
                 key: node[2],
                 value: '',
@@ -324,16 +324,17 @@ export function parseYamlString(string, state, tabSize) {
                 range: {
                     from: {
                         line: state.line,
-                        ch: fromCh },
+                        ch: fromCh
+                    },
                     to: {
                         line: state.line,
-                        ch: toCh }
+                        ch: toCh
+                    }
                 },
                 index: 0
-            } ];
+            }];
 
-            let subNodes = getInlineNodes(node[4],
-                state.line);
+            let subNodes = getInlineNodes(node[4], state.line);
             for (let i = 0; i < subNodes.length; i++) {
                 subNodes[i].address = address + subNodes[i].address;
                 subNodes[i].range.from.ch += spaces + node[2].length + node[3].length;
@@ -344,7 +345,7 @@ export function parseYamlString(string, state, tabSize) {
         else {
             let anchor = getAnchorFromValue(node[4]);
             toCh += node[4].length;
-            state.nodes = [ {
+            state.nodes = [{
                 address: address,
                 key: node[2],
                 anchor: anchor,
@@ -352,18 +353,20 @@ export function parseYamlString(string, state, tabSize) {
                 range: {
                     from: {
                         line: state.line,
-                        ch: fromCh },
+                        ch: fromCh
+                    },
                     to: {
                         line: state.line,
-                        ch: toCh }
+                        ch: toCh
+                    }
                 },
                 index: 0
-            } ];
+            }];
         }
     }
     else {
         // Commented or empty lines lines
-        state.nodes = [ {
+        state.nodes = [{
             address: getAddressFromKeys(state.keyStack),
             key: '',
             value: '',
@@ -371,13 +374,15 @@ export function parseYamlString(string, state, tabSize) {
             range: {
                 from: {
                     line: state.line,
-                    ch: 0 },
+                    ch: 0
+                },
                 to: {
                     line: state.line,
-                    ch: 0 }
+                    ch: 0
+                }
             },
             index: 0
-        } ];
+        }];
     }
 }
 
@@ -464,8 +469,9 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
             };
         },
         copyState: function (state) {
+            let local;
             if (state.localState) {
-                var local = CodeMirror.copyState(state.localMode, state.localState);
+                local = CodeMirror.copyState(state.localMode, state.localState);
             }
             return {
                 token: state.token,

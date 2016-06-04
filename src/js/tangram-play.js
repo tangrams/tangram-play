@@ -106,6 +106,7 @@ class TangramPlay {
             // Don't take original url or original base path from
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
+            /* eslint-disable camelcase */
             let sceneData = {
                 original_url: tangramLayer.scene.config_source,
                 original_base_path: tangramLayer.scene.config_path,
@@ -114,6 +115,8 @@ class TangramPlay {
                 scrollInfo: editor.getScrollInfo(),
                 cursor: editor.doc.getCursor()
             };
+            /* eslint-enable camelcase */
+
             saveSceneContentsToLocalMemory(sceneData);
         });
     }

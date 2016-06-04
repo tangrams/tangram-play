@@ -41,7 +41,7 @@ export default class Helpers {
                         this.activeModal = newColorPicker(cursor, match);
 
                         // This picker has an additional toggle for a vec3
-                        this.activeModal.on('link_button', (color) => {
+                        this.activeModal.on('linkbutton', (color) => {
                             this.activeModal = newVec3Picker(cursor, match);
                         });
                         break;
@@ -129,6 +129,7 @@ function findAllMatches (pattern, string) {
     // Collect all matches in the string. The loop
     // stops when no matches exist and returns null.
     let match;
+    /* eslint-disable no-cond-assign */
     while (match = re.exec(string)) {
         // Clones the match result so we can push it to
         // the array of returned matches. The match result
@@ -136,6 +137,7 @@ function findAllMatches (pattern, string) {
         // which will also be cloned.
         matches.push(_.clone(match));
     }
+    /* eslint-enable no-cond-assign */
 
     return matches;
 }
@@ -147,7 +149,7 @@ function findAllMatches (pattern, string) {
  * @param {Object} match - Match information returned from getMatch()
  */
 function newColorPicker (cursor, match) {
-    const picker = new ColorPicker(match.string, { link_button: true });
+    const picker = new ColorPicker(match.string, { linkButton: true });
 
     picker.showAt(editor);
     picker.on('changed', (color) => {

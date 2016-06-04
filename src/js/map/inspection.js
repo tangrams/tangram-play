@@ -294,12 +294,14 @@ class TangramInspectionPopup {
      */
     showPopup (leafletEvent) {
         const popup = L.popup({
-                closeButton: false,
-                closeOnClick: false,
-                autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
-                offset: [0, -6],
-                className: 'map-inspection-popup'
-            })
+            closeButton: false,
+            closeOnClick: false,
+            autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
+            offset: [0, -6],
+            className: 'map-inspection-popup'
+        });
+
+        popup
             .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
             .setContent(this.el)
             .openOn(map);
