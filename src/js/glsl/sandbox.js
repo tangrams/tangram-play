@@ -10,19 +10,19 @@ import ColorPicker from '../pickers/color';
 
 import GlslCanvas from 'glslCanvas';
 
-(function() {
+(function () {
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
         window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
         window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
                                         window[vendors[x] + 'CancelRequestAnimationFrame'];
     }
     if (!window.requestAnimationFrame) {
-        window.requestAnimationFrame = function(callback, element) {
+        window.requestAnimationFrame = function (callback, element) {
             var currTime = new Date().getTime();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() {
+            var id = window.setTimeout(function () {
                 callback(currTime + timeToCall);
             }, timeToCall);
             lastTime = currTime + timeToCall;
@@ -30,14 +30,14 @@ import GlslCanvas from 'glslCanvas';
         };
     }
     if (!window.cancelAnimationFrame) {
-        window.cancelAnimationFrame = function(id) {
+        window.cancelAnimationFrame = function (id) {
             clearTimeout(id);
         };
     }
 }());
 
 // Debounced event after user stop doing something
-var stopAction = debounce(function(cm) {
+var stopAction = debounce(function (cm) {
     TangramPlay.addons.glslSandbox.change = true;
     if (TangramPlay.addons.glslSandbox.active) {
         TangramPlay.addons.glslSandbox.reload();
@@ -88,16 +88,16 @@ export default class GlslSandbox {
         this.uniforms['u_vanishing_point'] = 1;
 
         // EVENTS
-        editor.on('cursorActivity', function(cm) {
+        editor.on('cursorActivity', function (cm) {
             TangramPlay.addons.glslSandbox.onCursorMove();
         });
 
-        editor.on('changes', function(cm, changesObj) {
+        editor.on('changes', function (cm, changesObj) {
             stopAction(cm);
         });
     }
 
-    reload(nLine) {
+    reload (nLine) {
         if (nLine === undefined) {
             nLine = editor.getCursor().line;
         }
@@ -189,7 +189,7 @@ export default class GlslSandbox {
         }
     }
 
-    start() {
+    start () {
         if (!this.active) {
             if (this.shader) {
                 this.shader.refreshUniforms();
@@ -199,7 +199,7 @@ export default class GlslSandbox {
         }
     }
 
-    disable() {
+    disable () {
         if (this.active) {
             this.element.parentNode.removeChild(this.element);
         }
@@ -207,12 +207,12 @@ export default class GlslSandbox {
         this.address = '';
     }
 
-    stop() {
+    stop () {
         this.active = false;
         this.change = true;
     }
 
-    update() {
+    update () {
         // Update uniforms
         this.uniforms['u_device_pixel_ratio'] = window.devicePixelRatio;
         this.uniforms['u_meters_per_pixel'] = tangramLayer.scene['meters_per_pixel'];
@@ -223,17 +223,17 @@ export default class GlslSandbox {
         this.shader.setUniforms(this.uniforms);
     }
 
-    render() {
+    render () {
         if (this.active) { // && this.animated) {
             this.update();
             this.shader.render(true);
-            requestAnimationFrame(function() {
+            requestAnimationFrame(function () {
                 TangramPlay.addons.glslSandbox.render();
             }, 1000 / 30);
         }
     }
 
-    setColor(colorArray) {
+    setColor (colorArray) {
         if (typeof colorArray === 'number') {
             this.uniforms['u_color'] = [colorArray, colorArray, colorArray, 1];
         }
@@ -275,10 +275,10 @@ export default class GlslSandbox {
         this.setColor([color.v, color.e, color.c, 1]);
     }
 
-    onCursorMove() {
+    onCursorMove () {
         let pos = editor.getCursor();
 
-        let edge = editor.charCoords({ line:pos.line, ch:20 }).left;
+        let edge = editor.charCoords({ line: pos.line, ch: 20 }).left;
         let left = editor.charCoords(pos).left;
 
         if (pos.ch < 20 || left < edge) {
@@ -293,7 +293,7 @@ export default class GlslSandbox {
     }
 }
 
-function getStyleObj(sc, address) {
+function getStyleObj (sc, address) {
     let keys = getKeysFromAddress(address);
     if (keys === undefined || keys.length === 0 || sc.styles === undefined || sc.styles === null || sc.styles[keys[1]] === undefined) {
         console.log('Error: No style for ', address);
@@ -302,7 +302,7 @@ function getStyleObj(sc, address) {
     return sc.styles[keys[1]];
 }
 
-function getVertex(scene, uniforms, styleObj) {
+function getVertex (scene, uniforms, styleObj) {
     let defines = '#define TANGRAM_VERTEX_SHADER\n';
 
     for (let name in styleObj.defines) {
@@ -365,7 +365,7 @@ void main() {
     return defines + blockUniforms + blockGlobal + core + blockPosition + ending;
 }
 
-function getFramgmentHeader(scene, uniforms, styleObj) {
+function getFramgmentHeader (scene, uniforms, styleObj) {
     let defines = '#define TANGRAM_FRAGMENT_SHADER\n';
 
     for (let name in styleObj.defines) {

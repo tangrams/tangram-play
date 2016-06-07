@@ -24,7 +24,7 @@ export default class ColorPicker extends Picker {
         this.init();
     }
 
-    init() {
+    init () {
         if (!domCache) {
             let modal = document.createElement('div');
             let patch = document.createElement('div');
@@ -299,7 +299,7 @@ function drawDisk (ctx, coords, radius, steps, colorCallback) {
 
     steps = (angle / steps) || 360;
 
-    for (; angle > 0 ; angle -= steps) {
+    for (; angle > 0; angle -= steps) {
         ctx.beginPath();
         if (steps !== 360) {
             ctx.moveTo(1, 1); // stroke

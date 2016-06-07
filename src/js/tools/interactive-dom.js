@@ -9,7 +9,7 @@ import { subscribeMixin } from './mixin';
 var FULLSCREEN_MARGINS = -30;
 var MARGINS = 10;
 
-function setBounds(element, x, y, w, h) {
+function setBounds (element, x, y, w, h) {
     element.style.left = x + 'px';
     element.style.top = y + 'px';
     element.style.width = w + 'px';
@@ -57,7 +57,7 @@ export function subscribeInteractiveDom (dom, options) {
     document.addEventListener('touchmove', onTouchMove);
     document.addEventListener('touchend', onTouchEnd);
 
-    function hintHide() {
+    function hintHide () {
         setBounds(ghostdom, b.left, b.top, b.width, b.height);
         ghostdom.style.opacity = 0;
     }
@@ -101,7 +101,7 @@ export function subscribeInteractiveDom (dom, options) {
         };
     }
 
-    function canMove() {
+    function canMove () {
         return options.move && (x > 0 && x < b.width && y > 0 && y < b.height);// && y < 30;
     }
 
@@ -121,13 +121,13 @@ export function subscribeInteractiveDom (dom, options) {
 
     var e;
 
-    function onMove(ee) {
+    function onMove (ee) {
         calc(ee);
         e = ee;
         redraw = true;
     }
 
-    function animate() {
+    function animate () {
         requestAnimationFrame(animate);
 
         if (!redraw) {
@@ -251,7 +251,7 @@ export function subscribeInteractiveDom (dom, options) {
     }
     animate();
 
-    function onUp(e) {
+    function onUp (e) {
         calc(e);
 
         if (clicked && clicked.isResizing) {

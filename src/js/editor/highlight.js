@@ -77,8 +77,8 @@ export function highlightLines (from, to, clear = true) {
     // The end line is the same as the start line if `to` is undefined.
     // Lines are zero-indexed, so do not use "falsy" checks -- `0` is a valid
     // value for `line`, so check if value is undefined or null specifically.
-    const endLine = (to !== undefined && to !== null) ?
-        _getLineNumber(to) : startLine;
+    const endLine = (to !== undefined && to !== null)
+        ? _getLineNumber(to) : startLine;
 
     function _getLineNumber (arg) {
         // If `arg` is a CodeMirror position object, use its `line` property.

@@ -111,7 +111,7 @@ export default class Widget {
      *  Use this method within a module to communicate a value
      *  back to the Tangram Play editor.
      */
-    setEditorValue(string) {
+    setEditorValue (string) {
         this.updateNode();
 
         // Send the value to editor

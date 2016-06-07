@@ -65,40 +65,40 @@ function initCodeMirror (el) {
         autoCloseBrackets: true,
         extraKeys: {
             'Ctrl-Space': 'autocomplete',
-            Tab: function(cm) {
+            Tab: function (cm) {
                 cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
             },
-            'Alt-F': function(cm) {
+            'Alt-F': function (cm) {
                 cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
-            } ,
-            'Alt-P': function(cm) {
+            },
+            'Alt-P': function (cm) {
                 takeScreenshot();
             },
-            'Ctrl-0': function(cm) {
+            'Ctrl-0': function (cm) {
                 unfoldAll(cm);
             },
-            'Ctrl-1': function(cm) {
+            'Ctrl-1': function (cm) {
                 foldByLevel(cm, 0);
             },
-            'Ctrl-2': function(cm) {
+            'Ctrl-2': function (cm) {
                 foldByLevel(cm, 1);
             },
-            'Ctrl-3': function(cm) {
+            'Ctrl-3': function (cm) {
                 foldByLevel(cm, 2);
             },
-            'Ctrl-4': function(cm) {
+            'Ctrl-4': function (cm) {
                 foldByLevel(cm, 3);
             },
-            'Ctrl-5': function(cm) {
+            'Ctrl-5': function (cm) {
                 foldByLevel(cm, 4);
             },
-            'Ctrl-6': function(cm) {
+            'Ctrl-6': function (cm) {
                 foldByLevel(cm, 5);
             },
-            'Ctrl-7': function(cm) {
+            'Ctrl-7': function (cm) {
                 foldByLevel(cm, 6);
             },
-            'Ctrl-8': function(cm) {
+            'Ctrl-8': function (cm) {
                 foldByLevel(cm, 7);
             }
         },

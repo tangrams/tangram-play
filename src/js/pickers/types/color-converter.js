@@ -35,17 +35,17 @@ export default class ColorConverter {
     // ------------------------ VEC ------------------------ //
     static vec2rgb (vec) {
         return {
-            r: vec.v * valueRanges['rgb']['r'][1],
-            g: vec.e * valueRanges['rgb']['g'][1],
-            b: vec.c * valueRanges['rgb']['b'][1]
+            r: vec.v * valueRanges.rgb.r[1],
+            g: vec.e * valueRanges.rgb.g[1],
+            b: vec.c * valueRanges.rgb.b[1]
         };
     }
 
     static rgb2vec (rgb) {
         return {
-            v: rgb.r / valueRanges['rgb']['r'][1],
-            e: rgb.g / valueRanges['rgb']['g'][1],
-            c: rgb.b / valueRanges['rgb']['b'][1]
+            v: rgb.r / valueRanges.rgb.r[1],
+            e: rgb.g / valueRanges.rgb.g[1],
+            c: rgb.b / valueRanges.rgb.b[1]
         };
     }
 
@@ -71,10 +71,11 @@ export default class ColorConverter {
     // ------------------------ HUE ------------------------ //
 
     static hue2RGB (hue) {
-        var h = hue * 6,
-            // mod = ~~h % 6, // Math.floor(h) -> faster in most browsers
-            mod = Math.floor(h) % 6,
-            i = h === 6 ? 0 : (h - mod);
+        var h = hue * 6;
+        // mod = ~~h % 6, // Math.floor(h) -> faster in most browsers
+        var mod = Math.floor(h) % 6;
+        var i = h === 6 ? 0 : (h - mod);
+
         return {
             r: Math.round([1, 1 - i, 0, 0, i, 1][mod] * 255),
             g: Math.round([i, 1, 1, 1 - i, 0, 0][mod] * 255),
@@ -85,13 +86,13 @@ export default class ColorConverter {
     // ------------------------ HSV ------------------------ //
 
     static rgb2hsv (rgb) { // faster
-        var r = rgb.r,
-            g = rgb.g,
-            b = rgb.b,
-            k = 0,
-            chroma,
-            min,
-            s;
+        var r = rgb.r;
+        var g = rgb.g;
+        var b = rgb.b;
+        var k = 0;
+        var chroma;
+        var min;
+        var s;
 
         if (g < b) {
             g = b + (b = g, 0);
@@ -106,24 +107,24 @@ export default class ColorConverter {
         chroma = r - min;
         s = r ? (chroma / r) : 0;
         return {
-            h: s < 1e-15 ? ((_colors && _colors.hsl && _colors.hsl.h) || 0) :
-                chroma ? Math.abs(k + (g - b) / (6 * chroma)) : 0,
+            h: s < 1e-15 ? ((_colors && _colors.hsl && _colors.hsl.h) || 0)
+                : chroma ? Math.abs(k + (g - b) / (6 * chroma)) : 0,
             s: r ? (chroma / r) : ((_colors && _colors.hsv && _colors.hsv.s) || 0), // ??_colors.hsv.s || 0
             v: r
         };
     }
 
     static hsv2rgb (hsv) {
-        var h = hsv.h * 6,
-            s = hsv.s,
-            v = hsv.v,
-            // i = ~~h, // Math.floor(h) -> faster in most browsers
-            i = Math.floor(h),
-            f = h - i,
-            p = v * (1 - s),
-            q = v * (1 - f * s),
-            t = v * (1 - (1 - f) * s),
-            mod = i % 6;
+        var h = hsv.h * 6;
+        var s = hsv.s;
+        var v = hsv.v;
+        // var i = ~~h; // Math.floor(h) -> faster in most browsers
+        var i = Math.floor(h);
+        var f = h - i;
+        var p = v * (1 - s);
+        var q = v * (1 - f * s);
+        var t = v * (1 - (1 - f) * s);
+        var mod = i % 6;
 
         return {
             r: [v, q, p, p, t, v][mod],
@@ -135,8 +136,8 @@ export default class ColorConverter {
     // ------------------------ HSL ------------------------ //
 
     static hsv2hsl (hsv) {
-        var l = (2 - hsv.s) * hsv.v,
-            s = hsv.s * hsv.v;
+        var l = (2 - hsv.s) * hsv.v;
+        var s = hsv.s * hsv.v;
 
         s = !hsv.s ? 0 : l < 1 ? (l ? s / l : 0) : s / (2 - l);
 
@@ -154,19 +155,19 @@ export default class ColorConverter {
     }
 
     static hsl2rgb (hsl) {
-        var h = hsl.h * 6,
-            s = hsl.s,
-            l = hsl.l,
-            v = l < 0.5 ? l * (1 + s) : (l + s) - (s * l),
-            m = l + l - v,
-            sv = v ? ((v - m) / v) : 0,
-            // sextant = ~~h, // Math.floor(h) -> faster in most browsers
-            sextant = Math.floor(h),
-            fract = h - sextant,
-            vsf = v * sv * fract,
-            t = m + vsf,
-            q = v - vsf,
-            mod = sextant % 6;
+        var h = hsl.h * 6;
+        var s = hsl.s;
+        var l = hsl.l;
+        var v = l < 0.5 ? l * (1 + s) : (l + s) - (s * l);
+        var m = l + l - v;
+        var sv = v ? ((v - m) / v) : 0;
+        // var sextant = ~~h; // Math.floor(h) -> faster in most browsers
+        var sextant = Math.floor(h);
+        var fract = h - sextant;
+        var vsf = v * sv * fract;
+        var t = m + vsf;
+        var q = v - vsf;
+        var mod = sextant % 6;
 
         return {
             r: [v, q, m, m, t, v][mod],
@@ -193,8 +194,8 @@ export default class ColorConverter {
     }
 
     static cmy2cmyk (cmy) {
-        var k = Math.min(Math.min(cmy.c, cmy.m), cmy.y),
-            t = 1 - k || 1e-20;
+        var k = Math.min(Math.min(cmy.c, cmy.m), cmy.y);
+        var t = 1 - k || 1e-20;
 
         return { // regular
             c: (cmy.c - k) / t,
@@ -235,14 +236,14 @@ export default class ColorConverter {
     // ------------------------ LAB ------------------------ //
 
     static xyz2rgb (XYZ) {
-        var M = xyzMatrix,
-            X = XYZ.X,
-            Y = XYZ.Y,
-            Z = XYZ.Z,
-            r = X * M.R[0] + Y * M.R[1] + Z * M.R[2],
-            g = X * M.G[0] + Y * M.G[1] + Z * M.G[2],
-            b = X * M.B[0] + Y * M.B[1] + Z * M.B[2],
-            N = 1 / 2.4;
+        var M = xyzMatrix;
+        var X = XYZ.X;
+        var Y = XYZ.Y;
+        var Z = XYZ.Z;
+        var r = X * M.R[0] + Y * M.R[1] + Z * M.R[2];
+        var g = X * M.G[0] + Y * M.G[1] + Z * M.G[2];
+        var b = X * M.B[0] + Y * M.B[1] + Z * M.B[2];
+        var N = 1 / 2.4;
 
         M = 0.0031308;
 
@@ -258,11 +259,11 @@ export default class ColorConverter {
     }
 
     static rgb2xyz (rgb) {
-        var M = xyzMatrix,
-            r = rgb.r,
-            g = rgb.g,
-            b = rgb.b,
-            N = 0.04045;
+        var M = xyzMatrix;
+        var r = rgb.r;
+        var g = rgb.g;
+        var b = rgb.b;
+        var N = 0.04045;
 
         r = (r > N ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92);
         g = (g > N ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92);
@@ -276,14 +277,14 @@ export default class ColorConverter {
     }
 
     static zyx2lab (XYZ) {
-        var R = xyzReference,
-            X = XYZ.X / R.X,
-            Y = XYZ.Y / R.Y,
-            Z = XYZ.Z / R.Z,
-            N = 16 / 116,
-            M = 1 / 3,
-            K = 0.008856,
-            L = 7.787037;
+        var R = xyzReference;
+        var X = XYZ.X / R.X;
+        var Y = XYZ.Y / R.Y;
+        var Z = XYZ.Z / R.Z;
+        var N = 16 / 116;
+        var M = 1 / 3;
+        var K = 0.008856;
+        var L = 7.787037;
 
         X = X > K ? Math.pow(X, M) : (L * X) + N;
         Y = Y > K ? Math.pow(Y, M) : (L * Y) + N;
@@ -297,16 +298,16 @@ export default class ColorConverter {
     }
 
     static lab2xyz (lab) {
-        var R = xyzReference,
-            Y = (lab.L + 16) / 116,
-            X = lab.a / 500 + Y,
-            Z = Y - lab.b / 200,
-            X3 = Math.pow(X, 3),
-            Y3 = Math.pow(Y, 3),
-            Z3 = Math.pow(Z, 3),
-            N = 16 / 116,
-            K = 0.008856,
-            L = 7.787037;
+        var R = xyzReference;
+        var Y = (lab.L + 16) / 116;
+        var X = lab.a / 500 + Y;
+        var Z = Y - lab.b / 200;
+        var X3 = Math.pow(X, 3);
+        var Y3 = Math.pow(Y, 3);
+        var Z3 = Math.pow(Z, 3);
+        var N = 16 / 116;
+        var K = 0.008856;
+        var L = 7.787037;
 
         return {
             X: (X3 > K ? X3 : (X - N) / L) * R.X,
@@ -328,14 +329,14 @@ export default class ColorConverter {
     }
 }
 
-export function limitValue(value, min, max) {
+export function limitValue (value, min, max) {
     // return Math.max(min, Math.min(max, value)); // faster??
     return (value > max ? max : value < min ? min : value);
 }
 
-export function getLuminance(rgb, normalized) {
-    var div = normalized ? 1 : 255,
-        RGB = [rgb.r / div, rgb.g / div, rgb.b / div];
+export function getLuminance (rgb, normalized) {
+    var div = normalized ? 1 : 255;
+    var RGB = [rgb.r / div, rgb.g / div, rgb.b / div];
 
     for (var i = RGB.length; i--;) {
         RGB[i] = RGB[i] <= 0.03928 ? RGB[i] / 12.92 : Math.pow(((RGB[i] + 0.055) / 1.055), 2.4);
@@ -372,7 +373,7 @@ export function getColorAsRGB (color) {
     return normalized;
 }
 
-export function getValueRanges(type) {
+export function getValueRanges (type) {
     if (!type) {
         return valueRanges;
     }

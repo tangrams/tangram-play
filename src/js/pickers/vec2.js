@@ -15,7 +15,7 @@ export default class Vec2Picker extends Picker {
         this.overPoint = false;
 
         let center = ((this.range / 2) - this.max) * -1;
-        this.setValue(pos || [center,center]);
+        this.setValue(pos || [center, center]);
         this.create();
     }
 

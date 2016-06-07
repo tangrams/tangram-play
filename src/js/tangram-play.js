@@ -26,10 +26,9 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
-import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
+import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl, isEmptyString } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { isEmptyString } from './tools/helpers';
 import { jumpToLine } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightLines } from './editor/highlight';
@@ -73,7 +72,7 @@ class TangramPlay {
         this.load(initialScene)
             .then(() => {
                 // Highlight lines if requested by the query string.
-                let lines = query['lines'];
+                let lines = query.lines;
                 if (lines) {
                     lines = lines.split('-');
 

@@ -4,7 +4,7 @@ import Vector from './vector';
 //      - generalize this for mat2, mat3 and mat4
 
 export default class Matrix {
-    constructor(m, type) {
+    constructor (m, type) {
         this.dim = 3;
         this.value = [
             [1, 0, 0],
@@ -79,7 +79,7 @@ export default class Matrix {
         return newMatrix;
     }
 
-    getInv() {
+    getInv () {
         let M = new Matrix();
         let determinant = this.value[0][0] * (this.value[1][1] * this.value[2][2] - this.value[2][1] * this.value[1][2]) -
                             this.value[0][1] * (this.value[1][0] * this.value[2][2] - this.value[1][2] * this.value[2][0]) +
