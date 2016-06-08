@@ -1,0 +1,19 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "at-rule-no-vendor-prefix": true,
+    "comment-empty-line-before": null,
+    "font-family-name-quotes": "always-where-recommended",
+    "function-url-quotes": "always",
+    "indentation": 4,
+    "max-nesting-depth": 2,
+    "media-feature-name-no-vendor-prefix": true,
+    "no-browser-hacks": true,
+    "property-no-vendor-prefix": true,
+    "selector-max-compound-selectors": 3,
+    "selector-no-qualifying-type": null,
+    "selector-no-vendor-prefix": null,
+    "string-quotes": "single",
+    "value-no-vendor-prefix": true
+  }
+}
