@@ -123,9 +123,12 @@
         border-bottom: 1px dotted var(--ui-border-color);
     }
 
-    &[placeholder] { text-overflow: ellipsis; color: var(--ui-border-color); }
-    ::-moz-placeholder { text-overflow: ellipsis; color: var(--ui-border-color); } /* firefox 19+ */
-    &:-moz-placeholder { text-overflow: ellipsis; color: var(--ui-border-color); }
+    &[placeholder],
+    ::-moz-placeholder, /* firefox 19+ */
+    &:-moz-placeholder {
+        text-overflow: ellipsis;
+        color: var(--ui-border-color);
+    }
 }
 
 .map-latlng-label {
@@ -151,7 +154,7 @@
 
     &::after {
         display: block;
-        content: "\25BE";
+        content: '\25BE';
         font-size: 14px;
         color: #777; /* match CM folding arrows */
     }

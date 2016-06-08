@@ -2,10 +2,10 @@
 
 .map-toolbar,
 .input-bar {
-    ::-webkit-input-placeholder { color: #909195 }
-    :-moz-placeholder { color: #909195 }
-    ::-moz-placeholder { color: #909195 }
-    :-ms-input-placeholder { color: #909195 }
+    ::-webkit-input-placeholder { color: #909195; }
+    :-moz-placeholder { color: #909195; }
+    ::-moz-placeholder { color: #909195; }
+    :-ms-input-placeholder { color: #909195; }
 
     /* Much dislike Black Tie's pick of font smoothing */
     .btm {

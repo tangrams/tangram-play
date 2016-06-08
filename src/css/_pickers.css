@@ -1,9 +1,9 @@
 .picker-modal {
     box-sizing: border-box;
     position: absolute;
-    padding: 0px;
+    padding: 0;
     background-color: var(--ui-component-color);
-    /*overflow: hidden;*/
+    /* overflow: hidden; */
     box-shadow: var(--modal-shadow);
     user-select: none;
     z-index: var(--z08-colorpicker);
@@ -92,12 +92,14 @@
     border-color: #333;
 }
 
-/*.colorpicker-no-cursor,
+/*
+.colorpicker-no-cursor,
 .colorpicker-no-cursor .colorpicker-patch,
 .colorpicker-no-cursor .colorpicker-disc-cursor,
 .colorpicker-no-cursor .colorpicker-disc-cover {
     cursor: none;
-}*/
+}
+*/
 
 .colorpicker-bar-luminance {
     position: absolute;
@@ -113,6 +115,7 @@
     height: 200px;
     overflow: hidden;
 }
+
 .colorpicker-bar-cursor-left,
 .colorpicker-bar-cursor-right {
     position: absolute;
@@ -121,10 +124,12 @@
     border: 4px solid transparent;
     margin-top: -4px;
 }
+
 .colorpicker-bar-cursor-left {
     left: 0;
     border-left: 4px solid #eee;
 }
+
 .colorpicker-bar-cursor-right {
     right: 0;
     border-right: 4px solid #eee;
@@ -133,6 +138,7 @@
 .colorpicker-dark .colorpicker-bar-cursor-left {
     border-left-color: #333;
 }
+
 .colorpicker-dark .colorpicker-bar-cursor-right {
     border-right-color: #333;
 }

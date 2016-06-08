@@ -1,12 +1,14 @@
-/*.cm-suggested-keys-menu-remove {
+/*
+.cm-suggested-keys-menu-remove {
     float: right;
     cursor: pointer;
-}*/
+}
+*/
 
 .tangram-play-suggested-menu {
     font-family: var(--editor-font-family);
     font-size: 14px;
-    /*background: #494949;*/
+    /* background: #494949; */
     background: #fff;
     color: white;
     height: 20px;

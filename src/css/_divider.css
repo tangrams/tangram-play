@@ -6,7 +6,6 @@
     top: 0;
     width: 8px;
     height: 100%;
-    vertical-align: top;
     opacity: 1;
     background-color: var(--ui-base-color);
     z-index: var(--z01-divider);

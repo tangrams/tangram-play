@@ -9,16 +9,17 @@
     transition: 80ms bottom ease-out;
     animation: barberpole 1s linear infinite;
     background-size: 30px 30px;
-    background-image: linear-gradient(
-        135deg,
-        #6b6b70 25%,
-        var(--ui-active-color) 25%,
-        var(--ui-active-color) 50%,
-        #6b6b70 50%,
-        #6b6b70 75%,
-        var(--ui-active-color) 75%,
-        var(--ui-active-color)
-    );
+    background-image:
+        linear-gradient(
+            135deg,
+            #6b6b70 25%,
+            var(--ui-active-color) 25%,
+            var(--ui-active-color) 50%,
+            #6b6b70 50%,
+            #6b6b70 75%,
+            var(--ui-active-color) 75%,
+            var(--ui-active-color)
+        );
     user-select: none;
     z-index: var(--z04-map-loading);
 
@@ -28,6 +29,6 @@
 }
 
 @keyframes barberpole {
-  from { background-position: 0 0; }
-  to   { background-position: 60px 30px; }
+    from { background-position: 0 0; }
+    to { background-position: 60px 30px; }
 }
