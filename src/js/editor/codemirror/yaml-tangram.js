@@ -1,6 +1,9 @@
+import _ from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';
+
+import { tangramScene } from '../../map/map';
 
 // Load some common functions
 import { getInd } from './tools';
@@ -90,29 +93,24 @@ export function getAddressForLevel (address, level) {
 //  CHECK
 //  ===============================================================================
 
-//  Check if a str ends with a suffix
-function endsWith (str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
-
 //  Function that check if a line is inside a Color Shader Block
 function isGlobalBlock (address) {
-    return endsWith(address, 'shaders:blocks:global');
+    return _.endsWith(address, 'shaders:blocks:global');
 }
 function isWidthBlock (address) {
-    return endsWith(address, 'shaders:blocks:width');
+    return _.endsWith(address, 'shaders:blocks:width');
 }
 function isPositionBlock (address) {
-    return endsWith(address, 'shaders:blocks:position');
+    return _.endsWith(address, 'shaders:blocks:position');
 }
 export function isNormalBlock (address) {
-    return endsWith(address, 'shaders:blocks:normal');
+    return _.endsWith(address, 'shaders:blocks:normal');
 }
 export function isColorBlock (address) {
-    return endsWith(address, 'shaders:blocks:color');
+    return _.endsWith(address, 'shaders:blocks:color');
 }
 function isFilterBlock (address) {
-    return endsWith(address, 'shaders:blocks:filter');
+    return _.endsWith(address, 'shaders:blocks:filter');
 }
 function isShader (address) {
     return (
@@ -125,9 +123,24 @@ function isShader (address) {
     );
 }
 
+/**
+ * Detects if a key's contents (value) is JavaScript. In Tangram syntax,
+ * JavaScript values must be a single function. This makes detection easy:
+ * See if the beginning of the string starts with a valid function declaration.
+ *
+ * @param {Tangram.scene} tangramScene - scene object from Tangram
+ * @param {string} address - the address of the key-value pair
+ * @return {Boolean} bool - `true` if value appears to be a JavaScript function
+ */
 function isContentJS (tangramScene, address) {
     if (tangramScene && tangramScene.config) {
-        return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(getAddressSceneContent(tangramScene, address));
+        const content = getAddressSceneContent(tangramScene, address);
+
+        // Regex pattern. Content can begin with any amount of whitespace.
+        // Where whitespace is allowed, it can be any amount of whitespace.
+        // Content may begin with a pipe "|" character for YAML multi-line
+        // strings. Next, test if "function () {" (with opening brace).
+        return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(content);
     }
     else {
         return false;
@@ -389,6 +402,7 @@ export function parseYamlString (string, state, tabSize) {
 //  YAML-TANGRAM
 //  ===============================================================================
 CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
+    // Import multiple modes used by Tangram YAML.
     const yamlMode = CodeMirror.getMode(config, 'yaml');
     const glslMode = CodeMirror.getMode(config, 'glsl');
     const jsMode = CodeMirror.getMode(config, 'javascript');
@@ -397,11 +411,8 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     yamlMode.lineComment = '#';
 
     function yaml (stream, state) {
-        let address = getKeyAddressFromState(state.yamlState);
+        const address = getKeyAddressFromState(state.yamlState);
         if (address !== undefined) {
-            let key = /^\s+(\w*):\s+\|/gm.exec(stream.string);
-            key = key ? key[1] : '';
-
             if (isShader(address) &&
                 !/^\|$/g.test(stream.string) &&
                 isAfterKey(stream.string, stream.pos)) {
@@ -410,7 +421,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 state.localState = glslMode.startState(getInd(stream.string));
                 return glsl(stream, state);
             }
-            else if (isContentJS(window.scene, address) &&
+            else if (isContentJS(tangramScene, address) &&
                         !/^\|$/g.test(stream.string) &&
                         isAfterKey(stream.string, stream.pos)) {
                 state.token = js;
@@ -445,7 +456,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     //
     function js (stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
-        if ((!isContentJS(window.scene, address) || /^\|$/g.test(stream.string))) {
+        if ((!isContentJS(tangramScene, address) || /^\|$/g.test(stream.string))) {
             state.token = yaml;
             state.localState = state.localMode = null;
             return null;
