@@ -4,6 +4,7 @@ import CodeMirror from 'codemirror';
 // Import CodeMirror addons and modules
 import 'codemirror/addon/search/searchcursor';
 import 'codemirror/addon/search/search';
+import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/edit/closebrackets';
@@ -20,7 +21,6 @@ import 'codemirror/mode/javascript/javascript';
 
 // Import additional parsers
 import './codemirror/yaml-tangram';
-import './codemirror/comment-tangram';
 import './codemirror/hint-tangram';
 
 // Keymap

@@ -389,10 +389,11 @@ export function parseYamlString (string, state, tabSize) {
 //  YAML-TANGRAM
 //  ===============================================================================
 CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
-    let yamlMode = CodeMirror.getMode(config, 'yaml');
-    let glslMode = CodeMirror.getMode(config, 'glsl');
+    const yamlMode = CodeMirror.getMode(config, 'yaml');
+    const glslMode = CodeMirror.getMode(config, 'glsl');
+    const jsMode = CodeMirror.getMode(config, 'javascript');
 
-    let jsMode = CodeMirror.getMode(config, 'javascript');
+    // Specify YAML line comment character (not provided by CodeMirror).
     yamlMode.lineComment = '#';
 
     function yaml (stream, state) {
