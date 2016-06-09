@@ -1,9 +1,9 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
-import '../codemirror/glsl-tangram';
+import './glsl-tangram';
 
 // Load some common functions
-import { getInd } from '../codemirror/tools';
+import { getInd } from './tools';
 
 const ADDRESS_KEY_DELIMITER = ':';
 
