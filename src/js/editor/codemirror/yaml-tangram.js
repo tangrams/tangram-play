@@ -252,7 +252,7 @@ function getInlineNodes (str, nLine) {
 }
 
 // Add Address to token states
-export function parseYamlString (string, state, tabSize) {
+export function parseYamlString (string, state, stream) {
     const regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
     const node = regex.exec(string);
 
@@ -278,14 +278,18 @@ export function parseYamlString (string, state, tabSize) {
 
     // If looks like a node
     if (node) {
-        const nodeSpaces = node[1];     // Spaces at the beginning of a line
+        // const nodeSpaces = node[1];     // Spaces at the beginning of a line
         const nodeKey = node[2];        // the YAML key
         const nodeSeparator = node[3];  // "\s*:\s*"
         const nodeValue = node[4];      // the value, if there is one
 
         // Calculate the number of spaces and indentation level
-        const spaces = (nodeSpaces.match(/\s/g) || []).length;
-        const level = Math.floor(spaces / tabSize);
+        // TODO: Do not use tabSize to calculate level. Tab size is an editor
+        // preference, and YAML specification does not depend on tab sizes
+        // throughout a document to determine level. It is based on the number
+        // of spaces indented beyond its parent.
+        const spaces = stream.indentation();
+        const level = Math.floor(spaces / stream.tabSize);
 
         // Update the node tree
         if (level > state.keyLevel) {
