@@ -67,13 +67,15 @@ export default class Color {
         let ranges = getValueRanges();
         let exceptions = { hsl: 'hsv', cmyk: 'cmy', rgb: type };
 
-        if (type !== 'alpha') {
-            for (let typ in ranges) {
-                if (!ranges[typ][typ]) { // no alpha|HEX
-                    if (type !== typ && typ !== 'XYZ') {
-                        let from = exceptions[typ] || 'rgb';
-                        this.colors[typ] = convert[from + '2' + typ](this.colors[from]);
-                    }
+        if (type === 'alpha') {
+            return;
+        }
+
+        for (let typ in ranges) {
+            if (!ranges[typ][typ]) { // no alpha|HEX
+                if (type !== typ && typ !== 'XYZ') {
+                    let from = exceptions[typ] || 'rgb';
+                    this.colors[typ] = convert[from + '2' + typ](this.colors[from]);
                 }
             }
         }
