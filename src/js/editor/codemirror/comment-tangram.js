@@ -151,6 +151,7 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
     let pad = options.padding === undefined ? ' ' : options.padding;
     let didSomething;
 
+    /* eslint-disable no-labels */
     lineComment: {
         if (!lineString) {
             // break lineComment;
@@ -189,6 +190,7 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
             return true;
         }
     }
+    /* eslint-enable no-labels */
 
     // Try block comments
     let startString = options.blockCommentStart || mode.blockCommentStart;
