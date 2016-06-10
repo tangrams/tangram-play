@@ -119,5 +119,23 @@ function initCodeMirror (el) {
         return getLineInd(this, nLine);
     };
 
+    // Better line wrapping. Wrapped lines are based on the indentation
+    // of the current line. See this demo:
+    //      https://codemirror.net/demo/indentwrap.html
+    // Modified slightly to provide an additional hanging indent that is based
+    // off of the document's tabSize setting. This mimics how wrapping behaves
+    // in Sublime Text.
+    const charWidth = cm.defaultCharWidth();
+    const basePadding = 4; // Magic number: it is CodeMirror's default value.
+    cm.on('renderLine', function (cm, line, el) {
+        const tabSize = cm.getOption('tabSize');
+        const columns = CodeMirror.countColumn(line.text, null, tabSize);
+        const offset = (columns + tabSize) * charWidth;
+
+        el.style.textIndent = '-' + offset + 'px';
+        el.style.paddingLeft = (basePadding + offset) + 'px';
+    });
+    cm.refresh();
+
     return cm;
 }
