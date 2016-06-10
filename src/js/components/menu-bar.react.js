@@ -16,7 +16,7 @@ import { openGistModal } from '../modals/modal.open-gist';
 import { saveGistModal } from '../modals/modal.save-gist';
 import { aboutModal } from '../modals/modal.about';
 import { toggleFullscreen } from '../ui/fullscreen';
-import { takeScreenshot } from '../map/map';
+import { takeScreenshot, setGlobalIntrospection } from '../map/map';
 
 const _clickNew = function () {
     EditorIO.new();
@@ -48,6 +48,10 @@ const _clickSaveGist = function () {
 
 const _clickSaveCamera = function () {
     takeScreenshot();
+};
+
+const _clickInspect = function () {
+    setGlobalIntrospection(true);
 };
 
 const _clickFullscreen = function () {
@@ -105,6 +109,11 @@ export default class MenuBar extends React.Component {
                                 <MenuItem onClick={_clickSaveGist}><Icon type={'bt-code'} />Save to Gist</MenuItem>
                                 <MenuItem onClick={_clickSaveCamera}><Icon type={'bt-camera'} />Take a screenshot</MenuItem>
                             </NavDropdown>
+                        </OverlayTrigger>
+
+                        {/* Introspection button */}
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle inspect mode'}</Tooltip>}>
+                            <NavItem eventKey={'new'} onClick={_clickInspect} href='#'><Icon type={'bt-wrench'} />Inspect</NavItem>
                         </OverlayTrigger>
                     </Nav>
 

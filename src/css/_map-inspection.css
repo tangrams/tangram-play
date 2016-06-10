@@ -4,7 +4,7 @@
     background-color: rgba(0, 0, 0, 0.85);
     font-family: var(--font-family);
     font-weight: 200;
-    font-size: 0.75rem; /* TODO: create & associate with global font scale */
+    font-size: 1.2rem; /* TODO: create & associate with global font scale */
     color: var(--ui-component-text-color);
     z-index: var(--z04-map-inspection);
     min-width: 85px;

@@ -178,6 +178,17 @@ function getMapStartLocation () {
     return startLocation;
 }
 
+/**
+ * Turns on global introspection mode for Tangram.
+ *
+ * @public
+ * @param {Boolean} - when `true`, the interactive flag is turned on for all
+ *          geometry. when `false`, interactivity defers to scene file rules.
+ */
+export function setGlobalIntrospection (boolean) {
+    tangramLayer.scene.setIntrospection(boolean);
+}
+
 /* New section to handle React components */
 
 // Need to setup dispatch services to let the React component MapPanel know when map has changed
