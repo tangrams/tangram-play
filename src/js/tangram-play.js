@@ -240,7 +240,7 @@ class TangramPlay {
         // Can't do a pushstate where the URL includes 'http://localhost' due to security
         // problems. So we have to let the browser do the routing relative to the server
         const locationPrefix = window.location.pathname;
-        const queryObj = getQueryStringObject();
+        const queryObj = {};
         if (scene.url) {
             queryObj.scene = scene.url;
         }
