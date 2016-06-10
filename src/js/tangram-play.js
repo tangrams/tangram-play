@@ -3,10 +3,13 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Error tracking
+// Load this before all other modules. Only load when run in production.
 import Raven from 'raven-js';
-Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
-    whitelistUrls: [/mapzen\.com/]
-}).install();
+if (window.location.hostname === 'mapzen.com' || window.location.hostname === 'www.mapzen.com') {
+    Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
+        whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/]
+    }).install();
+}
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
