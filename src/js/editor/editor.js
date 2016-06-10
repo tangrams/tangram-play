@@ -55,7 +55,6 @@ function initCodeMirror (el) {
 
     // Initialize CodeMirror
     const cm = new CodeMirror(el, {
-        value: 'Loading...',
         rulers: rulers,
         styleActiveLine: true,
         lineNumbers: true,

@@ -454,7 +454,6 @@ class TangramPlay {
 
 function showUnloadedState (editor) {
     document.querySelector('.map-view').classList.add('map-view-not-loaded');
-    editor.setValue('No scene loaded.');
 }
 
 function hideUnloadedState () {
@@ -501,10 +500,8 @@ function getSceneContentsFromLocalMemory () {
         let contents = sceneData.contents;
 
         // TODO: Verify that contents are valid/parse-able YAML before returning it.
-        // Throw away saved contents if it's "Loading...", "No scene loaded." or empty.
-        // If we check for parse-ability, we won't need to hard-code the Loading check
-        // (The alternative strategy is to not have the placeholder)
-        if (contents && contents !== 'Loading...' && contents !== 'No scene loaded.' && contents.trim().length > 0) {
+        // Throw away saved contents if it's empty.
+        if (contents && contents.trim().length > 0) {
             return sceneData;
         }
     }
