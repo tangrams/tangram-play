@@ -1,5 +1,11 @@
 /* EDITOR WIDGETS */
 
+.CodeMirror-widget {
+    /* Resets this property for wrapped lines. The hanging indent adds
+       its own text-indent and we do not want widgets to inherit it. */
+    text-indent: initial;
+}
+
 .widget {
     display: inline-block;
     position: relative;
