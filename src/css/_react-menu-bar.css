@@ -77,5 +77,7 @@ html.mdnzr-no-fullscreen .menu-button-fullscreen {
 
 .btm {
     padding-right: 8px ;
-    font-size: 17px;
+    font-size: 15px;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
 }

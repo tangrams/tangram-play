@@ -1,3 +1,5 @@
+
+/*
 import LocalStorage from '../storage/localstorage';
 import { map } from './map';
 import search from './search';
@@ -44,6 +46,7 @@ function setupEventListeners () {
 
     // Close
     el.querySelector('.map-toolbar-toggle').addEventListener('click', e => {
+        console.log("clicking hide toolbar") ;
         hideToolbar();
     });
 
@@ -75,6 +78,7 @@ function setupEventListeners () {
 }
 
 function toggleMapToolbar () {
+    console.log("toggletoolbar") ;
     if (el.getBoundingClientRect().top > 0) {
         hideToolbar();
     }
@@ -125,3 +129,4 @@ function getMapChangeDelta (startLatLng, endLatLng) {
     let endY = endLatLng.lng;
     return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
 }
+*/
