@@ -4,8 +4,6 @@
 }
 
 #map-panel-button {
-    /*width: 54px;
-    height: 34px;*/
     position: absolute ;
     left: auto;
     right: 0;
@@ -76,8 +74,6 @@
     padding-right: 8px ;
 }
 
-/**********/
-
 #map-toolbar-test {
     display: flex;
 }
@@ -102,4 +98,9 @@
     font-family: var(--font-family);
     font-weight: 200;
     line-height: 28px;
+    padding: 0px ;
+}
+
+#plus-minus {
+    display: flex ;
 }
