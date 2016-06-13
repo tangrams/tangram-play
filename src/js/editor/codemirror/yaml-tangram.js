@@ -288,6 +288,9 @@ export function parseYamlString (string, state, stream) {
         // preference, and YAML specification does not depend on tab sizes
         // throughout a document to determine level. It is based on the number
         // of spaces indented beyond its parent.
+        // NOTE: when getNodesForAddress is called, which calls parseYamlString,
+        // stream is not provided and neither is identation / tabSize. This is
+        // the only external use of parseYamlString()
         const spaces = stream.indentation();
         const level = Math.floor(spaces / stream.tabSize);
 
