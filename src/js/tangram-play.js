@@ -2,6 +2,9 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
 
+
+/********************************** REACT **********************************/
+
 // Error tracking
 import Raven from 'raven-js';
 Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
@@ -46,6 +49,11 @@ const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
+
+
+
+
+
 
 class TangramPlay {
     constructor () {
@@ -522,19 +530,37 @@ window.tangramPlay = tangramPlay;
 
 /********************************** REACT **********************************/
 
+
+
+/********************************** REACT **********************************/
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+//import Map from './components/map.react';
 import MenuBar from './components/menu-bar.react';
-import MapPanelButton from './components/map-panel-button.react';
-import Example from './components/map-panel.react';
+
+// import MapPanelToolbar from './components/map-panel-toolbar.react';
+// import MapPanelButton from './components/map-panel-button.react';
+
+
+import MapPanel from './components/map-panel.react';
 
 
 let mountNode1 = document.getElementById('navbar-container');
 ReactDOM.render(<MenuBar />, mountNode1);
 
-let mountNode2 = document.getElementById('map-panel-button');
-ReactDOM.render(<MapPanelButton />, mountNode2);
+// let mountNode4 = document.getElementById('mapmap-container');
+// ReactDOM.render(<Map />, mountNode4);
 
-let mountNode3 = document.getElementById('map-toolbar');
-ReactDOM.render(<Example />, mountNode3);
+
+
+// let mountNode2 = document.getElementById('map-panel-button');
+// ReactDOM.render(<MapPanelButton />, mountNode2);
+//
+// let mountNode3 = document.getElementById('map-toolbar');
+// ReactDOM.render(<MapPanelToolbar />, mountNode3);
+
+
+let mountNode6 = document.getElementById('map-panel');
+ReactDOM.render(<MapPanel />, mountNode6);

@@ -48,6 +48,7 @@ class TangramInspectionPopup {
         el.appendChild(layersEl);
         el.appendChild(closeEl);
 
+        //COMMENTED OUT WHEN PORTING TO REACT
         document.getElementById('map-container').appendChild(el);
     }
 

@@ -46,7 +46,7 @@ export function initMap () {
         LocalStorage.setItem('zoom', map.getZoom());
     });
 
-    initMapToolbar();
+    //initMapToolbar();
 }
 
 /**
