@@ -87,6 +87,10 @@
 }
 
 /* Style for button groups */
+#buttons-plusminus {
+    display: flex ;
+}
+
 #buttons-search {
     display:inline-flex ;
     flex-grow: 1 ;
@@ -114,6 +118,12 @@
     }
 }
 
-#buttons-plusminus {
-    display: flex ;
+.map-search-latlng {
+    align-items: center;
+    display: flex;
+    font-size: 12px;
+    font-family: var(--font-family);
+    font-weight: 200;
+    line-height: 28px;
+    color: var(--ui-border-color);
 }
