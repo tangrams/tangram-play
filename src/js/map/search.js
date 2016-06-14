@@ -15,7 +15,7 @@ let maxReqTimestampRendered = new Date().getTime();
 
 function init () {
     // Cache reference to elements
-    locationBarEl = document.body.querySelector('.map-location-bar');
+    locationBarEl = document.body.querySelector('#buttons-search');
     input = locationBarEl.querySelector('.map-search-input');
     latlngLabel = locationBarEl.querySelector('.map-latlng-label');
     resultsEl = locationBarEl.querySelector('.map-search-results');
