@@ -97,21 +97,24 @@
     background-color: var(--ui-element-color);
 }
 
-.map-search-input {
-    appearance: none;
+/*.map-search-input {*/
+.react-autosuggest__container {
     flex-grow: 1 ;
-    outline: none ;
+    border-bottom: 1px solid transparent;
+    height: 38px ;
+}
+
+.react-autosuggest__container input {
+    width: 100% ;
     font-size: 12px;
     font-family: var(--font-family);
     font-weight: 200;
     line-height: 28px;
-    padding: 0px ;
     background-color: transparent;
-    outline: none;
+    appearance: none;
+    outline: none ;
     border: 0px;
-    border-bottom: 1px solid transparent;
     color: var(--ui-component-text-color);
-    margin: 4px;
 
     &:focus {
         border-bottom: 1px dotted var(--ui-border-color);
@@ -126,4 +129,5 @@
     font-weight: 200;
     line-height: 28px;
     color: var(--ui-border-color);
+    white-space:nowrap;
 }
