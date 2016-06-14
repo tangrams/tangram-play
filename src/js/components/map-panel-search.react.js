@@ -23,7 +23,7 @@ function getSuggestionValue (suggestion) {
 
 function renderSuggestion (suggestion) {
     return (
-        <span>{suggestion}</span>
+        <span><Icon type={'bt-map-marker'} /> {suggestion}</span>
     );
 }
 
@@ -143,7 +143,7 @@ export default class MapPanelSearch extends React.Component {
                 <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
                     <Button> <Icon type={'bt-search'} /> </Button>
                 </OverlayTrigger>
-                <Autosuggest className='map-search-input' suggestions={suggestions}
+                <Autosuggest suggestions={suggestions}
                    getSuggestionValue={getSuggestionValue}
                    renderSuggestion={renderSuggestion}
                    inputProps={inputProps} />
