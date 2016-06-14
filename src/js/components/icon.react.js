@@ -1,9 +1,9 @@
 import React from 'react';
 
 export default React.createClass({
-    render: function() {
+    render: function () {
         return (
-            <i className={`btm ${ this.props.type}`}></i>
+            <i className={`btm ${this.props.type}`}></i>
         );
     },
 

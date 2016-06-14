@@ -49,11 +49,6 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
-
-
-
-
-
 class TangramPlay {
     constructor () {
         subscribeMixin(this);
@@ -527,7 +522,7 @@ initDivider();
 // for debug
 window.tangramPlay = tangramPlay;
 
-/********************************** REACT **********************************/
+/* ********************************* REACT ********************************* */
 
 var React = require('react');
 var ReactDOM = require('react-dom');

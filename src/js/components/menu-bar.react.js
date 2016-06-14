@@ -19,54 +19,54 @@ import { aboutModal } from '../modals/modal.about';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/map';
 
-const clickNew = function() {
+const clickNew = function () {
     EditorIO.new();
 };
 
-const clickOpenFile = function() {
+const clickOpenFile = function () {
     openLocalFile();
 };
 
-const clickOpenGist = function() {
+const clickOpenGist = function () {
     openGistModal.show();
 };
 
-const clickOpenURL = function() {
+const clickOpenURL = function () {
     openURLModal.show();
 };
 
-const clickOpenExample = function() {
+const clickOpenExample = function () {
     examplesModal.show();
 };
 
-const clickSaveFile = function() {
+const clickSaveFile = function () {
     EditorIO.export();
 };
 
-const clickSaveGist = function() {
+const clickSaveGist = function () {
     saveGistModal.show();
 };
 
-const clickSaveCamera = function() {
+const clickSaveCamera = function () {
     takeScreenshot();
 };
 
-const clickFullscreen = function() {
+const clickFullscreen = function () {
     toggleFullscreen();
 };
 
-const documentationLink = 'https://mapzen.com/documentation/tangram/' ;
-const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/' ;
+const documentationLink = 'https://mapzen.com/documentation/tangram/';
+const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
 
-const clickAbout = function() {
+const clickAbout = function () {
     aboutModal.show();
 };
 
 export default React.createClass({
-    render: function() {
+    render: function () {
         return (
             <Navbar inverse>
-                {/*The brand section*/}
+                {/* The brand section */}
                 <Navbar.Header>
                     <Navbar.Brand>
                         <span className='brand'>Tangram Play<span className='brand-tag'>BETA</span></span>
@@ -75,14 +75,14 @@ export default React.createClass({
                 </Navbar.Header>
 
                 <Navbar.Collapse>
-                    {/*Left menu section*/}
+                    {/* Left menu section */}
                     <Nav pullLeft>
-                        {/*New button*/}
+                        {/* New button*/}
                         <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'New scene'}</Tooltip>}>
                             <NavItem eventKey={'new'} onClick={clickNew} href='#'><Icon type={'bt-file'} />New</NavItem>
                         </OverlayTrigger>
 
-                        {/*Open dropdown*/}
+                        {/* Open dropdown */}
                         <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Open scene'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-upload'} />Open</span>} id='open-dropdown'>
                                 <MenuItem onClick={clickOpenFile}><Icon type={'bt-folder'} />Open a file</MenuItem>
@@ -92,7 +92,7 @@ export default React.createClass({
                             </NavDropdown>
                         </OverlayTrigger>
 
-                        {/*Save dropdown*/}
+                        {/* Save dropdown */}
                         <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Save scene'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-download'} />Save</span>} id='save-dropdown'>
                                 <MenuItem onClick={clickSaveFile}><Icon type={'bt-folder'} />Save to file</MenuItem>
@@ -102,14 +102,14 @@ export default React.createClass({
                         </OverlayTrigger>
                     </Nav>
 
-                    {/*Right menu section*/}
+                    {/* Right menu section */}
                     <Nav pullRight>
-                        {/*Fullscreen button*/}
+                        {/* Fullscreen button */}
                         <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'View fullscreen'}</Tooltip>}>
                             <NavItem eventKey={'new'} onClick={clickFullscreen} href='#'><Icon type={'bt-maximize'} />Fullscreen</NavItem>
                         </OverlayTrigger>
 
-                        {/*Help dropdown*/}
+                        {/* Help dropdown */}
                         <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Documentation and help'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-question-circle'} />Help</span>} id='help-dropdown'>
                                 <MenuItem onClick={clickAbout}><Icon type={'bt-folder'} />About</MenuItem>
