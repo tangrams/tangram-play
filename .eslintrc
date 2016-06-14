@@ -11,6 +11,8 @@
     "node": true,
     "es6": true
   },
+  "plugins": ["react"],
+  "extends": ["plugin:react/recommended"],
   "globals": {
     "L": true,
     "Modernizr": true,
