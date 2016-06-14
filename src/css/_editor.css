@@ -23,6 +23,12 @@
     padding: 0 8px;
 }
 
+.CodeMirror-ruler {
+    border-width: 1px;
+    border-left-style: dotted;
+    border-color: rgba(227, 227, 227, 0.08);
+}
+
 /* Slightly more padding around the text content */
 .CodeMirror pre {
     padding: 0 8px;
