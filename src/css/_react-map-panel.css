@@ -159,10 +159,15 @@
 #map-panel .react-autosuggest__suggestions-container * i {
     font-size: 10px;
     padding-right: 10px;
+    font-weight: 900 ;
 
     .btm {
         -webkit-font-smoothing: auto;
         -moz-osx-font-smoothing: auto;
         font-weight: 900;
     }
+}
+
+.react-autosuggest__suggestion--focused {
+    background-color: var(--ui-active-color);
 }
