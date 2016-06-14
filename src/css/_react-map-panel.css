@@ -97,7 +97,6 @@
     background-color: var(--ui-element-color);
 }
 
-/*.map-search-input {*/
 .react-autosuggest__container {
     flex-grow: 1 ;
     border-bottom: 1px solid transparent;
@@ -130,4 +129,40 @@
     line-height: 28px;
     color: var(--ui-border-color);
     white-space:nowrap;
+}
+
+/* ** */
+.react-autosuggest__container {
+    /*display:flex ;*/
+}
+
+.react-autosuggest__suggestions-container {
+    list-style-type: none;
+    font-size: 12px;
+    background-color: var(--ui-component-color);
+    padding: 0px ;
+    margin: 0px ;
+    margin-top: 7px ;
+
+    li {
+        border-top: 1px solid var(--ui-active-color);
+        cursor: pointer;
+        line-height: 1.4;
+        padding: 10px;
+    }
+
+    li:hover {
+        background-color: var(--ui-active-color);
+    }
+}
+
+#map-panel .react-autosuggest__suggestions-container * i {
+    font-size: 10px;
+    padding-right: 10px;
+
+    .btm {
+        -webkit-font-smoothing: auto;
+        -moz-osx-font-smoothing: auto;
+        font-weight: 900;
+    }
 }
