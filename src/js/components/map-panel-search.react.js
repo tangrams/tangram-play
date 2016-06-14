@@ -8,27 +8,27 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
 
 import { httpGet, debounce } from '../tools/common';
-import bookmarks from '../map/bookmarks';
+// import bookmarks from '../map/bookmarks';
 import { map } from '../map/map';
 import { config } from '../config';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
 let latlngLabelPrecision = 4;
-let maxReqTimestampRendered = new Date().getTime();
+// let maxReqTimestampRendered = new Date().getTime();
 
-function getSuggestionValue(suggestion) {
-    console.log("Suggestions is: " + suggestions)
-    return suggestion.name ;
+function getSuggestionValue (suggestion) {
+    console.log('Suggestions is: ' + suggestion);
+    return suggestion.name;
 }
 
-function renderSuggestion(suggestion) {
-  return (
-    <span>{suggestion}</span>
-  );
+function renderSuggestion (suggestion) {
+    return (
+        <span>{suggestion}</span>
+    );
 }
 
 export default class MapPanelSearch extends React.Component {
-    makeRequest(endpoint) {
+    makeRequest (endpoint) {
         debounce(httpGet(endpoint, (err, res) => {
             if (err) {
                 console.error(err);
@@ -39,7 +39,7 @@ export default class MapPanelSearch extends React.Component {
         }), SEARCH_THROTTLE);
     }
 
-    showResults(results) {
+    showResults (results) {
         const features = results.features;
 
         // // Ignore requests that started before a request which has already
@@ -51,34 +51,33 @@ export default class MapPanelSearch extends React.Component {
         // // Store the latest timestamp of the last request
         // maxReqTimestampRendered = results.geocoding.timestamp;
 
-        let list = [] ;
+        let list = [];
         for (let i = 0, j = features.length; i < j; i++) {
-            list.push(features[i].properties.label) ;
+            list.push(features[i].properties.label);
         }
 
         this.setState({
-          results: features,
-          suggestions: list
+            results: features,
+            suggestions: list
         });
-
     }
 
     // Get autocomplete suggestions
-    autocomplete(query) {
+    autocomplete (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
         this.makeRequest(endpoint);
     }
 
 
-    getSuggestions(value) {
-        const query = value.trim() ;
+    getSuggestions (value) {
+        const query = value.trim();
         if (query.length >= 2) {
-            this.autocomplete(value) ;
+            this.autocomplete(value);
         }
     }
 
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.state = {
             location: 'Cuartos, Mexico',
@@ -89,15 +88,15 @@ export default class MapPanelSearch extends React.Component {
         };
 
         this.onChange = this.onChange.bind(this);
-        //this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        // this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount () {
         this.setCurrentLatLng(map.getCenter());
-        console.log(this.state.location) ;
+        console.log(this.state.location);
     }
 
-    setCurrentLatLng(latlng) {
+    setCurrentLatLng (latlng) {
         this.setState({ latlng: `${latlng.lat.toFixed(latlngLabelPrecision)}, ${latlng.lng.toFixed(latlngLabelPrecision)}` });
     }
 
@@ -123,20 +122,20 @@ export default class MapPanelSearch extends React.Component {
         }), SEARCH_THROTTLE);
     }
 
-    onChange(event, { newValue }) {
+    onChange (event, { newValue }) {
         this.setState({
-          value: newValue
+            value: newValue
         });
 
-        this.getSuggestions(newValue) ;
+        this.getSuggestions(newValue);
     }
 
-    render() {
+    render () {
         const { value, suggestions } = this.state;
         const inputProps = {
-          placeholder: 'Cuartos, Mexico',
-          value,
-          onChange: this.onChange
+            placeholder: 'Cuartos, Mexico',
+            value,
+            onChange: this.onChange
         };
 
         return (

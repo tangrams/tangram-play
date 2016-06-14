@@ -5,7 +5,6 @@ var gutil = require('gulp-util');
 var notify = require('gulp-notify');
 var sourcemaps = require('gulp-sourcemaps');
 var browserSync = require('browser-sync');
-var babel = require('gulp-babel');
 
 var paths = {
     styles: 'src/css/**/*.css',

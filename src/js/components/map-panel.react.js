@@ -8,18 +8,17 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
 import MapPanelSearch from './map-panel-search.react';
 
-
-import LocalStorage from '../storage/localstorage';
+// import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
-import search from '../map/search';
-import { initGeolocator } from '../map/geolocator';
-import bookmarks from '../map/bookmarks';
+// import search from '../map/search';
+// import { initGeolocator } from '../map/geolocator';
+// import bookmarks from '../map/bookmarks';
 
-const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
-const MAP_UPDATE_DELTA = 0.002;
+// const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
+// const MAP_UPDATE_DELTA = 0.002;
 
 let el;
-let currentLocation;
+// let currentLocation;
 
 function setZoomLabel () {
     let label = el.querySelector('.map-zoom-quantity');
@@ -28,18 +27,18 @@ function setZoomLabel () {
     label.textContent = fractionalNumber.toFixed(1);
 }
 
-const clickZoomIn = function() {
+const clickZoomIn = function () {
     map.zoomIn(1, { animate: true });
     setZoomLabel();
 };
 
-const clickZoomOut = function() {
+const clickZoomOut = function () {
     map.zoomOut(1, { animate: true });
     setZoomLabel();
 };
 
 export default class MapPanel extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.state = {
             open: true
@@ -47,7 +46,7 @@ export default class MapPanel extends React.Component {
         this.toggleMapPanel = this.toggleMapPanel.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount () {
         // search.init();
         // initGeolocator();
         // bookmarks.init();
@@ -58,25 +57,25 @@ export default class MapPanel extends React.Component {
         // search.reverseGeocode(currentLocation);
     }
 
-    toggleMapPanel() {
+    toggleMapPanel () {
         this.setState({ open: !this.state.open });
     }
 
-    render() {
+    render () {
         return (
             <div>
-                {/*Toggle map panel to show it*/}
+                {/* Toggle map panel to show it*/}
                 <Button onClick={this.toggleMapPanel} className='map-panel-button-show'>
                     <Icon type={'bt-caret-down'} />
                 </Button>
 
-                {/*Map panel*/}
+                {/* Map panel*/}
                 <Panel collapsible expanded={this.state.open} className='map-panel-collapsible'>
                     <div className='map-panel-toolbar'>
-                        <div class='map-zoom-indicator'>z&#8202;<span class='map-zoom-quantity'></span></div>
+                        <div>z&#8202;<span></span></div>
 
-                        {/*Zoom buttons*/}
-                        <ButtonGroup id="buttons-plusminus">
+                        {/* Zoom buttons*/}
+                        <ButtonGroup id='buttons-plusminus'>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
                                 <Button onClick={clickZoomIn}> <Icon type={'bt-plus'} /> </Button>
                             </OverlayTrigger>
@@ -85,24 +84,24 @@ export default class MapPanel extends React.Component {
                             </OverlayTrigger>
                         </ButtonGroup>
 
-                        {/*Search buttons*/}
+                        {/* Search buttons*/}
                         <MapPanelSearch />
 
-                        {/*Bookmark button*/}
+                        {/* Bookmark button*/}
                         <ButtonGroup>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
                                 <Button> <Icon type={'bt-bookmark'} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 
-                        {/*Locate me button*/}
+                        {/* Locate me button*/}
                         <ButtonGroup>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Locate me'}</Tooltip>}>
                                 <Button> <Icon type={'bt-map-arrow'} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 
-                        {/*Toggle map panel to show it*/}
+                        {/* Toggle map panel to show it*/}
                         <ButtonGroup>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle map toolbar'}</Tooltip>}>
                                 <Button onClick={this.toggleMapPanel}> <Icon type={'bt-caret-up'} /> </Button>
