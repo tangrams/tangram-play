@@ -8,7 +8,7 @@ export default class Color {
 
     set (color, type) { // color only full range
         if (typeof color === 'number') {
-            type = type ? type : 'rgb';
+            type = type || 'rgb';
             this.colors[type] = {};
             for (var n = 3; n--;) {
                 let m = type[n] || type.charAt(n); // IE7
@@ -19,7 +19,7 @@ export default class Color {
             let parts = color.replace(/(?:#|\)|%)/g, '').split('(');
             if (parts[1]) {
                 let values = (parts[1] || '').split(/,\s*/);
-                type = type ? type : (parts[1] ? parts[0].substr(0, 3) : 'rgb');
+                type = type || (parts[1] ? parts[0].substr(0, 3) : 'rgb');
                 this.set(values, type);
             }
             else {
@@ -63,17 +63,19 @@ export default class Color {
     }
 
     convert (type) {
-        let convert = ColorConverter,
-            ranges = getValueRanges(),
-            exceptions = { hsl: 'hsv', cmyk: 'cmy', rgb: type };
+        let convert = ColorConverter;
+        let ranges = getValueRanges();
+        let exceptions = { hsl: 'hsv', cmyk: 'cmy', rgb: type };
 
-        if (type !== 'alpha') {
-            for (let typ in ranges) {
-                if (!ranges[typ][typ]) { // no alpha|HEX
-                    if (type !== typ && typ !== 'XYZ') {
-                        let from = exceptions[typ] || 'rgb';
-                        this.colors[typ] = convert[from + '2' + typ](this.colors[from]);
-                    }
+        if (type === 'alpha') {
+            return;
+        }
+
+        for (let typ in ranges) {
+            if (!ranges[typ][typ]) { // no alpha|HEX
+                if (type !== typ && typ !== 'XYZ') {
+                    let from = exceptions[typ] || 'rgb';
+                    this.colors[typ] = convert[from + '2' + typ](this.colors[from]);
                 }
             }
         }
@@ -82,23 +84,23 @@ export default class Color {
     get (type) {
         if (type !== 'rgb') {
             var convert = ColorConverter;
-            this.colors[type] = convert['rgb2' + type](this.colors['rgb']);
+            this.colors[type] = convert['rgb2' + type](this.colors.rgb);
             return this.colors[type];
         }
         else {
-            return this.colors['rgb'];
+            return this.colors.rgb;
         }
     }
 
     getString (type) {
         if (type === 'HEX') {
             var convert = ColorConverter;
-            return convert['rgb2' + type](this.colors['rgb']);
+            return convert['rgb2' + type](this.colors.rgb);
         }
         else {
             let color = this.get(type);
-            let str = type,
-                m = '';
+            let str = type;
+            let m = '';
             if (type === 'vec') {
                 str += this.colors.alpha ? 4 : 3;
             }
@@ -119,7 +121,8 @@ export default class Color {
             if (this.colors.alpha) {
                 str += ',' + (this.colors.alpha).toFixed(3);
             }
-            return str += ')';
+            str += ')';
+            return str;
         }
     }
 }

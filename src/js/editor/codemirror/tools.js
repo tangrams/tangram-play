@@ -3,7 +3,7 @@
 import { isEmptyString } from '../../tools/helpers';
 
 //  Get the spaces of a string
-export function getSpaces(str) {
+export function getSpaces (str) {
     let regex = /^(\s+)/gm;
     let space = regex.exec(str);
     if (space) {
@@ -15,42 +15,42 @@ export function getSpaces(str) {
 }
 
 //  Get the indentation level of a line
-export function getInd(string) {
+export function getInd (string) {
     return getSpaces(string) / 4;
 }
-export function getLineInd(cm, nLine) {
+export function getLineInd (cm, nLine) {
     return getSpaces(cm.lineInfo(nLine).text) / cm.getOption('tabSize');
 }
 
 //  Check if a line is empty
-export function isEmpty(cm, nLine) {
+export function isEmpty (cm, nLine) {
     return isEmptyString(cm.lineInfo(nLine).text);
 }
 
 //  Check if the line is commented YAML style
-export function isStrCommented(str) {
-    let regex = /^\s*[\#||\/\/]/gm;
+export function isStrCommented (str) {
+    let regex = /^\s*[#||\/\/]/gm;
     return (regex.exec(str) || []).length > 0;
 }
-export function isCommented(cm, nLine) {
+export function isCommented (cm, nLine) {
     return isStrCommented(cm.lineInfo(nLine).text);
 }
 
 // Get the text of a line and ignore the previus spaces
-export function getText(cm, nLine) {
+export function getText (cm, nLine) {
     let value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);
     return value ? value[1] : '';
 }
 
 //  Get value of a key pair
-export function getValue(cm, nLine) {
+export function getValue (cm, nLine) {
     let value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec(cm.lineInfo(nLine).text);
     return value ? value[1] : '';
 }
 
 // Escape regex special characters
 // via http://stackoverflow.com/a/9310752
-export function regexEscape(text) {
+export function regexEscape (text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
@@ -58,12 +58,12 @@ export function regexEscape(text) {
 //  ===============================================================================
 
 //  Jump to a specific line
-export function jumpToLine(cm, nLine) {
+export function jumpToLine (cm, nLine) {
     cm.scrollTo(null, cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top);
 }
 
 //  Jump to a specific line
-export function jumpToLineAt(cm, nLine, offset) {
+export function jumpToLineAt (cm, nLine, offset) {
     let t = cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top;
     cm.scrollTo(null, t);
 }
@@ -73,7 +73,7 @@ export function jumpToLineAt(cm, nLine, offset) {
 
 //  Is posible to fold
 //
-export function isFolder(cm, nLine) {
+export function isFolder (cm, nLine) {
     if (cm.lineInfo(nLine).gutterMarkers) {
         return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
     }
@@ -84,7 +84,7 @@ export function isFolder(cm, nLine) {
 
 //  Select everything except for a range of lines
 //
-export function foldAllBut(cm, From, To, queryLevel) {
+export function foldAllBut (cm, From, To, queryLevel) {
     // default level is 0
     queryLevel = typeof queryLevel !== 'undefined' ? queryLevel : 0;
 
@@ -134,7 +134,7 @@ export function foldAllBut(cm, From, To, queryLevel) {
         }
     }
 
-    for (let i = To; i < cm.lineCount() ; i++) {
+    for (let i = To; i < cm.lineCount(); i++) {
         if (getLineInd(cm, i) >= queryLevel) {
             cm.foldCode({ line: i }, opts.rangeFinder, 'fold');
         }
@@ -143,16 +143,16 @@ export function foldAllBut(cm, From, To, queryLevel) {
 
 //  Unfold all lines
 //
-export function unfoldAll(cm) {
+export function unfoldAll (cm) {
     let opts = cm.state.foldGutter.options;
-    for (let i = 0; i < cm.lineCount() ; i++) {
+    for (let i = 0; i < cm.lineCount(); i++) {
         cm.foldCode({ line: i }, opts.rangeFinder, 'unfold');
     }
 }
 
 //  Fold all lines above a specific indentation level
 //
-export function foldByLevel(cm, level) {
+export function foldByLevel (cm, level) {
     unfoldAll(cm);
     let opts = cm.state.foldGutter.options;
 
@@ -160,7 +160,7 @@ export function foldByLevel(cm, level) {
     while (actualLine >= 0) {
         if (isFolder(cm, actualLine)) {
             if (getLineInd(cm, actualLine) >= level) {
-                cm.foldCode({ line:actualLine, ch:0 }, opts.rangeFinder);
+                cm.foldCode({ line: actualLine, ch: 0 }, opts.rangeFinder);
             }
         }
         actualLine--;

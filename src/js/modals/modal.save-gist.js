@@ -119,7 +119,7 @@ class SaveGistModal extends Modal {
                     // MIME-type 'application/json'
                     body: JSON.stringify(data)
                 }).then(response => {
-                    switch(response.status) {
+                    switch (response.status) {
                         case 201:
                             return response.json();
                         case 403:

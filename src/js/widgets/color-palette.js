@@ -5,7 +5,7 @@ import { toCSS } from '../tools/common';
 import { jumpToLine } from '../editor/codemirror/tools';
 
 export default class ColorPalette {
-    constructor() {
+    constructor () {
         if (TangramPlay.addons.widgetsManager === undefined) {
             return;
         }
@@ -52,7 +52,7 @@ export default class ColorPalette {
         this.make();
     }
 
-    make() {
+    make () {
         this.palette.innerHTML = '';
 
         for (let color in this.colors) {
@@ -62,7 +62,7 @@ export default class ColorPalette {
 }
 
 class Color {
-    constructor(color) {
+    constructor (color) {
         color = toCSS(color);
 
         // DOM
@@ -141,11 +141,11 @@ class Color {
      *  Handles when user selects a new color on the colorpicker
      */
     onPickerChange (event) {
-        this.color = event.getString('rgb');//this.picker.getCSS();
+        this.color = event.getString('rgb'); // this.picker.getCSS();
 
         // Convert the CSS color value to Tangram format for editor.
-        let color = event.get('vec');//this.picker.getRGB();
-        let rgbString = [1,1,1];
+        let color = event.get('vec'); // this.picker.getRGB();
+        let rgbString = [1, 1, 1];
 
         rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}]`;
 

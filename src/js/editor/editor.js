@@ -27,7 +27,7 @@ import './codemirror/hint-tangram';
 import 'codemirror/keymap/sublime';
 
 // Import Utils
-import { getLineInd, unfoldAll, foldByLevel } from './codemirror/tools';
+import { unfoldAll, foldByLevel } from './codemirror/tools';
 
 // Import Tangram Play functions
 import { takeScreenshot } from '../map/map';
@@ -60,45 +60,47 @@ function initCodeMirror (el) {
         styleActiveLine: true,
         lineNumbers: true,
         matchBrackets: true,
+        autoCloseBrackets: true,
         mode: 'text/x-yaml-tangram',
         keyMap: 'sublime',
-        autoCloseBrackets: true,
         extraKeys: {
             'Ctrl-Space': 'autocomplete',
-            Tab: function(cm) {
+            // Maps the tab key to insert spaces instead of a tab character.
+            // https://codemirror.net/doc/manual.html#keymaps
+            Tab: function (cm) {
                 cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
             },
-            'Alt-F': function(cm) {
+            'Alt-F': function (cm) {
                 cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
-            } ,
-            'Alt-P': function(cm) {
+            },
+            'Alt-P': function (cm) {
                 takeScreenshot();
             },
-            'Ctrl-0': function(cm) {
+            'Ctrl-0': function (cm) {
                 unfoldAll(cm);
             },
-            'Ctrl-1': function(cm) {
+            'Ctrl-1': function (cm) {
                 foldByLevel(cm, 0);
             },
-            'Ctrl-2': function(cm) {
+            'Ctrl-2': function (cm) {
                 foldByLevel(cm, 1);
             },
-            'Ctrl-3': function(cm) {
+            'Ctrl-3': function (cm) {
                 foldByLevel(cm, 2);
             },
-            'Ctrl-4': function(cm) {
+            'Ctrl-4': function (cm) {
                 foldByLevel(cm, 3);
             },
-            'Ctrl-5': function(cm) {
+            'Ctrl-5': function (cm) {
                 foldByLevel(cm, 4);
             },
-            'Ctrl-6': function(cm) {
+            'Ctrl-6': function (cm) {
                 foldByLevel(cm, 5);
             },
-            'Ctrl-7': function(cm) {
+            'Ctrl-7': function (cm) {
                 foldByLevel(cm, 6);
             },
-            'Ctrl-8': function(cm) {
+            'Ctrl-8': function (cm) {
                 foldByLevel(cm, 7);
             }
         },
@@ -113,11 +115,23 @@ function initCodeMirror (el) {
         indentUnit: 4
     });
 
-    // Hook events
+    // Better line wrapping. Wrapped lines are based on the indentation
+    // of the current line. See this demo:
+    //      https://codemirror.net/demo/indentwrap.html
+    // Modified slightly to provide an additional hanging indent that is based
+    // off of the document's tabSize setting. This mimics how wrapping behaves
+    // in Sublime Text.
+    const charWidth = cm.defaultCharWidth();
+    const basePadding = 4; // Magic number: it is CodeMirror's default value.
+    cm.on('renderLine', function (cm, line, el) {
+        const tabSize = cm.getOption('tabSize');
+        const columns = CodeMirror.countColumn(line.text, null, tabSize);
+        const offset = (columns + tabSize) * charWidth;
 
-    cm.getLineInd = function (nLine) {
-        return getLineInd(this, nLine);
-    };
+        el.style.textIndent = '-' + offset + 'px';
+        el.style.paddingLeft = (basePadding + offset) + 'px';
+    });
+    cm.refresh();
 
     return cm;
 }

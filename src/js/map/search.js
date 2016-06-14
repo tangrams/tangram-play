@@ -28,7 +28,7 @@ function init () {
     saveEl.addEventListener('click', onSaveClickHandler, false);
 
     locationBarEl.querySelector('.map-search-icon').addEventListener('click', e => {
-        input.focus();
+        input.focus(); //What is this??
     });
 
     window.addEventListener('divider:dragend', onDividerMove);

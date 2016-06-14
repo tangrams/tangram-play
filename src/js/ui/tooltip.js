@@ -72,7 +72,7 @@ function showTooltip () {
 
     // Force browsers to end batch reflow computation so that animations work
     window.setTimeout(() => {
-        let reflow = window.getComputedStyle(tooltipEl).cssText;
+        let reflow = window.getComputedStyle(tooltipEl).cssText; // eslint-disable-line no-unused-vars
         tooltipEl.classList.add('tooltip-show');
     }, 0);
 

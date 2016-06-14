@@ -11,7 +11,7 @@ const ADDRESS_KEY_DELIMITER = ':';
 //  ===============================================================================
 
 // Get array of YAML keys parent tree of a particular line
-export function getNodes(cm, nLine) {
+export function getNodes (cm, nLine) {
     const lineHandle = cm.getLineHandle(nLine);
 
     // Return the nodes. If any property in the chain is not defined,
@@ -32,7 +32,7 @@ export function getNodes(cm, nLine) {
  * @param {string} address - in the form of 'key1:key2:key3'
  * @return {mixed} content - Whatever is stored as a value for that key
  */
-export function getAddressSceneContent(tangramScene, address) {
+export function getAddressSceneContent (tangramScene, address) {
     try {
         const keys = getKeysFromAddress(address);
 
@@ -91,30 +91,30 @@ export function getAddressForLevel (address, level) {
 //  ===============================================================================
 
 //  Check if a str ends with a suffix
-function endsWith(str, suffix) {
+function endsWith (str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
 //  Function that check if a line is inside a Color Shader Block
-function isGlobalBlock(address) {
+function isGlobalBlock (address) {
     return endsWith(address, 'shaders:blocks:global');
 }
-function isWidthBlock(address) {
+function isWidthBlock (address) {
     return endsWith(address, 'shaders:blocks:width');
 }
-function isPositionBlock(address) {
+function isPositionBlock (address) {
     return endsWith(address, 'shaders:blocks:position');
 }
-export function isNormalBlock(address) {
+export function isNormalBlock (address) {
     return endsWith(address, 'shaders:blocks:normal');
 }
-export function isColorBlock(address) {
+export function isColorBlock (address) {
     return endsWith(address, 'shaders:blocks:color');
 }
-function isFilterBlock(address) {
+function isFilterBlock (address) {
     return endsWith(address, 'shaders:blocks:filter');
 }
-function isShader(address) {
+function isShader (address) {
     return (
         isGlobalBlock(address) ||
         isWidthBlock(address) ||
@@ -125,7 +125,7 @@ function isShader(address) {
     );
 }
 
-function isContentJS(tangramScene, address) {
+function isContentJS (tangramScene, address) {
     if (tangramScene && tangramScene.config) {
         return /\s*[\|]*\s*function\s*\(\s*\)\s*\{/gm.test(getAddressSceneContent(tangramScene, address));
     }
@@ -134,7 +134,7 @@ function isContentJS(tangramScene, address) {
     }
 }
 
-function isAfterKey(str, pos) {
+function isAfterKey (str, pos) {
     let key = /^\s*(\w+):/gm.exec(str);
     if (key === undefined) {
         return true;
@@ -203,7 +203,7 @@ function getAnchorFromValue (value) {
 // Given a YAML string return an array of keys
 // TODO: We will need a different way of parsing YAML flow notation,
 // since this function does not cover the full range of legal YAML specification
-function getInlineNodes(str, nLine) {
+function getInlineNodes (str, nLine) {
     let rta = [];
     let stack = [];
     let i = 0;
@@ -222,7 +222,7 @@ function getInlineNodes(str, nLine) {
         }
         else {
             // check for keypair
-            let isNode = /^\s*([\w|\-|\_|\$]+)(\s*:\s*)([\w|\-|\'|\#]*)\s*/gm.exec(str.substr(i));
+            let isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
             if (isNode) {
                 stack[level] = isNode[1];
                 i += isNode[1].length;
@@ -263,7 +263,7 @@ function getInlineNodes(str, nLine) {
 }
 
 // Add Address to token states
-function yamlAddressing(stream, state) {
+function yamlAddressing (stream, state) {
     // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
     if (stream.pos === 0) {
         parseYamlString(stream.string, state, stream.tabSize);
@@ -271,13 +271,13 @@ function yamlAddressing(stream, state) {
 }
 
 // Add Address to token states
-export function parseYamlString(string, state, tabSize) {
+export function parseYamlString (string, state, tabSize) {
     // TODO:
     //  - add an extra \s* before the :
     //  - break all this into smaller and reusable functions
     //  - get rid of the pos
     //
-    let regex = /(^\s*)([\w|\-|\_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
+    let regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
     let node = regex.exec(string);
 
     // node[0] = all the matching line
@@ -388,7 +388,7 @@ export function parseYamlString(string, state, tabSize) {
 
 //  YAML-TANGRAM
 //  ===============================================================================
-CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
+CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     let yamlMode = CodeMirror.getMode(config, 'yaml');
     let glslMode = CodeMirror.getMode(config, 'glsl');
 
@@ -398,7 +398,7 @@ CodeMirror.defineMode('yaml-tangram', function(config, parserConfig) {
     function yaml (stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
         if (address !== undefined) {
-            let key = /^\s+(\w*)\:\s+\|/gm.exec(stream.string);
+            let key = /^\s+(\w*):\s+\|/gm.exec(stream.string);
             key = key ? key[1] : '';
 
             if (isShader(address) &&

@@ -8,23 +8,25 @@ const DEFAULT_OPTIONS = { indent: true };
 let nonWS = /[^\s\u00a0]/;
 let cmPos = CodeMirror.Pos;
 
-function firstNonWS(str) {
+function firstNonWS (str) {
     let found = str.search(nonWS);
     return found === -1 ? 0 : found;
 }
 
-CodeMirror.commands.toggleComment = function(cm) {
+CodeMirror.commands.toggleComment = function (cm) {
     cm.toggleComment();
 };
 
 CodeMirror.defineExtension('toggleComment', function (options = DEFAULT_OPTIONS) {
     let cm = this;
-    let minLine = Infinity,
-        ranges = cm.listSelections(),
-        mode = null;
+    let minLine = Infinity;
+    let ranges = cm.listSelections();
+    let mode = null;
+
     for (let i = ranges.length - 1; i >= 0; i--) {
-        let from = ranges[i].from(),
-            to = ranges[i].to();
+        let from = ranges[i].from();
+        let to = ranges[i].to();
+
         if (from.line >= minLine) {
             continue;
         }
@@ -69,12 +71,12 @@ CodeMirror.defineExtension('lineComment', function (from, to, options = DEFAULT_
     let pad = options.padding === undefined ? ' ' : options.padding;
     let blankLines = options.commentBlankLines || from.line === to.line;
 
-    self.operation(function() {
+    self.operation(function () {
         if (options.indent) {
             let baseString = firstLine.slice(0, firstNonWS(firstLine));
             for (let i = from.line; i < end; ++i) {
-                let line = self.getLine(i),
-                    cut = baseString.length;
+                let line = self.getLine(i);
+                let cut = baseString.length;
                 if (!blankLines && !nonWS.test(line)) {
                     continue;
                 }
@@ -95,8 +97,8 @@ CodeMirror.defineExtension('lineComment', function (from, to, options = DEFAULT_
 });
 
 CodeMirror.defineExtension('blockComment', function (from, to, options = DEFAULT_OPTIONS) {
-    let self = this,
-        mode = self.getModeAt(from);
+    let self = this;
+    let mode = self.getModeAt(from);
     let startString = options.blockCommentStart || mode.blockCommentStart;
     let endString = options.blockCommentEnd || mode.blockCommentEnd;
     if (!startString || !endString) {
@@ -116,7 +118,7 @@ CodeMirror.defineExtension('blockComment', function (from, to, options = DEFAULT
         return;
     }
 
-    self.operation(function() {
+    self.operation(function () {
         if (options.fullLines !== false) {
             let lastLineHasText = nonWS.test(self.getLine(end));
             self.replaceRange(pad + endString, cmPos(end));
@@ -149,6 +151,7 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
     let pad = options.padding === undefined ? ' ' : options.padding;
     let didSomething;
 
+    /* eslint-disable no-labels */
     lineComment: {
         if (!lineString) {
             // break lineComment;
@@ -168,11 +171,11 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
             }
             lines.push(line);
         }
-        self.operation(function() {
+        self.operation(function () {
             for (let i = start; i <= end; ++i) {
                 let line = lines[i - start];
-                let pos = line.indexOf(lineString),
-                    endPos = pos + lineString.length;
+                let pos = line.indexOf(lineString);
+                let endPos = pos + lineString.length;
                 if (pos < 0) {
                     continue;
                 }
@@ -187,6 +190,7 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
             return true;
         }
     }
+    /* eslint-enable no-labels */
 
     // Try block comments
     let startString = options.blockCommentStart || mode.blockCommentStart;
@@ -195,10 +199,10 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
         return false;
     }
     let lead = options.blockCommentLead || mode.blockCommentLead;
-    let startLine = self.getLine(start),
-        endLine = end === start ? startLine : self.getLine(end);
-    let open = startLine.indexOf(startString),
-        close = endLine.lastIndexOf(endString);
+    let startLine = self.getLine(start);
+    let endLine = end === start ? startLine : self.getLine(end);
+    let open = startLine.indexOf(startString);
+    let close = endLine.lastIndexOf(endString);
     if (close === -1 && start !== end) {
         endLine = self.getLine(--end);
         close = endLine.lastIndexOf(endString);
@@ -224,7 +228,7 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
         return false;
     }
 
-    self.operation(function() {
+    self.operation(function () {
         self.replaceRange('', cmPos(end, close - (pad && endLine.slice(close - pad.length, close) === pad ? pad.length : 0)),
                             cmPos(end, close + endString.length));
         let openEnd = open + startString.length;
@@ -234,8 +238,8 @@ CodeMirror.defineExtension('uncomment', function (from, to, options = DEFAULT_OP
         self.replaceRange('', cmPos(start, open), cmPos(start, openEnd));
         if (lead) {
             for (let i = start + 1; i <= end; ++i) {
-                let line = self.getLine(i),
-                    found = line.indexOf(lead);
+                let line = self.getLine(i);
+                let found = line.indexOf(lead);
                 if (found === -1 || nonWS.test(line.slice(0, found))) {
                     continue;
                 }

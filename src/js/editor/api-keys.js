@@ -6,7 +6,7 @@
  * by Tangram. This default key should always be masked and not seen by the end user.
  */
 
-const URL_PATTERN = /((https?:)?\/\/vector.mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\:)+(topojson|geojson|mvt))/;
+const URL_PATTERN = /((https?:)?\/\/vector.mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|:)+(topojson|geojson|mvt))/;
 
 /**
  * Parses Tangram YAML content for URL references to Mapzen vector tile service

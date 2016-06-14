@@ -57,7 +57,7 @@ export function initDivider () {
         }
     });
 
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
         onDividerPositionChange();
         updateMapState();
     });
@@ -113,7 +113,7 @@ function getStartingPosition () {
     }
 }
 
-function getBounds() {
+function getBounds () {
     return {
         minX: MAP_MINIMUM_WIDTH,
         maxX: window.innerWidth - CM_MINIMUM_WIDTH

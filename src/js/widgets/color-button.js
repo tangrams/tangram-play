@@ -27,7 +27,7 @@ export default class ColorButton extends Widget {
         return el;
     }
 
-    update() {
+    update () {
         super.update();
 
         // Set the color property from editor value
@@ -53,11 +53,11 @@ export default class ColorButton extends Widget {
     }
 
     get value () {
-        return super['value'];
+        return super.value;
     }
 
     set value (val) {
-        super['value'] = val;
+        super.value = val;
         this.color = toCSS(val);
 
         // Updates the color picker modal, if present.
@@ -94,13 +94,13 @@ export default class ColorButton extends Widget {
      *  Handles when user selects a new color on the colorpicker
      */
     onPickerChange (event) {
-        let original = toColorVec(super['value']);
-        this.color = event.getString('rgb');//this.picker.getCSS();
+        let original = toColorVec(super.value);
+        this.color = event.getString('rgb'); // this.picker.getCSS();
 
         // Convert the CSS color value to Tangram format for editor.
-        let color = event.get('vec');//this.picker.getRGB();
-        let rgbString = [1,1,1];
-        if (typeof(original) === 'object' && original.a !== undefined) {
+        let color = event.get('vec'); // this.picker.getRGB();
+        let rgbString = [1, 1, 1];
+        if (typeof original === 'object' && original.a !== undefined) {
             rgbString = `[${color.v.toFixed(3)}, ${color.e.toFixed(3)}, ${color.c.toFixed(3)}, ${original.a}]`;
         }
         else {

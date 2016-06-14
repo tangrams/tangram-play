@@ -35,4 +35,4 @@ Sublime-like hotkeys
 
 ## Contributing
 
-We welcome contributions from the community. For more information how to run Tangram Play in your local environment and get started, please see [CONTRIBUTING.md](https://github.com/tangrams/tangram-play/blob/gh-pages/CONTRIBUTING.md).
+We welcome contributions from the community. For more information how to run Tangram Play in your local environment and get started, please see [CONTRIBUTING.md](https://github.com/tangrams/tangram-play/blob/master/CONTRIBUTING.md).

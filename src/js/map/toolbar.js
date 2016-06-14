@@ -89,13 +89,13 @@ function toggleMapToolbar () {
 
 function showToolbar () {
     el.style.top = '0';
-    //menuButtonEl.style.top = '-40px';
+    // menuButtonEl.style.top = '-40px';
     saveDisplayState('true');
 }
 
 function hideToolbar () {
     el.style.top = '-50px';
-    //menuButtonEl.style.top = '0';
+    // menuButtonEl.style.top = '0';
     saveDisplayState('false');
 }
 

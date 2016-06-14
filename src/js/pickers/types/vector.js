@@ -1,6 +1,6 @@
 export default class Vector {
     constructor (vec, type) {
-        this.value = [0,0];
+        this.value = [0, 0];
         this.dim = 2;
         this.set(vec, type);
     }
@@ -74,14 +74,14 @@ export default class Vector {
     }
 
     get z () {
-        return this.value[2] || 0.0 ;
+        return this.value[2] || 0.0;
     }
 
     get w () {
         return this.value[3] || 0.0;
     }
 
-    getString(type) {
+    getString (type) {
         type = type || 'vec' + this.dim;
 
         let len = this.dim;
@@ -105,7 +105,8 @@ export default class Vector {
                 str += ',';
             }
         }
-        return str += end;
+        str += end;
+        return str;
     }
 
     // VECTOR OPERATIONS

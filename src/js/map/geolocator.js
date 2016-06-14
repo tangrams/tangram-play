@@ -56,8 +56,8 @@ function onGeolocateSuccess (position) {
         // If the new zoom level is within a +/- 1 range of the original
         // zoom level, keep it the same
         let newZoom = map.getZoom();
-        desiredZoom = (newZoom >= originalZoom - 1 && newZoom <= originalZoom + 1) ?
-            originalZoom : newZoom;
+        desiredZoom = (newZoom >= originalZoom - 1 && newZoom <= originalZoom + 1)
+            ? originalZoom : newZoom;
 
         // Clean up
         circle.remove();

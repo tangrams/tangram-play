@@ -27,7 +27,7 @@ export default class Vec3Picker extends Picker {
                 [this.width / 2, this.height / 2, 50],
                 [this.width / 2, this.height / 2, 150]
             ],
-            edges: [[0,1], [2,3], [4,5]]
+            edges: [[0, 1], [2, 3], [4, 5]]
         });
 
         this.shapes.push({
@@ -87,8 +87,8 @@ export default class Vec3Picker extends Picker {
 
         this.drawShapeEdges({
             edgeColour: this.fnColor,
-            nodes: [[0,0,0], this.point],
-            edges: [[0,1]]
+            nodes: [[0, 0, 0], this.point],
+            edges: [[0, 1]]
         });
 
         this.drawShapeNodes({
@@ -119,7 +119,7 @@ export default class Vec3Picker extends Picker {
         for (let n in shape.nodes) {
             let coord = this.viewFromCamera(shape.nodes[n]);
             this.ctx.beginPath();
-            this.ctx.arc(coord[0], coord[1], radius, 0 , 2 * Math.PI, false);
+            this.ctx.arc(coord[0], coord[1], radius, 0, 2 * Math.PI, false);
             this.ctx.fill();
         }
     }

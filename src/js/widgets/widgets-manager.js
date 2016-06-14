@@ -19,7 +19,7 @@ export default class WidgetsManager {
             }
         }
 
-        let from = { line:0, ch:0 };
+        let from = { line: 0, ch: 0 };
         let to = {
             line: editor.getDoc().size - 1,
             ch: editor.getLine(editor.getDoc().size - 1).length

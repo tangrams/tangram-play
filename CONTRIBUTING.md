@@ -20,11 +20,11 @@ To build JavaScript and CSS once, run:
 
 #### Running a local server with Browsersync
 
-The default behavior of `gulp` uses [Browsersync][browsersync] to watch for source file changes, rebuild client-side bundles, and automatically update browser tabs:
+The default behavior of `gulp` uses [Browsersync][browsersync] to watch for source file changes, rebuild client-side bundles, and automatically update browser tabs. For convenience, this maps to a standard `npm` run script command:
 
-    gulp
+    npm start
 
-When run, a local server will be opened on `http://localhost:8080/`. You may adjust this port by configuring `gulpfile.js`. In addition, you may access the Browsersync UI (default location is `http://localhost:8081/`). Browsersync will automatically reload when JavaScript or the app's entry `index.html` is edited. CSS files will stream into the application without a reload. Tangram Play will save some elements of application state, such as map position, last scene content, and last editor position even while reloading. You may safely kill the `gulp` process at any time by hitting Ctrl-C.
+When run, a local server will be opened on `http://localhost:8080/`. You may adjust this port by configuring `gulpfile.js`. In addition, you may access the Browsersync UI (default location is `http://localhost:8081/`). Browsersync will automatically reload when JavaScript or the app's entry `index.html` is edited. CSS files will stream into the application without a reload. Tangram Play will save some elements of application state, such as map position, last scene content, and last editor position even while reloading. You may safely kill the BrowserSync server process at any time by hitting Ctrl-C.
 
 #### Running a local server manually
 
@@ -106,17 +106,14 @@ To run tests:
 
 ## Code style and linting
 
-Tangram Play borrows [JSHint](http://jshint.com/docs/) rules from Tangram, and also attempts to codify Tangram code style into [JSCS](http://jscs.info/) rules, but this is still in need of a review. For Javascript / ES6 best-practices we refer to the [Airbnb Javascript style guide](https://github.com/airbnb/javascript) but we do not yet have any meaningful opinions on whether we need to differ from it.
+Tangram Play uses [ESLint][eslint] to lint JavaScript for both syntax errors and code style. Rules were inherited from Tangram's [JSHint][jshint] rules, with gaps filled in by [JavaScript Standard Style][standard]. Generally, please refer to the [Airbnb Javascript style guide][airbnb] for Javascript / ES6 best practices, although we did not necessarily adopt their rules directly. We may document rationales for certain rules as comments within `.eslintrc`.
 
-To run the linter, there is an npm script that runs both JSHint and JSCS on non-vendor-sourced Javascript files in the `src/` folder. This assumes that the CLI for JSHint and JSCS are also available:
+To run the linter, there is an `npm` script that runs ESLint on non-vendor-sourced Javascript files in the `src/` folder. This assumes that the CLI for ESLint is also available:
 
-    npm install -g jshint jscs    # if you need to
+    npm install -g eslint    # if you need to
     npm run lint
 
-You may also run the linters on individual files if you do not want to see the massive list of warnings the script currently outputs on all of the files we have.
-
-### Explanations for certain rules
-
-Since we can't document rationales for rules inside the `.jscsrc` itself, this is where we can record the reasons why certain rules are the way they are.
-
-- **[requireCamelCaseOrUpperCaseIdentifiers](http://jscs.info/rule/requireCamelCaseOrUpperCaseIdentifiers)** -- Set to `"ignoreProperties"` to allow for references to internal properties of Tangram, e.g. `scene.config_path`. Otherwise all identifiers including object properties of Tangram Play should be camelCase and constants can be UPPERCASE_WITH_UNDERSCORES.
+[eslint]: http://eslint.org/
+[jshint]: http://jshint.com/docs/
+[standard]: http://standardjs.com/
+[airbnb]: https://github.com/airbnb/javascript

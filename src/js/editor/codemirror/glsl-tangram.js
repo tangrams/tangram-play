@@ -1,16 +1,16 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/clike/clike.js';
 
-function words(str) {
-    let obj = {},
-        keys = str.split(' ');
+function words (str) {
+    let obj = {};
+    let keys = str.split(' ');
     for (let i = 0; i < keys.length; ++i) {
         obj[keys[i]] = true;
     }
     return obj;
 }
 
-function cppHook(stream, state) {
+function cppHook (stream, state) {
     if (!state.startOfLine) {
         return false;
     }
@@ -31,12 +31,12 @@ function cppHook(stream, state) {
     return 'meta';
 }
 
-function def(mimes, mode) {
+function def (mimes, mode) {
     if (typeof mimes === 'string') {
         mimes = [mimes];
     }
     let words = [];
-    function add(obj) {
+    function add (obj) {
         if (obj) {
             for (var prop in obj) {
                 if (obj.hasOwnProperty(prop)) {

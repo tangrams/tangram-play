@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "start": "gulp serve",
     "test": "npm run lint --silent && npm run karma --silent",
     "lint": "eslint *.js src/ test/",
     "karma": "./node_modules/karma/bin/karma start",
@@ -79,7 +80,7 @@
     "glslCanvas": "0.0.9",
     "gsap": "1.18.3",
     "gulp-babel": "^6.1.2",
-    "leaflet": "1.0.0-beta.2",
+    "leaflet": "1.0.0-rc.1",
     "leaflet-hash": "0.2.1",
     "lodash": "4.11.1",
     "raven-js": "3.0.4",

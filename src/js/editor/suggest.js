@@ -168,7 +168,7 @@ export default class SuggestManager {
         return result;
     }
 
-    getDefault(address, completion) {
+    getDefault (address, completion) {
         let key = {
             address: address + '/' + completion,
             key: completion,
@@ -186,15 +186,15 @@ export default class SuggestManager {
 }
 
 class Suggestion {
-    constructor(datum) {
+    constructor (datum) {
         //  TODO: must be a better way to do this
-        if (datum['address']) {
+        if (datum.address) {
             this.checkAgainst = 'address';
         }
-        else if (datum['key']) {
+        else if (datum.key) {
             this.checkAgainst = 'key';
         }
-        else if (datum['value']) {
+        else if (datum.value) {
             this.checkAgainst = 'value';
         }
 
@@ -217,7 +217,7 @@ class Suggestion {
         }
     }
 
-    check(node,forceLevel) {
+    check (node, forceLevel) {
         if (node && this.checkAgainst) {
             let rightLevel = true;
             if (!forceLevel && this.level) {
@@ -230,11 +230,11 @@ class Suggestion {
         }
     }
 
-    getDefault() {
+    getDefault () {
         return this.defaultValue || '';
     }
 
-    getList(node) {
+    getList (node) {
         let scene = tangramLayer.scene;
         let list = [];
         let presentNodes = [];

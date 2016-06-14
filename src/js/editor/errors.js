@@ -3,7 +3,7 @@ import TangramPlay from '../tangram-play';
 import { tangramLayer } from '../map/map';
 
 export default class ErrorsManager {
-    constructor() {
+    constructor () {
         //  private variables
         this.widgets = [];
         this.blockErrors = new Set();
@@ -36,7 +36,7 @@ export default class ErrorsManager {
         });
     }
 
-    clean() {
+    clean () {
         for (let i = 0; i < this.widgets.length; i++) {
             editor.removeLineWidget(this.widgets[i]);
         }
@@ -44,7 +44,7 @@ export default class ErrorsManager {
         this.blockErrors.clear();
     }
 
-    addError(args) {
+    addError (args) {
         if (args.type !== undefined) {
             let msg = document.createElement('div');
             let icon = msg.appendChild(document.createElement('span'));
@@ -55,7 +55,7 @@ export default class ErrorsManager {
         }
     }
 
-    addWarning(args) {
+    addWarning (args) {
         if (args.type === 'styles') {
             // Only show first error, cascading errors can be confusing
             let errors = args['shader_errors'].slice(0, 1);
@@ -95,7 +95,7 @@ export default class ErrorsManager {
             }
         }
         else if (args.type === 'duplicate') {
-            for (let node of args['nodes']) {
+            for (let node of args.nodes) {
                 console.log(node);
                 let nLine = node.widget.range.to.line + 1;
                 let msg = document.createElement('div');

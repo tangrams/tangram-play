@@ -3,10 +3,13 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 // Error tracking
+// Load this before all other modules. Only load when run in production.
 import Raven from 'raven-js';
-Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
-    whitelistUrls: [/mapzen\.com/]
-}).install();
+if (window.location.hostname === 'mapzen.com' || window.location.hostname === 'www.mapzen.com') {
+    Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
+        whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/]
+    }).install();
+}
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
@@ -26,10 +29,9 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
-import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
+import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl, isEmptyString } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { isEmptyString } from './tools/helpers';
 import { jumpToLine } from './editor/codemirror/tools';
 import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightLines } from './editor/highlight';
@@ -77,7 +79,7 @@ class TangramPlay {
         this.load(initialScene)
             .then(() => {
                 // Highlight lines if requested by the query string.
-                let lines = query['lines'];
+                let lines = query.lines;
                 if (lines) {
                     lines = lines.split('-');
 
@@ -245,7 +247,7 @@ class TangramPlay {
         // Can't do a pushstate where the URL includes 'http://localhost' due to security
         // problems. So we have to let the browser do the routing relative to the server
         const locationPrefix = window.location.pathname;
-        const queryObj = getQueryStringObject();
+        const queryObj = {};
         if (scene.url) {
             queryObj.scene = scene.url;
         }
