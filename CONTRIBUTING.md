@@ -108,12 +108,20 @@ To run tests:
 
 Tangram Play uses [ESLint][eslint] to lint JavaScript for both syntax errors and code style. Rules were inherited from Tangram's [JSHint][jshint] rules, with gaps filled in by [JavaScript Standard Style][standard]. Generally, please refer to the [Airbnb Javascript style guide][airbnb] for Javascript / ES6 best practices, although we did not necessarily adopt their rules directly. We may document rationales for certain rules as comments within `.eslintrc`.
 
-To run the linter, there is an `npm` script that runs ESLint on non-vendor-sourced Javascript files in the `src/` folder. This assumes that the CLI for ESLint is also available:
+We use [Stylelint][stylelint] and build on [`stylelint-config-standard`][stylelint-standard] for linting CSS.
 
-    npm install -g eslint    # if you need to
+To run the linter, there is an `npm` script that runs ESLint and Stylelint on non-vendor-sourced files.
+
     npm run lint
+
+You may also run commands to lint JavaScript or CSS separately.
+
+    npm run lint-js
+    npm run lint-css
 
 [eslint]: http://eslint.org/
 [jshint]: http://jshint.com/docs/
 [standard]: http://standardjs.com/
 [airbnb]: https://github.com/airbnb/javascript
+[stylelint]: http://stylelint.io/
+[stylelint-standard]: https://github.com/stylelint/stylelint-config-standard
