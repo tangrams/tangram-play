@@ -93,9 +93,8 @@
     background-color: var(--ui-element-color);
 }
 
-.map-panel-search-input {
+.map-search-input {
     appearance: none;
-    margin: 4;
     flex-grow: 1 ;
     outline: none ;
     font-size: 12px;
@@ -103,6 +102,16 @@
     font-weight: 200;
     line-height: 28px;
     padding: 0px ;
+    background-color: transparent;
+    outline: none;
+    border: 0px;
+    border-bottom: 1px solid transparent;
+    color: var(--ui-component-text-color);
+    margin: 4px;
+
+    &:focus {
+        border-bottom: 1px dotted var(--ui-border-color);
+    }
 }
 
 #buttons-plusminus {

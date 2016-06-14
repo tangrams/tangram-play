@@ -43,7 +43,7 @@ export default class MapPanel extends React.Component {
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
                                 <Button> <Icon type={'bt-search'} /> </Button>
                             </OverlayTrigger>
-                            <input className='map-panel-search-input' placeholder='Cuartos, Mexico' spellcheck='false'></input>
+                            <input className='map-search-input' placeholder='Cuartos, Mexico' spellcheck='false'></input>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
                                 <Button> <Icon type={'bt-star'} /> </Button>
                             </OverlayTrigger>
