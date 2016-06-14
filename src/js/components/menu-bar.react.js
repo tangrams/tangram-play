@@ -62,8 +62,8 @@ const clickAbout = function () {
     aboutModal.show();
 };
 
-export default React.createClass({
-    render: function () {
+export default class MenuBar extends React.Component {
+    render () {
         return (
             <Navbar inverse>
                 {/* The brand section */}
@@ -122,4 +122,4 @@ export default React.createClass({
             </Navbar>
         );
     }
-});
+}
