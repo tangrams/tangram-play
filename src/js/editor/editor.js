@@ -27,7 +27,7 @@ import './codemirror/hint-tangram';
 import 'codemirror/keymap/sublime';
 
 // Import Utils
-import { getLineInd, unfoldAll, foldByLevel } from './codemirror/tools';
+import { unfoldAll, foldByLevel } from './codemirror/tools';
 
 // Import Tangram Play functions
 import { takeScreenshot } from '../map/map';
@@ -60,11 +60,13 @@ function initCodeMirror (el) {
         styleActiveLine: true,
         lineNumbers: true,
         matchBrackets: true,
+        autoCloseBrackets: true,
         mode: 'text/x-yaml-tangram',
         keyMap: 'sublime',
-        autoCloseBrackets: true,
         extraKeys: {
             'Ctrl-Space': 'autocomplete',
+            // Maps the tab key to insert spaces instead of a tab character.
+            // https://codemirror.net/doc/manual.html#keymaps
             Tab: function (cm) {
                 cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
             },
@@ -112,12 +114,6 @@ function initCodeMirror (el) {
         autofocus: true,
         indentUnit: 4
     });
-
-    // Hook events
-
-    cm.getLineInd = function (nLine) {
-        return getLineInd(this, nLine);
-    };
 
     // Better line wrapping. Wrapped lines are based on the indentation
     // of the current line. See this demo:
