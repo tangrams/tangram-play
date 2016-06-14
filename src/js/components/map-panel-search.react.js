@@ -18,7 +18,7 @@ let latlngLabelPrecision = 4;
 
 function getSuggestionValue (suggestion) {
     console.log('Suggestions is: ' + suggestion);
-    return suggestion.name;
+    return suggestion;
 }
 
 function renderSuggestion (suggestion) {
@@ -28,28 +28,19 @@ function renderSuggestion (suggestion) {
 }
 
 export default class MapPanelSearch extends React.Component {
-    makeRequest (endpoint) {
-        debounce(httpGet(endpoint, (err, res) => {
-            if (err) {
-                console.error(err);
-            }
-            else {
-                this.showResults(JSON.parse(res));
-            }
-        }), SEARCH_THROTTLE);
-    }
+    // makeRequest (endpoint) {
+    //     debounce(httpGet(endpoint, (err, res) => {
+    //         if (err) {
+    //             mine = err ;
+    //         }
+    //         else {
+    //             this.showResults(JSON.parse(res));
+    //         }
+    //     }), SEARCH_THROTTLE);
+    // }
 
     showResults (results) {
         const features = results.features;
-
-        // // Ignore requests that started before a request which has already
-        // // been successfully rendered on to the UI.
-        // if (results.geocoding.timestamp < maxReqTimestampRendered) {
-        //     return;
-        // }
-        //
-        // // Store the latest timestamp of the last request
-        // maxReqTimestampRendered = results.geocoding.timestamp;
 
         let list = [];
         for (let i = 0, j = features.length; i < j; i++) {
@@ -62,11 +53,32 @@ export default class MapPanelSearch extends React.Component {
         });
     }
 
+    loadSuggestions (value) {
+        this.autocomplete(value) ;
+    }
+
+    onSuggestionSelected(event, { suggestionValue }) {
+        this.loadSuggestions(suggestionValue);
+    }
+
+    onSuggestionsUpdateRequested({ value }) {
+        this.loadSuggestions(value);
+    }
+
     // Get autocomplete suggestions
     autocomplete (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
-        this.makeRequest(endpoint);
+        // this.makeRequest(endpoint);
+
+        debounce(httpGet(endpoint, (err, res) => {
+            if (err) {
+                mine = err ;
+            }
+            else {
+                this.showResults(JSON.parse(res));
+            }
+        }), SEARCH_THROTTLE);
     }
 
 
@@ -80,7 +92,6 @@ export default class MapPanelSearch extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            location: 'Cuartos, Mexico',
             latlng: '40.7148, -73.9218',
             value: '',
             suggestions: [],
@@ -88,12 +99,11 @@ export default class MapPanelSearch extends React.Component {
         };
 
         this.onChange = this.onChange.bind(this);
-        // this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
     }
 
     componentDidMount () {
         this.setCurrentLatLng(map.getCenter());
-        console.log(this.state.location);
     }
 
     setCurrentLatLng (latlng) {
@@ -127,7 +137,7 @@ export default class MapPanelSearch extends React.Component {
             value: newValue
         });
 
-        this.getSuggestions(newValue);
+        // this.getSuggestions(newValue);
     }
 
     render () {
@@ -144,9 +154,10 @@ export default class MapPanelSearch extends React.Component {
                     <Button> <Icon type={'bt-search'} /> </Button>
                 </OverlayTrigger>
                 <Autosuggest suggestions={suggestions}
-                   getSuggestionValue={getSuggestionValue}
-                   renderSuggestion={renderSuggestion}
-                   inputProps={inputProps} />
+                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                    getSuggestionValue={getSuggestionValue}
+                    renderSuggestion={renderSuggestion}
+                    inputProps={inputProps} />
                 <div className='map-search-latlng'>{this.state.latlng}</div>
                 <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
                     <Button> <Icon type={'bt-star'} /> </Button>
