@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "start": "gulp serve",
     "test": "npm run lint --silent && npm run karma --silent",
     "lint": "eslint *.js src/ test/",
     "karma": "./node_modules/karma/bin/karma start",
