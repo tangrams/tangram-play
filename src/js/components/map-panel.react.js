@@ -6,6 +6,8 @@ import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
+import MapPanelSearch from './map-panel-search.react';
+
 
 import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
@@ -84,15 +86,7 @@ export default class MapPanel extends React.Component {
                         </ButtonGroup>
 
                         {/*Search buttons*/}
-                        <ButtonGroup id="buttons-search">
-                            <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
-                                <Button> <Icon type={'bt-search'} /> </Button>
-                            </OverlayTrigger>
-                            <input className='map-search-input' placeholder='Cuartos, Mexico' spellcheck='false'></input>
-                            <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
-                                <Button> <Icon type={'bt-star'} /> </Button>
-                            </OverlayTrigger>
-                        </ButtonGroup>
+                        <MapPanelSearch />
 
                         {/*Bookmark button*/}
                         <ButtonGroup>
