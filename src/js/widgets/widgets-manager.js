@@ -62,27 +62,26 @@ export default class WidgetsManager {
 
     change (changeObj) {
         // Get FROM/TO range of the change
-        console.log('trigger change') ;
         let from = { line: changeObj.from.line, ch: changeObj.from.ch };
         let to = { line: changeObj.to.line, ch: changeObj.to.ch };
 
-        //Simplest case. If a user is typing on a single line
-        let bookmarks = [] ;
-        if (from.line === to.line) { //Line the user is typing
-            //cascade and check up the tree and down the tree
-            var activeAddress = window.tangramPlay.editor.getStateAfter(from.line).yamlState.nodes[0].address ;
+        // Simplest case. If a user is typing on a single line
+        let bookmarks = [];
+        if (from.line === to.line) { // Line the user is typing
+            // cascade and check up the tree and down the tree
+            var activeAddress = window.tangramPlay.editor.getStateAfter(from.line).yamlState.nodes[0].address;
             bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(to));
 
-            //If there is a bookmark on that line
-            if(bookmarks[0] !== undefined) {
-                let bookmarkAddress = bookmarks[0].widget.node.address ;
+            // If there is a bookmark on that line
+            if (bookmarks[0] !== undefined) {
+                let bookmarkAddress = bookmarks[0].widget.node.address;
 
-                //If the widget address does not correspond to the node address, it means user has deleted part of the logic
-                if(activeAddress !== bookmarkAddress) {
+                // If the widget address does not correspond to the node address, it means user has deleted part of the logic
+                if (activeAddress !== bookmarkAddress) {
                     for (let bkm of bookmarks) {
                         bkm.clear(); // delete the widget
                     }
-                    return ;
+                    return;
                 }
             }
         }
@@ -117,8 +116,6 @@ export default class WidgetsManager {
         // Get affected bookmarks
         bookmarks = [];
         if (from.line === to.line && from.ch === to.ch) {
-            console.log('weird fucntion') ;
-            console.log('from: ' + from.ch + ' to: ' + to.ch) ;
             // If the FROM/TO range is to narrow search using nodes
             for (let node of nodes) {
                 // Find and concatenate bookmarks between FROM/TO range

@@ -1,5 +1,5 @@
 
-/*
+
 import LocalStorage from '../storage/localstorage';
 import { map } from './map';
 import search from './search';
@@ -89,13 +89,13 @@ function toggleMapToolbar () {
 
 function showToolbar () {
     el.style.top = '0';
-    // menuButtonEl.style.top = '-40px';
+    //menuButtonEl.style.top = '-40px';
     saveDisplayState('true');
 }
 
 function hideToolbar () {
     el.style.top = '-50px';
-    // menuButtonEl.style.top = '0';
+    //menuButtonEl.style.top = '0';
     saveDisplayState('false');
 }
 
@@ -129,4 +129,3 @@ function getMapChangeDelta (startLatLng, endLatLng) {
     let endY = endLatLng.lng;
     return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
 }
-*/

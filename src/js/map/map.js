@@ -6,7 +6,7 @@ import Tangram from 'tangram';
 import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
-import { initMapToolbar } from './toolbar';
+// import { initMapToolbar } from './toolbar';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 
 // We need to manually set the image path when Leaflet is bundled.
@@ -48,7 +48,7 @@ export function initMap () {
         LocalStorage.setItem('zoom', map.getZoom());
     });
 
-    //initMapToolbar();
+    // initMapToolbar();
 }
 
 /**
