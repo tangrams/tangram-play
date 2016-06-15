@@ -109,13 +109,14 @@ class TangramPlay {
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
             /* eslint-disable camelcase */
-            let sceneData = {
+            const doc = editor.getDoc();
+            const sceneData = {
                 original_url: tangramLayer.scene.config_source,
                 original_base_path: tangramLayer.scene.config_path,
                 contents: this.getContent(),
-                is_clean: editor.isClean(),
+                is_clean: doc.isClean(),
                 scrollInfo: editor.getScrollInfo(),
-                cursor: editor.doc.getCursor()
+                cursor: doc.getCursor()
             };
             /* eslint-enable camelcase */
 
@@ -454,7 +455,6 @@ class TangramPlay {
 
 function showUnloadedState (editor) {
     document.querySelector('.map-view').classList.add('map-view-not-loaded');
-    editor.setValue('No scene loaded.');
 }
 
 function hideUnloadedState () {
@@ -473,8 +473,9 @@ function determineScene () {
     }
 
     // Else if there is something saved in memory (LocalStorage), return that
+    // Check that contents exist and that it is not empty.
     let sceneData = getSceneContentsFromLocalMemory();
-    if (sceneData) {
+    if (sceneData.contents && sceneData.contents.trim().length > 0) {
         return sceneData;
     }
 
@@ -490,26 +491,14 @@ function saveSceneContentsToLocalMemory (sceneData) {
     //     original_base_path: 'http://valid.url/path/',
     //     contents: 'Contents of scene.yaml',
     //     is_clean: boolean value; false indicates original contents were modified without saving
+    //     scrollInfo: editor's scroll position
+    //     cursor: where the cursor was positioned in the document.
     // }
     LocalStorage.setItem(STORAGE_LAST_EDITOR_CONTENT, JSON.stringify(sceneData));
 }
 
 function getSceneContentsFromLocalMemory () {
-    let sceneData = JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
-
-    if (sceneData) {
-        let contents = sceneData.contents;
-
-        // TODO: Verify that contents are valid/parse-able YAML before returning it.
-        // Throw away saved contents if it's "Loading...", "No scene loaded." or empty.
-        // If we check for parse-ability, we won't need to hard-code the Loading check
-        // (The alternative strategy is to not have the placeholder)
-        if (contents && contents !== 'Loading...' && contents !== 'No scene loaded.' && contents.trim().length > 0) {
-            return sceneData;
-        }
-    }
-
-    return null;
+    return JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
 }
 
 let tangramPlay = new TangramPlay();

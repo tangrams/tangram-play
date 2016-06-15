@@ -20,8 +20,10 @@ export const map = L.map('map', {
     keyboardZoomOffset: 0.05
 });
 
-// Declare this export now, but Tangram is set up later. See initTangram() and loadScene().
+// Declare these exports now, but Tangram is set up later.
+// See initTangram() and loadScene().
 export let tangramLayer = null;
+export let tangramScene = null;
 
 // Initializes Leaflet-based map
 export function initMap () {
@@ -81,6 +83,10 @@ function initTangram (pathToSceneFile) {
         /* eslint-enable camelcase */
     });
 
+    // Attach scene to export
+    tangramScene = tangramLayer.scene;
+
+    // Export to window for debugging.
     window.layer = tangramLayer;
     window.scene = tangramLayer.scene;
 }
