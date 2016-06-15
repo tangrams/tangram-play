@@ -1,5 +1,5 @@
 
-
+/*
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
 
@@ -84,6 +84,7 @@ function onGeolocateSuccess (position) {
  *      see https://developer.mozilla.org/en-US/docs/Web/API/PositionError
  */
 
+/*
 
 function onGeolocateError (err) {
     let message = 'Tangram Play could not retrieve your current position and we do not have enough information to know why.';
@@ -108,3 +109,5 @@ function onGeolocateError (err) {
 function resetGeolocateButton () {
     buttonEl.classList.remove('active');
 }
+
+*/

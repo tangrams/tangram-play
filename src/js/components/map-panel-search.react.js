@@ -74,11 +74,17 @@ export default class MapPanelSearch extends React.Component {
             if (!response.features || response.features.length === 0) {
                 // Sometimes reverse geocoding returns no results
                 this.setState({ placeholder: 'Unknown location' });
-                this.setState({ value: 'Unknown location' });
+                // Very first time we load the bar we don't want a value, we want a placeholder
+                if(this.state.value != '') {
+                    this.setState({ value: 'Unknown location' });
+                }
             }
             else {
                 this.setState({ placeholder: response.features[0].properties.label });
-                this.setState({ value: response.features[0].properties.label });
+                // Very first time we load the bar we don't want a value, we want a placeholder
+                if(this.state.value != '') {
+                    this.setState({ value: response.features[0].properties.label });
+                }
             }
         }), SEARCH_THROTTLE);
     }
