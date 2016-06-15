@@ -1,3 +1,4 @@
+/*
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from './bookmarks';
 import { map } from '../map/map';
@@ -344,3 +345,4 @@ export default {
     reverseGeocode,
     resetSaveIcon
 };
+*/

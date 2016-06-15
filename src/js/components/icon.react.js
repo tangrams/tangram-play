@@ -9,5 +9,6 @@ export default class Icon extends React.Component {
 }
 
 Icon.propTypes = {
-    type: React.PropTypes.string
+    type: React.PropTypes.string,
+    active: React.PropTypes.string
 };
