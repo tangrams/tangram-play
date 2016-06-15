@@ -367,16 +367,19 @@ export function parseYamlString (string, origState, tabSize) {
     return state;
 }
 
-//  YAML-TANGRAM
-//  ===============================================================================
+// YAML-TANGRAM
+// =============================================================================
+
+// Extend YAML with line comment character (not provided by CodeMirror).
+CodeMirror.extendMode('yaml', {
+    lineComment: '#'
+});
+
 CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     // Import multiple modes used by Tangram YAML.
     const yamlMode = CodeMirror.getMode(config, 'yaml');
     const glslMode = CodeMirror.getMode(config, 'glsl');
     const jsMode = CodeMirror.getMode(config, 'javascript');
-
-    // Specify YAML line comment character (not provided by CodeMirror).
-    yamlMode.lineComment = '#';
 
     function yaml (stream, state) {
         const address = getKeyAddressFromState(state.yamlState);
