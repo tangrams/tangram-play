@@ -16,35 +16,22 @@ import ErrorModal from '../modals/modal.error';
 // const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 // const MAP_UPDATE_DELTA = 0.002;
 
-//let el;
-// let currentLocation;
-
 export default class MapPanel extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            zoom: '',
+            zoom: map.getZoom(),
             open: true,
             geolocatorButton: 'bt-map-arrow',
-            geolocateActive: 'false'
+            geolocateActive: {
+                active: 'false'
+            }
         };
         this.toggleMapPanel = this.toggleMapPanel.bind(this);
         this.clickGeolocator = this.clickGeolocator.bind(this);
         this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
         this.clickZoomIn = this.clickZoomIn.bind(this);
         this.clickZoomOut = this.clickZoomOut.bind(this);
-    }
-
-    componentDidMount () {
-        let currentLocation = map.getCenter();
-        let currentZoom = map.getZoom();
-
-        this.setState({ zoom: currentZoom });
-        // bookmarks.init();
-        //
-        // currentLocation = map.getCenter();
-        // search.setCurrentLatLng(currentLocation);
-        // search.reverseGeocode(currentLocation);
     }
 
     toggleMapPanel () {
@@ -54,12 +41,12 @@ export default class MapPanel extends React.Component {
     clickZoomIn () {
         map.zoomIn(1, { animate: true });
         this.setZoomLabel();
-    };
+    }
 
     clickZoomOut () {
         map.zoomOut(1, { animate: true });
         this.setZoomLabel();
-    };
+    }
 
     setZoomLabel () {
         let currentZoom = map.getZoom();
@@ -84,15 +71,22 @@ export default class MapPanel extends React.Component {
     }
 
     onGeolocateSuccess (position) {
-        // console.log(position);
-
-        this.setState({ geolocatorButton: 'bt-map-arrow' });
-        this.setState({ geolocateActive: 'true' });
-        this.setState({ geolocateActive: 'false' });
-
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const accuracy = position.coords.accuracy || 0;
+
+        this.setState({ geolocatorButton: 'bt-map-arrow' });
+        this.setState({
+            geolocateActive: {
+                active: 'true',
+                latlng: {lat: latitude, lng: longitude}
+            }
+        });
+        this.setState({
+            geolocateActive: {
+                active: 'false'
+            }
+        });
 
         let originalZoom = map.getZoom();
         let desiredZoom = originalZoom;

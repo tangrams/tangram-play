@@ -29,12 +29,17 @@ function renderSuggestion (suggestion) {
 export default class MapPanelSearch extends React.Component {
     constructor (props) {
         super(props);
+        let mapcenter = map.getCenter();
         this.state = {
-            latlng: '40.7148, -73.9218',
+            latlng: mapcenter.lat.toFixed(latlngLabelPrecision) + ',' + mapcenter.lng.toFixed(latlngLabelPrecision),
             value: '',
+            placeholder: '',
             suggestions: [],
             bookmarkActive: ''
         };
+
+        // Set the value of the search bar to whatever the map is currently pointing to
+        this.reverseGeocode(mapcenter);
 
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
@@ -42,25 +47,19 @@ export default class MapPanelSearch extends React.Component {
         this.clickSave = this.clickSave.bind(this);
     }
 
-    // Called exactly once after component DOM has finished rendering
-    componentDidMount () {
-        this.setCurrentLatLng(map.getCenter());
-        console.log(this.props.geolocateActive)
-    }
-
     setCurrentLatLng (latlng) {
         this.setState({ latlng: `${latlng.lat.toFixed(latlngLabelPrecision)}, ${latlng.lng.toFixed(latlngLabelPrecision)}` });
     }
 
     // Every time user locates him or herself we need to update the value of the search bar
-    componentWillReceiveProps(nextProps) {
-        if (this.props.geolocateActive === 'true') {
-            this.reverseGeocode(map.getCenter());
+    componentWillReceiveProps (nextProps) {
+        let geolocateActive = this.props.geolocateActive;
+        if (geolocateActive.active === 'true') {
+            this.reverseGeocode(geolocateActive.latlng); // set the lat lng here
         }
     }
 
     reverseGeocode (latlng) {
-        console.log("trying to geocode");
         const lat = latlng.lat;
         const lng = latlng.lng;
         const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
@@ -72,12 +71,13 @@ export default class MapPanelSearch extends React.Component {
 
             // TODO: Much more clever viewport/zoom based determination of current location
             let response = JSON.parse(res);
-            console.log("response" + response);
             if (!response.features || response.features.length === 0) {
                 // Sometimes reverse geocoding returns no results
+                this.setState({ placeholder: 'Unknown location' });
                 this.setState({ value: 'Unknown location' });
             }
             else {
+                this.setState({ placeholder: response.features[0].properties.label });
                 this.setState({ value: response.features[0].properties.label });
             }
         }), SEARCH_THROTTLE);
@@ -86,9 +86,7 @@ export default class MapPanelSearch extends React.Component {
     clickSave () {
         let data = this.getCurrentMapViewData();
         if (bookmarks.saveBookmark(data) === true) {
-            console.log("true") ;
             this.setState({ bookmarkActive: 'active' });
-        //     // saveEl.classList.add('active');
         }
     }
 
@@ -122,15 +120,16 @@ export default class MapPanelSearch extends React.Component {
     onSuggestionSelected (event, { suggestion, suggestionValue, sectionIndex }) {
         let lat = suggestion.geometry.coordinates[1];
         let lng = suggestion.geometry.coordinates[0];
-        this.setCurrentLatLng ({lat: lat, lng: lng});
+        this.setCurrentLatLng({lat: lat, lng: lng});
         map.setView({ lat: lat, lng: lng });
         this.setState({ bookmarkActive: '' });
-        // this.loadSuggestions(suggestionValue);
     }
 
     // Load suggested search results
     loadSuggestions (value) {
-        this.autocomplete(value);
+        if (value.length >= 2) {
+            this.autocomplete(value);
+        }
     }
 
     autocomplete (query) {
@@ -156,9 +155,9 @@ export default class MapPanelSearch extends React.Component {
     }
 
     render () {
-        const { value, suggestions } = this.state;
-        let inputProps = {
-            placeholder: 'Cuartos, Mexico',
+        const { suggestions } = this.state;
+        const inputProps = {
+            placeholder: this.state.placeholder,
             value: this.state.value,
             onChange: this.onChange
         };
@@ -182,3 +181,8 @@ export default class MapPanelSearch extends React.Component {
         );
     }
 }
+
+
+MapPanelSearch.propTypes = {
+    geolocateActive: React.PropTypes.object
+};
