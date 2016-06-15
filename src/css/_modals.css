@@ -33,17 +33,17 @@
         font-family: var(--font-family);
         font-weight: 200;
         line-height: 28px;
-        padding: 4px 8px 4px;
+        padding: 4px 8px;
         width: 100%;
         box-sizing: border-box;
     }
 
     input:focus {
-        box-shadow: 0px 0px 0px 1px var(--ui-highlight-color-2) inset;
+        box-shadow: 0 0 0 1px var(--ui-highlight-color-2) inset;
     }
 
     input:invalid {
-        box-shadow: 0px 0px 0px 1px red inset;
+        box-shadow: 0 0 0 1px red inset;
     }
 
     input::selection {
@@ -135,13 +135,13 @@
 
     button:disabled {
         color: gray;
-        background-color: rgba(0,0,0,0.10);
+        background-color: rgba(0, 0, 0, 0.1);
         cursor: default;
     }
 
     button:disabled:hover {
         color: gray;
-        background-color: rgba(0,0,0,0.10);
+        background-color: rgba(0, 0, 0, 0.1);
     }
 
     button:disabled > i {

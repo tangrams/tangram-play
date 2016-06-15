@@ -17,7 +17,7 @@
 }
 
 .widget-colorpicker {
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
     width: 14px;
     height: 14px;
@@ -29,7 +29,7 @@
 }
 
 .widget-vector {
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     width: 14px;
     height: 14px;
     box-sizing: border-box;
@@ -37,7 +37,7 @@
     cursor: pointer;
     /* position override */
     vertical-align: middle;
-    /*text-align: center;*/
+    /* text-align: center; */
 }
 
 .widget-vector-text {
