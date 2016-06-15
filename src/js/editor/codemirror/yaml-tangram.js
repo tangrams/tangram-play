@@ -205,39 +205,6 @@ function getAnchorFromValue (value) {
     }
 }
 
-// function isNodeDuplicated(A) {
-//     let B = TangramPlay.getNodesForAddress(A);
-//     if (B === undefined){
-//         return false;
-//     }
-//     return isNodeEqual(A, B);
-// }
-
-// function isNodeEqual (A, B) {
-//     if (A && B && A.address && B.address && A.value && B.value) {
-//         if (A.address !== B.address) {
-//             return false;
-//         }
-//         if (A.value !== B.value) {
-//             return false;
-//         }
-//         else if (A.range.from.line !== B.range.from.line) {
-//             return false;
-//         }
-//         else if (A.range.to.line !== B.range.to.line) {
-//             return false;
-//         }
-//         else if (A.range.to.ch !== B.range.to.ch) {
-//             return false;
-//         }
-//         else if (A.range.from.ch !== B.range.from.ch) {
-//             return false;
-//         }
-//         return true;
-//     }
-//     return true;
-// }
-
 // Given a YAML string return an array of keys
 // TODO: We will need a different way of parsing YAML flow notation,
 // since this function does not cover the full range of legal YAML specification
@@ -301,127 +268,103 @@ function getInlineNodes (str, nLine) {
 }
 
 // Add Address to token states
-function yamlAddressing (stream, state) {
-    // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
-    if (stream.pos === 0) {
-        parseYamlString(stream.string, state, stream.tabSize);
-    }
-}
+export function parseYamlString (string, origState, tabSize) {
+    const regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
+    const node = regex.exec(string);
 
-// Add Address to token states
-export function parseYamlString (string, state, tabSize) {
-    // TODO:
-    //  - add an extra \s* before the :
-    //  - break all this into smaller and reusable functions
-    //  - get rid of the pos
-    //
-    let regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
-    let node = regex.exec(string);
+    // Safe clone of state
+    const state = Object.assign({}, origState);
 
-    // node[0] = all the matching line
-    // node[1] = spaces
-    // node[2] = key
-    // node[3] = "\s*:\s*"
-    // node[4] = value (if there is one)
-    //
+    // Each node entry is based off of this object.
+    // TODO: Also make this available to to getInlineNodes(), above.
+    let nodeEntry = {
+        address: '',
+        key: '',
+        anchor: '',
+        value: '',
+        range: {
+            from: {
+                line: state.line,
+                ch: 0
+            },
+            to: {
+                line: state.line,
+                ch: 0
+            }
+        },
+        index: 0
+    };
+
+    // If looks like a node
     if (node) {
-        //  If looks like a node
-        //  Calculate the number of spaces and indentation level
-        let spaces = (node[1].match(/\s/g) || []).length;
-        let level = Math.floor(spaces / tabSize);
+        const nodeSpaces = node[1];     // Spaces at the beginning of a line
+        const nodeKey = node[2];        // the YAML key
+        const nodeSeparator = node[3];  // "\s*:\s*"
+        const nodeValue = node[4];      // the value, if there is one
 
-        //  Update the nodeS tree
+        // Calculate the number of spaces and indentation level
+        const spaces = (nodeSpaces.match(/\s/g) || []).length;
+        const level = Math.floor(spaces / tabSize);
+
+        // Update the node tree
         if (level > state.keyLevel) {
-            state.keyStack.push(node[2]);
+            state.keyStack.push(nodeKey);
         }
         else if (level === state.keyLevel) {
-            state.keyStack[level] = node[2];
+            state.keyStack[level] = nodeKey;
         }
         else if (level < state.keyLevel) {
             let diff = state.keyLevel - level;
             for (let i = 0; i < diff; i++) {
                 state.keyStack.pop();
             }
-            state.keyStack[level] = node[2];
+            state.keyStack[level] = nodeKey;
         }
 
-        //  Record all that in the state value
+        // Record all that in the state value
         state.keyLevel = level;
 
-        let address = getAddressFromKeys(state.keyStack);
-        let fromCh = spaces;
-        let toCh = spaces + node[2].length + node[3].length;
+        const address = getAddressFromKeys(state.keyStack);
+        const fromCh = spaces;
+        const toCh = spaces + nodeKey.length + nodeSeparator.length;
 
-        if (node[4].substr(0, 1) === '{') {
-            // If there are multiple keys
-            state.nodes = [{
-                address: address,
-                key: node[2],
-                value: '',
-                anchor: '',
-                range: {
-                    from: {
-                        line: state.line,
-                        ch: fromCh
-                    },
-                    to: {
-                        line: state.line,
-                        ch: toCh
-                    }
-                },
-                index: 0
-            }];
+        // If there are multiple keys
+        if (nodeValue.substr(0, 1) === '{') {
+            nodeEntry.address = address;
+            nodeEntry.key = nodeKey;
+            nodeEntry.range.from.ch = fromCh;
+            nodeEntry.range.to.ch = toCh;
 
-            let subNodes = getInlineNodes(node[4], state.line);
+            state.nodes = [nodeEntry];
+
+            let subNodes = getInlineNodes(nodeValue, state.line);
             for (let i = 0; i < subNodes.length; i++) {
                 subNodes[i].address = address + subNodes[i].address;
-                subNodes[i].range.from.ch += spaces + node[2].length + node[3].length;
-                subNodes[i].range.to.ch += spaces + node[2].length + node[3].length;
+                subNodes[i].range.from.ch += spaces + nodeKey.length + nodeSeparator.length;
+                subNodes[i].range.to.ch += spaces + nodeKey.length + nodeSeparator.length;
                 state.nodes.push(subNodes[i]);
             }
         }
         else {
-            let anchor = getAnchorFromValue(node[4]);
-            toCh += node[4].length;
-            state.nodes = [{
-                address: address,
-                key: node[2],
-                anchor: anchor,
-                value: node[4].substr(anchor.length),
-                range: {
-                    from: {
-                        line: state.line,
-                        ch: fromCh
-                    },
-                    to: {
-                        line: state.line,
-                        ch: toCh
-                    }
-                },
-                index: 0
-            }];
+            const anchor = getAnchorFromValue(nodeValue);
+
+            nodeEntry.address = address;
+            nodeEntry.key = nodeKey;
+            nodeEntry.anchor = anchor;
+            nodeEntry.value = nodeValue.substr(anchor.length);
+            nodeEntry.range.from.ch = fromCh;
+            nodeEntry.range.to.ch = toCh + nodeValue.length;
+
+            state.nodes = [nodeEntry];
         }
     }
+    // Commented or empty lines lines
     else {
-        // Commented or empty lines lines
-        state.nodes = [{
-            address: getAddressFromKeys(state.keyStack),
-            key: '',
-            value: '',
-            anchor: '',
-            range: {
-                from: {
-                    line: state.line,
-                    ch: 0
-                },
-                to: {
-                    line: state.line,
-                    ch: 0
-                }
-            },
-            index: 0
-        }];
+        nodeEntry.address = getAddressFromKeys(state.keyStack);
+        state.nodes = [nodeEntry];
     }
+
+    return state;
 }
 
 //  YAML-TANGRAM
@@ -532,7 +475,11 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
             state.yamlState.line++;
         },
         token: function (stream, state) {
-            yamlAddressing(stream, state.yamlState);
+            // Add Address to token states
+            // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
+            if (stream.pos === 0) {
+                state.yamlState = parseYamlString(stream.string, state.yamlState, stream.tabSize);
+            }
             return state.token(stream, state);
         },
         fold: 'indent'

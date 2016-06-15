@@ -422,7 +422,7 @@ class TangramPlay {
                 state.line = line;
 
                 // Parse the current state
-                parseYamlString(lineHandle.text, state, 4);
+                state = parseYamlString(lineHandle.text, state, 4);
 
                 // Iterate through keys in this line
                 for (let key of state.nodes) {
