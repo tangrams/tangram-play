@@ -3,7 +3,7 @@ import React from 'react';
 export default class Icon extends React.Component {
     render () {
         return (
-            <i className={`btm ${this.props.type}`}></i>
+            <i className={`btm ${this.props.type} ${this.props.active}`}></i>
         );
     }
 }

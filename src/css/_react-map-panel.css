@@ -80,6 +80,10 @@
     -moz-osx-font-smoothing: auto;
 }
 
+#map-panel * i.btm.active {
+    color: yellow ;
+    font-weight: 700 ;
+}
 
 #map-panel * .btn-group {
     margin-right: 2px ;

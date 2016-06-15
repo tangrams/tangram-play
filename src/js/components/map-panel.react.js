@@ -10,47 +10,37 @@ import MapPanelSearch from './map-panel-search.react';
 
 // import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
-// import search from '../map/search';
-// import { initGeolocator } from '../map/geolocator';
+import ErrorModal from '../modals/modal.error';
 // import bookmarks from '../map/bookmarks';
 
 // const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 // const MAP_UPDATE_DELTA = 0.002;
 
-let el;
+//let el;
 // let currentLocation;
-
-function setZoomLabel () {
-    let label = el.querySelector('.map-zoom-quantity');
-    let currentZoom = map.getZoom();
-    let fractionalNumber = Math.floor(currentZoom * 10) / 10;
-    label.textContent = fractionalNumber.toFixed(1);
-}
-
-const clickZoomIn = function () {
-    map.zoomIn(1, { animate: true });
-    setZoomLabel();
-};
-
-const clickZoomOut = function () {
-    map.zoomOut(1, { animate: true });
-    setZoomLabel();
-};
 
 export default class MapPanel extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            open: true
+            zoom: '',
+            open: true,
+            geolocatorButton: 'bt-map-arrow',
+            geolocateActive: 'false'
         };
         this.toggleMapPanel = this.toggleMapPanel.bind(this);
+        this.clickGeolocator = this.clickGeolocator.bind(this);
+        this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
+        this.clickZoomIn = this.clickZoomIn.bind(this);
+        this.clickZoomOut = this.clickZoomOut.bind(this);
     }
 
     componentDidMount () {
-        // search.init();
-        // initGeolocator();
+        let currentLocation = map.getCenter();
+        let currentZoom = map.getZoom();
+
+        this.setState({ zoom: currentZoom });
         // bookmarks.init();
-        // setZoomLabel();
         //
         // currentLocation = map.getCenter();
         // search.setCurrentLatLng(currentLocation);
@@ -59,6 +49,97 @@ export default class MapPanel extends React.Component {
 
     toggleMapPanel () {
         this.setState({ open: !this.state.open });
+    }
+
+    clickZoomIn () {
+        map.zoomIn(1, { animate: true });
+        this.setZoomLabel();
+    };
+
+    clickZoomOut () {
+        map.zoomOut(1, { animate: true });
+        this.setZoomLabel();
+    };
+
+    setZoomLabel () {
+        let currentZoom = map.getZoom();
+        let fractionalNumber = Math.floor(currentZoom * 10) / 10;
+        this.setState({ zoom: fractionalNumber.toFixed(1) });
+    }
+
+    clickGeolocator () {
+        const geolocator = window.navigator.geolocation;
+        const options = {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+        };
+
+        // Fixes an infinite loop bug with Safari
+        // https://stackoverflow.com/questions/27150465/geolocation-api-in-safari-8-and-7-1-keeps-asking-permission/28436277#28436277
+        window.setTimeout(() => {
+            geolocator.getCurrentPosition(this.onGeolocateSuccess, this.onGeolocateError, options);
+        }, 0);
+
+        this.setState({ geolocatorButton: 'bt-sync bt-spin' });
+    }
+
+    onGeolocateSuccess (position) {
+        // console.log(position);
+
+        this.setState({ geolocatorButton: 'bt-map-arrow' });
+        this.setState({ geolocateActive: 'true' });
+        this.setState({ geolocateActive: 'false' });
+
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const accuracy = position.coords.accuracy || 0;
+
+        let originalZoom = map.getZoom();
+        let desiredZoom = originalZoom;
+
+        // Only zoom to a radius if the accuracy is actually a number or present
+        if (accuracy) {
+            // The circle needs to be added to the map in order for .getBounds() to work
+            let circle = L.circle([latitude, longitude], accuracy).addTo(map);
+            let bounds = circle.getBounds();
+
+            // Fit view to the accuracy diameter
+            map.fitBounds(bounds);
+
+            // If the new zoom level is within a +/- 1 range of the original
+            // zoom level, keep it the same
+            let newZoom = map.getZoom();
+            desiredZoom = (newZoom >= originalZoom - 1 && newZoom <= originalZoom + 1)
+                ? originalZoom : newZoom;
+
+            // Clean up
+            circle.remove();
+        }
+        else {
+            // Zoom in a bit only if user's view is very zoomed out
+            desiredZoom = (originalZoom < 16) ? 16 : originalZoom;
+        }
+
+        map.setZoom(desiredZoom);
+    }
+
+    onGeolocateError (err) {
+        let message = 'Tangram Play could not retrieve your current position and we do not have enough information to know why.';
+        switch (err.code) {
+            case 1: // PERMISSION_DENIED
+                message = 'Tangram Play could not retrieve your current position because we do not have permission to use your browser’s geolocation feature. To get your current location, please turn it back on in your browser settings.';
+                break;
+            case 2: // POSITION_UNAVAILABLE
+                message = 'Tangram Play could not retrieve your current position because your browser’s geolocation feature reported an internal error.';
+                break;
+            case 3: // TIMEOUT
+                message = 'Tangram Play could not retrieve your current position because your browser’s geolocation feature did not respond.';
+                break;
+            default:
+                break;
+        }
+        const modal = new ErrorModal({ message });
+        modal.show();
     }
 
     render () {
@@ -74,20 +155,20 @@ export default class MapPanel extends React.Component {
                 {/* Map panel*/}
                 <Panel collapsible expanded={this.state.open} className='map-panel-collapsible'>
                     <div className='map-panel-toolbar'>
-                        <div>z&#8202;<span></span></div>
+                        <div><span>z{this.state.zoom}</span></div>
 
                         {/* Zoom buttons*/}
                         <ButtonGroup id='buttons-plusminus'>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
-                                <Button onClick={clickZoomIn}> <Icon type={'bt-plus'} /> </Button>
+                                <Button onClick={this.clickZoomIn}> <Icon type={'bt-plus'} /> </Button>
                             </OverlayTrigger>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom out'}</Tooltip>}>
-                                <Button onClick={clickZoomOut}> <Icon type={'bt-minus'} /> </Button>
+                                <Button onClick={this.clickZoomOut}> <Icon type={'bt-minus'} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 
                         {/* Search buttons*/}
-                        <MapPanelSearch />
+                        <MapPanelSearch geolocateActive={this.state.geolocateActive}/>
 
                         {/* Bookmark button*/}
                         <ButtonGroup>
@@ -99,7 +180,7 @@ export default class MapPanel extends React.Component {
                         {/* Locate me button*/}
                         <ButtonGroup>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Locate me'}</Tooltip>}>
-                                <Button> <Icon type={'bt-map-arrow'} /> </Button>
+                                <Button onClick={this.clickGeolocator}> <Icon type={this.state.geolocatorButton} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 

@@ -8,7 +8,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
 
 import { httpGet, debounce } from '../tools/common';
-// import bookmarks from '../map/bookmarks';
+import bookmarks from '../map/bookmarks';
 import { map } from '../map/map';
 import { config } from '../config';
 
@@ -17,12 +17,12 @@ let latlngLabelPrecision = 4;
 
 // Returns the currently selected result in order to update the search bar placeholder
 function getSuggestionValue (suggestion) {
-    return suggestion;
+    return suggestion.properties.label;
 }
 
 function renderSuggestion (suggestion) {
     return (
-        <span><Icon type={'bt-map-marker'} /> {suggestion}</span>
+        <span><Icon type={'bt-map-marker'} /> {suggestion.properties.label}</span>
     );
 }
 
@@ -33,22 +33,34 @@ export default class MapPanelSearch extends React.Component {
             latlng: '40.7148, -73.9218',
             value: '',
             suggestions: [],
-            results: []
+            bookmarkActive: ''
         };
 
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+        this.clickSave = this.clickSave.bind(this);
     }
 
+    // Called exactly once after component DOM has finished rendering
     componentDidMount () {
         this.setCurrentLatLng(map.getCenter());
+        console.log(this.props.geolocateActive)
     }
 
     setCurrentLatLng (latlng) {
         this.setState({ latlng: `${latlng.lat.toFixed(latlngLabelPrecision)}, ${latlng.lng.toFixed(latlngLabelPrecision)}` });
     }
 
+    // Every time user locates him or herself we need to update the value of the search bar
+    componentWillReceiveProps(nextProps) {
+        if (this.props.geolocateActive === 'true') {
+            this.reverseGeocode(map.getCenter());
+        }
+    }
+
     reverseGeocode (latlng) {
+        console.log("trying to geocode");
         const lat = latlng.lat;
         const lng = latlng.lng;
         const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
@@ -60,14 +72,37 @@ export default class MapPanelSearch extends React.Component {
 
             // TODO: Much more clever viewport/zoom based determination of current location
             let response = JSON.parse(res);
+            console.log("response" + response);
             if (!response.features || response.features.length === 0) {
                 // Sometimes reverse geocoding returns no results
-                this.setState({ location: 'Unknown location' });
+                this.setState({ value: 'Unknown location' });
             }
             else {
-                this.setState({ location: response.features[0].properties.label });
+                this.setState({ value: response.features[0].properties.label });
             }
         }), SEARCH_THROTTLE);
+    }
+
+    clickSave () {
+        let data = this.getCurrentMapViewData();
+        if (bookmarks.saveBookmark(data) === true) {
+            console.log("true") ;
+            this.setState({ bookmarkActive: 'active' });
+        //     // saveEl.classList.add('active');
+        }
+    }
+
+    getCurrentMapViewData () {
+        let center = map.getCenter();
+        let zoom = map.getZoom();
+        let label = this.state.value || 'Unknown location';
+        return {
+            label,
+            lat: center.lat,
+            lng: center.lng,
+            zoom,
+            _date: new Date().toJSON()
+        };
     }
 
     /* Autocomplete search functions */
@@ -84,8 +119,12 @@ export default class MapPanelSearch extends React.Component {
     }
 
     // When user selects a result from the list of autocompletes
-    onSuggestionSelected (event, { suggestionValue }) {
-        console.log('Selected ' + suggestionValue);
+    onSuggestionSelected (event, { suggestion, suggestionValue, sectionIndex }) {
+        let lat = suggestion.geometry.coordinates[1];
+        let lng = suggestion.geometry.coordinates[0];
+        this.setCurrentLatLng ({lat: lat, lng: lng});
+        map.setView({ lat: lat, lng: lng });
+        this.setState({ bookmarkActive: '' });
         // this.loadSuggestions(suggestionValue);
     }
 
@@ -111,22 +150,16 @@ export default class MapPanelSearch extends React.Component {
     showResults (results) {
         const features = results.features;
 
-        let list = [];
-        for (let i = 0, j = features.length; i < j; i++) {
-            list.push(features[i].properties.label);
-        }
-
         this.setState({
-            results: features,
-            suggestions: list
+            suggestions: features
         });
     }
 
     render () {
         const { value, suggestions } = this.state;
-        const inputProps = {
+        let inputProps = {
             placeholder: 'Cuartos, Mexico',
-            value,
+            value: this.state.value,
             onChange: this.onChange
         };
 
@@ -143,7 +176,7 @@ export default class MapPanelSearch extends React.Component {
                     inputProps={inputProps} />
                 <div className='map-search-latlng'>{this.state.latlng}</div>
                 <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
-                    <Button> <Icon type={'bt-star'} /> </Button>
+                    <Button onClick={this.clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
                 </OverlayTrigger>
             </ButtonGroup>
         );
