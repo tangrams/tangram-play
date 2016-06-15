@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import DropdownButton from 'react-bootstrap/lib/DropdownButton';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
 import MapPanelSearch from './map-panel-search.react';
@@ -11,7 +13,7 @@ import MapPanelSearch from './map-panel-search.react';
 // import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
-// import bookmarks from '../map/bookmarks';
+import bookmarks from '../map/bookmarks';
 
 // const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 // const MAP_UPDATE_DELTA = 0.002;
@@ -137,6 +139,35 @@ export default class MapPanel extends React.Component {
     }
 
     render () {
+        var results = [];
+
+        let bookmarkList = bookmarks.readData().data;
+        if (bookmarkList.length === 0) {
+            results.push({
+                id: 1,
+                label: 'No bookmarks yet!'
+            });
+        }
+        else {
+            for (let i = 0, j = bookmarkList.length; i < j; i++) {
+                const bookmark = bookmarkList[i];
+                let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
+
+                results.push({
+                    id: i,
+                    label: bookmark.label,
+                    lat: bookmark.lat.toFixed(4),
+                    lng: bookmark.lng.toFixed(4),
+                    zoom: fractionalZoom.toFixed(1)
+                });
+            }
+
+            results.push({
+                id: results.length,
+                label: 'Clear bookmarks'
+            });
+        }
+
         return (
             <div>
                 {/* Toggle map panel to show it*/}
@@ -167,7 +198,11 @@ export default class MapPanel extends React.Component {
                         {/* Bookmark button*/}
                         <ButtonGroup>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
-                                <Button> <Icon type={'bt-bookmark'} /> </Button>
+                                <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle="default" noCaret pullRight id="map-panel-bookmark-button">
+                                    {results.map(function(result) {
+                                        return <MenuItem key={result.id}>{result.label}</MenuItem>;
+                                    })}
+                                </DropdownButton>
                             </OverlayTrigger>
                         </ButtonGroup>
 
