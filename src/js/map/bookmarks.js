@@ -14,15 +14,15 @@ function init () {
     buttonEl = el.querySelector('.map-bookmarks-button');
     menuEl = el.querySelector('.map-bookmarks-menu');
 
-    menuEl.addEventListener('click', onMenuClickHandler, false);
-    buttonEl.addEventListener('click', event => {
-        if (!buttonEl.classList.contains('active')) {
-            showMenu();
-        }
-        else {
-            clearMenu();
-        }
-    }, false);
+    // menuEl.addEventListener('click', onMenuClickHandler, false);
+    // buttonEl.addEventListener('click', event => {
+    //     if (!buttonEl.classList.contains('active')) {
+    //         showMenu();
+    //     }
+    //     else {
+    //         clearMenu();
+    //     }
+    // }, false);
 }
 
 function readData () {
@@ -163,7 +163,8 @@ let bookmarks = {
     init,
     showMenu,
     saveBookmark,
-    clearData
+    clearData,
+    readData
 };
 
 export default bookmarks;
