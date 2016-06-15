@@ -381,71 +381,66 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     const glslMode = CodeMirror.getMode(config, 'glsl');
     const jsMode = CodeMirror.getMode(config, 'javascript');
 
-    function yaml (stream, state) {
+    function yamlToken (stream, state) {
         const address = getKeyAddressFromState(state.yamlState);
         if (address !== undefined) {
             if (isShader(address) &&
                 !/^\|$/g.test(stream.string) &&
                 isAfterKey(stream.string, stream.pos)) {
-                state.token = glsl;
+                state.token = glslToken;
                 state.localMode = glslMode;
                 state.localState = glslMode.startState(getInd(stream.string));
-                return glsl(stream, state);
+                return glslToken(stream, state);
             }
             else if (isContentJS(tangramScene, address) &&
                         !/^\|$/g.test(stream.string) &&
                         isAfterKey(stream.string, stream.pos)) {
-                state.token = js;
+                state.token = jsToken;
                 state.localMode = jsMode;
                 state.localState = jsMode.startState(getInd(stream.string));
-                return js(stream, state);
+                return jsToken(stream, state);
             }
-        }
-
-        if (stream.pos === 0) {
-            state.yamlState.line++;
         }
 
         return yamlMode.token(stream, state.yamlState);
     }
 
-    function glsl (stream, state) {
+    function glslToken (stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
         if (!isShader(address) || (/^\|$/g.test(stream.string))) {
-            state.token = yaml;
-            state.localState = state.localMode = null;
-            return null;
+            state.token = yamlToken;
+            state.localState = null;
+            state.localMode = null;
+            return yamlMode.token(stream, state.yamlState);
         }
-        if (stream.pos === 0) {
-            state.yamlState.line++;
-        }
+
         return glslMode.token(stream, state.localState);
     }
 
     //  TODO:
     //        Replace global scene by a local
     //
-    function js (stream, state) {
+    function jsToken (stream, state) {
         let address = getKeyAddressFromState(state.yamlState);
         if ((!isContentJS(tangramScene, address) || /^\|$/g.test(stream.string))) {
-            state.token = yaml;
-            state.localState = state.localMode = null;
-            return null;
+            state.token = yamlToken;
+            state.localState = null;
+            state.localMode = null;
+            return yamlMode.token(stream, state.yamlState);
         }
-        if (stream.pos === 0) {
-            state.yamlState.line++;
-        }
+
         return jsMode.token(stream, state.localState);
     }
 
     return {
         startState: function () {
-            let state = yamlMode.startState();
+            const state = CodeMirror.startState(yamlMode);
+
             state.keyStack = [];
             state.keyLevel = -1;
             state.line = 0;
             return {
-                token: yaml,
+                token: yamlToken,
                 localMode: null,
                 localState: null,
                 yamlState: state
@@ -482,6 +477,11 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
             // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
             if (stream.pos === 0) {
                 state.yamlState = parseYamlString(stream.string, state.yamlState, stream.tabSize);
+
+                // Increment line count in the state, since CodeMirror normally
+                // does not keep track of this for us. Note: we may not need
+                // this ultimately if widget data is embedded directly on the state.
+                state.yamlState.line++;
             }
             return state.token(stream, state);
         },
