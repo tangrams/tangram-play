@@ -86,9 +86,13 @@ export default class MapPanelSearch extends React.Component {
 
     // Every time user locates him or herself we need to update the value of the search bar
     componentWillReceiveProps (nextProps) {
-        let geolocateActive = this.props.geolocateActive;
+        let geolocateActive = nextProps.geolocateActive;
+        let bookmarkActive = nextProps.bookmarkActive;
         if (geolocateActive.active === 'true') {
             this.reverseGeocode(geolocateActive.latlng); // set the lat lng here
+        }
+        if (bookmarkActive) {
+            this.setState({ bookmarkActive: 'active' });
         }
     }
 
@@ -226,5 +230,6 @@ export default class MapPanelSearch extends React.Component {
 
 MapPanelSearch.propTypes = {
     geolocateActive: React.PropTypes.object,
+    bookmarkActive: React.PropTypes.bool,
     callbackParent: React.PropTypes.func
 };
