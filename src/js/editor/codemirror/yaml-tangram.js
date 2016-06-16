@@ -432,6 +432,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
 
             // Augment YAML state object with other information.
             return Object.assign(state, {
+                indentation: 0,
                 keyStack: [],
                 keyLevel: -1,
                 line: 0, // 1-indexed line number.
@@ -477,9 +478,54 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 // does not keep track of this for us. Note: we may not need
                 // this ultimately if widget data is embedded directly on the state.
                 state.line++;
+
+                // Record indentation. This is the number of spaces a line
+                // is indented. It does not indicate key level, which depends
+                // on the indentation level of lines above this one.
+                state.indentation = stream.indentation();
             }
 
             return state.token(stream, state);
+        },
+        // Enables smart indentation on new lines, while in YAML mode.
+        // When the new line is created, if the previous value is blank or
+        // the multi-line pipe character, the new line indented one indentUnit
+        // past the previous indentation. Otherwise, retain the previous
+        // indentation.
+        indent: function (state, textAfter) {
+            // Indentation in YAML mode
+            if (state.innerMode === null) {
+                const previousValue = state.nodes[0].value.trim();
+                const previousKey = state.nodes[0].key;
+
+                // Only indent after lines that meet certain conditions.
+                // The previous line must have a key, and the key's value is
+                // either blank or a pipe.
+                if (previousKey && (previousValue === '' || previousValue === '|')) {
+                    return state.indentation + config.indentUnit;
+                }
+                else {
+                    return state.indentation;
+                }
+            }
+            // If not YAML, defer to inner mode's indent() method.
+            // Both JavaScript and C-like modes have built-in indent() methods,
+            // so we have no need for fallbacks yet.
+            // TODO: there is still buggy implementation of indentation
+            // within these inner modes (possibly due to the mixed mode).
+            // There is still some work to do.
+            else {
+                const innerIndent = state.innerMode.indent(state.innerState, textAfter);
+                // The inner state's context does not always store the actual
+                // indentation, for unknown reasons. This hack never lets the
+                // inner mode's indentation be less than the YAML indentation.
+                if (innerIndent >= state.indentation) {
+                    return innerIndent;
+                }
+                else {
+                    return state.indentation;
+                }
+            }
         },
         fold: 'indent'
     };
