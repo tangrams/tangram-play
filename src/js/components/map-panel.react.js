@@ -11,12 +11,11 @@ import Icon from './icon.react';
 import MapPanelSearch from './map-panel-search.react';
 
 // import LocalStorage from '../storage/localstorage';
-import { map } from '../map/map';
+import { map, EventEmitter } from '../map/map';
 import ErrorModal from '../modals/modal.error';
 import bookmarks from '../map/bookmarks';
 import Modal from '../modals/modal';
 
-// const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 // const MAP_UPDATE_DELTA = 0.002;
 
 export default class MapPanel extends React.Component {
@@ -38,6 +37,13 @@ export default class MapPanel extends React.Component {
         this.clickDeleteBookmarks = this.clickDeleteBookmarks.bind(this);
         this.clickGoToBookmark = this.clickGoToBookmark.bind(this);
         this.addBookmarkCallback = this.addBookmarkCallback.bind(this);
+    }
+
+    // Temporary requirement is to subscribe to events from map becuase it is not a React component
+    componentDidMount () {
+        let that = this;
+        // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
+        EventEmitter.subscribe('zoomend', function (data) { that.setZoomLabel(); });
     }
 
     toggleMapPanel () {

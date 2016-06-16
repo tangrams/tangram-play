@@ -46,6 +46,8 @@ export function initMap () {
         LocalStorage.setItem('zoom', map.getZoom());
     });
 
+    setupEventListeners();
+
     // initMapToolbar();
 }
 
@@ -170,3 +172,62 @@ function getMapStartLocation () {
 
     return startLocation;
 }
+
+// New section added to make map play nice with React panel
+/*
+function getMapChangeDelta (startLatLng, endLatLng) {
+    let startX = startLatLng.lat;
+    let startY = startLatLng.lng;
+    let endX = endLatLng.lat;
+    let endY = endLatLng.lng;
+    return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
+}
+*/
+
+// Need to setup dispatch services to let the React component MapPanel know when map has changed
+function setupEventListeners () {
+    // Make sure that map zoom label changes when the map is done zooming
+    map.on('zoomend', function (e) {
+        EventEmitter.dispatch('zoomend', {});
+    });
+    map.on('moveend', function (e) {
+        EventEmitter.dispatch('moveend', {});
+        // Only update location if the map center has moved more than a given delta
+        // This is actually really necessary because EVERY update in the editor reloads
+        // the map, which fires moveend events despite not actually moving the map
+        // But we also have the bonus of not needing to make a reverse geocode request
+        // for small changes of the map center.
+
+        // let center = map.getCenter();
+        // console.log("new center: " + center);
+        /*
+        search.setCurrentLatLng(center);
+        if (getMapChangeDelta(currentLocation, center) > MAP_UPDATE_DELTA) {
+            search.reverseGeocode(center);
+
+            // Reset currentLocation after geocoding - don't reset after every
+            // moveend because this basically allows the reverse geocode to never
+            // happen if you just scoot the viewport tiny amounts each time.
+            currentLocation = center;
+        }
+        */
+    });
+}
+
+export var EventEmitter = {
+    _events: {},
+    dispatch: function (event, data) {
+        if (!this._events[event]) {
+            return; // no one is listening to this event
+        }
+        for (var i = 0; i < this._events[event].length; i++) {
+            this._events[event][i](data);
+        }
+    },
+    subscribe: function (event, callback) {
+        if (!this._events[event]) {
+            this._events[event] = []; // new event
+        }
+        this._events[event].push(callback);
+    }
+};
