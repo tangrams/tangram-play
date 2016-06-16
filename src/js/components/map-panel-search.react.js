@@ -10,11 +10,12 @@ import Icon from './icon.react';
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from '../map/bookmarks';
 import { map } from '../map/map';
-import { EventEmitter }  from './event-emittor';
+import { EventEmitter } from './event-emittor';
 import { config } from '../config';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
 let latlngLabelPrecision = 4;
+const MAP_UPDATE_DELTA = 0.002;
 
 // Returns the currently selected result in order to update the search bar placeholder
 function getSuggestionValue (suggestion) {
@@ -27,12 +28,23 @@ function renderSuggestion (suggestion) {
     );
 }
 
+function getMapChangeDelta (startLatLng, endLatLng) {
+    let startX = startLatLng.lat;
+    let startY = startLatLng.lng;
+    let endX = endLatLng.lat;
+    let endY = endLatLng.lng;
+    return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
+}
+
 export default class MapPanelSearch extends React.Component {
     constructor (props) {
         super(props);
         let mapcenter = map.getCenter();
         this.state = {
-            latlng: mapcenter.lat.toFixed(latlngLabelPrecision) + ',' + mapcenter.lng.toFixed(latlngLabelPrecision),
+            latlng: {
+                lat: mapcenter.lat.toFixed(latlngLabelPrecision),
+                lng: mapcenter.lng.toFixed(latlngLabelPrecision)
+            },
             value: '',
             placeholder: '',
             suggestions: [],
@@ -52,14 +64,23 @@ export default class MapPanelSearch extends React.Component {
     componentDidMount () {
         let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('dragend', function (data) {
-            that.setCurrentLatLng(map.getCenter());
-            that.reverseGeocode(map.getCenter());
+        EventEmitter.subscribe('moveend', function (data) {
+            let currentLatLng = map.getCenter();
+            let delta = getMapChangeDelta(that.state.latlng, currentLatLng);
+            if (delta > MAP_UPDATE_DELTA) {
+                that.setCurrentLatLng(currentLatLng);
+                that.reverseGeocode(currentLatLng);
+            }
         });
     }
 
     setCurrentLatLng (latlng) {
-        this.setState({ latlng: `${latlng.lat.toFixed(latlngLabelPrecision)}, ${latlng.lng.toFixed(latlngLabelPrecision)}` });
+        this.setState({
+            latlng: {
+                lat: latlng.lat.toFixed(latlngLabelPrecision),
+                lng: latlng.lng.toFixed(latlngLabelPrecision)
+            }
+        });
     }
 
     // Every time user locates him or herself we need to update the value of the search bar
@@ -193,7 +214,7 @@ export default class MapPanelSearch extends React.Component {
                     renderSuggestion={renderSuggestion}
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps} />
-                <div className='map-search-latlng'>{this.state.latlng}</div>
+                <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
                 <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
                     <Button onClick={this.clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
                 </OverlayTrigger>
