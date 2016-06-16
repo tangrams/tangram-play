@@ -75,10 +75,14 @@
 }
 
 .cm-s-tangram .CodeMirror-linenumber {
-    margin-left: 14px;
+    /* Relative units allow for proportional gutter sizing when font-size changes */
+    margin-left: 1em;
+    padding: 0 0.2em 0 0.4em;
+    min-width: 1.2em;
     color: var(--ui-border-color);
     font-weight: 200;
 }
+
 .cm-s-tangram .CodeMirror-cursor { border-left: 1px solid white; }
 
 .cm-s-tangram .cm-keyword { color: #c792ea; }
