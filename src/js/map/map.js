@@ -8,7 +8,7 @@ import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 // import { initMapToolbar } from './toolbar';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
-
+import { EventEmitter }  from '../components/event-emittor';
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';
@@ -196,11 +196,13 @@ function setupEventListeners () {
     map.on('zoomend', function (e) {
         EventEmitter.dispatch('zoomend', {});
     });
-    map.on('moveend', function (e) {
-        EventEmitter.dispatch('moveend', {});
+    map.on('dragend', function (e) { //drag
+        // Explain drag change
+        EventEmitter.dispatch('dragend', {});
         // Only update location if the map center has moved more than a given delta
         // This is actually really necessary because EVERY update in the editor reloads
         // the map, which fires moveend events despite not actually moving the map
+
         // But we also have the bonus of not needing to make a reverse geocode request
         // for small changes of the map center.
 
@@ -219,21 +221,3 @@ function setupEventListeners () {
         */
     });
 }
-
-export var EventEmitter = {
-    _events: {},
-    dispatch: function (event, data) {
-        if (!this._events[event]) {
-            return; // no one is listening to this event
-        }
-        for (var i = 0; i < this._events[event].length; i++) {
-            this._events[event][i](data);
-        }
-    },
-    subscribe: function (event, callback) {
-        if (!this._events[event]) {
-            this._events[event] = []; // new event
-        }
-        this._events[event].push(callback);
-    }
-};

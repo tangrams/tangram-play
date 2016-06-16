@@ -10,8 +10,8 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
 import MapPanelSearch from './map-panel-search.react';
 
-// import LocalStorage from '../storage/localstorage';
-import { map, EventEmitter } from '../map/map';
+import { map } from '../map/map';
+import { EventEmitter } from './event-emittor';
 import ErrorModal from '../modals/modal.error';
 import bookmarks from '../map/bookmarks';
 import Modal from '../modals/modal';
@@ -165,8 +165,11 @@ export default class MapPanel extends React.Component {
     }
 
     clickDeleteBookmarks () {
+        var that = this;
+
         const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', bookmarks.clearData);
         modal.show();
+        that.forceUpdate();
     }
 
     addBookmarkCallback () {

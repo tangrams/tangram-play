@@ -9,7 +9,8 @@ import Icon from './icon.react';
 
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from '../map/bookmarks';
-import { map, EventEmitter } from '../map/map';
+import { map } from '../map/map';
+import { EventEmitter }  from './event-emittor';
 import { config } from '../config';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
@@ -51,7 +52,7 @@ export default class MapPanelSearch extends React.Component {
     componentDidMount () {
         let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('moveend', function (data) {
+        EventEmitter.subscribe('dragend', function (data) {
             that.setCurrentLatLng(map.getCenter());
             that.reverseGeocode(map.getCenter());
         });
