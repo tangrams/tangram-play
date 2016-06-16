@@ -192,7 +192,6 @@ function setupEventListeners () {
         // Only update location if the map center has moved more than a given delta
         // This is actually really necessary because EVERY update in the editor reloads
         // the map, which fires moveend events despite not actually moving the map
-
         // But we also have the bonus of not needing to make a reverse geocode request
         // for small changes of the map center.
 

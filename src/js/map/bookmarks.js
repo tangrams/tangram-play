@@ -1,5 +1,6 @@
 // import { map } from '../map/map';
 import LocalStorage from '../storage/localstorage';
+import { EventEmitter } from '../components/event-emittor';
 // import Modal from '../modals/modal';
 
 const STORAGE_BOOKMARKS_KEY = 'bookmarks';
@@ -57,6 +58,7 @@ function onClickDeleteBookmarks (event) {
 
 function clearData () {
     LocalStorage.setItem(STORAGE_BOOKMARKS_KEY, JSON.stringify(DEFAULT_BOOKMARKS_OBJECT));
+    EventEmitter.dispatch('clearbookmarks', {});
     return true;
 }
 
