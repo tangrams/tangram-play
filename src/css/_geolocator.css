@@ -1,10 +1,10 @@
 /* GEOLOCATOR */
 
+/*
 .geolocator {
     flex: none;
 }
 
-/* borrowing from map-nav button */
 .geolocator-button {
     i.bt-spin {
         display: none;
@@ -19,3 +19,5 @@
         display: inline-block;
     }
 }
+
+*/
