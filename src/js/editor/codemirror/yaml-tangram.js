@@ -20,7 +20,7 @@ export function getNodes (cm, nLine) {
     // Return the nodes. If any property in the chain is not defined,
     // return an empty array.
     try {
-        return lineHandle.stateAfter.yamlState.nodes;
+        return lineHandle.stateAfter.nodes || [];
     }
     catch (e) {
         return [];
@@ -268,12 +268,9 @@ function getInlineNodes (str, nLine) {
 }
 
 // Add Address to token states
-export function parseYamlString (string, origState, tabSize) {
+export function parseYamlString (string, state, tabSize) {
     const regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
     const node = regex.exec(string);
-
-    // Safe clone of state
-    const state = Object.assign({}, origState);
 
     // Each node entry is based off of this object.
     // TODO: Also make this available to to getInlineNodes(), above.
@@ -382,86 +379,83 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     const jsMode = CodeMirror.getMode(config, 'javascript');
 
     function yamlToken (stream, state) {
-        const address = getKeyAddressFromState(state.yamlState);
+        const address = getKeyAddressFromState(state);
         if (address !== undefined) {
             if (isShader(address) &&
                 !/^\|$/g.test(stream.string) &&
                 isAfterKey(stream.string, stream.pos)) {
                 state.token = glslToken;
-                state.localMode = glslMode;
-                state.localState = glslMode.startState(getInd(stream.string));
+                state.innerMode = glslMode;
+                state.innerState = glslMode.startState(getInd(stream.string));
                 return glslToken(stream, state);
             }
             else if (isContentJS(tangramScene, address) &&
                         !/^\|$/g.test(stream.string) &&
                         isAfterKey(stream.string, stream.pos)) {
                 state.token = jsToken;
-                state.localMode = jsMode;
-                state.localState = jsMode.startState(getInd(stream.string));
+                state.innerMode = jsMode;
+                state.innerState = jsMode.startState(getInd(stream.string));
                 return jsToken(stream, state);
             }
         }
 
-        return yamlMode.token(stream, state.yamlState);
+        return yamlMode.token(stream, state);
     }
 
     function glslToken (stream, state) {
-        let address = getKeyAddressFromState(state.yamlState);
+        let address = getKeyAddressFromState(state);
         if (!isShader(address) || (/^\|$/g.test(stream.string))) {
             state.token = yamlToken;
-            state.localState = null;
-            state.localMode = null;
-            return yamlMode.token(stream, state.yamlState);
+            state.innerState = null;
+            state.innerMode = null;
+            return yamlMode.token(stream, state);
         }
 
-        return glslMode.token(stream, state.localState);
+        return glslMode.token(stream, state.innerState);
     }
 
-    //  TODO:
-    //        Replace global scene by a local
-    //
     function jsToken (stream, state) {
-        let address = getKeyAddressFromState(state.yamlState);
+        let address = getKeyAddressFromState(state);
         if ((!isContentJS(tangramScene, address) || /^\|$/g.test(stream.string))) {
             state.token = yamlToken;
-            state.localState = null;
-            state.localMode = null;
-            return yamlMode.token(stream, state.yamlState);
+            state.innerState = null;
+            state.innerMode = null;
+            return yamlMode.token(stream, state);
         }
 
-        return jsMode.token(stream, state.localState);
+        return jsMode.token(stream, state.innerState);
     }
 
     return {
         startState: function () {
             const state = CodeMirror.startState(yamlMode);
 
-            state.keyStack = [];
-            state.keyLevel = -1;
-            state.line = 0;
-            return {
+            // Augment YAML state object with other information.
+            return Object.assign(state, {
+                keyStack: [],
+                keyLevel: -1,
+                line: 0, // 1-indexed line number.
                 token: yamlToken,
-                localMode: null,
-                localState: null,
-                yamlState: state
-            };
+                // For mixed modes
+                innerMode: null,
+                innerState: null
+            });
         },
-        copyState: function (state) {
-            let local;
-            if (state.localState) {
-                local = CodeMirror.copyState(state.localMode, state.localState);
+        // Makes a safe copy of the original state object.
+        copyState: function (originalState) {
+            const state = CodeMirror.copyState(yamlMode, originalState);
+
+            // Also, make a safe copy of the inner state object, if present.
+            if (originalState.innerState !== null) {
+                state.innerState = CodeMirror.copyState(originalState.innerMode, originalState.innerState);
             }
-            return {
-                token: state.token,
-                localMode: state.localMode,
-                localState: local,
-                yamlState: CodeMirror.copyState(yamlMode, state.yamlState),
-            };
+
+            return state;
         },
         innerMode: function (state) {
             return {
-                state: state.localState || state.yamlState,
-                mode: state.localMode || yamlMode
+                state: state.innerState || state,
+                mode: state.innerMode || yamlMode
             };
         },
         // By default, CodeMirror skips blank lines when tokenizing a document.
@@ -470,19 +464,21 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
         // blank lines, which we use solely to increment the line number on our state
         // object when a blank line is encountered by CodeMirror's parser.
         blankLine: function (state) {
-            state.yamlState.line++;
+            state.line++;
         },
         token: function (stream, state) {
-            // Add Address to token states
-            // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
+            // Do the following only once per line
             if (stream.pos === 0) {
-                state.yamlState = parseYamlString(stream.string, state.yamlState, stream.tabSize);
+                // Parse the string for information - key structure, key name,
+                // key level, and address.
+                state = parseYamlString(stream.string, state, stream.tabSize);
 
                 // Increment line count in the state, since CodeMirror normally
                 // does not keep track of this for us. Note: we may not need
                 // this ultimately if widget data is embedded directly on the state.
-                state.yamlState.line++;
+                state.line++;
             }
+
             return state.token(stream, state);
         },
         fold: 'indent'

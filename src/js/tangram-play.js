@@ -409,7 +409,7 @@ class TangramPlay {
         for (let line = 0, size = editor.getDoc().size; line < size; line++) {
             const lineHandle = editor.getLineHandle(line);
 
-            if (!lineHandle.stateAfter || !lineHandle.stateAfter.yamlState) {
+            if (!lineHandle.stateAfter) {
                 // If the line is NOT parsed.
                 // ======================================================
                 //
@@ -440,7 +440,7 @@ class TangramPlay {
             else {
                 // it the line HAVE BEEN parsed (use the stateAfter)
                 // ======================================================
-                lastState = lineHandle.stateAfter.yamlState;
+                lastState = lineHandle.stateAfter;
                 let keys = this.getNodesOnLine(line);
                 for (let key of keys) {
                     if (key.address === address) {

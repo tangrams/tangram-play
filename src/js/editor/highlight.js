@@ -127,13 +127,13 @@ export function highlightBlock (node) {
 
     // Scroll the top of the block into view. Do this first so that
     // CodeMirror will parse the lines in this viewport. This is necessary
-    // for the `stateAfter.yamlState.keyLevel` to be available.
+    // for the `stateAfter.keyLevel` to be available.
     jumpToLine(editor, node.range.from.line);
 
     // Determine the range to highlight from.
     const blockLine = node.range.from.line;
     // This can still sometimes fail, for unknown reasons.
-    const blockLevel = doc.getLineHandle(blockLine).stateAfter.yamlState.keyLevel;
+    const blockLevel = doc.getLineHandle(blockLine).stateAfter.keyLevel;
     let toLine = blockLine;
     let thisLevel = blockLevel;
     do {
@@ -141,7 +141,7 @@ export function highlightBlock (node) {
         if (nextLineHandle !== undefined && !isEmptyString(nextLineHandle.text)) {
             // The nextLineHandle might not have a stateAfter, so wrap in try {}
             try {
-                thisLevel = nextLineHandle.stateAfter.yamlState.keyLevel;
+                thisLevel = nextLineHandle.stateAfter.keyLevel;
             }
             catch (err) {
                 break;

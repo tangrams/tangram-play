@@ -41,10 +41,9 @@ export default class Widget {
             this.bookmark.lines.length === 1 &&
             this.bookmark.lines[0] &&
             this.bookmark.lines[0].stateAfter &&
-            this.bookmark.lines[0].stateAfter.yamlState &&
-            this.bookmark.lines[0].stateAfter.yamlState.nodes &&
-            this.bookmark.lines[0].stateAfter.yamlState.nodes.length > 0) {
-            for (let node of this.bookmark.lines[0].stateAfter.yamlState.nodes) {
+            this.bookmark.lines[0].stateAfter.nodes &&
+            this.bookmark.lines[0].stateAfter.nodes.length > 0) {
+            for (let node of this.bookmark.lines[0].stateAfter.nodes) {
                 if (this.node.address === node.address) {
                     this.node = node;
                     break;
