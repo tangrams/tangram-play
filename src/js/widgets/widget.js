@@ -72,7 +72,6 @@ export default class Widget {
 
         let others = editor.getDoc().findMarksAt(this.node.range.to);
         if (others.length > 0) {
-            console.log('Avoiding duplication');
             // if (TangramPlay.addons.errorsManager) {
             //     TangramPlay.addons.errorsManager.addWarning({
             //         type:'duplicate',

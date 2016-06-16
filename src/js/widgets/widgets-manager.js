@@ -67,8 +67,8 @@ export default class WidgetsManager {
         let bookmarks = [];
         if (from.line === to.line) { // Line the user is typing
             // cascade and check up the tree and down the tree
-            var activeAddress = window.tangramPlay.editor.getStateAfter(from.line).yamlState.nodes[0].address;
-            bookmarks = bookmarks.concat(TangramPlay.editor.getDoc().findMarksAt(to));
+            var activeAddress = editor.getStateAfter(from.line).yamlState.nodes[0].address;
+            bookmarks = bookmarks.concat(editor.getDoc().findMarksAt(to));
 
             // If there is a bookmark on that line
             if (bookmarks[0] !== undefined) {
