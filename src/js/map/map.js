@@ -8,7 +8,7 @@ import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 // import { initMapToolbar } from './toolbar';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
-import { EventEmitter }  from '../components/event-emittor';
+import { EventEmitter } from '../components/event-emittor';
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';
@@ -174,25 +174,15 @@ function getMapStartLocation () {
 }
 
 // New section added to make map play nice with React panel
-/*
-function getMapChangeDelta (startLatLng, endLatLng) {
-    let startX = startLatLng.lat;
-    let startY = startLatLng.lng;
-    let endX = endLatLng.lat;
-    let endY = endLatLng.lng;
-    return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
-}
-*/
-
 // Need to setup dispatch services to let the React component MapPanel know when map has changed
 function setupEventListeners () {
     // Make sure that map zoom label changes when the map is done zooming
     map.on('zoomend', function (e) {
         EventEmitter.dispatch('zoomend', {});
     });
-    map.on('dragend', function (e) { //drag
+    map.on('moveend', function (e) { // drag
         // Explain drag change
-        EventEmitter.dispatch('dragend', {});
+        EventEmitter.dispatch('moveend', {});
         // Only update location if the map center has moved more than a given delta
         // This is actually really necessary because EVERY update in the editor reloads
         // the map, which fires moveend events despite not actually moving the map
