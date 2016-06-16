@@ -17,15 +17,19 @@
 }
 
 .widget-colorpicker {
+    box-sizing: border-box;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
-    width: 14px;
-    height: 14px;
-    box-sizing: border-box;
+    /* Adjustable size based on editor font size */
+    max-width: 14px;
+    max-height: 14px;
+    width: 1em;
+    height: 1em;
     background-color: white;
     cursor: pointer;
     /* position override */
     vertical-align: middle;
+    margin-top: -0.15em;
 }
 
 .widget-vector {
