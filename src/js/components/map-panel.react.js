@@ -14,6 +14,7 @@ import MapPanelSearch from './map-panel-search.react';
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
 import bookmarks from '../map/bookmarks';
+import Modal from '../modals/modal';
 
 // const STORAGE_DISPLAY_KEY = 'map-toolbar-display';
 // const MAP_UPDATE_DELTA = 0.002;
@@ -34,6 +35,9 @@ export default class MapPanel extends React.Component {
         this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
         this.clickZoomIn = this.clickZoomIn.bind(this);
         this.clickZoomOut = this.clickZoomOut.bind(this);
+        this.clickDeleteBookmarks = this.clickDeleteBookmarks.bind(this);
+        this.clickGoToBookmark = this.clickGoToBookmark.bind(this);
+        this.addBookmarkCallback = this.addBookmarkCallback.bind(this);
     }
 
     toggleMapPanel () {
@@ -138,6 +142,31 @@ export default class MapPanel extends React.Component {
         modal.show();
     }
 
+    clickGoToBookmark (eventKey) {
+        let bookmarkList = bookmarks.readData().data;
+        let bookmark = bookmarkList[eventKey];
+
+        const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
+        const zoom = bookmark.zoom;
+
+        if (!coordinates || !zoom) {
+            return;
+        }
+
+        map.setView(coordinates, zoom);
+
+        // Todo: Add highlight star to indicat its a bookmark you saved
+    }
+
+    clickDeleteBookmarks () {
+        const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', bookmarks.clearData);
+        modal.show();
+    }
+
+    addBookmarkCallback () {
+        this.forceUpdate();
+    }
+
     render () {
         var results = [];
 
@@ -158,13 +187,15 @@ export default class MapPanel extends React.Component {
                     label: bookmark.label,
                     lat: bookmark.lat.toFixed(4),
                     lng: bookmark.lng.toFixed(4),
-                    zoom: fractionalZoom.toFixed(1)
+                    zoom: fractionalZoom.toFixed(1),
+                    onClick: this.clickGoToBookmark
                 });
             }
 
             results.push({
                 id: results.length,
-                label: 'Clear bookmarks'
+                label: 'Clear bookmarks',
+                onClick: this.clickDeleteBookmarks
             });
         }
 
@@ -193,14 +224,14 @@ export default class MapPanel extends React.Component {
                         </ButtonGroup>
 
                         {/* Search buttons*/}
-                        <MapPanelSearch geolocateActive={this.state.geolocateActive}/>
+                        <MapPanelSearch geolocateActive={this.state.geolocateActive} callbackParent={this.addBookmarkCallback}/>
 
                         {/* Bookmark button*/}
                         <ButtonGroup>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
-                                <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle="default" noCaret pullRight id="map-panel-bookmark-button">
-                                    {results.map(function(result) {
-                                        return <MenuItem key={result.id}>{result.label}</MenuItem>;
+                                <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
+                                    {results.map(function (result) {
+                                        return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>{result.label}</MenuItem>;
                                     })}
                                 </DropdownButton>
                             </OverlayTrigger>

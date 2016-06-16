@@ -75,14 +75,14 @@ export default class MapPanelSearch extends React.Component {
                 // Sometimes reverse geocoding returns no results
                 this.setState({ placeholder: 'Unknown location' });
                 // Very first time we load the bar we don't want a value, we want a placeholder
-                if(this.state.value != '') {
+                if (this.state.value !== '') {
                     this.setState({ value: 'Unknown location' });
                 }
             }
             else {
                 this.setState({ placeholder: response.features[0].properties.label });
                 // Very first time we load the bar we don't want a value, we want a placeholder
-                if(this.state.value != '') {
+                if (this.state.value !== '') {
                     this.setState({ value: response.features[0].properties.label });
                 }
             }
@@ -94,6 +94,9 @@ export default class MapPanelSearch extends React.Component {
         if (bookmarks.saveBookmark(data) === true) {
             this.setState({ bookmarkActive: 'active' });
         }
+
+        // Tell parent container to rerender bookmarks button
+        this.props.callbackParent();
     }
 
     getCurrentMapViewData () {
@@ -190,5 +193,6 @@ export default class MapPanelSearch extends React.Component {
 
 
 MapPanelSearch.propTypes = {
-    geolocateActive: React.PropTypes.object
+    geolocateActive: React.PropTypes.object,
+    callbackParent: React.PropTypes.func
 };

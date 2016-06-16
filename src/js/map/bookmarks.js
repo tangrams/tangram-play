@@ -1,14 +1,15 @@
-import { map } from '../map/map';
+// import { map } from '../map/map';
 import LocalStorage from '../storage/localstorage';
-import Modal from '../modals/modal';
+// import Modal from '../modals/modal';
 
 const STORAGE_BOOKMARKS_KEY = 'bookmarks';
 const DEFAULT_BOOKMARKS_OBJECT = {
     data: []
 };
 
-let el, buttonEl, menuEl;
+// let el, buttonEl, menuEl;
 
+/*
 function init () {
     el = document.body.querySelector('.map-bookmarks');
     buttonEl = el.querySelector('.map-bookmarks-button');
@@ -24,6 +25,7 @@ function init () {
     //     }
     // }, false);
 }
+*/
 
 function readData () {
     let data = LocalStorage.getItem(STORAGE_BOOKMARKS_KEY);
@@ -36,11 +38,6 @@ function readData () {
     }
 }
 
-function clearData () {
-    LocalStorage.setItem(STORAGE_BOOKMARKS_KEY, JSON.stringify(DEFAULT_BOOKMARKS_OBJECT));
-    return true;
-}
-
 function saveBookmark (newBookmark) {
     let currentData = readData();
     currentData.data.push(newBookmark);
@@ -48,6 +45,23 @@ function saveBookmark (newBookmark) {
     return true;
 }
 
+/*
+function onClickDeleteBookmarks (event) {
+    const abort = function (event) {
+        event.stopImmediatePropagation();
+    };
+    const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', clearData, abort);
+    modal.show();
+}
+*/
+
+function clearData () {
+    LocalStorage.setItem(STORAGE_BOOKMARKS_KEY, JSON.stringify(DEFAULT_BOOKMARKS_OBJECT));
+    return true;
+}
+
+
+/*
 function showMenu () {
     let bookmarks = readData().data;
 
@@ -91,14 +105,16 @@ function showMenu () {
 
     window.addEventListener('click', onClickOutsideMenu, false);
 }
-
+*/
+/*
 function clearMenu () {
     menuEl.innerHTML = '';
     menuEl.style.display = 'none';
     buttonEl.classList.remove('active');
     document.body.removeEventListener('click', onClickOutsideMenu, false);
 }
-
+*/
+/*
 function onMenuClickHandler (event) {
     let selected = event.target;
 
@@ -119,6 +135,8 @@ function onMenuClickHandler (event) {
         gotoBookmark(selected);
     }
 }
+*/
+/*
 
 function gotoBookmark (selectedEl) {
     const coordinates = selectedEl.coordinates;
@@ -138,15 +156,9 @@ function gotoBookmark (selectedEl) {
         document.body.querySelector('.map-save-icon').classList.add('active');
     }, 0);
 }
+*/
 
-function onClickDeleteBookmarks (event) {
-    const abort = function (event) {
-        event.stopImmediatePropagation();
-    };
-    const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', clearData, abort);
-    modal.show();
-}
-
+/*
 function onClickOutsideMenu (event) {
     let target = event.target;
 
@@ -158,10 +170,11 @@ function onClickOutsideMenu (event) {
         clearMenu();
     }
 }
+*/
 
 let bookmarks = {
-    init,
-    showMenu,
+    // init,
+    // showMenu,
     saveBookmark,
     clearData,
     readData

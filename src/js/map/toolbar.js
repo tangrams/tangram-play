@@ -1,5 +1,5 @@
-/*
 
+/*
 import LocalStorage from '../storage/localstorage';
 import { map } from './map';
 import search from './search';
@@ -129,5 +129,4 @@ function getMapChangeDelta (startLatLng, endLatLng) {
     let endY = endLatLng.lng;
     return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
 }
-
 */
