@@ -52,8 +52,6 @@ export default class Widget {
         }
         // Find the right widget to update if a line has multiple nodes
         else {
-            // Here is a good place to detect duplicates
-            // let others = editor.getDoc().findMarksAt(this.node.range.to);
             let node = TangramPlay.getNodesForAddress(this.node.address);
             this.node = node;
         }

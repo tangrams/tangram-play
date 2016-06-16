@@ -2,6 +2,7 @@ import _ from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';
+import { addWidgets } from './widgets';
 
 import { tangramScene } from '../../map/map';
 
@@ -343,6 +344,9 @@ export function parseYamlString (string, state, tabSize) {
         nodeEntry.address = getAddressFromKeys(state.keyStack);
         state.nodes = [nodeEntry];
     }
+
+    // Adds widgets to nodes, if they have them.
+    state = addWidgets(state);
 
     return state;
 }
