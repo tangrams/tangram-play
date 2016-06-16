@@ -70,20 +70,27 @@ export default class Widget {
     insert () {
         this.updateNode();
 
-        let others = editor.getDoc().findMarksAt(this.node.range.to);
-        if (others.length > 0) {
-            console.log('Avoiding duplication');
-            // if (TangramPlay.addons.errorsManager) {
-            //     TangramPlay.addons.errorsManager.addWarning({
-            //         type:'duplicate',
-            //         nodes: others
-            //     });
-            // }
+        const doc = editor.getDoc();
+
+        // Do not insert if another bookmark is already inserted at this point
+        const otherMarks = doc.findMarksAt(this.node.range.to);
+        let otherBookmarkFound = false;
+        for (let mark of otherMarks) {
+            // Must match this type. Other marks, like the CodeMirror's
+            // matching brackets add-on, creates a TextMarker of type `range`,
+            // and we want to make sure widget bookmarks are added even other
+            // mark types are present.
+            if (mark.type === 'bookmark') {
+                otherBookmarkFound = true;
+                break;
+            }
+        }
+        if (otherBookmarkFound === true) {
             return false;
         }
 
         // inserts the widget into CodeMirror DOM
-        this.bookmark = editor.doc.setBookmark(this.node.range.to, {
+        this.bookmark = doc.setBookmark(this.node.range.to, {
             widget: this.el,
             insertLeft: true,
             handleMouseEvents: true
