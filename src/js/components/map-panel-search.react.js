@@ -70,6 +70,7 @@ export default class MapPanelSearch extends React.Component {
             if (delta > MAP_UPDATE_DELTA) {
                 that.setCurrentLatLng(currentLatLng);
                 that.reverseGeocode(currentLatLng);
+                that.setState({ bookmarkActive: '' });
             }
         });
     }

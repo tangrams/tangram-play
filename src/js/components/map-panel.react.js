@@ -150,8 +150,10 @@ export default class MapPanel extends React.Component {
     }
 
     clickGoToBookmark (eventKey) {
-        let bookmarkList = bookmarks.readData().data;
-        let bookmark = bookmarkList[eventKey];
+        let bookmarks = this.state.bookmarks ;
+        bookmarks[eventKey].active = 'true' ;
+        let bookmark = bookmarks[eventKey];
+        console.log(bookmark);
 
         const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
         const zoom = bookmark.zoom;
@@ -162,6 +164,7 @@ export default class MapPanel extends React.Component {
 
         map.setView(coordinates, zoom);
 
+        this.setState({ bookmarks: bookmarks });
         // Todo: Add highlight star to indicat its a bookmark you saved
     }
 
@@ -195,14 +198,15 @@ export default class MapPanel extends React.Component {
                     lat: bookmark.lat.toFixed(4),
                     lng: bookmark.lng.toFixed(4),
                     zoom: fractionalZoom.toFixed(1),
-                    onClick: this.clickGoToBookmark
+                    onClick: this.clickGoToBookmark.bind(this),
+                    active: ''
                 });
             }
 
             newBookmarks.push({
                 id: bookmarkList.length,
                 label: 'Clear bookmarks',
-                onClick: this.clickDeleteBookmarks
+                onClick: this.clickDeleteBookmarks.bind(this)
             });
         }
 
