@@ -9,7 +9,7 @@ import Icon from './icon.react';
 
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from '../map/bookmarks';
-import { map } from '../map/map';
+import { map, EventEmitter } from '../map/map';
 import { config } from '../config';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
@@ -45,6 +45,16 @@ export default class MapPanelSearch extends React.Component {
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
         this.clickSave = this.clickSave.bind(this);
+    }
+
+    // Temporary requirement is to subscribe to events from map becuase it is not a React component
+    componentDidMount () {
+        let that = this;
+        // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
+        EventEmitter.subscribe('moveend', function (data) {
+            that.setCurrentLatLng(map.getCenter());
+            that.reverseGeocode(map.getCenter());
+        });
     }
 
     setCurrentLatLng (latlng) {
@@ -190,7 +200,6 @@ export default class MapPanelSearch extends React.Component {
         );
     }
 }
-
 
 MapPanelSearch.propTypes = {
     geolocateActive: React.PropTypes.object,

@@ -58,8 +58,8 @@
 @import '_geolocator';
 
 /* + React */
-@import '_react-menu-bar';
-@import '_react-map-panel';
+@import '_map-panel.react';
+@import '_menu-bar.react';
 
 /* VARIABLES */
 
