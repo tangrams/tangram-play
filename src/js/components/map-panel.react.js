@@ -26,7 +26,8 @@ export default class MapPanel extends React.Component {
             geolocateActive: {
                 active: 'false'
             },
-            bookmarks: this.updateBookmarks()
+            bookmarks: this.updateBookmarks(),
+            bookmarkActive: false
         };
         this.toggleMapPanel = this.toggleMapPanel.bind(this);
         this.clickGeolocator = this.clickGeolocator.bind(this);
@@ -150,10 +151,8 @@ export default class MapPanel extends React.Component {
     }
 
     clickGoToBookmark (eventKey) {
-        let bookmarks = this.state.bookmarks ;
-        bookmarks[eventKey].active = 'true' ;
+        let bookmarks = this.state.bookmarks;
         let bookmark = bookmarks[eventKey];
-        console.log(bookmark);
 
         const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
         const zoom = bookmark.zoom;
@@ -164,8 +163,7 @@ export default class MapPanel extends React.Component {
 
         map.setView(coordinates, zoom);
 
-        this.setState({ bookmarks: bookmarks });
-        // Todo: Add highlight star to indicat its a bookmark you saved
+        this.setState({ bookmarkActive: true });
     }
 
     clickDeleteBookmarks () {
@@ -239,7 +237,7 @@ export default class MapPanel extends React.Component {
                         </ButtonGroup>
 
                         {/* Search buttons*/}
-                        <MapPanelSearch geolocateActive={this.state.geolocateActive} callbackParent={this.bookmarkCallback}/>
+                        <MapPanelSearch geolocateActive={this.state.geolocateActive} bookmarkActive={this.state.bookmarkActive} callbackParent={this.bookmarkCallback}/>
 
                         {/* Bookmark button*/}
                         <ButtonGroup>
