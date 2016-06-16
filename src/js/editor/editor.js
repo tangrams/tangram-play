@@ -164,6 +164,7 @@ function createRulersOption (indentSize = INDENT_UNIT, amount = 10) {
 
 /**
  * Change font size in editor.
+ * Font size will never go below 8px.
  *
  * @param {CodeMirror} cm - instance of CodeMirror editor.
  * @param {increase} Boolean - if true, font size goes up. If false, font size
@@ -173,7 +174,7 @@ function changeFontSize (cm, increase) {
     const el = cm.getWrapperElement();
     const fontSize = window.getComputedStyle(el).getPropertyValue('font-size');
     const adjustment = increase ? 1 : -1;
-    const newSize = window.parseInt(fontSize, 10) + adjustment;
+    const newSize = Math.max(window.parseInt(fontSize, 10) + adjustment, 8);
     el.style.fontSize = newSize.toString() + 'px';
     cm.refresh();
 }
