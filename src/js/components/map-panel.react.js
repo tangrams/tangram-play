@@ -13,22 +13,28 @@ import ErrorModal from '../modals/modal.error';
 import { EventEmitter } from './event-emittor';
 
 /**
- * MapPanel Component
  * Represents the main map panel that user can toggle in and out of the leaflet
  * map.
  */
 export default class MapPanel extends React.Component {
+    /**
+     * Used to setup the state of the component. Regular ES6 classes do not
+     * automatically bind 'this' to the instance, therefore this is the best
+     * place to bind event handlers
+     *
+     * @param props - parameters passed from the parent
+     */
     constructor (props) {
         super(props);
         this.state = {
-            zoom: map.getZoom(),
-            open: true,
-            geolocatorButton: 'bt-map-arrow',
+            open: true, // Whether panel should be open or not
+            zoom: map.getZoom(), // Current map zoom position to display
+            geolocatorButton: 'bt-map-arrow', // Icon to display for the geolocator button
             geolocateActive: {
                 active: 'false'
-            },
-            bookmarkActive: false
+            } // Whether the geolocate function has been activated
         };
+
         this.toggleMapPanel = this.toggleMapPanel.bind(this);
         this.clickGeolocator = this.clickGeolocator.bind(this);
         this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
@@ -36,33 +42,57 @@ export default class MapPanel extends React.Component {
         this.clickZoomOut = this.clickZoomOut.bind(this);
     }
 
-    // Temporary requirement is to subscribe to events from map becuase it is not a React component
+    /**
+     * Official React lifecycle method
+     * Invoked once immediately after the initial rendering occurs.
+     * Temporary requirement is to subscribe to events from map becuase it is
+     * not a React component
+     */
     componentDidMount () {
         let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
         EventEmitter.subscribe('zoomend', function (data) { that.setZoomLabel(); });
     }
 
+    /**
+     * Toggle the panel so it is visible or not visible
+     */
     toggleMapPanel () {
         this.setState({ open: !this.state.open });
     }
 
-    clickZoomIn () {
-        map.zoomIn(1, { animate: true });
-        this.setZoomLabel();
-    }
+    /** Zoom functionality **/
 
-    clickZoomOut () {
-        map.zoomOut(1, { animate: true });
-        this.setZoomLabel();
-    }
-
+    /**
+     * Zoom into the map when user click ZoomOut button
+     */
     setZoomLabel () {
         let currentZoom = map.getZoom();
         let fractionalNumber = Math.floor(currentZoom * 10) / 10;
         this.setState({ zoom: fractionalNumber.toFixed(1) });
     }
 
+    /**
+     * Zoom into the map when user click ZoomIn button
+     */
+    clickZoomIn () {
+        map.zoomIn(1, { animate: true });
+        this.setZoomLabel();
+    }
+
+    /**
+     * Zoom into the map when user click ZoomOut button
+     */
+    clickZoomOut () {
+        map.zoomOut(1, { animate: true });
+        this.setZoomLabel();
+    }
+
+    /** Geolocator functionality **/
+
+    /**
+     * Fired when user clicks on geolocator button
+     */
     clickGeolocator () {
         const geolocator = window.navigator.geolocation;
         const options = {
@@ -76,15 +106,27 @@ export default class MapPanel extends React.Component {
             geolocator.getCurrentPosition(this.onGeolocateSuccess, this.onGeolocateError, options);
         }, 0);
 
+        // Sets a new state for the geolocator button in order to change the
+        // type of icon displayed. Sets icon to spin.
         this.setState({ geolocatorButton: 'bt-sync bt-spin' });
     }
 
+    /**
+     * If the geolocator finds a user position succesfully, re-render the map
+     * and panel to reflect new position
+     * @param position - the new position to which map has moved
+     */
     onGeolocateSuccess (position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const accuracy = position.coords.accuracy || 0;
 
+        // Sets a new state for the geolocator button in order to change the
+        // type of icon displayed. Stops the spinning.
         this.setState({ geolocatorButton: 'bt-map-arrow' });
+
+        // Temporarily change state of 'geolocateActive' data so that child
+        // component MapPanelSearch can know how to update
         this.setState({
             geolocateActive: {
                 active: 'true',
@@ -130,7 +172,6 @@ export default class MapPanel extends React.Component {
     /**
      * Handles geolocation error. Reports a user friendly error message
      * if PositionError has provided the reason why it did not work.
-     *
      * @param {PositionError} err - a PositionError object representing the
      *      reason for the geolocation failure. It contains an error code
      *      and a user-agent defined message. See also:
@@ -155,6 +196,10 @@ export default class MapPanel extends React.Component {
         modal.show();
     }
 
+    /**
+     * Official React lifecycle method
+     * Called every time state or props are changed
+     */
     render () {
         return (
             <div>
@@ -182,17 +227,6 @@ export default class MapPanel extends React.Component {
 
                         {/* Search buttons*/}
                         <MapPanelSearch geolocateActive={this.state.geolocateActive}/>
-
-                        {/* Bookmark button
-                        <ButtonGroup>
-                            <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
-                                <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
-                                    {this.state.bookmarks.map(function (result) {
-                                        return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>{result.label}</MenuItem>;
-                                    })}
-                                </DropdownButton>
-                            </OverlayTrigger>
-                        </ButtonGroup> */}
 
                         {/* Locate me button*/}
                         <ButtonGroup>

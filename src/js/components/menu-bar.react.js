@@ -1,5 +1,4 @@
 import React from 'react';
-
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Navbar from 'react-bootstrap/lib/Navbar';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
@@ -55,14 +54,21 @@ const clickFullscreen = function () {
     toggleFullscreen();
 };
 
-const documentationLink = 'https://mapzen.com/documentation/tangram/';
-const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
-
 const clickAbout = function () {
     aboutModal.show();
 };
 
+const documentationLink = 'https://mapzen.com/documentation/tangram/';
+const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
+
+/**
+ * Represents the navbar for the application
+ */
 export default class MenuBar extends React.Component {
+    /**
+     * Official React lifecycle method
+     * Called every time state or props are changed
+     */
     render () {
         return (
             <Navbar inverse>
