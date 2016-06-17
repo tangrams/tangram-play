@@ -1,9 +1,8 @@
-import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import Modal from './modal';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
-import { editor } from '../editor/editor';
+import { editor, getEditorContent } from '../editor/editor';
 import { map, getScreenshotData } from '../map/map';
 // import { getLocationLabel } from '../map/search'; // TODO: implement now that move to react has changed this
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
@@ -92,7 +91,7 @@ class SaveGistModal extends Modal {
                 // We cannot specify MIME type here so filename should have the
                 // correct extension (see above)
                 files[filename] = {
-                    content: TangramPlay.getContent()
+                    content: getEditorContent()
                 };
 
                 // GitHub Gist does not appear to have a limit on filesize,

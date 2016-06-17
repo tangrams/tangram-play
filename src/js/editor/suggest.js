@@ -1,4 +1,4 @@
-import { editor } from './editor';
+import { editor, getNodesOfLine } from './editor';
 import TangramPlay from '../tangram-play';
 import TANGRAM_API from '../tangram-api.json';
 import { tangramLayer } from '../map/map';
@@ -95,14 +95,14 @@ export default class SuggestManager {
         let to = range.head;
         // console.log("RANGE",from,to);
 
-        let nLine = cursor.line;
+        let line = cursor.line;
         let list = [];
 
         let wasKey = false;
         let address = '/';
 
         // What's the main key of the line?
-        let nodes = TangramPlay.getNodesOnLine(nLine);
+        let nodes = getNodesOfLine(line);
         if (nodes) {
             // Get key pair where the cursor is
             let node = nodes[0];
@@ -111,7 +111,7 @@ export default class SuggestManager {
                 // If there is no key search for a KEY
                 if (node.key === '') {
                     // Fallback the address to match
-                    let actualLevel = getLineInd(editor, nLine);
+                    let actualLevel = getLineInd(editor, line);
                     address = getAddressForLevel(node.address, actualLevel);
                     node.address = address;
                     // Suggest key

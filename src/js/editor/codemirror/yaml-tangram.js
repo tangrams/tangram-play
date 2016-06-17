@@ -10,22 +10,8 @@ import { getInd } from './tools';
 
 const ADDRESS_KEY_DELIMITER = ':';
 
-//  GET public functions
-//  ===============================================================================
-
-// Get array of YAML keys parent tree of a particular line
-export function getNodes (cm, nLine) {
-    const lineHandle = cm.getLineHandle(nLine);
-
-    // Return the nodes. If any property in the chain is not defined,
-    // return an empty array.
-    try {
-        return lineHandle.stateAfter.nodes || [];
-    }
-    catch (e) {
-        return [];
-    }
-}
+// GET public functions
+// =============================================================================
 
 /**
  * Returns the content given an address

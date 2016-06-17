@@ -13,8 +13,7 @@ if (window.location.hostname === 'mapzen.com' || window.location.hostname === 'w
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
-import { editor } from './editor/editor';
-import { config } from './config';
+import { editor, getEditorContent, setEditorContent, getNodesOfLine } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
@@ -29,13 +28,12 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
-import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl, isEmptyString } from './tools/helpers';
+import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { jumpToLine } from './editor/codemirror/tools';
-import { getNodes, parseYamlString } from './editor/codemirror/yaml-tangram';
+import { parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightLines } from './editor/highlight';
-import { injectAPIKey, suppressAPIKeys } from './editor/api-keys';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
@@ -112,7 +110,7 @@ class TangramPlay {
             const sceneData = {
                 original_url: tangramLayer.scene.config_source,
                 original_base_path: tangramLayer.scene.config_path,
-                contents: this.getContent(),
+                contents: getEditorContent(),
                 is_clean: doc.isClean(),
                 scrollInfo: editor.getScrollInfo(),
                 cursor: doc.getCursor()
@@ -264,22 +262,15 @@ class TangramPlay {
     }
 
     _setSceneContentsInEditor (sceneData) {
-        // Remove any instances of Tangram Play's default API key
-        let contents = suppressAPIKeys(sceneData.contents, config.TILES.API_KEYS.SUPPRESSED);
-
-        // Set content in CodeMirror
-        editor.setValue(contents);
-        editor.clearHistory();
-
         // Mark as "clean" if the contents are freshly loaded
         // (there is no is_clean property defined) or if contents
         // have been restored with the is_clean property set to "true"
         // This is converted from JSON so the value is a string, not
         // a Boolean. Otherwise, the document has not been previously
         // saved and it is left in the "dirty" state.
-        if (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true') {
-            editor.doc.markClean();
-        }
+        const shouldMarkClean = (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true');
+
+        setEditorContent(sceneData.contents, shouldMarkClean);
 
         // Restore cursor position, if provided.
         if (sceneData.cursor) {
@@ -322,7 +313,7 @@ class TangramPlay {
 
     // If editor is updated, send it to the map.
     updateContent () {
-        const content = this.getContent();
+        const content = getEditorContent();
         const url = createObjectURL(content);
 
         // Send scene data to Tangram
@@ -339,64 +330,6 @@ class TangramPlay {
             const queryString = serializeToQueryString(queryObj);
             window.history.replaceState({}, null, url + queryString + window.location.hash);
         }
-    }
-
-    // GET
-    // Get the contents of the editor (with injected API keys)
-    getContent () {
-        let content = editor.getValue();
-        //  If API keys are missing, inject one
-        content = injectAPIKey(content, config.TILES.API_KEYS.DEFAULT);
-        return content;
-    }
-
-    getNodes (from, to) {
-        let nodes = [];
-
-        if (from.line === to.line) {
-            // If the searched nodes are in a same line
-            let line = from.line;
-            let inLineNodes = this.getNodesOnLine(line);
-
-            for (let node of inLineNodes) {
-                if (node.range.to.ch > from.ch || node.range.from < to.ch) {
-                    nodes.push(node);
-                }
-            }
-        }
-        else {
-            // If the searched nodes are in a range of lines
-            for (let i = from.line; i <= to.line; i++) {
-                let inLineNodes = this.getNodesOnLine(i);
-
-                for (let node of inLineNodes) {
-                    if (node.range.from.line === from.line) {
-                        // Is in the beginning line
-                        if (node.range.to.ch > from.ch) {
-                            nodes.push(node);
-                        }
-                    }
-                    else if (node.range.to.line === to.line) {
-                        // is in the end line
-                        if (node.range.from.ch < to.ch) {
-                            nodes.push(node);
-                        }
-                    }
-                    else {
-                        // is in the sandwich lines
-                        nodes.push(node);
-                    }
-                }
-            }
-        }
-        return nodes;
-    }
-
-    getNodesOnLine (nLine) {
-        if (isEmptyString(editor.getLine(nLine))) {
-            return [];
-        }
-        return getNodes(editor, nLine);
     }
 
     getNodesForAddress (address) {
@@ -440,7 +373,7 @@ class TangramPlay {
                 // it the line HAVE BEEN parsed (use the stateAfter)
                 // ======================================================
                 lastState = lineHandle.stateAfter;
-                let keys = this.getNodesOnLine(line);
+                let keys = getNodesOfLine(line);
                 for (let key of keys) {
                     if (key.address === address) {
                         return key;

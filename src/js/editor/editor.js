@@ -1,115 +1,126 @@
-// Import CodeMirror
-import CodeMirror from 'codemirror';
+import { config } from '../config';
+import { initCodeMirror } from './codemirror';
+import { injectAPIKey, suppressAPIKeys } from './api-keys';
 
-// Import CodeMirror modes
-import 'codemirror/mode/javascript/javascript';
-
-// Import Tangram custom modes
-import './codemirror/yaml-tangram';
-import './codemirror/hint-tangram';
-
-// Import CodeMirror addons
-import 'codemirror/addon/search/searchcursor';
-import 'codemirror/addon/search/search';
-import 'codemirror/addon/comment/comment';
-import 'codemirror/addon/dialog/dialog';
-import 'codemirror/addon/edit/matchbrackets';
-import 'codemirror/addon/edit/closebrackets';
-import 'codemirror/addon/wrap/hardwrap';
-import 'codemirror/addon/fold/foldcode';
-import 'codemirror/addon/fold/foldgutter';
-import 'codemirror/addon/fold/indent-fold';
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/hint/javascript-hint';
-import 'codemirror/addon/display/rulers';
-import 'codemirror/addon/display/panel';
-import 'codemirror/addon/selection/active-line';
-
-// Import Codemirror keymap
-import 'codemirror/keymap/sublime';
-
-// Import custom keymap with additional Tangram Play functionality
-import { getExtraKeyMap } from './keymap';
-
-// Starting indent size. Use this when a hard-coded value at CodeMirror
-// initialization is necessary. Otherwise, when a CodeMirror instance is
-// available, use cm.getOption('indentUnit') to retrieve the current value.
-const INDENT_UNIT = 4;
-
-// Export CodeMirror instance
+// Export an instantiated CodeMirror instance
 export const editor = initCodeMirror();
 
 // Debug
 window.editor = editor;
 
+// Sets or gets scene contents in the editor.
+// =============================================================================
+
 /**
- * Initializes CodeMirror.
+ * Returns content of the editor, with injected API keys.
  *
- * @returns {CodeMirror} an instance of the CodeMirror editor.
+ * @public
+ * @return {string} content
  */
-function initCodeMirror () {
-    const el = document.getElementById('editor');
-    const cm = new CodeMirror(el, {
-        mode: 'text/x-yaml-tangram',
-        theme: 'tangram',
-        indentUnit: INDENT_UNIT,
-        rulers: createRulersOption(),
-        keyMap: 'sublime',
-        extraKeys: getExtraKeyMap(),
-        lineWrapping: true,
-        lineNumbers: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        foldGutter: {
-            rangeFinder: CodeMirror.fold.indent
-        },
-        styleActiveLine: true,
-        showCursorWhenSelecting: true,
-        autofocus: true,
-        matchBrackets: true,
-        autoCloseBrackets: true
-    });
-
-    // Better line wrapping. Wrapped lines are based on the indentation
-    // of the current line. See this demo:
-    //      https://codemirror.net/demo/indentwrap.html
-    // Modified slightly to provide an additional hanging indent that is based
-    // off of the document's indentUnit setting. This mimics how wrapping behaves
-    // in Sublime Text.
-    cm.on('renderLine', function (cm, line, el) {
-        const indentUnit = cm.getOption('indentUnit');
-        const charWidth = cm.defaultCharWidth();
-        const columns = CodeMirror.countColumn(line.text, null, indentUnit);
-        const offset = (columns + indentUnit) * charWidth;
-        const basePadding = 4; // Magic number: it is CodeMirror's default value.
-
-        el.style.textIndent = '-' + offset + 'px';
-        el.style.paddingLeft = (basePadding + offset) + 'px';
-    });
-    cm.refresh();
-
-    return cm;
+export function getEditorContent () {
+    let content = editor.getDoc().getValue();
+    //  If API keys are missing, inject one
+    content = injectAPIKey(content, config.TILES.API_KEYS.DEFAULT);
+    return content;
 }
 
 /**
- * Sets up a series of CodeMirror rulers. Depends on addon `display/rulers.js`.
- * See documetation: https://codemirror.net/doc/manual.html#addon_rulers
+ * Sets content of the editor, scrubbing API keys. This is meant to replace
+ * the contents of the entire editor, so history is also cleared. Normally,
+ * this means also marking contents of the editor as clean, but since it's
+ * possible to restore old editor content that has not been saved (from local)
+ * memory, the `shouldMarkClean` argument allows content to be replaced but
+ * not be marked as clean.
  *
- * CodeMirror's `rulers` option expects an array of objects where the
- * `column` property is the column at which to add a ruler. There does not
- * appear to be a way to specify rulers only at CodeMirror's current `indentSize`
- * property, so this function returns an array of ruler positions given an
- * arbitrary indent spacing. If the editor's indent spacing changes, CodeMirror's
- * `rulers` option should be set to the correct `indentSize` value.
- *
- * @param {Number} indentSize - the number of spaces to add rulers at.
- *              Defaults to INDENT_UNIT, defined above.
- * @param {Number} amount - number of rulers to add, total. Defaults to 10.
- * @returns {Object} a valid value for CodeMirror's `rulers` option.
+ * @public
+ * @param {string} content - to display in editor
+ * @param {Boolean} shouldMarkClean - if true, mark contents of editor
+ *          as clean. If false, do not mark as clean. Defaults to true.
  */
-function createRulersOption (indentSize = INDENT_UNIT, amount = 10) {
-    const rulers = [];
-    for (let i = 1; i < amount; i++) {
-        rulers.push({ column: i * indentSize });
+export function setEditorContent (content, shouldMarkClean = true) {
+    const doc = editor.getDoc();
+
+    // Remove any instances of Tangram Play's default API key
+    content = suppressAPIKeys(content, config.TILES.API_KEYS.SUPPRESSED);
+
+    // Set content in CodeMirror document.
+    doc.setValue(content);
+    doc.clearHistory();
+    if (shouldMarkClean === true) {
+        doc.markClean();
     }
-    return rulers;
+}
+
+// Getting parsed nodes.
+// =============================================================================
+
+/**
+ * Returns an array of nodes recorded in a parsed line's state.
+ * If there are no nodes for any reason, return an empty array.
+ *
+ * @public
+ * @param {Number} line - the number of the line to check, 0-index.
+ * @return {Array} nodes
+ */
+export function getNodesOfLine (line) {
+    const lineHandle = editor.getLineHandle(line);
+
+    // Return the nodes. If any property in the chain is not defined,
+    // return an empty array.
+    try {
+        return lineHandle.stateAfter.nodes || [];
+    }
+    catch (e) {
+        return [];
+    }
+}
+
+/**
+ * Returns an array of nodes in a given range. Calls getNodesOfLine()
+ * repeatedly for each line in the range.
+ *
+ * @public
+ * @param {Number} line - the number of the line to check, 0-index.
+ * @return {Array} nodes
+ */
+export function getNodesInRange (from, to) {
+    let nodes = [];
+
+    if (from.line === to.line) {
+        // If the searched nodes are in a same line
+        let line = from.line;
+        let inLineNodes = getNodesOfLine(line);
+
+        for (let node of inLineNodes) {
+            if (node.range.to.ch > from.ch || node.range.from.ch < to.ch) {
+                nodes.push(node);
+            }
+        }
+    }
+    else {
+        // If the searched nodes are in a range of lines
+        for (let i = from.line; i <= to.line; i++) {
+            let inLineNodes = getNodesOfLine(i);
+
+            for (let node of inLineNodes) {
+                if (node.range.from.line === from.line) {
+                    // Is in the beginning line
+                    if (node.range.to.ch > from.ch) {
+                        nodes.push(node);
+                    }
+                }
+                else if (node.range.to.line === to.line) {
+                    // is in the end line
+                    if (node.range.from.ch < to.ch) {
+                        nodes.push(node);
+                    }
+                }
+                else {
+                    // is in the sandwich lines
+                    nodes.push(node);
+                }
+            }
+        }
+    }
+    return nodes;
 }
