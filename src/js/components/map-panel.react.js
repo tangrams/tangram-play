@@ -216,7 +216,7 @@ export default class MapPanel extends React.Component {
                         <div><span>z{this.state.zoom}</span></div>
 
                         {/* Zoom buttons*/}
-                        <ButtonGroup id='buttons-plusminus'>
+                        <ButtonGroup className='buttons-plusminus'>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
                                 <Button onClick={this.clickZoomIn}> <Icon type={'bt-plus'} /> </Button>
                             </OverlayTrigger>

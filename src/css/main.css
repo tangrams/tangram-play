@@ -23,8 +23,6 @@
 
 /* + Menu */
 @import '_filedrop';
-@import '_menu-bar';
-@import '_menu-dropdown';
 @import '_tooltip';
 @import '_modals';
 @import '_modals.examples';
@@ -53,10 +51,7 @@
 @import '_ui';
 @import '_leaflet-overrides';
 @import '_map-loading';
-@import '_map-toolbar';
 @import '_map-inspection';
-@import '_map-bookmarks';
-@import '_geolocator';
 
 /* + React */
 @import '_menu-bar.react';

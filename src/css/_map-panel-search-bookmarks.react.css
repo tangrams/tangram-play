@@ -1,31 +1,12 @@
+.map-panel-search-bookmarks {
+    display: flex;
+    flex-grow: 1;
+}
 
-#buttons-search {
+.map-search {
     display:inline-flex ;
     flex-grow: 1 ;
     background-color: var(--ui-element-color);
-}
-
-.react-autosuggest__container {
-    flex-grow: 1 ;
-    border-bottom: 1px solid transparent;
-    height: 38px ;
-}
-
-.react-autosuggest__container input {
-    width: 100% ;
-    font-size: 12px;
-    font-family: var(--font-family);
-    font-weight: 200;
-    line-height: 28px;
-    background-color: transparent;
-    appearance: none;
-    outline: none ;
-    border: 0px;
-    color: var(--ui-component-text-color);
-
-    &:focus {
-        border-bottom: 1px dotted var(--ui-border-color);
-    }
 }
 
 .map-search-latlng {
@@ -39,9 +20,27 @@
     white-space:nowrap;
 }
 
-/* ** */
 .react-autosuggest__container {
-    /*display:flex ;*/
+    flex-grow: 1 ;
+    border-bottom: 1px solid transparent;
+    height: 38px ;
+
+    input {
+        width: 100% ;
+        font-size: 12px;
+        font-family: var(--font-family);
+        font-weight: 200;
+        line-height: 28px;
+        background-color: transparent;
+        appearance: none;
+        outline: none ;
+        border: 0px;
+        color: var(--ui-component-text-color);
+
+        &:focus {
+            border-bottom: 1px dotted var(--ui-border-color);
+        }
+    }
 }
 
 .react-autosuggest__suggestions-container {
@@ -64,7 +63,7 @@
     }
 }
 
-#map-panel .react-autosuggest__suggestions-container * i {
+.map-panel .react-autosuggest__suggestions-container * i {
     font-size: 10px;
     padding-right: 10px;
     font-weight: 900 ;
@@ -78,11 +77,6 @@
 
 .react-autosuggest__suggestion--focused {
     background-color: var(--ui-active-color);
-}
-
-.searchnbookmarks {
-    display: flex;
-    flex-grow: 1;
 }
 
 .react-autosuggest__suggestions-container * strong {
