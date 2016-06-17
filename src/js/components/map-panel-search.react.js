@@ -6,12 +6,15 @@ import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
+import DropdownButton from 'react-bootstrap/lib/DropdownButton';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
 
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from '../map/bookmarks';
 import { map } from '../map/map';
 import { EventEmitter } from './event-emittor';
 import { config } from '../config';
+import Modal from '../modals/modal';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
 let latlngLabelPrecision = 4;
@@ -40,6 +43,10 @@ export default class MapPanelSearch extends React.Component {
     constructor (props) {
         super(props);
         let mapcenter = map.getCenter();
+
+        // Temporarily using an active Button state because React doesn not guarantee that setState will be synchronouse
+        this.goToActive = false;
+
         this.state = {
             latlng: {
                 lat: mapcenter.lat.toFixed(latlngLabelPrecision),
@@ -48,7 +55,8 @@ export default class MapPanelSearch extends React.Component {
             value: '',
             placeholder: '',
             suggestions: [],
-            bookmarkActive: ''
+            bookmarkActive: '',
+            bookmarks: this.updateBookmarks()
         };
 
         // Set the value of the search bar to whatever the map is currently pointing to
@@ -72,7 +80,13 @@ export default class MapPanelSearch extends React.Component {
                 that.reverseGeocode(currentLatLng);
                 that.setState({ bookmarkActive: '' });
             }
+            if (that.goToActive) {
+                that.setState({ bookmarkActive: 'active' });
+                that.goToActive = false;
+            }
         });
+
+        EventEmitter.subscribe('clearbookmarks', function (data) { that.bookmarkCallback(); });
     }
 
     setCurrentLatLng (latlng) {
@@ -87,12 +101,8 @@ export default class MapPanelSearch extends React.Component {
     // Every time user locates him or herself we need to update the value of the search bar
     componentWillReceiveProps (nextProps) {
         let geolocateActive = nextProps.geolocateActive;
-        let bookmarkActive = nextProps.bookmarkActive;
         if (geolocateActive.active === 'true') {
             this.reverseGeocode(geolocateActive.latlng); // set the lat lng here
-        }
-        if (bookmarkActive) {
-            this.setState({ bookmarkActive: 'active' });
         }
     }
 
@@ -129,11 +139,9 @@ export default class MapPanelSearch extends React.Component {
     clickSave () {
         let data = this.getCurrentMapViewData();
         if (bookmarks.saveBookmark(data) === true) {
+            this.setState({ bookmarks: this.updateBookmarks() });
             this.setState({ bookmarkActive: 'active' });
         }
-
-        // Tell parent container to rerender bookmarks button
-        this.props.callbackParent();
     }
 
     getCurrentMapViewData () {
@@ -200,6 +208,68 @@ export default class MapPanelSearch extends React.Component {
         });
     }
 
+    clickGoToBookmark (eventKey) {
+        let bookmarks = this.state.bookmarks;
+        let bookmark = bookmarks[eventKey];
+
+        const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
+        const zoom = bookmark.zoom;
+
+        if (!coordinates || !zoom) {
+            return;
+        }
+
+        this.goToActive = true;
+        map.setView(coordinates, zoom);
+        // this.setState({ bookmarkActive: 'active' });
+    }
+
+    clickDeleteBookmarks () {
+        const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', bookmarks.clearData);
+        modal.show();
+    }
+
+    bookmarkCallback () {
+        this.setState({ bookmarks: this.updateBookmarks() });
+        this.setState({ bookmarkActive: '' });
+    }
+
+    updateBookmarks () {
+        let newBookmarks = [];
+        let bookmarkList = bookmarks.readData().data;
+
+        if (bookmarkList.length === 0) {
+            newBookmarks.push({
+                id: 0,
+                label: 'No bookmarks yet!'
+            });
+        }
+        else {
+            for (let i = 0; i < bookmarkList.length; i++) {
+                const bookmark = bookmarkList[i];
+                let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
+
+                newBookmarks.push({
+                    id: i,
+                    label: bookmark.label,
+                    lat: bookmark.lat.toFixed(4),
+                    lng: bookmark.lng.toFixed(4),
+                    zoom: fractionalZoom.toFixed(1),
+                    onClick: this.clickGoToBookmark.bind(this),
+                    active: ''
+                });
+            }
+
+            newBookmarks.push({
+                id: bookmarkList.length,
+                label: 'Clear bookmarks',
+                onClick: this.clickDeleteBookmarks.bind(this)
+            });
+        }
+
+        return newBookmarks;
+    }
+
     render () {
         const { suggestions } = this.state;
         const inputProps = {
@@ -209,27 +279,38 @@ export default class MapPanelSearch extends React.Component {
         };
 
         return (
-            <ButtonGroup id='buttons-search'>
-                <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
-                    <Button> <Icon type={'bt-search'} /> </Button>
-                </OverlayTrigger>
-                <Autosuggest suggestions={suggestions}
-                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                    getSuggestionValue={getSuggestionValue}
-                    renderSuggestion={renderSuggestion}
-                    onSuggestionSelected={this.onSuggestionSelected}
-                    inputProps={inputProps} />
-                <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
-                <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
-                    <Button onClick={this.clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
-                </OverlayTrigger>
-            </ButtonGroup>
+            <div className='searchnbookmarks'>
+                <ButtonGroup id='buttons-search'>
+                    <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
+                        <Button> <Icon type={'bt-search'} /> </Button>
+                    </OverlayTrigger>
+                    <Autosuggest suggestions={suggestions}
+                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                        getSuggestionValue={getSuggestionValue}
+                        renderSuggestion={renderSuggestion}
+                        onSuggestionSelected={this.onSuggestionSelected}
+                        inputProps={inputProps} />
+                    <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
+                    <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
+                        <Button onClick={this.clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
+                    </OverlayTrigger>
+                </ButtonGroup>
+
+                {/* Bookmark button*/}
+                <ButtonGroup>
+                    <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
+                        <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
+                            {this.state.bookmarks.map(function (result) {
+                                return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>{result.label}</MenuItem>;
+                            })}
+                        </DropdownButton>
+                    </OverlayTrigger>
+                </ButtonGroup>
+            </div>
         );
     }
 }
 
 MapPanelSearch.propTypes = {
-    geolocateActive: React.PropTypes.object,
-    bookmarkActive: React.PropTypes.bool,
-    callbackParent: React.PropTypes.func
+    geolocateActive: React.PropTypes.object
 };
