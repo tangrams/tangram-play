@@ -5,7 +5,7 @@ import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
 import { editor } from '../editor/editor';
 import { map, getScreenshotData } from '../map/map';
-import { getLocationLabel } from '../map/search';
+// import { getLocationLabel } from '../map/search'; // TODO: implement now that move to react has changed this
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
 import { createThumbnail } from '../tools/thumbnail';
 
@@ -78,7 +78,8 @@ class SaveGistModal extends Modal {
                 const metadata = {
                     name: sceneName,
                     view: {
-                        label: getLocationLabel(),
+                        // label: getLocationLabel(), // TODO: change now that search component is React
+                        label: '',
                         lat: map.getCenter().lat,
                         lng: map.getCenter().lng,
                         zoom: map.getZoom()
