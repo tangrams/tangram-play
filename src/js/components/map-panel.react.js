@@ -1,17 +1,22 @@
 import React from 'react';
-
 import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
-import MapPanelSearch from './map-panel-search.react';
+import MapPanelSearch from './map-panel-search-bookmarks.react';
 
 import { map } from '../map/map';
-import { EventEmitter } from './event-emittor';
 import ErrorModal from '../modals/modal.error';
+// Required event dispatch and subscription for now while parts of app are React components and others are not
+import { EventEmitter } from './event-emittor';
 
+/**
+ * MapPanel Component
+ * Represents the main map panel that user can toggle in and out of the leaflet
+ * map.
+ */
 export default class MapPanel extends React.Component {
     constructor (props) {
         super(props);
@@ -121,6 +126,16 @@ export default class MapPanel extends React.Component {
         map.setZoom(desiredZoom);
     }
 
+
+    /**
+     * Handles geolocation error. Reports a user friendly error message
+     * if PositionError has provided the reason why it did not work.
+     *
+     * @param {PositionError} err - a PositionError object representing the
+     *      reason for the geolocation failure. It contains an error code
+     *      and a user-agent defined message. See also:
+     *      see https://developer.mozilla.org/en-US/docs/Web/API/PositionError
+     */
     onGeolocateError (err) {
         let message = 'Tangram Play could not retrieve your current position and we do not have enough information to know why.';
         switch (err.code) {

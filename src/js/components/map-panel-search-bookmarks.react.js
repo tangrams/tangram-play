@@ -1,34 +1,28 @@
 import React from 'react';
-
 import Autosuggest from 'react-autosuggest';
 import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Icon from './icon.react';
 import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
+import Icon from './icon.react';
 
 import { httpGet, debounce } from '../tools/common';
 import bookmarks from '../map/bookmarks';
 import { map } from '../map/map';
-import { EventEmitter } from './event-emittor';
 import { config } from '../config';
 import Modal from '../modals/modal';
+// Required event dispatch and subscription for now while parts of app are React components and others are not
+import { EventEmitter } from './event-emittor';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
-let latlngLabelPrecision = 4;
 const MAP_UPDATE_DELTA = 0.002;
+let latlngLabelPrecision = 4;
 
 // Returns the currently selected result in order to update the search bar placeholder
 function getSuggestionValue (suggestion) {
     return suggestion.properties.label;
-}
-
-function renderSuggestion (suggestion) {
-    return (
-        <span><Icon type={'bt-map-marker'} /> {suggestion.properties.label}</span>
-    );
 }
 
 function getMapChangeDelta (startLatLng, endLatLng) {
@@ -39,6 +33,10 @@ function getMapChangeDelta (startLatLng, endLatLng) {
     return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
 }
 
+/**
+ * MapPanelSearch
+ * Represents the search bar and bookmarks button on the map panel
+ */
 export default class MapPanelSearch extends React.Component {
     constructor (props) {
         super(props);
@@ -65,6 +63,7 @@ export default class MapPanelSearch extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+        this.renderSuggestion = this.renderSuggestion.bind(this);
         this.clickSave = this.clickSave.bind(this);
     }
 
@@ -75,6 +74,12 @@ export default class MapPanelSearch extends React.Component {
         EventEmitter.subscribe('moveend', function (data) {
             let currentLatLng = map.getCenter();
             let delta = getMapChangeDelta(that.state.latlng, currentLatLng);
+
+            // Only update location if the map center has moved more than a given delta
+            // This is actually really necessary because EVERY update in the editor reloads
+            // the map, which fires moveend events despite not actually moving the map
+            // But we also have the bonus of not needing to make a reverse geocode request
+            // for small changes of the map center.
             if (delta > MAP_UPDATE_DELTA) {
                 that.setCurrentLatLng(currentLatLng);
                 that.reverseGeocode(currentLatLng);
@@ -87,6 +92,25 @@ export default class MapPanelSearch extends React.Component {
         });
 
         EventEmitter.subscribe('clearbookmarks', function (data) { that.bookmarkCallback(); });
+
+        window.addEventListener('divider:dragend', that.setLabelPrecision);
+    }
+
+    setLabelPrecision (event) {
+        // Updates the precision of the lat-lng display label
+        // based on the available screen width
+        let mapcontainer = document.getElementById('map-container');
+        let width = mapcontainer.offsetWidth;
+
+        if (width < 600) {
+            latlngLabelPrecision = 2;
+        }
+        else if (width < 800) {
+            latlngLabelPrecision = 3;
+        }
+        else {
+            latlngLabelPrecision = 4;
+        }
     }
 
     setCurrentLatLng (latlng) {
@@ -166,6 +190,26 @@ export default class MapPanelSearch extends React.Component {
     }
 
     // Fires when user starts typing in search bar
+    // Have to highlight in a different way because of this limitation in rendering JSX and HTML tags
+    renderSuggestion (suggestion) {
+        let value = this.state.value;
+        let label = suggestion.properties.label;
+
+        let r = new RegExp('(' + value + ')', 'gi');
+        var parts = label.split(r);
+        for (var i = 0; i < parts.length; i++) {
+            if (parts[i].toLowerCase() === value.toLowerCase()) {
+                parts[i] = <strong key={i}>{parts[i]}</strong>;
+            }
+        }
+
+        return (
+            <span>
+                <Icon type={'bt-map-marker'} />{parts}
+            </span>
+        );
+    }
+
     onSuggestionsUpdateRequested ({ value }) {
         this.loadSuggestions(value);
     }
@@ -287,7 +331,7 @@ export default class MapPanelSearch extends React.Component {
                     <Autosuggest suggestions={suggestions}
                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                         getSuggestionValue={getSuggestionValue}
-                        renderSuggestion={renderSuggestion}
+                        renderSuggestion={this.renderSuggestion}
                         onSuggestionSelected={this.onSuggestionSelected}
                         inputProps={inputProps} />
                     <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
@@ -311,6 +355,9 @@ export default class MapPanelSearch extends React.Component {
     }
 }
 
+/**
+ * Prop validation required by React
+ */
 MapPanelSearch.propTypes = {
     geolocateActive: React.PropTypes.object
 };
