@@ -1,7 +1,7 @@
 @charset 'utf-8';
 
 /* EXTERNAL */
-
+@import 'vendor/bootstrap.css';
 @import 'vendor/black-tie.css';
 
 /* You can import CSS from node_modules */
