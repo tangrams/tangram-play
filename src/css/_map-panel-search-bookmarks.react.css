@@ -84,3 +84,8 @@
     display: flex;
     flex-grow: 1;
 }
+
+.react-autosuggest__suggestions-container * strong {
+    color: yellow;
+    font-weight: 200;
+}
