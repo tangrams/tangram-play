@@ -6,30 +6,30 @@ import { jumpToLine } from '../editor/codemirror/tools';
 
 export default class ColorPalette {
     constructor () {
-        // if (TangramPlay.addons.widgetsManager === undefined) {
-        //     return;
-        // }
-        //
-        // this.colors = {};
-        // this.palette = document.createElement('div');
-        // this.palette.className = 'colorpalette';
-        // document.body.appendChild(this.palette);
-        //
-        // TangramPlay.addons.widgetsManager.on('widgets_created', (args) => {
-        //     TangramPlay.addons.colorPalette.update(args);
-        // });
-        //
-        // TangramPlay.addons.widgetsManager.on('widget_updated', (args) => {
-        //     TangramPlay.addons.colorPalette.update(args);
-        // });
-        //
-        // // If is a new file load all colors by going to the end and comeback
-        // TangramPlay.on('sceneload', (event) => {
-        //     for (let i = 0; i < editor.getDoc().size; i++) {
-        //         jumpToLine(editor, i);
-        //     }
-        //     jumpToLine(editor, 0);
-        // });
+        if (TangramPlay.addons.widgetsManager === undefined) {
+            return;
+        }
+
+        this.colors = {};
+        this.palette = document.createElement('div');
+        this.palette.className = 'colorpalette';
+        document.body.appendChild(this.palette);
+
+        TangramPlay.addons.widgetsManager.on('widgets_created', (args) => {
+            TangramPlay.addons.colorPalette.update(args);
+        });
+
+        TangramPlay.addons.widgetsManager.on('widget_updated', (args) => {
+            TangramPlay.addons.colorPalette.update(args);
+        });
+
+        // If is a new file load all colors by going to the end and comeback
+        TangramPlay.on('sceneload', (event) => {
+            for (let i = 0; i < editor.getDoc().size; i++) {
+                jumpToLine(editor, i);
+            }
+            jumpToLine(editor, 0);
+        });
     }
 
     update (args) {

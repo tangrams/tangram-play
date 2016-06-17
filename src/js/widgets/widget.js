@@ -64,10 +64,16 @@ export default class Widget {
         this.value = this.value;
     }
 
-    insert () {
+    insert (lineNumber) {
         this.updateNode();
 
         const doc = editor.getDoc();
+
+        // Update line number because
+        if (lineNumber) {
+            this.node.range.to.line = lineNumber;
+            this.node.range.from.line = lineNumber;
+        }
 
         // Do not insert if another bookmark is already inserted at this point
         const otherMarks = doc.findMarksAt(this.node.range.to);
@@ -90,6 +96,7 @@ export default class Widget {
         this.bookmark = doc.setBookmark(this.node.range.to, {
             widget: this.el,
             insertLeft: true,
+            clearWhenEmpty: true,
             handleMouseEvents: true
         });
         this.bookmark.widget = this;

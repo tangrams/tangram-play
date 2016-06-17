@@ -3,7 +3,7 @@ import ToggleButton from './toggle-button';
 import DropDownMenu from './drop-down-menu';
 import VectorButton from './vector-button';
 
-export default class WidgetType {
+export default class WidgetConstructor {
     constructor (datum) {
         // Widgets exist for different types of Tangram scene syntax.
         //      value - a widget exists for this type of value (not used?)

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';
-import { addWidgets } from './widgets';
+import { attachWidgetConstructorsToDocumentState } from './widgets';
 
 import { tangramScene } from '../../map/map';
 
@@ -346,7 +346,7 @@ export function parseYamlString (string, state, tabSize) {
     }
 
     // Adds widgets to nodes, if they have them.
-    state = addWidgets(state);
+    state = attachWidgetConstructorsToDocumentState(state);
 
     return state;
 }
@@ -376,6 +376,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 keyLevel: -1,
                 line: -1, // 0-indexed line number.
                 string: '',
+                nodes: [],
                 // For mixed modes
                 innerMode: null,
                 innerState: null,
@@ -509,8 +510,14 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
         indent: function (state, textAfter) {
             // Indentation in YAML mode
             if (state.innerMode === null) {
-                const previousValue = state.nodes[0].value.trim();
-                const previousKey = state.nodes[0].key;
+                const node = state.nodes[0] || null;
+
+                if (!node) {
+                    return state.indentation;
+                }
+
+                const previousValue = node.value.trim();
+                const previousKey = node.key;
 
                 // Only indent after lines that meet certain conditions.
                 // The previous line must have a key, and the key's value is
