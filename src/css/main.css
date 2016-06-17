@@ -59,8 +59,9 @@
 @import '_geolocator';
 
 /* + React */
-@import '_map-panel.react';
 @import '_menu-bar.react';
+@import '_map-panel.react';
+@import '_map-panel-search-bookmarks.react';
 
 /* VARIABLES */
 
