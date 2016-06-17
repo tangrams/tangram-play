@@ -4,8 +4,6 @@ import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
 import MapPanelSearch from './map-panel-search.react';
@@ -13,8 +11,6 @@ import MapPanelSearch from './map-panel-search.react';
 import { map } from '../map/map';
 import { EventEmitter } from './event-emittor';
 import ErrorModal from '../modals/modal.error';
-import bookmarks from '../map/bookmarks';
-import Modal from '../modals/modal';
 
 export default class MapPanel extends React.Component {
     constructor (props) {
@@ -26,7 +22,6 @@ export default class MapPanel extends React.Component {
             geolocateActive: {
                 active: 'false'
             },
-            bookmarks: this.updateBookmarks(),
             bookmarkActive: false
         };
         this.toggleMapPanel = this.toggleMapPanel.bind(this);
@@ -34,10 +29,6 @@ export default class MapPanel extends React.Component {
         this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
         this.clickZoomIn = this.clickZoomIn.bind(this);
         this.clickZoomOut = this.clickZoomOut.bind(this);
-        this.clickDeleteBookmarks = this.clickDeleteBookmarks.bind(this);
-        this.clickGoToBookmark = this.clickGoToBookmark.bind(this);
-        this.bookmarkCallback = this.bookmarkCallback.bind(this);
-        this.updateBookmarks = this.updateBookmarks.bind(this);
     }
 
     // Temporary requirement is to subscribe to events from map becuase it is not a React component
@@ -45,7 +36,6 @@ export default class MapPanel extends React.Component {
         let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
         EventEmitter.subscribe('zoomend', function (data) { that.setZoomLabel(); });
-        EventEmitter.subscribe('clearbookmarks', function (data) { that.bookmarkCallback(); });
     }
 
     toggleMapPanel () {
@@ -150,67 +140,6 @@ export default class MapPanel extends React.Component {
         modal.show();
     }
 
-    clickGoToBookmark (eventKey) {
-        let bookmarks = this.state.bookmarks;
-        let bookmark = bookmarks[eventKey];
-
-        const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
-        const zoom = bookmark.zoom;
-
-        if (!coordinates || !zoom) {
-            return;
-        }
-
-        map.setView(coordinates, zoom);
-
-        this.setState({ bookmarkActive: true });
-    }
-
-    clickDeleteBookmarks () {
-        const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', bookmarks.clearData);
-        modal.show();
-    }
-
-    bookmarkCallback () {
-        this.setState({ bookmarks: this.updateBookmarks() });
-    }
-
-    updateBookmarks () {
-        let newBookmarks = [];
-        let bookmarkList = bookmarks.readData().data;
-
-        if (bookmarkList.length === 0) {
-            newBookmarks.push({
-                id: 0,
-                label: 'No bookmarks yet!'
-            });
-        }
-        else {
-            for (let i = 0; i < bookmarkList.length; i++) {
-                const bookmark = bookmarkList[i];
-                let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
-
-                newBookmarks.push({
-                    id: i,
-                    label: bookmark.label,
-                    lat: bookmark.lat.toFixed(4),
-                    lng: bookmark.lng.toFixed(4),
-                    zoom: fractionalZoom.toFixed(1),
-                    onClick: this.clickGoToBookmark.bind(this),
-                    active: ''
-                });
-            }
-
-            newBookmarks.push({
-                id: bookmarkList.length,
-                label: 'Clear bookmarks',
-                onClick: this.clickDeleteBookmarks.bind(this)
-            });
-        }
-
-        return newBookmarks;
-    }
-
     render () {
         return (
             <div>
@@ -237,9 +166,9 @@ export default class MapPanel extends React.Component {
                         </ButtonGroup>
 
                         {/* Search buttons*/}
-                        <MapPanelSearch geolocateActive={this.state.geolocateActive} bookmarkActive={this.state.bookmarkActive} callbackParent={this.bookmarkCallback}/>
+                        <MapPanelSearch geolocateActive={this.state.geolocateActive}/>
 
-                        {/* Bookmark button*/}
+                        {/* Bookmark button
                         <ButtonGroup>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
                                 <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
@@ -248,7 +177,7 @@ export default class MapPanel extends React.Component {
                                     })}
                                 </DropdownButton>
                             </OverlayTrigger>
-                        </ButtonGroup>
+                        </ButtonGroup> */}
 
                         {/* Locate me button*/}
                         <ButtonGroup>

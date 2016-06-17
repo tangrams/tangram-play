@@ -175,3 +175,8 @@
 .react-autosuggest__suggestion--focused {
     background-color: var(--ui-active-color);
 }
+
+.searchnbookmarks {
+    display: flex;
+    flex-grow: 1;
+}
