@@ -519,7 +519,7 @@ var ReactDOM = require('react-dom');
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
 
-let mountNode1 = document.getElementById('navbar-container');
+let mountNode1 = document.getElementById('menu-bar');
 ReactDOM.render(<MenuBar />, mountNode1);
 
 let mountNode2 = document.getElementById('map-panel');

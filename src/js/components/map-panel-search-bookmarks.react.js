@@ -421,9 +421,9 @@ export default class MapPanelSearch extends React.Component {
         };
 
         return (
-            <div className='searchnbookmarks'>
+            <div className='map-panel-search-bookmarks'>
                 {/* Search bar*/}
-                <ButtonGroup id='buttons-search'>
+                <ButtonGroup className='map-search'>
                     {/* Search button */}
                     <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
                         <Button> <Icon type={'bt-search'} /> </Button>
