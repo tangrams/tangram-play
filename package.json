@@ -34,10 +34,9 @@
       "email": "brett@mapzen.com"
     },
     {
-        "name": "Irene Alvarado",
-        "email": "irene@mapzen.com"
+      "name": "Irene Alvarado",
+      "email": "irene@mapzen.com"
     }
-
   ],
   "devDependencies": {
     "autoprefixer": "6.3.6",

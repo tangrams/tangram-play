@@ -277,32 +277,18 @@ export default class MapPanelSearch extends React.Component {
         let newBookmarks = [];
         let bookmarkList = bookmarks.readData().data;
 
-        if (bookmarkList.length === 0) {
-            newBookmarks.push({
-                id: 0,
-                label: 'No bookmarks yet!'
-            });
-        }
-        else {
-            for (let i = 0; i < bookmarkList.length; i++) {
-                const bookmark = bookmarkList[i];
-                let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
-
-                newBookmarks.push({
-                    id: i,
-                    label: bookmark.label,
-                    lat: bookmark.lat.toFixed(4),
-                    lng: bookmark.lng.toFixed(4),
-                    zoom: fractionalZoom.toFixed(1),
-                    onClick: this.clickGoToBookmark.bind(this),
-                    active: ''
-                });
-            }
+        for (let i = 0; i < bookmarkList.length; i++) {
+            const bookmark = bookmarkList[i];
+            let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
 
             newBookmarks.push({
-                id: bookmarkList.length,
-                label: 'Clear bookmarks',
-                onClick: this.clickDeleteBookmarks.bind(this)
+                id: i,
+                label: bookmark.label,
+                lat: bookmark.lat.toFixed(4),
+                lng: bookmark.lng.toFixed(4),
+                zoom: fractionalZoom.toFixed(1),
+                onClick: this.clickGoToBookmark.bind(this),
+                active: ''
             });
         }
 
@@ -316,7 +302,7 @@ export default class MapPanelSearch extends React.Component {
      * Updates what is stored by value to correspond to what user is typing.
      * @param event - event that caused the change
      */
-    onChange (event, { newValue }) {
+    onChange (event, { newValue, method }) {
         this.setState({
             value: newValue
         });
@@ -338,11 +324,19 @@ export default class MapPanelSearch extends React.Component {
      * call a new autocomplete search request
      * @param value - value to search for
      */
-    onSuggestionsUpdateRequested ({ value }) {
-        // Only call autocomplete if user has typed more than 1 character
-        if (value.length >= 2) {
-            this.autocomplete(value);
+    onSuggestionsUpdateRequested ({ value, reason }) {
+        // If user presses ENTER on the input search bar
+        if(reason === 'enter-input') {
+            this.search(value);
         }
+        // For all other interactions, like moving up and down the suggestion list
+        else {
+            // Only call autocomplete if user has typed more than 1 character
+            if (value.length >= 2) {
+                this.autocomplete(value);
+            }
+        }
+
     }
 
     /**
@@ -352,7 +346,24 @@ export default class MapPanelSearch extends React.Component {
     autocomplete (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
+        this.makeRequest(endpoint);
+    }
 
+    /**
+     * Makes an search request to API when user presses ENTER
+     * @param query - value to search for
+     */
+     search (query) {
+        const center = map.getCenter();
+        const endpoint = `//${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
+        this.makeRequest(endpoint);
+    }
+
+    /**
+     * Makes a request to Mapzen API
+     * @param endpoint - the address or connection point to the web service
+     */
+    makeRequest (endpoint) {
         debounce(httpGet(endpoint, (err, res) => {
             if (err) {
                 console.error(err);
@@ -441,7 +452,7 @@ export default class MapPanelSearch extends React.Component {
                         getSuggestionValue={this.getSuggestionValue}
                         renderSuggestion={this.renderSuggestion}
                         onSuggestionSelected={this.onSuggestionSelected}
-                        inputProps={inputProps} />
+                        inputProps={inputProps}/>
                     {/* Lat lng label */}
                     <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
                     {/* Bookmark save button */}
@@ -453,14 +464,42 @@ export default class MapPanelSearch extends React.Component {
                 {/* Bookmark button*/}
                 <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
                     <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
-                        {this.state.bookmarks.map(function (result) {
-                            return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>
-                                        <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
-                                        <div>{result.label}<br />
-                                            <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, {result.zoom}</span>
-                                        </div>
-                                    </MenuItem>;
-                        })}
+                        {/* Defining an immediately-invoked function expression inside JSX to decide whether to render full bookmark list or not */}
+                        {(() => {
+                            let bookmarkDropdownList ;
+
+                            // If no bookmarks, then display a no bookmarks message
+                            if(this.state.bookmarks.length === 0) {
+                                bookmarkDropdownList =
+                                    <MenuItem key='none' className='bookmark-dropdown-center'>
+                                        <div>No bookmarks yet!</div>
+                                    </MenuItem> ;
+                            }
+                            // If there are bookmarks
+                            else {
+                                // Create the bookmarks list
+                                let list =
+                                    this.state.bookmarks.map(function (result) {
+                                        return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>
+                                                    <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
+                                                    <div>{result.label}<br />
+                                                        <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, {result.zoom}</span>
+                                                    </div>
+                                                </MenuItem>;
+                                    });
+
+                                // Add a delete button at the end
+                                let deletebutton =
+                                    <MenuItem key='delete' onSelect={this.clickDeleteBookmarks} className='bookmark-dropdown-center'>
+                                        <div>Clear bookmarks</div>
+                                    </MenuItem> ;
+
+                                // In React we have to use arrays if we want to concatenate two JSX fragments
+                                bookmarkDropdownList = [list, deletebutton];
+                            }
+
+                            return bookmarkDropdownList;
+                        })()}
                     </DropdownButton>
                 </OverlayTrigger>
             </div>

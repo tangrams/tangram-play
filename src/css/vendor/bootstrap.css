@@ -5703,6 +5703,7 @@ button.close {
   background: transparent;
   border: 0;
 }
+/*
 .modal-open {
   overflow: hidden;
 }
@@ -5824,6 +5825,7 @@ button.close {
     width: 900px;
   }
 }
+*/
 .tooltip {
   position: absolute;
   z-index: 1070;
