@@ -28,9 +28,8 @@ import 'codemirror/addon/selection/active-line';
 // Import Codemirror keymap
 import 'codemirror/keymap/sublime';
 
-// Import everything else
-import { unfoldAll, foldByLevel } from './codemirror/tools';
-import { takeScreenshot } from '../map/map';
+// Import custom keymap with additional Tangram Play functionality
+import { getExtraKeyMap } from './keymap';
 
 // Starting indent size. Use this when a hard-coded value at CodeMirror
 // initialization is necessary. Otherwise, when a CodeMirror instance is
@@ -56,54 +55,7 @@ function initCodeMirror () {
         indentUnit: INDENT_UNIT,
         rulers: createRulersOption(),
         keyMap: 'sublime',
-        extraKeys: {
-            'Ctrl-Space': 'autocomplete',
-            // Maps the tab key to insert spaces instead of a tab character.
-            // https://codemirror.net/doc/manual.html#keymaps
-            Tab: function (cm) {
-                cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
-            },
-            'Alt-F': function (cm) {
-                cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
-            },
-            'Alt-P': function (cm) {
-                takeScreenshot();
-            },
-            'Ctrl-0': function (cm) {
-                unfoldAll(cm);
-            },
-            'Ctrl-1': function (cm) {
-                foldByLevel(cm, 0);
-            },
-            'Ctrl-2': function (cm) {
-                foldByLevel(cm, 1);
-            },
-            'Ctrl-3': function (cm) {
-                foldByLevel(cm, 2);
-            },
-            'Ctrl-4': function (cm) {
-                foldByLevel(cm, 3);
-            },
-            'Ctrl-5': function (cm) {
-                foldByLevel(cm, 4);
-            },
-            'Ctrl-6': function (cm) {
-                foldByLevel(cm, 5);
-            },
-            'Ctrl-7': function (cm) {
-                foldByLevel(cm, 6);
-            },
-            'Ctrl-8': function (cm) {
-                foldByLevel(cm, 7);
-            },
-            'Cmd--': function (cm) {
-                changeFontSize(cm, false);
-            },
-            // Equal (=) maps to the Plus (+)
-            'Cmd-=': function (cm) {
-                changeFontSize(cm, true);
-            }
-        },
+        extraKeys: getExtraKeyMap(),
         lineWrapping: true,
         lineNumbers: true,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
@@ -160,22 +112,4 @@ function createRulersOption (indentSize = INDENT_UNIT, amount = 10) {
         rulers.push({ column: i * indentSize });
     }
     return rulers;
-}
-
-/**
- * Change font size in editor. Increments or decrements by 1px.
- * Font size will never go below 8px.
- *
- * @param {CodeMirror} cm - instance of CodeMirror editor.
- * @param {increase} Boolean - if true, font size goes up. If false, font size
- *              goes down.
- */
-function changeFontSize (cm, increase) {
-    const MINIMUM_FONT_SIZE = 8;
-    const el = cm.getWrapperElement();
-    const fontSize = window.getComputedStyle(el).getPropertyValue('font-size');
-    const adjustment = increase ? 1 : -1;
-    const newSize = Math.max(window.parseInt(fontSize, 10) + adjustment, MINIMUM_FONT_SIZE);
-    el.style.fontSize = newSize.toString() + 'px';
-    cm.refresh();
 }
