@@ -326,7 +326,7 @@ export default class MapPanelSearch extends React.Component {
      */
     onSuggestionsUpdateRequested ({ value, reason }) {
         // If user presses ENTER on the input search bar
-        if(reason === 'enter-input') {
+        if (reason === 'enter-input') {
             this.search(value);
         }
         // For all other interactions, like moving up and down the suggestion list
@@ -336,7 +336,6 @@ export default class MapPanelSearch extends React.Component {
                 this.autocomplete(value);
             }
         }
-
     }
 
     /**
@@ -353,7 +352,7 @@ export default class MapPanelSearch extends React.Component {
      * Makes an search request to API when user presses ENTER
      * @param query - value to search for
      */
-     search (query) {
+    search (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
         this.makeRequest(endpoint);
@@ -466,14 +465,14 @@ export default class MapPanelSearch extends React.Component {
                     <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
                         {/* Defining an immediately-invoked function expression inside JSX to decide whether to render full bookmark list or not */}
                         {(() => {
-                            let bookmarkDropdownList ;
+                            let bookmarkDropdownList;
 
                             // If no bookmarks, then display a no bookmarks message
-                            if(this.state.bookmarks.length === 0) {
+                            if (this.state.bookmarks.length === 0) {
                                 bookmarkDropdownList =
                                     <MenuItem key='none' className='bookmark-dropdown-center'>
                                         <div>No bookmarks yet!</div>
-                                    </MenuItem> ;
+                                    </MenuItem>;
                             }
                             // If there are bookmarks
                             else {
@@ -492,7 +491,7 @@ export default class MapPanelSearch extends React.Component {
                                 let deletebutton =
                                     <MenuItem key='delete' onSelect={this.clickDeleteBookmarks} className='bookmark-dropdown-center'>
                                         <div>Clear bookmarks</div>
-                                    </MenuItem> ;
+                                    </MenuItem>;
 
                                 // In React we have to use arrays if we want to concatenate two JSX fragments
                                 bookmarkDropdownList = [list, deletebutton];
