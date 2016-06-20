@@ -34,8 +34,8 @@ export default class SuggestManager {
 
             let line = editor.getCursor().line;
             let stateAfter = editor.getLineHandle(line).stateAfter;
-            if (stateAfter && stateAfter.localMode && stateAfter.localMode.helperType) {
-                let helperType = stateAfter.localMode.helperType;
+            if (stateAfter && stateAfter.innerMode && stateAfter.innerMode.helperType) {
+                let helperType = stateAfter.innerMode.helperType;
                 if (helperType === 'glsl' || helperType === 'javascript') {
                     bOpen = false;
                 }

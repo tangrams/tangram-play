@@ -28,7 +28,7 @@ export default class Helpers {
             // Exit early if the cursor is not at a token
             let token = editor.getTokenAt(cursor);
 
-            if (token.state.localMode === null || token.state.localMode.helperType !== 'glsl') {
+            if (token.state.innerMode === null || token.state.innerMode.helperType !== 'glsl') {
                 return;
             }
 

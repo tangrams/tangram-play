@@ -20,7 +20,7 @@ export function getNodes (cm, nLine) {
     // Return the nodes. If any property in the chain is not defined,
     // return an empty array.
     try {
-        return lineHandle.stateAfter.yamlState.nodes;
+        return lineHandle.stateAfter.nodes || [];
     }
     catch (e) {
         return [];
@@ -205,39 +205,6 @@ function getAnchorFromValue (value) {
     }
 }
 
-// function isNodeDuplicated(A) {
-//     let B = TangramPlay.getNodesForAddress(A);
-//     if (B === undefined){
-//         return false;
-//     }
-//     return isNodeEqual(A, B);
-// }
-
-// function isNodeEqual (A, B) {
-//     if (A && B && A.address && B.address && A.value && B.value) {
-//         if (A.address !== B.address) {
-//             return false;
-//         }
-//         if (A.value !== B.value) {
-//             return false;
-//         }
-//         else if (A.range.from.line !== B.range.from.line) {
-//             return false;
-//         }
-//         else if (A.range.to.line !== B.range.to.line) {
-//             return false;
-//         }
-//         else if (A.range.to.ch !== B.range.to.ch) {
-//             return false;
-//         }
-//         else if (A.range.from.ch !== B.range.from.ch) {
-//             return false;
-//         }
-//         return true;
-//     }
-//     return true;
-// }
-
 // Given a YAML string return an array of keys
 // TODO: We will need a different way of parsing YAML flow notation,
 // since this function does not cover the full range of legal YAML specification
@@ -301,226 +268,195 @@ function getInlineNodes (str, nLine) {
 }
 
 // Add Address to token states
-function yamlAddressing (stream, state) {
-    // Once per line compute the KEYS tree, NAME, ADDRESS and LEVEL.
-    if (stream.pos === 0) {
-        parseYamlString(stream.string, state, stream.tabSize);
-    }
-}
-
-// Add Address to token states
 export function parseYamlString (string, state, tabSize) {
-    // TODO:
-    //  - add an extra \s* before the :
-    //  - break all this into smaller and reusable functions
-    //  - get rid of the pos
-    //
-    let regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
-    let node = regex.exec(string);
+    const regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
+    const node = regex.exec(string);
 
-    // node[0] = all the matching line
-    // node[1] = spaces
-    // node[2] = key
-    // node[3] = "\s*:\s*"
-    // node[4] = value (if there is one)
-    //
+    // Each node entry is based off of this object.
+    // TODO: Also make this available to to getInlineNodes(), above.
+    let nodeEntry = {
+        address: '',
+        key: '',
+        anchor: '',
+        value: '',
+        range: {
+            from: {
+                line: state.line,
+                ch: 0
+            },
+            to: {
+                line: state.line,
+                ch: 0
+            }
+        },
+        index: 0
+    };
+
+    // If looks like a node
     if (node) {
-        //  If looks like a node
-        //  Calculate the number of spaces and indentation level
-        let spaces = (node[1].match(/\s/g) || []).length;
-        let level = Math.floor(spaces / tabSize);
+        const nodeSpaces = node[1];     // Spaces at the beginning of a line
+        const nodeKey = node[2];        // the YAML key
+        const nodeSeparator = node[3];  // "\s*:\s*"
+        const nodeValue = node[4];      // the value, if there is one
 
-        //  Update the nodeS tree
+        // Calculate the number of spaces and indentation level
+        const spaces = (nodeSpaces.match(/\s/g) || []).length;
+        const level = Math.floor(spaces / tabSize);
+
+        // Update the node tree
         if (level > state.keyLevel) {
-            state.keyStack.push(node[2]);
+            state.keyStack.push(nodeKey);
         }
         else if (level === state.keyLevel) {
-            state.keyStack[level] = node[2];
+            state.keyStack[level] = nodeKey;
         }
         else if (level < state.keyLevel) {
             let diff = state.keyLevel - level;
             for (let i = 0; i < diff; i++) {
                 state.keyStack.pop();
             }
-            state.keyStack[level] = node[2];
+            state.keyStack[level] = nodeKey;
         }
 
-        //  Record all that in the state value
+        // Record all that in the state value
         state.keyLevel = level;
 
-        let address = getAddressFromKeys(state.keyStack);
-        let fromCh = spaces;
-        let toCh = spaces + node[2].length + node[3].length;
+        const address = getAddressFromKeys(state.keyStack);
+        const fromCh = spaces;
+        const toCh = spaces + nodeKey.length + nodeSeparator.length;
 
-        if (node[4].substr(0, 1) === '{') {
-            // If there are multiple keys
-            state.nodes = [{
-                address: address,
-                key: node[2],
-                value: '',
-                anchor: '',
-                range: {
-                    from: {
-                        line: state.line,
-                        ch: fromCh
-                    },
-                    to: {
-                        line: state.line,
-                        ch: toCh
-                    }
-                },
-                index: 0
-            }];
+        // If there are multiple keys
+        if (nodeValue.substr(0, 1) === '{') {
+            nodeEntry.address = address;
+            nodeEntry.key = nodeKey;
+            nodeEntry.range.from.ch = fromCh;
+            nodeEntry.range.to.ch = toCh;
 
-            let subNodes = getInlineNodes(node[4], state.line);
+            state.nodes = [nodeEntry];
+
+            let subNodes = getInlineNodes(nodeValue, state.line);
             for (let i = 0; i < subNodes.length; i++) {
                 subNodes[i].address = address + subNodes[i].address;
-                subNodes[i].range.from.ch += spaces + node[2].length + node[3].length;
-                subNodes[i].range.to.ch += spaces + node[2].length + node[3].length;
+                subNodes[i].range.from.ch += spaces + nodeKey.length + nodeSeparator.length;
+                subNodes[i].range.to.ch += spaces + nodeKey.length + nodeSeparator.length;
                 state.nodes.push(subNodes[i]);
             }
         }
         else {
-            let anchor = getAnchorFromValue(node[4]);
-            toCh += node[4].length;
-            state.nodes = [{
-                address: address,
-                key: node[2],
-                anchor: anchor,
-                value: node[4].substr(anchor.length),
-                range: {
-                    from: {
-                        line: state.line,
-                        ch: fromCh
-                    },
-                    to: {
-                        line: state.line,
-                        ch: toCh
-                    }
-                },
-                index: 0
-            }];
+            const anchor = getAnchorFromValue(nodeValue);
+
+            nodeEntry.address = address;
+            nodeEntry.key = nodeKey;
+            nodeEntry.anchor = anchor;
+            nodeEntry.value = nodeValue.substr(anchor.length);
+            nodeEntry.range.from.ch = fromCh;
+            nodeEntry.range.to.ch = toCh + nodeValue.length;
+
+            state.nodes = [nodeEntry];
         }
     }
+    // Commented or empty lines lines
     else {
-        // Commented or empty lines lines
-        state.nodes = [{
-            address: getAddressFromKeys(state.keyStack),
-            key: '',
-            value: '',
-            anchor: '',
-            range: {
-                from: {
-                    line: state.line,
-                    ch: 0
-                },
-                to: {
-                    line: state.line,
-                    ch: 0
-                }
-            },
-            index: 0
-        }];
+        nodeEntry.address = getAddressFromKeys(state.keyStack);
+        state.nodes = [nodeEntry];
     }
+
+    return state;
 }
 
-//  YAML-TANGRAM
-//  ===============================================================================
+// YAML-TANGRAM
+// =============================================================================
+
+// Extend YAML with line comment character (not provided by CodeMirror).
+CodeMirror.extendMode('yaml', {
+    lineComment: '#'
+});
+
 CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     // Import multiple modes used by Tangram YAML.
     const yamlMode = CodeMirror.getMode(config, 'yaml');
     const glslMode = CodeMirror.getMode(config, 'glsl');
     const jsMode = CodeMirror.getMode(config, 'javascript');
 
-    // Specify YAML line comment character (not provided by CodeMirror).
-    yamlMode.lineComment = '#';
-
-    function yaml (stream, state) {
-        const address = getKeyAddressFromState(state.yamlState);
+    function yamlToken (stream, state) {
+        const address = getKeyAddressFromState(state);
         if (address !== undefined) {
             if (isShader(address) &&
                 !/^\|$/g.test(stream.string) &&
                 isAfterKey(stream.string, stream.pos)) {
-                state.token = glsl;
-                state.localMode = glslMode;
-                state.localState = glslMode.startState(getInd(stream.string));
-                return glsl(stream, state);
+                state.token = glslToken;
+                state.innerMode = glslMode;
+                state.innerState = glslMode.startState(getInd(stream.string));
+                return glslToken(stream, state);
             }
             else if (isContentJS(tangramScene, address) &&
                         !/^\|$/g.test(stream.string) &&
                         isAfterKey(stream.string, stream.pos)) {
-                state.token = js;
-                state.localMode = jsMode;
-                state.localState = jsMode.startState(getInd(stream.string));
-                return js(stream, state);
+                state.token = jsToken;
+                state.innerMode = jsMode;
+                state.innerState = jsMode.startState(getInd(stream.string));
+                return jsToken(stream, state);
             }
         }
 
-        if (stream.pos === 0) {
-            state.yamlState.line++;
-        }
-
-        return yamlMode.token(stream, state.yamlState);
+        return yamlMode.token(stream, state);
     }
 
-    function glsl (stream, state) {
-        let address = getKeyAddressFromState(state.yamlState);
+    function glslToken (stream, state) {
+        let address = getKeyAddressFromState(state);
         if (!isShader(address) || (/^\|$/g.test(stream.string))) {
-            state.token = yaml;
-            state.localState = state.localMode = null;
-            return null;
+            state.token = yamlToken;
+            state.innerState = null;
+            state.innerMode = null;
+            return yamlMode.token(stream, state);
         }
-        if (stream.pos === 0) {
-            state.yamlState.line++;
-        }
-        return glslMode.token(stream, state.localState);
+
+        return glslMode.token(stream, state.innerState);
     }
 
-    //  TODO:
-    //        Replace global scene by a local
-    //
-    function js (stream, state) {
-        let address = getKeyAddressFromState(state.yamlState);
+    function jsToken (stream, state) {
+        let address = getKeyAddressFromState(state);
         if ((!isContentJS(tangramScene, address) || /^\|$/g.test(stream.string))) {
-            state.token = yaml;
-            state.localState = state.localMode = null;
-            return null;
+            state.token = yamlToken;
+            state.innerState = null;
+            state.innerMode = null;
+            return yamlMode.token(stream, state);
         }
-        if (stream.pos === 0) {
-            state.yamlState.line++;
-        }
-        return jsMode.token(stream, state.localState);
+
+        return jsMode.token(stream, state.innerState);
     }
 
     return {
         startState: function () {
-            let state = yamlMode.startState();
-            state.keyStack = [];
-            state.keyLevel = -1;
-            state.line = 0;
-            return {
-                token: yaml,
-                localMode: null,
-                localState: null,
-                yamlState: state
-            };
+            const state = CodeMirror.startState(yamlMode);
+
+            // Augment YAML state object with other information.
+            return Object.assign(state, {
+                indentation: 0,
+                keyStack: [],
+                keyLevel: -1,
+                line: 0, // 1-indexed line number.
+                token: yamlToken,
+                // For mixed modes
+                innerMode: null,
+                innerState: null
+            });
         },
-        copyState: function (state) {
-            let local;
-            if (state.localState) {
-                local = CodeMirror.copyState(state.localMode, state.localState);
+        // Makes a safe copy of the original state object.
+        copyState: function (originalState) {
+            const state = CodeMirror.copyState(yamlMode, originalState);
+
+            // Also, make a safe copy of the inner state object, if present.
+            if (originalState.innerState !== null) {
+                state.innerState = CodeMirror.copyState(originalState.innerMode, originalState.innerState);
             }
-            return {
-                token: state.token,
-                localMode: state.localMode,
-                localState: local,
-                yamlState: CodeMirror.copyState(yamlMode, state.yamlState),
-            };
+
+            return state;
         },
         innerMode: function (state) {
             return {
-                state: state.localState || state.yamlState,
-                mode: state.localMode || yamlMode
+                state: state.innerState || state,
+                mode: state.innerMode || yamlMode
             };
         },
         // By default, CodeMirror skips blank lines when tokenizing a document.
@@ -529,11 +465,67 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
         // blank lines, which we use solely to increment the line number on our state
         // object when a blank line is encountered by CodeMirror's parser.
         blankLine: function (state) {
-            state.yamlState.line++;
+            state.line++;
         },
         token: function (stream, state) {
-            yamlAddressing(stream, state.yamlState);
+            // Do the following only once per line
+            if (stream.pos === 0) {
+                // Parse the string for information - key structure, key name,
+                // key level, and address.
+                state = parseYamlString(stream.string, state, stream.tabSize);
+
+                // Increment line count in the state, since CodeMirror normally
+                // does not keep track of this for us. Note: we may not need
+                // this ultimately if widget data is embedded directly on the state.
+                state.line++;
+
+                // Record indentation. This is the number of spaces a line
+                // is indented. It does not indicate key level, which depends
+                // on the indentation level of lines above this one.
+                state.indentation = stream.indentation();
+            }
+
             return state.token(stream, state);
+        },
+        // Enables smart indentation on new lines, while in YAML mode.
+        // When the new line is created, if the previous value is blank or
+        // the multi-line pipe character, the new line indented one indentUnit
+        // past the previous indentation. Otherwise, retain the previous
+        // indentation.
+        indent: function (state, textAfter) {
+            // Indentation in YAML mode
+            if (state.innerMode === null) {
+                const previousValue = state.nodes[0].value.trim();
+                const previousKey = state.nodes[0].key;
+
+                // Only indent after lines that meet certain conditions.
+                // The previous line must have a key, and the key's value is
+                // either blank or a pipe.
+                if (previousKey && (previousValue === '' || previousValue === '|')) {
+                    return state.indentation + config.indentUnit;
+                }
+                else {
+                    return state.indentation;
+                }
+            }
+            // If not YAML, defer to inner mode's indent() method.
+            // Both JavaScript and C-like modes have built-in indent() methods,
+            // so we have no need for fallbacks yet.
+            // TODO: there is still buggy implementation of indentation
+            // within these inner modes (possibly due to the mixed mode).
+            // There is still some work to do.
+            else {
+                const innerIndent = state.innerMode.indent(state.innerState, textAfter);
+                // The inner state's context does not always store the actual
+                // indentation, for unknown reasons. This hack never lets the
+                // inner mode's indentation be less than the YAML indentation.
+                if (innerIndent >= state.indentation) {
+                    return innerIndent;
+                }
+                else {
+                    return state.indentation;
+                }
+            }
         },
         fold: 'indent'
     };
