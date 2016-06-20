@@ -23,6 +23,7 @@
     line-height: 28px;
     color: var(--ui-border-color);
     white-space:nowrap;
+    padding-left: 6px;
 }
 
 /* Autosuggestion list */
@@ -95,9 +96,19 @@
 .dropdown-menu.dropdown-menu-right {
     background-color: var(--ui-component-color);
     font-size: 12px;
+    margin: 0;
+    border: 0;
+    padding: 0;
 
     a {
         display: inline-flex;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        outline: none;
+    }
+
+    li:hover {
+        background-color: var(--ui-active-color);
     }
 }
 
@@ -108,4 +119,8 @@
 
 .bookmark-dropdown-text {
     color: var(--ui-border-color);
+}
+
+.bookmark-dropdown-center {
+    text-align: center;
 }
