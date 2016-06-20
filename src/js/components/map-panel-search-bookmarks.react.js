@@ -215,6 +215,13 @@ export default class MapPanelSearch extends React.Component {
         let center = map.getCenter();
         let zoom = map.getZoom();
         let label = this.state.value || 'Unknown location';
+
+        // TODO: come up with a better distinction of when to show value and
+        // when to show label to user
+        if (label === 'Unknown location') {
+            label = this.state.placeholder;
+        }
+
         return {
             label,
             lat: center.lat,
@@ -444,15 +451,18 @@ export default class MapPanelSearch extends React.Component {
                 </ButtonGroup>
 
                 {/* Bookmark button*/}
-                <ButtonGroup>
-                    <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
-                        <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
-                            {this.state.bookmarks.map(function (result) {
-                                return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>{result.label}</MenuItem>;
-                            })}
-                        </DropdownButton>
-                    </OverlayTrigger>
-                </ButtonGroup>
+                <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
+                    <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
+                        {this.state.bookmarks.map(function (result) {
+                            return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>
+                                        <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
+                                        <div>{result.label}<br />
+                                            <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, {result.zoom}</span>
+                                        </div>
+                                    </MenuItem>;
+                        })}
+                    </DropdownButton>
+                </OverlayTrigger>
             </div>
         );
     }

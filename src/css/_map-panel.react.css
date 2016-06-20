@@ -47,6 +47,7 @@
 
     .map-panel-toolbar {
         display: flex;
+        align-items: center;
     }
 }
 
@@ -88,6 +89,17 @@
 }
 
 /* Style for button groups */
+.map-panel-zoom {
+    width: 38px;
+    margin-right: 4px;
+    font-size: 12px;
+    text-align:center
+}
+
 .buttons-plusminus {
     display: flex ;
+
+    .map-panel-zoomin {
+        margin-right: 2px ;
+    }
 }

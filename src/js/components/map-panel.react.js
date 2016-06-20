@@ -201,6 +201,8 @@ export default class MapPanel extends React.Component {
      * Called every time state or props are changed
      */
     render () {
+        let mapzoom = parseFloat(this.state.zoom).toFixed(1);
+
         return (
             <div>
                 {/* Toggle map panel to show it*/}
@@ -213,12 +215,12 @@ export default class MapPanel extends React.Component {
                 {/* Map panel*/}
                 <Panel collapsible expanded={this.state.open} className='map-panel-collapsible'>
                     <div className='map-panel-toolbar'>
-                        <div><span>z{this.state.zoom}</span></div>
+                        <div className='map-panel-zoom'><span>z{mapzoom}</span></div>
 
                         {/* Zoom buttons*/}
                         <ButtonGroup className='buttons-plusminus'>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
-                                <Button onClick={this.clickZoomIn}> <Icon type={'bt-plus'} /> </Button>
+                                <Button onClick={this.clickZoomIn} className='map-panel-zoomin'> <Icon type={'bt-plus'} /> </Button>
                             </OverlayTrigger>
                             <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom out'}</Tooltip>}>
                                 <Button onClick={this.clickZoomOut}> <Icon type={'bt-minus'} /> </Button>
