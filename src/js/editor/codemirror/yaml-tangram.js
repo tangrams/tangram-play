@@ -5,9 +5,6 @@ import './glsl-tangram';
 
 import { tangramScene } from '../../map/map';
 
-// Load some common functions
-import { getInd } from './tools';
-
 const ADDRESS_KEY_DELIMITER = ':';
 
 // GET public functions
@@ -341,7 +338,7 @@ export function parseYamlString (string, state, tabSize) {
             state.nodes = [nodeEntry];
         }
     }
-    // Commented or empty lines lines
+    // Commented or empty lines
     else {
         nodeEntry.address = getAddressFromKeys(state.keyStack);
         state.nodes = [nodeEntry];
@@ -364,54 +361,6 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     const glslMode = CodeMirror.getMode(config, 'glsl');
     const jsMode = CodeMirror.getMode(config, 'javascript');
 
-    function yamlToken (stream, state) {
-        const address = getKeyAddressFromState(state);
-        if (address !== undefined) {
-            if (isShader(address) &&
-                !/^\|$/g.test(stream.string) &&
-                isAfterKey(stream.string, stream.pos)) {
-                state.token = glslToken;
-                state.innerMode = glslMode;
-                state.innerState = glslMode.startState(getInd(stream.string));
-                return glslToken(stream, state);
-            }
-            else if (isContentJS(tangramScene, address) &&
-                        !/^\|$/g.test(stream.string) &&
-                        isAfterKey(stream.string, stream.pos)) {
-                state.token = jsToken;
-                state.innerMode = jsMode;
-                state.innerState = jsMode.startState(getInd(stream.string));
-                return jsToken(stream, state);
-            }
-        }
-
-        return yamlMode.token(stream, state);
-    }
-
-    function glslToken (stream, state) {
-        let address = getKeyAddressFromState(state);
-        if (!isShader(address) || (/^\|$/g.test(stream.string))) {
-            state.token = yamlToken;
-            state.innerState = null;
-            state.innerMode = null;
-            return yamlMode.token(stream, state);
-        }
-
-        return glslMode.token(stream, state.innerState);
-    }
-
-    function jsToken (stream, state) {
-        let address = getKeyAddressFromState(state);
-        if ((!isContentJS(tangramScene, address) || /^\|$/g.test(stream.string))) {
-            state.token = yamlToken;
-            state.innerState = null;
-            state.innerMode = null;
-            return yamlMode.token(stream, state);
-        }
-
-        return jsMode.token(stream, state.innerState);
-    }
-
     return {
         startState: function () {
             const state = CodeMirror.startState(yamlMode);
@@ -421,11 +370,13 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 indentation: 0,
                 keyStack: [],
                 keyLevel: -1,
-                line: 0, // 1-indexed line number.
-                token: yamlToken,
+                line: -1, // 0-indexed line number.
+                string: '',
                 // For mixed modes
                 innerMode: null,
-                innerState: null
+                innerState: null,
+                shouldChangeInnerMode: false,
+                parentBlockIndent: 0
             });
         },
         // Makes a safe copy of the original state object.
@@ -448,6 +399,8 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
         // By default, CodeMirror skips blank lines when tokenizing a document.
         // This updates the state for blank lines.
         blankLine: function (state) {
+            state.string = '';
+
             // We need to know the exact line number for our YAML addressing system.
             // Increment blank lines here.
             state.line++;
@@ -458,24 +411,91 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
             state.indentation = 0;
         },
         token: function (stream, state) {
-            // Do the following only once per line
+            const address = getKeyAddressFromState(state);
+
             if (stream.pos === 0) {
-                // Parse the string for information - key structure, key name,
-                // key level, and address.
-                state = parseYamlString(stream.string, state, stream.tabSize);
+                // Record indentation. This is the number of spaces a line
+                // is indented. It does not indicate key level, which depends
+                // on the indentation level of lines above this one.
+                // If we're about to change inner modes, record the previous
+                // line indent as the parent block's indentation level.
+                // We will use this indentation as a way to know if we drop out
+                // of the inner mode.
+                if (state.shouldChangeInnerMode) {
+                    state.parentBlockIndent = state.indentation;
+                }
+                state.indentation = stream.indentation();
+                state.string = stream.string;
+
+                // If we think we're in an inner mode, but the indentation level
+                // of this stream has dropped down to, or less than the inner
+                // mode's opening indentation, then cancel & reset inner modes.
+                // Furthermore, return from the tokenizer without advancing the
+                // stream.
+                if (state.innerMode && state.indentation <= state.parentBlockIndent) {
+                    state.innerMode = null;
+                    state.innerState = null;
+                    return null;
+                }
 
                 // Increment line count in the state, since CodeMirror normally
                 // does not keep track of this for us. Note: we may not need
                 // this ultimately if widget data is embedded directly on the state.
                 state.line++;
-
-                // Record indentation. This is the number of spaces a line
-                // is indented. It does not indicate key level, which depends
-                // on the indentation level of lines above this one.
-                state.indentation = stream.indentation();
             }
 
-            return state.token(stream, state);
+            // Do the following only once per line
+            if (stream.sol()) {
+                // Parse the string for information - key structure, key name,
+                // key level, and address.
+                state = parseYamlString(stream.string, state, stream.tabSize);
+
+                // If we should change mode here, and there is already not an
+                // inner mode, determine what mode to switch to.
+                if (state.shouldChangeInnerMode && !state.innerMode && address !== undefined) {
+                    if (isShader(address)) {
+                        state.innerMode = glslMode;
+                    }
+                    else if (isContentJS(tangramScene, address)) {
+                        state.innerMode = jsMode;
+                    }
+
+                    // Reset this.
+                    state.shouldChangeInnerMode = false;
+                }
+            }
+
+            // If we are parsing a value, determine what language to parse in.
+            if (address !== undefined && isAfterKey(stream.string, stream.pos)) {
+                const value = state.nodes[0].value.trim();
+
+                // If it's a multiline indicator, we will begin changing modes
+                // in the next stream, instead of right now.
+                if (value === '|') {
+                    state.shouldChangeInnerMode = true;
+                }
+                // Otherwise, start inner modes immediately.
+                else if (isShader(address)) {
+                    state.innerMode = glslMode;
+                }
+                else if (isContentJS(tangramScene, address)) {
+                    state.innerMode = jsMode;
+                }
+            }
+
+            // Get the token, according to either the inner mode or YAML mode.
+            let token;
+
+            if (state.innerMode) {
+                const innerMode = state.innerMode;
+                state.innerState = innerMode.startState();
+                token = innerMode.token(stream, state.innerState);
+            }
+            else {
+                token = yamlMode.token(stream, state);
+            }
+
+            return token;
         },
         // Enables smart indentation on new lines, while in YAML mode.
         // When the new line is created, if the previous value is blank or
@@ -498,24 +518,12 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                     return state.indentation;
                 }
             }
+
             // If not YAML, defer to inner mode's indent() method.
             // Both JavaScript and C-like modes have built-in indent() methods,
             // so we have no need for fallbacks yet.
-            // TODO: there is still buggy implementation of indentation
-            // within these inner modes (possibly due to the mixed mode).
-            // There is still some work to do.
-            else {
-                const innerIndent = state.innerMode.indent(state.innerState, textAfter);
-                // The inner state's context does not always store the actual
-                // indentation, for unknown reasons. This hack never lets the
-                // inner mode's indentation be less than the YAML indentation.
-                if (innerIndent >= state.indentation) {
-                    return innerIndent;
-                }
-                else {
-                    return state.indentation;
-                }
-            }
+            const innerIndent = state.innerMode.indent(state.innerState, textAfter);
+            return state.indentation + innerIndent;
         },
         fold: 'indent'
     };
