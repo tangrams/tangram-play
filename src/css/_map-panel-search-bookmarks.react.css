@@ -3,6 +3,11 @@
     flex-grow: 1;
 }
 
+.map-panel i.btm.active {
+    color: yellow;
+    font-weight: 900;
+}
+
 .map-search {
     display:inline-flex ;
     flex-grow: 1 ;
@@ -20,6 +25,7 @@
     white-space:nowrap;
 }
 
+/* Autosuggestion list */
 .react-autosuggest__container {
     flex-grow: 1 ;
     border-bottom: 1px solid transparent;
@@ -36,6 +42,8 @@
         outline: none ;
         border: 0px;
         color: var(--ui-component-text-color);
+        padding-top: 4px;
+        padding-bottom: 0px;
 
         &:focus {
             border-bottom: 1px dotted var(--ui-border-color);
@@ -63,7 +71,7 @@
     }
 }
 
-.map-panel .react-autosuggest__suggestions-container * i {
+.map-panel i.btm.bt-map-marker {
     font-size: 10px;
     padding-right: 10px;
     font-weight: 900 ;
@@ -71,7 +79,6 @@
     .btm {
         -webkit-font-smoothing: auto;
         -moz-osx-font-smoothing: auto;
-        font-weight: 900;
     }
 }
 
@@ -82,4 +89,23 @@
 .react-autosuggest__suggestions-container * strong {
     color: yellow;
     font-weight: 200;
+}
+
+/* Bookmark list dropdown */
+.dropdown-menu.dropdown-menu-right {
+    background-color: var(--ui-component-color);
+    font-size: 12px;
+
+    a {
+        display: inline-flex;
+    }
+}
+
+.bookmark-dropdown-icon {
+    display: flex;
+    align-items: center;
+}
+
+.bookmark-dropdown-text {
+    color: var(--ui-border-color);
 }
