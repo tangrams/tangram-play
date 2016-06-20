@@ -52,6 +52,7 @@ nav {
     font-family: var(--font-family);
     font-weight: 200;
     font-size: 14px;
+    outline: none;
 
     &:hover {
         color: yellow;
