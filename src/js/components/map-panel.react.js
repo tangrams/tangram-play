@@ -35,11 +35,11 @@ export default class MapPanel extends React.Component {
             } // Whether the geolocate function has been activated
         };
 
-        this.toggleMapPanel = this.toggleMapPanel.bind(this);
-        this.clickGeolocator = this.clickGeolocator.bind(this);
-        this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
-        this.clickZoomIn = this.clickZoomIn.bind(this);
-        this.clickZoomOut = this.clickZoomOut.bind(this);
+        this._toggleMapPanel = this._toggleMapPanel.bind(this);
+        this._clickGeolocator = this._clickGeolocator.bind(this);
+        this._onGeolocateSuccess = this._onGeolocateSuccess.bind(this);
+        this._clickZoomIn = this._clickZoomIn.bind(this);
+        this._clickZoomOut = this._clickZoomOut.bind(this);
     }
 
     /**
@@ -51,13 +51,13 @@ export default class MapPanel extends React.Component {
     componentDidMount () {
         let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('zoomend', function (data) { that.setZoomLabel(); });
+        EventEmitter.subscribe('zoomend', function (data) { that._setZoomLabel(); });
     }
 
     /**
      * Toggle the panel so it is visible or not visible
      */
-    toggleMapPanel () {
+    _toggleMapPanel () {
         this.setState({ open: !this.state.open });
     }
 
@@ -66,7 +66,7 @@ export default class MapPanel extends React.Component {
     /**
      * Zoom into the map when user click ZoomOut button
      */
-    setZoomLabel () {
+    _setZoomLabel () {
         let currentZoom = map.getZoom();
         let fractionalNumber = Math.floor(currentZoom * 10) / 10;
         this.setState({ zoom: fractionalNumber.toFixed(1) });
@@ -75,17 +75,17 @@ export default class MapPanel extends React.Component {
     /**
      * Zoom into the map when user click ZoomIn button
      */
-    clickZoomIn () {
+    _clickZoomIn () {
         map.zoomIn(1, { animate: true });
-        this.setZoomLabel();
+        this._setZoomLabel();
     }
 
     /**
      * Zoom into the map when user click ZoomOut button
      */
-    clickZoomOut () {
+    _clickZoomOut () {
         map.zoomOut(1, { animate: true });
-        this.setZoomLabel();
+        this._setZoomLabel();
     }
 
     /** Geolocator functionality **/
@@ -93,7 +93,7 @@ export default class MapPanel extends React.Component {
     /**
      * Fired when user clicks on geolocator button
      */
-    clickGeolocator () {
+    _clickGeolocator () {
         const geolocator = window.navigator.geolocation;
         const options = {
             enableHighAccuracy: true,
@@ -103,7 +103,7 @@ export default class MapPanel extends React.Component {
         // Fixes an infinite loop bug with Safari
         // https://stackoverflow.com/questions/27150465/geolocation-api-in-safari-8-and-7-1-keeps-asking-permission/28436277#28436277
         window.setTimeout(() => {
-            geolocator.getCurrentPosition(this.onGeolocateSuccess, this.onGeolocateError, options);
+            geolocator.getCurrentPosition(this._onGeolocateSuccess, this._onGeolocateError, options);
         }, 0);
 
         // Sets a new state for the geolocator button in order to change the
@@ -116,7 +116,7 @@ export default class MapPanel extends React.Component {
      * and panel to reflect new position
      * @param position - the new position to which map has moved
      */
-    onGeolocateSuccess (position) {
+    _onGeolocateSuccess (position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const accuracy = position.coords.accuracy || 0;
@@ -177,7 +177,7 @@ export default class MapPanel extends React.Component {
      *      and a user-agent defined message. See also:
      *      see https://developer.mozilla.org/en-US/docs/Web/API/PositionError
      */
-    onGeolocateError (err) {
+    _onGeolocateError (err) {
         let message = 'Tangram Play could not retrieve your current position and we do not have enough information to know why.';
         switch (err.code) {
             case 1: // PERMISSION_DENIED
@@ -207,7 +207,7 @@ export default class MapPanel extends React.Component {
             <div>
                 {/* Toggle map panel to show it*/}
                 <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toogle map toolbar'}</Tooltip>}>
-                    <Button onClick={this.toggleMapPanel} className='map-panel-button-show'>
+                    <Button onClick={this._toggleMapPanel} className='map-panel-button-show'>
                         <Icon type={'bt-caret-down'} />
                     </Button>
                 </OverlayTrigger>
@@ -220,10 +220,10 @@ export default class MapPanel extends React.Component {
                         {/* Zoom buttons*/}
                         <ButtonGroup className='buttons-plusminus'>
                             <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
-                                <Button onClick={this.clickZoomIn} className='map-panel-zoomin'> <Icon type={'bt-plus'} /> </Button>
+                                <Button onClick={this._clickZoomIn} className='map-panel-zoomin'> <Icon type={'bt-plus'} /> </Button>
                             </OverlayTrigger>
                             <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom out'}</Tooltip>}>
-                                <Button onClick={this.clickZoomOut}> <Icon type={'bt-minus'} /> </Button>
+                                <Button onClick={this._clickZoomOut}> <Icon type={'bt-minus'} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 
@@ -233,14 +233,14 @@ export default class MapPanel extends React.Component {
                         {/* Locate me button*/}
                         <ButtonGroup>
                             <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Locate me'}</Tooltip>}>
-                                <Button onClick={this.clickGeolocator}> <Icon type={this.state.geolocatorButton} /> </Button>
+                                <Button onClick={this._clickGeolocator}> <Icon type={this.state.geolocatorButton} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 
                         {/* Toggle map panel to show it*/}
                         <ButtonGroup>
                             <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle map toolbar'}</Tooltip>}>
-                                <Button onClick={this.toggleMapPanel}> <Icon type={'bt-caret-up'} /> </Button>
+                                <Button onClick={this._toggleMapPanel}> <Icon type={'bt-caret-up'} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
                     </div>
