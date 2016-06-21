@@ -64,6 +64,10 @@ nav {
     }
 }
 
+.menu-bar li.active a {
+    color: var(--ui-highlight-color);
+}
+
 .menu-bar .dropdown-menu li {
     border-top: 1px solid var(--ui-active-color);
 

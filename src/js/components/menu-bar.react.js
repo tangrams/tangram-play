@@ -50,10 +50,6 @@ const _clickSaveCamera = function () {
     takeScreenshot();
 };
 
-const _clickInspect = function () {
-    setGlobalIntrospection(true);
-};
-
 const _clickFullscreen = function () {
     toggleFullscreen();
 };
@@ -69,6 +65,13 @@ const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
  * Represents the navbar for the application
  */
 export default class MenuBar extends React.Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            inspectActive: false, // Represents whether inspect mode is on / off
+        };
+    }
+
     /**
      * Official React lifecycle method
      * Called every time state or props are changed
@@ -113,7 +116,7 @@ export default class MenuBar extends React.Component {
 
                         {/* Introspection button */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle inspect mode'}</Tooltip>}>
-                            <NavItem eventKey={'new'} onClick={_clickInspect} href='#'><Icon type={'bt-wrench'} />Inspect</NavItem>
+                            <NavItem eventKey={'new'} onClick={this._clickInspect.bind(this)} href='#' active={this.state.inspectActive}><Icon type={'bt-wrench'} />Inspect</NavItem>
                         </OverlayTrigger>
                     </Nav>
 
@@ -136,5 +139,17 @@ export default class MenuBar extends React.Component {
                 </Navbar.Collapse>
             </Navbar>
         );
+    }
+
+    _clickInspect () {
+        const isInspectActive = this.state.inspectActive;
+        if (isInspectActive) {
+            this.setState({ inspectActive: false });
+            setGlobalIntrospection(false);
+        }
+        else {
+            this.setState({ inspectActive: true });
+            setGlobalIntrospection(true);
+        }
     }
 }
