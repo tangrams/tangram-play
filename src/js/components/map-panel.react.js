@@ -172,26 +172,44 @@ export default class MapPanel extends React.Component {
     /**
      * Handles geolocation error. Reports a user friendly error message
      * if PositionError has provided the reason why it did not work.
+     *
      * @param {PositionError} err - a PositionError object representing the
      *      reason for the geolocation failure. It contains an error code
      *      and a user-agent defined message. See also:
      *      see https://developer.mozilla.org/en-US/docs/Web/API/PositionError
      */
     _onGeolocateError (err) {
-        let message = 'Tangram Play could not retrieve your current position and we do not have enough information to know why.';
-        switch (err.code) {
-            case 1: // PERMISSION_DENIED
-                message = 'Tangram Play could not retrieve your current position because we do not have permission to use your browser’s geolocation feature. To get your current location, please turn it back on in your browser settings.';
-                break;
-            case 2: // POSITION_UNAVAILABLE
-                message = 'Tangram Play could not retrieve your current position because your browser’s geolocation feature reported an internal error.';
-                break;
-            case 3: // TIMEOUT
-                message = 'Tangram Play could not retrieve your current position because your browser’s geolocation feature did not respond.';
-                break;
-            default:
-                break;
+        let message = 'Your current position is unavailable, and we could not determine why.';
+
+        // On Chrome 50, a specific error message (with code 1) indicates that
+        // permission to geolocate was denied due to an insecure origin. This
+        // may happen if Tangram Play is loaded over http, rather than https.
+        // The only way to distinguish this between other uses of error code 1
+        // is via the error message text. See also:
+        // https://developers.google.com/web/updates/2016/04/geolocation-on-secure-contexts-only
+        // Note this comment from that page: "This can be quite brittle as it
+        // might change in the future, but a strong signal that it was a
+        // non-secure content issue is to look for the string “Only secure
+        // origins are allowed”."
+        if (err.message.indexOf('Only secure origins are allowed') === 0) {
+            message = 'Your current position is unavailable in this browser because Tangram Play wasn’t loaded over a secure URL.';
         }
+        else {
+            switch (err.code) {
+                case 1: // PERMISSION_DENIED
+                    message = 'Your current position is unavailable because the browser denied our request for it. It may be disabled in your browser settings.';
+                    break;
+                case 2: // POSITION_UNAVAILABLE
+                    message = 'Your current position is unavailable because the browser reported an internal error.';
+                    break;
+                case 3: // TIMEOUT
+                    message = 'Your current position is unavailable because we asked for it and got no response.';
+                    break;
+                default:
+                    break;
+            }
+        }
+
         const modal = new ErrorModal({ message });
         modal.show();
     }
