@@ -75,12 +75,12 @@ function initCodeMirror () {
     // Modified slightly to provide an additional hanging indent that is based
     // off of the document's indentUnit setting. This mimics how wrapping behaves
     // in Sublime Text.
-    const charWidth = cm.defaultCharWidth();
-    const basePadding = 4; // Magic number: it is CodeMirror's default value.
     cm.on('renderLine', function (cm, line, el) {
         const indentUnit = cm.getOption('indentUnit');
+        const charWidth = cm.defaultCharWidth();
         const columns = CodeMirror.countColumn(line.text, null, indentUnit);
         const offset = (columns + indentUnit) * charWidth;
+        const basePadding = 4; // Magic number: it is CodeMirror's default value.
 
         el.style.textIndent = '-' + offset + 'px';
         el.style.paddingLeft = (basePadding + offset) + 'px';
