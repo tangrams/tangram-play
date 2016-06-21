@@ -475,7 +475,7 @@ function determineScene () {
     // Else if there is something saved in memory (LocalStorage), return that
     // Check that contents exist and that it is not empty.
     let sceneData = getSceneContentsFromLocalMemory();
-    if (sceneData.contents && sceneData.contents.trim().length > 0) {
+    if (sceneData && sceneData.contents && sceneData.contents.trim().length > 0) {
         return sceneData;
     }
 
