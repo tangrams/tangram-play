@@ -69,7 +69,7 @@ export default class WidgetsManager {
         let bookmarks = [];
         if (from.line === to.line) { // Line the user is typing
             // cascade and check up the tree and down the tree
-            var activeAddress = editor.getStateAfter(from.line).yamlState.nodes[0].address;
+            var activeAddress = editor.getStateAfter(from.line).nodes[0].address;
             bookmarks = bookmarks.concat(editor.getDoc().findMarksAt(to));
 
             // If there is a bookmark on that line
