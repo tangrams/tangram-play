@@ -122,5 +122,6 @@
     /* 09-10: Anything that demands absolutely the highest priority */
     --z09-overlay: var(--z09);
     --z09-tooltip: var(--z09);
+    --z10-dropdown-button: var(--z10);
     --z10-mobile-message: var(--z10);
 }

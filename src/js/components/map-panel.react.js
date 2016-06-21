@@ -206,7 +206,7 @@ export default class MapPanel extends React.Component {
         return (
             <div>
                 {/* Toggle map panel to show it*/}
-                <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Toogle map toolbar'}</Tooltip>}>
+                <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toogle map toolbar'}</Tooltip>}>
                     <Button onClick={this.toggleMapPanel} className='map-panel-button-show'>
                         <Icon type={'bt-caret-down'} />
                     </Button>
@@ -219,10 +219,10 @@ export default class MapPanel extends React.Component {
 
                         {/* Zoom buttons*/}
                         <ButtonGroup className='buttons-plusminus'>
-                            <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
+                            <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
                                 <Button onClick={this.clickZoomIn} className='map-panel-zoomin'> <Icon type={'bt-plus'} /> </Button>
                             </OverlayTrigger>
-                            <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom out'}</Tooltip>}>
+                            <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom out'}</Tooltip>}>
                                 <Button onClick={this.clickZoomOut}> <Icon type={'bt-minus'} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
@@ -232,14 +232,14 @@ export default class MapPanel extends React.Component {
 
                         {/* Locate me button*/}
                         <ButtonGroup>
-                            <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Locate me'}</Tooltip>}>
+                            <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Locate me'}</Tooltip>}>
                                 <Button onClick={this.clickGeolocator}> <Icon type={this.state.geolocatorButton} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 
                         {/* Toggle map panel to show it*/}
                         <ButtonGroup>
-                            <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle map toolbar'}</Tooltip>}>
+                            <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle map toolbar'}</Tooltip>}>
                                 <Button onClick={this.toggleMapPanel}> <Icon type={'bt-caret-up'} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
