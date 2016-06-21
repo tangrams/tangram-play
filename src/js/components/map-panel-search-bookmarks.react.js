@@ -60,17 +60,17 @@ export default class MapPanelSearch extends React.Component {
             placeholder: '', // Represents placeholder of the search bar
             suggestions: [], // Stores search suggestions from autocomplete
             bookmarkActive: '', // Represents wether bookmark button should show as active
-            bookmarks: this.updateBookmarks() // Stores all bookmarks
+            bookmarks: this._updateBookmarks() // Stores all bookmarks
         };
 
         // Set the value of the search bar to whatever the map is currently pointing to
-        this.reverseGeocode(mapcenter);
+        this._reverseGeocode(mapcenter);
 
         this.onChange = this.onChange.bind(this);
-        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
-        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
-        this.renderSuggestion = this.renderSuggestion.bind(this);
-        this.clickSave = this.clickSave.bind(this);
+        this._onSuggestionsUpdateRequested = this._onSuggestionsUpdateRequested.bind(this);
+        this._onSuggestionSelected = this._onSuggestionSelected.bind(this);
+        this._renderSuggestion = this._renderSuggestion.bind(this);
+        this._clickSave = this._clickSave.bind(this);
     }
 
     /**
@@ -92,8 +92,8 @@ export default class MapPanelSearch extends React.Component {
             // But we also have the bonus of not needing to make a reverse geocode request
             // for small changes of the map center.
             if (delta > MAP_UPDATE_DELTA) {
-                that.setCurrentLatLng(currentLatLng);
-                that.reverseGeocode(currentLatLng);
+                that._setCurrentLatLng(currentLatLng);
+                that._reverseGeocode(currentLatLng);
                 that.setState({ bookmarkActive: '' });
             }
             if (that.goToActive) {
@@ -103,17 +103,17 @@ export default class MapPanelSearch extends React.Component {
         });
 
         // Need a notification when all bookmarks are cleared succesfully in order to re-render list
-        EventEmitter.subscribe('clearbookmarks', function (data) { that.bookmarkCallback(); });
+        EventEmitter.subscribe('clearbookmarks', function (data) { that._bookmarkCallback(); });
 
         // Need a notification when divider moves to change the latlng label precision
-        window.addEventListener('divider:dragend', that.setLabelPrecision);
+        window.addEventListener('divider:dragend', that._setLabelPrecision);
     }
 
     /**
      * Given a latlng, make a request to API to find location details
      * @param latlng - a latitude and longitude pair
      */
-    reverseGeocode (latlng) {
+    _reverseGeocode (latlng) {
         const lat = latlng.lat;
         const lng = latlng.lng;
         const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
@@ -155,7 +155,7 @@ export default class MapPanelSearch extends React.Component {
         let geolocateActive = nextProps.geolocateActive;
         // If the geolocate button has been activated, perform a reverseGeocode
         if (geolocateActive.active === 'true') {
-            this.reverseGeocode(geolocateActive.latlng);
+            this._reverseGeocode(geolocateActive.latlng);
         }
     }
 
@@ -165,7 +165,7 @@ export default class MapPanelSearch extends React.Component {
      * Change the latlng on the panel. Causes a re-render
      * @param latlng - a new set of latitude and longitude
      */
-    setCurrentLatLng (latlng) {
+    _setCurrentLatLng (latlng) {
         this.setState({
             latlng: {
                 lat: latlng.lat.toFixed(latlngLabelPrecision),
@@ -178,7 +178,7 @@ export default class MapPanelSearch extends React.Component {
      * Set a new latlng label with a new precision of diigts when divider moves
      * @param event - describes the divider move event that triggered the function
      */
-    setLabelPrecision (event) {
+    _setLabelPrecision (event) {
         // Updates the precision of the lat-lng display label
         // based on the available screen width
         let mapcontainer = document.getElementById('map-container');
@@ -200,10 +200,10 @@ export default class MapPanelSearch extends React.Component {
     /**
      * Fires when user wants to save a bookmark. Causes re-render of bookmark list and button
      */
-    clickSave () {
-        let data = this.getCurrentMapViewData();
+    _clickSave () {
+        let data = this._getCurrentMapViewData();
         if (bookmarks.saveBookmark(data) === true) {
-            this.setState({ bookmarks: this.updateBookmarks() });
+            this.setState({ bookmarks: this._updateBookmarks() });
             this.setState({ bookmarkActive: 'active' });
         }
     }
@@ -211,7 +211,7 @@ export default class MapPanelSearch extends React.Component {
     /**
      * Returns information for the current map view
      */
-    getCurrentMapViewData () {
+    _getCurrentMapViewData () {
         let center = map.getCenter();
         let zoom = map.getZoom();
         let label = this.state.value || 'Unknown location';
@@ -237,7 +237,7 @@ export default class MapPanelSearch extends React.Component {
      * @param eventKey - each bookmark in the bookmark list identified by a unique
      *      key
      */
-    clickGoToBookmark (eventKey) {
+    _clickGoToBookmark (eventKey) {
         let bookmarks = this.state.bookmarks;
         let bookmark = bookmarks[eventKey];
 
@@ -255,7 +255,7 @@ export default class MapPanelSearch extends React.Component {
     /**
      * Delete all bookmarks
      */
-    clickDeleteBookmarks () {
+    _clickDeleteBookmarks () {
         const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', bookmarks.clearData);
         modal.show();
     }
@@ -264,8 +264,8 @@ export default class MapPanelSearch extends React.Component {
      * Callback issued from 'bookmarks' object in order to update the panel UI.
      * Causes a re-render of the bookmarks list
      */
-    bookmarkCallback () {
-        this.setState({ bookmarks: this.updateBookmarks() });
+    _bookmarkCallback () {
+        this.setState({ bookmarks: this._updateBookmarks() });
         this.setState({ bookmarkActive: '' });
     }
 
@@ -273,7 +273,7 @@ export default class MapPanelSearch extends React.Component {
      * Fetches current bookmarks from 'bookmarks' object a causes re-render of
      * bookmarks list.
      */
-    updateBookmarks () {
+    _updateBookmarks () {
         let newBookmarks = [];
         let bookmarkList = bookmarks.readData().data;
 
@@ -287,7 +287,7 @@ export default class MapPanelSearch extends React.Component {
                 lat: bookmark.lat.toFixed(4),
                 lng: bookmark.lng.toFixed(4),
                 zoom: fractionalZoom.toFixed(1),
-                onClick: this.clickGoToBookmark.bind(this),
+                onClick: this._clickGoToBookmark.bind(this),
                 active: ''
             });
         }
@@ -315,7 +315,7 @@ export default class MapPanelSearch extends React.Component {
      * @param suggestion - current suggestion in the autocomplete list being selected
      *      or hovered on by user
      */
-    getSuggestionValue (suggestion) {
+    _getSuggestionValue (suggestion) {
         return suggestion.properties.label;
     }
 
@@ -324,16 +324,16 @@ export default class MapPanelSearch extends React.Component {
      * call a new autocomplete search request
      * @param value - value to search for
      */
-    onSuggestionsUpdateRequested ({ value, reason }) {
+    _onSuggestionsUpdateRequested ({ value, reason }) {
         // If user presses ENTER on the input search bar
         if (reason === 'enter-input') {
-            this.search(value);
+            this._search(value);
         }
         // For all other interactions, like moving up and down the suggestion list
         else {
             // Only call autocomplete if user has typed more than 1 character
             if (value.length >= 2) {
-                this.autocomplete(value);
+                this._autocomplete(value);
             }
         }
     }
@@ -342,33 +342,33 @@ export default class MapPanelSearch extends React.Component {
      * Makes an autocomplete request to API based on what user has typed
      * @param query - value to search for
      */
-    autocomplete (query) {
+    _autocomplete (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
-        this.makeRequest(endpoint);
+        this._makeRequest(endpoint);
     }
 
     /**
      * Makes an search request to API when user presses ENTER
      * @param query - value to search for
      */
-    search (query) {
+    _search (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
-        this.makeRequest(endpoint);
+        this._makeRequest(endpoint);
     }
 
     /**
      * Makes a request to Mapzen API
      * @param endpoint - the address or connection point to the web service
      */
-    makeRequest (endpoint) {
+    _makeRequest (endpoint) {
         debounce(httpGet(endpoint, (err, res) => {
             if (err) {
                 console.error(err);
             }
             else {
-                this.showResults(JSON.parse(res));
+                this._showResults(JSON.parse(res));
             }
         }), SEARCH_THROTTLE);
     }
@@ -378,7 +378,7 @@ export default class MapPanelSearch extends React.Component {
      * causing the search list to re-render
      * @param results - list of search results to display from autocomplete results
      */
-    showResults (results) {
+    _showResults (results) {
         const features = results.features;
 
         this.setState({
@@ -392,10 +392,10 @@ export default class MapPanelSearch extends React.Component {
      * @param event - event that cause user to select a particular results from
      *      suggestions list
      */
-    onSuggestionSelected (event, { suggestion }) {
+    _onSuggestionSelected (event, { suggestion }) {
         let lat = suggestion.geometry.coordinates[1];
         let lng = suggestion.geometry.coordinates[0];
-        this.setCurrentLatLng({lat: lat, lng: lng});
+        this._setCurrentLatLng({lat: lat, lng: lng});
         map.setView({ lat: lat, lng: lng });
         this.setState({ bookmarkActive: '' });
     }
@@ -404,7 +404,7 @@ export default class MapPanelSearch extends React.Component {
      * Returns a JSX string for all the suggestions returned for autocomplete
      * @param suggestion - particular item from autocomplete result list to style
      */
-    renderSuggestion (suggestion) {
+    _renderSuggestion (suggestion) {
         let value = this.state.value;
         let label = suggestion.properties.label;
 
@@ -447,16 +447,16 @@ export default class MapPanelSearch extends React.Component {
                     </OverlayTrigger>
                     {/* Autosuggest bar */}
                     <Autosuggest suggestions={suggestions}
-                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                        getSuggestionValue={this.getSuggestionValue}
-                        renderSuggestion={this.renderSuggestion}
-                        onSuggestionSelected={this.onSuggestionSelected}
+                        onSuggestionsUpdateRequested={this._onSuggestionsUpdateRequested}
+                        getSuggestionValue={this._getSuggestionValue}
+                        renderSuggestion={this._renderSuggestion}
+                        onSuggestionSelected={this._onSuggestionSelected}
                         inputProps={inputProps}/>
                     {/* Lat lng label */}
                     <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
                     {/* Bookmark save button */}
                     <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
-                        <Button onClick={this.clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
+                        <Button onClick={this._clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
                     </OverlayTrigger>
                 </ButtonGroup>
 
@@ -489,7 +489,7 @@ export default class MapPanelSearch extends React.Component {
 
                                 // Add a delete button at the end
                                 let deletebutton =
-                                    <MenuItem key='delete' onSelect={this.clickDeleteBookmarks} className='bookmark-dropdown-center'>
+                                    <MenuItem key='delete' onSelect={this._clickDeleteBookmarks} className='bookmark-dropdown-center'>
                                         <div>Clear bookmarks</div>
                                     </MenuItem>;
 

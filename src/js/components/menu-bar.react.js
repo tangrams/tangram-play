@@ -18,43 +18,43 @@ import { aboutModal } from '../modals/modal.about';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/map';
 
-const clickNew = function () {
+const _clickNew = function () {
     EditorIO.new();
 };
 
-const clickOpenFile = function () {
+const _clickOpenFile = function () {
     openLocalFile();
 };
 
-const clickOpenGist = function () {
+const _clickOpenGist = function () {
     openGistModal.show();
 };
 
-const clickOpenURL = function () {
+const _clickOpenURL = function () {
     openURLModal.show();
 };
 
-const clickOpenExample = function () {
+const _clickOpenExample = function () {
     examplesModal.show();
 };
 
-const clickSaveFile = function () {
+const _clickSaveFile = function () {
     EditorIO.export();
 };
 
-const clickSaveGist = function () {
+const _clickSaveGist = function () {
     saveGistModal.show();
 };
 
-const clickSaveCamera = function () {
+const _clickSaveCamera = function () {
     takeScreenshot();
 };
 
-const clickFullscreen = function () {
+const _clickFullscreen = function () {
     toggleFullscreen();
 };
 
-const clickAbout = function () {
+const _clickAbout = function () {
     aboutModal.show();
 };
 
@@ -85,25 +85,25 @@ export default class MenuBar extends React.Component {
                     <Nav pullLeft>
                         {/* New button*/}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'New scene'}</Tooltip>}>
-                            <NavItem eventKey={'new'} onClick={clickNew} href='#'><Icon type={'bt-file'} />New</NavItem>
+                            <NavItem eventKey={'new'} onClick={_clickNew} href='#'><Icon type={'bt-file'} />New</NavItem>
                         </OverlayTrigger>
 
                         {/* Open dropdown */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Open scene'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-upload'} />Open</span>} id='open-dropdown'>
-                                <MenuItem onClick={clickOpenFile}><Icon type={'bt-folder'} />Open a file</MenuItem>
-                                <MenuItem onClick={clickOpenGist}><Icon type={'bt-code'} />Open a saved Gist</MenuItem>
-                                <MenuItem onClick={clickOpenURL}><Icon type={'bt-link'} />Open from URL</MenuItem>
-                                <MenuItem onClick={clickOpenExample}><Icon type={'bt-map'} />Choose example</MenuItem>
+                                <MenuItem onClick={_clickOpenFile}><Icon type={'bt-folder'} />Open a file</MenuItem>
+                                <MenuItem onClick={_clickOpenGist}><Icon type={'bt-code'} />Open a saved Gist</MenuItem>
+                                <MenuItem onClick={_clickOpenURL}><Icon type={'bt-link'} />Open from URL</MenuItem>
+                                <MenuItem onClick={_clickOpenExample}><Icon type={'bt-map'} />Choose example</MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
 
                         {/* Save dropdown */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Save scene'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-download'} />Save</span>} id='save-dropdown'>
-                                <MenuItem onClick={clickSaveFile}><Icon type={'bt-folder'} />Save to file</MenuItem>
-                                <MenuItem onClick={clickSaveGist}><Icon type={'bt-code'} />Save to Gist</MenuItem>
-                                <MenuItem onClick={clickSaveCamera}><Icon type={'bt-camera'} />Take a Screenshot</MenuItem>
+                                <MenuItem onClick={_clickSaveFile}><Icon type={'bt-folder'} />Save to file</MenuItem>
+                                <MenuItem onClick={_clickSaveGist}><Icon type={'bt-code'} />Save to Gist</MenuItem>
+                                <MenuItem onClick={_clickSaveCamera}><Icon type={'bt-camera'} />Take a Screenshot</MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
                     </Nav>
@@ -112,13 +112,13 @@ export default class MenuBar extends React.Component {
                     <Nav pullRight>
                         {/* Fullscreen button */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'View fullscreen'}</Tooltip>}>
-                            <NavItem eventKey={'new'} onClick={clickFullscreen} href='#'><Icon type={'bt-maximize'} />Fullscreen</NavItem>
+                            <NavItem eventKey={'new'} onClick={_clickFullscreen} href='#'><Icon type={'bt-maximize'} />Fullscreen</NavItem>
                         </OverlayTrigger>
 
                         {/* Help dropdown */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Documentation and help'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-question-circle'} />Help</span>} id='help-dropdown'>
-                                <MenuItem onClick={clickAbout}><Icon type={'bt-folder'} />About</MenuItem>
+                                <MenuItem onClick={_clickAbout}><Icon type={'bt-folder'} />About</MenuItem>
                                 <MenuItem href={documentationLink} target='_blank'><Icon type={'bt-code'} />Documentation</MenuItem>
                                 <MenuItem href={feedbackLink} target='_blank'><Icon type={'bt-camera'} />Feedback</MenuItem>
                             </NavDropdown>
