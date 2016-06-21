@@ -69,7 +69,7 @@ nav {
 }
 
 .menu-bar .dropdown-menu {
-    z-index: 2000 ;
+    z-index: var(--z07-menu-dropdown);
     border-top: 0px ;
     padding: 0px;
     width: 200px;
@@ -78,4 +78,8 @@ nav {
 
 .menu-bar .dropdown-menu > li > a {
     line-height: 44px ;
+}
+
+.menu-bar * li.open.dropdown {
+    z-index: var(--z10-dropdown-button);
 }

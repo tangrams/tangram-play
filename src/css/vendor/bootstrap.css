@@ -3428,9 +3428,6 @@ input[type="button"].btn-block {
 }
 .fade {
   opacity: 0;
-  -webkit-transition: opacity .15s linear;
-       -o-transition: opacity .15s linear;
-          transition: opacity .15s linear;
 }
 .fade.in {
   opacity: 1;
@@ -5925,6 +5922,7 @@ button.close {
   border-width: 0 5px 5px;
   border-bottom-color: #000;
 }
+
 .tooltip.bottom-left .tooltip-arrow {
   top: 0;
   right: 5px;

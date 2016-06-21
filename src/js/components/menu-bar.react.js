@@ -84,12 +84,12 @@ export default class MenuBar extends React.Component {
                     {/* Left menu section */}
                     <Nav pullLeft>
                         {/* New button*/}
-                        <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'New scene'}</Tooltip>}>
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'New scene'}</Tooltip>}>
                             <NavItem eventKey={'new'} onClick={clickNew} href='#'><Icon type={'bt-file'} />New</NavItem>
                         </OverlayTrigger>
 
                         {/* Open dropdown */}
-                        <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Open scene'}</Tooltip>}>
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Open scene'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-upload'} />Open</span>} id='open-dropdown'>
                                 <MenuItem onClick={clickOpenFile}><Icon type={'bt-folder'} />Open a file</MenuItem>
                                 <MenuItem onClick={clickOpenGist}><Icon type={'bt-code'} />Open a saved Gist</MenuItem>
@@ -99,7 +99,7 @@ export default class MenuBar extends React.Component {
                         </OverlayTrigger>
 
                         {/* Save dropdown */}
-                        <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Save scene'}</Tooltip>}>
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Save scene'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-download'} />Save</span>} id='save-dropdown'>
                                 <MenuItem onClick={clickSaveFile}><Icon type={'bt-folder'} />Save to file</MenuItem>
                                 <MenuItem onClick={clickSaveGist}><Icon type={'bt-code'} />Save to Gist</MenuItem>
@@ -111,12 +111,12 @@ export default class MenuBar extends React.Component {
                     {/* Right menu section */}
                     <Nav pullRight>
                         {/* Fullscreen button */}
-                        <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'View fullscreen'}</Tooltip>}>
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'View fullscreen'}</Tooltip>}>
                             <NavItem eventKey={'new'} onClick={clickFullscreen} href='#'><Icon type={'bt-maximize'} />Fullscreen</NavItem>
                         </OverlayTrigger>
 
                         {/* Help dropdown */}
-                        <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Documentation and help'}</Tooltip>}>
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Documentation and help'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-question-circle'} />Help</span>} id='help-dropdown'>
                                 <MenuItem onClick={clickAbout}><Icon type={'bt-folder'} />About</MenuItem>
                                 <MenuItem href={documentationLink} target='_blank'><Icon type={'bt-code'} />Documentation</MenuItem>

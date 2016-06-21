@@ -442,7 +442,7 @@ export default class MapPanelSearch extends React.Component {
                 {/* Search bar*/}
                 <ButtonGroup className='map-search'>
                     {/* Search button */}
-                    <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
+                    <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
                         <Button> <Icon type={'bt-search'} /> </Button>
                     </OverlayTrigger>
                     {/* Autosuggest bar */}
@@ -455,13 +455,13 @@ export default class MapPanelSearch extends React.Component {
                     {/* Lat lng label */}
                     <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
                     {/* Bookmark save button */}
-                    <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
+                    <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
                         <Button onClick={this.clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
                     </OverlayTrigger>
                 </ButtonGroup>
 
                 {/* Bookmark button*/}
-                <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
+                <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
                     <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
                         {/* Defining an immediately-invoked function expression inside JSX to decide whether to render full bookmark list or not */}
                         {(() => {
