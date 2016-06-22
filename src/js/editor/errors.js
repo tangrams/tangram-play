@@ -75,8 +75,8 @@ export default class ErrorsManager {
                     continue;
                 }
 
-                let address = '/styles/' + style + '/shaders/blocks/';
-                let node = TangramPlay.getNodesForAddress(address + block.name);
+                const address = `styles:${style}:shaders:blocks:${block.name}`;
+                const node = TangramPlay.getNodesForAddress(address);
 
                 if (node) {
                     let nLine = node.range.from.line + 1 + block.line;
@@ -90,7 +90,7 @@ export default class ErrorsManager {
                     this.blockErrors.add(JSON.stringify(block)); // track unique errors
                 }
                 else {
-                    console.log('Node', address + block.name, 'was not found');
+                    console.log('Node', address, 'was not found');
                 }
             }
         }
