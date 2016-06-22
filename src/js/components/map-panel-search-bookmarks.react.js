@@ -407,12 +407,19 @@ export default class MapPanelSearch extends React.Component {
      * Returns a JSX string for all the suggestions returned for autocomplete
      * @param suggestion - particular item from autocomplete result list to style
      */
-    _renderSuggestion (suggestion) {
-        let value = this.state.value;
+    _renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
+        let value;
         let label = suggestion.properties.label;
 
         // Have to highlight in a different way because of this limitation in rendering JSX and HTML tags
         // Read: https://facebook.github.io/react/tips/dangerously-set-inner-html.html
+        if (valueBeforeUpDown === null) {
+            value = this.state.value;
+        }
+        else {
+            value = valueBeforeUpDown;
+        }
+
         let r = new RegExp('(' + value + ')', 'gi');
         var parts = label.split(r);
         for (var i = 0; i < parts.length; i++) {
