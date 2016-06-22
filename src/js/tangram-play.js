@@ -31,9 +31,8 @@ import { subscribeMixin } from './tools/mixin';
 import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { jumpToLine } from './editor/codemirror/tools';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';
-import { highlightLines } from './editor/highlight';
+import { highlightRanges } from './editor/highlight';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
@@ -74,23 +73,7 @@ class TangramPlay {
                 // Highlight lines if requested by the query string.
                 let lines = query.lines;
                 if (lines) {
-                    const ranges = lines.split(',');
-
-                    for (let i = 0, j = ranges.length; i < j; i++) {
-                        const lines = ranges[i].split('-');
-
-                        // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
-                        // Just in case, the return value is clamped to a minimum value of 0.
-                        const startLine = Math.max(Number(lines[0]) - 1, 0);
-                        const endLine = Math.max(Number(lines[1]) - 1, 0);
-
-                        // Only jump to the first range given.
-                        if (i === 0) {
-                            jumpToLine(editor, startLine);
-                        }
-
-                        highlightLines(startLine, endLine, false);
-                    }
+                    highlightRanges(lines);
                 }
 
                 // Add widgets marks.

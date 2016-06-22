@@ -145,6 +145,42 @@ export function highlightLines (from, to, clear = true) {
 }
 
 /**
+ * Highlights lines, given a comma delimited set of line numbers or ranges of
+ * line numbers. Expects a string that would have been formed with
+ * getLineNumberString(). The following are valid strings:
+ *
+ *      '6'
+ *      '6-10'
+ *      '6-10,12-30'
+ *      '6-10,12-30,45,60-12'
+ *
+ * Note that the ranges are assumed to be in sequential order, and line numbers
+ * start from 1 instead of 0. The first linenumber or range will get jumped to.
+ *
+ * @param {String} lines - Required. A human-readable sequence of lines and
+ *          line ranges to highlight.
+ */
+export function highlightRanges (lines) {
+    const ranges = lines.split(',');
+
+    for (let i = 0, j = ranges.length; i < j; i++) {
+        const lines = ranges[i].split('-');
+
+        // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
+        // Just in case, the return value is clamped to a minimum value of 0.
+        const startLine = Math.max(Number(lines[0]) - 1, 0);
+        const endLine = Math.max(Number(lines[1]) - 1, 0);
+
+        // Only jump to the first range given.
+        if (i === 0) {
+            jumpToLine(editor, startLine);
+        }
+
+        highlightLines(startLine, endLine, false);
+    }
+}
+
+/**
  * Given a node, find all the lines that are part of that entire block, and then
  * applies a highlight class to each of those lines.
  * TODO: This can still be pretty buggy because `stateAfter` is still not
