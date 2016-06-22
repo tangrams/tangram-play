@@ -462,7 +462,7 @@ export default class MapPanelSearch extends React.Component {
 
                 {/* Bookmark button*/}
                 <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
-                    <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight id='map-panel-bookmark-button'>
+                    <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight className='map-panel-bookmark-button' id='map-panel-bookmark-button'>
                         {/* Defining an immediately-invoked function expression inside JSX to decide whether to render full bookmark list or not */}
                         {(() => {
                             let bookmarkDropdownList;

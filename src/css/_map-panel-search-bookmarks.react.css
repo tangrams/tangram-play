@@ -9,8 +9,8 @@
 }
 
 .map-search {
-    display:inline-flex ;
-    flex-grow: 1 ;
+    display: inline-flex;
+    flex-grow: 1;
     background-color: var(--ui-element-color);
 }
 
@@ -22,29 +22,29 @@
     font-weight: 200;
     line-height: 28px;
     color: var(--ui-border-color);
-    white-space:nowrap;
+    white-space: nowrap;
     padding-left: 6px;
 }
 
 /* Autosuggestion list */
 .react-autosuggest__container {
-    flex-grow: 1 ;
+    flex-grow: 1;
     border-bottom: 1px solid transparent;
-    height: 38px ;
+    height: 38px;
 
     input {
-        width: 100% ;
+        width: 100%;
         font-size: 12px;
         font-family: var(--font-family);
         font-weight: 200;
         line-height: 28px;
         background-color: transparent;
         appearance: none;
-        outline: none ;
-        border: 0px;
+        outline: none;
+        border: 0;
         color: var(--ui-component-text-color);
         padding-top: 4px;
-        padding-bottom: 0px;
+        padding-bottom: 0;
 
         &:focus {
             border-bottom: 1px dotted var(--ui-border-color);
@@ -56,9 +56,9 @@
     list-style-type: none;
     font-size: 12px;
     background-color: var(--ui-component-color);
-    padding: 0px ;
-    margin: 0px ;
-    margin-top: 4px ;
+    padding: 0;
+    margin: 0;
+    margin-top: 4px;
 
     li {
         border-top: 1px solid var(--ui-active-color);
@@ -72,10 +72,11 @@
     }
 }
 
-.map-panel i.btm.bt-map-marker {
+/* CHANGE */ /* Bootstrap is playing something here - make sure to change that */
+.bookmark-dropdown-icon i.btm {
     font-size: 10px;
     padding-right: 10px;
-    font-weight: 900 ;
+    font-weight: 900;
 
     .btm {
         -webkit-font-smoothing: auto;

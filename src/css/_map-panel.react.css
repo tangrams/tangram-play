@@ -1,7 +1,7 @@
 /* React MapPanel */
 
 .map-panel {
-    position: relative ;
+    position: relative;
     z-index: var(--z04-map-toolbar);
 }
 
@@ -9,9 +9,9 @@
 .map-panel * .map-panel-button-show {
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
-    border:none ;
-    outline:none;
-    position: absolute ;
+    border: none;
+    outline: none;
+    position: absolute;
     left: auto;
     right: 0;
 
@@ -19,18 +19,18 @@
         color: var(--ui-highlight-color);
         background-color: var(--ui-active-color);
     }
+}
 
-    i.btm {
-        padding-right: 0px ;
-    }
+.map-panel-button-show > i.btm {
+    padding-right: 0;
 }
 
 /* Style for map panel */
 .map-panel .panel {
-    border: none ;
-    margin: 0px ;
+    border: none;
+    margin: 0;
     z-index: var(--z07-menu-dropdown);
-    opacity: .99;
+    opacity: 0.99;
 }
 
 .map-panel-collapsible {
@@ -39,10 +39,10 @@
     background-color: var(--ui-component-color);
 
     .panel-body {
-        padding-top: 6px ;
-        padding-bottom: 6px ;
-        padding-left: 8px ;
-        padding-right: 8px ;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-left: 8px;
+        padding-right: 8px;
     }
 
     .map-panel-toolbar {
@@ -67,25 +67,25 @@
 }
 
 .map-panel * .btn {
-    border: none ;
+    border: none;
 }
 
-.map-panel * i.btm {
-    padding-right: 0px ;
-    font-size:12px ;
+.map-panel-toolbar i.btm {
+    padding-right: 0;
+    font-size: 12px;
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto;
     color: var(--ui-component-text-color);
 
     .active {
-        color: yellow ;
-        font-weight: 700 ;
+        color: yellow;
+        font-weight: 700;
     }
 }
 
 .map-panel * .btn-group {
-    margin-right: 2px ;
-    margin-left: 2px ;
+    margin-right: 2px;
+    margin-left: 2px;
 }
 
 /* Style for button groups */
@@ -93,13 +93,13 @@
     width: 38px;
     margin-right: 4px;
     font-size: 12px;
-    text-align:center
+    text-align: center;
 }
 
 .buttons-plusminus {
-    display: flex ;
+    display: flex;
 
     .map-panel-zoomin {
-        margin-right: 2px ;
+        margin-right: 2px;
     }
 }
