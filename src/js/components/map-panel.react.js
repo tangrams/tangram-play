@@ -108,7 +108,7 @@ export default class MapPanel extends React.Component {
 
         // Sets a new state for the geolocator button in order to change the
         // type of icon displayed. Sets icon to spin.
-        this.setState({ geolocatorButton: 'bt-sync bt-spin' });
+        this.setState({ geolocatorButton: 'bt-sync bt-spin active' });
     }
 
     /**

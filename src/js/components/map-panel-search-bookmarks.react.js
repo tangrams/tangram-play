@@ -71,6 +71,7 @@ export default class MapPanelSearch extends React.Component {
         this._onSuggestionSelected = this._onSuggestionSelected.bind(this);
         this._renderSuggestion = this._renderSuggestion.bind(this);
         this._clickSave = this._clickSave.bind(this);
+        this._setLabelPrecision = this._setLabelPrecision.bind(this);
     }
 
     /**
@@ -97,7 +98,7 @@ export default class MapPanelSearch extends React.Component {
                 that.setState({ bookmarkActive: '' });
             }
             if (that.goToActive) {
-                that.setState({ bookmarkActive: 'active' });
+                that.setState({ bookmarkActive: 'active-fill' });
                 that.goToActive = false;
             }
         });
@@ -168,8 +169,8 @@ export default class MapPanelSearch extends React.Component {
     _setCurrentLatLng (latlng) {
         this.setState({
             latlng: {
-                lat: latlng.lat.toFixed(latlngLabelPrecision),
-                lng: latlng.lng.toFixed(latlngLabelPrecision)
+                lat: parseFloat(latlng.lat).toFixed(latlngLabelPrecision),
+                lng: parseFloat(latlng.lng).toFixed(latlngLabelPrecision)
             }
         });
     }
@@ -193,6 +194,8 @@ export default class MapPanelSearch extends React.Component {
         else {
             latlngLabelPrecision = 4;
         }
+
+        this._setCurrentLatLng(this.state.latlng);
     }
 
     /** Bookmark functionality **/
@@ -204,7 +207,7 @@ export default class MapPanelSearch extends React.Component {
         let data = this._getCurrentMapViewData();
         if (bookmarks.saveBookmark(data) === true) {
             this.setState({ bookmarks: this._updateBookmarks() });
-            this.setState({ bookmarkActive: 'active' });
+            this.setState({ bookmarkActive: 'active-fill' });
         }
     }
 
@@ -443,7 +446,7 @@ export default class MapPanelSearch extends React.Component {
                 <ButtonGroup className='map-search'>
                     {/* Search button */}
                     <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
-                        <Button> <Icon type={'bt-search'} /> </Button>
+                        <Button className='map-panel-search-button'><Icon type={'bt-search'} /> </Button>
                     </OverlayTrigger>
                     {/* Autosuggest bar */}
                     <Autosuggest suggestions={suggestions}
@@ -453,10 +456,10 @@ export default class MapPanelSearch extends React.Component {
                         onSuggestionSelected={this._onSuggestionSelected}
                         inputProps={inputProps}/>
                     {/* Lat lng label */}
-                    <div className='map-search-latlng'>{this.state.latlng.lat},{this.state.latlng.lng}</div>
+                    <div className='map-search-latlng'>{this.state.latlng.lat}, {this.state.latlng.lng}</div>
                     {/* Bookmark save button */}
                     <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
-                        <Button onClick={this._clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
+                        <Button className='map-panel-save-button' onClick={this._clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
                     </OverlayTrigger>
                 </ButtonGroup>
 
@@ -482,14 +485,14 @@ export default class MapPanelSearch extends React.Component {
                                         return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>
                                                     <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
                                                     <div>{result.label}<br />
-                                                        <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, {result.zoom}</span>
+                                                        <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, z{result.zoom}</span>
                                                     </div>
                                                 </MenuItem>;
                                     });
 
                                 // Add a delete button at the end
                                 let deletebutton =
-                                    <MenuItem key='delete' onSelect={this._clickDeleteBookmarks} className='bookmark-dropdown-center'>
+                                    <MenuItem key='delete' onSelect={this._clickDeleteBookmarks} className='bookmark-dropdown-center clear-bookmarks'>
                                         <div>Clear bookmarks</div>
                                     </MenuItem>;
 

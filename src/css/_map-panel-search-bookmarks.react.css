@@ -5,7 +5,6 @@
 
 .map-panel i.btm.active {
     color: yellow;
-    font-weight: 900;
 }
 
 .map-search {
@@ -24,6 +23,14 @@
     color: var(--ui-border-color);
     white-space: nowrap;
     padding-left: 6px;
+}
+
+.map-panel-search-button {
+    margin-right: 4px;
+}
+
+.map-panel-save-button {
+    margin-left: 4px;
 }
 
 /* Autosuggestion list */
@@ -55,6 +62,7 @@
 .react-autosuggest__suggestions-container {
     list-style-type: none;
     font-size: 12px;
+    font-weight: 200;
     background-color: var(--ui-component-color);
     padding: 0;
     margin: 0;
@@ -72,18 +80,6 @@
     }
 }
 
-/* CHANGE */ /* Bootstrap is playing something here - make sure to change that */
-.bookmark-dropdown-icon i.btm {
-    font-size: 10px;
-    padding-right: 10px;
-    font-weight: 900;
-
-    .btm {
-        -webkit-font-smoothing: auto;
-        -moz-osx-font-smoothing: auto;
-    }
-}
-
 .react-autosuggest__suggestion--focused {
     background-color: var(--ui-active-color);
 }
@@ -91,6 +87,13 @@
 .react-autosuggest__suggestions-container * strong {
     color: yellow;
     font-weight: 200;
+}
+
+.react-autosuggest__suggestions-container i.btm,
+.bookmark-dropdown-icon i.btm {
+    font-size: 10px;
+    padding-right: 10px;
+    font-weight: 900;
 }
 
 /* Bookmark list dropdown */
@@ -130,4 +133,8 @@
 
 .bookmark-dropdown-center {
     text-align: center;
+}
+
+.dropdown-menu.dropdown-menu-right .clear-bookmarks a {
+    display: block;
 }

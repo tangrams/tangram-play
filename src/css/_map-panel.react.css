@@ -30,7 +30,7 @@
     border: none;
     margin: 0;
     z-index: var(--z07-menu-dropdown);
-    opacity: 0.99;
+    opacity: 0.99; /* For panel to play nice with absolute positioned toggle button on the side */
 }
 
 .map-panel-collapsible {
@@ -61,9 +61,12 @@
     outline: none;
 
     &:hover {
-        color: var(--ui-highlight-color);
         background-color: var(--ui-active-color);
     }
+}
+
+.map-panel-toolbar button:hover i {
+    color: var(--ui-highlight-color);
 }
 
 .map-panel * .btn {
@@ -76,11 +79,11 @@
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto;
     color: var(--ui-component-text-color);
+}
 
-    .active {
-        color: yellow;
-        font-weight: 700;
-    }
+.map-panel-toolbar i.btm.active-fill {
+    color: yellow;
+    font-weight: 700;
 }
 
 .map-panel * .btn-group {
