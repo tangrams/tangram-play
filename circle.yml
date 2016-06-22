@@ -7,6 +7,8 @@ machine:
 dependencies:
   pre:
     - npm install -g gulp-cli
+  override:
+    - npm install --production=false
   post:
     - npm install -g aws-cli
 
