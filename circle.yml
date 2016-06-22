@@ -2,11 +2,15 @@ machine:
   node:
     version: 4.4.4
   environment:
+    # We need to build React in a production environment.
     NODE_ENV: production
 
 dependencies:
+  # Gulp must be installed in the global environment.
   pre:
     - npm install -g gulp-cli
+  # Modules for compiling assets live in devDependencies, which are not
+  # installed in production environments by default. This overrides this.
   override:
     - npm install --production=false
   post:
