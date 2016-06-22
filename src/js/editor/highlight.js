@@ -4,7 +4,7 @@ import { isEmptyString, getQueryStringObject, serializeToQueryString } from '../
 
 const HIGHLIGHT_CLASS = 'editor-highlight';
 
-let prevHighlightedLine;
+let anchorLine;
 let manuallyHighlighted = false;
 
 editor.on('gutterClick', function (cm, line, gutter, event) {
@@ -19,35 +19,72 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
     }
 
     // Shift keys will allow highlighting of multiple lines.
-    if (event.shiftKey === true && prevHighlightedLine !== undefined) {
-        if (prevHighlightedLine < line) {
-            highlightLines(prevHighlightedLine, line);
+    if (event.shiftKey === true && anchorLine !== undefined) {
+        if (anchorLine < line) {
+            highlightLines(anchorLine, line, false);
         }
         // Handle lines clicked in non-sequential order
         // If the previously highlighted line is greater than the currently
         // clicked one, then we flip the order of arguments.
         else {
-            highlightLines(line, prevHighlightedLine);
+            highlightLines(line, anchorLine, false);
         }
 
         // Remember state of how this happened
         manuallyHighlighted = true;
     }
+    // The meta (command or control keys) will allow highlighting of
+    // non-sequential lines.
+    else if (event.metaKey === true) {
+        highlightLines(line, null, false);
+
+        // If the clicked line is the same as the one before, turn it off.
+        if (line === anchorLine) {
+            unhighlightLine(cm.getDoc(), line);
+            anchorLine = undefined;
+        }
+        else {
+            // Update the anchor line
+            anchorLine = line;
+        }
+    }
     // If shift key is not pressed or there is not a previously selected line
     // (which you need to do the whole range) then select one line.
     else {
         // If the clicked line is the same as the one before, turn it off.
-        if (line === prevHighlightedLine) {
+        if (line === anchorLine) {
             unhighlightAll();
-            prevHighlightedLine = undefined;
+            anchorLine = undefined;
         }
         else {
             highlightLines(line);
-            prevHighlightedLine = line;
+            anchorLine = line;
             manuallyHighlighted = true;
         }
     }
 });
+
+/**
+ * Highlights a given line in the document.
+ *
+ * @param {CodeMirror Doc} doc - The document to add a highlight to.
+ * @param {Number} line - The line number to add a highlight to.
+ */
+function highlightLine (doc, line) {
+    doc.addLineClass(line, 'gutter', HIGHLIGHT_CLASS);
+    doc.addLineClass(line, 'background', HIGHLIGHT_CLASS);
+}
+
+/**
+ * Removes highlight a given line in the document.
+ *
+ * @param {CodeMirror Doc} doc - The document to remove a highlight from.
+ * @param {Number} line - The line number to remove a highlight from.
+ */
+function unhighlightLine (doc, line) {
+    doc.removeLineClass(line, 'gutter', HIGHLIGHT_CLASS);
+    doc.removeLineClass(line, 'background', HIGHLIGHT_CLASS);
+}
 
 /**
  * Highlights a line or a range of lines by applying a highlight class.
@@ -100,18 +137,11 @@ export function highlightLines (from, to, clear = true) {
     // If a range is backwards, it is ignored.
     const doc = editor.getDoc();
     for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
-        doc.addLineClass(currentLine, 'gutter', HIGHLIGHT_CLASS);
-        doc.addLineClass(currentLine, 'background', HIGHLIGHT_CLASS);
+        highlightLine(doc, currentLine);
     }
 
     // Update the query string
-    // Lines are zero-indexed, but in the query string, use 1-indexed values.
-    if (startLine === endLine) {
-        updateLinesQueryString(`${startLine + 1}`);
-    }
-    else {
-        updateLinesQueryString(`${startLine + 1}-${endLine + 1}`);
-    }
+    updateLinesQueryString();
 }
 
 /**
@@ -160,7 +190,7 @@ export function highlightBlock (node) {
     highlightLines(node.range.from, toLine);
 
     // Reset
-    prevHighlightedLine = undefined;
+    anchorLine = undefined;
     manuallyHighlighted = false;
 }
 
@@ -181,28 +211,87 @@ export function unhighlightAll ({ defer = false, updateQueryString = true } = {}
     const doc = editor.getDoc();
 
     for (let i = 0, j = doc.lineCount(); i <= j; i++) {
-        doc.removeLineClass(i, 'gutter', HIGHLIGHT_CLASS);
-        doc.removeLineClass(i, 'background', HIGHLIGHT_CLASS);
+        unhighlightLine(doc, i);
     }
 
     // Update the query string
     // Pass `false` from highlightLines() to prevent query string from flashing
     if (updateQueryString === true) {
-        updateLinesQueryString(null);
+        updateLinesQueryString();
     }
 }
 
+export function getAllHighlightedLines () {
+    const lineNumbers = [];
+
+    for (let i = 0, j = editor.getDoc().lineCount(); i < j; i++) {
+        const lineInfo = editor.lineInfo(i);
+        if (lineInfo.bgClass === HIGHLIGHT_CLASS) {
+            lineNumbers.push(i);
+        }
+    }
+
+    const string = getLineNumberString(lineNumbers);
+
+    return string;
+}
+
 /**
- * Updates the ?lines= query string to the given value.
+ * Updates the ?lines= query string to the currently highlighted lines in the
+ * document.
  *
- * @param {string} value - the value for ?lines=. Set to null to delete it.
  */
-function updateLinesQueryString (value) {
+function updateLinesQueryString () {
     const locationPrefix = window.location.pathname;
     const queryObj = getQueryStringObject();
+    const allHighlightedLines = getAllHighlightedLines();
 
-    queryObj.lines = value;
+    queryObj.lines = allHighlightedLines !== '' ? allHighlightedLines : null;
 
     const queryString = serializeToQueryString(queryObj);
     window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
+}
+
+/**
+ * Given an array of sorted line numbers, convert it to a sequence of ranges,
+ * for example:
+ *
+ * [2, 3, 4, 5, 10, 18, 19, 20]  =>  ['2-5', '10', '18-20']
+ * [1, 2, 3, 5, 7, 9, 10, 11, 12, 14]  =>  ['1-3', '5', '7', '9-12', '14']
+ * [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] => ['1-10']
+ *
+ */
+function getLineNumberRanges (array) {
+    const ranges = [];
+    let start, end;
+
+    for (let i = 0, j = array.length; i < j; i++) {
+        start = array[i];
+        end = start;
+        while (array[i + 1] - array[i] === 1) {
+            end = array[i + 1]; // increment the index if the numbers sequential
+            i++;
+        }
+        ranges.push(start === end ? start.toString() : start + '-' + end);
+    }
+
+    return ranges;
+}
+
+/**
+ * Given an array of sorted line numbers, convert it to a range and flatten
+ * it to a single string. For example:
+ *
+ * e.g. [2, 3, 4, 5, 10, 18, 19, 20]  =>  '2-5,10,18-20'
+ * This is ideal for storing in URL strings.
+ *
+ */
+function getLineNumberString (array) {
+    // Line number arrays are zero-indexed, so before converting to a string,
+    // we increment each number by one.
+    array = array.map(number => {
+        return number + 1;
+    });
+    const ranges = getLineNumberRanges(array);
+    return ranges.join(',');
 }

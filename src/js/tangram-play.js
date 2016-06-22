@@ -74,15 +74,23 @@ class TangramPlay {
                 // Highlight lines if requested by the query string.
                 let lines = query.lines;
                 if (lines) {
-                    lines = lines.split('-');
+                    const ranges = lines.split(',');
 
-                    // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
-                    // Just in case, the return value is clamped to a minimum value of 0.
-                    const startLine = Math.max(Number(lines[0]) - 1, 0);
-                    const endLine = Math.max(Number(lines[1]) - 1, 0);
+                    for (let i = 0, j = ranges.length; i < j; i++) {
+                        const lines = ranges[i].split('-');
 
-                    jumpToLine(editor, startLine);
-                    highlightLines(startLine, endLine, false);
+                        // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
+                        // Just in case, the return value is clamped to a minimum value of 0.
+                        const startLine = Math.max(Number(lines[0]) - 1, 0);
+                        const endLine = Math.max(Number(lines[1]) - 1, 0);
+
+                        // Only jump to the first range given.
+                        if (i === 0) {
+                            jumpToLine(editor, startLine);
+                        }
+
+                        highlightLines(startLine, endLine, false);
+                    }
                 }
 
                 // Add widgets marks.
