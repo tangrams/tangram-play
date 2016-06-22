@@ -10,6 +10,11 @@ html.mdnzr-no-fullscreen .menu-button-fullscreen {
 
 nav {
     border: 0;
+    user-select: none;
+}
+
+.navbar {
+    height: 44px;
 }
 
 .menu-bar .container {
@@ -24,8 +29,10 @@ nav {
     font-size: 16px;
     font-weight: 300;
     color: var(--ui-component-text-color);
-    margin-left: 15px;
-    padding-left: 0;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 14px;
+    padding-right: 12px;
 }
 
 .brand-tag {
@@ -33,18 +40,12 @@ nav {
     font-size: 9px;
     position: absolute;
     left: 15px;
-    top: 26px;
-}
-
-.menu-bar .dropdown-toggle {
-    padding-bottom: 14px;
+    top: 22px;
 }
 
 .menu-bar .btm {
     padding-right: 8px;
     font-size: 15px;
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
 }
 
 .menu-bar a {
@@ -53,6 +54,8 @@ nav {
     font-weight: 200;
     font-size: 14px;
     outline: none;
+    padding-top: 12px;
+    padding-bottom: 12px;
 
     &:hover {
         color: yellow;
@@ -60,7 +63,7 @@ nav {
     }
 }
 
-.menu-bar li {
+.menu-bar .dropdown-menu li {
     border-top: 1px solid var(--ui-active-color);
 
     &:hover {
@@ -78,8 +81,32 @@ nav {
 
 .menu-bar .dropdown-menu a {
     line-height: 44px;
+    padding-top: 3px;
+    padding-right: 14px;
+    padding-bottom: 3px;
+    padding-left: 14px;
 }
 
 .menu-bar * li.open.dropdown {
     z-index: var(--z10-dropdown-button);
+}
+
+/* Small screens */
+.navbar-toggle {
+    outline: none;
+    color: var(--ui-component-text-color);
+    background-color: var(--ui-component-color);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 12px;
+
+    span {
+        background-color: white;
+    }
+}
+
+.navbar-collapse {
+    position: relative;
+    z-index: var(--z10-dropdown-button);
+    background-color: var(--ui-component-color);
 }

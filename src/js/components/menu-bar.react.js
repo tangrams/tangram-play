@@ -103,7 +103,7 @@ export default class MenuBar extends React.Component {
                             <NavDropdown title={<span><Icon type={'bt-download'} />Save</span>} id='save-dropdown'>
                                 <MenuItem onClick={_clickSaveFile}><Icon type={'bt-folder'} />Save to file</MenuItem>
                                 <MenuItem onClick={_clickSaveGist}><Icon type={'bt-code'} />Save to Gist</MenuItem>
-                                <MenuItem onClick={_clickSaveCamera}><Icon type={'bt-camera'} />Take a Screenshot</MenuItem>
+                                <MenuItem onClick={_clickSaveCamera}><Icon type={'bt-camera'} />Take a screenshot</MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
                     </Nav>
@@ -118,9 +118,9 @@ export default class MenuBar extends React.Component {
                         {/* Help dropdown */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Documentation and help'}</Tooltip>}>
                             <NavDropdown title={<span><Icon type={'bt-question-circle'} />Help</span>} id='help-dropdown'>
-                                <MenuItem onClick={_clickAbout}><Icon type={'bt-folder'} />About</MenuItem>
-                                <MenuItem href={documentationLink} target='_blank'><Icon type={'bt-code'} />Documentation</MenuItem>
-                                <MenuItem href={feedbackLink} target='_blank'><Icon type={'bt-camera'} />Feedback</MenuItem>
+                                <MenuItem onClick={_clickAbout}><Icon type={'bt-info-circle'} />About</MenuItem>
+                                <MenuItem href={documentationLink} target='_blank'><Icon type={'bt-book'} />Documentation</MenuItem>
+                                <MenuItem href={feedbackLink} target='_blank'><Icon type={'bt-comments'} />Feedback</MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
                     </Nav>

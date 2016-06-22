@@ -1,10 +1,15 @@
 /* APPLICATION */
 
+html {
+    font-family: var(--font-family);
+}
+
 body {
     margin: 0;
     border: 0;
     padding: 0;
     overflow: hidden;
+    background-color: var(--ui-base-color);
 }
 
 /* MOBILE MESSAGE */

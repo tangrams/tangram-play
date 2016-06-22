@@ -110,6 +110,8 @@
 
     li {
         border-top: 1px solid var(--ui-active-color);
+        padding-left: 16px;
+        padding-right: 18px;
     }
 
     li:hover {
