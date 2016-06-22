@@ -64,19 +64,21 @@ gulp.task('js', function () {
     var source = require('vinyl-source-stream');
     var buffer = require('vinyl-buffer');
     var uglify = require('gulp-uglify');
+    var envify = require('loose-envify');
 
     var bundle = browserify({
         entries: 'src/js/tangram-play.js',
         debug: true,
         transform: [
             babelify.configure({ presets: ['es2015'] }),
-            shim
+            shim,
+            envify
         ]
     });
 
     // Only uglify for deployment/production build,
     // because this doubles build time locally!
-    if (process.env.NODE_ENV === 'deployment') {
+    if (process.env.NODE_ENV === 'production') {
         return bundle.bundle()
             .pipe(source('tangram-play.js'))
             .pipe(buffer())
