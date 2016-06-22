@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import TangramPlay from '../tangram-play';
-import { editor } from './editor';
+import { editor, getEditorContent } from './editor';
 import { saveAs } from '../vendor/FileSaver.min.js';
 import Modal from '../modals/modal';
 
@@ -18,7 +18,7 @@ const EditorIO = {
         });
     },
     export () {
-        const typedArray = TangramPlay.getContent();
+        const typedArray = getEditorContent();
         const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'scene.yaml');
         editor.doc.markClean();

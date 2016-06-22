@@ -1,5 +1,5 @@
 import TangramPlay from '../tangram-play';
-import { editor } from '../editor/editor';
+import { editor, getNodesOfLine } from '../editor/editor';
 import { tangramLayer } from '../map/map';
 
 import { debounce, getDOMOffset } from '../tools/common';
@@ -97,13 +97,13 @@ export default class GlslSandbox {
         });
     }
 
-    reload (nLine) {
-        if (nLine === undefined) {
-            nLine = editor.getCursor().line;
+    reload (line) {
+        if (line === undefined) {
+            line = editor.getCursor().line;
         }
 
-        if (!isEmpty(editor, nLine)) {
-            let keys = TangramPlay.getNodesOnLine(nLine);
+        if (!isEmpty(editor, line)) {
+            let keys = getNodesOfLine(line);
             if (keys && keys[0]) {
                 this.address = keys[0].address;
                 let isNormal = isNormalBlock(this.address);
@@ -123,7 +123,7 @@ export default class GlslSandbox {
                     if (this.shader === undefined) {
                         this.shader = new GlslCanvas(this.canvas);
                     }
-                    editor.addWidget({ line: nLine, ch: 0 }, this.element);
+                    editor.addWidget({ line: line, ch: 0 }, this.element);
 
                     if (this.styleObj.shaders.uniforms) {
                         for (let name in this.styleObj.shaders.uniforms) {

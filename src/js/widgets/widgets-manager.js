@@ -1,7 +1,7 @@
 import TangramPlay from '../tangram-play';
 import TANGRAM_API from '../tangram-api.json';
 import WidgetType from './widget-type';
-import { editor } from '../editor/editor';
+import { editor, getNodesInRange } from '../editor/editor';
 import { subscribeMixin } from '../tools/mixin';
 import { isEmptyString } from '../tools/helpers';
 
@@ -107,7 +107,7 @@ export default class WidgetsManager {
         }
 
         // Get the matching nodes for the FROM/TO range
-        let nodes = TangramPlay.getNodes(from, to);
+        let nodes = getNodesInRange(from, to);
         // If there is no nodes there nothing to do
         if (!nodes || nodes.length === 0) {
             return;
@@ -149,7 +149,7 @@ export default class WidgetsManager {
     }
 
     clearRange (from, to) {
-        let nodes = TangramPlay.getNodes(from, to);
+        let nodes = getNodesInRange(from, to);
 
         if (!nodes || nodes.length === 0) {
             return;
@@ -175,7 +175,7 @@ export default class WidgetsManager {
 
     createRange (from, to) {
         // Search for nodes between FROM and TO
-        let nodes = TangramPlay.getNodes(from, to);
+        let nodes = getNodesInRange(from, to);
 
         if (!nodes || nodes.length === 0) {
             return;
