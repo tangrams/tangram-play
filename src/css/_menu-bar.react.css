@@ -110,5 +110,5 @@ nav {
 .navbar-collapse {
     position: relative;
     z-index: var(--z10-dropdown-button);
-    background-color: var(--ui-component-color);
+    background-color: var(--ui-base-color);
 }
