@@ -65,6 +65,7 @@
     "karma-mocha-reporter": "2.0.1",
     "karma-phantomjs-launcher": "1.0.0",
     "karma-sinon": "1.0.4",
+    "loose-envify": "1.2.0",
     "mocha": "2.4.5",
     "modernizr": "3.3.1",
     "phantomjs-prebuilt": "2.1.7",
