@@ -1,0 +1,142 @@
+.map-panel-search-bookmarks {
+    display: flex;
+    flex-grow: 1;
+}
+
+.map-panel i.btm.active {
+    color: yellow;
+}
+
+.map-search {
+    display: inline-flex;
+    flex-grow: 1;
+    background-color: var(--ui-element-color);
+}
+
+.map-search-latlng {
+    align-items: center;
+    display: flex;
+    font-size: 12px;
+    font-family: var(--font-family);
+    font-weight: 200;
+    line-height: 28px;
+    color: var(--ui-border-color);
+    white-space: nowrap;
+    padding-left: 6px;
+}
+
+.map-panel-search-button {
+    margin-right: 4px;
+    min-width: 38px;
+}
+
+.map-panel-save-button {
+    margin-left: 4px;
+    min-width: 38px;
+}
+
+/* Autosuggestion list */
+.react-autosuggest__container {
+    flex-grow: 1;
+    border-bottom: 1px solid transparent;
+    height: 38px;
+
+    input {
+        width: 100%;
+        font-size: 12px;
+        font-family: var(--font-family);
+        font-weight: 200;
+        line-height: 28px;
+        background-color: transparent;
+        appearance: none;
+        outline: none;
+        border: 0;
+        color: var(--ui-component-text-color);
+        padding-top: 4px;
+        padding-bottom: 0;
+
+        &:focus {
+            border-bottom: 1px dotted var(--ui-border-color);
+        }
+    }
+}
+
+.react-autosuggest__suggestions-container {
+    list-style-type: none;
+    font-size: 12px;
+    font-weight: 200;
+    background-color: var(--ui-component-color);
+    padding: 0;
+    margin: 0;
+    margin-top: 4px;
+
+    li {
+        border-top: 1px solid var(--ui-active-color);
+        cursor: pointer;
+        line-height: 1.4;
+        padding: 10px;
+    }
+
+    li:hover {
+        background-color: var(--ui-active-color);
+    }
+}
+
+.react-autosuggest__suggestion--focused {
+    background-color: var(--ui-active-color);
+}
+
+.react-autosuggest__suggestions-container * strong {
+    color: yellow;
+    font-weight: 200;
+}
+
+.react-autosuggest__suggestions-container i.btm,
+.bookmark-dropdown-icon i.btm {
+    font-size: 10px;
+    padding-right: 10px;
+    font-weight: 900;
+}
+
+/* Bookmark list dropdown */
+.dropdown-menu.dropdown-menu-right {
+    background-color: var(--ui-component-color);
+    font-size: 12px;
+    margin: 0;
+    border: 0;
+    padding: 0;
+
+    a {
+        display: inline-flex;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        outline: none;
+    }
+
+    li {
+        border-top: 1px solid var(--ui-active-color);
+        padding-left: 16px;
+        padding-right: 18px;
+    }
+
+    li:hover {
+        background-color: var(--ui-active-color);
+    }
+}
+
+.bookmark-dropdown-icon {
+    display: flex;
+    align-items: center;
+}
+
+.bookmark-dropdown-text {
+    color: var(--ui-border-color);
+}
+
+.bookmark-dropdown-center {
+    text-align: center;
+}
+
+.dropdown-menu.dropdown-menu-right .clear-bookmarks a {
+    display: block;
+}

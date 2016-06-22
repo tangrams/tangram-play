@@ -75,6 +75,10 @@
     padding: 0;
     line-height: 1.4;
     user-select: none;
+
+    a {
+        text-decoration: underline;
+    }
 }
 
 .modal-content {
@@ -202,4 +206,8 @@
             box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
         }
     }
+}
+
+.modal {
+    position: relative;
 }

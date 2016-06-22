@@ -5,8 +5,8 @@
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
     <title>Tangram Play</title>
-    <link type='text/css' rel='stylesheet' href='build/css/main.css'>
     <script src='build/js/modernizr.js'></script>
+    <link type='text/css' rel='stylesheet' href='build/css/main.css'>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -18,86 +18,13 @@
     </script>
 </head>
 <body>
-    <div class='menu-container'>
-        <div class='menu-bar'>
-            <h1>Tangram Play<span class='beta-tag'>BETA</span></h1>
-            <ul class='menu-items menu-left'>
-                <li class='menu-item menu-button-new' data-tooltip='New scene'><i class='btm bt-file'></i><span class='menu-item-label'>New</span></li>
-                <li class='menu-item menu-button-open' data-tooltip='Open scene'><i class='btm bt-upload'></i><span class='menu-item-label'>Open</span></li>
-                <li class='menu-item menu-button-save' data-tooltip='Save scene'><i class='btm bt-download'></i><span class='menu-item-label'>Save</span></li>
-                <li class='menu-item menu-item-private' data-tooltip='Share'><i class='btm bt-share'></i></li>
-            </ul>
-            <ul class='menu-items menu-right'>
-                <li class='menu-item menu-item-private' data-tooltip='Refresh map'><i class='btm bt-sync'></i></li>
-                <li class='menu-item menu-item-private' data-tooltip='Settings'><i class='btm bt-gear'></i></li>
-                <li class='menu-item menu-button-fullscreen' data-tooltip='View fullscreen' data-tooltip-alignment='right'><i class='btm bt-maximize'></i><span class='menu-item-label'>Fullscreen</span></li>
-                <li class='menu-item menu-button-help' data-tooltip='Documentation and help' data-tooltip-alignment='right'><i class='btm bt-question-circle'></i><span class='menu-item-label'>Help</span></li>
-                <li class='menu-item menu-item-private menu-sign-in' data-tooltip='Sign in'><span class='menu-sign-in-label'>Sign in</span><i class='btm bt-sign-in'></i></li>
-            </ul>
-        </div>
-        <div class='menu-dropdowns'>
-            <div class='menu-dropdown menu-dropdown-open'>
-                <ul>
-                    <li class='menu-open-file'><i class='btm bt-folder'></i><span class='menu-item-label'>Open a file</span></li>
-                    <li class='menu-open-gist'><i class='btm bt-code'></i><span class='menu-item-label'>Open a saved Gist</span></li>
-                    <li class='menu-open-url'><i class='btm bt-link'></i><span class='menu-item-label'>Open from URL</span></li>
-                    <li class='menu-open-example'><i class='btm bt-map'></i><span class='menu-item-label'>Choose example</span></li>
-                </ul>
-            </div>
-            <div class='menu-dropdown menu-dropdown-save'>
-                <ul>
-                    <li class='menu-save-file'><i class='btm bt-folder'></i><span class='menu-item-label'>Save to file</span></li>
-                    <li class='menu-save-gist'><i class='btm bt-code'></i><span class='menu-item-label'>Save to Gist</span></li>
-                    <li class='menu-screenshot'><i class='btm bt-camera'></i><span class='menu-item-label'>Take a screenshot</span></li>
-                </ul>
-            </div>
-            <div class='menu-dropdown menu-dropdown-help'>
-                <ul>
-                    <li class='menu-about'><i class='btm bt-info-circle'></i><span class='menu-item-label'>About</span></li>
-                    <li class='menu-view-docs'><i class='btm bt-book'></i><span class='menu-item-label'>Documentation</span><a href='https://mapzen.com/documentation/tangram' target='_blank'></a></li>
-                    <li class='menu-feedback'><i class='btm bt-comments'></i><span class='menu-item-label'>Feedback</span><a href='https://github.com/tangrams/tangram-play/issues/' target='_blank'></a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <div class='menu-bar' id='menu-bar'></div>
 
     <div class='workspace-container'>
         <div class='map-container' id='map-container'>
             <div class='map-view' id='map'></div>
-            <div class='map-toolbar map-toolbar-collapsed' data-tooltip='Toggle map toolbar' data-tooltip-alignment='right'>
-              <div class='map-toolbar-button'>
-                  <i class='btm bt-globe'></i>
-              </div>
-              <div class='map-toolbar-toggle'></div>
-            </div>
-            <div class='map-toolbar map-toolbar-bar' id='map-toolbar'>
-                <div class='map-zoom'>
-                    <div class='map-zoom-indicator'>z&#8202;<span class='map-zoom-quantity'></span></div>
-                    <button class='map-zoom-in' id='zoom-in' data-tooltip='Zoom in'><i class='btm bt-plus'></i></button>
-                    <button class='map-zoom-out' id='zoom-out' data-tooltip='Zoom out'><i class='btm bt-minus'></i></button>
-                </div>
-                <div class='map-location-bar'>
-                    <div class='map-search-icon' data-tooltip='Search for location'><i class='btm bt-search'></i></div>
-                    <input class='map-search-input' placeholder='' spellcheck='false'>
-                    <div class='map-latlng-label'></div>
-                    <div class='map-save-icon' data-tooltip='Bookmark location' data-tooltip-alignment='right'><i class='btm bt-star'></i></div>
-                    <div class='map-bookmarks'>
-                        <button class='map-bookmarks-button' id='bookmarks' data-tooltip='Bookmarks' data-tooltip-alignment='right'>
-                            <i class='btm bt-bookmark'></i>
-                        </button>
-                        <div class='map-bookmarks-menu'></div>
-                    </div>
-                    <div class='map-search-results'></div>
-                </div>
-                <div class='geolocator'>
-                    <button class='geolocator-button' id='geolocator' data-tooltip='Locate me' data-tooltip-alignment='right'>
-                        <i class='btm bt-map-arrow'></i>
-                        <i class='btm bt-sync bt-spin'></i>
-                    </button>
-                </div>
-                <div class='map-toolbar-toggle' id='map-toolbar-toggle' data-tooltip='Toogle map toolbar' data-tooltip-alignment='right'></div>
-            </div>
             <div class='map-loading' id='map-loading'></div>
+            <div class='map-panel' id='map-panel'></div>
         </div>
         <div class='divider' id='divider'><span class='divider-affordance'></span></div>
         <div class='editor-container' id='content'>

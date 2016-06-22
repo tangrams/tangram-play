@@ -40,7 +40,6 @@ import { injectAPIKey, suppressAPIKeys } from './editor/api-keys';
 // Import UI elements
 import { initDivider } from './ui/divider';
 import './file/drop';
-import './menus/menu';
 import './ui/tooltip';
 
 const query = getQueryStringObject();
@@ -511,3 +510,17 @@ initDivider();
 
 // for debug
 window.tangramPlay = tangramPlay;
+
+/* ********************************* REACT ********************************* */
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+import MenuBar from './components/menu-bar.react';
+import MapPanel from './components/map-panel.react';
+
+let mountNode1 = document.getElementById('menu-bar');
+ReactDOM.render(<MenuBar />, mountNode1);
+
+let mountNode2 = document.getElementById('map-panel');
+ReactDOM.render(<MapPanel />, mountNode2);

@@ -15,7 +15,7 @@ const STORAGE_POSITION_KEY = 'divider-position-x';
 const dividerEl = document.getElementById('divider');
 const mapEl = document.getElementById('map-container');
 const contentEl = document.getElementById('content');
-const menuEl = document.querySelector('.menu-container');
+const menuEl = document.getElementById('menu-bar');
 
 let draggable;
 

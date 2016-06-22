@@ -1,7 +1,7 @@
 @charset 'utf-8';
 
 /* EXTERNAL */
-
+@import 'vendor/bootstrap.css';
 @import 'vendor/black-tie.css';
 
 /* You can import CSS from node_modules */
@@ -23,8 +23,6 @@
 
 /* + Menu */
 @import '_filedrop';
-@import '_menu-bar';
-@import '_menu-dropdown';
 @import '_tooltip';
 @import '_modals';
 @import '_modals.examples';
@@ -52,10 +50,12 @@
 @import '_ui';
 @import '_leaflet-overrides';
 @import '_map-loading';
-@import '_map-toolbar';
 @import '_map-inspection';
-@import '_map-bookmarks';
-@import '_geolocator';
+
+/* + React */
+@import '_menu-bar.react';
+@import '_map-panel.react';
+@import '_map-panel-search-bookmarks.react';
 
 /* VARIABLES */
 
@@ -87,6 +87,7 @@
     --z08: 1000; /* Greensock Draggable starts at 1000 */
     --z09: 1100;
     --z10: 1200;
+    --z11: 1300;
 
     /**
      *  Z-INDEX COMPONENTS
@@ -122,5 +123,7 @@
     /* 09-10: Anything that demands absolutely the highest priority */
     --z09-overlay: var(--z09);
     --z09-tooltip: var(--z09);
+    --z10-dropdown-button: var(--z10);
     --z10-mobile-message: var(--z10);
+    --z11-brand: var(--z11);
 }

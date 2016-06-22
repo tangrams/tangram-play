@@ -1,0 +1,114 @@
+/* React MenuBar */
+
+/* Have to implement this */
+/* Hides the fullscreen button if feature is not present in browser */
+/*
+html.mdnzr-no-fullscreen .menu-button-fullscreen {
+    display: none;
+}
+*/
+
+nav {
+    border: 0;
+    user-select: none;
+}
+
+.navbar {
+    height: 44px;
+}
+
+.menu-bar .container {
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+    background-color: var(--ui-base-color);
+}
+
+.brand {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--ui-component-text-color);
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 14px;
+    padding-right: 12px;
+    z-index: var(--z11-brand);
+    position: relative;
+}
+
+.brand-tag {
+    color: var(--ui-highlight-color);
+    font-size: 9px;
+    position: absolute;
+    left: 15px;
+    top: 22px;
+}
+
+.menu-bar .btm {
+    padding-right: 8px;
+    font-size: 15px;
+}
+
+.menu-bar a {
+    color: var(--ui-component-text-color);
+    font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 14px;
+    outline: none;
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    &:hover {
+        color: yellow;
+        background-color: var(--ui-active-color);
+    }
+}
+
+.menu-bar .dropdown-menu li {
+    border-top: 1px solid var(--ui-active-color);
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+}
+
+.menu-bar .dropdown-menu {
+    z-index: var(--z07-menu-dropdown);
+    border-top: 0;
+    padding: 0;
+    width: 200px;
+    background-color: var(--ui-component-color);
+}
+
+.menu-bar .dropdown-menu a {
+    line-height: 44px;
+    padding-top: 3px;
+    padding-right: 14px;
+    padding-bottom: 3px;
+    padding-left: 14px;
+}
+
+.menu-bar * li.open.dropdown {
+    z-index: var(--z10-dropdown-button);
+}
+
+/* Small screens */
+.navbar-toggle {
+    outline: none;
+    color: var(--ui-component-text-color);
+    background-color: var(--ui-component-color);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 12px;
+
+    span {
+        background-color: white;
+    }
+}
+
+.navbar-collapse {
+    position: relative;
+    z-index: var(--z10-dropdown-button);
+    background-color: var(--ui-component-color);
+}
