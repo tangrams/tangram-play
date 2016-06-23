@@ -204,7 +204,7 @@ export default class MapPanelSearch extends React.Component {
      */
     _clickSave () {
         let data = this._getCurrentMapViewData();
-        if (bookmarks.saveBookmark(data) === true) {
+        if (bookmarks.saveBookmark(data)) {
             this.setState({ bookmarks: this._updateBookmarks() });
             this.setState({ bookmarkActive: 'active-fill' });
         }
