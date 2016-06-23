@@ -49,9 +49,8 @@ export default class MapPanel extends React.Component {
      * not a React component
      */
     componentDidMount () {
-        let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('zoomend', function (data) { that._setZoomLabel(); });
+        EventEmitter.subscribe('zoomend', data => { this._setZoomLabel(); });
     }
 
     /**

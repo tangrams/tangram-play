@@ -34,7 +34,6 @@
 }
 
 .map-panel-collapsible {
-    font-family: var(--font-family);
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
 
