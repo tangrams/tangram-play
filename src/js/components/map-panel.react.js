@@ -10,7 +10,7 @@ import MapPanelSearch from './map-panel-search-bookmarks.react';
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
 // Required event dispatch and subscription for now while parts of app are React components and others are not
-import { EventEmitter } from './event-emittor';
+import { EventEmitter } from './event-emitter';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet

@@ -7,7 +7,7 @@ import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
-import { EventEmitter } from '../components/event-emittor';
+import { EventEmitter } from '../components/event-emitter';
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';

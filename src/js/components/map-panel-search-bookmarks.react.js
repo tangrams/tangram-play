@@ -14,7 +14,7 @@ import { map } from '../map/map';
 import { config } from '../config';
 import Modal from '../modals/modal';
 // Required event dispatch and subscription for now while parts of app are React components and others are not
-import { EventEmitter } from './event-emittor';
+import { EventEmitter } from './event-emitter';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
 const MAP_UPDATE_DELTA = 0.002;
