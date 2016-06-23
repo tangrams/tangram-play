@@ -52,7 +52,6 @@ nav {
 
 .menu-bar a {
     color: var(--ui-component-text-color);
-    font-family: var(--font-family);
     font-weight: 200;
     font-size: 14px;
     outline: none;

@@ -10,7 +10,7 @@ import MapPanelSearch from './map-panel-search-bookmarks.react';
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
 // Required event dispatch and subscription for now while parts of app are React components and others are not
-import { EventEmitter } from './event-emittor';
+import { EventEmitter } from './event-emitter';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
@@ -49,9 +49,8 @@ export default class MapPanel extends React.Component {
      * not a React component
      */
     componentDidMount () {
-        let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('zoomend', function (data) { that._setZoomLabel(); });
+        EventEmitter.subscribe('zoomend', data => { this._setZoomLabel(); });
     }
 
     /**

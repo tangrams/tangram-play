@@ -17,7 +17,6 @@
     align-items: center;
     display: flex;
     font-size: 12px;
-    font-family: var(--font-family);
     font-weight: 200;
     line-height: 28px;
     color: var(--ui-border-color);
@@ -40,11 +39,11 @@
     flex-grow: 1;
     border-bottom: 1px solid transparent;
     height: 38px;
+    min-width: 150px;
 
     input {
         width: 100%;
         font-size: 12px;
-        font-family: var(--font-family);
         font-weight: 200;
         line-height: 28px;
         background-color: transparent;
@@ -52,7 +51,7 @@
         outline: none;
         border: 0;
         color: var(--ui-component-text-color);
-        padding-top: 4px;
+        padding-top: 6px;
         padding-bottom: 0;
 
         &:focus {
@@ -69,6 +68,7 @@
     padding: 0;
     margin: 0;
     margin-top: 4px;
+    white-space: nowrap;
 
     li {
         border-top: 1px solid var(--ui-active-color);

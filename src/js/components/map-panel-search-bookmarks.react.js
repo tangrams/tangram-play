@@ -14,7 +14,7 @@ import { map } from '../map/map';
 import { config } from '../config';
 import Modal from '../modals/modal';
 // Required event dispatch and subscription for now while parts of app are React components and others are not
-import { EventEmitter } from './event-emittor';
+import { EventEmitter } from './event-emitter';
 
 const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
 const MAP_UPDATE_DELTA = 0.002;
@@ -81,11 +81,10 @@ export default class MapPanelSearch extends React.Component {
      * not a React component
      */
     componentDidMount () {
-        let that = this;
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('moveend', function (data) {
+        EventEmitter.subscribe('moveend', data => {
             let currentLatLng = map.getCenter();
-            let delta = getMapChangeDelta(that.state.latlng, currentLatLng);
+            let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
 
             // Only update location if the map center has moved more than a given delta
             // This is actually really necessary because EVERY update in the editor reloads
@@ -93,21 +92,21 @@ export default class MapPanelSearch extends React.Component {
             // But we also have the bonus of not needing to make a reverse geocode request
             // for small changes of the map center.
             if (delta > MAP_UPDATE_DELTA) {
-                that._setCurrentLatLng(currentLatLng);
-                that._reverseGeocode(currentLatLng);
-                that.setState({ bookmarkActive: '' });
+                this._setCurrentLatLng(currentLatLng);
+                this._reverseGeocode(currentLatLng);
+                this.setState({ bookmarkActive: '' });
             }
-            if (that.goToActive) {
-                that.setState({ bookmarkActive: 'active-fill' });
-                that.goToActive = false;
+            if (this.goToActive) {
+                this.setState({ bookmarkActive: 'active-fill' });
+                this.goToActive = false;
             }
         });
 
         // Need a notification when all bookmarks are cleared succesfully in order to re-render list
-        EventEmitter.subscribe('clearbookmarks', function (data) { that._bookmarkCallback(); });
+        EventEmitter.subscribe('clearbookmarks', data => { this._bookmarkCallback(); });
 
         // Need a notification when divider moves to change the latlng label precision
-        window.addEventListener('divider:dragend', that._setLabelPrecision);
+        window.addEventListener('divider:dragend', this._setLabelPrecision);
     }
 
     /**

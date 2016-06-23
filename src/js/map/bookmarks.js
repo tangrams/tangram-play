@@ -1,5 +1,5 @@
 import LocalStorage from '../storage/localstorage';
-import { EventEmitter } from '../components/event-emittor';
+import { EventEmitter } from '../components/event-emitter';
 
 const STORAGE_BOOKMARKS_KEY = 'bookmarks';
 const DEFAULT_BOOKMARKS_OBJECT = {
