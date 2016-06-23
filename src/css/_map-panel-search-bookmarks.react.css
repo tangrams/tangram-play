@@ -108,19 +108,16 @@
 
     a {
         display: inline-flex;
-        padding-top: 8px;
-        padding-bottom: 8px;
         outline: none;
+        width: 100%;
+        display: flex;
+        /* align-items: center; */
+        justify-content: center;
+        justify-content: space-between;
     }
 
     li {
         border-top: 1px solid var(--ui-active-color);
-        padding-left: 16px;
-        padding-right: 18px;
-    }
-
-    li:hover {
-        background-color: var(--ui-active-color);
     }
 }
 
@@ -129,14 +126,45 @@
     align-items: center;
 }
 
+.bookmark-dropdown-info {
+    display: inline-flex;
+    flex-grow: 1;
+    padding-left: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-right: 8px;
+}
+
+.bookmark-dropdown-info:hover {
+    background-color: var(--ui-active-color);
+}
+
 .bookmark-dropdown-text {
     color: var(--ui-border-color);
 }
 
-.bookmark-dropdown-center {
-    text-align: center;
+.dropdown-menu.dropdown-menu-right .bookmark-dropdown-center a {
+    justify-content: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
-.dropdown-menu.dropdown-menu-right .clear-bookmarks a {
-    display: block;
+.bookmark-dropdown-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid #36383c;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    i.btm {
+        font-size: 6px;
+        font-weight: 900;
+    }
+}
+
+.bookmark-dropdown-delete:hover {
+    background-color: var(--ui-active-color);
 }

@@ -254,6 +254,10 @@ export default class MapPanelSearch extends React.Component {
         map.setView(coordinates, zoom);
     }
 
+    _clickDeleteSingleBookmark (eventKey) {
+        bookmarks.deleteBookmark(eventKey);
+    }
+
     /**
      * Delete all bookmarks
      */
@@ -487,11 +491,16 @@ export default class MapPanelSearch extends React.Component {
                             else {
                                 // Create the bookmarks list
                                 let list =
-                                    this.state.bookmarks.map(function (result) {
-                                        return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>
-                                                    <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
-                                                    <div>{result.label}<br />
-                                                        <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, z{result.zoom}</span>
+                                    this.state.bookmarks.map((result, i) => {
+                                        return <MenuItem key={i}>
+                                                    <div className='bookmark-dropdown-info' eventKey={i} onClick={() => this._clickGoToBookmark(i)} >
+                                                        <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
+                                                        <div>{result.label}<br />
+                                                            <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, z{result.zoom}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className='bookmark-dropdown-delete' eventKey={i} onClick={() => this._clickDeleteSingleBookmark(i)}>
+                                                        <Icon type={'bt-times'} />
                                                     </div>
                                                 </MenuItem>;
                                     });

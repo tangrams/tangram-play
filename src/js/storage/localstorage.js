@@ -50,6 +50,30 @@ const LocalStorage = {
     },
 
     /**
+     *  deleteItem()
+     *  Deletes a single item based on an index in an array
+     */
+    deleteItem (key, index) {
+        if (window.localStorage) {
+            let stored;
+            stored = this.getItem(key);
+
+            // In case there is a previously stored item here that is not
+            // parseable JSON, don't fail
+            try {
+                stored = JSON.parse(stored);
+                stored.arr = stored.arr || [];
+            }
+            catch (e) {
+                stored = { arr: [] };
+            }
+
+            stored.data.splice(index, 1);
+            this.setItem(key, JSON.stringify(stored));
+        }
+    },
+
+    /**
      *  getItem()
      *  Retrieves value for the given key name and application namespace.
      */

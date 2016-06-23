@@ -32,12 +32,6 @@ function saveBookmark (newBookmark) {
     }
 }
 
-function clearData () {
-    LocalStorage.setItem(STORAGE_BOOKMARKS_KEY, JSON.stringify(DEFAULT_BOOKMARKS_OBJECT));
-    EventEmitter.dispatch('clearbookmarks', {});
-    return true;
-}
-
 function bookmarkExists (newBookmark) {
     let currentData = readData();
     for (var bookmark of currentData.data) {
@@ -52,9 +46,24 @@ function bookmarkExists (newBookmark) {
     return false;
 }
 
+// Clear all the bookmarks
+function clearData () {
+    LocalStorage.setItem(STORAGE_BOOKMARKS_KEY, JSON.stringify(DEFAULT_BOOKMARKS_OBJECT));
+    EventEmitter.dispatch('clearbookmarks', {});
+    return true;
+}
+
+// Clear only one bookmark
+function deleteBookmark (index) {
+    LocalStorage.deleteItem(STORAGE_BOOKMARKS_KEY, index);
+    EventEmitter.dispatch('clearbookmarks', {});
+    return true;
+}
+
 let bookmarks = {
     saveBookmark,
     clearData,
+    deleteBookmark,
     readData
 };
 
