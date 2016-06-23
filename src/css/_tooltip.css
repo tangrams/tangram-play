@@ -6,7 +6,6 @@
 
 .tooltip-inner {
     padding: 1em;
-    font-family: var(--font-family);
     font-weight: 200;
     color: var(--ui-highlight-color);
 }
