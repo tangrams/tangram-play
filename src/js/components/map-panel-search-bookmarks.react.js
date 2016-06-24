@@ -50,6 +50,7 @@ export default class MapPanelSearch extends React.Component {
         // Temporarily using an active Button state because React doesn not
         // guarantee that setState will be synchronouse
         this.goToActive = false;
+        this.overrideBookmarkClose = false; // Most of the time we don't want to override the bookmark button toggle function
 
         this.state = {
             latlng: {
@@ -60,7 +61,7 @@ export default class MapPanelSearch extends React.Component {
             placeholder: '', // Represents placeholder of the search bar
             suggestions: [], // Stores search suggestions from autocomplete
             bookmarkActive: '', // Represents wether bookmark button should show as active
-            bookmarks: this._updateBookmarks() // Stores all bookmarks
+            bookmarks: this._updateBookmarks() // Stores all bookmarks,
         };
 
         // Set the value of the search bar to whatever the map is currently pointing to
@@ -72,6 +73,7 @@ export default class MapPanelSearch extends React.Component {
         this._renderSuggestion = this._renderSuggestion.bind(this);
         this._clickSave = this._clickSave.bind(this);
         this._setLabelPrecision = this._setLabelPrecision.bind(this);
+        this._shouldDropdownToggle = this._shouldDropdownToggle.bind(this);
     }
 
     /**
@@ -204,7 +206,7 @@ export default class MapPanelSearch extends React.Component {
      */
     _clickSave () {
         let data = this._getCurrentMapViewData();
-        if (bookmarks.saveBookmark(data) === true) {
+        if (bookmarks.saveBookmark(data)) {
             this.setState({ bookmarks: this._updateBookmarks() });
             this.setState({ bookmarkActive: 'active-fill' });
         }
@@ -234,6 +236,17 @@ export default class MapPanelSearch extends React.Component {
     }
 
     /**
+     * Official React lifecycle method
+     * Invoked immediately after the component's updates are flushed to the DOM
+     * Using a ref to the DOM element overlay tooltip on top of the dropdown button
+     * to make sure its closed after user clicks on a bookmark
+     */
+    componentDidUpdate (prevProps, prevState) {
+        this.refs.culpritOverlay.hide();
+        this.overrideBookmarkClose = false;
+    }
+
+    /**
      * Fires when a user clicks on a bookmark from bookmark list.
      * Causes map and search panel to re-render to go to the location on the bookmark
      * @param eventKey - each bookmark in the bookmark list identified by a unique
@@ -252,6 +265,28 @@ export default class MapPanelSearch extends React.Component {
 
         this.goToActive = true;
         map.setView(coordinates, zoom);
+    }
+
+    /**
+     * Delete a single bookmark
+     * @param eventKey - the bookmark index to delete
+     */
+    _clickDeleteSingleBookmark (eventKey) {
+        this.overrideBookmarkClose = true; // We want to keep the dropdown open
+        bookmarks.deleteBookmark(eventKey);
+    }
+
+    /**
+     * Callback called when dropdown button wants to change state from open to closed
+     * @param isOpen - state that dropdown wants to render to. Either true or false
+     */
+    _shouldDropdownToggle (isOpen) {
+        if (this.overrideBookmarkClose) {
+            return true;
+        }
+        else {
+            return isOpen;
+        }
     }
 
     /**
@@ -470,8 +505,8 @@ export default class MapPanelSearch extends React.Component {
                 </ButtonGroup>
 
                 {/* Bookmark button*/}
-                <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmarks'}</Tooltip>}>
-                    <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight className='map-panel-bookmark-button' id='map-panel-bookmark-button'>
+                <OverlayTrigger rootClose ref='culpritOverlay' placement='bottom' overlay={<Tooltip id='tooltip-bookmark'>{'Bookmarks'}</Tooltip>}>
+                    <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight className='map-panel-bookmark-button' id='map-panel-bookmark-button' open={this._shouldDropdownToggle()} onToggle={this._shouldDropdownToggle}>
                         {/* Defining an immediately-invoked function expression inside JSX to decide whether to render full bookmark list or not */}
                         {(() => {
                             let bookmarkDropdownList;
@@ -487,11 +522,16 @@ export default class MapPanelSearch extends React.Component {
                             else {
                                 // Create the bookmarks list
                                 let list =
-                                    this.state.bookmarks.map(function (result) {
-                                        return <MenuItem eventKey={result.id} key={result.id} onSelect={result.onClick}>
-                                                    <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
-                                                    <div>{result.label}<br />
-                                                        <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, z{result.zoom}</span>
+                                    this.state.bookmarks.map((result, i) => {
+                                        return <MenuItem key={i}>
+                                                    <div className='bookmark-dropdown-info' eventKey={i} onClick={() => this._clickGoToBookmark(i)} >
+                                                        <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
+                                                        <div>{result.label}<br />
+                                                            <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, z{result.zoom}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className='bookmark-dropdown-delete' eventKey={i} onClick={() => this._clickDeleteSingleBookmark(i)}>
+                                                        <Icon type={'bt-times'} />
                                                     </div>
                                                 </MenuItem>;
                                     });
