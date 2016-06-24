@@ -141,9 +141,9 @@ function insertMarks (fromLine, toLine) {
             // if so, we create it and insert it into the document.
             // Skip blank lines, which may have the state (and widget
             // constructor) of the previous line.
-            if (node.widgetConstructor && lineHandle.text.trim() !== '') {
+            if (node.widgetMarkConstructor && lineHandle.text.trim() !== '') {
                 const lineNumber = doc.getLineNumber(lineHandle);
-                const widget = node.widgetConstructor.create(node);
+                const widget = node.widgetMarkConstructor.create(node);
                 if (widget.insert(lineNumber)) {
                     newWidgets.push(widget);
                 }

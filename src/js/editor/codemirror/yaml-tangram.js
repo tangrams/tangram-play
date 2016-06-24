@@ -2,7 +2,7 @@ import _ from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';
-import { attachWidgetConstructorsToDocumentState } from './widgets';
+import { attachWidgetMarkConstructorsToDocumentState } from './widgets';
 
 import { tangramScene } from '../../map/map';
 
@@ -346,7 +346,7 @@ export function parseYamlString (string, state, tabSize) {
     }
 
     // Adds widgets to nodes, if they have them.
-    state = attachWidgetConstructorsToDocumentState(state);
+    state = attachWidgetMarkConstructorsToDocumentState(state);
 
     return state;
 }
