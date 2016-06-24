@@ -145,6 +145,14 @@
     border-bottom: 1px solid red;
 }
 
+/* Adds a red squiggly line to trailing spaces.
+   See: https://codemirror.net/demo/trailingspace.html */
+.cm-trailingspace {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==');
+    background-position: bottom left;
+    background-repeat: repeat-x;
+}
+
 .cm-s-tangram .CodeMirror-activeline-background {
     background: var(--ui-base-color);
 }
