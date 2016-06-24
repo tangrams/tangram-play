@@ -117,7 +117,7 @@ export default class MenuBar extends React.Component {
                     <Nav pullRight>
                         {/* Introspection button */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle inspect mode'}</Tooltip>}>
-                            <NavItem eventKey={'new'} onClick={this._clickInspect.bind(this)} href='#' active={this.state.inspectActive}><Icon type={'bt-wrench'} />Inspect</NavItem>
+                            <NavItem eventKey={'new'} onClick={this._clickInspect.bind(this)} href='#' active={this.state.inspectActive}><Icon type={'bt-magic'} />Inspect</NavItem>
                         </OverlayTrigger>
 
                         {/* Fullscreen button */}
