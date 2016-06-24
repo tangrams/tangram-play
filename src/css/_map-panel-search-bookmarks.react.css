@@ -99,6 +99,11 @@
 }
 
 /* Bookmark list dropdown */
+.dropdown {
+    transition: all 0.8s ease-out;
+    transition-delay: 2s;
+}
+
 .dropdown-menu.dropdown-menu-right {
     background-color: var(--ui-component-color);
     font-size: 12px;
@@ -118,6 +123,7 @@
 
     li {
         border-top: 1px solid var(--ui-active-color);
+        transition: all 0.4s ease-out;
     }
 }
 
