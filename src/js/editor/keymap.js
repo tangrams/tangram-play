@@ -16,10 +16,18 @@ export function getExtraKeyMap () {
 
     const extraKeysSettings = {
         'Ctrl-Space': 'autocomplete',
-        // Maps the tab key to insert spaces instead of a tab character.
-        // https://codemirror.net/doc/manual.html#keymaps
         Tab: function (cm) {
-            cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
+            // If something is selected, particularly for selection of multiple
+            // lines, tab inserts additional indentation, rather than replace
+            // the selection with a tab character.
+            if (cm.somethingSelected()) {
+                cm.indentSelection('add');
+            }
+            // Maps the tab key to insert spaces instead of a tab character.
+            // https://codemirror.net/doc/manual.html#keymaps
+            else {
+                cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
+            }
         },
         'Alt-F': function (cm) {
             cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
