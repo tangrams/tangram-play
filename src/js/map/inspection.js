@@ -479,4 +479,12 @@ export function handleInspectionClickEvent (selection) {
 export function setGlobalIntrospection (boolean) {
     tangramLayer.scene.setIntrospection(boolean);
     globalIntrospectionState = boolean;
+
+    // Turn mouse cursor into a crosshair when on the map
+    if (boolean === true) {
+        map.getContainer().classList.add('map-crosshair');
+    }
+    else {
+        map.getContainer().classList.remove('map-crosshair');
+    }
 }

@@ -51,10 +51,6 @@ const _clickSaveCamera = function () {
     takeScreenshot();
 };
 
-const _clickFullscreen = function () {
-    toggleFullscreen();
-};
-
 const _clickAbout = function () {
     aboutModal.show();
 };
@@ -70,6 +66,7 @@ export default class MenuBar extends React.Component {
         super(props);
         this.state = {
             inspectActive: false, // Represents whether inspect mode is on / off
+            fullscreenActive: false
         };
     }
 
@@ -114,18 +111,18 @@ export default class MenuBar extends React.Component {
                                 <MenuItem onClick={_clickSaveCamera}><Icon type={'bt-camera'} />Take a screenshot</MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
-
-                        {/* Introspection button */}
-                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle inspect mode'}</Tooltip>}>
-                            <NavItem eventKey={'new'} onClick={this._clickInspect.bind(this)} href='#' active={this.state.inspectActive}><Icon type={'bt-wrench'} />Inspect</NavItem>
-                        </OverlayTrigger>
                     </Nav>
 
                     {/* Right menu section */}
                     <Nav pullRight>
+                        {/* Introspection button */}
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle inspect mode'}</Tooltip>}>
+                            <NavItem eventKey={'new'} onClick={this._clickInspect.bind(this)} href='#' active={this.state.inspectActive}><Icon type={'bt-wrench'} />Inspect</NavItem>
+                        </OverlayTrigger>
+
                         {/* Fullscreen button */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'View fullscreen'}</Tooltip>}>
-                            <NavItem eventKey={'new'} onClick={_clickFullscreen} href='#'><Icon type={'bt-maximize'} />Fullscreen</NavItem>
+                            <NavItem eventKey={'new'} onClick={this._clickFullscreen.bind(this)} href='#' active={this.state.fullscreenActive}><Icon type={'bt-maximize'} />Fullscreen</NavItem>
                         </OverlayTrigger>
 
                         {/* Help dropdown */}
@@ -140,6 +137,11 @@ export default class MenuBar extends React.Component {
                 </Navbar.Collapse>
             </Navbar>
         );
+    }
+
+    _clickFullscreen () {
+        this.setState({ fullscreenActive: !this.state.fullscreenActive });
+        toggleFullscreen();
     }
 
     _clickInspect () {

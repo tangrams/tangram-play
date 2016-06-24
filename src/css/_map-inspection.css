@@ -219,3 +219,9 @@
     transition: opacity 120ms ease-out, transform 100ms ease-out;
     transform: translateY(-20px) translateZ(100px);
 }
+
+/* Crosshair cursor is active when global introspection mode is on.
+   Only apply it when the user is not dragging the map. */
+body:not(.leaflet-dragging) .map-crosshair {
+    cursor: crosshair;
+}
