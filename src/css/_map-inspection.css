@@ -67,12 +67,19 @@
     background-color: var(--ui-base-color);
     user-select: none;
     cursor: default;
+    line-height: 1.4;
 }
 
-.map-inspection-properties {
-    box-sizing: border-box;
-    line-height: 1.4;
+.map-inspection-source {
     margin-top: 0.25em;
+}
+
+.map-inspection-source-item-label {
+    font-size: 0.75em;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--ui-subtext-color);
+    vertical-align: middle;
 }
 
 .map-inspection-properties-table-wrapper {
@@ -80,6 +87,7 @@
     max-height: 88px; /* should be exactly four rows */
     overflow-y: auto;
     overflow-x: hidden;
+    line-height: 1.4;
 
     &::-webkit-scrollbar {
         width: 8px;

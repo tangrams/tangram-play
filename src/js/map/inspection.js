@@ -30,6 +30,10 @@ class TangramInspectionPopup {
         headerEl.appendChild(kindEl);
         headerEl.appendChild(nameEl);
 
+        let sourceEl = this._sourceEl = document.createElement('div');
+        sourceEl.className = 'map-inspection-source';
+        sourceEl.style.display = 'none';
+
         let propertiesEl = this._propertiesEl = document.createElement('div');
         propertiesEl.className = 'map-inspection-properties';
         propertiesEl.style.display = 'none';
@@ -45,6 +49,7 @@ class TangramInspectionPopup {
         // Listeners for this will be added later, during popup creation
 
         el.appendChild(headerEl);
+        el.appendChild(sourceEl);
         el.appendChild(propertiesEl);
         el.appendChild(layersEl);
         el.appendChild(closeEl);
@@ -145,6 +150,58 @@ class TangramInspectionPopup {
     get name () {
         let text = this._nameEl.textContent;
         return text !== EMPTY_SELECTION_NAME_LABEL ? text : null;
+    }
+
+    showSource (name, layer) {
+        emptyDOMElement(this._sourceEl);
+
+        // Add section label
+        const labelEl = document.createElement('div');
+        labelEl.className = 'map-inspection-label';
+        labelEl.textContent = 'Data source';
+
+        this._sourceEl.appendChild(labelEl);
+
+        // Create table element
+        const tableWrapperEl = document.createElement('div');
+        const tableEl = document.createElement('table');
+        const tbodyEl = document.createElement('tbody');
+
+        tableWrapperEl.className = 'map-inspection-properties-table-wrapper';
+        tableEl.className = 'map-inspection-properties-table';
+        tableEl.appendChild(tbodyEl);
+
+        // Alphabetize key-value pairs
+        let properties = [
+            ['Name', name],
+            ['Layer', layer]
+        ];
+
+        for (let x in properties) {
+            const key = properties[x][0];
+            const value = properties[x][1];
+
+            const tr = document.createElement('tr');
+            const tdKey = document.createElement('td');
+            const tdValue = document.createElement('td');
+            tdKey.className = 'map-inspection-source-item-label';
+            tdKey.textContent = key;
+            tdValue.textContent = value;
+            tr.appendChild(tdKey);
+            tr.appendChild(tdValue);
+
+            tbodyEl.appendChild(tr);
+        }
+
+        tableWrapperEl.appendChild(tableEl);
+        this._sourceEl.appendChild(tableWrapperEl);
+
+        this._sourceEl.style.display = 'block';
+    }
+
+    hideSource () {
+        emptyDOMElement(this._sourceEl);
+        this._sourceEl.style.display = 'none';
     }
 
     showProperties (properties) {
@@ -406,6 +463,7 @@ export function handleInspectionClickEvent (selection) {
 
     inspectPopup.resetPosition();
     inspectPopup.setLabel(selection.feature.properties);
+    inspectPopup.showSource(selection.feature.source_name, selection.feature.source_layer);
     inspectPopup.showProperties(selection.feature.properties);
     inspectPopup.showLayers(selection.feature.layers);
     inspectPopup.showPopup(selection.leaflet_event);
