@@ -11,15 +11,14 @@ export default class ColorPalette {
         this.palette.className = 'colorpalette';
         document.body.appendChild(this.palette);
 
-        // TODO: replace this.
+        TangramPlay.on('widget_marks_created', (args) => {
+            TangramPlay.addons.colorPalette.update(args);
+        });
 
-        // TangramPlay.addons.widgetsManager.on('widgets_created', (args) => {
-        //     TangramPlay.addons.colorPalette.update(args);
-        // });
-        //
-        // TangramPlay.addons.widgetsManager.on('widget_updated', (args) => {
-        //     TangramPlay.addons.colorPalette.update(args);
-        // });
+        // TODO: This might not be triggered anywhere. Update or fix.
+        TangramPlay.on('widget_updated', (args) => {
+            TangramPlay.addons.colorPalette.update(args);
+        });
 
         // If is a new file load all colors by going to the end and comeback
         TangramPlay.on('sceneload', (event) => {

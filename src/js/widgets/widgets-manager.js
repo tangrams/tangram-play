@@ -1,4 +1,5 @@
 import { editor } from '../editor/editor';
+import TangramPlay from '../tangram-play';
 
 /**
  * Initializes widget marks in the current editor viewport and adds event
@@ -58,15 +59,14 @@ function handleEditorChanges (cm, changes) {
 
 /**
  * Handler function for the CodeMirror `scroll` event.
+ * As the different parts of the viewport come into view, insert widget marks
+ * that may exist in the viewport.
  *
  * @param {CodeMirror} cm - instance of CodeMirror editor.
  */
 function handleEditorScroll (cm) {
     const viewport = cm.getViewport();
-    const fromLine = viewport.from;
-    const toLine = viewport.to;
-
-    insertMarks(fromLine, toLine);
+    insertMarks(viewport.from, viewport.to);
 }
 
 /**
@@ -116,10 +116,11 @@ function insertMarks (fromLine, toLine) {
     // If `to` is not provided, use `from`.
     toLine = (toLine || fromLine);
 
+    const newWidgets = [];
+
     // For each line in the range, get the line handle, check for nodes,
     // check for widgets, and add or remove them.
     for (let line = fromLine; line <= toLine; line++) {
-        const newWidgets = [];
         const doc = editor.getDoc();
         const lineHandle = doc.getLineHandle(line);
 
@@ -151,6 +152,6 @@ function insertMarks (fromLine, toLine) {
         }
     }
 
-    // TODO: replace this
-    // this.trigger('widgets_created', { widgets: newWidgets });
+    // Trigger an event for created widgets - this is picked up by the color palette
+    TangramPlay.trigger('widget_marks_created', { widgets: newWidgets });
 }
