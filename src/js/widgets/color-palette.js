@@ -6,22 +6,20 @@ import { jumpToLine } from '../editor/codemirror/tools';
 
 export default class ColorPalette {
     constructor () {
-        if (TangramPlay.addons.widgetsManager === undefined) {
-            return;
-        }
-
         this.colors = {};
         this.palette = document.createElement('div');
         this.palette.className = 'colorpalette';
         document.body.appendChild(this.palette);
 
-        TangramPlay.addons.widgetsManager.on('widgets_created', (args) => {
-            TangramPlay.addons.colorPalette.update(args);
-        });
+        // TODO: replace this.
 
-        TangramPlay.addons.widgetsManager.on('widget_updated', (args) => {
-            TangramPlay.addons.colorPalette.update(args);
-        });
+        // TangramPlay.addons.widgetsManager.on('widgets_created', (args) => {
+        //     TangramPlay.addons.colorPalette.update(args);
+        // });
+        //
+        // TangramPlay.addons.widgetsManager.on('widget_updated', (args) => {
+        //     TangramPlay.addons.colorPalette.update(args);
+        // });
 
         // If is a new file load all colors by going to the end and comeback
         TangramPlay.on('sceneload', (event) => {

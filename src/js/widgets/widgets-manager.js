@@ -1,53 +1,72 @@
 import { editor } from '../editor/editor';
 
-export default class WidgetsManager {
-    constructor () {
-        // On initialization, insert all marks in the current viewport.
-        const viewport = editor.getViewport();
-        insertMarks(viewport.from, viewport.to);
+/**
+ * Initializes widget marks in the current editor viewport and adds event
+ * listeners to handle new marks that need to be created as the editor content
+ * is changed on scrolled.
+ */
+export function initWidgetMarks () {
+    // On initialization, insert all marks in the current viewport.
+    const viewport = editor.getViewport();
+    insertMarks(viewport.from, viewport.to);
 
-        // On editor changes, update those marks
-        editor.on('changes', (cm, changes) => {
-            for (let change of changes) {
-                // Each change object specifies a range of lines
-                let fromLine = change.from.line;
-                let toLine = change.to.line;
+    // On editor changes, update those marks
+    editor.on('changes', handleEditorChanges);
 
-                // CodeMirror's `from` and `to` properties are pre-change values, so
-                // we adjust the range if lines were removed or added. The `removed`
-                // and `text` properties are arrays which indicate how many lines
-                // were removed or added respectively.
-                if (change.origin === '+delete' || change.origin === 'cut') {
-                    // In a delete or cut operation, CodeMirror's `to` line
-                    // includes lines have just been removed. However, we don't
-                    // want to parse those lines, since they're gone. We will
-                    // only reparse the current line.
-                    toLine = fromLine;
-                }
-                else if (change.origin === 'paste' || change.origin === 'undo') {
-                    // In a paste operation, CodeMirror's to line is the same
-                    // as the from line. We can get the correct to-line by
-                    // adding the pasted lines minus the removed lines.
-                    // This also captures undo operations where removals of
-                    // lines are undone (so it works like a paste)
-                    toLine += change.text.length - change.removed.length;
-                }
+    // CodeMirror only parses lines inside of the current viewport.
+    // When we scroll, we start inserting marks on lines as they're parsed.
+    editor.on('scroll', handleEditorScroll);
+}
 
-                clearMarks(fromLine, toLine);
-                insertMarks(fromLine, toLine);
-            }
-        });
+/**
+ * Handler function for the CodeMirror `changes` event.
+ *
+ * @param {CodeMirror} cm - instance of CodeMirror editor.
+ * @param {Array} changes - an array of change objects representing changes in
+ *          editor content.
+ */
+function handleEditorChanges (cm, changes) {
+    for (let change of changes) {
+        // Each change object specifies a range of lines
+        let fromLine = change.from.line;
+        let toLine = change.to.line;
 
-        // CodeMirror only parses lines inside of the current viewport.
-        // When we scroll, we start inserting marks on lines as they're parsed.
-        editor.on('scroll', (cm) => {
-            const viewport = cm.getViewport();
-            const fromLine = viewport.from;
-            const toLine = viewport.to;
+        // CodeMirror's `from` and `to` properties are pre-change values, so
+        // we adjust the range if lines were removed or added. The `removed`
+        // and `text` properties are arrays which indicate how many lines
+        // were removed or added respectively.
+        if (change.origin === '+delete' || change.origin === 'cut') {
+            // In a delete or cut operation, CodeMirror's `to` line
+            // includes lines have just been removed. However, we don't
+            // want to parse those lines, since they're gone. We will
+            // only reparse the current line.
+            toLine = fromLine;
+        }
+        else if (change.origin === 'paste' || change.origin === 'undo') {
+            // In a paste operation, CodeMirror's to line is the same
+            // as the from line. We can get the correct to-line by
+            // adding the pasted lines minus the removed lines.
+            // This also captures undo operations where removals of
+            // lines are undone (so it works like a paste)
+            toLine += change.text.length - change.removed.length;
+        }
 
-            insertMarks(fromLine, toLine);
-        });
+        clearMarks(fromLine, toLine);
+        insertMarks(fromLine, toLine);
     }
+}
+
+/**
+ * Handler function for the CodeMirror `scroll` event.
+ *
+ * @param {CodeMirror} cm - instance of CodeMirror editor.
+ */
+function handleEditorScroll (cm) {
+    const viewport = cm.getViewport();
+    const fromLine = viewport.from;
+    const toLine = viewport.to;
+
+    insertMarks(fromLine, toLine);
 }
 
 /**

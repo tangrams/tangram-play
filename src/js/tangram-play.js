@@ -17,8 +17,8 @@ import { editor, getEditorContent, setEditorContent, getNodesOfLine } from './ed
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
+import { initWidgetMarks } from './widgets/widgets-manager';
 import ErrorModal from './modals/modal.error';
-import WidgetsManager from './widgets/widgets-manager';
 import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
 // import GlslSandbox from './glsl/sandbox';
@@ -85,6 +85,9 @@ class TangramPlay {
                     highlightLines(startLine, endLine, false);
                 }
 
+                // Add widgets marks.
+                initWidgetMarks();
+
                 // Things we do after Tangram is finished initializing
                 tangramLayer.scene.initializing.then(() => {
                     this.trigger('sceneinit');
@@ -123,7 +126,6 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        this.addons.widgetsManager = new WidgetsManager();
         this.addons.suggestManager = new SuggestManager();
         // this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslHelpers();
