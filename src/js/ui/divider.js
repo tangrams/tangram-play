@@ -1,4 +1,3 @@
-import { editor } from '../editor/editor';
 import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
 
@@ -15,7 +14,6 @@ const STORAGE_POSITION_KEY = 'divider-position-x';
 const dividerEl = document.getElementById('divider');
 const mapEl = document.getElementById('map-container');
 const contentEl = document.getElementById('content');
-const menuEl = document.getElementById('menu-bar');
 
 let draggable;
 
@@ -66,14 +64,10 @@ export function initDivider () {
 }
 
 function onDividerPositionChange () {
-    const menuBottom = menuEl.getBoundingClientRect().bottom;
     const positionX = dividerEl.getBoundingClientRect().left;
 
     mapEl.style.width = positionX + 'px';
     contentEl.style.width = (window.innerWidth - positionX) + 'px';
-
-    editor.setSize('100%', (window.innerHeight - menuBottom) + 'px');
-    dividerEl.style.height = (window.innerHeight - menuBottom) + 'px';
 }
 
 // We update the map on the end of the drag because
