@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import L from 'leaflet';
-import { map } from './map';
+import { map, tangramLayer } from './map';
 import { emptyDOMElement } from '../tools/helpers';
 import TangramPlay from '../tangram-play';
 import { highlightBlock, unhighlightAll } from '../editor/highlight';
@@ -10,6 +10,7 @@ const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
 
 let isPopupOpen = false;
 let currentPopupX, currentPopupY;
+let globalIntrospectionState = false;
 
 class TangramInspectionPopup {
     constructor () {
@@ -359,6 +360,11 @@ const hoverPopup = new TangramInspectionPopup();
 hoverPopup.el.className += ' map-inspection-hover';
 
 export function handleInspectionHoverEvent (selection) {
+    // Experiment: only show popups when global introspection is on.
+    if (globalIntrospectionState === false) {
+        return;
+    }
+
     if (isPopupOpen === true) {
         return;
     }
@@ -376,6 +382,11 @@ export function handleInspectionHoverEvent (selection) {
 }
 
 export function handleInspectionClickEvent (selection) {
+    // Experiment: only show popups when global introspection is on.
+    if (globalIntrospectionState === false) {
+        return;
+    }
+
     // Don't display a new popup if the click does not return a feature
     // (e.g. interactive: false)
     if (!selection.feature) {
@@ -398,4 +409,16 @@ export function handleInspectionClickEvent (selection) {
     inspectPopup.showProperties(selection.feature.properties);
     inspectPopup.showLayers(selection.feature.layers);
     inspectPopup.showPopup(selection.leaflet_event);
+}
+
+/**
+ * Turns on global introspection mode for Tangram.
+ *
+ * @public
+ * @param {Boolean} - when `true`, the interactive flag is turned on for all
+ *          geometry. when `false`, interactivity defers to scene file rules.
+ */
+export function setGlobalIntrospection (boolean) {
+    tangramLayer.scene.setIntrospection(boolean);
+    globalIntrospectionState = boolean;
 }
