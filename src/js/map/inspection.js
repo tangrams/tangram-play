@@ -190,6 +190,17 @@ class TangramInspectionPopup {
             tr.appendChild(tdKey);
             tr.appendChild(tdValue);
 
+            // Clicking on the source name should scroll to its position in the editor.
+            // `node` will be undefined if it is not found in the current scene
+            if (value === name) {
+                const node = TangramPlay.getNodesForAddress('sources:' + name);
+                if (node) {
+                    tr.addEventListener('click', event => {
+                        highlightBlock(node);
+                    });
+                }
+            }
+
             tbodyEl.appendChild(tr);
         }
 
@@ -252,8 +263,6 @@ class TangramInspectionPopup {
         this._propertiesEl.style.display = 'block';
         // Resets scroll position (we don't want it to remember scroll position of the previous set of properties)
         this._propertiesEl.scrollTop = 0;
-
-        this._closeEl.style.display = 'block';
     }
 
     hideProperties () {
@@ -372,6 +381,7 @@ class TangramInspectionPopup {
         this._closeEl.addEventListener('click', event => {
             map.closePopup(popup);
         });
+        this._closeEl.style.display = 'block';
 
         // Provide an animation in. By itself, the translateZ doesn't mean anything.
         // It's just a "transition from" point. Leaflet adds an animation class

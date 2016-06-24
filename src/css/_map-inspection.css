@@ -80,6 +80,7 @@
     text-transform: uppercase;
     color: var(--ui-subtext-color);
     vertical-align: middle;
+    width: 60px;
 }
 
 .map-inspection-properties-table-wrapper {
