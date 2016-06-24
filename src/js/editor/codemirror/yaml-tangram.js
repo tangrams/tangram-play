@@ -446,12 +446,16 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
             };
         },
         // By default, CodeMirror skips blank lines when tokenizing a document.
-        // We need to know the exact line number for our YAML addressing system.
-        // CodeMirror allows a blankLine(state) method for languages with significant
-        // blank lines, which we use solely to increment the line number on our state
-        // object when a blank line is encountered by CodeMirror's parser.
+        // This updates the state for blank lines.
         blankLine: function (state) {
+            // We need to know the exact line number for our YAML addressing system.
+            // Increment blank lines here.
             state.line++;
+
+            // We also need to set the indentation to zero so that smart
+            // indentation does not try to pick up indentation from a previous
+            // line that is not blank.
+            state.indentation = 0;
         },
         token: function (stream, state) {
             // Do the following only once per line
