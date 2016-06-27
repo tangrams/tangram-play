@@ -32,28 +32,37 @@ function handleEditorChanges (cm, changes) {
         let fromLine = change.from.line;
         let toLine = change.to.line;
 
-        // CodeMirror's `from` and `to` properties are pre-change values, so
-        // we adjust the range if lines were removed or added. The `removed`
-        // and `text` properties are arrays which indicate how many lines
-        // were removed or added respectively.
-        if (change.origin === '+delete' || change.origin === 'cut') {
-            // In a delete or cut operation, CodeMirror's `to` line
-            // includes lines have just been removed. However, we don't
-            // want to parse those lines, since they're gone. We will
-            // only reparse the current line.
-            toLine = fromLine;
+        // Changes from a widget popup mark its origin as `+value_change`
+        // Just call insertMarks, which will determine whether a mark should be
+        // inserted, if not already. Don't clear marks here, which causes the
+        // widget popups to lose contact with the original widget bookmark.
+        if (change.origin === '+value_change' && fromLine === toLine) {
+            insertMarks(fromLine, toLine);
         }
-        else if (change.origin === 'paste' || change.origin === 'undo') {
-            // In a paste operation, CodeMirror's to line is the same
-            // as the from line. We can get the correct to-line by
-            // adding the pasted lines minus the removed lines.
-            // This also captures undo operations where removals of
-            // lines are undone (so it works like a paste)
-            toLine += change.text.length - change.removed.length;
-        }
+        else {
+            // CodeMirror's `from` and `to` properties are pre-change values, so
+            // we adjust the range if lines were removed or added. The `removed`
+            // and `text` properties are arrays which indicate how many lines
+            // were removed or added respectively.
+            if (change.origin === '+delete' || change.origin === 'cut') {
+                // In a delete or cut operation, CodeMirror's `to` line
+                // includes lines have just been removed. However, we don't
+                // want to parse those lines, since they're gone. We will
+                // only reparse the current line.
+                toLine = fromLine;
+            }
+            else if (change.origin === 'paste' || change.origin === 'undo') {
+                // In a paste operation, CodeMirror's to line is the same
+                // as the from line. We can get the correct to-line by
+                // adding the pasted lines minus the removed lines.
+                // This also captures undo operations where removals of
+                // lines are undone (so it works like a paste)
+                toLine += change.text.length - change.removed.length;
+            }
 
-        clearMarks(fromLine, toLine);
-        insertMarks(fromLine, toLine);
+            clearMarks(fromLine, toLine);
+            insertMarks(fromLine, toLine);
+        }
     }
 }
 
@@ -70,37 +79,61 @@ function handleEditorScroll (cm) {
 }
 
 /**
+ * Returns an array of existing marks
+ *
+ * @param {Number} fromLine - The line number to start looking from
+ * @param {Number} toLine - Optional. The line number to look to. If not
+ *          provided, just the fromLine is checked.
+ */
+function getExistingMarks (fromLine, toLine) {
+    // If `to` is not provided, use `from`.
+    // Add one to this, so we check the entirety of the `to` line. This seems to
+    // be an effective shorthand which means we do not have to obtain the
+    // length of the `from` line.
+    toLine = (toLine || fromLine) + 1;
+
+    const doc = editor.getDoc();
+
+    // Create position objects representing the range to find marks in.
+    const fromPos = { line: fromLine, ch: 0 };
+    const toPos = { line: toLine, ch: 0 };
+
+    // Look for existing text markers
+    let foundMarks = doc.findMarks(fromPos, toPos) || [];
+
+    // findMarks() does not find marks on empty lines even if it is within the
+    // range provided. (This might be a CodeMirror bug?) In this case, we
+    // manually check each line to see if it is empty, and if so, explicitly
+    // search for a mark at the zero-character position on that line.
+    for (let line = fromLine; line < toLine; line++) {
+        const lineContent = doc.getLine(line) || '';
+        if (lineContent.length === 0) {
+            const marks = doc.findMarksAt({ line: line, ch: 0 });
+            foundMarks = foundMarks.concat(marks);
+        }
+    }
+
+    // Filter out anything that is not of type `bookmark`. Text markers can
+    // come from different sources, such as the matching-brackets plugin for
+    // CodeMirror. We only want widget bookmarks.
+    const existingMarks = foundMarks.filter(marker => {
+        return marker.type === 'bookmark' && marker.hasOwnProperty('widget');
+    });
+
+    return existingMarks;
+}
+
+/**
+ * Removes all existing widget bookmarks.
+ *
  * @param {Number} fromLine - The line number to clear from
  * @param {Number} toLine - Optional. The line number to clear to. If not
  *          provided, just the fromLine is checked.
  */
 function clearMarks (fromLine, toLine) {
-    // If `to` is not provided, use `from`.
-    // Add one to this, so we check the entirety of the `to` line.
-    // TODO: verify this works (or we have to get the last character of the `to` line.)
-    toLine = (toLine || fromLine) + 1;
-
-    const doc = editor.getDoc();
-
-    // Create a range just for this line.
-    const fromPos = { line: fromLine, ch: 0 };
-    const toPos = { line: toLine, ch: 0 };
-
-    // Look for stray bookmarks
-    let strayBookmarks = doc.findMarks(fromPos, toPos) || [];
-
-    // findMarks() does not find marks that are at the end of a line, but not
-    // in the range provided. (This might be a CodeMirror bug?)
-    // Manually look for stray bookmarks at the end of these lines, as well.
-    for (let line = fromLine; line < toLine; line++) {
-        const lineContent = doc.getLine(line) || '';
-        const lineLength = lineContent.length;
-        const marks = doc.findMarksAt({ line: line, ch: lineLength });
-        strayBookmarks = strayBookmarks.concat(marks);
-    }
-
+    const existingMarks = getExistingMarks(fromLine, toLine);
     // And remove them, if present.
-    for (let bookmark of strayBookmarks) {
+    for (let bookmark of existingMarks) {
         bookmark.clear();
     }
 }

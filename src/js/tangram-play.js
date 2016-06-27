@@ -292,27 +292,6 @@ class TangramPlay {
         editor.on('changes', this._watchEditorForChanges);
     }
 
-    // SET
-    setValue (node, str) {
-        // Force space between the ':' and the value
-        if (node.value === '') {
-            str = ' ' + str;
-        }
-
-        // Calculate begining character of the value
-        //               key:_[anchor]value
-        //               ^ ^^^^
-        //               | ||||__ + anchor.length
-        //               | |||___ + 1
-        //               | | `--- + 1
-        //  range.from.ch  key.lenght
-
-        let from = { line: node.range.from.line,
-                     ch: node.range.from.ch + node.anchor.length + node.key.length + 2 };
-
-        editor.doc.replaceRange(str, from, node.range.to);
-    }
-
     // If editor is updated, send it to the map.
     updateContent () {
         const content = getEditorContent();

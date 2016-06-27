@@ -124,3 +124,39 @@ export function getNodesInRange (from, to) {
     }
     return nodes;
 }
+
+/**
+ * Sets a node's value. If a value is prepended with a YAML anchor, the
+ * anchor is left in place.
+ *
+ * @public
+ * @param {Object} node - An object representing the node whose value changes
+ * @param {string} value - The new value to set to
+ * @param {string} origin - Optional. This should be a string that CodeMirror
+ *          uses to understand where a change is coming from. Use CodeMirror's
+ *          `+` prefix if you want changes to stack in undo history.
+ */
+export function setNodeValue (node, value, origin) {
+    const doc = editor.getDoc();
+
+    // Force a space between the ':' and the value
+    if (node.value === '') {
+        value = ' ' + value;
+    }
+
+    // Calculate beginning character of the value
+    //               key:_[anchor]value
+    //               ^ ^^^^
+    //               | ||||__ + anchor.length
+    //               | |||___ + 1
+    //               | | `--- + 1
+    //  range.from.ch  key.length
+    const fromPos = {
+        line: node.range.from.line,
+        // Magic number: 2 refers to the colon + space between key and value
+        ch: node.range.from.ch + node.key.length + 2 + node.anchor.length
+    };
+    const toPos = node.range.to;
+
+    doc.replaceRange(value, fromPos, toPos, origin);
+}
