@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import L from 'leaflet';
-import { map } from './map';
+import { map, tangramLayer } from './map';
 import { emptyDOMElement } from '../tools/helpers';
 import TangramPlay from '../tangram-play';
 import { highlightBlock, unhighlightAll } from '../editor/highlight';
@@ -10,6 +10,7 @@ const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
 
 let isPopupOpen = false;
 let currentPopupX, currentPopupY;
+let globalIntrospectionState = false;
 
 class TangramInspectionPopup {
     constructor () {
@@ -29,6 +30,10 @@ class TangramInspectionPopup {
         headerEl.appendChild(kindEl);
         headerEl.appendChild(nameEl);
 
+        let sourceEl = this._sourceEl = document.createElement('div');
+        sourceEl.className = 'map-inspection-source';
+        sourceEl.style.display = 'none';
+
         let propertiesEl = this._propertiesEl = document.createElement('div');
         propertiesEl.className = 'map-inspection-properties';
         propertiesEl.style.display = 'none';
@@ -44,6 +49,7 @@ class TangramInspectionPopup {
         // Listeners for this will be added later, during popup creation
 
         el.appendChild(headerEl);
+        el.appendChild(sourceEl);
         el.appendChild(propertiesEl);
         el.appendChild(layersEl);
         el.appendChild(closeEl);
@@ -146,6 +152,69 @@ class TangramInspectionPopup {
         return text !== EMPTY_SELECTION_NAME_LABEL ? text : null;
     }
 
+    showSource (name, layer) {
+        emptyDOMElement(this._sourceEl);
+
+        // Add section label
+        const labelEl = document.createElement('div');
+        labelEl.className = 'map-inspection-label';
+        labelEl.textContent = 'Data source';
+
+        this._sourceEl.appendChild(labelEl);
+
+        // Create table element
+        const tableWrapperEl = document.createElement('div');
+        const tableEl = document.createElement('table');
+        const tbodyEl = document.createElement('tbody');
+
+        tableWrapperEl.className = 'map-inspection-properties-table-wrapper';
+        tableEl.className = 'map-inspection-properties-table';
+        tableEl.appendChild(tbodyEl);
+
+        // Alphabetize key-value pairs
+        let properties = [
+            ['Name', name],
+            ['Layer', layer]
+        ];
+
+        for (let x in properties) {
+            const key = properties[x][0];
+            const value = properties[x][1];
+
+            const tr = document.createElement('tr');
+            const tdKey = document.createElement('td');
+            const tdValue = document.createElement('td');
+            tdKey.className = 'map-inspection-source-item-label';
+            tdKey.textContent = key;
+            tdValue.textContent = value;
+            tr.appendChild(tdKey);
+            tr.appendChild(tdValue);
+
+            // Clicking on the source name should scroll to its position in the editor.
+            // `node` will be undefined if it is not found in the current scene
+            if (value === name) {
+                const node = TangramPlay.getNodesForAddress('sources:' + name);
+                if (node) {
+                    tr.addEventListener('click', event => {
+                        highlightBlock(node);
+                    });
+                }
+            }
+
+            tbodyEl.appendChild(tr);
+        }
+
+        tableWrapperEl.appendChild(tableEl);
+        this._sourceEl.appendChild(tableWrapperEl);
+
+        this._sourceEl.style.display = 'block';
+    }
+
+    hideSource () {
+        emptyDOMElement(this._sourceEl);
+        this._sourceEl.style.display = 'none';
+    }
+
     showProperties (properties) {
         emptyDOMElement(this._propertiesEl);
 
@@ -194,8 +263,6 @@ class TangramInspectionPopup {
         this._propertiesEl.style.display = 'block';
         // Resets scroll position (we don't want it to remember scroll position of the previous set of properties)
         this._propertiesEl.scrollTop = 0;
-
-        this._closeEl.style.display = 'block';
     }
 
     hideProperties () {
@@ -314,6 +381,7 @@ class TangramInspectionPopup {
         this._closeEl.addEventListener('click', event => {
             map.closePopup(popup);
         });
+        this._closeEl.style.display = 'block';
 
         // Provide an animation in. By itself, the translateZ doesn't mean anything.
         // It's just a "transition from" point. Leaflet adds an animation class
@@ -359,6 +427,11 @@ const hoverPopup = new TangramInspectionPopup();
 hoverPopup.el.className += ' map-inspection-hover';
 
 export function handleInspectionHoverEvent (selection) {
+    // Experiment: only show popups when global introspection is on.
+    if (globalIntrospectionState === false) {
+        return;
+    }
+
     if (isPopupOpen === true) {
         return;
     }
@@ -376,6 +449,11 @@ export function handleInspectionHoverEvent (selection) {
 }
 
 export function handleInspectionClickEvent (selection) {
+    // Experiment: only show popups when global introspection is on.
+    if (globalIntrospectionState === false) {
+        return;
+    }
+
     // Don't display a new popup if the click does not return a feature
     // (e.g. interactive: false)
     if (!selection.feature) {
@@ -395,7 +473,28 @@ export function handleInspectionClickEvent (selection) {
 
     inspectPopup.resetPosition();
     inspectPopup.setLabel(selection.feature.properties);
+    inspectPopup.showSource(selection.feature.source_name, selection.feature.source_layer);
     inspectPopup.showProperties(selection.feature.properties);
     inspectPopup.showLayers(selection.feature.layers);
     inspectPopup.showPopup(selection.leaflet_event);
+}
+
+/**
+ * Turns on global introspection mode for Tangram.
+ *
+ * @public
+ * @param {Boolean} - when `true`, the interactive flag is turned on for all
+ *          geometry. when `false`, interactivity defers to scene file rules.
+ */
+export function setGlobalIntrospection (boolean) {
+    tangramLayer.scene.setIntrospection(boolean);
+    globalIntrospectionState = boolean;
+
+    // Turn mouse cursor into a crosshair when on the map
+    if (boolean === true) {
+        map.getContainer().classList.add('map-crosshair');
+    }
+    else {
+        map.getContainer().classList.remove('map-crosshair');
+    }
 }
