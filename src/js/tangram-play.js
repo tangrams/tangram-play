@@ -17,8 +17,8 @@ import { editor, getEditorContent, setEditorContent, getNodesOfLine } from './ed
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
+import { initWidgetMarks } from './widgets/widgets-manager';
 import ErrorModal from './modals/modal.error';
-import WidgetsManager from './widgets/widgets-manager';
 import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
 // import GlslSandbox from './glsl/sandbox';
@@ -84,6 +84,9 @@ class TangramPlay {
                     highlightLines(startLine, endLine, false);
                 }
 
+                // Add widgets marks.
+                initWidgetMarks();
+
                 // Things we do after Tangram is finished initializing
                 tangramLayer.scene.initializing.then(() => {
                     this.trigger('sceneinit');
@@ -122,7 +125,6 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        this.addons.widgetsManager = new WidgetsManager();
         this.addons.suggestManager = new SuggestManager();
         // this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslHelpers();
@@ -287,27 +289,6 @@ class TangramPlay {
 
         // Turn change watching back on.
         editor.on('changes', this._watchEditorForChanges);
-    }
-
-    // SET
-    setValue (node, str) {
-        // Force space between the ':' and the value
-        if (node.value === '') {
-            str = ' ' + str;
-        }
-
-        // Calculate begining character of the value
-        //               key:_[anchor]value
-        //               ^ ^^^^
-        //               | ||||__ + anchor.length
-        //               | |||___ + 1
-        //               | | `--- + 1
-        //  range.from.ch  key.lenght
-
-        let from = { line: node.range.from.line,
-                     ch: node.range.from.ch + node.anchor.length + node.key.length + 2 };
-
-        editor.doc.replaceRange(str, from, node.range.to);
     }
 
     // If editor is updated, send it to the map.
