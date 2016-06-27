@@ -7,6 +7,8 @@ import { toCSS, toColorVec } from '../tools/common';
 const MODAL_X_OFFSET = 0;
 const MODAL_Y_OFFSET = 5;
 
+var t = 0 ;
+
 export default class ColorButton extends Widget {
     // There must be a constructor call here because
     // ColorPicker sets its own properties for color
@@ -22,8 +24,17 @@ export default class ColorButton extends Widget {
      */
     createEl () {
         let el = document.createElement('div');
-        el.className = 'widget widget-colorpicker';
-        el.addEventListener('click', this.onClick.bind(this));
+
+        // el.className = 'widget widget-colorpicker';
+        let string = 'react-color' + t ;
+        el.setAttribute("id", string);
+
+        // let el2 = document.createElement('div');
+        // el.appendChild(el2);
+
+
+        t = t + 1 ;
+        // el.addEventListener('click', this.onClick.bind(this));
         return el;
     }
 
@@ -49,7 +60,7 @@ export default class ColorButton extends Widget {
      *  Be sure to convert value parameter to a CSS-readable value.
      */
     set color (cssColor) {
-        this.el.style.backgroundColor = cssColor;
+        /*this.el.style.backgroundColor = cssColor;*/
     }
 
     get value () {

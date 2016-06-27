@@ -38,7 +38,6 @@ import { highlightLines } from './editor/highlight';
 // Import UI elements
 import { initDivider } from './ui/divider';
 import './file/drop';
-import './ui/tooltip';
 
 const query = getQueryStringObject();
 
@@ -451,9 +450,32 @@ var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
+import WidgetColorPicker from './components/widget-color-picker.react';
 
 let mountNode1 = document.getElementById('menu-bar');
 ReactDOM.render(<MenuBar />, mountNode1);
 
 let mountNode2 = document.getElementById('map-panel');
 ReactDOM.render(<MapPanel />, mountNode2);
+
+/*
+document.addEventListener("DOMContentLoaded", function(event) {
+    // let colorpicker1 = document.getElementsByClassName('widget-colorpicker')    ;
+    // console.log(colorpicker1);
+
+    // let elementList = document.querySelectorAll('.widget-colorpicker');
+    // console.log(elementList);
+    let test = document.getElementById('react-color0');
+    console.log(test);
+    // console.log(colorpicker1[0]);
+    //ReactDOM.render(<WidgetColorPicker />, colorpicker1[0]);
+});
+*/
+
+/*
+setTimeout( function() {
+    let test = document.getElementById('react-color0');
+    console.log(test);
+    ReactDOM.render(<WidgetColorPicker />, test);
+} ,5000);
+*/

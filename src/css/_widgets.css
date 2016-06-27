@@ -110,3 +110,12 @@ input.widget-toggle {
         opacity: 1;
     }
 }
+
+#react-color0 {
+    display: inline-flex;
+    background-color:none;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    user-select: none;
+}

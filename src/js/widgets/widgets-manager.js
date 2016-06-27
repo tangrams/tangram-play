@@ -5,6 +5,10 @@ import { editor, getNodesInRange } from '../editor/editor';
 import { subscribeMixin } from '../tools/mixin';
 import { isEmptyString } from '../tools/helpers';
 
+var React = require('react');
+var ReactDOM = require('react-dom');
+import WidgetColorPicker from '../components/widget-color-picker.react';
+
 export default class WidgetsManager {
     constructor () {
         subscribeMixin(this);
@@ -210,5 +214,9 @@ export default class WidgetsManager {
         }
         // Trigger Events
         this.trigger('widgets_created', { widgets: newWidgets });
+
+        let test = document.getElementById('react-color0');
+        console.log(test);
+        ReactDOM.render(<WidgetColorPicker />, test);
     }
 }

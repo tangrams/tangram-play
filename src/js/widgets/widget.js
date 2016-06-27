@@ -7,6 +7,8 @@
  *  with any additional functionality.
  *
  */
+
+ 
 import TangramPlay from '../tangram-play';
 import { editor } from '../editor/editor';
 
@@ -66,6 +68,7 @@ export default class Widget {
         this.value = this.value;
     }
 
+    // REACT: change insert function to put a react component
     insert () {
         this.updateNode();
 
@@ -92,9 +95,13 @@ export default class Widget {
         this.bookmark = doc.setBookmark(this.node.range.to, {
             widget: this.el,
             insertLeft: true,
-            handleMouseEvents: true
+            handleMouseEvents: false
         });
         this.bookmark.widget = this;
+
+        // let test = document.getElementById('react-color0');
+        // console.log(test);
+        // ReactDOM.render(<WidgetColorPicker />, test);
 
         return true;
     }
