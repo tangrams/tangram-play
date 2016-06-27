@@ -36,7 +36,7 @@ You can then run a local server manually. The app is a static site, and can be v
 
 #### SimpleHTTPServer
 
-Download this repo, then start a web server in its directory:
+After downloading this repository and running `npm install`, you can start a web server in its directory:
 
     python -m SimpleHTTPServer 8080
 
@@ -48,7 +48,7 @@ Then navigate to: [http://localhost:8080/][localhost]
 
 #### `http-server`
 
-Download this repo, then install `http-server`:
+After downloading this repository and running `npm install`, then install `http-server`:
 
     npm install -g http-server
 
