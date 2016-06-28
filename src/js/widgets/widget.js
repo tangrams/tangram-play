@@ -101,7 +101,7 @@ export default class Widget {
             widget: this.el,
             insertLeft: true,
             clearWhenEmpty: true,
-            handleMouseEvents: true
+            handleMouseEvents: false
         });
         this.bookmark.widget = this;
 

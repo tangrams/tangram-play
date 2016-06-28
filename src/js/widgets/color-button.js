@@ -23,7 +23,9 @@ export default class ColorButton extends Widget {
      *  Creates an in-line color indicator widget
      */
     createEl () {
+        console.log("created WIDGET: " + t);
         let el = document.createElement('div');
+        el.className = 'widget-parent';
 
         // el.className = 'widget widget-colorpicker';
         let string = 'react-color' + t ;

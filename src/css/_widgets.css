@@ -111,11 +111,33 @@ input.widget-toggle {
     }
 }
 
-#react-color0 {
+/* REACT */
+
+.widget-parent {
     display: inline-flex;
     background-color:none;
     display: inline-block;
     position: relative;
     box-sizing: border-box;
     user-select: none;
+}
+
+.widget-modal {
+          /*position: absolute;*/
+          z-index: var(--z09-overlay);
+          outline: none;
+          margin-top:47px;
+          box-shadow: var(--modal-shadow);
+          width: auto;
+          display: inline-flex !important;
+          padding: 0px;
+          background-color: var(--ui-component-color);
+}
+
+.widget-modal * {
+    border-radius: 0px;
+}
+
+#color-picker + div {
+    background: var(--ui-component-color) !important;
 }

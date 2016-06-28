@@ -1,6 +1,15 @@
 import React from 'react'
 import ReactCSS from 'reactcss'
 import { SketchPicker } from 'react-color'
+import Modal from 'react-bootstrap/lib/Modal';
+import Draggable from 'react-draggable'; // The default
+import ModalDialog from 'react-bootstrap/lib/ModalDialog'
+
+class DraggableModalDialog extends React.Component {
+	render() {
+		return <Draggable  bounds="#draggable-container" zIndex={1800} handle="strong"><ModalDialog {...this.props} /></Draggable>
+	}
+}
 
 /**
  * Represents an icon that receives a 'type' prop indicating how it should look
@@ -20,6 +29,7 @@ export default class WidgetColorPicker extends React.Component {
         };
 
         this.handleClick = this.handleClick.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
   classes() {
@@ -72,9 +82,15 @@ export default class WidgetColorPicker extends React.Component {
     }
   }
 
+  componentDidMount() {
+
+  }
+
   handleClick ()  {
-      console.log("clicking widget widget-colorpicker");
     this.setState({ displayColorPicker: !this.state.displayColorPicker })
+    let d = document.getElementById('#modal-test');
+    console.log(d);
+
   }
 
   handleClose () {
@@ -86,11 +102,20 @@ export default class WidgetColorPicker extends React.Component {
   }
 
   render() {
+      console.log(this.state.displayColorPicker);
     return (
       <div>
         <div className="widget widget-colorpicker" onClick={ this.handleClick }>
         </div>
+        <Modal id='modal-test' dialogComponentClass={DraggableModalDialog} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker}>
+            <strong id='color-picker' className="cursor"><div>Drag here</div></strong>
+          <SketchPicker className='widget-color-picker' color={ this.state.color } onChange={ this.handleChange } />
+        </Modal>
+
       </div>
     )
   }
 }
+
+//this.state.displayColorPicker
+//onHide={this.close} onClick={ this.handleClose }

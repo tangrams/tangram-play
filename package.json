@@ -98,8 +98,9 @@
     "react-autosuggest": "3.7.4",
     "react-bootstrap": "0.29.4",
     "react-color": "^2.2.0",
-    "reactcss": "^1.0.4",
     "react-dom": "15.1.0",
+    "react-draggable": "^2.1.2",
+    "reactcss": "^1.0.4",
     "whatwg-fetch": "0.11.0"
   },
   "browserify-shim": {

@@ -1,6 +1,11 @@
 import { editor } from '../editor/editor';
 import TangramPlay from '../tangram-play';
 
+var React = require('react');
+var ReactDOM = require('react-dom');
+import WidgetColorPicker from '../components/widget-color-picker.react';
+
+
 /**
  * Initializes widget marks in the current editor viewport and adds event
  * listeners to handle new marks that need to be created as the editor content
@@ -187,4 +192,15 @@ function insertMarks (fromLine, toLine) {
 
     // Trigger an event for created widgets - this is picked up by the color palette
     TangramPlay.trigger('widget_marks_created', { widgets: newWidgets });
+
+    // let test = document.getElementById('react-color0');
+    let test = document.getElementsByClassName('widget-parent');
+    console.log(test);
+    console.log("LENGTH: " + test.length);
+    for(let widget of test) {
+        if (widget.children.length === 0) {
+            ReactDOM.render(<WidgetColorPicker />, widget);
+        }
+    }
+    // ReactDOM.render(<WidgetColorPicker />, test);
 }
