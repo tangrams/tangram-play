@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactCSS from 'reactcss'
-import { SketchPicker } from 'react-color'
+//import { SketchPicker } from 'react-color'
+import { SketchPicker } from './sketch.react'
 import Modal from 'react-bootstrap/lib/Modal';
 import Draggable from 'react-draggable'; // The default
 import ModalDialog from 'react-bootstrap/lib/ModalDialog'
@@ -25,6 +26,12 @@ export default class WidgetColorPicker extends React.Component {
               g: '112',
               b: '19',
               a: '1',
+            },
+            hsl: {
+                h: 0,
+                s: 0,
+                l: .20,
+                a: 1,
             }
         };
 
@@ -32,65 +39,8 @@ export default class WidgetColorPicker extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-  classes() {
-    return {
-      'default': {
-        color: {
-          width: '36px',
-          height: '14px',
-          borderRadius: '2px',
-          background: `rgba(${ this.state.color.r }, ${ this.state.color.g }, ${ this.state.color.b }, ${ this.state.color.a })`,
-        },
-        swatch: {
-          padding: '5px',
-          background: '#fff',
-          borderRadius: '1px',
-          boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
-          display: 'inline-block',
-          cursor: 'pointer',
-          boxSizing: 'border-box',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          borderRadius: '50%',
-          maxWidth: '14px',
-          maxHeight:'14px',
-          width: '1em',
-          height: '1em',
-          backgroundColor: 'white',
-          cursor: 'pointer',
-          verticalAlign: 'middle',
-          marginTop: '-0.15em',
-          display: 'inline-block',
-          position: 'relative',
-          userSelect: 'none',
-          marginLeft: '6px',
-          marginRight: '6px',
-          marginTop: '0',
-          marginBottom: '0',
-        },
-        popover: {
-          position: 'absolute',
-          zIndex: '2',
-        },
-        cover: {
-          position: 'fixed',
-          top: '0',
-          right: '0',
-          bottom: '0',
-          left: '0',
-        },
-      },
-    }
-  }
-
-  componentDidMount() {
-
-  }
-
   handleClick ()  {
     this.setState({ displayColorPicker: !this.state.displayColorPicker })
-    let d = document.getElementById('#modal-test');
-    console.log(d);
-
   }
 
   handleClose () {
@@ -109,7 +59,7 @@ export default class WidgetColorPicker extends React.Component {
         </div>
         <Modal id='modal-test' dialogComponentClass={DraggableModalDialog} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker}>
             <strong id='color-picker' className="cursor"><div>Drag here</div></strong>
-          <SketchPicker className='widget-color-picker' color={ this.state.color } onChange={ this.handleChange } />
+          <SketchPicker className={'widget-color-picker'} color={ this.state.color } onChange={ this.handleChange } />
         </Modal>
 
       </div>
