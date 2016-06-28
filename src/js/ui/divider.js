@@ -1,5 +1,6 @@
 import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
+import { EventEmitter } from '../components/event-emitter';
 
 // Import Greensock (GSAP)
 import 'gsap/src/uncompressed/TweenLite.js';
@@ -44,11 +45,12 @@ export function initDivider () {
         },
         onDrag: function () {
             onDividerPositionChange();
+            EventEmitter.dispatch('divider:drag');
         },
         onDragEnd: function () {
             updateMapState();
             saveDividerPosition();
-            window.dispatchEvent(new CustomEvent('divider:dragend'));
+            EventEmitter.dispatch('divider:dragend');
         },
         onRelease: function () {
             this.target.classList.remove('divider-is-dragging');
