@@ -170,13 +170,13 @@ class TangramPlay {
                         // Update the scene URL property with the correct URL
                         // to the raw YAML to ensure safe loading
                         scene.url = url;
-                        return window.fetch(url, { credentials: 'same-origin' });
+                        return window.fetch(url);
                     });
             }
             // Fetch the contents of a YAML file directly. This step
             // allows us to verify contents (TODO) or error status.
             else {
-                fetchPromise = window.fetch(scene.url, { credentials: 'same-origin' });
+                fetchPromise = window.fetch(scene.url);
             }
 
             return fetchPromise.then(response => {
