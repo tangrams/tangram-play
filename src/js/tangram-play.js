@@ -37,7 +37,6 @@ import { highlightLines } from './editor/highlight';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
-import './file/drop';
 import './ui/tooltip';
 
 const query = getQueryStringObject();
@@ -432,9 +431,13 @@ var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
+import FileDrop from './file/drop';
 
 let mountNode1 = document.getElementById('menu-bar');
 ReactDOM.render(<MenuBar />, mountNode1);
 
 let mountNode2 = document.getElementById('map-panel');
 ReactDOM.render(<MapPanel />, mountNode2);
+
+let mountNode3 = document.getElementById('filedrop');
+ReactDOM.render(<FileDrop />, mountNode3);
