@@ -108,7 +108,7 @@ export default class MapPanelSearch extends React.Component {
         EventEmitter.subscribe('clearbookmarks', data => { this._bookmarkCallback(); });
 
         // Need a notification when divider moves to change the latlng label precision
-        window.addEventListener('divider:dragend', this._setLabelPrecision);
+        EventEmitter.subscribe('divider:drag', this._setLabelPrecision);
     }
 
     /**
