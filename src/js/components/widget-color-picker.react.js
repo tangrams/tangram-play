@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactCSS from 'reactcss'
-//import { SketchPicker } from 'react-color'
-import { SketchPicker } from './sketch.react'
+
+import SketchPicker from './widget-color-picker/sketch.react'
 import Modal from 'react-bootstrap/lib/Modal';
 import Draggable from 'react-draggable'; // The default
 import ModalDialog from 'react-bootstrap/lib/ModalDialog'
@@ -52,7 +52,6 @@ export default class WidgetColorPicker extends React.Component {
   }
 
   render() {
-      console.log(this.state.displayColorPicker);
     return (
       <div>
         <div className="widget widget-colorpicker" onClick={ this.handleClick }>
@@ -67,5 +66,8 @@ export default class WidgetColorPicker extends React.Component {
   }
 }
 
+//<ReactColorPreset className={'widget-color-picker'} color={ this.state.color } onChange={ this.handleChange } />
 //this.state.displayColorPicker
 //onHide={this.close} onClick={ this.handleClose }
+
+//<SketchPicker custom={ SketchPicker } className={'widget-color-picker'} rgb={this.state.color} color={ this.state.color } onChange={ this.handleChange } />

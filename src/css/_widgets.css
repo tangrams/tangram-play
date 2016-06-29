@@ -134,10 +134,6 @@ input.widget-toggle {
           background-color: var(--ui-component-color);
 }
 
-.widget-modal * {
-    border-radius: 0px;
-}
-
 #color-picker + div {
     background: var(--ui-component-color) !important;
 }

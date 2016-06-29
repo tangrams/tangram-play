@@ -1,0 +1,109 @@
+.picker {
+  width: 220px;
+  padding: 10px 10px 0;
+  box-sizing: initial;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.15);
+  /* 0 8px 16px rgba(0;0;0;.15);*/
+}
+
+.saturation {
+  width: 100%;
+  padding-bottom: 75%;
+  position: relative;
+  overflow: hidden;
+}
+.saturation2 {
+  radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+  /*inset 0 0 4px rgba(0;0;0;.25);*/
+}
+.controls {
+  display: flex;
+}
+.sliders {
+  padding: 4px 0;
+  flex: 1;
+}
+.color {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  margin-top: 4px;
+  margin-left: 4px;
+  border-radius: 3px;
+}
+.activeColor {
+  /*Absolute: 0px 0px 0px 0px;*/
+  border-radius: 2px;
+  /*background: rgba( + this.props.rgb.r + ;  + this.props.rgb.g + ;  + this.props.rgb.b + ;  + this.props.rgb.a + );*/
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+  /*inset 0 0 4px rgba(0,0,0,.25);*/
+  width: 100%;
+  height: 100%;
+}
+.hue {
+  position: relative;
+  height: 10px;
+  overflow: hidden;
+}
+.hue2 {
+  radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+  /*inset 0 0 4px rgba(0;0;0;.25);*/
+}
+
+.alpha {
+  position: relative;
+  height: 10px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.alpha2 {
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+  /*inset 0 0 4px rgba(0;0;0;.25);*/
+}
+/* SEPARATE COMPONENT */
+.fields {
+    display: flex;
+    padding-top: 4px;
+}
+.single {
+    flex: 1;
+    padding-left: 6px;
+}
+.alpha3 {
+    flex: 1;
+    padding-left: 6px;
+}
+.double {
+    flex: 2;
+}
+
+.picker input {
+    width: 80%;
+    padding: 4px 10% 3px;
+    border: none;
+    box-shadow: inset 0 0 0 1px #ccc;
+    font-size: 11px;
+}
+.label {
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    color: #222;
+    padding-top: 3px;
+    padding-bottom: 4px;
+    text-transform: capitalize;
+}
+
+.flexbox-fix {
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+}

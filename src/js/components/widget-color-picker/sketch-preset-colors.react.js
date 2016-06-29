@@ -1,6 +1,6 @@
 
 import React from 'react'
-import ReactCSS from 'reactcss'
+import ReactCSS, {Component} from 'reactcss'
 import shallowCompare from 'react-addons-shallow-compare'
 
 export default class SketchPresetColors extends React.Component {
@@ -12,54 +12,20 @@ export default class SketchPresetColors extends React.Component {
       return shallowCompare.bind(this, this, arguments[0], arguments[1]);
   }
 
-  classes(): any {
-    return {
-      'default': {
-        colors: {
-          marginRight: '-10px',
-          marginLeft: '-10px',
-          paddingLeft: '10px',
-          paddingTop: '10px',
-          borderTop: '1px solid #eee',
-        },
-        li: {
-          borderRadius: '3px',
-          overflow: 'hidden',
-          position: 'relative',
-          display: 'inline-block',
-          margin: '0 10px 10px 0',
-          verticalAlign: 'top',
-          cursor: 'pointer',
-        },
-        square: {
-          borderRadius: '3px',
-          width: '16px',
-          height: '16px',
-          boxShadow: 'inset 0 0 0 1px rgba(0,0,0,.15)',
-        },
-      },
-      'no-presets': {
-        colors: {
-          display: 'none',
-        },
-      },
-    }
-  }
-
-  styles(): any {
+  styles() {
     return this.css({
       'no-presets': !this.props.colors || !this.props.colors.length,
     })
   }
 
-  handleClick (hex: any) {
+  handleClick (hex) {
     this.props.onClick({
       hex: hex,
       source: 'hex',
     })
   }
 
-  render(): any {
+  render() {
     var colors = []
     if (this.props.colors) {
       for (var i = 0; i < this.props.colors.length; i++) {
