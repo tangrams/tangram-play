@@ -11,7 +11,8 @@
     "lint-js": "eslint *.js src/ test/",
     "lint-css": "stylelint src/css/*.css",
     "karma": "./node_modules/karma/bin/karma start",
-    "postinstall": "modernizr -c modernizr-config.json -d build/js; gulp build"
+    "postinstall": "modernizr -c modernizr-config.json -d build/js; gulp build",
+    "make-thumbnails": "node meta/make-scene-thumbnails.js"
   },
   "repository": {
     "type": "git",
@@ -54,6 +55,7 @@
     "csswring": "4.2.2",
     "eslint": "2.10.2",
     "eslint-plugin-react": "5.1.1",
+    "gm": "1.22.0",
     "gulp": "3.9.1",
     "gulp-babel": "6.1.2",
     "gulp-notify": "2.2.0",
@@ -61,6 +63,9 @@
     "gulp-sourcemaps": "1.6.0",
     "gulp-uglify": "1.5.3",
     "gulp-util": "3.0.7",
+    "imagemin": "5.2.2",
+    "imagemin-gifsicle": "5.1.0",
+    "imagemin-pngquant": "5.0.0",
     "karma": "0.13.22",
     "karma-browserify": "5.0.3",
     "karma-mocha": "0.2.2",
