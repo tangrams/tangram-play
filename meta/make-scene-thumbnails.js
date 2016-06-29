@@ -76,7 +76,7 @@ for (let name in IMAGE_SOURCES) {
     gm(url)
         .format(function (err, value) {
             if (err) {
-                console.log(`Error: unable to determine format for ${url}`);
+                console.log(`Error: unable to determine format for ${url}: ${err}`);
                 return;
             }
 
@@ -96,6 +96,7 @@ for (let name in IMAGE_SOURCES) {
                 .resize(width, height, '^')
                 .gravity('Center')
                 .extent(width, height)
+                .interlace('Line')
                 .write(filename, function (err) {
                     if (err) {
                         console.log(`Error writing ${filename}:\n ${err}`);
