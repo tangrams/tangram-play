@@ -12,7 +12,9 @@
     "lint-css": "stylelint src/css/*.css",
     "karma": "./node_modules/karma/bin/karma start",
     "postinstall": "modernizr -c modernizr-config.json -d build/js; gulp build",
-    "make-thumbnails": "node meta/make-scene-thumbnails.js"
+    "examples": "npm run examples:thumbnails && npm run examples:scenes",
+    "examples:thumbnails": "node meta/example-scenes/cache-thumbnails.js",
+    "examples:scenes": "node meta/example-scenes/cache-scenes.js"
   },
   "repository": {
     "type": "git",

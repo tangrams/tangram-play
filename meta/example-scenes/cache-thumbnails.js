@@ -27,7 +27,7 @@
  *
  * Then run this script with node
  *
- *      node ./meta/make-scene-thumbnails.js
+ *      node ./meta/example-scenes/cache-thumbnails.js
  *
  * Can this be done in a shell script? Probably!
  */
@@ -39,41 +39,22 @@ const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminGifsicle = require('imagemin-gifsicle');
 
+const IMAGE_SOURCES = require('./sources');
 const THUMBNAIL_WIDTH = 245;
 const THUMBNAIL_HEIGHT = 60;
 const RETINA_MULTIPLIER = 2;
-const WRITE_PATH = '../data/scenes/thumbnails';
-
-/* eslint-disable quote-props */
-const IMAGE_SOURCES = {
-    'default': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/default.png',
-    'grain': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain.png',
-    'grain-roads': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain-roads.png',
-    'grain-area': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/grain-area.png',
-    'refill': 'https://cloud.githubusercontent.com/assets/853051/11160181/87349950-8a1b-11e5-8559-5c6d95cb84d5.png',
-    'cinnabar': 'https://cloud.githubusercontent.com/assets/853051/11084429/f615a860-87ef-11e5-8ca9-6c46cec3534b.png',
-    'zinc': 'https://cloud.githubusercontent.com/assets/853051/11136794/c8c54190-8966-11e5-9017-b7f06d6841bb.png',
-    'gotham': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/gotham.png',
-    'blueprint': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/blueprint.png',
-    'tron': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/tron.png',
-    'matrix': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/matrix.png',
-    'ikeda': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/ikeda.png',
-    '9845c': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/9845C.png[0]', // Special case: force this to be a 1-frame png
-    'press': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/press.png',
-    'radar': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/radar.png',
-    'crosshatch': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/crosshatch.png',
-    'pericoli': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/pericoli.png',
-    'patterns': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/patterns.png',
-    'lego': 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/lego.png',
-    'walkabout': 'https://s3.amazonaws.com/static-prod.mapzen.com/resources/maps-page-hero/walkabout-style.png'
-};
-/* eslint-enable quote-props */
+const WRITE_PATH = '../../data/scenes/thumbnails';
 
 for (let name in IMAGE_SOURCES) {
-    const url = IMAGE_SOURCES[name];
+    const url = IMAGE_SOURCES[name].image;
+    const forcePNG = IMAGE_SOURCES[name].forcePNG || false;
     const destination = path.resolve(__dirname, WRITE_PATH);
 
-    gm(url)
+    // If we want to force an animated GIF to be a one-frame PNG, we fetch the
+    // url with a `[0]`
+    const fetchURL = forcePNG ? url + '[0]' : url;
+
+    gm(fetchURL)
         .format(function (err, value) {
             if (err) {
                 console.log(`Error: unable to determine format for ${url}: ${err}`);
@@ -81,10 +62,7 @@ for (let name in IMAGE_SOURCES) {
             }
 
             let ext = value.toLowerCase();
-            // Special hard-coded case for 9845c, which is a very subtle
-            // animation and results in an unnecessarily large 1MB gif, so force
-            // it to be PNG.
-            if (name === '9845c') {
+            if (forcePNG === true) {
                 ext = 'png';
             }
 
