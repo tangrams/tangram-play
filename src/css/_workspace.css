@@ -2,7 +2,8 @@
 
 .workspace-container {
     position: absolute;
-    height: calc(100% - 44px);
+    height: 100%;
+    top: 44px;
     left: 0;
     width: 100%;
     bottom: 0;

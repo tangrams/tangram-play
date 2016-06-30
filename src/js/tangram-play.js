@@ -427,14 +427,25 @@ window.tangramPlay = tangramPlay;
 
 /* ********************************* REACT ********************************* */
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
 
-let mountNode1 = document.getElementById('menu-bar');
-ReactDOM.render(<MenuBar />, mountNode1);
+if (window.location.hash) {
+    let hash = window.location.hash.split('/');
+    let index = hash.length - 1;
 
-let mountNode2 = document.getElementById('map-panel');
-ReactDOM.render(<MapPanel />, mountNode2);
+    if (hash[index] === 'tutorial') {
+        let container = document.getElementsByClassName('workspace-container')[0];
+        container.setAttribute('style', 'top: 0');
+    }
+    else {
+        let mountNode1 = document.getElementById('menu-bar');
+        ReactDOM.render(<MenuBar />, mountNode1);
+
+        let mountNode2 = document.getElementById('map-panel');
+        ReactDOM.render(<MapPanel />, mountNode2);
+    }
+}
