@@ -56,10 +56,12 @@ const IMAGE_SOURCES = {
         scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/matrix.yaml'
     },
     'ikeda': {
+        // Note that the original source is actually an animated GIF, despite the PNG extension
         image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/ikeda.png',
         scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/ikeda.yaml'
     },
     '9845c': {
+        // Note that the original source is actually an animated GIF, despite the PNG extension
         image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/9845C.png',
         forcePNG: true, // Special case: force this to be a 1-frame png
         scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/9845C.yaml'
@@ -69,6 +71,7 @@ const IMAGE_SOURCES = {
         scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/press.yaml'
     },
     'radar': {
+        // Note that the original source is actually an animated GIF, despite the PNG extension
         image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/radar.png',
         scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/radar.yaml'
     },
