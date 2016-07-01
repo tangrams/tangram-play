@@ -69,6 +69,13 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
 // Editor operations, such as cut, paste, delete, or inserts, can mutate
 // highlighted lines. This will make sure the query string remains updated.
 editor.on('changes', function (cm, changes) {
+    // Small performance tweak: if there's just one change on one line,
+    // don't bother updating the query string, which must check the highlight
+    // state on all lines
+    if (changes.length === 1 && changes[0].removed.length === 1 && changes[0].text.length === 1) {
+        return;
+    }
+
     updateLinesQueryString();
 });
 
