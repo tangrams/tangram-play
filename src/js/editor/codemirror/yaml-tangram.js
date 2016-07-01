@@ -347,6 +347,7 @@ export function parseYamlString (string, state, tabSize) {
 
     // Adds widgets to nodes, if they have them.
     state = attachWidgetMarkConstructorsToDocumentState(state);
+    // console.log(state);
 
     return state;
 }

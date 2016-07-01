@@ -4,6 +4,7 @@ import { EventEmitter } from '../components/event-emitter';
 var React = require('react');
 var ReactDOM = require('react-dom');
 import WidgetColorPicker from '../components/widget-color-picker.react';
+import Widget from './widget';
 
 
 /**
@@ -175,14 +176,18 @@ function insertMarks (fromLine, toLine) {
             continue;
         }
 
+        //What does WidgetMarkConstructor do?
         for (let node of nodes) {
             // See if there's a widget constructor attached to it, and
             // if so, we create it and insert it into the document.
             // Skip blank lines, which may have the state (and widget
             // constructor) of the previous line.
-            if (node.widgetMarkConstructor && lineHandle.text.trim() !== '') {
+            if (node.widgetMark && lineHandle.text.trim() !== '') {
                 const lineNumber = doc.getLineNumber(lineHandle);
-                const widget = node.widgetMarkConstructor.create(node);
+                const widget = new Widget(node);
+                // const widget = node.widgetMarkConstructor.create(node);
+                // console.log("Heres a widget " );
+                // console.log(widget);
                 if (widget.insert(lineNumber)) {
                     newWidgets.push(widget);
                 }
@@ -193,14 +198,14 @@ function insertMarks (fromLine, toLine) {
     // Trigger an event for created widgets - this is picked up by the color palette
 
     // let test = document.getElementById('react-color0');
-    let test = document.getElementsByClassName('widget-parent');
-    console.log(test);
-    console.log("LENGTH: " + test.length);
-    for(let widget of test) {
-        if (widget.children.length === 0) {
-            ReactDOM.render(<WidgetColorPicker />, widget);
-        }
-    }
+    // let test = document.getElementsByClassName('widget-parent');
+    // console.log(test);
+    // console.log("LENGTH: " + test.length);
+    // for(let widget of test) {
+    //     if (widget.children.length === 0) {
+    //         ReactDOM.render(<WidgetColorPicker />, widget);
+    //     }
+    // }
     // ReactDOM.render(<WidgetColorPicker />, test);
     EventEmitter.dispatch('widget_marks_created', { widgets: newWidgets });
 }

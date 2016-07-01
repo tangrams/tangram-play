@@ -1,7 +1,48 @@
 import _ from 'lodash';
 import TANGRAM_API from '../../tangram-api.json';
-import WidgetMarkConstructor from '../../widgets/widget-type';
 import { isEmptyString } from '../../tools/helpers';
+
+
+export class WidgetMark {
+    constructor (datum) {
+        // Widgets exist for different types of Tangram scene syntax.
+        //      value - a widget exists for this type of value (not used?)
+        //      key - a widget exists when the key matches this
+        //      address - a widget exists when the address (sequence of keys)
+        //          matches this
+        const matchTypes = [
+            'value',
+            'key',
+            'address',
+        ];
+
+        // This normalizes the syntax matching method to a single property.
+        for (const key of matchTypes) {
+            if (datum[key]) {
+                this.matchAgainst = key;
+                this.matchPattern = datum[key];
+                break;
+            }
+        }
+
+        // The rest of the data is stored, with default values if not present
+        this.type = datum.type;
+        this.options = datum.options || [];
+        this.source = datum.source || null;
+    }
+
+    match (node) {
+        if (this.matchAgainst) {
+            return RegExp(this.matchPattern).test(node[this.matchAgainst]);
+        }
+        else {
+            return false;
+        }
+    }
+}
+
+
+
 
 // Only certain types of values in Tangram syntax will have widgets, so
 // filter out all other ones.
@@ -12,7 +53,7 @@ const listOfWidgetMarkConstructors = _.filter(TANGRAM_API.values, function (item
 // Create a set of ready-to-go widget objects.
 const allWidgetMarkConstructors = listOfWidgetMarkConstructors.map(function (item) {
     // new WidgetMarkConstructor() is passed an object from TANGRAM_API.
-    return new WidgetMarkConstructor(item);
+    return new WidgetMark(item);
 });
 
 /**
@@ -28,9 +69,9 @@ export function attachWidgetMarkConstructorsToDocumentState (state) {
         }
 
         // Check for widgets to add
-        for (let widgetMarkConstructor of allWidgetMarkConstructors) {
-            if (widgetMarkConstructor.match(node)) {
-                node.widgetMarkConstructor = widgetMarkConstructor;
+        for (let widgetMark of allWidgetMarkConstructors) {
+            if (widgetMark.match(node)) {
+                node.widgetMark = widgetMark;
                 break;
             }
         }

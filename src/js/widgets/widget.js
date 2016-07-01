@@ -10,11 +10,22 @@
 import { editor, setNodeValue } from '../editor/editor';
 import { parseYamlString } from '../editor/codemirror/yaml-tangram';
 
+var React = require('react');
+var ReactDOM = require('react-dom');
+import WidgetColorPicker from '../components/widget-color-picker.react';
+
+
 export default class Widget {
-    constructor (def, node) {
+    constructor (node) {
+        console.log(node);
         this.node = node;
-        this.definition = def;
+        this.definition = node.widgetMark;
+        this.type = node.widgetMark.type;
         this.el = this.createEl(node);
+        // console.log("this el is:");
+        // console.log(this.el);
+        // console.log("THE TYPE I GET IS");
+        // console.log(def.type);
     }
 
     /**
@@ -25,7 +36,30 @@ export default class Widget {
      *  @param node in case the element needs to know something about the source
      */
     createEl (node) {
-        return document.createDocumentFragment();
+        let el = document.createElement('div');
+
+        switch (this.type) {
+            case 'color':
+                el.className = 'widget-parent widget-color';
+                break;
+            case 'boolean':
+                el.className = 'widget-parent widget-boolean';
+                break;
+            case 'string':
+                el.className = 'widget-parent widget-string';
+                break;
+            case 'vector':
+                el.className = 'widget-parent widget-vector';
+                break;
+            default:
+                // Nothing
+                break;
+        }
+
+        return el;
+
+
+        // return document.createDocumentFragment();
     }
 
     updateNodeReference (lineNumber) {
@@ -98,12 +132,17 @@ export default class Widget {
 
         // inserts the widget into CodeMirror DOM
         this.bookmark = doc.setBookmark(this.node.range.to, {
-            widget: this.el,
+            widget: this.el, // inserted DOM element into position
             insertLeft: true,
             clearWhenEmpty: true,
             handleMouseEvents: false
         });
         this.bookmark.widget = this;
+
+        if(this.type === 'color'){
+            console.log("created color");
+            ReactDOM.render(<WidgetColorPicker />, this.el);
+        }
 
         return true;
     }
