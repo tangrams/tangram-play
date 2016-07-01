@@ -5682,7 +5682,7 @@ button.close {
   background: transparent;
   border: 0;
 }
-/*
+
 .modal-open {
   overflow: hidden;
 }
@@ -5698,19 +5698,19 @@ button.close {
   -webkit-overflow-scrolling: touch;
 }
 .modal.fade .modal-dialog {
-  -webkit-transition: -webkit-transform .3s ease-out;
-       -o-transition:      -o-transform .3s ease-out;
-          transition:         transform .3s ease-out;
+  /*-webkit-transition: -webkit-transform .1s ease-out;
+       -o-transition:      -o-transform .1s ease-out;
+          transition:         transform .1s ease-out;
   -webkit-transform: translate(0, -25%);
       -ms-transform: translate(0, -25%);
        -o-transform: translate(0, -25%);
-          transform: translate(0, -25%);
+          transform: translate(0, -25%);*/
 }
 .modal.in .modal-dialog {
-  -webkit-transform: translate(0, 0);
+  /*-webkit-transform: translate(0, 0);
       -ms-transform: translate(0, 0);
        -o-transform: translate(0, 0);
-          transform: translate(0, 0);
+          transform: translate(0, 0);*/
 }
 .modal-open .modal {
   overflow-x: hidden;
@@ -5718,12 +5718,12 @@ button.close {
 }
 .modal-dialog {
   position: relative;
-  width: auto;
+  /*width: auto;*/
   margin: 10px;
 }
 .modal-content {
   position: relative;
-  background-color: #fff;
+  /*background-color: #fff;*/
   -webkit-background-clip: padding-box;
           background-clip: padding-box;
   border: 1px solid #999;
@@ -5739,7 +5739,7 @@ button.close {
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #000;
+  /*background-color: #000;*/
 }
 .modal-backdrop.fade {
   filter: alpha(opacity=0);
@@ -5786,7 +5786,7 @@ button.close {
   height: 50px;
   overflow: scroll;
 }
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
   .modal-dialog {
     width: 600px;
     margin: 30px auto;
@@ -5803,8 +5803,8 @@ button.close {
   .modal-lg {
     width: 900px;
   }
-}
-*/
+}*/
+
 .tooltip {
   position: absolute;
   z-index: 1070;
