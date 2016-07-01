@@ -32,7 +32,7 @@ import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } fr
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';
-import { highlightRanges } from './editor/highlight';
+import { highlightRanges, updateLinesQueryString } from './editor/highlight';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
@@ -74,6 +74,7 @@ class TangramPlay {
                 let lines = query.lines;
                 if (lines) {
                     highlightRanges(lines);
+                    updateLinesQueryString();
                 }
 
                 // Add widgets marks.

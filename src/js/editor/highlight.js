@@ -260,11 +260,9 @@ export function highlightBlock (node) {
  * @param {Boolean} defer - Optional. Default is false. If `true`, then this
  *          function does not unhighlight any lines if the current highlighting
  *          was created by a user clicking on the gutters.
- * @param {Boolean} updateQueryString - Optional. Default is true. If `false`,
- *          then the query string is not blanked after unhighlighting lines.
  */
 export function unhighlightAll ({ defer = false } = {}) {
-    if (defer === true && manuallyHighlighted === true) {
+    if (defer === true) {
         return;
     }
 
