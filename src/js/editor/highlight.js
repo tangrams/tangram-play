@@ -5,6 +5,7 @@ import { isEmptyString, getQueryStringObject, serializeToQueryString } from '../
 const HIGHLIGHT_CLASS = 'editor-highlight';
 
 let anchorLine;
+let targetLine;
 let manuallyHighlighted = false;
 
 editor.on('gutterClick', function (cm, line, gutter, event) {
@@ -18,49 +19,54 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
         return;
     }
 
+    // The `line` parameter is a 0-indexed line number.
+
     // The meta (command or control keys) will allow highlighting of
     // non-sequential lines.
     if (event.metaKey === true) {
         const didHighlight = toggleHighlightLine(cm.getDoc(), line);
+        anchorLine = didHighlight ? line : undefined;
 
-        if (didHighlight) {
-            anchorLine = line;
-        }
-        else {
-            anchorLine = undefined;
-        }
-
-        updateLinesQueryString();
+        // Reset
+        targetLine = undefined;
     }
     // Shift keys will allow highlighting of multiple lines.
     else if (event.shiftKey === true && anchorLine !== undefined) {
-        if (anchorLine < line) {
-            highlightLines(anchorLine, line, false);
-        }
-        // Handle lines clicked in non-sequential order
-        // If the previously highlighted line is greater than the currently
-        // clicked one, then we flip the order of arguments.
-        else {
-            highlightLines(line, anchorLine, false);
+        // Clears a previous range if it exists
+        if (targetLine) {
+            unhighlightLines(anchorLine, targetLine);
         }
 
+        // Then highlight the desired range
+        highlightLines(anchorLine, line);
+
         // Remember state of how this happened
+        targetLine = line;
         manuallyHighlighted = true;
     }
     // If shift key is not pressed or there is not a previously selected line
     // (which you need to do the whole range) then select one line.
     else {
-        // If the clicked line is the same as the one before, turn it off.
+        // Clear all existing highlights first
+        unhighlightAll();
+
+        // If the clicked line is the same as the one before, reset
         if (line === anchorLine) {
-            unhighlightAll();
             anchorLine = undefined;
         }
+        // Otherwise, highlight that one line
         else {
-            highlightLines(line);
+            highlightLine(cm.getDoc(), line);
             anchorLine = line;
             manuallyHighlighted = true;
         }
+
+        // Reset
+        targetLine = undefined;
     }
+
+    // Update the query string
+    updateLinesQueryString();
 });
 
 /**
@@ -108,60 +114,47 @@ function toggleHighlightLine (doc, line) {
 
 /**
  * Highlights a line or a range of lines by applying a highlight class.
+ * Accepts arguments in any order and it will still loop in the
+ * correct direction.
  *
- * @param {Number|CodeMirror.Pos} from - Required. The line number to start to
- *          highlighting from, or a CodeMirror.Pos object with the signature
- *          of { line, ch }. Lines are zero-indexed.
- * @param {Number|CodeMirror.Pos} to - Optional. The line number to end
- *          highlighting on, or a CodeMirror.Pos object with the signature
- *          of { line, ch }. If undefined or null, only the "from" line is
- *          highlighted. Lines are zero-indexed.
- * @param {Boolean} clear - Optional. Defaults to `true`, where all existing
- *          highlights are cleared first. If set to false, previous Highlights
- *          are preserved.
+ * @param {Number} from - Required. The line number to start
+ *          highlighting from. Lines are zero-indexed.
+ * @param {Number} to - Required. The line number to end
+ *          highlighting on. Lines are zero-indexed.
  */
-export function highlightLines (from, to, clear = true) {
-    // First, remove all existing instances of the highlight class.
-    if (clear === true) {
-        // Pass `false` as the second parameter to prevent query string
-        // from flashing
-        unhighlightAll({ updateQueryString: false });
-    }
-
-    // Set the line to start highlighting from.
-    const startLine = _getLineNumber(from);
-
-    // The end line is the same as the start line if `to` is undefined.
-    // Lines are zero-indexed, so do not use "falsy" checks -- `0` is a valid
-    // value for `line`, so check if value is undefined, null or isNaN
-    // specifically.
-    const endLine = (to !== undefined && to !== null && !Number.isNaN(to))
-        ? _getLineNumber(to) : startLine;
-
-    function _getLineNumber (arg) {
-        // If `arg` is a CodeMirror position object, use its `line` property.
-        // Lines are zero-indexed, so a don't use "falsy" checks for its
-        // presence -- `0` is a valid value for `line`.
-        // Make sure it is converted to a number object.
-        if (typeof from === 'object' && from.hasOwnProperty('line') && typeof arg.line !== 'undefined') {
-            return Number(arg.line);
-        }
-        // Otherwise, assume the value passed is a number or string, and
-        // use the `arg` as provided.
-        else {
-            return Number(arg);
-        }
-    }
-
-    // We assume `startLine` is less than or equal to `endLine`.
-    // If a range is backwards, it is ignored.
+function highlightLines (startLine, endLine) {
     const doc = editor.getDoc();
+
+    // Swap arguments if startLine is higher than endLine
+    if (startLine > endLine) {
+        [startLine, endLine] = [endLine, startLine];
+    }
+
     for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
         highlightLine(doc, currentLine);
     }
+}
 
-    // Update the query string
-    updateLinesQueryString();
+/**
+ * Unhighlights all lines between a range of lines. Accepts
+ * arguments in any order and it will still loop in the correct direction.
+ *
+ * @param {Number} from - Required. The line number to start
+ *          unhighlighting from. Lines are zero-indexed.
+ * @param {Number} to - Required. The line number to end
+ *          unhighlighting on. Lines are zero-indexed.
+ */
+function unhighlightLines (startLine, endLine) {
+    const doc = editor.getDoc();
+
+    // Swap arguments if startLine is higher than endLine
+    if (startLine > endLine) {
+        [startLine, endLine] = [endLine, startLine];
+    }
+
+    for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
+        unhighlightLine(doc, currentLine);
+    }
 }
 
 /**
@@ -196,7 +189,7 @@ export function highlightRanges (lines) {
             jumpToLine(editor, startLine);
         }
 
-        highlightLines(startLine, endLine, false);
+        highlightLines(startLine, endLine);
     }
 }
 
@@ -243,10 +236,15 @@ export function highlightBlock (node) {
         }
     } while (thisLevel > blockLevel);
 
-    highlightLines(node.range.from, toLine);
+    // First, remove all existing instances of the highlight class.
+    // Then highlight the block's range and update query string.
+    unhighlightAll();
+    highlightLines(node.range.from.line, toLine);
+    updateLinesQueryString();
 
     // Reset
     anchorLine = undefined;
+    targetLine = undefined;
     manuallyHighlighted = false;
 }
 
@@ -259,7 +257,7 @@ export function highlightBlock (node) {
  * @param {Boolean} updateQueryString - Optional. Default is true. If `false`,
  *          then the query string is not blanked after unhighlighting lines.
  */
-export function unhighlightAll ({ defer = false, updateQueryString = true } = {}) {
+export function unhighlightAll ({ defer = false } = {}) {
     if (defer === true && manuallyHighlighted === true) {
         return;
     }
@@ -268,12 +266,6 @@ export function unhighlightAll ({ defer = false, updateQueryString = true } = {}
 
     for (let i = 0, j = doc.lineCount(); i <= j; i++) {
         unhighlightLine(doc, i);
-    }
-
-    // Update the query string
-    // Pass `false` from highlightLines() to prevent query string from flashing
-    if (updateQueryString === true) {
-        updateLinesQueryString();
     }
 }
 
