@@ -107,8 +107,7 @@ function unhighlightLine (doc, line) {
  *          and `false` if a line was unhighlighted.
  */
 function toggleHighlightLine (doc, line) {
-    const lineInfo = editor.lineInfo(line);
-    if (lineInfo.bgClass === HIGHLIGHT_CLASS) {
+    if (isLineHighlighted(line)) {
         unhighlightLine(doc, line);
         return false;
     }
@@ -274,6 +273,25 @@ export function unhighlightAll ({ defer = false } = {}) {
 }
 
 /**
+ * Returns true if a line is highlighted. It does this by checking whether the
+ * line number has the highlight class attached to it. Note that other background
+ * classes may exist (e.g. for active lines).
+ *
+ * @param {Number} line - the line number to check.
+ * @returns {Boolean}
+ */
+function isLineHighlighted (line) {
+    const lineInfo = editor.lineInfo(line);
+
+    // .bgClass may be null
+    if (!lineInfo.bgClass) {
+        return false;
+    }
+
+    return (lineInfo.bgClass.indexOf(HIGHLIGHT_CLASS) >= 0);
+}
+
+/**
  * Gets a string representation of all highlighted lines in the editor.
  * This looks at the editor itself, so it's guaranteed to be the current state
  * of the editor.
@@ -281,12 +299,11 @@ export function unhighlightAll ({ defer = false } = {}) {
  * @returns {String} linenumbers - in the format of '2-5,10,18-20', as
  *          returned by getLineNumberString() function
  */
-export function getAllHighlightedLines () {
+function getAllHighlightedLines () {
     const lineNumbers = [];
 
     for (let i = 0, j = editor.getDoc().lineCount(); i < j; i++) {
-        const lineInfo = editor.lineInfo(i);
-        if (lineInfo.bgClass === HIGHLIGHT_CLASS) {
+        if (isLineHighlighted(i)) {
             lineNumbers.push(i);
         }
     }
