@@ -69,6 +69,12 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
     updateLinesQueryString();
 });
 
+// Editor operations, such as cut, paste, delete, or inserts, can mutate
+// highlighted lines. This will make sure the query string remains updated.
+editor.on('changes', function (cm, changes) {
+    updateLinesQueryString();
+});
+
 /**
  * Highlights a given line in the document.
  *
@@ -297,7 +303,7 @@ export function getAllHighlightedLines () {
  * document.
  *
  */
-function updateLinesQueryString () {
+export function updateLinesQueryString () {
     const locationPrefix = window.location.pathname;
     const queryObj = getQueryStringObject();
     const allHighlightedLines = getAllHighlightedLines();
