@@ -18,8 +18,22 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
         return;
     }
 
+    // The meta (command or control keys) will allow highlighting of
+    // non-sequential lines.
+    if (event.metaKey === true) {
+        const didHighlight = toggleHighlightLine(cm.getDoc(), line);
+
+        if (didHighlight) {
+            anchorLine = line;
+        }
+        else {
+            anchorLine = undefined;
+        }
+
+        updateLinesQueryString();
+    }
     // Shift keys will allow highlighting of multiple lines.
-    if (event.shiftKey === true && anchorLine !== undefined) {
+    else if (event.shiftKey === true && anchorLine !== undefined) {
         if (anchorLine < line) {
             highlightLines(anchorLine, line, false);
         }
@@ -32,21 +46,6 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
 
         // Remember state of how this happened
         manuallyHighlighted = true;
-    }
-    // The meta (command or control keys) will allow highlighting of
-    // non-sequential lines.
-    else if (event.metaKey === true) {
-        highlightLines(line, null, false);
-
-        // If the clicked line is the same as the one before, turn it off.
-        if (line === anchorLine) {
-            unhighlightLine(cm.getDoc(), line);
-            anchorLine = undefined;
-        }
-        else {
-            // Update the anchor line
-            anchorLine = line;
-        }
     }
     // If shift key is not pressed or there is not a previously selected line
     // (which you need to do the whole range) then select one line.
@@ -84,6 +83,27 @@ function highlightLine (doc, line) {
 function unhighlightLine (doc, line) {
     doc.removeLineClass(line, 'gutter', HIGHLIGHT_CLASS);
     doc.removeLineClass(line, 'background', HIGHLIGHT_CLASS);
+}
+
+/**
+ * Toggles the highlight on a given line in the document.
+ *
+ * @param {CodeMirror Doc} doc - The document the line is in.
+ * @param {Number} line - The line number to toggle highlight on.
+ * @returns {Boolean} - a boolean value corresponding to the action
+ *          that was performed. Returns `true` if a line was highlighted,
+ *          and `false` if a line was unhighlighted.
+ */
+function toggleHighlightLine (doc, line) {
+    const lineInfo = editor.lineInfo(line);
+    if (lineInfo.bgClass === HIGHLIGHT_CLASS) {
+        unhighlightLine(doc, line);
+        return false;
+    }
+    else {
+        highlightLine(doc, line);
+        return true;
+    }
 }
 
 /**
@@ -257,6 +277,14 @@ export function unhighlightAll ({ defer = false, updateQueryString = true } = {}
     }
 }
 
+/**
+ * Gets a string representation of all highlighted lines in the editor.
+ * This looks at the editor itself, so it's guaranteed to be the current state
+ * of the editor.
+ *
+ * @returns {String} linenumbers - in the format of '2-5,10,18-20', as
+ *          returned by getLineNumberString() function
+ */
 export function getAllHighlightedLines () {
     const lineNumbers = [];
 
