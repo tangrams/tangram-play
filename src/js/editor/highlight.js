@@ -6,7 +6,6 @@ const HIGHLIGHT_CLASS = 'editor-highlight';
 
 let anchorLine;
 let targetLine;
-let manuallyHighlighted = false;
 
 editor.on('gutterClick', function (cm, line, gutter, event) {
     // Do work when the click occurs for the left (or main) mouse button only
@@ -42,7 +41,6 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
 
         // Remember state of how this happened
         targetLine = line;
-        manuallyHighlighted = true;
     }
     // If shift key is not pressed or there is not a previously selected line
     // (which you need to do the whole range) then select one line.
@@ -58,7 +56,6 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
         else {
             highlightLine(cm.getDoc(), line);
             anchorLine = line;
-            manuallyHighlighted = true;
         }
 
         // Reset
@@ -250,21 +247,12 @@ export function highlightBlock (node) {
     // Reset
     anchorLine = undefined;
     targetLine = undefined;
-    manuallyHighlighted = false;
 }
 
 /**
  * Removes highlights from all lines in the document.
- *
- * @param {Boolean} defer - Optional. Default is false. If `true`, then this
- *          function does not unhighlight any lines if the current highlighting
- *          was created by a user clicking on the gutters.
  */
-export function unhighlightAll ({ defer = false } = {}) {
-    if (defer === true) {
-        return;
-    }
-
+function unhighlightAll () {
     const doc = editor.getDoc();
 
     for (let i = 0, j = doc.lineCount(); i <= j; i++) {
