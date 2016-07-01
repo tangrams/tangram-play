@@ -3,6 +3,7 @@ import { editor } from '../editor/editor';
 import ColorPicker from '../pickers/color';
 import { toCSS } from '../tools/common';
 import { jumpToLine } from '../editor/codemirror/tools';
+import { EventEmitter } from '../components/event-emitter';
 
 export default class ColorPalette {
     constructor () {
@@ -11,12 +12,8 @@ export default class ColorPalette {
         this.palette.className = 'colorpalette';
         document.body.appendChild(this.palette);
 
-        TangramPlay.on('widget_marks_created', (args) => {
-            TangramPlay.addons.colorPalette.update(args);
-        });
-
-        // TODO: This might not be triggered anywhere. Update or fix.
-        TangramPlay.on('widget_updated', (args) => {
+        // Receive events when new widget markers are created
+        EventEmitter.subscribe('widget_marks_created', (args) => {
             TangramPlay.addons.colorPalette.update(args);
         });
 

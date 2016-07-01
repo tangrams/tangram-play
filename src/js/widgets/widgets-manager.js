@@ -1,5 +1,5 @@
 import { editor } from '../editor/editor';
-import TangramPlay from '../tangram-play';
+import { EventEmitter } from '../components/event-emitter';
 
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -191,7 +191,6 @@ function insertMarks (fromLine, toLine) {
     }
 
     // Trigger an event for created widgets - this is picked up by the color palette
-    TangramPlay.trigger('widget_marks_created', { widgets: newWidgets });
 
     // let test = document.getElementById('react-color0');
     let test = document.getElementsByClassName('widget-parent');
@@ -203,4 +202,5 @@ function insertMarks (fromLine, toLine) {
         }
     }
     // ReactDOM.render(<WidgetColorPicker />, test);
+    EventEmitter.dispatch('widget_marks_created', { widgets: newWidgets });
 }
