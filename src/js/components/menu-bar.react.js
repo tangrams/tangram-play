@@ -15,7 +15,7 @@ import { openURLModal } from '../modals/modal.open-url';
 import { openGistModal } from '../modals/modal.open-gist';
 import { saveGistModal } from '../modals/modal.save-gist';
 import { aboutModal } from '../modals/modal.about';
-import { toggleFullscreen } from '../tools/ui/fullscreen';
+import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/map';
 import { setGlobalIntrospection } from '../map/inspection';
 

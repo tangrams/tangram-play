@@ -36,8 +36,9 @@ import { parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightLines } from './editor/highlight';
 
 // Import UI elements
-import { initDivider } from './tools/ui/divider';
-import './file/drop';
+// Import UI elements
+import { initDivider } from './ui/divider';
+// import './ui/tooltip';
 
 const query = getQueryStringObject();
 
@@ -431,7 +432,11 @@ var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
+<<<<<<< HEAD
 import WidgetColorPicker from './components/widget-color-picker.react';
+=======
+import FileDrop from './file/drop';
+>>>>>>> fcb67f3496bdc57f3fca9561eb0c055b6d929f0c
 
 let mountNode1 = document.getElementById('menu-bar');
 ReactDOM.render(<MenuBar />, mountNode1);
@@ -439,6 +444,7 @@ ReactDOM.render(<MenuBar />, mountNode1);
 let mountNode2 = document.getElementById('map-panel');
 ReactDOM.render(<MapPanel />, mountNode2);
 
+<<<<<<< HEAD
 /*
 document.addEventListener("DOMContentLoaded", function(event) {
     // let colorpicker1 = document.getElementsByClassName('widget-colorpicker')    ;
@@ -460,3 +466,7 @@ setTimeout( function() {
     ReactDOM.render(<WidgetColorPicker />, test);
 } ,5000);
 */
+=======
+let mountNode3 = document.getElementById('filedrop');
+ReactDOM.render(<FileDrop />, mountNode3);
+>>>>>>> fcb67f3496bdc57f3fca9561eb0c055b6d929f0c
