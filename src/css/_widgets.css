@@ -25,7 +25,7 @@
     max-height: 14px;
     width: 1em;
     height: 1em;
-    background-color: white;
+    /*background-color: white;*/
     cursor: pointer;
     /* position override */
     vertical-align: middle;

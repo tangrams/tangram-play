@@ -36,7 +36,7 @@ import { parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightLines } from './editor/highlight';
 
 // Import UI elements
-import { initDivider } from './ui/divider';
+import { initDivider } from './tools/ui/divider';
 import './file/drop';
 
 const query = getQueryStringObject();

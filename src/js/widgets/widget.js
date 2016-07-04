@@ -14,18 +14,13 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 import WidgetColorPicker from '../components/widget-color-picker.react';
 
-
 export default class Widget {
     constructor (node) {
-        console.log(node);
+        // console.log(node);
         this.node = node;
         this.definition = node.widgetMark;
         this.type = node.widgetMark.type;
         this.el = this.createEl(node);
-        // console.log("this el is:");
-        // console.log(this.el);
-        // console.log("THE TYPE I GET IS");
-        // console.log(def.type);
     }
 
     /**
@@ -60,6 +55,51 @@ export default class Widget {
 
 
         // return document.createDocumentFragment();
+    }
+
+    insert (lineNumber) {
+        this.updateNodeReference(lineNumber);
+
+        const doc = editor.getDoc();
+
+        // Update line number because
+        if (lineNumber) {
+            this.node.range.to.line = lineNumber;
+            this.node.range.from.line = lineNumber;
+        }
+
+        // Do not insert if another bookmark is already inserted at this point
+        const otherMarks = doc.findMarksAt(this.node.range.to);
+        let otherBookmarkFound = false;
+        for (let mark of otherMarks) {
+            // Must match this type. Other marks, like the CodeMirror's
+            // matching brackets add-on, creates a TextMarker of type `range`,
+            // and we want to make sure widget bookmarks are added even other
+            // mark types are present.
+            if (mark.type === 'bookmark') {
+                otherBookmarkFound = true;
+                break;
+            }
+        }
+        if (otherBookmarkFound === true) {
+            return false;
+        }
+
+        // inserts the widget into CodeMirror DOM
+        this.bookmark = doc.setBookmark(this.node.range.to, {
+            widget: this.el, // inserted DOM element into position
+            insertLeft: true,
+            clearWhenEmpty: true,
+            handleMouseEvents: false
+        });
+        this.bookmark.widget = this;
+
+        if(this.type === 'color'){
+            console.log("created color");
+            ReactDOM.render(<WidgetColorPicker node={this.node} bookmark={this.bookmark}/>, this.el);
+        }
+
+        return true;
     }
 
     updateNodeReference (lineNumber) {
@@ -102,50 +142,7 @@ export default class Widget {
         this.value = this.value;
     }
 
-    insert (lineNumber) {
-        this.updateNodeReference(lineNumber);
 
-        const doc = editor.getDoc();
-
-        // Update line number because
-        if (lineNumber) {
-            this.node.range.to.line = lineNumber;
-            this.node.range.from.line = lineNumber;
-        }
-
-        // Do not insert if another bookmark is already inserted at this point
-        const otherMarks = doc.findMarksAt(this.node.range.to);
-        let otherBookmarkFound = false;
-        for (let mark of otherMarks) {
-            // Must match this type. Other marks, like the CodeMirror's
-            // matching brackets add-on, creates a TextMarker of type `range`,
-            // and we want to make sure widget bookmarks are added even other
-            // mark types are present.
-            if (mark.type === 'bookmark') {
-                otherBookmarkFound = true;
-                break;
-            }
-        }
-        if (otherBookmarkFound === true) {
-            return false;
-        }
-
-        // inserts the widget into CodeMirror DOM
-        this.bookmark = doc.setBookmark(this.node.range.to, {
-            widget: this.el, // inserted DOM element into position
-            insertLeft: true,
-            clearWhenEmpty: true,
-            handleMouseEvents: false
-        });
-        this.bookmark.widget = this;
-
-        if(this.type === 'color'){
-            console.log("created color");
-            ReactDOM.render(<WidgetColorPicker />, this.el);
-        }
-
-        return true;
-    }
 
     /**
      *  Use this property from outside the module (usually by)

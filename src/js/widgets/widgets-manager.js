@@ -1,6 +1,8 @@
 import { editor } from '../editor/editor';
 import { EventEmitter } from '../components/event-emitter';
 
+import Widget from './widget';
+
 /**
  * Initializes widget marks in the current editor viewport and adds event
  * listeners to handle new marks that need to be created as the editor content
@@ -179,9 +181,6 @@ function insertMarks (fromLine, toLine) {
             if (node.widgetMark && lineHandle.text.trim() !== '') {
                 const lineNumber = doc.getLineNumber(lineHandle);
                 const widget = new Widget(node);
-                // const widget = node.widgetMarkConstructor.create(node);
-                // console.log("Heres a widget " );
-                // console.log(widget);
                 if (widget.insert(lineNumber)) {
                     newWidgets.push(widget);
                 }
