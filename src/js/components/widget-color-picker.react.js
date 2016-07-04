@@ -23,9 +23,12 @@ export default class WidgetColorPicker extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
-        console.log(this.state.color);
-        console.log(this.props.node);
-        console.log(this.props.bookmark);
+        this.node = this.props.node;
+        this.bookmark = this.props.bookmark;
+
+        // console.log(this.state.color);
+        // console.log(this.node);
+        // console.log(this.bookmark);
     }
 
   handleClick ()  {
@@ -33,15 +36,19 @@ export default class WidgetColorPicker extends React.Component {
   }
 
   handleChange (color) {
+    //   console.log("handling change:")
+    //   console.log(color);
     this.setState({ color: color.rgb });
-    // let test = '[' + this.state.color.r/1000 + ',' + this.state.color.g/1000 + ',' + this.state.color.b/1000 + ',' + this.state.color.a/1000 + ']';
+    let test = '[' + color.rgb.r/1000 + ', ' + color.rgb.g/1000 + ', ' + color.rgb.b/1000 + ']';
+    // console.log("printing test");
+    // console.log(color.rgb);
     // console.log(test);
     // let currentcolor = '\''+this.state.color+'\'';
     // console.log(currentcolor);
 
-    let test2 = ColorConverter.rgb2vec(this.state.color);
-    console.log(test2);
-    this.setEditorValue(test2);
+    // let test2 = ColorConverter.rgb2vec(this.state.color);
+    // console.log(test2);
+    this.setEditorValue(test);
   }
 
   /**
@@ -51,8 +58,17 @@ export default class WidgetColorPicker extends React.Component {
   setEditorValue (string) {
     //   this.updateNodeReference(); //Why do we have to do this?
 
-      // Send the value to editor
-      setNodeValue(this.props.node, string, '+value_change');
+    console.log(this.bookmark);
+    this.bookmark.widget.node.value = string;
+
+    //   Send the value to editor
+    //   console.log("NODE REACT HAS Before setting value:");
+    //   console.log(this.node);
+        // this.node.value = string;
+    //   console.log("NODE REACT HAS:");
+    //   console.log(this.node);
+    console.log("setting node value: " + string);
+    setNodeValue(this.node, string, '+value_change');
 
       // Change the value attached to this widget instance
     //   this.node.value = string;

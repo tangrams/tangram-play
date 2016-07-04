@@ -18,6 +18,8 @@ export default class Widget {
     constructor (node) {
         // console.log(node);
         this.node = node;
+        // console.log("NODE WIDGET HAS:");
+        // console.log(this.node);
         this.definition = node.widgetMark;
         this.type = node.widgetMark.type;
         this.el = this.createEl(node);
@@ -95,7 +97,7 @@ export default class Widget {
         this.bookmark.widget = this;
 
         if(this.type === 'color'){
-            console.log("created color");
+            // console.log("created color");
             ReactDOM.render(<WidgetColorPicker node={this.node} bookmark={this.bookmark}/>, this.el);
         }
 
@@ -163,7 +165,7 @@ export default class Widget {
      *  back to the Tangram Play editor.
      */
     setEditorValue (string) {
-        this.updateNodeReference();
+        this.updateNodeReference(); //Why do we have to do this?
 
         // Send the value to editor
         setNodeValue(this.node, string, '+value_change');
