@@ -2,7 +2,6 @@ import _ from 'lodash';
 import TANGRAM_API from '../../tangram-api.json';
 import { isEmptyString } from '../../tools/helpers';
 
-
 export class WidgetMark {
     constructor (datum) {
         // Widgets exist for different types of Tangram scene syntax.
@@ -40,9 +39,6 @@ export class WidgetMark {
         }
     }
 }
-
-
-
 
 // Only certain types of values in Tangram syntax will have widgets, so
 // filter out all other ones.

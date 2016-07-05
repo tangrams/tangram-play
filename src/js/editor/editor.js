@@ -160,8 +160,6 @@ export function setNodeValue (node, value, origin) {
     //               | | `--- + 1
     //  range.from.ch  key.length
 
-    node.value = value ;
-    console.log(node);
     const fromPos = {
         line: node.range.from.line,
         // Magic number: 2 refers to the colon + space between key and value
@@ -169,9 +167,5 @@ export function setNodeValue (node, value, origin) {
     };
     const toPos = node.range.to;
 
-    console.log("value: " + value);
-    console.log("fromPos: " + JSON.stringify(fromPos));
-    console.log("toPos: " + JSON.stringify(toPos));
-    console.log("origin: " + origin);
     doc.replaceRange(value, fromPos, toPos, origin);
 }

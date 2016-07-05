@@ -133,7 +133,3 @@ input.widget-toggle {
           padding: 0px;
           background-color: var(--ui-component-color);
 }
-
-#color-picker + div {
-    background: var(--ui-component-color) !important;
-}

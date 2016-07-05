@@ -172,7 +172,6 @@ function insertMarks (fromLine, toLine) {
             continue;
         }
 
-        //What does WidgetMarkConstructor do?
         for (let node of nodes) {
             // See if there's a widget constructor attached to it, and
             // if so, we create it and insert it into the document.

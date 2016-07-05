@@ -42,9 +42,6 @@ export default class ColorConverter {
     }
 
     static rgb2vec (rgb) {
-        console.log("within rgb2vec");
-        console.log(rgb);
-
         return {
             v: rgb.r / valueRanges.rgb.r[1],
             e: rgb.g / valueRanges.rgb.g[1],

@@ -16,10 +16,7 @@ import WidgetColorPicker from '../components/widget-color-picker.react';
 
 export default class Widget {
     constructor (node) {
-        // console.log(node);
         this.node = node;
-        // console.log("NODE WIDGET HAS:");
-        // console.log(this.node);
         this.definition = node.widgetMark;
         this.type = node.widgetMark.type;
         this.el = this.createEl(node);
@@ -54,8 +51,6 @@ export default class Widget {
         }
 
         return el;
-
-
         // return document.createDocumentFragment();
     }
 
@@ -96,8 +91,7 @@ export default class Widget {
         });
         this.bookmark.widget = this;
 
-        if(this.type === 'color'){
-            // console.log("created color");
+        if (this.type === 'color') {
             ReactDOM.render(<WidgetColorPicker node={this.node} bookmark={this.bookmark}/>, this.el);
         }
 
@@ -144,8 +138,6 @@ export default class Widget {
         this.value = this.value;
     }
 
-
-
     /**
      *  Use this property from outside the module (usually by)
      *  the WidgetManager to set a value inside the module.
@@ -165,7 +157,7 @@ export default class Widget {
      *  back to the Tangram Play editor.
      */
     setEditorValue (string) {
-        this.updateNodeReference(); //Why do we have to do this?
+        this.updateNodeReference(); // Why do we have to do this?
 
         // Send the value to editor
         setNodeValue(this.node, string, '+value_change');
