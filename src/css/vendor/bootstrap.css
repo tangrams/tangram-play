@@ -2764,16 +2764,16 @@ select[multiple].input-lg {
 .input-lg + .form-control-feedback,
 .input-group-lg + .form-control-feedback,
 .form-group-lg .form-control + .form-control-feedback {
-  width: 46px;
+  /*width: 46px;
   height: 46px;
-  line-height: 46px;
+  line-height: 46px;*/
 }
 .input-sm + .form-control-feedback,
 .input-group-sm + .form-control-feedback,
 .form-group-sm .form-control + .form-control-feedback {
-  width: 30px;
+  /*width: 30px;
   height: 30px;
-  line-height: 30px;
+  line-height: 30px;*/
 }
 .has-success .help-block,
 .has-success .control-label,
@@ -3556,7 +3556,7 @@ tbody.collapse.in {
   content: "";
   border-top: 0;
   border-bottom: 4px dashed;
-  border-bottom: 4px solid \9;
+  border-bottom: 4px solid;
 }
 .dropup .dropdown-menu,
 .navbar-fixed-bottom .dropdown .dropdown-menu {
@@ -5987,7 +5987,7 @@ button.close {
 .popover.top > .arrow:after {
   bottom: 1px;
   margin-left: -10px;
-  content: " ";
+  content: "";
   border-top-color: #fff;
   border-bottom-width: 0;
 }

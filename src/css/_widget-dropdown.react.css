@@ -18,8 +18,7 @@
     color: white;
     border: none;
     height: 20px;
-    margin-right: 10px;
-    width: 18px;
+    width: 16px; /* Remove width to get full dropdown to appear */
 }
 
 .widget-dropdown option {
