@@ -2527,9 +2527,8 @@ output {
   color: #555;
 }
 .form-control {
-  display: block;
+  /*display: block;*/
   width: 100%;
-  height: 34px;
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.42857143;
@@ -2605,9 +2604,6 @@ input[type="search"] {
   .input-group-lg input[type="month"] {
     line-height: 46px;
   }
-}
-.form-group {
-  margin-bottom: 15px;
 }
 .radio,
 .checkbox {
