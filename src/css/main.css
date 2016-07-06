@@ -23,7 +23,7 @@
 
 /* + Menu */
 @import '_filedrop';
-@import '_tooltip';
+@import '_tooltip.react';
 @import '_modals';
 @import '_modals.examples';
 @import '_modals.open-gist';

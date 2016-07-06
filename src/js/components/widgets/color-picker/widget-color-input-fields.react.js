@@ -5,7 +5,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { EditableInput } from 'react-color/lib/components/common';
 import color from 'react-color/lib/helpers/color';
 
-export default class ColorPickerInputFields extends React.Component {
+export default class WidgetColorInputFields extends React.Component {
     shouldComponentUpdate () {
         return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
@@ -71,7 +71,7 @@ export default class ColorPickerInputFields extends React.Component {
 /**
  * Prop validation required by React
  */
-ColorPickerInputFields.propTypes = {
+WidgetColorInputFields.propTypes = {
     rgb: React.PropTypes.object,
     hsl: React.PropTypes.object,
     hex: React.PropTypes.string,

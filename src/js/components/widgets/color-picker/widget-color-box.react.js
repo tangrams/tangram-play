@@ -4,9 +4,9 @@ import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { CustomPicker } from 'react-color';
 import { Hue, Alpha, Saturation } from 'react-color/lib/components/common';
-import ColorPickerInputFields from './color-picker-input-fields.react';
+import WidgetColorInputFields from './widget-color-input-fields.react';
 
-class ColorPickerBox extends React.Component {
+class WidgetColorBox extends React.Component {
     constructor (props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
@@ -40,7 +40,7 @@ class ColorPickerBox extends React.Component {
                     </div>
                 </div>
                 <div className='fields'>
-                    <ColorPickerInputFields {...this.props} onChange={ this.handleChange } />
+                    <WidgetColorInputFields {...this.props} onChange={ this.handleChange } />
                 </div>
             </div>
         );
@@ -50,9 +50,9 @@ class ColorPickerBox extends React.Component {
 /**
  * Prop validation required by React
  */
-ColorPickerBox.propTypes = {
+WidgetColorBox.propTypes = {
     rgb: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
 
-export default CustomPicker(ColorPickerBox);
+export default CustomPicker(WidgetColorBox);
