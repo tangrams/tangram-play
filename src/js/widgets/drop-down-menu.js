@@ -1,3 +1,4 @@
+/*
 import { tangramLayer } from '../map/map';
 import Widget from './widget';
 import { getAddressSceneContent } from '../editor/codemirror/yaml-tangram';
@@ -57,3 +58,4 @@ export default class DropDownMenu extends Widget {
         return el;
     }
 }
+*/

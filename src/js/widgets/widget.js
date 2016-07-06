@@ -12,7 +12,7 @@ import { parseYamlString } from '../editor/codemirror/yaml-tangram';
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-import WidgetColor from '../components/widgets/color-picker/widget-color.react';
+import WidgetColor from '../components/widgets/widget-color/widget-color.react';
 import WidgetDropdown from '../components/widgets/widget-dropdown.react';
 
 export default class Widget {
