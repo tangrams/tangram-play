@@ -1,0 +1,177 @@
+/* Widget menu bar */
+
+.drag {
+    background-color: var(--ui-component-color);
+    cursor: move;
+    height: 20px;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.widget-exit {
+    padding: 0;
+    background-color: transparent;
+    outline: none;
+    border-color: transparent;
+    border: transparent;
+    padding-right: 14px;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+}
+
+.widget-exit:hover {
+    color: yellow;
+}
+
+.widget-exit i {
+    font-size: 8px;
+    font-weight: 600;
+}
+
+/* color-picker.react */
+
+.widget-colorpicker {
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    max-width: 14px;
+    max-height: 14px;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: -0.15em;
+}
+
+/* color-picker-box.react */
+
+.picker {
+    width: 220px;
+    padding: 14px;
+    box-sizing: initial;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+    background-color: var(--ui-element-color);
+}
+
+.saturation {
+    width: 100%;
+    padding-bottom: 75%;
+    position: relative;
+    overflow: hidden;
+}
+
+.saturation2 {
+    radius: 3px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.controls {
+    display: flex;
+}
+
+.sliders {
+    padding: 4px 0;
+    flex: 1;
+}
+
+.color {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    margin-top: 4px;
+    margin-left: 4px;
+}
+
+.activeColor {
+    width: 100%;
+    height: 100%;
+}
+
+.hue {
+    position: relative;
+    height: 10px;
+    overflow: hidden;
+}
+
+.hue2 {
+    radius: 2px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.alpha {
+    position: relative;
+    height: 10px;
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.alpha2 {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* color-picker-input-fields.react */
+
+.fields {
+    display: flex;
+    padding-top: 4px;
+}
+
+.single {
+    flex: 1;
+    padding-left: 3px;
+}
+
+.alpha3 {
+    flex: 1;
+    padding-left: 6px;
+}
+
+.double {
+    flex: 2;
+}
+
+.picker input {
+    width: 80%;
+    padding: 4px 8% 3px;
+    border: none;
+    outline: none;
+    background-color: #55575a;
+    text-align: center;
+    font-size: 12px;
+}
+
+.label {
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    color: #222;
+    padding-top: 3px;
+    padding-bottom: 4px;
+    text-transform: capitalize;
+}
+
+.single div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.single span {
+    font-size: 14px;
+}
+
+.modal-content {
+    margin-top: 0;
+}
+
+.modal input:focus {
+    box-shadow: none;
+}
+
+/* shared */
+
+.flexbox-fix {
+    display: flex;
+}

@@ -4,9 +4,9 @@ import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { CustomPicker } from 'react-color';
 import { Hue, Alpha, Saturation } from 'react-color/lib/components/common';
-import SketchFields from './sketch-fields.react';
+import ColorPickerInputFields from './color-picker-input-fields.react';
 
-class SketchPicker extends React.Component {
+class ColorPickerBox extends React.Component {
     constructor (props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
@@ -40,7 +40,7 @@ class SketchPicker extends React.Component {
                     </div>
                 </div>
                 <div className='fields'>
-                    <SketchFields {...this.props} onChange={ this.handleChange } />
+                    <ColorPickerInputFields {...this.props} onChange={ this.handleChange } />
                 </div>
             </div>
         );
@@ -50,9 +50,9 @@ class SketchPicker extends React.Component {
 /**
  * Prop validation required by React
  */
-SketchPicker.propTypes = {
+ColorPickerBox.propTypes = {
     rgb: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
 
-export default CustomPicker(SketchPicker);
+export default CustomPicker(ColorPickerBox);

@@ -56,7 +56,7 @@
 @import '_menu-bar.react';
 @import '_map-panel.react';
 @import '_map-panel-search-bookmarks.react';
-@import '_widget-color-picker.react';
+@import '_color-picker.react';
 
 /* VARIABLES */
 

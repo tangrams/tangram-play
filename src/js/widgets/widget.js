@@ -12,7 +12,7 @@ import { parseYamlString } from '../editor/codemirror/yaml-tangram';
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-import WidgetColorPicker from '../components/widget-color-picker.react';
+import ColorPicker from '../components/widgets/color-picker/color-picker.react';
 
 export default class Widget {
     constructor (node) {
@@ -92,7 +92,7 @@ export default class Widget {
         this.bookmark.widget = this;
 
         if (this.type === 'color') {
-            ReactDOM.render(<WidgetColorPicker node={this.node} bookmark={this.bookmark}/>, this.el);
+            ReactDOM.render(<ColorPicker node={this.node} bookmark={this.bookmark}/>, this.el);
         }
 
         return true;

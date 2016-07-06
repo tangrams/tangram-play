@@ -16,22 +16,6 @@
     margin-bottom: 0;
 }
 
-.widget-colorpicker {
-    box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    /* Adjustable size based on editor font size */
-    max-width: 14px;
-    max-height: 14px;
-    width: 1em;
-    height: 1em;
-    /*background-color: white;*/
-    cursor: pointer;
-    /* position override */
-    vertical-align: middle;
-    margin-top: -0.15em;
-}
-
 .widget-vector {
     border: 1px solid rgba(255, 255, 255, 0.15);
     width: 14px;
@@ -115,7 +99,7 @@ input.widget-toggle {
 
 .widget-parent {
     display: inline-flex;
-    background-color:none;
+    background-color: none;
     display: inline-block;
     position: relative;
     box-sizing: border-box;
@@ -123,13 +107,12 @@ input.widget-toggle {
 }
 
 .widget-modal {
-          /*position: absolute;*/
-          z-index: var(--z09-overlay);
-          outline: none;
-          margin-top:47px;
-          box-shadow: var(--modal-shadow);
-          width: auto;
-          display: inline-flex !important;
-          padding: 0px;
-          background-color: var(--ui-component-color);
+    z-index: var(--z09-overlay);
+    outline: none;
+    margin-top: 47px;
+    box-shadow: var(--modal-shadow);
+    width: auto;
+    display: inline-flex !important;
+    padding: 0;
+    background-color: var(--ui-component-color);
 }

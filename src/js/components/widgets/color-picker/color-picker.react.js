@@ -1,17 +1,17 @@
 import React from 'react';
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
-import DraggableModal from './draggable-modal.react.js';
-import SketchPicker from './widget-color-picker/sketch-picker.react';
-import Icon from './icon.react';
+import DraggableModal from '../../draggable-modal.react.js';
+import Icon from '../../icon.react';
+import ColorPickerBox from './color-picker-box.react';
 
-import { setNodeValue } from '../editor/editor';
-import ColorConverter from '../pickers/types/color-converter';
+import { setNodeValue } from '../../../editor/editor';
+import ColorConverter from '../../../pickers/types/color-converter';
 
 /**
  * Represents a color picker widget
  */
-export default class WidgetColorPicker extends React.Component {
+export default class ColorPicker extends React.Component {
     /**
      * Used to setup the state of the component. Regular ES6 classes do not
      * automatically bind 'this' to the instance, therefore this is the best
@@ -143,7 +143,7 @@ export default class WidgetColorPicker extends React.Component {
                         <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <SketchPicker className={'widget-color-picker'} color={ this.state.color } onChange={ this.handleChange }/>
+                    <ColorPickerBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.handleChange }/>
                 </Modal>
             </div>
         );
@@ -153,7 +153,7 @@ export default class WidgetColorPicker extends React.Component {
 /**
  * Prop validation required by React
  */
-WidgetColorPicker.propTypes = {
+ColorPicker.propTypes = {
     node: React.PropTypes.object,
     bookmark: React.PropTypes.object
 };
