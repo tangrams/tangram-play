@@ -110,8 +110,8 @@ input,
 optgroup,
 select,
 textarea {
-  margin: 0;
-  font: inherit;
+  /*margin: 0;*/
+  /*font: inherit;*/
   color: inherit;
 }
 button {
@@ -1082,9 +1082,7 @@ input,
 button,
 select,
 textarea {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
+
 }
 a {
   color: #337ab7;
@@ -2512,7 +2510,7 @@ input[type="range"] {
 }
 select[multiple],
 select[size] {
-  height: auto;
+  /*height: auto;*/
 }
 input[type="file"]:focus,
 input[type="radio"]:focus,
@@ -2529,9 +2527,6 @@ output {
 .form-control {
   /*display: block;*/
   width: 100%;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.42857143;
   color: #555;
   background-color: #fff;
   background-image: none;
@@ -2668,15 +2663,15 @@ fieldset[disabled] .checkbox label {
   cursor: not-allowed;
 }
 .form-control-static {
-  min-height: 34px;
+  /*min-height: 34px;
   padding-top: 7px;
   padding-bottom: 7px;
-  margin-bottom: 0;
+  margin-bottom: 0;*/
 }
 .form-control-static.input-lg,
 .form-control-static.input-sm {
-  padding-right: 0;
-  padding-left: 0;
+  /*padding-right: 0;
+  padding-left: 0;*/
 }
 .input-sm {
   height: 30px;
@@ -2685,68 +2680,68 @@ fieldset[disabled] .checkbox label {
   line-height: 1.5;
 }
 select.input-sm {
-  height: 30px;
-  line-height: 30px;
+  /*height: 30px;
+  line-height: 30px;*/
 }
 textarea.input-sm,
 select[multiple].input-sm {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-sm .form-control {
-  height: 30px;
+  /*height: 30px;
   padding: 5px 10px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.5;*/
 }
 .form-group-sm select.form-control {
-  height: 30px;
-  line-height: 30px;
+  /*height: 30px;
+  line-height: 30px;*/
 }
 .form-group-sm textarea.form-control,
 .form-group-sm select[multiple].form-control {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-sm .form-control-static {
-  height: 30px;
+  /*height: 30px;
   min-height: 32px;
   padding: 6px 10px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.5;*/
 }
 .input-lg {
-  height: 46px;
+  /*height: 46px;
   padding: 10px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 select.input-lg {
-  height: 46px;
-  line-height: 46px;
+  /*height: 46px;
+  line-height: 46px;*/
 }
 textarea.input-lg,
 select[multiple].input-lg {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-lg .form-control {
-  height: 46px;
+  /*height: 46px;
   padding: 10px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 .form-group-lg select.form-control {
-  height: 46px;
-  line-height: 46px;
+  /*height: 46px;
+  line-height: 46px;*/
 }
 .form-group-lg textarea.form-control,
 .form-group-lg select[multiple].form-control {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-lg .form-control-static {
-  height: 46px;
+  /*height: 46px;
   min-height: 38px;
   padding: 11px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 .has-feedback {
   position: relative;
@@ -3768,16 +3763,16 @@ tbody.collapse.in {
 .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
-  height: 46px;
+  /*height: 46px;
   padding: 10px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 select.input-group-lg > .form-control,
 select.input-group-lg > .input-group-addon,
 select.input-group-lg > .input-group-btn > .btn {
-  height: 46px;
-  line-height: 46px;
+  /*height: 46px;
+  line-height: 46px;*/
 }
 textarea.input-group-lg > .form-control,
 textarea.input-group-lg > .input-group-addon,
@@ -3785,21 +3780,21 @@ textarea.input-group-lg > .input-group-btn > .btn,
 select[multiple].input-group-lg > .form-control,
 select[multiple].input-group-lg > .input-group-addon,
 select[multiple].input-group-lg > .input-group-btn > .btn {
-  height: auto;
+  /*height: auto;*/
 }
 .input-group-sm > .form-control,
 .input-group-sm > .input-group-addon,
 .input-group-sm > .input-group-btn > .btn {
-  height: 30px;
+  /*height: 30px;
   padding: 5px 10px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.5;*/
 }
 select.input-group-sm > .form-control,
 select.input-group-sm > .input-group-addon,
 select.input-group-sm > .input-group-btn > .btn {
-  height: 30px;
-  line-height: 30px;
+  /*height: 30px;
+  line-height: 30px;*/
 }
 textarea.input-group-sm > .form-control,
 textarea.input-group-sm > .input-group-addon,
@@ -3807,7 +3802,7 @@ textarea.input-group-sm > .input-group-btn > .btn,
 select[multiple].input-group-sm > .form-control,
 select[multiple].input-group-sm > .input-group-addon,
 select[multiple].input-group-sm > .input-group-btn > .btn {
-  height: auto;
+  /*height: auto;*/
 }
 .input-group-addon,
 .input-group-btn,

@@ -1,5 +1,35 @@
 .widget-dropdown {
     display: inline-block;
     position: relative;
+    font-weight: 500;
+    margin-left: 10px;
+    margin-right: 10px;
+    outline: none;
+    border-radius: 0;
+}
+
+.widget-dropdown select {
+    font-family: var(--font-family);
+    font-size: 100%;
+    font-weight: 400;
+    outline: none;
+    border-radius: 0;
+    background-color: #55575a;
+    color: white;
+    border: none;
     height: 22px;
+    margin-right: 10px;
+}
+
+.widget-dropdown option {
+    outline: none;
+    margin-left: 20px;
+    background-color: #55575a;
+    color: white;
+}
+
+.form-control:focus {
+    border-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
 }

@@ -89,7 +89,7 @@ export default class WidgetDropdown extends React.Component {
         return (
             <FormGroup className='widget-dropdown' controlId='widget-form-dropdown'>
                 <FormControl componentClass='select' placeholder='select' onChange={this.handleChange}>
-                    <option value='--select--'>--select--</option>
+                    <option value='--select--'>-- select --</option>
                     {this.state.options.map(function (result, i) {
                         return <option key={i} value={result}>{result}</option>;
                     })}
