@@ -1,7 +1,7 @@
 .widget-dropdown {
     display: inline-block;
     position: relative;
-    font-weight: 500;
+    font-weight: 400;
     margin-left: 10px;
     margin-right: 10px;
     outline: none;
@@ -14,18 +14,17 @@
     font-weight: 400;
     outline: none;
     border-radius: 0;
-    background-color: #55575a;
+    background-color: #5e6064;
     color: white;
     border: none;
-    height: 22px;
+    height: 20px;
     margin-right: 10px;
+    width: 18px;
 }
 
 .widget-dropdown option {
     outline: none;
     margin-left: 20px;
-    background-color: #55575a;
-    color: white;
 }
 
 .form-control:focus {
