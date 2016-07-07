@@ -17,7 +17,7 @@ import { editor, getEditorContent, setEditorContent, getNodesOfLine } from './ed
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
-import { initWidgetMarks } from './widgets/widgets-manager';
+// import { initWidgetMarks } from './widgets/widgets-manager';
 import ErrorModal from './modals/modal.error';
 import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
@@ -86,7 +86,7 @@ class TangramPlay {
                 }
 
                 // Add widgets marks.
-                initWidgetMarks();
+                // initWidgetMarks(); // Only change to remove widgets
 
                 // Things we do after Tangram is finished initializing
                 tangramLayer.scene.initializing.then(() => {
@@ -427,6 +427,8 @@ window.tangramPlay = tangramPlay;
 
 /* ********************************* REACT ********************************* */
 
+/*
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -449,3 +451,5 @@ if (window.location.hash) {
         ReactDOM.render(<MapPanel />, mountNode2);
     }
 }
+
+*/

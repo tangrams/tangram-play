@@ -3,7 +3,8 @@
 .workspace-container {
     position: absolute;
     height: 100%;
-    top: 44px;
+    /* top: 44px; */ /* Only change for tangram tutorial */
+    top: 0;
     left: 0;
     width: 100%;
     bottom: 0;
