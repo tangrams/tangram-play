@@ -58,6 +58,7 @@
 @import '_map-panel-search-bookmarks.react';
 @import '_widget-color.react';
 @import '_widget-dropdown.react';
+@import '_widget-vector.react';
 
 /* VARIABLES */
 

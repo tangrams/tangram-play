@@ -16,6 +16,7 @@
     margin-bottom: 0;
 }
 
+/*
 .widget-vector {
     border: 1px solid rgba(255, 255, 255, 0.15);
     width: 14px;
@@ -23,10 +24,10 @@
     box-sizing: border-box;
     background-color: var(--ui-element-color);
     cursor: pointer;
-    /* position override */
     vertical-align: middle;
-    /* text-align: center; */
+    text-align: center;
 }
+
 
 .widget-vector-text {
     position: relative;
@@ -35,11 +36,12 @@
     font-size: 15px;
     font-weight: 100;
 }
+/*
 
 select.widget-dropdown {
-    /* width: 17px; NTOE THIS IS WEIRD */
     height: 17px;
 }
+*/
 
 input.widget-toggle {
     position: relative;

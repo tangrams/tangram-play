@@ -14,6 +14,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 import WidgetColor from '../components/widgets/widget-color/widget-color.react';
 import WidgetDropdown from '../components/widgets/widget-dropdown.react';
+import WidgetVector from '../components/widgets/widget-vector/widget-vector.react';
 
 export default class Widget {
     constructor (node) {
@@ -97,6 +98,9 @@ export default class Widget {
         }
         else if (this.type === 'string') {
             ReactDOM.render(<WidgetDropdown node={this.node} bookmark={this.bookmark}/>, this.el);
+        }
+        else if (this.type === 'vector') {
+            ReactDOM.render(<WidgetVector node={this.node} bookmark={this.bookmark}/>, this.el);
         }
 
         return true;

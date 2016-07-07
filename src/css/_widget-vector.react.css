@@ -1,0 +1,12 @@
+/* Should probably simplify this for color picker too. just refers to button being clicked to open modal */
+.widget-vectorpicker {
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    max-width: 14px;
+    max-height: 14px;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: -0.15em;
+}
