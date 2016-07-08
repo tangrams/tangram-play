@@ -6,7 +6,7 @@ import Icon from '../../icon.react';
 import { setNodeValue } from '../../../editor/editor';
 
 import THREE from 'three';
-import TrackballControls from './TrackBallControls';
+import TrackballControls from './TrackballControls';
 
 let renderer;
 let scene;
