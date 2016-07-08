@@ -150,7 +150,6 @@ export default class WidgetVector extends React.Component {
      */
     handleClick () {
         this.setState({ displayPicker: !this.state.displayPicker });
-        console.log('click');
     }
 
     /* SHARED METHODS FOR ALL WIDGETS? */
