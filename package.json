@@ -2,7 +2,7 @@
   "name": "tangram-play",
   "version": "0.7.0",
   "description": "GUI editor for Tangram",
-  "main": "index.js",
+  "main": "main.js",
   "private": true,
   "scripts": {
     "start": "gulp serve",
@@ -15,7 +15,8 @@
     "postinstall": "gulp build",
     "examples": "npm run examples:scenes && npm run examples:thumbnails",
     "examples:scenes": "node meta/example-scenes/cache-scenes.js",
-    "examples:thumbnails": "node meta/example-scenes/cache-thumbnails.js"
+    "examples:thumbnails": "node meta/example-scenes/cache-thumbnails.js",
+    "app": "electron ."
   },
   "repository": {
     "type": "git",
@@ -102,6 +103,7 @@
     "babel-polyfill": "6.23.0",
     "clipboard": "1.6.1",
     "codemirror": "5.25.0",
+    "electron": "1.6.2",
     "file-saver": "1.3.3",
     "jszip": "3.1.3",
     "leaflet": "1.0.3",
