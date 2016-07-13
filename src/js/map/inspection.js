@@ -3,7 +3,7 @@ import L from 'leaflet';
 import { map, tangramLayer } from './map';
 import { emptyDOMElement } from '../tools/helpers';
 import TangramPlay from '../tangram-play';
-import { highlightBlock, unhighlightAll } from '../editor/highlight';
+import { highlightBlock } from '../editor/highlight';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
@@ -404,9 +404,6 @@ class TangramInspectionPopup {
             // popup class to provide the Y-position transform.
             event.popup._container.style.transform = null;
             isPopupOpen = false;
-
-            // Remove highlights. Defers to user-generated highlighting, if any.
-            unhighlightAll({ defer: true });
 
             // Clean up events from the map listeners
             map.off('popupclose', onPopupClose);
