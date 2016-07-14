@@ -20,7 +20,6 @@ const ADDRESS_KEY_DELIMITER = ':';
  * @return {mixed} content - Whatever is stored as a value for that key
  */
 export function getAddressSceneContent (tangramScene, address) {
-
     try {
         const keys = getKeysFromAddress(address);
 
@@ -213,6 +212,8 @@ function getInlineNodes (str, nLine) {
         else {
             // check for keypair
             let isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|\[|\]|,|.|\s|#]*)\s*/gm.exec(str.substr(i));
+            // Before fixing inline nodes:
+            // let isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
             if (isNode) {
                 stack[level] = isNode[1];
                 i += isNode[1].length;

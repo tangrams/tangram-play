@@ -134,21 +134,21 @@ export function getNodesInRange (from, to) {
 }
 
 /**
- * Sets a node's value. If a value is prepended with a YAML anchor, the
+ * Sets a bookmark's value. If a value is prepended with a YAML anchor, the
  * anchor is left in place.
  *
  * @public
- * @param {Object} node - An object representing the node whose value changes
+ * @param {Object} bookmark - An object representing the bookmark whose value changes
  * @param {string} value - The new value to set to
- * @param {string} origin - Optional. This should be a string that CodeMirror
- *          uses to understand where a change is coming from. Use CodeMirror's
- *          `+` prefix if you want changes to stack in undo history.
  */
-export function setNodeValue (node, value, origin) {
+export function setCodeMirrorValue (bookmark, value) {
+    let origin = '+value_change';
+    let node = bookmark.widgetInfo;
+
     const doc = editor.getDoc();
 
     // Force a space between the ':' and the value
-    if (node.value === '') {
+    if (value === '') {
         value = ' ' + value;
     }
 
@@ -159,7 +159,6 @@ export function setNodeValue (node, value, origin) {
     //               | |||___ + 1
     //               | | `--- + 1
     //  range.from.ch  key.length
-
     const fromPos = {
         line: node.range.from.line,
         // Magic number: 2 refers to the colon + space between key and value
@@ -167,59 +166,14 @@ export function setNodeValue (node, value, origin) {
     };
     const toPos = node.range.to;
 
-    doc.replaceRange(value, fromPos, toPos, origin);
-}
-
-export function setCodeMirrorValue (bookmark, value) {
-    let origin = '+value_change';
-    let node = bookmark.widgetInfo;
-    // console.log("NEW WORD " + value);
-    // console.log("CHARS " + value.length);
-
-    const doc = editor.getDoc();
-
-    if(value === '') {
-        value = ' ' + value;
-    }
-
-    const fromPos = {
-        line: node.range.from.line,
-        // Magic number: 2 refers to the colon + space between key and value
-        ch: node.range.from.ch + node.key.length + 2 + node.anchor.length
-    };
-    const toPos = node.range.to;
-
-    console.log("SETTING NEW VALUE " + JSON.stringify(fromPos) + " TO " + JSON.stringify(toPos));
-    console.log("\n");
-    console.log(bookmark);
-    console.log(bookmark.lines[0].stateAfter.nodes);
-    for (let test of bookmark.lines[0].stateAfter.nodes) {
-        console.log("FROM: "+ JSON.stringify(test.range.from) + " TO: "+ JSON.stringify(test.range.to));
-    }
-    console.log(bookmark.widgetInfo);
-
-    console.log("NEW VALUE TO SET IS: " + value);
     doc.replaceRange(value, fromPos, toPos, origin);
 
     for (let linenode of bookmark.lines[0].stateAfter.nodes) {
         if (node.address === linenode.address) {
-            console.log("MATCHED");
             bookmark.widgetInfo = linenode;
             break;
         }
     }
-    console.log("\nFINDING MARKS\n");
-    console.log(doc.findMarks(fromPos, toPos));
-    console.log("\n\n");
-
-    console.log(bookmark);
-    console.log(bookmark.lines[0].stateAfter.nodes);
-    for (let test of bookmark.lines[0].stateAfter.nodes) {
-        console.log("FROM: "+ JSON.stringify(test.range.from) + " TO: "+ JSON.stringify(test.range.to));
-    }
-    console.log(bookmark.widgetInfo);
-    console.log("\n\n");
-
 
     return bookmark;
 }

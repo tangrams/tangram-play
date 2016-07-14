@@ -1,7 +1,4 @@
 import { editor } from '../editor/editor';
-import { EventEmitter } from '../components/event-emitter';
-
-import Widget from './widget';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -177,28 +174,24 @@ function isThereMark (to) {
 
     // If there is a mark return true
     for (let mark of otherMarks) {
-        if(mark.type === 'bookmark') {
+        if (mark.type === 'bookmark') {
             return true;
         }
     }
 
     // If there is no mark at this location return false
-    return false ;
+    return false;
 }
-
 
 /**
  *
  * @param {Number} fromLine - The line number to insert from
  * @param {Number} toLine - Optional. The line number to insert to. If not
  *          provided, just the fromLine is checked.
- *
  */
 function insertMarks (fromLine, toLine) {
     // If `to` is not provided, use `from`.
     toLine = (toLine || fromLine);
-
-    // const newWidgets = [];
 
     // For each line in the range, get the line handle, check for nodes,
     // check for widgets, and add or remove them.
@@ -219,10 +212,7 @@ function insertMarks (fromLine, toLine) {
             continue;
         }
 
-        let i = 0;
         for (let node of nodes) {
-            // console.log("\nPRINTING EACH NODE");
-            // console.log(node);
             // See if there's a widget constructor attached to it, and
             // if so, we create it and insert it into the document.
             // Skip blank lines, which may have the state (and widget
@@ -242,7 +232,7 @@ function insertMarks (fromLine, toLine) {
 
                 let mybookmark = {};
 
-                if(!myboolean) {
+                if (!myboolean) {
                     let myel = createEl(mytype);
 
                     // inserts the widget into CodeMirror DOM
@@ -255,10 +245,6 @@ function insertMarks (fromLine, toLine) {
                     // We attach a the node with all the info on the wiget to a property of the bookmark
                     // 'bookmark' becomes parent to property 'widgetInfo' that represents a node
                     mybookmark.widgetInfo = node;
-                    // this.bookmark.widget = this; //inserts a node
-                    //widget + node is extra
-                    //bookmark is part of CodeMirror
-
 
                     if (mytype === 'color') {
                         ReactDOM.render(<WidgetColor bookmark={mybookmark}/>, myel);
@@ -271,15 +257,8 @@ function insertMarks (fromLine, toLine) {
                     }
                 }
             }
-            // else if (!node.widgetMark) {
-            //     let myboolean = isThereMark(node.range.to);
-            //     if(myboolean === true) {
-            //         clearMarks (node.range.from.line) ;
-            //     }
-            // }
         }
     }
-
     // Trigger an event for created widgets - this is picked up by the color palette
     // EventEmitter.dispatch('widget_marks_created', { widgets: newWidgets });
 }
