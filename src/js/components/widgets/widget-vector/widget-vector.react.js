@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
 import DraggableModal from '../../draggable-modal.react.js';
 import Icon from '../../icon.react';
-import { setNodeValue } from '../../../editor/editor';
+import { setCodeMirrorValue } from '../../../editor/editor';
 
 import THREE from 'three';
 import TrackballControls from './TrackballControls';
@@ -31,7 +31,6 @@ export default class WidgetVector extends React.Component {
             displayPicker: false,
         };
 
-        this.node = this.props.node;
         this.bookmark = this.props.bookmark;
 
         this.handleClick = this.handleClick.bind(this);
@@ -158,29 +157,8 @@ export default class WidgetVector extends React.Component {
      *  back to the Tangram Play editor.
      */
     setEditorValue (string) {
-        this.updateNodeReference(); // Why do we have to do this?
-
-        // Send the value to editor
-        setNodeValue(this.node, string, '+value_change');
-
-        // Change the value attached to this widget instance
-        this.node.value = string;
+        this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
-
-    updateNodeReference () {
-        // Update a widget on a single-node line
-        if (this.bookmark) {
-            for (let node of this.bookmark.lines[0].stateAfter.nodes) {
-                if (this.node.address === node.address) {
-                    this.node = node;
-                    break;
-                }
-            }
-        }
-      // There was extra code here that didn't seem to do anything in the widget.js Widget class. It has been deleted
-    }
-
-    /* END: SHARED METHODS FOR ALL WIDGETS? */
 
     render () {
         return (
@@ -205,6 +183,5 @@ export default class WidgetVector extends React.Component {
  * Prop validation required by React
  */
 WidgetVector.propTypes = {
-    node: React.PropTypes.object,
     bookmark: React.PropTypes.object
 };

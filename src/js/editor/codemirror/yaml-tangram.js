@@ -20,6 +20,7 @@ const ADDRESS_KEY_DELIMITER = ':';
  * @return {mixed} content - Whatever is stored as a value for that key
  */
 export function getAddressSceneContent (tangramScene, address) {
+    
     try {
         const keys = getKeysFromAddress(address);
 

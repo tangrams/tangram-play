@@ -2,7 +2,7 @@ import React from 'react';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 
-import { setNodeValue } from '../../editor/editor';
+import { setCodeMirrorValue } from '../../editor/editor';
 import { tangramLayer } from '../../map/map';
 import { getAddressSceneContent } from '../../editor/codemirror/yaml-tangram';
 import _ from 'lodash';
@@ -22,18 +22,17 @@ export default class WidgetDropdown extends React.Component {
         super(props);
 
         this.bookmark = this.props.bookmark;
-        this.node = this.props.node;
-        this.key = this.node.key;
+        this.key = this.bookmark.widgetInfo.key;
         this.value = '';
-        // this.options = this.node.widgetMark.options;
 
         if (this.key !== 'source') {
             this.state = {
-                options: this.node.widgetMark.options
+                options: this.bookmark.widgetInfo.widgetMark.options
             };
         }
         else {
-            let obj = getAddressSceneContent(tangramLayer.scene, this.node.widgetMark.source);
+            let obj = getAddressSceneContent(tangramLayer.scene, this.bookmark.widgetInfo.widgetMark.source);
+            console.log(obj);
             let keys = (obj) ? Object.keys(obj) : {};
 
             // TODO: find out why getAddressSceneContent is returning empty when loading new scene
@@ -49,41 +48,26 @@ export default class WidgetDropdown extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    componentDidMount () {
+        // EventEmitter.subscribe('tangram:sceneinit', this._setLabelPrecision);
+        // EventEmitter.subscribe('tangram:sceneinit', data => {
+        //     this._setZoomLabel();
+        // });
+    }
+
     handleChange (e) {
         this.value = e.target.value;
 
         this.setEditorValue(this.value);
     }
 
-    /* SHARED METHODS FOR ALL WIDGETS? */
     /**
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
     setEditorValue (string) {
-        this.updateNodeReference(); // Why do we have to do this?
-
-        // Send the value to editor
-        setNodeValue(this.node, string, '+value_change');
-
-        // Change the value attached to this widget instance
-        this.node.value = string;
+        this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
-
-    updateNodeReference () {
-        // Update a widget on a single-node line
-        if (this.bookmark) {
-            for (let node of this.bookmark.lines[0].stateAfter.nodes) {
-                if (this.node.address === node.address) {
-                    this.node = node;
-                    break;
-                }
-            }
-        }
-      // There was extra code here that didn't seem to do anything in the widget.js Widget class. It has been deleted
-    }
-
-    /* END: SHARED METHODS FOR ALL WIDGETS? */
 
     render () {
         return (
@@ -103,6 +87,5 @@ export default class WidgetDropdown extends React.Component {
  * Prop validation required by React
  */
 WidgetDropdown.propTypes = {
-    node: React.PropTypes.object,
     bookmark: React.PropTypes.object
 };

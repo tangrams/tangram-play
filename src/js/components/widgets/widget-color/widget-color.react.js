@@ -5,8 +5,9 @@ import DraggableModal from '../../draggable-modal.react.js';
 import Icon from '../../icon.react';
 import WidgetColorBox from './widget-color-box.react';
 
-import { setNodeValue } from '../../../editor/editor';
+import { setCodeMirrorValue } from '../../../editor/editor';
 import ColorConverter from './color-converter';
+
 
 /**
  * Represents a color picker widget
@@ -23,9 +24,10 @@ export default class WidgetColor extends React.Component {
         super(props);
         this.state = {
             displayColorPicker: false,
-            color: this.processUserColor(this.props.node.value)
+            color: this.processUserColor(this.props.bookmark.widgetInfo.value)
+            // node: this.props.node,
+            // bookmark: this.props.bookmark
         };
-        this.node = this.props.node;
         this.bookmark = this.props.bookmark;
 
         this.handleClick = this.handleClick.bind(this);
@@ -97,29 +99,8 @@ export default class WidgetColor extends React.Component {
      *  back to the Tangram Play editor.
      */
     setEditorValue (string) {
-        this.updateNodeReference(); // Why do we have to do this?
-
-        // Send the value to editor
-        setNodeValue(this.node, string, '+value_change');
-
-        // Change the value attached to this widget instance
-        this.node.value = string;
+        this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
-
-    updateNodeReference () {
-        // Update a widget on a single-node line
-        if (this.bookmark) {
-            for (let node of this.bookmark.lines[0].stateAfter.nodes) {
-                if (this.node.address === node.address) {
-                    this.node = node;
-                    break;
-                }
-            }
-        }
-      // There was extra code here that didn't seem to do anything in the widget.js Widget class. It has been deleted
-    }
-
-    /* END: SHARED METHODS FOR ALL WIDGETS? */
 
     render () {
         let currentColor = this.state.color;
@@ -154,6 +135,5 @@ export default class WidgetColor extends React.Component {
  * Prop validation required by React
  */
 WidgetColor.propTypes = {
-    node: React.PropTypes.object,
     bookmark: React.PropTypes.object
 };

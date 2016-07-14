@@ -19,9 +19,12 @@ import WidgetVector from '../components/widgets/widget-vector/widget-vector.reac
 export default class Widget {
     constructor (node) {
         this.node = node;
-        this.definition = node.widgetMark;
+        // this.definition = node.widgetMark;
         this.type = node.widgetMark.type;
         this.el = this.createEl(node);
+        console.log("*****Widget:******");
+        console.log(this);
+        console.log("***********");
     }
 
     /**
@@ -57,7 +60,7 @@ export default class Widget {
     }
 
     insert (lineNumber) {
-        this.updateNodeReference(lineNumber);
+        // this.updateNodeReference(lineNumber);
 
         const doc = editor.getDoc();
 
@@ -91,7 +94,9 @@ export default class Widget {
             clearWhenEmpty: true,
             handleMouseEvents: false
         });
-        this.bookmark.widget = this;
+        this.bookmark.widget = this; //inserts a node
+        //widget + node is extra
+        //bookmark is part of CodeMirror
 
         if (this.type === 'color') {
             ReactDOM.render(<WidgetColor node={this.node} bookmark={this.bookmark}/>, this.el);
