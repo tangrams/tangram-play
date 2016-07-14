@@ -221,8 +221,8 @@ function insertMarks (fromLine, toLine) {
 
         let i = 0;
         for (let node of nodes) {
-            console.log("\nPRINTING EACH NODE");
-            console.log(node);
+            // console.log("\nPRINTING EACH NODE");
+            // console.log(node);
             // See if there's a widget constructor attached to it, and
             // if so, we create it and insert it into the document.
             // Skip blank lines, which may have the state (and widget

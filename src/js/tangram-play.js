@@ -38,6 +38,8 @@ import { highlightLines } from './editor/highlight';
 // Import UI elements
 // Import UI elements
 import { initDivider } from './ui/divider';
+import { EventEmitter } from './components/event-emitter';
+
 // import './ui/tooltip';
 
 const query = getQueryStringObject();
@@ -91,6 +93,8 @@ class TangramPlay {
                 // Things we do after Tangram is finished initializing
                 tangramLayer.scene.initializing.then(() => {
                     this.trigger('sceneinit');
+                    // Need to send a signal to the dropdown widgets of type source to populate
+                    EventEmitter.dispatch('tangram:sceneinit', {});
 
                     // Initialize addons after Tangram is done, because
                     // some addons depend on Tangram scene config being present
@@ -440,26 +444,5 @@ ReactDOM.render(<MenuBar />, mountNode1);
 let mountNode2 = document.getElementById('map-panel');
 ReactDOM.render(<MapPanel />, mountNode2);
 
-/*
-document.addEventListener("DOMContentLoaded", function(event) {
-    // let colorpicker1 = document.getElementsByClassName('widget-colorpicker')    ;
-    // console.log(colorpicker1);
-
-    // let elementList = document.querySelectorAll('.widget-colorpicker');
-    // console.log(elementList);
-    let test = document.getElementById('react-color0');
-    console.log(test);
-    // console.log(colorpicker1[0]);
-    //ReactDOM.render(<WidgetColorPicker />, colorpicker1[0]);
-});
-*/
-
-/*
-setTimeout( function() {
-    let test = document.getElementById('react-color0');
-    console.log(test);
-    ReactDOM.render(<WidgetColorPicker />, test);
-} ,5000);
-*/
 let mountNode3 = document.getElementById('filedrop');
 ReactDOM.render(<FileDrop />, mountNode3);
