@@ -1,9 +1,8 @@
-.picker-modal {
+/*.picker-modal {
     box-sizing: border-box;
     position: absolute;
     padding: 0;
     background-color: var(--ui-component-color);
-    /* overflow: hidden; */
     box-shadow: var(--modal-shadow);
     user-select: none;
     z-index: var(--z08-colorpicker);
@@ -100,7 +99,7 @@
     cursor: none;
 }
 */
-
+/*
 .colorpicker-bar-luminance {
     position: absolute;
     right: 0;
@@ -150,4 +149,4 @@
     color: white;
     font-size: 20px;
     cursor: pointer;
-}
+}*/
