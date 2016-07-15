@@ -131,7 +131,16 @@ export default class WidgetColor extends React.Component {
             widgetStyle = { backgroundColor: 'rgba(' + parseInt(currentColor.r) + ',' + parseInt(currentColor.g) + ',' + parseInt(currentColor.b) + ',' + currentColor.a + ')' };
         }
         else {
-            widgetStyle = { backgroundColor: this.state.color };
+            // Have to parse a color correctly if it is a number in order to pass on as a css style
+            let colorCheck = parseFloat(this.state.color);
+
+            // if the color is represented as a number and not HEX or any other format
+            if (!isNaN(colorCheck)) {
+                widgetStyle = { backgroundColor: colorCheck };
+            }
+            else {
+                widgetStyle = { backgroundColor: this.state.color };
+            }
         }
 
         return (
