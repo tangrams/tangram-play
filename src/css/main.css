@@ -32,7 +32,6 @@
 
 /* + Widgets */
 @import '_widgets';
-@import '_pickers';
 
 /* + Suggest */
 @import '_suggest';
