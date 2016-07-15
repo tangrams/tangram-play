@@ -24,7 +24,7 @@ export default class WidgetColor extends React.Component {
         super(props);
         this.state = {
             displayColorPicker: false,
-            color: this.processUserColor(this.props.bookmark.widgetInfo.value)
+            color: this._processUserColor(this.props.bookmark.widgetInfo.value)
             // node: this.props.node,
             // bookmark: this.props.bookmark
         };
@@ -40,7 +40,7 @@ export default class WidgetColor extends React.Component {
      *
      * @param color - current color being typed by the user
      */
-    processUserColor (color) {
+    _processUserColor (color) {
         // If a hex color
         if (color.charAt(0) === '\'' && (color.charAt(color.length - 1) === '\'')) {
             return color.replace(/'/g, '');
@@ -90,18 +90,22 @@ export default class WidgetColor extends React.Component {
         let vecColor = ColorConverter.rgb2vec(color.rgb);
         let vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (color.rgb.a).toFixed(2) + ']';
 
-        this.setEditorValue(vecColorString);
+        this._setEditorValue(vecColorString);
     }
 
-    /* SHARED METHODS FOR ALL WIDGETS? */
+    /* SHARED METHOD FOR ALL WIDGETS */
     /**
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    setEditorValue (string) {
+    _setEditorValue (string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
+    /**
+     * Official React lifecycle method
+     * Called every time state or props are changed
+     */
     render () {
         let currentColor = this.state.color;
         let widgetStyle;

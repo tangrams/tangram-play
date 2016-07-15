@@ -53,11 +53,17 @@ export default class WidgetDropdown extends React.Component {
         this._setSource = this._setSource.bind(this);
     }
 
+    /**
+     * React lifecycle function. Gets called once when DIV is mounted
+     */
     componentDidMount () {
         // Need to subscribe to when Tangram scene loads in order to populate the source widget
         EventEmitter.subscribe('tangram:sceneinit', this._setSource);
     }
 
+    /**
+     * Function called once the Tangram scene has loaded in order to update the source dropdown
+     */
     _setSource () {
         // If the dropdown is of type source then get sources from tangramLayer.scene
         if (this.key === 'source') {
@@ -68,20 +74,28 @@ export default class WidgetDropdown extends React.Component {
         }
     }
 
+    /**
+     * Called anytime there is a change in the dropdown form. I.e. when user opens or selects something
+     */
     handleChange (e) {
         this.value = e.target.value;
 
-        this.setEditorValue(this.value);
+        this._setEditorValue(this.value);
     }
 
+    /* SHARED METHOD FOR ALL WIDGETS */
     /**
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    setEditorValue (string) {
+    _setEditorValue (string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
+    /**
+     * Official React lifecycle method
+     * Called every time state or props are changed
+     */
     render () {
         return (
             <FormGroup className='widget-dropdown' controlId='widget-form-dropdown'>

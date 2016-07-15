@@ -117,3 +117,7 @@ input.widget-toggle {
     padding: 0;
     background-color: var(--ui-component-color);
 }
+
+.widget-link-canvas {
+    background-color: var(--ui-element-color);
+}

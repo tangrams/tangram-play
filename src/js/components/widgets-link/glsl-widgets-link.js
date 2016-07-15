@@ -1,13 +1,12 @@
 import _ from 'lodash';
-import { editor } from '../editor/editor';
-
-import FloatPicker from '../pickers/float';
+import { editor } from '../../editor/editor';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import WidgetLinkVec2 from '../components/widgets-links/widget-link-vec2.react';
+import WidgetLinkVec2 from './widget-link-vec2.react';
+import WidgetLinkNumber from './widget-link-number.react';
 
-export default class Helpers {
+export default class GlslWidgetsLink {
     constructor (main) {
         const wrapper = editor.getWrapperElement();
 
@@ -37,6 +36,8 @@ export default class Helpers {
             let match = this.getMatch(cursor);
 
             if (match) {
+                let widgetlink = document.getElementById('widget-links');
+
                 // Disabling the vec3 and color picker widget-links for now
                 switch (match.type) {
                     // case 'color':
@@ -51,11 +52,10 @@ export default class Helpers {
                     //     this.activeModal = newVec3Picker(cursor, match);
                     //     break;
                     case 'vec2':
-                        let widgetlink = document.getElementById('widget-links');
                         ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match}/>, widgetlink);
                         break;
                     case 'number':
-                        this.activeModal = newFloatPicker(cursor, match);
+                        ReactDOM.render(<WidgetLinkNumber display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
                         break;
                     default:
                         break;
@@ -143,18 +143,4 @@ function findAllMatches (pattern, string) {
     /* eslint-enable no-cond-assign */
 
     return matches;
-}
-
-function newFloatPicker (cursor, match) {
-    const picker = new FloatPicker(match.string);
-
-    picker.showAt(editor);
-    picker.on('changed', (string) => {
-        let start = { line: cursor.line, ch: match.start };
-        let end = { line: cursor.line, ch: match.end };
-        match.end = match.start + string.length;
-        editor.replaceRange(string, start, end);
-    });
-
-    return picker;
 }
