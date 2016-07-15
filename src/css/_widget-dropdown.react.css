@@ -1,5 +1,5 @@
 .widget-dropdown {
-    display: inline-block;
+    display: inline-flex;
     position: relative;
     font-weight: 400;
     margin-left: 10px;
