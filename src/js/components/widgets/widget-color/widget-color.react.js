@@ -5,9 +5,8 @@ import DraggableModal from '../../draggable-modal.react';
 import Icon from '../../icon.react';
 import WidgetColorBox from './widget-color-box.react';
 
-import { setCodeMirrorValue } from '../../../editor/editor';
+import { setCodeMirrorValue, editor } from '../../../editor/editor';
 import ColorConverter from './color-converter';
-
 
 /**
  * Represents a color picker widget
@@ -24,17 +23,12 @@ export default class WidgetColor extends React.Component {
         super(props);
         this.state = {
             displayColorPicker: false,
-            color: this._processUserColor(this.props.bookmark.widgetInfo.value)
-            // node: this.props.node,
-            // bookmark: this.props.bookmark
+            color: this._processUserColor(this.props.bookmark.widgetInfo.value),
+            x: 0,
+            y: 0
         };
         this.bookmark = this.props.bookmark;
-
-        let boundingRectangle = this.bookmark.replacedWith.getBoundingClientRect();
-        this.top = boundingRectangle.bottom;
-        this.left = boundingRectangle.left;
-
-        console.log(this.top, this.left);
+        this.height = 300; // Need to know width in case a widget is about to get rendered outside of the normal screen size
 
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -81,6 +75,23 @@ export default class WidgetColor extends React.Component {
      * Open or close the color picker widget
      */
     handleClick () {
+        // Every time user clicks, modal position has to be updated.
+        // This is because the user might have scrolled the CodeMirror editor
+        let linePos = { line: this.bookmark.widgetInfo.range.to.line, ch: this.bookmark.widgetInfo.range.to.ch }; // Position where user cliked on a line
+        let currentX = editor.charCoords(linePos).left - 20;
+        let currentY = editor.charCoords(linePos).bottom - 80;
+
+        let el = document.getElementsByClassName('workspace-container')[0];
+        let screenHeight = el.clientHeight;
+        let maxheight = currentY + this.height + 80;
+        // If the widget would render outside of the screen height
+        if (maxheight > screenHeight) {
+            currentY = screenHeight - this.height - 100; // Ofset the top position of the modal by a little
+        }
+        // Set the x and y of the modal that will contain the widget
+        this.setState({ x: currentX });
+        this.setState({ y: currentY });
+
         this.setState({ displayColorPicker: !this.state.displayColorPicker });
     }
 
@@ -129,7 +140,7 @@ export default class WidgetColor extends React.Component {
                 <div className='widget widget-colorpicker' onClick={ this.handleClick } style={widgetStyle}></div>
 
                 {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.handleClick}>
+                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.handleClick}>
                     <div className='drag'>
                         <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>

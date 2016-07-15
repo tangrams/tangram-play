@@ -10,6 +10,7 @@ import { editor } from '../../editor/editor';
 
 /**
  * Represents a widget link for a vec2
+ * Gets created on click, as opposed to normal widgets that get created on editor parse
  */
 export default class WidgetLinkVec2 extends React.Component {
     /**
@@ -27,6 +28,10 @@ export default class WidgetLinkVec2 extends React.Component {
 
         this.cursor = this.props.cursor;
         this.match = this.props.match;
+
+        let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
+        this.x = editor.charCoords(linePos).left;
+        this.y = editor.charCoords(linePos).bottom - 80;
 
         this.fnColor = 'rgb(230, 230, 230)';
         this.selColor = 'rgb(40, 168, 107)';
@@ -229,7 +234,7 @@ export default class WidgetLinkVec2 extends React.Component {
      */
     render () {
         return (
-            <Modal id='modal-test' dialogComponentClass={DraggableModal} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleClick}>
+            <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleClick}>
                 <div className='drag'>
                     <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                 </div>
