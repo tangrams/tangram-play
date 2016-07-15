@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import WidgetColor from '../components/widgets/widget-color/widget-color.react';
 import WidgetDropdown from '../components/widgets/widget-dropdown.react';
 import WidgetVector from '../components/widgets/widget-vector/widget-vector.react';
+import WidgetToggle from '../components/widgets/widget-toggle.react';
 
 /**
  * Initializes widget marks in the current editor viewport and adds event
@@ -250,10 +251,13 @@ function insertMarks (fromLine, toLine) {
                         ReactDOM.render(<WidgetColor bookmark={mybookmark}/>, myel);
                     }
                     else if (mytype === 'string') {
-                        ReactDOM.render(<WidgetDropdown node={node} bookmark={mybookmark}/>, myel);
+                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark}/>, myel);
                     }
                     else if (mytype === 'vector') {
-                        ReactDOM.render(<WidgetVector node={node} bookmark={mybookmark}/>, myel);
+                        ReactDOM.render(<WidgetVector bookmark={mybookmark}/>, myel);
+                    }
+                    else if (mytype === 'boolean') {
+                        ReactDOM.render(<WidgetToggle bookmark={mybookmark}/>, myel);
                     }
                 }
             }

@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/lib/Button';
 import DraggableModal from '../draggable-modal.react';
 import Icon from '../icon.react';
 
-import Vector from './vector';
 import { editor } from '../../editor/editor';
 
 /**
@@ -275,5 +274,9 @@ export default class WidgetLinkNumber extends React.Component {
 WidgetLinkNumber.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
-    match: React.PropTypes.object
+    match: React.PropTypes.object,
+    value: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.number
+    ])
 };

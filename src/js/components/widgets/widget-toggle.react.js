@@ -1,11 +1,10 @@
 import React from 'react';
-import FormGroup from 'react-bootstrap/lib/FormGroup';
-import FormControl from 'react-bootstrap/lib/FormControl';
+import Checkbox from 'react-bootstrap/lib/Checkbox';
 
 import { setCodeMirrorValue } from '../../editor/editor';
 
 /**
- * Represents a dropdown widget
+ * Represents a boolean checkbox
  */
 export default class WidgetToggle extends React.Component {
     /**
@@ -18,23 +17,34 @@ export default class WidgetToggle extends React.Component {
     constructor (props) {
         super(props);
 
-        this.state = {
-            options: this.bookmark.widgetInfo.widgetMark.options
-        };
-
         this.bookmark = this.props.bookmark;
 
+        this.state = {
+            value: this.bookmark.widgetInfo.value
+        };
+
         this.handleChange = this.handleChange.bind(this);
-        this._setSource = this._setSource.bind(this);
     }
 
     /**
-     * Called anytime there is a change in the dropdown form. I.e. when user opens or selects something
+     * Official React lifecycle method
+     * Invoked once immediately after the initial rendering occurs.
+     * The input default to being 'false'. Have to set it to 'true' if the code value is 'true'
+     */
+    componentDidMount () {
+        if (this.state.value === 'true') {
+            this.input.checked = true;
+        }
+    }
+
+    /**
+     * Called anytime user clicks on checkbox
      */
     handleChange (e) {
-        this.value = e.target.value;
+        let newvalue = this.input.checked;
+        this.setState({ value: newvalue });
 
-        this._setEditorValue(this.value);
+        this._setEditorValue(newvalue.toString());
     }
 
     /* SHARED METHOD FOR ALL WIDGETS */
@@ -49,17 +59,13 @@ export default class WidgetToggle extends React.Component {
     /**
      * Official React lifecycle method
      * Called every time state or props are changed
+     *
+     * this.input refers to the <input> div on the checkbox
      */
     render () {
         return (
-            <FormGroup className='widget-dropdown' controlId='widget-form-dropdown'>
-                <FormControl componentClass='select' className='widget-form-control' placeholder='select' onChange={this.handleChange}>
-                    <option value='--select--'>-- select --</option>
-                    {this.state.options.map(function (result, i) {
-                        return <option key={i} value={result}>{result}</option>;
-                    })}
-                </FormControl>
-            </FormGroup>
+            <Checkbox className='widget widget-toggle' onChange={this.handleChange} inputRef={ref => { this.input = ref; }}>
+            </Checkbox>
         );
     }
 }

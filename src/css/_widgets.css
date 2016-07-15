@@ -121,3 +121,37 @@ input.widget-toggle {
 .widget-link-canvas {
     background-color: var(--ui-element-color);
 }
+
+/* THE TOGGLE WIDGET */
+
+.widget-toggle {
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    max-width: 14px;
+    max-height: 14px;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: -0.15em;
+}
+
+.widget-toggle input[type=checkbox] {
+    outline: none;
+    margin-top: -0.15em;
+}
+
+.widget-toggle input[type=checkbox]::after {
+    content: '\FF58';
+    color: white;
+    visibility: visible;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    background-color: var(--ui-element-color);
+}
+
+.widget-toggle input[type=checkbox]:checked::after {
+    content: '\2713';
+    color: white;
+}
