@@ -29,9 +29,15 @@
     display: none;
 }
 
-/* A hover-only inspection tooltip has some special properties to it
-   to prevent interactivity quirks */
 .map-inspection-hover {
+    position: absolute;
+
+    /* Start condition is somewhere way off the page */
+    left: -9999px;
+    top: -9999px;
+
+    /* A hover-only inspection tooltip has some special properties to it
+       to prevent interactivity quirks */
     pointer-events: none;
     cursor: default;
 }
@@ -50,11 +56,6 @@
 
 .map-inspection-name-label {
     margin-top: 0.25em;
-}
-
-.map-inspection-name-label-blank {
-    display: none; /* Hide for now */
-    color: #999; /* In another world, this displayed "(unnamed)" grayed out */
 }
 
 .map-inspection-label {
