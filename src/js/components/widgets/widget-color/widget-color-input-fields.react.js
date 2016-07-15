@@ -6,6 +6,11 @@ import { EditableInput } from 'react-color/lib/components/common';
 import color from 'react-color/lib/helpers/color';
 
 export default class WidgetColorInputFields extends React.Component {
+    constructor (props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
     shouldComponentUpdate () {
         return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }

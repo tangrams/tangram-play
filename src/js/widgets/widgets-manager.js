@@ -253,9 +253,10 @@ function insertMarks (fromLine, toLine) {
                     else if (mytype === 'string') {
                         ReactDOM.render(<WidgetDropdown bookmark={mybookmark}/>, myel);
                     }
-                    else if (mytype === 'vector') {
-                        ReactDOM.render(<WidgetVector bookmark={mybookmark}/>, myel);
-                    }
+                    // Disabling vector for now
+                    // else if (mytype === 'vector') {
+                    //     ReactDOM.render(<WidgetVector bookmark={mybookmark}/>, myel);
+                    // }
                     else if (mytype === 'boolean') {
                         ReactDOM.render(<WidgetToggle bookmark={mybookmark}/>, myel);
                     }

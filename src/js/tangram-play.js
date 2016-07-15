@@ -134,7 +134,7 @@ class TangramPlay {
         // this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslWidgetsLink();
         this.addons.errorsManager = new ErrorsManager();
-        this.addons.colorPalette = new ColorPalette();
+        // this.addons.colorPalette = new ColorPalette();
     }
 
     /**
