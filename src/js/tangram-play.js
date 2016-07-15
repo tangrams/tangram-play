@@ -23,7 +23,7 @@ import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
 // import GlslSandbox from './glsl/sandbox';
 import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
-import ColorPalette from './widgets/color-palette';
+// import ColorPalette from './widgets/color-palette';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils

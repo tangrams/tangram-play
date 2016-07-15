@@ -30,6 +30,12 @@ export default class WidgetColor extends React.Component {
         };
         this.bookmark = this.props.bookmark;
 
+        let boundingRectangle = this.bookmark.replacedWith.getBoundingClientRect();
+        this.top = boundingRectangle.bottom;
+        this.left = boundingRectangle.left;
+
+        console.log(this.top, this.left);
+
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
