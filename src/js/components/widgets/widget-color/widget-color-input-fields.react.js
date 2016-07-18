@@ -40,13 +40,6 @@ export default class WidgetColorInputFields extends React.Component {
             }
 
             data.a = data.a / 100;
-            this.props.onChange({
-                h: this.props.hsl.h,
-                s: this.props.hsl.s,
-                l: this.props.hsl.l,
-                a: data.a,
-                source: 'rgb',
-            });
         }
     }
 
