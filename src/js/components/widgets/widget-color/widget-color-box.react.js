@@ -36,7 +36,7 @@ class WidgetColorBox extends React.Component {
                         </div>
                     </div>
                     <div className='color'>
-                        <div className='activeColor' style={{ backgroundColor: 'rgba(' + this.props.rgb.r + ', ' + this.props.rgb.g + ', ' + this.props.rgb.b + ', ' + this.props.rgb.a + ')' }}/>
+                        <div className='activeColor' style={{ backgroundColor: 'rgba(' + this.props.color.r + ', ' + this.props.color.g + ', ' + this.props.color.b + ', ' + this.props.color.a + ')' }}/>
                     </div>
                 </div>
                 <div className='fields'>
@@ -51,7 +51,7 @@ class WidgetColorBox extends React.Component {
  * Prop validation required by React
  */
 WidgetColorBox.propTypes = {
-    rgb: React.PropTypes.object,
+    color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
 

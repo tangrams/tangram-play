@@ -1,129 +1,98 @@
-import ColorConverter, { getColorAsRGB, getValueRanges, getLuminance, limitValue } from './color-converter';
+import tinycolor from 'tinycolor2';
+
+const valueRanges = {
+    rgb: { r: [0, 255], g: [0, 255], b: [0, 255] }
+};
 
 export default class Color {
     constructor (color) {
-        this.colors = {};
-        this.set(color);
+        let firstPass = this._processColor(color); // Catch a color written in vec format
+        let secondPass = this._processRGB(firstPass); // Convert color to rgb
+
+        this.color = secondPass;
     }
 
-    set (color, type) { // color only full range
-        console.log("trying to set a color");
-        if (typeof color === 'number') {
-            type = type || 'rgb';
-            this.colors[type] = {};
-            for (var n = 3; n--;) {
-                let m = type[n] || type.charAt(n); // IE7
-                this.colors[type][m] = color;
+    /**
+     * Process a color that could be taken from a valid YAML scene file.
+     * As such, we need to check for array notation and for hex written as a string
+     *
+     * @param color - color to parse
+     */
+    _processColor (color) {
+        if (typeof color === 'string' || color instanceof String) {
+            // If a hex color
+            if (color.charAt(0) === '\'' && (color.charAt(color.length - 1) === '\'')) {
+                return color.replace(/'/g, '');
             }
-        }
-        else if (typeof color === 'string') {
-            let parts = color.replace(/(?:#|\)|%)/g, '').split('(');
-            if (parts[1]) {
-                let values = (parts[1] || '').split(/,\s*/);
-                type = type || (parts[1] ? parts[0].substr(0, 3) : 'rgb');
-                this.set(values, type);
-            }
-            else {
-                this.set(getColorAsRGB(color), 'rgb');
-            }
-        }
-        else if (color) {
-            if (Array.isArray(color)) {
-                let m = '';
-                type = type || 'rgb';
+            // If a vec color
+            else if ((color.charAt(0) === '[') && (color.charAt(color.length - 1) === ']')) {
+                let colorString = color;
+                colorString = colorString.replace('[', '');
+                colorString = colorString.replace(']', '');
+                colorString = colorString.split(',');
 
-                this.colors[type] = this.colors[type] || {};
-                for (let n = 3; n--;) {
-                    m = type[n] || type.charAt(n); // IE7
-                    let i = color.length >= 3 ? n : 0;
-                    this.colors[type][m] = parseFloat(color[i]);
+                if (colorString.length >= 3) {
+                    let vec = { v: colorString[0], e: colorString[1], c: colorString[2] };
+                    let rgb = this._vec2rgb(vec);
+                    rgb.a = 1.0; // We need to add an alpha by default so that the widget button can update css properly
+
+                    if (colorString.length === 4) {
+                        rgb.a = parseFloat(colorString[3]);
+                    }
+                    return rgb;
                 }
 
-                if (color.length === 4) {
-                    this.colors.alpha = parseFloat(color[3]);
-                }
-            }
-            else if (type) {
-                for (let n in color) {
-                    this.colors[type][n] = limitValue(color[n] / getValueRanges(type)[n][1], 0, 1) * getValueRanges(type)[n][1];
-                }
+                return 'white';
             }
         }
-
-        if (!type) {
-            return;
-        }
-
-        if (type !== 'rgb') {
-            var convert = ColorConverter;
-            this.colors.rgb = convert[type + '2rgb'](this.colors[type]);
-        }
-        this.convert(type);
-        this.colors.hueRGB = ColorConverter.hue2RGB(this.colors.hsv.h);
-        this.colors.luminance = getLuminance(this.colors.rgb);
+        // If a normal css color
+        return color;
     }
 
-    convert (type) {
-        let convert = ColorConverter;
-        let ranges = getValueRanges();
-        let exceptions = { hsl: 'hsv', cmyk: 'cmy', rgb: type };
+    _processRGB (color) {
+        let newColor = tinycolor(color);
 
-        if (type === 'alpha') {
-            return;
+        if (!newColor.isValid()) {
+            newColor = tinycolor('white');
         }
 
-        for (let typ in ranges) {
-            if (!ranges[typ][typ]) { // no alpha|HEX
-                if (type !== typ && typ !== 'XYZ') {
-                    let from = exceptions[typ] || 'rgb';
-                    this.colors[typ] = convert[from + '2' + typ](this.colors[from]);
-                }
-            }
-        }
+        return newColor;
     }
 
-    get (type) {
-        if (type !== 'rgb') {
-            var convert = ColorConverter;
-            this.colors[type] = convert['rgb2' + type](this.colors.rgb);
-            return this.colors[type];
-        }
-        else {
-            return this.colors.rgb;
-        }
+    _vec2rgb (vec) {
+        return {
+            r: vec.v * valueRanges.rgb.r[1],
+            g: vec.e * valueRanges.rgb.g[1],
+            b: vec.c * valueRanges.rgb.b[1]
+        };
     }
 
-    getString (type) {
-        if (type === 'HEX') {
-            var convert = ColorConverter;
-            return convert['rgb2' + type](this.colors.rgb);
-        }
-        else {
-            let color = this.get(type);
-            let str = type;
-            let m = '';
-            if (type === 'vec') {
-                str += this.colors.alpha ? 4 : 3;
-            }
-            str += '(';
-            for (let n = 0; n < 3; n++) {
-                m = type[n] || type.charAt(n); // IE7
-                if (type === 'vec') {
-                    str += (color[m]).toFixed(3);
-                }
-                else {
-                    str += Math.floor(color[m]);
-                }
-                if (n !== 2) {
-                    str += ',';
-                }
-            }
+    _rgb2vec () {
+        return {
+            v: this.color.toRgb().r / valueRanges.rgb.r[1],
+            e: this.color.toRgb().g / valueRanges.rgb.g[1],
+            c: this.color.toRgb().b / valueRanges.rgb.b[1]
+        };
+    }
 
-            if (this.colors.alpha) {
-                str += ',' + (this.colors.alpha).toFixed(3);
-            }
-            str += ')';
-            return str;
-        }
+    // Returns rgba object { r: , g: , b: , a: }
+    getRgba () {
+        return this.color.toRgb();
+    }
+
+    // Returns rgba string "rgba(255, 0, 0, 0.5)"
+    getRgbaString () {
+        return this.color.toRgbString();
+    }
+
+    getVecString () {
+        let vecColor = this._rgb2vec();
+        let vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (this.color.getAlpha()).toFixed(2) + ']';
+        return vecColorString;
+    }
+
+    // Returns original input string
+    getOriginalInput () {
+        return this.color.getOriginalInput();
     }
 }
