@@ -30,12 +30,6 @@
 @import '_shield';
 @import '_inputs';
 
-/* + Widgets */
-@import '_widgets';
-
-/* + Suggest */
-@import '_suggest';
-
 /* + GLSL Sandbox */
 @import '_sandbox';
 
@@ -55,9 +49,10 @@
 @import '_menu-bar.react';
 @import '_map-panel.react';
 @import '_map-panel-search-bookmarks.react';
+
+/* + Widgets */
+@import '_widgets.react';
 @import '_widget-color.react';
-@import '_widget-dropdown.react';
-@import '_widget-vector.react';
 
 /* VARIABLES */
 

@@ -1,4 +1,4 @@
-/* Widget menu bar */
+/* React: Widget Color */
 
 .drag {
     background-color: var(--ui-component-color);
@@ -171,8 +171,6 @@
 .modal input:focus {
     box-shadow: none;
 }
-
-/* shared */
 
 .flexbox-fix {
     display: flex;
