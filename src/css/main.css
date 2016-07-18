@@ -36,9 +36,6 @@
 /* + Errors Manager */
 @import '_errors';
 
-/* + Color Palette */
-@import '_colorpalette';
-
 /* + Map UI */
 @import '_ui';
 @import '_leaflet-overrides';
@@ -49,6 +46,7 @@
 @import '_menu-bar.react';
 @import '_map-panel.react';
 @import '_map-panel-search-bookmarks.react';
+@import '_color-palette.react';
 
 /* + Widgets */
 @import '_widgets.react';

@@ -7,6 +7,7 @@ export default class Color {
     }
 
     set (color, type) { // color only full range
+        console.log("trying to set a color");
         if (typeof color === 'number') {
             type = type || 'rgb';
             this.colors[type] = {};

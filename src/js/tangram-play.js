@@ -23,7 +23,6 @@ import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
 // import GlslSandbox from './glsl/sandbox';
 import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
-// import ColorPalette from './widgets/color-palette';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
@@ -35,11 +34,8 @@ import { parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightRanges, updateLinesQueryString } from './editor/highlight';
 
 // Import UI elements
-// Import UI elements
 import { initDivider } from './ui/divider';
 import { EventEmitter } from './components/event-emitter';
-
-// import './ui/tooltip';
 
 const query = getQueryStringObject();
 
@@ -126,7 +122,6 @@ class TangramPlay {
         // this.addons.glslSandbox = new GlslSandbox();
         this.addons.glslHelpers = new GlslWidgetsLink();
         this.addons.errorsManager = new ErrorsManager();
-        // this.addons.colorPalette = new ColorPalette();
     }
 
     /**
@@ -428,6 +423,7 @@ var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
+import ColorPalette from './components/color-palette.react';
 import FileDrop from './file/drop';
 
 let mountNode1 = document.getElementById('menu-bar');
@@ -436,5 +432,8 @@ ReactDOM.render(<MenuBar />, mountNode1);
 let mountNode2 = document.getElementById('map-panel');
 ReactDOM.render(<MapPanel />, mountNode2);
 
-let mountNode3 = document.getElementById('filedrop');
-ReactDOM.render(<FileDrop />, mountNode3);
+let mountNode3 = document.getElementsByClassName('colorpalette');
+ReactDOM.render(<ColorPalette />, mountNode3[0]);
+
+let mountNode4 = document.getElementById('filedrop');
+ReactDOM.render(<FileDrop />, mountNode4);

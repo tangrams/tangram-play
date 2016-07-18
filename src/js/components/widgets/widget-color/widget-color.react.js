@@ -6,7 +6,9 @@ import Icon from '../../icon.react';
 import WidgetColorBox from './widget-color-box.react';
 
 import { setCodeMirrorValue, editor } from '../../../editor/editor';
+import Color from './color';
 import ColorConverter from './color-converter';
+import { EventEmitter } from '../../event-emitter';
 
 /**
  * Represents a color picker widget
@@ -21,9 +23,13 @@ export default class WidgetColor extends React.Component {
      */
     constructor (props) {
         super(props);
+        let color = this._processUserColor(this.props.bookmark.widgetInfo.value);
+        let mycolor = new Color(this.props.bookmark.widgetInfo.value);
+        console.log("COLOR OBJECT");
+        console.log(mycolor);
         this.state = {
             displayColorPicker: false,
-            color: this._processUserColor(this.props.bookmark.widgetInfo.value),
+            color: color,
             x: 0,
             y: 0
         };
@@ -32,6 +38,8 @@ export default class WidgetColor extends React.Component {
 
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
+
+        EventEmitter.dispatch('widgets:color', color);
     }
 
     /**
@@ -103,6 +111,7 @@ export default class WidgetColor extends React.Component {
      */
     handleChange (color) {
         this.setState({ color: color.rgb });
+        EventEmitter.dispatch('widgets:color', color.rgb);
 
         let vecColor = ColorConverter.rgb2vec(color.rgb);
         let vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (color.rgb.a).toFixed(2) + ']';
