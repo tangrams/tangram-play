@@ -52,7 +52,7 @@ export default class WidgetColorInputFields extends React.Component {
 
     render () {
         return (
-            <div className='fields flexbox-fix'>
+            <div className='fields'>
                 <div className='double'>
                     <EditableInput className='input' label='hex' value={ this.props.hex.replace('#', '') } onChange={ this.handleChange }/>
                 </div>

@@ -22,7 +22,7 @@ class WidgetColorBox extends React.Component {
 
     render () {
         return (
-            <div className='picker'>
+            <div className='widget-color-box'>
                 <div className='saturation'>
                     <Saturation className='saturation2' {...this.props} onChange={ this.handleChange }/>
                 </div>
