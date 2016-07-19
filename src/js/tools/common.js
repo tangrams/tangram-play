@@ -35,21 +35,6 @@ export function debounce (func, wait, immediate) {
     };
 }
 
-export function getDOMOffset (dom) {
-    let y = 0;
-    let x = 0;
-    do {
-        y += dom.offsetTop || 0;
-        x += dom.offsetLeft || 0;
-        dom = dom.offsetParent;
-    } while (dom);
-
-    return {
-        y: y,
-        x: x
-    };
-}
-
 //  Check if a variable is a number
 export function isNumber (n) {
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n);

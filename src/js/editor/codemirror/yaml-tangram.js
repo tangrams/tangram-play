@@ -55,7 +55,7 @@ function getAddressFromKeys (keys) {
  * @param {string} address - in the form of 'key1:key2:key3'
  * @return {Array} keys
  */
-export function getKeysFromAddress (address) {
+function getKeysFromAddress (address) {
     return address.split(ADDRESS_KEY_DELIMITER);
 }
 
@@ -89,43 +89,6 @@ export function getAddressForLevel (address, level) {
 function isShader (address) {
     const re = /shaders:blocks:(global|width|position|normal|color|filter)$/;
     return _.startsWith(address, 'styles') && re.test(address);
-}
-
-/**
- * The following functions are very similar and detects if an address refers to
- * a specific shader block. These are exported as helpers for other modules
- * to use. See documentation for types:
- * https://mapzen.com/documentation/tangram/shaders/#blocks
- *
- * A valid shader address will always begin with `styles:` and end in
- * `:shaders:blocks:__block__`, where __block__ is one of the six defined
- * shader blocks.
- *
- * @param {string} address - the address of the key-value pair
- * @return {Boolean} bool - `true` if address is a shader block of that type
- */
-export function isGlobalBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:global');
-}
-
-export function isWidthBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:width');
-}
-
-export function isPositionBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:position');
-}
-
-export function isNormalBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:normal');
-}
-
-export function isColorBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:color');
-}
-
-export function isFilterBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:filter');
 }
 
 /**
