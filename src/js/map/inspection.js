@@ -214,10 +214,21 @@ class TangramInspectionPopup extends React.Component {
                                         <td className='map-inspection-source-item-label'>Name</td>
                                         <td>{this.props.selection.feature.source_name}</td>
                                     </tr>
-                                    <tr>
-                                        <td className='map-inspection-source-item-label'>Layer</td>
-                                        <td>{this.props.selection.feature.source_layer}</td>
-                                    </tr>
+                                    {(() => {
+                                        // Not all data sources will have multiple layers.
+                                        // For instance, https://vector.mapzen.com/osm/earth/{z}/{x}/{y}.topojson
+                                        // is just the earth layer. In this situation, the
+                                        // `selection.feature` object reported by Tangram
+                                        // does not contain a `source_layer` property.
+                                        if (this.props.selection.feature.source_layer) {
+                                            return (
+                                                <tr>
+                                                    <td className='map-inspection-source-item-label'>Layer</td>
+                                                    <td>{this.props.selection.feature.source_layer}</td>
+                                                </tr>
+                                            );
+                                        }
+                                    })()}
                                 </tbody>
                             </table>
                         </div>
