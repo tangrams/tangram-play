@@ -57,16 +57,16 @@ export default class WidgetColorInputFields extends React.Component {
                     <EditableInput className='input' label='hex' value={ this.props.hex.replace('#', '') } onChange={ this.handleChange }/>
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='r' value={ this.props.rgb.r } onChange={ this.handleChange } dragLabel='true' dragMax='255'/>
+                    <EditableInput className='input' label='r' value={ this.props.rgb.r } onChange={ this.handleChange }/>
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='g' value={ this.props.rgb.g } onChange={ this.handleChange } dragLabel='true' dragMax='255'/>
+                    <EditableInput className='input' label='g' value={ this.props.rgb.g } onChange={ this.handleChange } />
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='b' value={ this.props.rgb.b } onChange={ this.handleChange } dragLabel='true' dragMax='255'/>
+                    <EditableInput className='input' label='b' value={ this.props.rgb.b } onChange={ this.handleChange } />
                 </div>
                 <div className='alpha3'>
-                    <EditableInput is='input' label='a' value={ Math.round(this.props.rgb.a * 100) } onChange={ this.handleChange } dragLabel='true' dragMax='100'/>
+                    <EditableInput is='input' label='a' value={ Math.round(this.props.rgb.a * 100) } onChange={ this.handleChange } />
                 </div>
             </div>
         );
