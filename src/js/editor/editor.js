@@ -160,11 +160,21 @@ export function setCodeMirrorValue (bookmark, value) {
 
     doc.replaceRange(value, fromPos, toPos, origin);
 
-    for (let linenode of bookmark.lines[0].stateAfter.nodes) {
-        if (node.address === linenode.address) {
-            bookmark.widgetInfo = linenode;
-            break;
+    if (bookmark.lines[0].stateAfter !== null) {
+        for (let linenode of bookmark.lines[0].stateAfter.nodes) {
+            if (node.address === linenode.address) {
+                bookmark.widgetInfo = linenode;
+                break;
+            }
         }
+    }
+    else {
+        let newRange = {
+            from: fromPos,
+            to: toPos
+        };
+        bookmark.widgetInfo.range = newRange;
+        bookmark.widgetInfo.value = value;
     }
 
     return bookmark;

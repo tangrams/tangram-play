@@ -147,7 +147,9 @@ function clearMarks (fromLine, toLine) {
     const existingMarks = getExistingMarks(fromLine, toLine);
     // And remove them, if present.
     for (let bookmark of existingMarks) {
+        ReactDOM.unmountComponentAtNode(bookmark.replacedWith);
         bookmark.clear();
+        // TODO: unmount divs
     }
 }
 
@@ -242,6 +244,7 @@ function insertMarks (fromLine, toLine) {
 
                 if (!myboolean) {
                     let myel = createEl(mytype);
+                    // ReactDOM.unmountComponentAtNode(myel);
 
                     // inserts the widget into CodeMirror DOM
                     mybookmark = doc.setBookmark(node.range.to, {
@@ -271,6 +274,4 @@ function insertMarks (fromLine, toLine) {
             }
         }
     }
-    // Trigger an event for created widgets - this is picked up by the color palette
-    // EventEmitter.dispatch('widget_marks_created', { widgets: newWidgets });
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { CompactPicker } from 'react-color';
 
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
@@ -8,6 +7,7 @@ import Icon from './Icon';
 import WidgetColorBox from './widgets/widget-color/widget-color-box.react';
 
 import { EventEmitter } from './event-emitter';
+import Color from './widgets/widget-color/color';
 
 /**
  * Represents the color palette will all current colors in the Tangram yaml
@@ -17,8 +17,11 @@ export default class ColorPalette extends React.Component {
         super(props);
 
         this.state = {
-            colors: ['#D0021B', '#F5A623'],
-            currentColor: '#fff',
+            colors: [],
+            currentColor: {
+                color: new Color('white'),
+                count: 1
+            },
             currentPosition: 0,
             displayPicker: false,
             x: 0,
@@ -29,6 +32,9 @@ export default class ColorPalette extends React.Component {
         this.handleHide = this.handleHide.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.addNewColor = this.addNewColor.bind(this);
+        this.changeColor = this.changeColor.bind(this);
+        this.removeColor = this.removeColor.bind(this);
+        this.clearColors = this.clearColors.bind(this);
     }
 
     /**
@@ -38,15 +44,52 @@ export default class ColorPalette extends React.Component {
      * not a React component
      */
     componentDidMount () {
-        // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        // EventEmitter.subscribe('widgets:color', data => { this.addNewColor(data); });
+        EventEmitter.subscribe('widgets:color', data => { this.addNewColor(data); });
+        EventEmitter.subscribe('widgets:color-unmount', data => { this.removeColor(data); });
+        EventEmitter.subscribe('widgets:color-change', data => { this.changeColor(data); });
+        EventEmitter.subscribe('tangram:clear-palette', this.clearColors);
     }
 
     addNewColor (data) {
-        console.log("NEW COLOR");
         let colors = this.state.colors;
-        colors.push(data);
-        console.log(data);
+
+        for (let color of colors) {
+            if (color.color.getRgbaString() === data.getRgbaString()) {
+                color.count = color.count + 1;
+                return;
+            }
+        }
+
+        let newColor = {
+            color: data,
+            count: 1
+        };
+
+        colors.push(newColor);
+        this.setState({ colors: colors });
+    }
+
+    removeColor (data) {
+        let colors = this.state.colors;
+
+        for (let i = 0; i < colors.length; i++) {
+            if (colors[i].color.getRgbaString() === data.getRgbaString()) {
+                if (colors[i].count === 1) {
+                    colors.splice(i, 1);
+                }
+                else {
+                    colors[i].count = colors[i].count - 1;
+                }
+
+                this.setState({ colors: colors });
+                return;
+            }
+        }
+    }
+
+    changeColor (data) {
+        this.removeColor(data.old);
+        this.addNewColor(data.new);
     }
 
     handleClick (color, i, e) {
@@ -72,12 +115,25 @@ export default class ColorPalette extends React.Component {
 
     handleChange (color) {
         // Set the color picker to whatever new color the user has picked
-        this.setState({ currentColor: color.rgb });
+        let oldColor = this.state.currentColor;
+        let newColor = {
+            color: new Color(color.rgb),
+            count: 1
+        };
+        this.setState({ currentColor: newColor });
 
         // Then update the current color array with the new color
         let newColors = this.state.colors;
-        newColors[this.state.currentPosition] = color.hex;
+        newColors[this.state.currentPosition] = newColor;
         this.setState({ colors: newColors });
+
+        // Alert each individual widget to that a color has changed
+        // Each widget will have to check if the change applies to itself
+        EventEmitter.dispatch('color-palette:color-change', { old: oldColor.color, new: newColor.color });
+    }
+
+    clearColors () {
+        this.setState({ colors: [] });
     }
 
     /**
@@ -85,11 +141,11 @@ export default class ColorPalette extends React.Component {
      * Called every time state or props are changed
      */
     render () {
-        let colors = []
+        let colors = [];
         if (this.state.colors) {
             for (let i = 0; i < this.state.colors.length; i++) {
                 let color = this.state.colors[i];
-                let widgetStyle = { backgroundColor: color };
+                let widgetStyle = { backgroundColor: color.color.getRgbaString() };
 
                 colors.push(<div key={i} className='palette-color' onClick={ this.handleClick.bind(null, color, i) }><div className='square' style={widgetStyle}></div></div>);
             }
@@ -106,7 +162,7 @@ export default class ColorPalette extends React.Component {
                         <Button onClick={ this.handleHide } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.currentColor } onChange={ this.handleChange }/>
+                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.currentColor.color.getRgba() } onChange={ this.handleChange }/>
                 </Modal>
             </div>
         );

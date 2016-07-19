@@ -6,6 +6,10 @@ const valueRanges = {
 
 export default class Color {
     constructor (color) {
+        // Invalid colors (junk input or user is typing) are created as white by default
+        // We need a way to distinguish what inputs were junk, so invalid colors will be this.valid = false
+        this.valid = true;
+
         let firstPass = this._processColor(color); // Catch a color written in vec format
         let secondPass = this._processRGB(firstPass); // Convert color to rgb
 
@@ -42,6 +46,7 @@ export default class Color {
                     return rgb;
                 }
 
+                this.valid = false;
                 return 'white';
             }
         }
@@ -53,6 +58,7 @@ export default class Color {
         let newColor = tinycolor(color);
 
         if (!newColor.isValid()) {
+            this.valid = false;
             newColor = tinycolor('white');
         }
 
