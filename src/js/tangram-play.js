@@ -142,6 +142,8 @@ class TangramPlay {
      *      contents has been fetched.
      */
     load (scene) {
+        EventEmitter.dispatch('tangram:clear-palette', {});
+
         // Turn on loading indicator. This is turned off later
         // when Tangram reports that it's done.
         showSceneLoadingIndicator();

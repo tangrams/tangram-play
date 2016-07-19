@@ -34,8 +34,21 @@ export default class WidgetColor extends React.Component {
 
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handlePaletteChange = this.handlePaletteChange.bind(this);
+    }
 
-        // EventEmitter.dispatch('widgets:color', color);
+    componentDidMount () {
+        // Only pass on colors that are valid. i.e. as the user types the color widget is white by default but
+        // the widget does not representa  fully valid color
+        if (this.state.color.valid) {
+            EventEmitter.dispatch('widgets:color', this.state.color);
+        }
+
+        EventEmitter.subscribe('color-palette:color-change', data => { this.handlePaletteChange(data); });
+    }
+
+    componentWillUnmount () {
+        EventEmitter.dispatch('widgets:color-unmount', this.state.color);
     }
 
     /**
@@ -69,12 +82,20 @@ export default class WidgetColor extends React.Component {
      * @param color - color that user has chosen in the color picker widget
      */
     handleChange (color) {
+        let oldColor = this.state.color;
         let newColor = new Color(color.rgb);
         this.setState({ color: newColor });
 
         this._setEditorValue(newColor.getVecString());
 
-        // EventEmitter.dispatch('widgets:color', color.rgb);
+        EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
+    }
+
+    handlePaletteChange (data) {
+        if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
+            this.setState({ color: data.new });
+            this._setEditorValue(data.new.getVecString());
+        }
     }
 
     /* SHARED METHOD FOR ALL WIDGETS */
