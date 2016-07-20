@@ -20,22 +20,26 @@ export default class WidgetColor extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
-        super(props);
+     constructor (props) {
+         super(props);
 
-        this.state = {
-            displayColorPicker: false,
-            color: new Color(this.props.bookmark.widgetInfo.value),
-            x: 0,
-            y: 0
-        };
-        this.bookmark = this.props.bookmark;
-        this.height = 300; // Need to know width in case a widget is about to get rendered outside of the normal screen size
+         this.state = {
+             displayColorPicker: false,
+             color: new Color(this.props.bookmark.widgetInfo.value),
+             x: 0,
+             y: 0
+         };
+         this.bookmark = this.props.bookmark;
 
-        this.handleClick = this.handleClick.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handlePaletteChange = this.handlePaletteChange.bind(this);
-    }
+         // Need to know width in case a widget is about to get rendered outside of the normal screen size
+         // TODO: Don't hardcode this.
+         this.height = 300;
+         this.width = 250;
+
+         this.onClick = this.onClick.bind(this);
+         this.onChange = this.onChange.bind(this);
+         this.onPaletteChange = this.onPaletteChange.bind(this);
+     }
 
     componentDidMount () {
         // Only pass on colors that are valid. i.e. as the user types the color widget is white by default but
@@ -44,7 +48,7 @@ export default class WidgetColor extends React.Component {
             EventEmitter.dispatch('widgets:color', this.state.color);
         }
 
-        EventEmitter.subscribe('color-palette:color-change', data => { this.handlePaletteChange(data); });
+        EventEmitter.subscribe('color-palette:color-change', data => { this.onPaletteChange(data); });
     }
 
     componentWillUnmount () {
@@ -54,24 +58,39 @@ export default class WidgetColor extends React.Component {
     /**
      * Open or close the color picker widget
      */
-    handleClick () {
+    onClick () {
         // Every time user clicks, modal position has to be updated.
         // This is because the user might have scrolled the CodeMirror editor
-        let linePos = { line: this.bookmark.widgetInfo.range.to.line, ch: this.bookmark.widgetInfo.range.to.ch }; // Position where user cliked on a line
-        let currentX = editor.charCoords(linePos).left - 20;
-        let currentY = editor.charCoords(linePos).bottom - 80;
 
-        let el = document.getElementsByClassName('workspace-container')[0];
-        let screenHeight = el.clientHeight;
-        let maxheight = currentY + this.height + 80;
-        // If the widget would render outside of the screen height
-        if (maxheight > screenHeight) {
-            currentY = screenHeight - this.height - 100; // Ofset the top position of the modal by a little
+        // Magic numbers
+        // Vertical distance in pixels to offset from the bookmark element
+        const VERTICAL_POSITION_BUFFER = 5;
+
+        // Vertical distance in pixels to correct for locking modal position to
+        // the workspace area. This works in conjunction with a hard-coded
+        // margin-top property on the modal to keep the modal in place.
+        const WORKSPACE_VERTICAL_CORRECTION = 47;
+
+        const bookmarkPos = this.bookmark.widgetNode.querySelector('.widget').getBoundingClientRect();
+        let posX = bookmarkPos.left;
+        let posY = bookmarkPos.bottom + VERTICAL_POSITION_BUFFER - WORKSPACE_VERTICAL_CORRECTION;
+
+        const workspaceEl = document.getElementsByClassName('workspace-container')[0];
+        const workspaceBounds = workspaceEl.getBoundingClientRect();
+        const maxX = posX + this.width;
+        const maxY = posY + this.height;
+
+        // Check if the widget would render outside of the workspace container area
+        if (maxX > workspaceBounds.width) {
+            posX = workspaceBounds.width - this.width;
         }
-        // Set the x and y of the modal that will contain the widget
-        this.setState({ x: currentX });
-        this.setState({ y: currentY });
+        if (maxY > workspaceBounds.height) {
+            posY = workspaceBounds.height - this.height;
+        }
 
+        // Set the x and y of the modal that will contain the widget
+        this.setState({ x: posX });
+        this.setState({ y: posY });
         this.setState({ displayColorPicker: !this.state.displayColorPicker });
     }
 
@@ -81,7 +100,7 @@ export default class WidgetColor extends React.Component {
      *
      * @param color - color that user has chosen in the color picker widget
      */
-    handleChange (color) {
+     onChange (color) {
         let oldColor = this.state.color;
         let newColor = new Color(color.rgb);
         this.setState({ color: newColor });
@@ -91,10 +110,11 @@ export default class WidgetColor extends React.Component {
         EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
     }
 
-    handlePaletteChange (data) {
+
+    onPaletteChange (data) {
         if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
             this.setState({ color: data.new });
-            this._setEditorValue(data.new.getVecString());
+            this.setEditorValue(data.new.getVecString());
         }
     }
 
@@ -103,7 +123,7 @@ export default class WidgetColor extends React.Component {
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    _setEditorValue (string) {
+    setEditorValue (string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
@@ -117,15 +137,15 @@ export default class WidgetColor extends React.Component {
         return (
             <div>
                 {/* The widget button user clicks to open color picker */}
-                <div className='widget widget-colorpicker' onClick={ this.handleClick } style={widgetStyle}></div>
+                <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
 
                 {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.handleClick}>
+                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
                     <div className='drag'>
-                        <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                        <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color.getRgba() } onChange={ this.handleChange }/>
+                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
                 </Modal>
             </div>
         );

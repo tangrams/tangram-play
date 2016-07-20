@@ -6,6 +6,16 @@
     text-indent: initial;
 }
 
+/* For the draggable modal */
+
+.drag {
+    background-color: var(--ui-component-color);
+    cursor: move;
+    height: 20px;
+    justify-content: flex-end;
+    display: flex;
+}
+
 /* React Widgets */
 
 .widget {
@@ -92,6 +102,7 @@
     margin-right: 10px;
     outline: none;
     border-radius: 0;
+    border-radius: 6px;
 }
 
 .widget-dropdown select {
@@ -99,12 +110,13 @@
     font-size: 100%;
     font-weight: 400;
     outline: none;
-    border-radius: 0;
     background-color: #5e6064;
     color: white;
-    border: none;
+    border: 0;
     height: 20px;
     width: 16px; /* Remove width to get full dropdown to appear */
+    border-radius: 4px;
+    padding-left: 16px;
 }
 
 .widget-dropdown option {
@@ -115,7 +127,18 @@
 .form-control:focus {
     border-color: transparent;
     box-shadow: none;
-    border-radius: 0;
+    border-radius: 6px;
+    outline: none;
+}
+
+select {
+    appearance: none;
+    outline: none;
+    border: 0;
+    width: 100%;
+    background: #fff url('../../data/imgs/arrow_down.png') no-repeat;
+    background-size: 16px;
+    background-position: left center;
 }
 
 /* React: Widget Vector */

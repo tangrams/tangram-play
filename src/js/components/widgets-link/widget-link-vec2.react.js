@@ -49,9 +49,9 @@ export default class WidgetLinkVec2 extends React.Component {
 
         this.drag = false;
 
-        this.handleClick = this.handleClick.bind(this);
-        this._setValue = this._setValue.bind(this);
-        this._drawCanvas = this._drawCanvas.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.setValue = this.setValue.bind(this);
+        this.drawCanvas = this.drawCanvas.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
@@ -62,13 +62,13 @@ export default class WidgetLinkVec2 extends React.Component {
      */
     componentDidMount () {
         // Once the canvas DIV is mounted, we can draw it
-        this._drawCanvas();
+        this.drawCanvas();
     }
 
     /**
      * Draws the canvas
      */
-    _drawCanvas () {
+    drawCanvas () {
         this.ctx = this.refs.canvas.getContext('2d');
         this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -138,7 +138,7 @@ export default class WidgetLinkVec2 extends React.Component {
      *
      * @param pos - takes in a position from which to create a vector
      */
-    _setValue (pos) {
+    setValue (pos) {
         this.value = new Vector(pos);
     }
 
@@ -147,7 +147,7 @@ export default class WidgetLinkVec2 extends React.Component {
      *
      * @param pos - the new position to write out to CodeMirror
      */
-    _updateEditor (pos) {
+    updateEditor (pos) {
         let newpos = pos.getString();
         let start = { line: this.cursor.line, ch: this.match.start };
         let end = { line: this.cursor.line, ch: this.match.end };
@@ -162,7 +162,7 @@ export default class WidgetLinkVec2 extends React.Component {
      * Widget links are handled slightly differently. For now they are simply unmounted from the DOM and recreated again
      * Meaning, handleClick will only be called once to unmount the widget
      */
-    handleClick () {
+    onClick () {
         this.setState({ displayPicker: !this.state.displayPicker });
 
         let widgetlink = document.getElementById('widget-links');
@@ -176,7 +176,7 @@ export default class WidgetLinkVec2 extends React.Component {
         this.drag = true; // START a drag event
         this.overPoint = true; // Change the look of the point within the canvas
 
-        let mousePos = this._getMousePos(this.refs.canvas, e);
+        let mousePos = this.getMousePos(this.refs.canvas, e);
 
         let x = mousePos.x;
         let y = mousePos.y;
@@ -184,8 +184,8 @@ export default class WidgetLinkVec2 extends React.Component {
         this.value.x = ((this.range / this.width) * x) - (this.range - this.max);
         this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
 
-        this._drawCanvas();
-        this._updateEditor(this.value);
+        this.drawCanvas();
+        this.updateEditor(this.value);
     }
 
     /**
@@ -193,7 +193,7 @@ export default class WidgetLinkVec2 extends React.Component {
      */
     onMouseMove (e) {
         if (this.drag === true) { // If DRAG event is true
-            let mousePos = this._getMousePos(this.refs.canvas, e);
+            let mousePos = this.getMousePos(this.refs.canvas, e);
 
             let x = mousePos.x;
             let y = mousePos.y;
@@ -203,8 +203,8 @@ export default class WidgetLinkVec2 extends React.Component {
 
             // this.overPoint = true;
 
-            this._drawCanvas();
-            this._updateEditor(this.value);
+            this.drawCanvas();
+            this.updateEditor(this.value);
         }
     }
 
@@ -214,13 +214,13 @@ export default class WidgetLinkVec2 extends React.Component {
     onMouseUp () {
         this.drag = false; // STOP a drag event
         this.overPoint = false; // Change the look of the point within the canvas
-        this._drawCanvas(); // Draw the new point
+        this.drawCanvas(); // Draw the new point
     }
 
     /**
      * Function to get a mouse position within the canvas element
      */
-    _getMousePos (canvas, evt) {
+    getMousePos (canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
@@ -234,9 +234,9 @@ export default class WidgetLinkVec2 extends React.Component {
      */
     render () {
         return (
-            <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleClick}>
+            <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onClick}>
                 <div className='drag'>
-                    <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                    <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                 </div>
                 {/* The actual widget link */}
                 <canvas className='widget-link-canvas' ref='canvas' width={this.width} height={this.height} onMouseDown={this.onMouseDown} onMouseMove={this.onMouseMove} onMouseUp={this.onMouseUp}/>

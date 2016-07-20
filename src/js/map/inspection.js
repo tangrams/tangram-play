@@ -1,98 +1,20 @@
 import _ from 'lodash';
 import L from 'leaflet';
-import { map, tangramLayer } from './map';
-import { emptyDOMElement } from '../tools/helpers';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import TangramPlay from '../tangram-play';
+import { map, tangramLayer } from './map';
 import { highlightBlock } from '../editor/highlight';
 
 const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
-const EMPTY_SELECTION_NAME_LABEL = '(unnamed)';
+const mountNode = document.getElementById('map-inspection-components');
 
 let isPopupOpen = false;
 let currentPopupX, currentPopupY;
 let globalIntrospectionState = false;
 
-class TangramInspectionPopup {
-    constructor () {
-        let el = this.el = document.createElement('div');
-        el.className = 'map-inspection';
-        el.style.display = 'none';
-
-        let headerEl = this._headerEl = document.createElement('div');
-        headerEl.className = 'map-inspection-header';
-
-        let kindEl = this._kindEl = document.createElement('div');
-        kindEl.className = 'map-inspection-kind-label';
-
-        let nameEl = this._nameEl = document.createElement('div');
-        nameEl.className = 'map-inspection-name-label';
-
-        headerEl.appendChild(kindEl);
-        headerEl.appendChild(nameEl);
-
-        let sourceEl = this._sourceEl = document.createElement('div');
-        sourceEl.className = 'map-inspection-source';
-        sourceEl.style.display = 'none';
-
-        let propertiesEl = this._propertiesEl = document.createElement('div');
-        propertiesEl.className = 'map-inspection-properties';
-        propertiesEl.style.display = 'none';
-
-        let layersEl = this._layersEl = document.createElement('div');
-        layersEl.className = 'map-inspection-layers';
-        layersEl.style.display = 'none';
-
-        let closeEl = this._closeEl = document.createElement('div');
-        closeEl.className = 'map-inspection-close';
-        closeEl.textContent = '×';
-        closeEl.style.display = 'none';
-        // Listeners for this will be added later, during popup creation
-
-        el.appendChild(headerEl);
-        el.appendChild(sourceEl);
-        el.appendChild(propertiesEl);
-        el.appendChild(layersEl);
-        el.appendChild(closeEl);
-
-        document.getElementById('map-container').appendChild(el);
-    }
-
-    showAt (x = 0, y = 0) {
-        // Guarantee that positioning and sizing calculations occur
-        // after DOM content has been placed
-        this.el.style.display = 'block';
-        this.el.style.position = 'absolute';
-
-        const rect = this.el.getBoundingClientRect();
-        const width = rect.width;
-        const height = rect.height;
-
-        this.el.style.left = (x - width / 2) + 'px';
-        // TODO: don't hardcode magic number
-        this.el.style.top = (y - height - 24) + 'px';
-    }
-
-    resetPosition () {
-        this.el.style.display = null; // Ensures that the absolute positioning from hovers is gone
-        this.el.style.position = null;
-        this.el.style.left = null;
-        this.el.style.top = null;
-    }
-
-    hide () {
-        this.el.style.display = 'none';
-        this._closeEl.style.display = 'none';
-        this.hideProperties();
-        this.hideLayers();
-
-        isPopupOpen = false;
-    }
-
-    setLabel (properties) {
-        this.kind = this.determineKindValue(properties);
-        this.name = this.determineFeatureName(properties);
-    }
-
+// This is shared between the hover and the popup
+class TangramInspectionHeader extends React.Component {
     determineKindValue (properties) {
         // Kind is usually present on properties
         if (properties.kind) {
@@ -104,7 +26,7 @@ class TangramInspectionPopup {
         }
     }
 
-    set kind (text) {
+    formatKindValue (text) {
         if (typeof text === 'string') {
             text = text.replace(/_/g, ' ');
             text = _.capitalize(text);
@@ -113,12 +35,7 @@ class TangramInspectionPopup {
             text = EMPTY_SELECTION_KIND_LABEL;
         }
 
-        this._kindEl.textContent = text;
-    }
-
-    get kind () {
-        let text = this._kindEl.textContent;
-        return text !== EMPTY_SELECTION_KIND_LABEL ? text : null;
+        return text;
     }
 
     determineFeatureName (properties) {
@@ -136,105 +53,134 @@ class TangramInspectionPopup {
         }
     }
 
-    set name (text) {
-        if (!text) {
-            // text = EMPTY_SELECTION_NAME_LABEL;
-            this._nameEl.classList.add('map-inspection-name-label-blank');
+    render () {
+        const properties = this.props.feature.properties;
+        const kind = this.formatKindValue(this.determineKindValue(properties));
+        const name = this.determineFeatureName(properties);
+
+        return (
+            <div className='map-inspection-header'>
+                <div className='map-inspection-kind-label'>{kind}</div>
+                {(() => {
+                    // Only render this part if the feature properties have provided a name.
+                    if (name) {
+                        return <div className='map-inspection-name-label'>{name}</div>;
+                    }
+                })()}
+            </div>
+        );
+    }
+}
+
+TangramInspectionHeader.propTypes = {
+    feature: React.PropTypes.object
+};
+
+class TangramInspectionHover extends React.Component {
+    constructor (props) {
+        super(props);
+
+        this.position = this.applyHoverPosition.bind(this);
+    }
+
+    componentDidUpdate () {
+        // Put the component in the right place, if rendered. Some conditions
+        // may prevent rendering; see the render() function.
+        if (this._el) {
+            this.applyHoverPosition();
+        }
+    }
+
+    applyHoverPosition () {
+        const rect = this._el.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        const pixelX = this.props.selection.pixel.x;
+        const pixelY = this.props.selection.pixel.y;
+
+        // TODO: don't hardcode magic number
+        const offsetY = 24;
+
+        this._el.style.left = (pixelX - width / 2) + 'px';
+        this._el.style.top = (pixelY - height - offsetY) + 'px';
+    }
+
+    render () {
+        // The .feature property does not always exist. For instance, when
+        // the map is being dragged, there is no feature being picked. In this
+        // case we do not render the component.
+        if (!this.props.selection.feature) {
+            return null;
         }
         else {
-            this._nameEl.classList.remove('map-inspection-name-label-blank');
+            return (
+                <div className='map-inspection map-inspection-hover' ref={(el) => { this._el = el; }}>
+                    <TangramInspectionHeader feature={this.props.selection.feature} />
+                </div>
+            );
         }
-        this._nameEl.textContent = text;
+    }
+}
+
+TangramInspectionHover.propTypes = {
+    selection: React.PropTypes.object
+};
+
+class TangramInspectionPopup extends React.Component {
+    constructor (props) {
+        super(props);
+
+        this.onMouseDownLayer = this.onMouseDownLayer.bind(this);
+        this.onClickLayer = this.onClickLayer.bind(this);
+        this.onClickClose = this.onClickClose.bind(this);
     }
 
-    get name () {
-        let text = this._nameEl.textContent;
-        return text !== EMPTY_SELECTION_NAME_LABEL ? text : null;
-    }
-
-    showSource (name, layer) {
-        emptyDOMElement(this._sourceEl);
-
-        // Add section label
-        const labelEl = document.createElement('div');
-        labelEl.className = 'map-inspection-label';
-        labelEl.textContent = 'Data source';
-
-        this._sourceEl.appendChild(labelEl);
-
-        // Create table element
-        const tableWrapperEl = document.createElement('div');
-        const tableEl = document.createElement('table');
-        const tbodyEl = document.createElement('tbody');
-
-        tableWrapperEl.className = 'map-inspection-properties-table-wrapper';
-        tableEl.className = 'map-inspection-properties-table';
-        tableEl.appendChild(tbodyEl);
-
-        // Alphabetize key-value pairs
-        let properties = [
-            ['Name', name],
-            ['Layer', layer]
-        ];
-
-        for (let x in properties) {
-            const key = properties[x][0];
-            const value = properties[x][1];
-
-            const tr = document.createElement('tr');
-            const tdKey = document.createElement('td');
-            const tdValue = document.createElement('td');
-            tdKey.className = 'map-inspection-source-item-label';
-            tdKey.textContent = key;
-            tdValue.textContent = value;
-            tr.appendChild(tdKey);
-            tr.appendChild(tdValue);
-
-            // Clicking on the source name should scroll to its position in the editor.
-            // `node` will be undefined if it is not found in the current scene
-            if (value === name) {
-                const node = TangramPlay.getNodesForAddress('sources:' + name);
-                if (node) {
-                    tr.addEventListener('click', event => {
-                        highlightBlock(node);
-                    });
-                }
-            }
-
-            tbodyEl.appendChild(tr);
+    onClickSourceName (event) {
+        const name = event.currentTarget.dataset.sourceName;
+        const node = TangramPlay.getNodesForAddress('sources:' + name);
+        if (node) {
+            highlightBlock(node);
         }
-
-        tableWrapperEl.appendChild(tableEl);
-        this._sourceEl.appendChild(tableWrapperEl);
-
-        this._sourceEl.style.display = 'block';
     }
 
-    hideSource () {
-        emptyDOMElement(this._sourceEl);
-        this._sourceEl.style.display = 'none';
+    // Active highlighting
+    onMouseDownLayer (event) {
+        // Be sure to destroy all other `active` classes on other layers
+        const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
+        for (var i = 0; i < layersNodeList.length; i++) {
+            layersNodeList[i].classList.remove('active');
+        }
+        event.target.classList.add('active');
     }
 
-    showProperties (properties) {
-        emptyDOMElement(this._propertiesEl);
+    onMouseOutLayer (event) {
+        event.target.classList.remove('active');
+    }
 
-        // Add section label
-        const labelEl = document.createElement('div');
-        labelEl.className = 'map-inspection-label';
-        labelEl.textContent = 'Properties';
+    onMouseUpLayer (event) {
+        event.target.classList.remove('active');
+    }
 
-        this._propertiesEl.appendChild(labelEl);
+    // If node is present, clicking on it should allow scrolling to
+    // its position in the editor.
+    onClickLayer (event) {
+        // Be sure to destroy all other `selected` classes on other layers
+        const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
+        for (var i = 0; i < layersNodeList.length; i++) {
+            layersNodeList[i].classList.remove('map-inspection-selected');
+        }
+        event.target.classList.add('map-inspection-selected');
 
-        // Create table element
-        const tableWrapperEl = document.createElement('div');
-        const tableEl = document.createElement('table');
-        const tbodyEl = document.createElement('tbody');
+        // Highlight the block & jump to line.
+        const node = TangramPlay.getNodesForAddress(event.currentTarget.dataset.nodeAddress);
+        highlightBlock(node);
+    }
 
-        tableWrapperEl.className = 'map-inspection-properties-table-wrapper';
-        tableEl.className = 'map-inspection-properties-table';
-        tableEl.appendChild(tbodyEl);
+    onClickClose (event) {
+        map.closePopup();
+    }
 
-        // Alphabetize key-value pairs
+    sortFeatureProperties (properties) {
         let sorted = [];
         Object.keys(properties)
             .sort()
@@ -242,207 +188,124 @@ class TangramInspectionPopup {
                 sorted.push([v, properties[v]]);
             });
 
-        for (let x in sorted) {
-            const key = sorted[x][0];
-            const value = sorted[x][1];
-
-            const tr = document.createElement('tr');
-            const tdKey = document.createElement('td');
-            const tdValue = document.createElement('td');
-            tdKey.textContent = key;
-            tdValue.textContent = value;
-            tr.appendChild(tdKey);
-            tr.appendChild(tdValue);
-
-            tbodyEl.appendChild(tr);
-        }
-
-        tableWrapperEl.appendChild(tableEl);
-        this._propertiesEl.appendChild(tableWrapperEl);
-
-        this._propertiesEl.style.display = 'block';
-        // Resets scroll position (we don't want it to remember scroll position of the previous set of properties)
-        this._propertiesEl.scrollTop = 0;
+        return sorted;
     }
 
-    hideProperties () {
-        emptyDOMElement(this._propertiesEl);
-        this._propertiesEl.style.display = 'none';
-    }
-
-    showLayers (layers) {
-        emptyDOMElement(this._layersEl);
-
-        if (!layers || layers.length === 0) {
-            return;
+    render () {
+        if (!this.props.selection.feature) {
+            return null;
         }
+        else {
+            const sortedProperties = this.sortFeatureProperties(this.props.selection.feature.properties);
+            const layers = this.props.selection.feature.layers;
 
-        // Add section label
-        const labelEl = document.createElement('div');
-        labelEl.className = 'map-inspection-label';
-        labelEl.textContent = 'Layers';
+            return (
+                <div className='map-inspection' ref={(el) => { this._el = el; }}>
+                    <TangramInspectionHeader feature={this.props.selection.feature} />
+                    <div className='map-inspection-source'>
+                        <div className='map-inspection-label'>Data source</div>
+                        <div className='map-inspection-properties-table-wrapper'>
+                            <table className='map-inspection-properties-table'>
+                                <tbody>
+                                    <tr
+                                        onClick={this.onClickSourceName}
+                                        data-source-name={this.props.selection.feature.source_name}
+                                    >
+                                        <td className='map-inspection-source-item-label'>Name</td>
+                                        <td>{this.props.selection.feature.source_name}</td>
+                                    </tr>
+                                    {(() => {
+                                        // Not all data sources will have multiple layers.
+                                        // For instance, https://vector.mapzen.com/osm/earth/{z}/{x}/{y}.topojson
+                                        // is just the earth layer. In this situation, the
+                                        // `selection.feature` object reported by Tangram
+                                        // does not contain a `source_layer` property.
+                                        if (this.props.selection.feature.source_layer) {
+                                            return (
+                                                <tr>
+                                                    <td className='map-inspection-source-item-label'>Layer</td>
+                                                    <td>{this.props.selection.feature.source_layer}</td>
+                                                </tr>
+                                            );
+                                        }
+                                    })()}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className='map-inspection-properties'>
+                        <div className='map-inspection-label'>Properties</div>
+                        <div className='map-inspection-properties-table-wrapper'>
+                            <table className='map-inspection-properties-table'>
+                                <tbody>
+                                    {sortedProperties.map((item) => {
+                                        const key = item[0];
+                                        const value = item[1];
 
-        this._layersEl.appendChild(labelEl);
+                                        return (
+                                            <tr key={key}>
+                                                <td>{key}</td>
+                                                <td>{value}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className='map-inspection-layers'>
+                        <div className='map-inspection-label'>Layers</div>
+                        <div className='map-inspection-layers-container' ref={(el) => { this._layersEl = el; }}>
+                            {layers.map((item) => {
+                                const address = `layers:${item}`;
+                                const node = TangramPlay.getNodesForAddress(address);
 
-        // Add layer container
-        const layerContainerEl = document.createElement('div');
-        layerContainerEl.className = 'map-inspection-layers-container';
-        this._layersEl.appendChild(layerContainerEl);
-
-        // Create list of layers
-        layers.forEach(item => {
-            const layerEl = document.createElement('div');
-            layerEl.className = 'map-inspection-layer-item';
-            layerEl.textContent = item;
-
-            // Layer icon.
-            // A class name will be applied later depending on whether
-            // it's in the scene or imported
-            const iconEl = document.createElement('span');
-            iconEl.className = 'map-inspection-layer-icon';
-            layerEl.insertBefore(iconEl, layerEl.childNodes[0]);
-
-            const node = TangramPlay.getNodesForAddress('layers:' + item);
-
-            // `node` will be undefined if it is not found in the current scene
-            if (node) {
-                iconEl.classList.add('icon-layers');
-
-                // Active highlighting
-                layerEl.addEventListener('mousedown', event => {
-                    // Be sure to destroy all other `active` classes on other layers
-                    const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
-                    for (var i = 0; i < layersNodeList.length; i++) {
-                        layersNodeList[i].classList.remove('active');
-                    }
-                    layerEl.classList.add('active');
-                });
-                layerEl.addEventListener('mouseout', event => {
-                    layerEl.classList.remove('active');
-                });
-                layerEl.addEventListener('mouseup', event => {
-                    layerEl.classList.remove('active');
-                });
-
-                // If node is present, clicking on it should allow scrolling to
-                // its position in the editor.
-                layerEl.addEventListener('click', event => {
-                    // Be sure to destroy all other `selected` classes on other layers
-                    const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
-                    for (var i = 0; i < layersNodeList.length; i++) {
-                        layersNodeList[i].classList.remove('map-inspection-selected');
-                    }
-                    layerEl.classList.add('map-inspection-selected');
-
-                    // Highlight the block & jump to line.
-                    highlightBlock(node);
-                });
-            }
-            else {
-                iconEl.classList.add('icon-imported');
-            }
-
-            layerContainerEl.appendChild(layerEl);
-        });
-
-        this._layersEl.style.display = 'block';
-    }
-
-    hideLayers () {
-        emptyDOMElement(this._layersEl);
-        this._layersEl.style.display = 'none';
-    }
-
-    /**
-     * Attaches this content to Leaflet's L.popup object. This allows the inspector to
-     * be attached to the lat/lng coordinate, so that it is in the right position when the
-     * map is panned or zoomed. It also allows the map to be scrolled into place to show
-     * the entire popup when it opens.
-     */
-    showPopup (leafletEvent) {
-        const popup = L.popup({
-            closeButton: false,
-            closeOnClick: false,
-            autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
-            offset: [0, -6],
-            className: 'map-inspection-popup'
-        });
-
-        popup
-            .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
-            .setContent(this.el)
-            .openOn(map);
-
-        // Attach the close listener to the X. This is done at this point when
-        // we have a reference to the popup event. We could technically also just
-        // rely on the popup's close button, but the thought is that handling our
-        // own even here gives us greater control in the future. That said, this can
-        // go away if depending on L.popup's internal close button is cleaner.
-        this._closeEl.addEventListener('click', event => {
-            map.closePopup(popup);
-        });
-        this._closeEl.style.display = 'block';
-
-        // Provide an animation in. By itself, the translateZ doesn't mean anything.
-        // It's just a "transition from" point. Leaflet adds an animation class
-        // which we hook into to provide a Y-position transform from zero.
-        popup._container.style.transform = 'translateZ(100px)';
-
-        // Attach a listener to the popup close event to clean up. Note that there
-        // can be various ways of closing this popup: the X button, or by clicking
-        // elsewhere on the map and opening a new popup.
-        map.on('popupclose', onPopupClose);
-
-        // Attach a listener to clean up the popup when a new scene is loaded.
-        TangramPlay.on('sceneload', onNewScene);
-
-        function onPopupClose (event) {
-            // Leaflet will be responsible for destroying the elements on close.
-
-            // Provide an animation out. Like the transition in, removing the transform
-            // style here just provides a "transition to" point. We use the Leaflet
-            // popup class to provide the Y-position transform.
-            event.popup._container.style.transform = null;
-            isPopupOpen = false;
-
-            // Clean up events from the map listeners
-            map.off('popupclose', onPopupClose);
-            TangramPlay.off('sceneload', onNewScene);
+                                if (node) {
+                                    return (
+                                        <div
+                                            className='map-inspection-layer-item'
+                                            key={item}
+                                            onMouseDown={this.onMouseDownLayer}
+                                            onMouseOut={this.onMouseOutLayer}
+                                            onMouseUp={this.onMouseUpLayer}
+                                            onClick={this.onClickLayer}
+                                            data-node-address={address}
+                                        >
+                                            <span className='map-inspection-layer-icon icon-layers'></span>
+                                            {item}
+                                        </div>
+                                    );
+                                }
+                                else {
+                                    return (
+                                        <div className='map-inspection-layer-item' key={item}>
+                                            <span className='map-inspection-layer-icon icon-imported'></span>
+                                            {item}
+                                        </div>
+                                    );
+                                }
+                            })}
+                        </div>
+                    </div>
+                    <div className='map-inspection-close' onClick={this.onClickClose}>×</div>
+                </div>
+            );
         }
-
-        function onNewScene (event) {
-            map.closePopup(popup);
-        }
-
-        // Record this state
-        isPopupOpen = true;
     }
 }
 
-// Create an instance only for hovering
-const hoverPopup = new TangramInspectionPopup();
-hoverPopup.el.className += ' map-inspection-hover';
+TangramInspectionPopup.propTypes = {
+    selection: React.PropTypes.object
+};
 
 export function handleInspectionHoverEvent (selection) {
-    // Experiment: only show popups when global introspection is on.
-    if (globalIntrospectionState === false) {
+    // Do not show when global introspection is off, or if the
+    // full popup is open already.
+    if (globalIntrospectionState === false || isPopupOpen === true) {
         return;
     }
 
-    if (isPopupOpen === true) {
-        return;
-    }
-
-    // The .feature property does not always exist.
-    // For instance, when the map is being dragged, there is no
-    // feature being picked. So, make sure it is present.
-    if (!selection.feature) {
-        hoverPopup.hide();
-        return;
-    }
-
-    hoverPopup.setLabel(selection.feature.properties);
-    hoverPopup.showAt(selection.pixel.x, selection.pixel.y);
+    ReactDOM.render(<TangramInspectionHover selection={selection} />, mountNode);
 }
 
 export function handleInspectionClickEvent (selection) {
@@ -464,16 +327,79 @@ export function handleInspectionClickEvent (selection) {
     currentPopupX = selection.pixel.x;
     currentPopupY = selection.pixel.y;
 
-    const inspectPopup = new TangramInspectionPopup();
+    // Hides a hover popup, if any
+    ReactDOM.unmountComponentAtNode(mountNode);
 
-    hoverPopup.hide();
+    // Mounts the inspection popup into a Leaflet popup element
+    showPopup(selection);
+}
 
-    inspectPopup.resetPosition();
-    inspectPopup.setLabel(selection.feature.properties);
-    inspectPopup.showSource(selection.feature.source_name, selection.feature.source_layer);
-    inspectPopup.showProperties(selection.feature.properties);
-    inspectPopup.showLayers(selection.feature.layers);
-    inspectPopup.showPopup(selection.leaflet_event);
+/**
+ * Attaches this content to Leaflet's L.popup object. This allows the inspector to
+ * be attached to the lat/lng coordinate, so that it is in the right position when the
+ * map is panned or zoomed. It also allows the map to be scrolled into place to show
+ * the entire popup when it opens.
+ */
+function showPopup (selection) {
+    const leafletEvent = selection.leaflet_event;
+    const popup = L.popup({
+        closeButton: false,
+        closeOnClick: false,
+        autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
+        offset: [0, -6],
+        className: 'map-inspection-popup'
+    });
+
+    // This is just a placeholder div to mount into. This placeholder div is
+    // attached to the Leaflet popup.
+    const el = document.createElement('div');
+    ReactDOM.render(<TangramInspectionPopup selection={selection} />, el);
+
+    popup
+        .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
+        .setContent(el)
+        .openOn(map);
+
+    // Provide an animation in. By itself, the translateZ doesn't mean anything.
+    // It's just a "transition from" point. Leaflet adds an animation class
+    // which we hook into to provide a Y-position transform from zero.
+    popup._container.style.transform = 'translateZ(100px)';
+
+    // Attach a listener to the popup close event to clean up. Note that there
+    // can be various ways of closing this popup: the X button, or by clicking
+    // elsewhere on the map and opening a new popup.
+    map.on('popupclose', onPopupClose);
+
+    // Attach a listener to clean up the popup when a new scene is loaded.
+    TangramPlay.on('sceneload', onNewScene);
+
+    function onPopupClose (event) {
+        // Leaflet will be responsible for destroying the elements on close.
+
+        // Provide an animation out. Like the transition in, removing the transform
+        // style here just provides a "transition to" point. We use the Leaflet
+        // popup class to provide the Y-position transform.
+        event.popup._container.style.transform = null;
+        isPopupOpen = false;
+
+        // Clean up React DOM
+        // NOTE we should just something like ReactTransitionGroup to handle
+        // the appropriate timing after animation is over.
+        window.setTimeout(() => {
+            ReactDOM.unmountComponentAtNode(el);
+        }, 120);
+
+        // Clean up events from the map listeners
+        map.off('popupclose', onPopupClose);
+        TangramPlay.off('sceneload', onNewScene);
+    }
+
+    function onNewScene (event) {
+        map.closePopup(popup);
+    }
+
+    // Record this state
+    isPopupOpen = true;
 }
 
 /**
@@ -493,5 +419,8 @@ export function setGlobalIntrospection (boolean) {
     }
     else {
         map.getContainer().classList.remove('map-crosshair');
+
+        // Cleanup
+        map.closePopup();
     }
 }

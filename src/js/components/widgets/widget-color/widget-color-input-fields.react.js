@@ -8,14 +8,14 @@ import color from 'react-color/lib/helpers/color';
 export default class WidgetColorInputFields extends React.Component {
     constructor (props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     shouldComponentUpdate () {
         return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
-    handleChange (data) {
+    onChange (data) {
         if (data.hex && color.isValidHex(data.hex)) {
             this.props.onChange({
                 hex: data.hex,
@@ -45,21 +45,21 @@ export default class WidgetColorInputFields extends React.Component {
 
     render () {
         return (
-            <div className='fields flexbox-fix'>
+            <div className='fields'>
                 <div className='double'>
-                    <EditableInput className='input' label='hex' value={ this.props.hex.replace('#', '') } onChange={ this.handleChange }/>
+                    <EditableInput className='input' label='hex' value={ this.props.hex.replace('#', '') } onChange={ this.onChange }/>
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='r' value={ this.props.rgb.r } onChange={ this.handleChange } dragLabel='true' dragMax='255'/>
+                    <EditableInput className='input' label='r' value={ this.props.rgb.r } onChange={ this.onChange }/>
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='g' value={ this.props.rgb.g } onChange={ this.handleChange } dragLabel='true' dragMax='255'/>
+                    <EditableInput className='input' label='g' value={ this.props.rgb.g } onChange={ this.onChange } />
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='b' value={ this.props.rgb.b } onChange={ this.handleChange } dragLabel='true' dragMax='255'/>
+                    <EditableInput className='input' label='b' value={ this.props.rgb.b } onChange={ this.onChange } />
                 </div>
                 <div className='alpha3'>
-                    <EditableInput is='input' label='a' value={ Math.round(this.props.rgb.a * 100) } onChange={ this.handleChange } dragLabel='true' dragMax='100'/>
+                    <EditableInput is='input' label='a' value={ Math.round(this.props.rgb.a * 100) } onChange={ this.onChange } />
                 </div>
             </div>
         );

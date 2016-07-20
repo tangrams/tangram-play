@@ -1,13 +1,5 @@
 /* React: Widget Color */
 
-.drag {
-    background-color: var(--ui-component-color);
-    cursor: move;
-    height: 20px;
-    justify-content: flex-end;
-    display: flex;
-}
-
 .widget-exit {
     padding: 0;
     background-color: transparent;
@@ -47,7 +39,7 @@
 
 /* color-picker-box.react */
 
-.picker {
+.widget-color-box {
     width: 220px;
     padding: 14px;
     box-sizing: initial;
@@ -55,28 +47,28 @@
     background-color: var(--ui-element-color);
 }
 
-.saturation {
+.widget-color-box .saturation {
     width: 100%;
     padding-bottom: 75%;
     position: relative;
     overflow: hidden;
 }
 
-.saturation2 {
+.widget-color-box .saturation2 {
     radius: 3px;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
-.controls {
+.widget-color-box .controls {
     display: flex;
 }
 
-.sliders {
+.widget-color-box .sliders {
     padding: 4px 0;
     flex: 1;
 }
 
-.color {
+.widget-color-box .color {
     width: 24px;
     height: 24px;
     position: relative;
@@ -84,55 +76,55 @@
     margin-left: 4px;
 }
 
-.activeColor {
+.widget-color-box .activeColor {
     width: 100%;
     height: 100%;
 }
 
-.hue {
+.widget-color-box .hue {
     position: relative;
     height: 10px;
     overflow: hidden;
 }
 
-.hue2 {
+.widget-color-box .hue2 {
     radius: 2px;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
-.alpha {
+.widget-color-box .alpha {
     position: relative;
     height: 10px;
     margin-top: 4px;
     overflow: hidden;
 }
 
-.alpha2 {
+.widget-color-box .alpha2 {
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
 /* color-picker-input-fields.react */
 
-.fields {
+.widget-color-box .fields {
     display: flex;
     padding-top: 4px;
 }
 
-.single {
+.widget-color-box .fields .single {
     flex: 1;
     padding-left: 3px;
 }
 
-.alpha3 {
+.widget-color-box .fields .alpha3 {
     flex: 1;
     padding-left: 6px;
 }
 
-.double {
+.widget-color-box .fields .double {
     flex: 2;
 }
 
-.picker input {
+.widget-color-box input {
     width: 80%;
     padding: 4px 8% 3px;
     border: none;
@@ -141,16 +133,6 @@
     text-align: center;
     font-size: 12px;
     color: white;
-}
-
-.label {
-    display: block;
-    text-align: center;
-    font-size: 11px;
-    color: #222;
-    padding-top: 3px;
-    padding-bottom: 4px;
-    text-transform: capitalize;
 }
 
 .single div {
@@ -170,8 +152,4 @@
 
 .modal input:focus {
     box-shadow: none;
-}
-
-.flexbox-fix {
-    display: flex;
 }

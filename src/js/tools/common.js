@@ -55,45 +55,6 @@ export function isNumber (n) {
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
 }
 
-export class StopWatch {
-    constructor (performance) {
-        this.startTime = 0;
-        this.stopTime = 0;
-        this.running = false;
-        this.performance = performance === false ? false : !window.performance;
-    }
-
-    currentTime () {
-        return this.performance ? window.performance.now() : new Date().getTime();
-    }
-
-    start () {
-        this.startTime = this.currentTime();
-        this.running = true;
-    }
-
-    stop () {
-        this.stopTime = this.currentTime();
-        this.running = false;
-    }
-
-    getElapsedMilliseconds () {
-        if (this.running) {
-            this.stopTime = this.currentTime();
-        }
-        return this.stopTime - this.startTime;
-    }
-
-    getElapsedSeconds () {
-        return this.getElapsedMilliseconds() / 1000;
-    }
-
-    printElapsed (name) {
-        let currentName = name || 'Elapsed:';
-        console.log(currentName, '[' + this.getElapsedMilliseconds() + 'ms]', '[' + this.getElapsedSeconds() + 's]');
-    }
-}
-
 export function getDevicePixelRatio (ctx) {
     let devicePixelRatio = window.devicePixelRatio || 1;
     let backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
