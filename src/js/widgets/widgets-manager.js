@@ -1,5 +1,11 @@
 import { editor } from '../editor/editor';
-import { EventEmitter } from '../components/event-emitter';
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import WidgetColor from '../components/widgets/widget-color/widget-color.react';
+import WidgetDropdown from '../components/widgets/widget-dropdown.react';
+// import WidgetVector from '../components/widgets/widget-vector/widget-vector.react';
+import WidgetToggle from '../components/widgets/widget-toggle.react';
 
 /**
  * Initializes widget marks in the current editor viewport and adds event
@@ -117,7 +123,7 @@ function getExistingMarks (fromLine, toLine) {
     // come from different sources, such as the matching-brackets plugin for
     // CodeMirror. We only want widget bookmarks.
     const existingMarks = foundMarks.filter(marker => {
-        return marker.type === 'bookmark' && marker.hasOwnProperty('widget');
+        return marker.type === 'bookmark' && marker.hasOwnProperty('widgetNode');
     });
 
     return existingMarks;
@@ -138,18 +144,55 @@ function clearMarks (fromLine, toLine) {
     }
 }
 
+function createEl (type) {
+    let el = document.createElement('div');
+
+    switch (type) {
+        case 'color':
+            el.className = 'widget-parent widget-color';
+            break;
+        case 'boolean':
+            el.className = 'widget-parent widget-boolean';
+            break;
+        case 'string':
+            el.className = 'widget-parent widget-string';
+            break;
+        case 'vector':
+            el.className = 'widget-parent widget-vector';
+            break;
+        default:
+            // Nothing
+            break;
+    }
+
+    return el;
+    // return document.createDocumentFragment();
+}
+
+function isThereMark (to) {
+    const doc = editor.getDoc();
+    const otherMarks = doc.findMarksAt(to);
+
+    // If there is a mark return true
+    for (let mark of otherMarks) {
+        if (mark.type === 'bookmark') {
+            return true;
+        }
+    }
+
+    // If there is no mark at this location return false
+    return false;
+}
+
 /**
  *
  * @param {Number} fromLine - The line number to insert from
  * @param {Number} toLine - Optional. The line number to insert to. If not
  *          provided, just the fromLine is checked.
- *
  */
 function insertMarks (fromLine, toLine) {
     // If `to` is not provided, use `from`.
     toLine = (toLine || fromLine);
-
-    const newWidgets = [];
 
     // For each line in the range, get the line handle, check for nodes,
     // check for widgets, and add or remove them.
@@ -175,16 +218,52 @@ function insertMarks (fromLine, toLine) {
             // if so, we create it and insert it into the document.
             // Skip blank lines, which may have the state (and widget
             // constructor) of the previous line.
-            if (node.widgetMarkConstructor && lineHandle.text.trim() !== '') {
+            if (node.widgetMark && lineHandle.text.trim() !== '') {
                 const lineNumber = doc.getLineNumber(lineHandle);
-                const widget = node.widgetMarkConstructor.create(node);
-                if (widget.insert(lineNumber)) {
-                    newWidgets.push(widget);
+
+                let mytype = node.widgetMark.type;
+
+                // TODO: What does this do?
+                if (lineNumber) {
+                    node.range.to.line = lineNumber;
+                    node.range.from.line = lineNumber;
+                }
+
+                let myboolean = isThereMark(node.range.to);
+
+                let mybookmark = {};
+
+                if (!myboolean) {
+                    let myel = createEl(mytype);
+
+                    // inserts the widget into CodeMirror DOM
+                    mybookmark = doc.setBookmark(node.range.to, {
+                        widget: myel, // inserted DOM element into position
+                        insertLeft: true,
+                        clearWhenEmpty: true,
+                        handleMouseEvents: false
+                    });
+                    // We attach a the node with all the info on the wiget to a property of the bookmark
+                    // 'bookmark' becomes parent to property 'widgetInfo' that represents a node
+                    mybookmark.widgetInfo = node;
+
+                    if (mytype === 'color') {
+                        ReactDOM.render(<WidgetColor bookmark={mybookmark}/>, myel);
+                    }
+                    else if (mytype === 'string') {
+                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark}/>, myel);
+                    }
+                    // Disabling vector for now
+                    // else if (mytype === 'vector') {
+                    //     ReactDOM.render(<WidgetVector bookmark={mybookmark}/>, myel);
+                    // }
+                    else if (mytype === 'boolean') {
+                        ReactDOM.render(<WidgetToggle bookmark={mybookmark}/>, myel);
+                    }
                 }
             }
         }
     }
-
     // Trigger an event for created widgets - this is picked up by the color palette
-    EventEmitter.dispatch('widget_marks_created', { widgets: newWidgets });
+    // EventEmitter.dispatch('widget_marks_created', { widgets: newWidgets });
 }

@@ -203,7 +203,8 @@ function getInlineNodes (str, nLine) {
         }
         else {
             // check for keypair
-            let isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
+            const isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|\[|\]|,|.|\s|#]*)\s*/gm.exec(str.substr(i));
+            // Before fixing inline nodes:
             if (isNode) {
                 stack[level] = isNode[1];
                 i += isNode[1].length;
@@ -339,6 +340,7 @@ export function parseYamlString (string, state, tabSize) {
 
     // Adds widgets to nodes, if they have them.
     state = attachWidgetMarkConstructorsToDocumentState(state);
+    // console.log(state);
 
     return state;
 }

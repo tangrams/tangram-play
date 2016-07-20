@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import { editor } from '../editor/editor';
+import { editor } from '../../editor/editor';
 
-import ColorPicker from '../pickers/color';
-import Vec3Picker from '../pickers/vec3';
-import Vec2Picker from '../pickers/vec2';
-import FloatPicker from '../pickers/float';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import WidgetLinkVec2 from './widget-link-vec2.react';
+import WidgetLinkNumber from './widget-link-number.react';
 
-export default class Helpers {
+export default class GlslWidgetsLink {
     constructor (main) {
         const wrapper = editor.getWrapperElement();
 
@@ -36,23 +36,26 @@ export default class Helpers {
             let match = this.getMatch(cursor);
 
             if (match) {
-                switch (match.type) {
-                    case 'color':
-                        this.activeModal = newColorPicker(cursor, match);
+                let widgetlink = document.getElementById('widget-links');
 
-                        // This picker has an additional toggle for a vec3
-                        this.activeModal.on('linkbutton', (color) => {
-                            this.activeModal = newVec3Picker(cursor, match);
-                        });
-                        break;
-                    case 'vec3':
-                        this.activeModal = newVec3Picker(cursor, match);
-                        break;
+                // Disabling the vec3 and color picker widget-links for now
+                switch (match.type) {
+                    // case 'color':
+                    //     this.activeModal = newColorPicker(cursor, match);
+                    //
+                    //     // This picker has an additional toggle for a vec3
+                    //     this.activeModal.on('linkbutton', (color) => {
+                    //         this.activeModal = newVec3Picker(cursor, match);
+                    //     });
+                    //     break;
+                    // case 'vec3':
+                    //     this.activeModal = newVec3Picker(cursor, match);
+                    //     break;
                     case 'vec2':
-                        this.activeModal = newVec2Picker(cursor, match);
+                        ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match}/>, widgetlink);
                         break;
                     case 'number':
-                        this.activeModal = newFloatPicker(cursor, match);
+                        ReactDOM.render(<WidgetLinkNumber display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
                         break;
                     default:
                         break;
@@ -140,69 +143,4 @@ function findAllMatches (pattern, string) {
     /* eslint-enable no-cond-assign */
 
     return matches;
-}
-
-/**
- * Create and return picker modals
- *
- * @param {Object} cursor - CodeMirror cursor object
- * @param {Object} match - Match information returned from getMatch()
- */
-function newColorPicker (cursor, match) {
-    const picker = new ColorPicker(match.string, { linkButton: true });
-
-    picker.showAt(editor);
-    picker.on('changed', (color) => {
-        let newColor = color.getString('vec');
-        let start = { line: cursor.line, ch: match.start };
-        let end = { line: cursor.line, ch: match.end };
-        match.end = match.start + newColor.length;
-        editor.replaceRange(newColor, start, end);
-    });
-
-    return picker;
-}
-
-function newVec3Picker (cursor, match) {
-    const picker = new Vec3Picker(match.string);
-
-    picker.showAt(editor);
-    picker.on('changed', (dir) => {
-        let newDir = dir.getString('vec3');
-        let start = { line: cursor.line, ch: match.start };
-        let end = { line: cursor.line, ch: match.end };
-        match.end = match.start + newDir.length;
-        editor.replaceRange(newDir, start, end);
-    });
-
-    return picker;
-}
-
-function newVec2Picker (cursor, match) {
-    const picker = new Vec2Picker(match.string);
-
-    picker.showAt(editor);
-    picker.on('changed', (pos) => {
-        let newpos = pos.getString();
-        let start = { line: cursor.line, ch: match.start };
-        let end = { line: cursor.line, ch: match.end };
-        match.end = match.start + newpos.length;
-        editor.replaceRange(newpos, start, end);
-    });
-
-    return picker;
-}
-
-function newFloatPicker (cursor, match) {
-    const picker = new FloatPicker(match.string);
-
-    picker.showAt(editor);
-    picker.on('changed', (string) => {
-        let start = { line: cursor.line, ch: match.start };
-        let end = { line: cursor.line, ch: match.end };
-        match.end = match.start + string.length;
-        editor.replaceRange(string, start, end);
-    });
-
-    return picker;
 }

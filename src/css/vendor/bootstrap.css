@@ -110,9 +110,9 @@ input,
 optgroup,
 select,
 textarea {
-  margin: 0;
-  font: inherit;
-  color: inherit;
+  /*margin: 0;*/
+  /*font: inherit;*/
+  /*color: inherit;*/
 }
 button {
   overflow: visible;
@@ -1082,9 +1082,7 @@ input,
 button,
 select,
 textarea {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
+
 }
 a {
   color: #337ab7;
@@ -2512,7 +2510,7 @@ input[type="range"] {
 }
 select[multiple],
 select[size] {
-  height: auto;
+  /*height: auto;*/
 }
 input[type="file"]:focus,
 input[type="radio"]:focus,
@@ -2527,26 +2525,22 @@ output {
   color: #555;
 }
 .form-control {
-  display: block;
+  /*display: block;*/
   width: 100%;
-  height: 34px;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.42857143;
-  color: #555;
-  background-color: #fff;
+  /*color: #555;*/
+  /*background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
   -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;*/
 }
 .form-control:focus {
-  border-color: #66afe9;
+  /*border-color: #66afe9;
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
-          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);*/
 }
 .form-control::-moz-placeholder {
   color: #999;
@@ -2605,9 +2599,6 @@ input[type="search"] {
   .input-group-lg input[type="month"] {
     line-height: 46px;
   }
-}
-.form-group {
-  margin-bottom: 15px;
 }
 .radio,
 .checkbox {
@@ -2672,15 +2663,15 @@ fieldset[disabled] .checkbox label {
   cursor: not-allowed;
 }
 .form-control-static {
-  min-height: 34px;
+  /*min-height: 34px;
   padding-top: 7px;
   padding-bottom: 7px;
-  margin-bottom: 0;
+  margin-bottom: 0;*/
 }
 .form-control-static.input-lg,
 .form-control-static.input-sm {
-  padding-right: 0;
-  padding-left: 0;
+  /*padding-right: 0;
+  padding-left: 0;*/
 }
 .input-sm {
   height: 30px;
@@ -2689,68 +2680,68 @@ fieldset[disabled] .checkbox label {
   line-height: 1.5;
 }
 select.input-sm {
-  height: 30px;
-  line-height: 30px;
+  /*height: 30px;
+  line-height: 30px;*/
 }
 textarea.input-sm,
 select[multiple].input-sm {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-sm .form-control {
-  height: 30px;
+  /*height: 30px;
   padding: 5px 10px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.5;*/
 }
 .form-group-sm select.form-control {
-  height: 30px;
-  line-height: 30px;
+  /*height: 30px;
+  line-height: 30px;*/
 }
 .form-group-sm textarea.form-control,
 .form-group-sm select[multiple].form-control {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-sm .form-control-static {
-  height: 30px;
+  /*height: 30px;
   min-height: 32px;
   padding: 6px 10px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.5;*/
 }
 .input-lg {
-  height: 46px;
+  /*height: 46px;
   padding: 10px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 select.input-lg {
-  height: 46px;
-  line-height: 46px;
+  /*height: 46px;
+  line-height: 46px;*/
 }
 textarea.input-lg,
 select[multiple].input-lg {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-lg .form-control {
-  height: 46px;
+  /*height: 46px;
   padding: 10px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 .form-group-lg select.form-control {
-  height: 46px;
-  line-height: 46px;
+  /*height: 46px;
+  line-height: 46px;*/
 }
 .form-group-lg textarea.form-control,
 .form-group-lg select[multiple].form-control {
-  height: auto;
+  /*height: auto;*/
 }
 .form-group-lg .form-control-static {
-  height: 46px;
+  /*height: 46px;
   min-height: 38px;
   padding: 11px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 .has-feedback {
   position: relative;
@@ -2773,16 +2764,16 @@ select[multiple].input-lg {
 .input-lg + .form-control-feedback,
 .input-group-lg + .form-control-feedback,
 .form-group-lg .form-control + .form-control-feedback {
-  width: 46px;
+  /*width: 46px;
   height: 46px;
-  line-height: 46px;
+  line-height: 46px;*/
 }
 .input-sm + .form-control-feedback,
 .input-group-sm + .form-control-feedback,
 .form-group-sm .form-control + .form-control-feedback {
-  width: 30px;
+  /*width: 30px;
   height: 30px;
-  line-height: 30px;
+  line-height: 30px;*/
 }
 .has-success .help-block,
 .has-success .control-label,
@@ -3565,7 +3556,7 @@ tbody.collapse.in {
   content: "";
   border-top: 0;
   border-bottom: 4px dashed;
-  border-bottom: 4px solid \9;
+  border-bottom: 4px solid;
 }
 .dropup .dropdown-menu,
 .navbar-fixed-bottom .dropdown .dropdown-menu {
@@ -3772,16 +3763,16 @@ tbody.collapse.in {
 .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
-  height: 46px;
+  /*height: 46px;
   padding: 10px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1.3333333;*/
 }
 select.input-group-lg > .form-control,
 select.input-group-lg > .input-group-addon,
 select.input-group-lg > .input-group-btn > .btn {
-  height: 46px;
-  line-height: 46px;
+  /*height: 46px;
+  line-height: 46px;*/
 }
 textarea.input-group-lg > .form-control,
 textarea.input-group-lg > .input-group-addon,
@@ -3789,21 +3780,21 @@ textarea.input-group-lg > .input-group-btn > .btn,
 select[multiple].input-group-lg > .form-control,
 select[multiple].input-group-lg > .input-group-addon,
 select[multiple].input-group-lg > .input-group-btn > .btn {
-  height: auto;
+  /*height: auto;*/
 }
 .input-group-sm > .form-control,
 .input-group-sm > .input-group-addon,
 .input-group-sm > .input-group-btn > .btn {
-  height: 30px;
+  /*height: 30px;
   padding: 5px 10px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.5;*/
 }
 select.input-group-sm > .form-control,
 select.input-group-sm > .input-group-addon,
 select.input-group-sm > .input-group-btn > .btn {
-  height: 30px;
-  line-height: 30px;
+  /*height: 30px;
+  line-height: 30px;*/
 }
 textarea.input-group-sm > .form-control,
 textarea.input-group-sm > .input-group-addon,
@@ -3811,7 +3802,7 @@ textarea.input-group-sm > .input-group-btn > .btn,
 select[multiple].input-group-sm > .form-control,
 select[multiple].input-group-sm > .input-group-addon,
 select[multiple].input-group-sm > .input-group-btn > .btn {
-  height: auto;
+  /*height: auto;*/
 }
 .input-group-addon,
 .input-group-btn,
@@ -5682,7 +5673,7 @@ button.close {
   background: transparent;
   border: 0;
 }
-/*
+
 .modal-open {
   overflow: hidden;
 }
@@ -5698,19 +5689,19 @@ button.close {
   -webkit-overflow-scrolling: touch;
 }
 .modal.fade .modal-dialog {
-  -webkit-transition: -webkit-transform .3s ease-out;
-       -o-transition:      -o-transform .3s ease-out;
-          transition:         transform .3s ease-out;
+  /*-webkit-transition: -webkit-transform .1s ease-out;
+       -o-transition:      -o-transform .1s ease-out;
+          transition:         transform .1s ease-out;
   -webkit-transform: translate(0, -25%);
       -ms-transform: translate(0, -25%);
        -o-transform: translate(0, -25%);
-          transform: translate(0, -25%);
+          transform: translate(0, -25%);*/
 }
 .modal.in .modal-dialog {
-  -webkit-transform: translate(0, 0);
+  /*-webkit-transform: translate(0, 0);
       -ms-transform: translate(0, 0);
        -o-transform: translate(0, 0);
-          transform: translate(0, 0);
+          transform: translate(0, 0);*/
 }
 .modal-open .modal {
   overflow-x: hidden;
@@ -5718,19 +5709,18 @@ button.close {
 }
 .modal-dialog {
   position: relative;
-  width: auto;
-  margin: 10px;
+  /*width: auto;*/
 }
 .modal-content {
   position: relative;
-  background-color: #fff;
+  /*background-color: #fff;*/
   -webkit-background-clip: padding-box;
           background-clip: padding-box;
-  border: 1px solid #999;
+  /*border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
 
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-          box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+          box-shadow: 0 3px 9px rgba(0, 0, 0, .5);*/
 }
 .modal-backdrop {
   position: fixed;
@@ -5739,7 +5729,7 @@ button.close {
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #000;
+  /*background-color: #000;*/
 }
 .modal-backdrop.fade {
   filter: alpha(opacity=0);
@@ -5786,7 +5776,7 @@ button.close {
   height: 50px;
   overflow: scroll;
 }
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
   .modal-dialog {
     width: 600px;
     margin: 30px auto;
@@ -5803,8 +5793,8 @@ button.close {
   .modal-lg {
     width: 900px;
   }
-}
-*/
+}*/
+
 .tooltip {
   position: absolute;
   z-index: 1070;
@@ -5997,7 +5987,7 @@ button.close {
 .popover.top > .arrow:after {
   bottom: 1px;
   margin-left: -10px;
-  content: " ";
+  content: "";
   border-top-color: #fff;
   border-bottom-width: 0;
 }

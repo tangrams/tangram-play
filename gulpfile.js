@@ -70,7 +70,7 @@ gulp.task('js', function () {
         entries: 'src/js/tangram-play.js',
         debug: true,
         transform: [
-            babelify.configure({ presets: ['es2015'] }),
+            babelify.configure({ presets: ['es2015', 'react'] }),
             shim,
             envify
         ]
