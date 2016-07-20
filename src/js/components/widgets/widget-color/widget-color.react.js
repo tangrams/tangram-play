@@ -5,7 +5,7 @@ import DraggableModal from '../../draggable-modal.react';
 import Icon from '../../icon.react';
 import WidgetColorBox from './widget-color-box.react';
 
-import { setCodeMirrorValue, editor } from '../../../editor/editor';
+import { setCodeMirrorValue } from '../../../editor/editor';
 import ColorConverter from './color-converter';
 
 /**
@@ -28,7 +28,11 @@ export default class WidgetColor extends React.Component {
             y: 0
         };
         this.bookmark = this.props.bookmark;
-        this.height = 300; // Need to know width in case a widget is about to get rendered outside of the normal screen size
+
+        // Need to know width in case a widget is about to get rendered outside of the normal screen size
+        // TODO: Don't hardcode this.
+        this.height = 300;
+        this.width = 250;
 
         this.onClick = this.onClick.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -77,21 +81,36 @@ export default class WidgetColor extends React.Component {
     onClick () {
         // Every time user clicks, modal position has to be updated.
         // This is because the user might have scrolled the CodeMirror editor
-        let linePos = { line: this.bookmark.widgetInfo.range.to.line, ch: this.bookmark.widgetInfo.range.to.ch }; // Position where user cliked on a line
-        let currentX = editor.charCoords(linePos).left - 20;
-        let currentY = editor.charCoords(linePos).bottom - 80;
 
-        let el = document.getElementsByClassName('workspace-container')[0];
-        let screenHeight = el.clientHeight;
-        let maxheight = currentY + this.height + 80;
-        // If the widget would render outside of the screen height
-        if (maxheight > screenHeight) {
-            currentY = screenHeight - this.height - 100; // Ofset the top position of the modal by a little
+        // Magic numbers
+        // Vertical distance in pixels to offset from the bookmark element
+        const VERTICAL_POSITION_BUFFER = 5;
+
+        // Vertical distance in pixels to correct for locking modal position to
+        // the workspace area. This works in conjunction with a hard-coded
+        // margin-top property on the modal to keep the modal in place.
+        const WORKSPACE_VERTICAL_CORRECTION = 47;
+
+        const bookmarkPos = this.bookmark.widgetNode.querySelector('.widget').getBoundingClientRect();
+        let posX = bookmarkPos.left;
+        let posY = bookmarkPos.bottom + VERTICAL_POSITION_BUFFER - WORKSPACE_VERTICAL_CORRECTION;
+
+        const workspaceEl = document.getElementsByClassName('workspace-container')[0];
+        const workspaceBounds = workspaceEl.getBoundingClientRect();
+        const maxX = posX + this.width;
+        const maxY = posY + this.height;
+
+        // Check if the widget would render outside of the workspace container area
+        if (maxX > workspaceBounds.width) {
+            posX = workspaceBounds.width - this.width;
         }
-        // Set the x and y of the modal that will contain the widget
-        this.setState({ x: currentX });
-        this.setState({ y: currentY });
+        if (maxY > workspaceBounds.height) {
+            posY = workspaceBounds.height - this.height;
+        }
 
+        // Set the x and y of the modal that will contain the widget
+        this.setState({ x: posX });
+        this.setState({ y: posY });
         this.setState({ displayColorPicker: !this.state.displayColorPicker });
     }
 

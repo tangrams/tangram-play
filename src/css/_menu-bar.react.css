@@ -17,6 +17,13 @@ nav {
     height: 44px;
 }
 
+.menu-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
 .menu-bar .container {
     margin: 0;
     padding-left: 0;
