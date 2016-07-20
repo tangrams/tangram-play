@@ -109,7 +109,7 @@ export default class WidgetColor extends React.Component {
      */
     onChange (color) {
         let oldColor = this.state.color;
-        let newColor = new Color(color.rgb);
+        let newColor = new Color(color);
         this.setState({ color: newColor });
 
         this.setEditorValue(newColor.getVecString());
