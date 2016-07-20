@@ -85,7 +85,16 @@ function handleEditorScroll (cm) {
 }
 
 /**
- * Returns an array of existing marks
+ * Returns an array of existing marks between a range of lines.
+ * This abstracts over CodeMirror's `findMarks()` method, which requires
+ * giving it character positions, and does not find marks that are located
+ * at the edge of a character range (you would need `findMarksAt()` for that).
+ * Furthermore, `findMarks()` fails to locate marks on blank lines within the
+ * given range.
+ *
+ * In our implementation, you only need to provide line numbers, and we'll
+ * iterate through each line, calling `findMarks` and `findMarksAt` to make
+ * sure that all marks on those lines are found.
  *
  * @param {Number} fromLine - The line number to start looking from
  * @param {Number} toLine - Optional. The line number to look to. If not
@@ -109,9 +118,10 @@ function getExistingMarks (fromLine, toLine) {
         const foundMarks = doc.findMarks(fromPos, toPos) || [];
         existingMarks = existingMarks.concat(foundMarks);
 
-        // findMarks() does not find marks at the outer edge of a range.
-        // So we must check the end of the line for a mark, as well.
-        // This also returns marks that are found at position 0 of a blank line.
+        // `findMarks()` does not find marks at the outer edge of a range.
+        // Nor will it find marks located on blank lines, even if it is within
+        // the range. So we must specifically check the end of each line,
+        // including position 0 of a blank line, for a mark.
         const trailingMarks = doc.findMarksAt(toPos);
         existingMarks = existingMarks.concat(trailingMarks);
     }
