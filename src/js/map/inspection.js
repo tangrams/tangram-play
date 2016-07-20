@@ -6,7 +6,6 @@ import TangramPlay from '../tangram-play';
 import { map, tangramLayer } from './map';
 import { highlightBlock } from '../editor/highlight';
 
-const EMPTY_SELECTION_KIND_LABEL = 'Unknown feature';
 const mountNode = document.getElementById('map-inspection-components');
 
 let isPopupOpen = false;
@@ -16,7 +15,8 @@ let globalIntrospectionState = false;
 // This is shared between the hover and the popup
 class TangramInspectionHeader extends React.Component {
     determineKindValue (properties) {
-        // Kind is usually present on properties
+        // Kind is usually present on properties in Mapzen vector tile service.
+        // (For more info: https://mapzen.com/documentation/vector-tiles/layers/)
         if (properties.kind) {
             return properties.kind;
         }
@@ -32,7 +32,7 @@ class TangramInspectionHeader extends React.Component {
             text = _.capitalize(text);
         }
         else {
-            text = EMPTY_SELECTION_KIND_LABEL;
+            text = '';
         }
 
         return text;
@@ -57,14 +57,16 @@ class TangramInspectionHeader extends React.Component {
         const properties = this.props.feature.properties;
         const kind = this.formatKindValue(this.determineKindValue(properties));
         const name = this.determineFeatureName(properties);
+        const UNKNOWN_LABEL = 'Unknown feature';
 
         return (
             <div className='map-inspection-header'>
-                <div className='map-inspection-kind-label'>{kind}</div>
+                <div className='map-inspection-header-label'>{name || kind || UNKNOWN_LABEL}</div>
                 {(() => {
-                    // Only render this part if the feature properties have provided a name.
-                    if (name) {
-                        return <div className='map-inspection-name-label'>{name}</div>;
+                    // Only render this part if the feature properties have provided
+                    // a name AND a `kind` property (Mapzen vector tiles).
+                    if (name && kind) {
+                        return <div className='map-inspection-header-sublabel'>{kind}</div>;
                     }
                 })()}
             </div>
