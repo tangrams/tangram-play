@@ -49,8 +49,8 @@ export default class WidgetDropdown extends React.Component {
             this.state = { options: keys };
         }
 
-        this.handleChange = this.handleChange.bind(this);
-        this._setSource = this._setSource.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.setSource = this.setSource.bind(this);
     }
 
     /**
@@ -58,13 +58,13 @@ export default class WidgetDropdown extends React.Component {
      */
     componentDidMount () {
         // Need to subscribe to when Tangram scene loads in order to populate the source widget
-        EventEmitter.subscribe('tangram:sceneinit', this._setSource);
+        EventEmitter.subscribe('tangram:sceneinit', this.setSource);
     }
 
     /**
      * Function called once the Tangram scene has loaded in order to update the source dropdown
      */
-    _setSource () {
+    setSource () {
         // If the dropdown is of type source then get sources from tangramLayer.scene
         if (this.key === 'source') {
             let obj = getAddressSceneContent(tangramLayer.scene, this.bookmark.widgetInfo.widgetMark.source);
@@ -77,10 +77,10 @@ export default class WidgetDropdown extends React.Component {
     /**
      * Called anytime there is a change in the dropdown form. I.e. when user opens or selects something
      */
-    handleChange (e) {
+    onChange (e) {
         this.value = e.target.value;
 
-        this._setEditorValue(this.value);
+        this.setEditorValue(this.value);
     }
 
     /* SHARED METHOD FOR ALL WIDGETS */
@@ -88,7 +88,7 @@ export default class WidgetDropdown extends React.Component {
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    _setEditorValue (string) {
+    setEditorValue (string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
@@ -97,16 +97,18 @@ export default class WidgetDropdown extends React.Component {
      * Called every time state or props are changed
      */
     render () {
-        return (
-            <FormGroup className='widget-dropdown' controlId='widget-form-dropdown'>
-                <FormControl componentClass='select' className='widget-form-control' placeholder='select' onChange={this.handleChange}>
-                    <option value='--select--'>-- select --</option>
-                    {this.state.options.map(function (result, i) {
-                        return <option key={i} value={result}>{result}</option>;
-                    })}
-                </FormControl>
-            </FormGroup>
-        );
+        if (this.state.options.length !== 0) {
+            return (<FormGroup className='widget-dropdown' controlId='widget-form-dropdown'>
+                        <FormControl componentClass='select' className='widget-form-control' placeholder='select' onChange={this.onChange}>
+                            {this.state.options.map(function (result, i) {
+                                return <option key={i} value={result}>{result}</option>;
+                            })}
+                        </FormControl>
+                    </FormGroup>);
+        }
+        else {
+            return null;
+        }
     }
 }
 

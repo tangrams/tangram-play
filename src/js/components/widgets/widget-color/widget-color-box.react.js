@@ -9,14 +9,14 @@ import WidgetColorInputFields from './widget-color-input-fields.react';
 class WidgetColorBox extends React.Component {
     constructor (props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     shouldComponentUpdate () {
         return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
-    handleChange (data) {
+    onChange (data) {
         this.props.onChange(data);
     }
 
@@ -24,15 +24,15 @@ class WidgetColorBox extends React.Component {
         return (
             <div className='widget-color-box'>
                 <div className='saturation'>
-                    <Saturation className='saturation2' {...this.props} onChange={ this.handleChange }/>
+                    <Saturation className='saturation2' {...this.props} onChange={ this.onChange }/>
                 </div>
                 <div className='controls flexbox-fix'>
                     <div className='sliders'>
                         <div className='hue'>
-                            <Hue className='hue2' {...this.props} onChange={ this.handleChange } />
+                            <Hue className='hue2' {...this.props} onChange={ this.onChange } />
                         </div>
                         <div className='alpha'>
-                            <Alpha className='alpha2' {...this.props} onChange={ this.handleChange } />
+                            <Alpha className='alpha2' {...this.props} onChange={ this.onChange } />
                         </div>
                     </div>
                     <div className='color'>
@@ -40,7 +40,7 @@ class WidgetColorBox extends React.Component {
                     </div>
                 </div>
                 <div className='fields'>
-                    <WidgetColorInputFields {...this.props} onChange={ this.handleChange } />
+                    <WidgetColorInputFields {...this.props} onChange={ this.onChange } />
                 </div>
             </div>
         );

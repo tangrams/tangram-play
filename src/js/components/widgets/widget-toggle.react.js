@@ -23,7 +23,7 @@ export default class WidgetToggle extends React.Component {
             value: this.bookmark.widgetInfo.value
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     /**
@@ -40,11 +40,11 @@ export default class WidgetToggle extends React.Component {
     /**
      * Called anytime user clicks on checkbox
      */
-    handleChange (e) {
+    onChange (e) {
         let newvalue = this.input.checked;
         this.setState({ value: newvalue });
 
-        this._setEditorValue(newvalue.toString());
+        this.setEditorValue(newvalue.toString());
     }
 
     /* SHARED METHOD FOR ALL WIDGETS */
@@ -52,7 +52,7 @@ export default class WidgetToggle extends React.Component {
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    _setEditorValue (string) {
+    setEditorValue (string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
@@ -64,7 +64,7 @@ export default class WidgetToggle extends React.Component {
      */
     render () {
         return (
-            <Checkbox className='widget widget-toggle' onChange={this.handleChange} inputRef={ref => { this.input = ref; }}>
+            <Checkbox className='widget widget-toggle' onChange={this.onChange} inputRef={ref => { this.input = ref; }}>
             </Checkbox>
         );
     }

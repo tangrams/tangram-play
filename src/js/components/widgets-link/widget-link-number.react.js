@@ -50,13 +50,13 @@ export default class WidgetLinkNumber extends React.Component {
         this.offsetX = this.value * this.center;
 
         this.value = parseFloat(this.props.value);
-        this._setValue(this.value);
+        this.setValue(this.value);
 
         this.drag = false;
 
-        this.handleClick = this.handleClick.bind(this);
-        this._setValue = this._setValue.bind(this);
-        this._drawCanvas = this._drawCanvas.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.setValue = this.setValue.bind(this);
+        this.drawCanvas = this.drawCanvas.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
@@ -68,13 +68,13 @@ export default class WidgetLinkNumber extends React.Component {
      * React lifecycle method called once DIV is mounted
      */
     componentDidMount () {
-        this._drawCanvas();
+        this.drawCanvas();
     }
 
     /**
      * Draws the canvas
      */
-    _drawCanvas () {
+    drawCanvas () {
         this.ctx = this.refs.canvas.getContext('2d');
         this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -105,10 +105,10 @@ export default class WidgetLinkNumber extends React.Component {
         this.ctx.closePath();
         this.ctx.fill();
 
-        let times = 3;
-        let unit = 40;
-        let step = this.width / unit;
-        let sections = unit * times;
+        const times = 3;
+        const unit = 40;
+        const step = this.width / unit;
+        const sections = unit * times;
 
         let offsetX = this.offsetX;
 
@@ -119,13 +119,13 @@ export default class WidgetLinkNumber extends React.Component {
         this.ctx.strokeStyle = this.dimColor;
         this.ctx.beginPath();
         for (let i = 0; i < sections; i++) {
-            let l = (i % (unit / 2) === 0) ? this.height * 0.35 : (i % (unit / 4) === 0) ? this.height * 0.2 : this.height * 0.1;
+            const l = (i % (unit / 2) === 0) ? this.height * 0.35 : (i % (unit / 4) === 0) ? this.height * 0.2 : this.height * 0.1;
             this.ctx.moveTo(i * step - offsetX, this.height * 0.5 - l);
             this.ctx.lineTo(i * step - offsetX, this.height * 0.5 + l);
         }
         this.ctx.stroke();
 
-        let val = Math.round(((this.value - this.min) / this.range) * this.width);
+        const val = Math.round(((this.value - this.min) / this.range) * this.width);
 
         // point
         this.ctx.strokeStyle = this.overPoint ? this.selColor : this.fnColor;
@@ -144,7 +144,7 @@ export default class WidgetLinkNumber extends React.Component {
      *
      * @param value - new value to set our number to
      */
-    _setValue (value) {
+    setValue (value) {
         this.value = value;
         this.offsetX = this.value * this.center;
     }
@@ -154,9 +154,9 @@ export default class WidgetLinkNumber extends React.Component {
      *
      * @param string - the new number to write out to CodeMirror
      */
-    _updateEditor (string) {
-        let start = { line: this.cursor.line, ch: this.match.start };
-        let end = { line: this.cursor.line, ch: this.match.end };
+    updateEditor (string) {
+        const start = { line: this.cursor.line, ch: this.match.start };
+        const end = { line: this.cursor.line, ch: this.match.end };
         this.match.end = this.match.start + string.length;
         editor.replaceRange(string, start, end);
     }
@@ -168,7 +168,7 @@ export default class WidgetLinkNumber extends React.Component {
      * Widget links are handled slightly differently. For now they are simply unmounted from the DOM and recreated again
      * Meaning, handleClick will only be called once to unmount the widget
      */
-    handleClick () {
+    onClick () {
         this.setState({ displayPicker: !this.state.displayPicker });
 
         let widgetlink = document.getElementById('widget-links');
@@ -182,9 +182,9 @@ export default class WidgetLinkNumber extends React.Component {
         this.drag = true; // START of a drag event
         this.overPoint = true; // Change the look of the point within the canvas
 
-        let mousePos = this._getMousePos(this.refs.canvas, e);
+        let mousePos = this.getMousePos(this.refs.canvas, e);
         this.prevOffset = mousePos.x;
-        this._drawCanvas();
+        this.drawCanvas();
     }
 
     /**
@@ -192,18 +192,18 @@ export default class WidgetLinkNumber extends React.Component {
      */
     onMouseMove (e) {
         if (this.drag === true) { // If user is dragging mouse
-            let mousePos = this._getMousePos(this.refs.canvas, e);
+            let mousePos = this.getMousePos(this.refs.canvas, e);
 
             let x = mousePos.x;
 
             let vel = x - this.prevOffset;
             let offset = this.offsetX - vel;
 
-            this._setValue(offset / this.center);
+            this.setValue(offset / this.center);
             this.prevOffset = x;
 
-            this._drawCanvas();
-            this._updateEditor(this.value.toFixed(3));
+            this.drawCanvas();
+            this.updateEditor(this.value.toFixed(3));
         }
     }
 
@@ -213,7 +213,7 @@ export default class WidgetLinkNumber extends React.Component {
     onMouseUp () {
         this.drag = false; // STOP a drag event
         this.overPoint = false; // Change the look of the point within the canvas
-        this._drawCanvas(); // Draw the new point
+        this.drawCanvas(); // Draw the new point
     }
 
 
@@ -223,13 +223,13 @@ export default class WidgetLinkNumber extends React.Component {
     onMouseLeave () {
         this.drag = false;
         this.overPoint = false; // Change the look of the point within the canvas
-        this._drawCanvas(); // Draw the new point
+        this.drawCanvas(); // Draw the new point
     }
 
     /**
      * Function to get a mouse position within the canvas element
      */
-    _getMousePos (canvas, evt) {
+    getMousePos (canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
@@ -247,11 +247,11 @@ export default class WidgetLinkNumber extends React.Component {
         let vel = x - this.prevWheelOffset;
         let offset = this.offsetX - vel;
 
-        this._setValue(offset / this.center);
+        this.setValue(offset / this.center);
         // this.prevOffset = x;
 
-        this._drawCanvas();
-        this._updateEditor(this.value.toFixed(3));
+        this.drawCanvas();
+        this.updateEditor(this.value.toFixed(3));
 
         this.prevWheelOffset = e.deltaY - this.prevWheelOffset;
     }
@@ -262,9 +262,9 @@ export default class WidgetLinkNumber extends React.Component {
      */
     render () {
         return (
-            <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleClick}>
+            <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onClick}>
                 <div className='drag'>
-                    <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                    <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                 </div>
                 {/* The actual widget link */}
                 <canvas className='widget-link-canvas' ref='canvas' width={this.width} height={this.height} onMouseDown={this.onMouseDown} onMouseMove={this.onMouseMove} onMouseUp={this.onMouseUp} onMouseLeave={this.onMouseLeave} onWheel={this.onWheel}/>

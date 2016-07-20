@@ -6,6 +6,16 @@
     text-indent: initial;
 }
 
+/* For the draggable modal */
+
+.drag {
+    background-color: var(--ui-component-color);
+    cursor: move;
+    height: 20px;
+    justify-content: flex-end;
+    display: flex;
+}
+
 /* React Widgets */
 
 .widget {
@@ -126,7 +136,7 @@ select {
     outline: none;
     border: 0;
     width: 100%;
-    background: #fff url('https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-128.png') no-repeat;
+    background: #fff url('../../data/imgs/arrow_down.png') no-repeat;
     background-size: 16px;
     background-position: left center;
 }

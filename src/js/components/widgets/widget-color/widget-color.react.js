@@ -23,15 +23,15 @@ export default class WidgetColor extends React.Component {
         super(props);
         this.state = {
             displayColorPicker: false,
-            color: this._processUserColor(this.props.bookmark.widgetInfo.value),
+            color: this.processUserColor(this.props.bookmark.widgetInfo.value),
             x: 0,
             y: 0
         };
         this.bookmark = this.props.bookmark;
         this.height = 300; // Need to know width in case a widget is about to get rendered outside of the normal screen size
 
-        this.handleClick = this.handleClick.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     /**
@@ -40,7 +40,7 @@ export default class WidgetColor extends React.Component {
      *
      * @param color - current color being typed by the user
      */
-    _processUserColor (color) {
+    processUserColor (color) {
         // If a hex color
         if (color.charAt(0) === '\'' && (color.charAt(color.length - 1) === '\'')) {
             return color.replace(/'/g, '');
@@ -74,7 +74,7 @@ export default class WidgetColor extends React.Component {
     /**
      * Open or close the color picker widget
      */
-    handleClick () {
+    onClick () {
         // Every time user clicks, modal position has to be updated.
         // This is because the user might have scrolled the CodeMirror editor
         let linePos = { line: this.bookmark.widgetInfo.range.to.line, ch: this.bookmark.widgetInfo.range.to.ch }; // Position where user cliked on a line
@@ -101,13 +101,13 @@ export default class WidgetColor extends React.Component {
      *
      * @param color - color that user has chosen in the color picker widget
      */
-    handleChange (color) {
+    onChange (color) {
         this.setState({ color: color.rgb });
 
         let vecColor = ColorConverter.rgb2vec(color.rgb);
         let vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (color.rgb.a).toFixed(2) + ']';
 
-        this._setEditorValue(vecColorString);
+        this.setEditorValue(vecColorString);
     }
 
     /* SHARED METHOD FOR ALL WIDGETS */
@@ -115,7 +115,7 @@ export default class WidgetColor extends React.Component {
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    _setEditorValue (string) {
+    setEditorValue (string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
@@ -146,15 +146,15 @@ export default class WidgetColor extends React.Component {
         return (
             <div>
                 {/* The widget button user clicks to open color picker */}
-                <div className='widget widget-colorpicker' onClick={ this.handleClick } style={widgetStyle}></div>
+                <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
 
                 {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.handleClick}>
+                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
                     <div className='drag'>
-                        <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                        <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.handleChange }/>
+                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
                 </Modal>
             </div>
         );

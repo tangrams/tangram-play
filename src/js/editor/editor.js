@@ -142,8 +142,8 @@ export function getNodesInRange (from, to) {
  * @param {string} value - The new value to set to
  */
 export function setCodeMirrorValue (bookmark, value) {
-    let origin = '+value_change';
-    let node = bookmark.widgetInfo;
+    const origin = '+value_change';
+    const node = bookmark.widgetInfo;
 
     const doc = editor.getDoc();
 

@@ -1,13 +1,5 @@
 /* React: Widget Color */
 
-.drag {
-    background-color: var(--ui-component-color);
-    cursor: move;
-    height: 20px;
-    justify-content: flex-end;
-    display: flex;
-}
-
 .widget-exit {
     padding: 0;
     background-color: transparent;
@@ -113,22 +105,22 @@
 
 /* color-picker-input-fields.react */
 
-.fields {
+.widget-color-box .fields {
     display: flex;
     padding-top: 4px;
 }
 
-.fields .single {
+.widget-color-box .fields .single {
     flex: 1;
     padding-left: 3px;
 }
 
-.fields .alpha3 {
+.widget-color-box .fields .alpha3 {
     flex: 1;
     padding-left: 6px;
 }
 
-.fields .double {
+.widget-color-box .fields .double {
     flex: 2;
 }
 
