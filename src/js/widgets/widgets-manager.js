@@ -93,36 +93,33 @@ function handleEditorScroll (cm) {
  */
 function getExistingMarks (fromLine, toLine) {
     // If `to` is not provided, use `from`.
-    // Add one to this, so we check the entirety of the `to` line. This seems to
-    // be an effective shorthand which means we do not have to obtain the
-    // length of the `from` line.
-    toLine = (toLine || fromLine) + 1;
+    toLine = fromLine;
 
     const doc = editor.getDoc();
+    let existingMarks = [];
 
-    // Create position objects representing the range to find marks in.
-    const fromPos = { line: fromLine, ch: 0 };
-    const toPos = { line: toLine, ch: 0 };
-
-    // Look for existing text markers
-    let foundMarks = doc.findMarks(fromPos, toPos) || [];
-
-    // findMarks() does not find marks on empty lines even if it is within the
-    // range provided. (This might be a CodeMirror bug?) In this case, we
-    // manually check each line to see if it is empty, and if so, explicitly
-    // search for a mark at the zero-character position on that line.
-    for (let line = fromLine; line < toLine; line++) {
+    for (let line = fromLine; line <= toLine; line++) {
         const lineContent = doc.getLine(line) || '';
-        if (lineContent.length === 0) {
-            const marks = doc.findMarksAt({ line: line, ch: 0 });
-            foundMarks = foundMarks.concat(marks);
-        }
+
+        // Create position objects representing the range of this line
+        const fromPos = { line: line, ch: 0 };
+        const toPos = { line: line, ch: lineContent.length };
+
+        // Look for existing text markers within this range
+        const foundMarks = doc.findMarks(fromPos, toPos) || [];
+        existingMarks = existingMarks.concat(foundMarks);
+
+        // findMarks() does not find marks at the outer edge of a range.
+        // So we must check the end of the line for a mark, as well.
+        // This also returns marks that are found at position 0 of a blank line.
+        const trailingMarks = doc.findMarksAt(toPos);
+        existingMarks = existingMarks.concat(trailingMarks);
     }
 
     // Filter out anything that is not of type `bookmark`. Text markers can
     // come from different sources, such as the matching-brackets plugin for
     // CodeMirror. We only want widget bookmarks.
-    const existingMarks = foundMarks.filter(marker => {
+    existingMarks = existingMarks.filter(marker => {
         return marker.type === 'bookmark' && marker.hasOwnProperty('widgetNode');
     });
 
