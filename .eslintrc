@@ -50,7 +50,7 @@
     "key-spacing": [2, { "beforeColon": false, "afterColon": true }],
     "keyword-spacing": [2, { "before": true, "after": true }],
     "linebreak-style": [2, "unix"],
-    # "new-cap": 2, // Temporarily disabled this rule becuase was forcing functions to start with lower case and confusing a React wrapper as a function
+    "new-cap": ["error", { "capIsNewExceptions": ["CustomPicker"] }],
     "new-parens": 2,
     "no-array-constructor": 2,
     "no-caller": 2,
