@@ -38,9 +38,12 @@ export default class WidgetColor extends React.Component {
 
         this.onClick = this.onClick.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.handlePaletteChange = this.handlePaletteChange.bind(this);
+        this.onPaletteChange = this.onPaletteChange.bind(this);
     }
 
+    /**
+     * React lifecycle function. Gets called once when DIV is mounted
+     */
     componentDidMount () {
         // Only pass on colors that are valid. i.e. as the user types the color widget is white by default but
         // the widget does not representa  fully valid color
@@ -48,11 +51,15 @@ export default class WidgetColor extends React.Component {
             EventEmitter.dispatch('widgets:color', this.state.color);
         }
 
-        EventEmitter.subscribe('color-palette:color-change', data => { this.handlePaletteChange(data); });
+        EventEmitter.subscribe('color-palette:color-change', data => { this.onPaletteChange(data); });
     }
 
     componentWillUnmount () {
         EventEmitter.dispatch('widgets:color-unmount', this.state.color);
+
+        // Do nothing on color palette changes if the React component has been unmounted.
+        // This is to prevent following error: "Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component."
+        EventEmitter.subscribe('color-palette:color-change', data => {});
     }
 
     /**
@@ -110,10 +117,16 @@ export default class WidgetColor extends React.Component {
         EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
     }
 
-    handlePaletteChange (data) {
+    /**
+     * Every time a user changes a color on the color palette, all color widgets
+     * need to check whether that change applies to their own internal color
+     *
+     * @param data - the new color the user has chosen
+     */
+    onPaletteChange (data) {
         if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
             this.setState({ color: data.new });
-            this._setEditorValue(data.new.getVecString());
+            this.setEditorValue(data.new.getVecString());
         }
     }
 

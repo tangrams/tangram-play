@@ -11,7 +11,7 @@ export default class Color {
         this.valid = true;
 
         let firstPass = this._processColor(color); // Catch a color written in vec format
-        let secondPass = this._processRGB(firstPass); // Convert color to rgb
+        let secondPass = this._processTinyColor(firstPass); // Creates a tinycolor color object
 
         this.color = secondPass;
     }
@@ -36,7 +36,7 @@ export default class Color {
                 colorString = colorString.split(',');
 
                 if (colorString.length >= 3) {
-                    let vec = { v: colorString[0], e: colorString[1], c: colorString[2] };
+                    const vec = { v: colorString[0], e: colorString[1], c: colorString[2] };
                     let rgb = this._vec2rgb(vec);
                     rgb.a = 1.0; // We need to add an alpha by default so that the widget button can update css properly
 
@@ -54,7 +54,8 @@ export default class Color {
         return color;
     }
 
-    _processRGB (color) {
+    // Creates a tinycolor color object
+    _processTinyColor (color) {
         let newColor = tinycolor(color);
 
         if (!newColor.isValid()) {
@@ -65,6 +66,7 @@ export default class Color {
         return newColor;
     }
 
+    // Converts the internally stored color from vec to rgb
     _vec2rgb (vec) {
         return {
             r: vec.v * valueRanges.rgb.r[1],
@@ -73,6 +75,7 @@ export default class Color {
         };
     }
 
+    // Converts the internally stored color from rgb to vec
     _rgb2vec () {
         return {
             v: this.color.toRgb().r / valueRanges.rgb.r[1],
@@ -91,9 +94,10 @@ export default class Color {
         return this.color.toRgbString();
     }
 
+    // Returns vec string "[0.x, 0.x , 0.x, 0.x]"
     getVecString () {
-        let vecColor = this._rgb2vec();
-        let vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (this.color.getAlpha()).toFixed(2) + ']';
+        const vecColor = this._rgb2vec();
+        const vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (this.color.getAlpha()).toFixed(2) + ']';
         return vecColorString;
     }
 
