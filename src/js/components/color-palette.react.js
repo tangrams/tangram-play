@@ -18,19 +18,19 @@ export default class ColorPalette extends React.Component {
 
         this.state = {
             colors: [],
-            currentColor: {
+            currentColor: { // We need a default color for an initial rendering
                 color: new Color('white'),
                 count: 1
             },
-            currentPosition: 0,
+            currentPosition: 0, // Keeps track of what color we are editing within the color palette array of colors
             displayPicker: false,
-            x: 0,
+            x: 0, // X and Y positions for the color picker modal
             y: 0
         };
 
-        this.handleClick = this.handleClick.bind(this);
-        this.handleHide = this.handleHide.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.onHide = this.onHide.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.addNewColor = this.addNewColor.bind(this);
         this.changeColor = this.changeColor.bind(this);
         this.removeColor = this.removeColor.bind(this);
@@ -40,8 +40,7 @@ export default class ColorPalette extends React.Component {
     /**
      * Official React lifecycle method
      * Invoked once immediately after the initial rendering occurs.
-     * Temporary requirement is to subscribe to events from map becuase it is
-     * not a React component
+     * Has to subscribe to color widget change events
      */
     componentDidMount () {
         EventEmitter.subscribe('widgets:color', data => { this.addNewColor(data); });
@@ -50,6 +49,11 @@ export default class ColorPalette extends React.Component {
         EventEmitter.subscribe('tangram:clear-palette', this.clearColors);
     }
 
+    /**
+     * Called every time that a color widget is created
+     *
+     * @param data - the color created with the widget
+     */
     addNewColor (data) {
         let colors = this.state.colors;
 
@@ -69,6 +73,11 @@ export default class ColorPalette extends React.Component {
         this.setState({ colors: colors });
     }
 
+    /**
+     * Called every time that a color widget is unmounted
+     *
+     * @param data - the color unmounted with the widget
+     */
     removeColor (data) {
         let colors = this.state.colors;
 
@@ -87,20 +96,38 @@ export default class ColorPalette extends React.Component {
         }
     }
 
+    /**
+     * Called every time that a user changes a color using a color widget
+     *
+     * @param data - the colors the user changed
+     */
     changeColor (data) {
         this.removeColor(data.old);
         this.addNewColor(data.new);
     }
 
-    handleClick (color, i, e) {
+    /**
+     * Called every time that a color from the palette is chosen
+     *
+     * @param color - the current color the user wants to edit
+     * @param i - the position of the current color within the color array
+     * @param e - the click event
+     */
+    onClick (color, i, e) {
         // Set the x and y of the modal that will contain the widget
-        let el = document.getElementsByClassName('workspace-container')[0];
-        let screenHeight = el.clientHeight;
-        let screenWidth = el.clientWidth;
+        const workspaceEl = document.getElementsByClassName('workspace-container')[0];
+        const screenHeight = workspaceEl.clientHeight;
+        const screenWidth = workspaceEl.clientWidth;
+
+        // Magic numbers
+        const COLOR_WIDTH = 22; // Width of each color div in the palette
+        const HORIZONTAL_POSITION_BUFFER = 250; // Horizontal distance to offset palette color picker
+        const VERTICAL_POSITION_BUFFER = 350; // Vertical distance to offset palette color picker
+
         // An approximation of x based on size of widget and place within array
-        let myX = (this.state.colors.length - i) * 22 + 250;
-        this.setState({ x: (screenWidth - myX) });
-        this.setState({ y: (screenHeight - 394) });
+        let x = (this.state.colors.length - i) * COLOR_WIDTH + HORIZONTAL_POSITION_BUFFER;
+        this.setState({ x: (screenWidth - x) });
+        this.setState({ y: (screenHeight - VERTICAL_POSITION_BUFFER) });
 
         // Log the currentColor being edited + the position of the color within our internal color array
         this.setState({ currentColor: color });
@@ -109,11 +136,19 @@ export default class ColorPalette extends React.Component {
         this.setState({ displayPicker: !this.state.displayPicker });
     }
 
-    handleHide () {
+    /**
+     * Called to close the color picker from the color palette
+     */
+    onHide () {
         this.setState({ displayPicker: !this.state.displayPicker });
     }
 
-    handleChange (color) {
+    /**
+     * Called when a user changes a color using the color picker. It affects the current color palette
+     *
+     * @param color - the new color
+     */
+    onChange (color) {
         // Set the color picker to whatever new color the user has picked
         let oldColor = this.state.currentColor;
         let newColor = {
@@ -132,6 +167,9 @@ export default class ColorPalette extends React.Component {
         EventEmitter.dispatch('color-palette:color-change', { old: oldColor.color, new: newColor.color });
     }
 
+    /**
+     * Resets the color picker when a new scene has loaded
+     */
     clearColors () {
         this.setState({ colors: [] });
     }
@@ -147,7 +185,8 @@ export default class ColorPalette extends React.Component {
                 let color = this.state.colors[i];
                 let widgetStyle = { backgroundColor: color.color.getRgbaString() };
 
-                colors.push(<div key={i} className='palette-color' onClick={ this.handleClick.bind(null, color, i) }><div className='square' style={widgetStyle}></div></div>);
+                // This represents each squared div for a color in the color palette
+                colors.push(<div key={i} className='palette-color' onClick={ this.onClick.bind(null, color, i) }><div className='square' style={widgetStyle}></div></div>);
             }
         }
 
@@ -157,12 +196,12 @@ export default class ColorPalette extends React.Component {
                     { colors }
                 </div>
                 {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleHide}>
+                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onHide}>
                     <div className='drag'>
-                        <Button onClick={ this.handleHide } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                        <Button onClick={ this.onHide } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.currentColor.color.getRgba() } onChange={ this.handleChange }/>
+                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.currentColor.color.getRgba() } onChange={ this.onChange }/>
                 </Modal>
             </div>
         );

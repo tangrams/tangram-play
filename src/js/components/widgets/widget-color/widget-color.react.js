@@ -5,7 +5,7 @@ import DraggableModal from '../../draggable-modal.react';
 import Icon from '../../icon.react';
 import WidgetColorBox from './widget-color-box.react';
 
-import { setCodeMirrorValue, editor } from '../../../editor/editor';
+import { setCodeMirrorValue } from '../../../editor/editor';
 import Color from './color';
 import { EventEmitter } from '../../event-emitter';
 
@@ -20,27 +20,30 @@ export default class WidgetColor extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-     constructor (props) {
-         super(props);
+    constructor (props) {
+        super(props);
 
-         this.state = {
-             displayColorPicker: false,
-             color: new Color(this.props.bookmark.widgetInfo.value),
-             x: 0,
-             y: 0
-         };
-         this.bookmark = this.props.bookmark;
+        this.state = {
+            displayColorPicker: false,
+            color: new Color(this.props.bookmark.widgetInfo.value),
+            x: 0,
+            y: 0
+        };
+        this.bookmark = this.props.bookmark;
 
-         // Need to know width in case a widget is about to get rendered outside of the normal screen size
-         // TODO: Don't hardcode this.
-         this.height = 300;
-         this.width = 250;
+        // Need to know width in case a widget is about to get rendered outside of the normal screen size
+        // TODO: Don't hardcode this.
+        this.height = 300;
+        this.width = 250;
 
-         this.onClick = this.onClick.bind(this);
-         this.onChange = this.onChange.bind(this);
-         this.onPaletteChange = this.onPaletteChange.bind(this);
-     }
+        this.onClick = this.onClick.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onPaletteChange = this.onPaletteChange.bind(this);
+    }
 
+    /**
+     * React lifecycle function. Gets called once when DIV is mounted
+     */
     componentDidMount () {
         // Only pass on colors that are valid. i.e. as the user types the color widget is white by default but
         // the widget does not representa  fully valid color
@@ -53,6 +56,10 @@ export default class WidgetColor extends React.Component {
 
     componentWillUnmount () {
         EventEmitter.dispatch('widgets:color-unmount', this.state.color);
+
+        // Do nothing on color palette changes if the React component has been unmounted.
+        // This is to prevent following error: "Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component."
+        EventEmitter.subscribe('color-palette:color-change', data => {});
     }
 
     /**
@@ -100,17 +107,23 @@ export default class WidgetColor extends React.Component {
      *
      * @param color - color that user has chosen in the color picker widget
      */
-     onChange (color) {
+    onChange (color) {
         let oldColor = this.state.color;
         let newColor = new Color(color.rgb);
         this.setState({ color: newColor });
 
-        this._setEditorValue(newColor.getVecString());
+        this.setEditorValue(newColor.getVecString());
 
         EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
     }
 
 
+    /**
+     * Every time a user changes a color on the color palette, all color widgets
+     * need to check whether that change applies to their own internal color
+     *
+     * @param data - the new color the user has chosen
+     */
     onPaletteChange (data) {
         if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
             this.setState({ color: data.new });
