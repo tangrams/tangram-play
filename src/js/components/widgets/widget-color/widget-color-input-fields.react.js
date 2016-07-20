@@ -16,6 +16,8 @@ export default class WidgetColorInputFields extends React.Component {
     }
 
     onChange (data) {
+        console.log("within color field");
+        console.log(data);
         if (data.hex && color.isValidHex(data.hex)) {
             this.props.onChange({
                 hex: data.hex,
@@ -47,19 +49,19 @@ export default class WidgetColorInputFields extends React.Component {
         return (
             <div className='fields'>
                 <div className='double'>
-                    <EditableInput className='input' label='hex' value={ this.props.hex.replace('#', '') } onChange={ this.onChange }/>
+                    <EditableInput className='input' label='hex' value={ this.props.color.getHexString() } onChange={ this.onChange }/>
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='r' value={ this.props.rgb.r } onChange={ this.onChange }/>
+                    <EditableInput className='input' label='r' value={ this.props.color.getRgba().r } onChange={ this.onChange }/>
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='g' value={ this.props.rgb.g } onChange={ this.onChange } />
+                    <EditableInput className='input' label='g' value={ this.props.color.getRgba().g } onChange={ this.onChange } />
                 </div>
                 <div className='single'>
-                    <EditableInput className='input' label='b' value={ this.props.rgb.b } onChange={ this.onChange } />
+                    <EditableInput className='input' label='b' value={ this.props.color.getRgba().b } onChange={ this.onChange } />
                 </div>
                 <div className='alpha3'>
-                    <EditableInput is='input' label='a' value={ Math.round(this.props.rgb.a * 100) } onChange={ this.onChange } />
+                    <EditableInput is='input' label='a' value={ Math.round(this.props.color.getRgba().a * 100) } onChange={ this.onChange } />
                 </div>
             </div>
         );
