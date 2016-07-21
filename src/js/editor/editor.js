@@ -168,33 +168,14 @@ export function setCodeMirrorValue (bookmark, value) {
 
     doc.replaceRange(value, fromPos, toPos, origin);
 
-    if (bookmark.lines[0] !== null && bookmark.lines[0].stateAfter !== null) {
-        for (let linenode of bookmark.lines[0].stateAfter.nodes) {
-            if (node.address === linenode.address) {
-                bookmark.widgetInfo = linenode;
-                break;
-            }
-        }
-    }
-    // This else is for usage with the color palette. In the case that some marks have been deleted from CodeMirror but a React color widget still exists
-    // We can essentially call a function to change the editor from the React color widget
-    else {
-        const newFromPos = {
-            line: node.range.from.line,
-            ch: node.range.from.ch
-        };
-        const newToPos = {
-            line: node.range.to.line,
-            ch: node.range.to.ch + value.length
-        };
+    editor.getStateAfter(node.range.from.line, true);
+    editor.getStateAfter(node.range.to.line, true);
 
-        let newRange = {
-            from: newFromPos,
-            to: newToPos
-        };
-        // We have to manually update the bookmark that will be returned to the React color widget
-        bookmark.widgetInfo.range = newRange;
-        bookmark.widgetInfo.value = value;
+    for (let linenode of bookmark.lines[0].stateAfter.nodes) {
+        if (node.address === linenode.address) {
+            bookmark.widgetInfo = linenode;
+            break;
+        }
     }
 
     return bookmark;
