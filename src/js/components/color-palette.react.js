@@ -186,17 +186,17 @@ export default class ColorPalette extends React.Component {
                 let widgetStyle = { backgroundColor: color.color.getRgbaString() };
 
                 // This represents each squared div for a color in the color palette
-                colors.push(<div key={i} className='palette-color' onClick={ this.onClick.bind(null, color, i) }><div className='square' style={widgetStyle}></div></div>);
+                colors.push(<div key={i} className='colorpalette-color' onClick={ this.onClick.bind(null, color, i) }><div className='colorpalette-square' style={widgetStyle}></div></div>);
             }
         }
 
         return (
             <div>
-                <div className='colors'>
-                    { colors }
-                </div>
+                {/* List of colors in the palette */}
+                <div>{ colors }</div>
+
                 {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onHide}>
+                <Modal dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onHide}>
                     <div className='drag'>
                         <Button onClick={ this.onHide } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>

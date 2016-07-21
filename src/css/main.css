@@ -50,6 +50,7 @@
 @import '_color-palette.react';
 
 /* + Widgets */
+@import '_widgets-modal.react';
 @import '_widgets.react';
 @import '_widget-color.react';
 
