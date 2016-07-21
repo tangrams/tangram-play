@@ -102,6 +102,21 @@ export default class Color {
         return vecColorString;
     }
 
+    // Returns hex string without '#'
+    getHexString () {
+        return this.color.toHexString().replace('#', '');
+    }
+
+    // { h: 0, s: 1, l: 0.5, a: 1 }
+    getHsl () {
+        return this.color.toHsl();
+    }
+
+    // { h: 0, s: 1, v: 1, a: 1 }
+    getHsv () {
+        return this.color.toHsv();
+    }
+
     // Returns original input string
     getOriginalInput () {
         return this.color.getOriginalInput();

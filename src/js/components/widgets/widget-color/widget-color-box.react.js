@@ -2,7 +2,6 @@
 
 import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { CustomPicker } from 'react-color';
 import { Hue, Alpha } from 'react-color/lib/components/common';
 import Saturation from './widget-color-saturation.react';
 import WidgetColorInputFields from './widget-color-input-fields.react';

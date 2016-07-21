@@ -1,17 +1,16 @@
-// Basically taken from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
+// Class essentially taken from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
 
 import React from 'react';
-import ReactCSS from 'reactcss';
 import throttle from 'lodash.throttle';
 import shallowCompare from 'react-addons-shallow-compare';
 
-export default class Saturation extends React.Component{
+export default class Saturation extends React.Component {
 
     constructor (props) {
         super(props);
 
         this.throttle = throttle(function (fn, data) {
-            fn(data)
+            fn(data);
         }, 50);
 
         this.width = 220;
@@ -26,7 +25,7 @@ export default class Saturation extends React.Component{
         return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         this.unbindEventListeners();
     }
 
@@ -37,26 +36,26 @@ export default class Saturation extends React.Component{
 
         const container = this.refs.container;
         const boundingBox = container.getBoundingClientRect();
-        let x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX
-        let y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY
+        let x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX;
+        let y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY;
         let left = x - boundingBox.left;
         let top = y - boundingBox.top;
 
         if (left < 0) {
-          left = 0;
+            left = 0;
         }
         else if (left > this.width) {
-          left = this.width;
+            left = this.width;
         }
         else if (top < 0) {
-          top = 0;
+            top = 0;
         }
         else if (top > this.height) {
-          top = this.height;
+            top = this.height;
         }
 
-        var saturation = left * 100 / this.width;
-        var bright = -(top * 100 / this.height) + 100;
+        const saturation = left * 100 / this.width;
+        const bright = -(top * 100 / this.height) + 100;
 
         this.throttle(this.props.onChange, {
             h: this.props.color.getHsv().h,
@@ -76,31 +75,39 @@ export default class Saturation extends React.Component{
         this.unbindEventListeners();
     }
 
-    unbindEventListeners() {
+    unbindEventListeners () {
         window.removeEventListener('mousemove', this.onChange);
         window.removeEventListener('mouseup', this.onMouseUp);
     }
 
     render () {
-        let style1 = { background: 'hsl(' + this.props.color.getHsl().h + ',100%, 50%)' };
-        let style2 = {
+        const style1 = { background: 'hsl(' + this.props.color.getHsl().h + ',100%, 50%)' };
+        const style2 = {
             top: -(this.props.color.getHsv().v * 100) + 100 + '%',
-            left: this.props.color.getHsv().s * 100 + '%',
+            left: this.props.color.getHsv().s * 100 + '%'
         };
 
-        var pointer = <div className='circle' />
+        const pointer = <div className='circle' />;
 
         return (
             <div className='widget-color-saturation' ref='container' onMouseDown={ this.onMouseDown }
                 onTouchMove={ this.onChange }
-                onTouchStart={ this.onChange } style={style1}>
+                onTouchStart={ this.onChange } style={ style1 }>
                 <div className='white'>
                     <div className='black' />
-                    <div className='pointer' ref='pointer' style={style2}> { pointer } </div>
+                    <div className='pointer' ref='pointer' style={style2}>{ pointer }</div>
                 </div>
             </div>
-        )
+        );
     }
 }
+
+/**
+ * Prop validation required by React
+ */
+Saturation.propTypes = {
+    color: React.PropTypes.object,
+    onChange: React.PropTypes.func
+};
 
 export default Saturation;
