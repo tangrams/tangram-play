@@ -149,7 +149,6 @@ function clearMarks (fromLine, toLine) {
     for (let bookmark of existingMarks) {
         ReactDOM.unmountComponentAtNode(bookmark.replacedWith);
         bookmark.clear();
-        // TODO: unmount divs
     }
 }
 
