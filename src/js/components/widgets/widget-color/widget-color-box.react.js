@@ -56,7 +56,7 @@ class WidgetColorBox extends React.Component {
                         </div>
                     </div>
                     <div className='color'>
-                        <div className='active-color' style={{ backgroundColor: this.props.color.getRgbaString() }}/>
+                        <div className='widget-color-box-active-color' style={{ backgroundColor: this.props.color.getRgbaString() }}/>
                     </div>
                 </div>
                 <div className='fields'>
