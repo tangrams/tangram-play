@@ -72,8 +72,6 @@ export default class WidgetColorInputFields extends React.Component {
  * Prop validation required by React
  */
 WidgetColorInputFields.propTypes = {
-    rgb: React.PropTypes.object,
-    hsl: React.PropTypes.object,
-    hex: React.PropTypes.string,
+    color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };

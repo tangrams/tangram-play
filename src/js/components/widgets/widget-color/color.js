@@ -103,7 +103,7 @@ export default class Color {
     }
 
     // Returns hex string without '#'
-    getHexString() {
+    getHexString () {
         return this.color.toHexString().replace('#', '');
     }
 
