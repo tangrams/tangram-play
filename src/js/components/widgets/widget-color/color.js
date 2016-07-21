@@ -50,6 +50,7 @@ export default class Color {
                 return 'white';
             }
         }
+
         // If a normal css color
         return color;
     }
@@ -99,6 +100,21 @@ export default class Color {
         const vecColor = this._rgb2vec();
         const vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (this.color.getAlpha()).toFixed(2) + ']';
         return vecColorString;
+    }
+
+    // Returns hex string without '#'
+    getHexString () {
+        return this.color.toHexString().replace('#', '');
+    }
+
+    // { h: 0, s: 1, l: 0.5, a: 1 }
+    getHsl () {
+        return this.color.toHsl();
+    }
+
+    // { h: 0, s: 1, v: 1, a: 1 }
+    getHsv () {
+        return this.color.toHsv();
     }
 
     // Returns original input string

@@ -109,7 +109,8 @@ export default class WidgetColor extends React.Component {
      */
     onChange (color) {
         const oldColor = this.state.color;
-        const newColor = new Color(color.rgb);
+        const newColor = new Color(color);
+
         this.setState({ color: newColor });
 
         this.setEditorValue(newColor.getVecString());
@@ -158,7 +159,7 @@ export default class WidgetColor extends React.Component {
                         <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color.getRgba() } onChange={ this.onChange }/>
+                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
                 </Modal>
             </div>
         );

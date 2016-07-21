@@ -152,7 +152,7 @@ export default class ColorPalette extends React.Component {
         // Set the color picker to whatever new color the user has picked
         let oldColor = this.state.currentColor;
         let newColor = {
-            color: new Color(color.rgb),
+            color: new Color(color),
             count: 1
         };
         this.setState({ currentColor: newColor });
@@ -201,7 +201,7 @@ export default class ColorPalette extends React.Component {
                         <Button onClick={ this.onHide } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.currentColor.color.getRgba() } onChange={ this.onChange }/>
+                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.currentColor.color } onChange={ this.onChange }/>
                 </Modal>
             </div>
         );
