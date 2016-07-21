@@ -152,7 +152,7 @@ export default class ColorPalette extends React.Component {
         // Set the color picker to whatever new color the user has picked
         let oldColor = this.state.currentColor;
         let newColor = {
-            color: new Color(color.rgb),
+            color: new Color(color),
             count: 1
         };
         this.setState({ currentColor: newColor });
