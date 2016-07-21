@@ -10,8 +10,8 @@ export default class Color {
         // We need a way to distinguish what inputs were junk, so invalid colors will be this.valid = false
         this.valid = true;
 
-        let firstPass = this._processColor(color); // Catch a color written in vec format
-        let secondPass = this._processTinyColor(firstPass); // Creates a tinycolor color object
+        const firstPass = this._processColor(color); // Catch a color written in vec format
+        const secondPass = this._processTinyColor(firstPass); // Creates a tinycolor color object
 
         this.color = secondPass;
     }

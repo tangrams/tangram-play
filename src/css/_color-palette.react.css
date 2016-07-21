@@ -9,14 +9,14 @@
     flex-direction: row;
 }
 
-.palette-color {
+.colorpalette-color {
     display: inline-block;
     position: relative;
     padding-left: 2px;
     padding-right: 2px;
 }
 
-.square {
+.colorpalette-square {
     width: 20px;
     height: 20px;
     cursor: pointer;

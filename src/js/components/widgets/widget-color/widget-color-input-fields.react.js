@@ -47,20 +47,20 @@ export default class WidgetColorInputFields extends React.Component {
         let color = this.props.color.getRgba();
         let hex = this.props.color.getHexString();
         return (
-            <div className='fields'>
-                <div className='double'>
+            <div className='widget-color-box-fields'>
+                <div className='widget-color-box-double'>
                     <EditableInput className='input' label='hex' value={ hex } onChange={ this.onChange }/>
                 </div>
-                <div className='single'>
-                    <EditableInput className='input' label='r' value={ color.r } onChange={ this.onChange }/>
+                <div className='widget-color-box-single'>
+                    <EditableInput className='input' label='r' value={ color.r} onChange={ this.onChange }/>
                 </div>
-                <div className='single'>
+                <div className='widget-color-box-single'>
                     <EditableInput className='input' label='g' value={ color.g } onChange={ this.onChange } />
                 </div>
-                <div className='single'>
+                <div className='widget-color-box-single'>
                     <EditableInput className='input' label='b' value={ color.b } onChange={ this.onChange } />
                 </div>
-                <div className='alpha3'>
+                <div className='widget-color-box-alpha'>
                     <EditableInput is='input' label='a' value={ Math.round(color.a * 100) } onChange={ this.onChange } />
                 </div>
             </div>

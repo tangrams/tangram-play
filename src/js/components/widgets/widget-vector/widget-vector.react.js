@@ -167,7 +167,7 @@ export default class WidgetVector extends React.Component {
                 <div className='widget widget-vectorpicker' onClick={ this.handleClick }></div>
 
                 {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleClick}>
+                <Modal dialogComponentClass={DraggableModal} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleClick}>
                     <div className='drag'>
                         <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
