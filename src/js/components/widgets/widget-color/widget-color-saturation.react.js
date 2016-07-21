@@ -1,17 +1,12 @@
 // Class essentially taken from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
 
 import React from 'react';
-import throttle from 'lodash.throttle';
 import shallowCompare from 'react-addons-shallow-compare';
 
 export default class Saturation extends React.Component {
 
     constructor (props) {
         super(props);
-
-        this.throttle = throttle(function (fn, data) {
-            fn(data);
-        }, 50);
 
         this.width = 220;
         this.height = 165;
@@ -57,7 +52,7 @@ export default class Saturation extends React.Component {
         const saturation = left * 100 / this.width;
         const bright = -(top * 100 / this.height) + 100;
 
-        this.throttle(this.props.onChange, {
+        this.props.onChange({
             h: this.props.color.getHsv().h,
             s: saturation,
             v: bright
