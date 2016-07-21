@@ -14,6 +14,9 @@ export default class Saturation extends React.Component{
             fn(data)
         }, 50);
 
+        this.width = 220;
+        this.height = 165;
+
         this.onChange = this.onChange.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
@@ -32,29 +35,28 @@ export default class Saturation extends React.Component{
             e.preventDefault();
         }
 
-        var container = this.refs.container;
-        const containerWidth = 220
-        const containerHeight = 165
-        var x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX
-        var y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY
-        var left = x - (container.getBoundingClientRect().left + window.pageXOffset)
-        var top = y - (container.getBoundingClientRect().top + window.pageYOffset)
+        const container = this.refs.container;
+        const boundingBox = container.getBoundingClientRect();
+        let x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX
+        let y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY
+        let left = x - boundingBox.left;
+        let top = y - boundingBox.top;
 
         if (left < 0) {
           left = 0;
         }
-        else if (left > containerWidth) {
-          left = containerWidth;
+        else if (left > this.width) {
+          left = this.width;
         }
         else if (top < 0) {
           top = 0;
         }
-        else if (top > containerHeight) {
-          top = containerHeight;
+        else if (top > this.height) {
+          top = this.height;
         }
 
-        var saturation = left * 100 / containerWidth;
-        var bright = -(top * 100 / containerHeight) + 100;
+        var saturation = left * 100 / this.width;
+        var bright = -(top * 100 / this.height) + 100;
 
         this.throttle(this.props.onChange, {
             h: this.props.color.getHsv().h,
