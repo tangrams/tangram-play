@@ -108,8 +108,8 @@ export default class WidgetColor extends React.Component {
      * @param color - color that user has chosen in the color picker widget
      */
     onChange (color) {
-        let oldColor = this.state.color;
-        let newColor = new Color(color.rgb);
+        const oldColor = this.state.color;
+        const newColor = new Color(color.rgb);
         this.setState({ color: newColor });
 
         this.setEditorValue(newColor.getVecString());
@@ -153,12 +153,12 @@ export default class WidgetColor extends React.Component {
                 <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
 
                 {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
+                <Modal dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
                     <div className='drag'>
                         <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                     </div>
                     {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
+                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color.getRgba() } onChange={ this.onChange }/>
                 </Modal>
             </div>
         );

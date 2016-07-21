@@ -76,7 +76,7 @@
     margin-left: 4px;
 }
 
-.widget-color-box .activeColor {
+.widget-color-box .active-color {
     width: 100%;
     height: 100%;
 }
@@ -135,21 +135,13 @@
     color: white;
 }
 
-.single div {
+.widget-color-box .single div {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.single span {
+.widget-color-box .single span {
     font-size: 14px;
-}
-
-.modal-content {
-    margin-top: 0;
-}
-
-.modal input:focus {
-    box-shadow: none;
 }
