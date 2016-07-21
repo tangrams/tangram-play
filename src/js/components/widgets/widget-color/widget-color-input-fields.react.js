@@ -45,20 +45,20 @@ export default class WidgetColorInputFields extends React.Component {
 
     render () {
         return (
-            <div className='fields'>
-                <div className='double'>
+            <div className='widget-color-box-fields'>
+                <div className='widget-color-box-double'>
                     <EditableInput className='input' label='hex' value={ this.props.hex.replace('#', '') } onChange={ this.onChange }/>
                 </div>
-                <div className='single'>
+                <div className='widget-color-box-single'>
                     <EditableInput className='input' label='r' value={ this.props.rgb.r } onChange={ this.onChange }/>
                 </div>
-                <div className='single'>
+                <div className='widget-color-box-single'>
                     <EditableInput className='input' label='g' value={ this.props.rgb.g } onChange={ this.onChange } />
                 </div>
-                <div className='single'>
+                <div className='widget-color-box-single'>
                     <EditableInput className='input' label='b' value={ this.props.rgb.b } onChange={ this.onChange } />
                 </div>
-                <div className='alpha3'>
+                <div className='widget-color-box-alpha'>
                     <EditableInput is='input' label='a' value={ Math.round(this.props.rgb.a * 100) } onChange={ this.onChange } />
                 </div>
             </div>

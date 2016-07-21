@@ -76,7 +76,7 @@
     margin-left: 4px;
 }
 
-.widget-color-box .active-color {
+.widget-color-box .widget-color-box-active-color {
     width: 100%;
     height: 100%;
 }
@@ -105,22 +105,22 @@
 
 /* color-picker-input-fields.react */
 
-.widget-color-box .fields {
+.widget-color-box-fields {
     display: flex;
     padding-top: 4px;
 }
 
-.widget-color-box .fields .single {
+.widget-color-box-fields .widget-color-box-single {
     flex: 1;
     padding-left: 3px;
 }
 
-.widget-color-box .fields .alpha3 {
+.widget-color-box-fields .widget-color-box-alpha {
     flex: 1;
     padding-left: 6px;
 }
 
-.widget-color-box .fields .double {
+.widget-color-box-fields .widget-color-box-double {
     flex: 2;
 }
 
@@ -135,13 +135,13 @@
     color: white;
 }
 
-.widget-color-box .single div {
+.widget-color-box-single div {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.widget-color-box .single span {
+.widget-color-box-single span {
     font-size: 14px;
 }
