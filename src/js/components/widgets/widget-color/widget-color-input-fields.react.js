@@ -3,7 +3,6 @@
 import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { EditableInput } from 'react-color/lib/components/common';
-import color from 'react-color/lib/helpers/color';
 
 export default class WidgetColorInputFields extends React.Component {
     constructor (props) {
@@ -16,11 +15,10 @@ export default class WidgetColorInputFields extends React.Component {
     }
 
     onChange (data) {
-        if (data.hex && color.isValidHex(data.hex)) {
-            this.props.onChange({
-                hex: data.hex,
-                source: 'hex',
-            });
+        let color = this.props.color.getRgba();
+
+        if (data.hex) {
+            this.props.onChange(data.hex);
         }
         else if (data.r || data.g || data.b || data.a) {
             let a = parseInt(data.a);
@@ -45,22 +43,24 @@ export default class WidgetColorInputFields extends React.Component {
     }
 
     render () {
+        let color = this.props.color.getRgba();
+        let hex = this.props.color.getHexString().toUpperCase();
         return (
             <div className='widget-color-box-fields'>
                 <div className='widget-color-box-double'>
-                    <EditableInput className='input' label='hex' value={ this.props.hex.replace('#', '') } onChange={ this.onChange }/>
+                    <EditableInput className='input' label='hex' value={ hex } onChange={ this.onChange }/>
                 </div>
                 <div className='widget-color-box-single'>
-                    <EditableInput className='input' label='r' value={ this.props.rgb.r } onChange={ this.onChange }/>
+                    <EditableInput className='input' label='r' value={ color.r } onChange={ this.onChange }/>
                 </div>
                 <div className='widget-color-box-single'>
-                    <EditableInput className='input' label='g' value={ this.props.rgb.g } onChange={ this.onChange } />
+                    <EditableInput className='input' label='g' value={ color.g } onChange={ this.onChange } />
                 </div>
                 <div className='widget-color-box-single'>
-                    <EditableInput className='input' label='b' value={ this.props.rgb.b } onChange={ this.onChange } />
+                    <EditableInput className='input' label='b' value={ color.b } onChange={ this.onChange } />
                 </div>
                 <div className='widget-color-box-alpha'>
-                    <EditableInput is='input' label='a' value={ Math.round(this.props.rgb.a * 100) } onChange={ this.onChange } />
+                    <EditableInput is='input' label='a' value={ Math.round(color.a * 100) } onChange={ this.onChange } />
                 </div>
             </div>
         );

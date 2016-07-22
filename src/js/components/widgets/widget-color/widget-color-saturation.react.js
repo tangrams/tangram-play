@@ -55,7 +55,8 @@ export default class Saturation extends React.Component {
         this.props.onChange({
             h: this.props.color.getHsv().h,
             s: saturation,
-            v: bright
+            v: bright,
+            a: this.props.color.getRgba().a
         });
     }
 
