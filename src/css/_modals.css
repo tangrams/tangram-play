@@ -4,7 +4,6 @@
     display: none;
     box-sizing: border-box;
     width: 400px;
-    min-height: 160px;
     padding: 30px;
     font-family: var(--font-family);
     font-weight: 200;

@@ -21,9 +21,8 @@ import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/load
 import ErrorModal from './modals/modal.error';
 import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
-// import GlslSandbox from './glsl/sandbox';
-import GlslHelpers from './glsl/helpers';
-import ColorPalette from './widgets/color-palette';
+import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
+// import ColorPalette from './widgets/color-palette';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
@@ -31,14 +30,15 @@ import { subscribeMixin } from './tools/mixin';
 import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { jumpToLine } from './editor/codemirror/tools';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';
-import { highlightLines } from './editor/highlight';
+import { highlightRanges, updateLinesQueryString } from './editor/highlight';
 
 // Import UI elements
+// Import UI elements
 import { initDivider } from './ui/divider';
-import './file/drop';
-import './ui/tooltip';
+import { EventEmitter } from './components/event-emitter';
+
+// import './ui/tooltip';
 
 const query = getQueryStringObject();
 
@@ -74,15 +74,8 @@ class TangramPlay {
                 // Highlight lines if requested by the query string.
                 let lines = query.lines;
                 if (lines) {
-                    lines = lines.split('-');
-
-                    // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
-                    // Just in case, the return value is clamped to a minimum value of 0.
-                    const startLine = Math.max(Number(lines[0]) - 1, 0);
-                    const endLine = Math.max(Number(lines[1]) - 1, 0);
-
-                    jumpToLine(editor, startLine);
-                    highlightLines(startLine, endLine, false);
+                    highlightRanges(lines);
+                    updateLinesQueryString();
                 }
 
                 // Add widgets marks.
@@ -91,6 +84,8 @@ class TangramPlay {
                 // Things we do after Tangram is finished initializing
                 tangramLayer.scene.initializing.then(() => {
                     this.trigger('sceneinit');
+                    // Need to send a signal to the dropdown widgets of type source to populate
+                    EventEmitter.dispatch('tangram:sceneinit', {});
 
                     // Initialize addons after Tangram is done, because
                     // some addons depend on Tangram scene config being present
@@ -127,10 +122,9 @@ class TangramPlay {
     //  ADDONS
     initAddons () {
         this.addons.suggestManager = new SuggestManager();
-        // this.addons.glslSandbox = new GlslSandbox();
-        this.addons.glslHelpers = new GlslHelpers();
+        this.addons.glslHelpers = new GlslWidgetsLink();
         this.addons.errorsManager = new ErrorsManager();
-        this.addons.colorPalette = new ColorPalette();
+        // this.addons.colorPalette = new ColorPalette();
     }
 
     /**
@@ -434,6 +428,7 @@ import ReactDOM from 'react-dom';
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
+import FileDrop from './file/drop';
 
 if (window.location.hash) {
     let hash = window.location.hash.split('/');
@@ -449,6 +444,9 @@ if (window.location.hash) {
 
         let mountNode2 = document.getElementById('map-panel');
         ReactDOM.render(<MapPanel />, mountNode2);
+
+        let mountNode3 = document.getElementById('filedrop');
+        ReactDOM.render(<FileDrop />, mountNode3);
     }
 }
 

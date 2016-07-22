@@ -10,3 +10,9 @@
     bottom: 0;
     background-color: var(--ui-editor-background-color); /* Background color during loading */
 }
+
+#draggable-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}

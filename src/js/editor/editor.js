@@ -134,21 +134,21 @@ export function getNodesInRange (from, to) {
 }
 
 /**
- * Sets a node's value. If a value is prepended with a YAML anchor, the
+ * Sets a bookmark's value. If a value is prepended with a YAML anchor, the
  * anchor is left in place.
  *
  * @public
- * @param {Object} node - An object representing the node whose value changes
+ * @param {Object} bookmark - An object representing the bookmark whose value changes
  * @param {string} value - The new value to set to
- * @param {string} origin - Optional. This should be a string that CodeMirror
- *          uses to understand where a change is coming from. Use CodeMirror's
- *          `+` prefix if you want changes to stack in undo history.
  */
-export function setNodeValue (node, value, origin) {
+export function setCodeMirrorValue (bookmark, value) {
+    const origin = '+value_change';
+    const node = bookmark.widgetInfo;
+
     const doc = editor.getDoc();
 
     // Force a space between the ':' and the value
-    if (node.value === '') {
+    if (value === '') {
         value = ' ' + value;
     }
 
@@ -167,4 +167,13 @@ export function setNodeValue (node, value, origin) {
     const toPos = node.range.to;
 
     doc.replaceRange(value, fromPos, toPos, origin);
+
+    for (let linenode of bookmark.lines[0].stateAfter.nodes) {
+        if (node.address === linenode.address) {
+            bookmark.widgetInfo = linenode;
+            break;
+        }
+    }
+
+    return bookmark;
 }

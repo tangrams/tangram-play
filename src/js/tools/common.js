@@ -35,21 +35,6 @@ export function debounce (func, wait, immediate) {
     };
 }
 
-export function getDOMOffset (dom) {
-    let y = 0;
-    let x = 0;
-    do {
-        y += dom.offsetTop || 0;
-        x += dom.offsetLeft || 0;
-        dom = dom.offsetParent;
-    } while (dom);
-
-    return {
-        y: y,
-        x: x
-    };
-}
-
 //  Check if a variable is a number
 export function isNumber (n) {
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
@@ -102,45 +87,6 @@ export function toColorVec (str) {
     else if (/^\s*['|"]#[0-9a-f]{3}(?:[0-9a-f]{3})?['|"]\s*$/i.test(str)) {
         let value = /['|"]([\w|\W|\s]+)['|"]/gm.exec(str);
         return value ? { w: value[1] } : {};
-    }
-}
-
-export class StopWatch {
-    constructor (performance) {
-        this.startTime = 0;
-        this.stopTime = 0;
-        this.running = false;
-        this.performance = performance === false ? false : !window.performance;
-    }
-
-    currentTime () {
-        return this.performance ? window.performance.now() : new Date().getTime();
-    }
-
-    start () {
-        this.startTime = this.currentTime();
-        this.running = true;
-    }
-
-    stop () {
-        this.stopTime = this.currentTime();
-        this.running = false;
-    }
-
-    getElapsedMilliseconds () {
-        if (this.running) {
-            this.stopTime = this.currentTime();
-        }
-        return this.stopTime - this.startTime;
-    }
-
-    getElapsedSeconds () {
-        return this.getElapsedMilliseconds() / 1000;
-    }
-
-    printElapsed (name) {
-        let currentName = name || 'Elapsed:';
-        console.log(currentName, '[' + this.getElapsedMilliseconds() + 'ms]', '[' + this.getElapsedSeconds() + 's]');
     }
 }
 

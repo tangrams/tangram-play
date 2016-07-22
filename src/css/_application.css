@@ -1,5 +1,12 @@
 /* APPLICATION */
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
 html {
     font-family: var(--font-family);
 }
@@ -8,7 +15,6 @@ body {
     margin: 0;
     border: 0;
     padding: 0;
-    overflow: hidden;
     background-color: var(--ui-base-color);
 }
 

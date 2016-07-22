@@ -1,0 +1,158 @@
+/* Editor Widgets */
+
+.CodeMirror-widget {
+    /* Resets this property for wrapped lines. The hanging indent adds
+       its own text-indent and we do not want widgets to inherit it. */
+    text-indent: initial;
+}
+
+/* For the draggable modal */
+
+.drag {
+    background-color: var(--ui-component-color);
+    cursor: move;
+    height: 20px;
+    justify-content: flex-end;
+    display: flex;
+}
+
+/* React Widgets */
+
+.widget {
+    display: inline-block;
+    position: relative;
+    user-select: none;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.widget-parent {
+    display: inline-flex;
+    background-color: none;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.widget-modal {
+    z-index: var(--z09-overlay);
+    outline: none;
+    margin-top: 47px;
+    box-shadow: var(--modal-shadow);
+    width: auto;
+    display: inline-flex !important;
+    padding: 0;
+    background-color: var(--ui-component-color);
+}
+
+/* ******************** */
+/* INDIVIDUAL WIDGETS */
+/* ******************** */
+
+/* React: Widget links (glsl) */
+
+.widget-link-canvas {
+    background-color: var(--ui-element-color);
+}
+
+/* React: Widget Toggle */
+
+.widget-toggle {
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    max-width: 14px;
+    max-height: 14px;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: -0.15em;
+}
+
+.widget-toggle input[type=checkbox] {
+    outline: none;
+    margin-top: -0.15em;
+}
+
+.widget-toggle input[type=checkbox]::after {
+    content: '\FF58';
+    color: white;
+    visibility: visible;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    background-color: var(--ui-element-color);
+}
+
+.widget-toggle input[type=checkbox]:checked::after {
+    content: '\2713';
+    color: white;
+}
+
+/* React: Widget Dropdown */
+
+.widget-dropdown {
+    display: inline-flex;
+    position: relative;
+    font-weight: 400;
+    margin-left: 10px;
+    margin-right: 10px;
+    outline: none;
+    border-radius: 0;
+    border-radius: 6px;
+}
+
+.widget-dropdown select {
+    font-family: var(--font-family);
+    font-size: 100%;
+    font-weight: 400;
+    outline: none;
+    background-color: #5e6064;
+    color: white;
+    border: 0;
+    height: 20px;
+    width: 16px; /* Remove width to get full dropdown to appear */
+    border-radius: 4px;
+    padding-left: 16px;
+}
+
+.widget-dropdown option {
+    outline: none;
+    margin-left: 20px;
+}
+
+.form-control:focus {
+    border-color: transparent;
+    box-shadow: none;
+    border-radius: 6px;
+    outline: none;
+}
+
+select {
+    appearance: none;
+    outline: none;
+    border: 0;
+    width: 100%;
+    background: #fff url('../../data/imgs/arrow_down.png') no-repeat;
+    background-size: 16px;
+    background-position: left center;
+}
+
+/* React: Widget Vector */
+
+/* Should probably simplify this for color picker too.
+   just refers to button being clicked to open modal */
+.widget-vectorpicker {
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    max-width: 14px;
+    max-height: 14px;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: -0.15em;
+}

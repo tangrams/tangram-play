@@ -4,8 +4,6 @@ import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';
 import { attachWidgetMarkConstructorsToDocumentState } from './widgets';
 
-import { tangramScene } from '../../map/map';
-
 const ADDRESS_KEY_DELIMITER = ':';
 
 // GET public functions
@@ -57,7 +55,7 @@ function getAddressFromKeys (keys) {
  * @param {string} address - in the form of 'key1:key2:key3'
  * @return {Array} keys
  */
-export function getKeysFromAddress (address) {
+function getKeysFromAddress (address) {
     return address.split(ADDRESS_KEY_DELIMITER);
 }
 
@@ -94,66 +92,23 @@ function isShader (address) {
 }
 
 /**
- * The following functions are very similar and detects if an address refers to
- * a specific shader block. These are exported as helpers for other modules
- * to use. See documentation for types:
- * https://mapzen.com/documentation/tangram/shaders/#blocks
- *
- * A valid shader address will always begin with `styles:` and end in
- * `:shaders:blocks:__block__`, where __block__ is one of the six defined
- * shader blocks.
- *
- * @param {string} address - the address of the key-value pair
- * @return {Boolean} bool - `true` if address is a shader block of that type
- */
-export function isGlobalBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:global');
-}
-
-export function isWidthBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:width');
-}
-
-export function isPositionBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:position');
-}
-
-export function isNormalBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:normal');
-}
-
-export function isColorBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:color');
-}
-
-export function isFilterBlock (address) {
-    return _.startsWith(address, 'styles') && _.endsWith(address, 'shaders:blocks:filter');
-}
-
-/**
  * Detects if an address's contents (value) is JavaScript. In Tangram syntax,
  * JavaScript values must be a single function. This makes detection easy:
  * See if the beginning of the string starts with a valid function declaration.
  *
- * @param {Tangram.scene} tangramScene - scene object from Tangram
- * @param {string} address - the address of the key-value pair
+ * @param {string} value - the first line of key-value YAML node to check
+ *          if it looks like a Javascript function
  * @return {Boolean} bool - `true` if value appears to be a JavaScript function
+ * @todo This returns false if any parameters are passed to a function.
  */
-function isContentJS (tangramScene, address) {
-    if (tangramScene && tangramScene.config) {
-        const content = getAddressSceneContent(tangramScene, address);
+function isContentJS (value) {
+    // Regex pattern. Content can begin with any amount of whitespace.
+    // Where whitespace is allowed, it can be any amount of whitespace.
+    // Content may begin with a pipe "|" character for YAML multi-line
+    // strings. Next, test if "function () {" (with opening brace).
+    const re = /^\s*\|?\s*function\s*\(\s*\)\s*\{/m;
 
-        // Regex pattern. Content can begin with any amount of whitespace.
-        // Where whitespace is allowed, it can be any amount of whitespace.
-        // Content may begin with a pipe "|" character for YAML multi-line
-        // strings. Next, test if "function () {" (with opening brace).
-        const re = /^\s*\|?\s*function\s*\(\s*\)\s*\{/m;
-
-        return re.test(content);
-    }
-    else {
-        return false;
-    }
+    return re.test(value);
 }
 
 function isAfterKey (str, pos) {
@@ -211,7 +166,8 @@ function getInlineNodes (str, nLine) {
         }
         else {
             // check for keypair
-            let isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
+            const isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|\[|\]|,|.|\s|#]*)\s*/gm.exec(str.substr(i));
+            // Before fixing inline nodes:
             if (isNode) {
                 stack[level] = isNode[1];
                 i += isNode[1].length;
@@ -347,6 +303,7 @@ export function parseYamlString (string, state, tabSize) {
 
     // Adds widgets to nodes, if they have them.
     state = attachWidgetMarkConstructorsToDocumentState(state);
+    // console.log(state);
 
     return state;
 }
@@ -381,6 +338,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 innerMode: null,
                 innerState: null,
                 shouldChangeInnerMode: false,
+                singleLineInnerMode: false,
                 parentBlockIndent: 0
             });
         },
@@ -461,7 +419,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                     if (isShader(address)) {
                         state.innerMode = glslMode;
                     }
-                    else if (isContentJS(tangramScene, address)) {
+                    else if (isContentJS(state.string)) {
                         state.innerMode = jsMode;
                     }
 
@@ -483,8 +441,11 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 else if (isShader(address)) {
                     state.innerMode = glslMode;
                 }
-                else if (isContentJS(tangramScene, address)) {
+                // This inner mode is assumed to be on one line only, so
+                // we need to make them active only for the current line.
+                else if (isContentJS(value)) {
                     state.innerMode = jsMode;
+                    state.singleLineInnerMode = true;
                 }
             }
 
@@ -498,6 +459,18 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
             }
             else {
                 token = yamlMode.token(stream, state);
+            }
+
+            // Actions to perform at the end of the stream.
+            if (stream.eol()) {
+                // If an inner mode is activated, but for one line only, then
+                // we want to reset the innermode and inner state at the end
+                // of the line.
+                if (state.singleLineInnerMode === true) {
+                    state.innerMode = null;
+                    state.innerState = null;
+                    state.singleLineInnerMode = false;
+                }
             }
 
             return token;

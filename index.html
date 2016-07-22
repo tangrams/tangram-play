@@ -21,15 +21,23 @@
     <div class='menu-bar' id='menu-bar'></div>
 
     <div class='workspace-container'>
+        <div id='draggable-container'>
+            <div id='draggable-container-child'>
+            </div>
+        </div>
+
         <div class='map-container' id='map-container'>
             <div class='map-view' id='map'></div>
             <div class='map-loading' id='map-loading'></div>
             <div class='map-panel' id='map-panel'></div>
+            <div id='map-inspection-components'></div>
         </div>
         <div class='divider' id='divider'><span class='divider-affordance'></span></div>
         <div class='editor-container' id='content'>
             <div class='editor' id='editor'></div>
         </div>
+
+        <div id='widget-links'></div>
     </div>
 
     <div class='overlay-container'>
@@ -145,12 +153,7 @@
                 <button class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
             </div>
         </div>
-        <div class='filedrop-container' id='filedrop'>
-            <div class='filedrop-indicator'>
-                <div class='filedrop-icon'><i class='btm bt-upload'></i></div>
-                <div class='filedrop-label'>Drop a file here to open</div>
-            </div>
-        </div>
+        <div id='filedrop'></div>
     </div>
 
     <div id='mobile-message' class='mobile-message'>
