@@ -105,14 +105,12 @@ export default class WidgetColor extends React.Component {
      * Function gets called any time the user changes a color in the color picker
      * widget
      *
-     * @param color - color that user has chosen in the color picker widget
+     * @param newColor - color that user has chosen in the color picker widget. Object of type Color
      */
-    onChange (color) {
+    onChange (newColor) {
         const oldColor = this.state.color;
-        const newColor = new Color(color);
 
         this.setState({ color: newColor });
-
         this.setEditorValue(newColor.getVecString());
 
         EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });

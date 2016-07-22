@@ -146,25 +146,25 @@ export default class ColorPalette extends React.Component {
     /**
      * Called when a user changes a color using the color picker. It affects the current color palette
      *
-     * @param color - the new color
+     * @param newColor - color that user has chosen in the color picker widget. Object of type Color
      */
-    onChange (color) {
-        // Set the color picker to whatever new color the user has picked
-        let oldColor = this.state.currentColor;
-        let newColor = {
-            color: new Color(color),
+    onChange (newColor) {
+        // Step 1: Set the color picker to whatever new color the user has picked
+        const oldC = this.state.currentColor;
+        const newC = {
+            color: newColor,
             count: 1
         };
-        this.setState({ currentColor: newColor });
+        this.setState({ currentColor: newC });
 
-        // Then update the current color array with the new color
-        let newColors = this.state.colors;
-        newColors[this.state.currentPosition] = newColor;
-        this.setState({ colors: newColors });
+        // Step 2: Then update the current color array with the new color
+        let newColorArray = this.state.colors;
+        newColorArray[this.state.currentPosition] = newC;
+        this.setState({ colors: newColorArray });
 
-        // Alert each individual widget to that a color has changed
+        // Step 3: Alert each individual widget to that a color has changed
         // Each widget will have to check if the change applies to itself
-        EventEmitter.dispatch('color-palette:color-change', { old: oldColor.color, new: newColor.color });
+        EventEmitter.dispatch('color-palette:color-change', { old: oldC.color, new: newC.color });
     }
 
     /**

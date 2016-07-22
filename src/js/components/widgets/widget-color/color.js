@@ -121,4 +121,9 @@ export default class Color {
     getOriginalInput () {
         return this.color.getOriginalInput();
     }
+
+    // Sets an alpha for the color
+    setAlpha (alpha) {
+        this.color.setAlpha(alpha);
+    }
 }
