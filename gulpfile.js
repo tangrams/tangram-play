@@ -8,7 +8,7 @@ var browserSync = require('browser-sync');
 
 var paths = {
     styles: 'src/css/**/*.css',
-    scripts: 'src/js/**/*.js',
+    scripts: 'src/js/**/*.{js,jsx}',
     app: 'index.html'
 };
 
@@ -69,6 +69,7 @@ gulp.task('js', function () {
     var bundle = browserify({
         entries: 'src/js/tangram-play.js',
         debug: true,
+        extensions: ['.jsx'],
         transform: [
             babelify.configure({ presets: ['es2015', 'react'] }),
             shim,
