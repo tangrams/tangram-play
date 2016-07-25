@@ -35,6 +35,10 @@
         "name": "Bubble Wrap",
         "thumb": "./data/scenes/thumbnails/bubble-wrap.png",
         "url": "https://mapzen.com/carto/bubble-wrap-style/bubble-wrap.yaml"
+    }, {
+        "name": "Walkabout",
+        "thumb": "./data/scenes/thumbnails/walkabout.png",
+        "url": "https://mapzen.com/carto/walkabout-style/walkabout-style.yaml"
     }]
 }, {
     "category": "Patricio’s greatest hits",
