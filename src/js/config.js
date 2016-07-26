@@ -3,11 +3,13 @@ export const config = {
         API_KEYS: {
             // Default vector tile service API key used exclusively by Tangram Play
             // This key is owned by Mapzen
-            DEFAULT: 'vector-tiles-P6dkVl4',
+            // DEFAULT: 'vector-tiles-P6dkVl4',
+            DEFAULT: 'vector-tiles-xTGXUGf', // Tutorial Key
             SUPPRESSED: [
-                'vector-tiles-P6dkVl4', // Tangram Play, should match API_KEY.DEFAULT
+                // 'vector-tiles-P6dkVl4', // Tangram Play, should match API_KEY.DEFAULT
+                'vector-tiles-xTGXUGf', // Tutorial Key
                 'vector-tiles-HqUVidw', // Tangram & "house styles"
-                'vector-tiles-JUsa0Gc', // Patricio's sandbox
+                'vector-tiles-JUsa0Gc' // Patricio's sandbox
             ]
         }
     },
