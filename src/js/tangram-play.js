@@ -23,7 +23,7 @@ import SuggestManager from './editor/suggest';
 import ErrorsManager from './editor/errors';
 import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
 // import ColorPalette from './widgets/color-palette';
-import LocalStorage from './storage/localstorage';
+// import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { subscribeMixin } from './tools/mixin';
@@ -43,7 +43,7 @@ import { EventEmitter } from './components/event-emitter';
 const query = getQueryStringObject();
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
-const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
+// const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
@@ -98,12 +98,12 @@ class TangramPlay {
         // there before. Note that there is not really a way of handling unload
         // with our own UI and logic, since this allows for widespread abuse
         // of normal browser functionality.
+        /*
         window.addEventListener('beforeunload', (event) => {
             // TODO:
             // Don't take original url or original base path from
             // Tangram (it may be wrong). Instead, remember this
             // in a "session" variable
-            /* eslint-disable camelcase */
             const doc = editor.getDoc();
             const sceneData = {
                 original_url: tangramLayer.scene.config_source,
@@ -113,10 +113,10 @@ class TangramPlay {
                 scrollInfo: editor.getScrollInfo(),
                 cursor: doc.getCursor()
             };
-            /* eslint-enable camelcase */
 
             saveSceneContentsToLocalMemory(sceneData);
         });
+        */
     }
 
     //  ADDONS
@@ -381,16 +381,19 @@ function determineScene () {
 
     // Else if there is something saved in memory (LocalStorage), return that
     // Check that contents exist and that it is not empty.
+    /*
     let sceneData = getSceneContentsFromLocalMemory();
     if (sceneData && sceneData.contents && sceneData.contents.trim().length > 0) {
         return sceneData;
     }
+    */
 
     // Else load the default scene file.
     scene.url = DEFAULT_SCENE;
     return scene;
 }
 
+/*
 function saveSceneContentsToLocalMemory (sceneData) {
     // Expects an object of format:
     // {
@@ -407,6 +410,7 @@ function saveSceneContentsToLocalMemory (sceneData) {
 function getSceneContentsFromLocalMemory () {
     return JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
 }
+*/
 
 let tangramPlay = new TangramPlay();
 
