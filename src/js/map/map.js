@@ -161,5 +161,5 @@ function setupEventListeners () {
     // Any other time the map moves: drag, bookmark select, tangram play edit
     map.on('moveend', throttle((e) => {
         EventEmitter.dispatch('moveend', {});
-    }), 250);
+    }), 1000);
 }
