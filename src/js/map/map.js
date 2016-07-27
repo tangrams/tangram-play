@@ -188,9 +188,9 @@ function setupEventListeners () {
     // Make sure that map zoom label changes when the map is done zooming
     map.on('zoomend', throttle((e) => {
         EventEmitter.dispatch('zoomend', {});
-    }), 500);
+    }), 250);
     // Any other time the map moves: drag, bookmark select, tangram play edit
     map.on('moveend', throttle((e) => {
         EventEmitter.dispatch('moveend', {});
-    }), 500);
+    }), 250);
 }

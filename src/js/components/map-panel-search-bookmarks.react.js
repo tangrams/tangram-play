@@ -85,23 +85,28 @@ export default class MapPanelSearch extends React.Component {
     componentDidMount () {
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
         EventEmitter.subscribe('moveend', data => {
-            // let currentLatLng = map.getCenter();
-            // let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
-            //
-            // // Only update location if the map center has moved more than a given delta
-            // // This is actually really necessary because EVERY update in the editor reloads
-            // // the map, which fires moveend events despite not actually moving the map
-            // // But we also have the bonus of not needing to make a reverse geocode request
-            // // for small changes of the map center.
-            // if (delta > MAP_UPDATE_DELTA) {
-            //     this._setCurrentLatLng(currentLatLng);
-            //     this._reverseGeocode(currentLatLng);
-            //     this.setState({ bookmarkActive: '' });
-            // }
-            // if (this.goToActive) {
-            //     this.setState({ bookmarkActive: 'active-fill' });
-            //     this.goToActive = false;
-            // }
+            let currentLatLng = map.getCenter();
+            let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
+
+            // Only update location if the map center has moved more than a given delta
+            // This is actually really necessary because EVERY update in the editor reloads
+            // the map, which fires moveend events despite not actually moving the map
+            // But we also have the bonus of not needing to make a reverse geocode request
+            // for small changes of the map center.
+            if (delta > MAP_UPDATE_DELTA) {
+                this._reverseGeocode(currentLatLng);
+                this.setState({
+                    bookmarkActive: '',
+                    latlng: {
+                        lat: currentLatLng.lat,
+                        lng: currentLatLng.lng
+                    }
+                });
+            }
+            if (this.goToActive) {
+                this.setState({ bookmarkActive: 'active-fill' });
+                this.goToActive = false;
+            }
         });
 
         // Need a notification when all bookmarks are cleared succesfully in order to re-render list
@@ -164,19 +169,6 @@ export default class MapPanelSearch extends React.Component {
     /** LatLng label **/
 
     /**
-     * Change the latlng on the panel. Causes a re-render
-     * @param latlng - a new set of latitude and longitude
-     */
-    _setCurrentLatLng (latlng) {
-        this.setState({
-            latlng: {
-                lat: parseFloat(latlng.lat).toFixed(latlngLabelPrecision),
-                lng: parseFloat(latlng.lng).toFixed(latlngLabelPrecision)
-            }
-        });
-    }
-
-    /**
      * Set a new latlng label with a new precision of diigts when divider moves
      * @param event - describes the divider move event that triggered the function
      */
@@ -195,8 +187,6 @@ export default class MapPanelSearch extends React.Component {
         else {
             latlngLabelPrecision = 4;
         }
-
-        this._setCurrentLatLng(this.state.latlng);
     }
 
     /** Bookmark functionality **/
@@ -430,11 +420,16 @@ export default class MapPanelSearch extends React.Component {
      *      suggestions list
      */
     _onSuggestionSelected (event, { suggestion }) {
-        let lat = suggestion.geometry.coordinates[1];
-        let lng = suggestion.geometry.coordinates[0];
-        this._setCurrentLatLng({lat: lat, lng: lng});
+        const lat = suggestion.geometry.coordinates[1];
+        const lng = suggestion.geometry.coordinates[0];
         map.setView({ lat: lat, lng: lng });
-        this.setState({ bookmarkActive: '' });
+        this.setState({
+            bookmarkActive: '',
+            latlng: {
+                lat: lat,
+                lng: lng
+            }
+        });
     }
 
     /**
@@ -481,6 +476,11 @@ export default class MapPanelSearch extends React.Component {
             onChange: this.onChange
         };
 
+        const latlng = {
+            lat: parseFloat(this.state.latlng.lat).toFixed(latlngLabelPrecision),
+            lng: parseFloat(this.state.latlng.lng).toFixed(latlngLabelPrecision)
+        };
+
         return (
             <div className='map-panel-search-bookmarks'>
                 {/* Search bar*/}
@@ -489,6 +489,7 @@ export default class MapPanelSearch extends React.Component {
                     <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
                         <Button className='map-panel-search-button'><Icon type={'bt-search'} /> </Button>
                     </OverlayTrigger>
+
                     {/* Autosuggest bar */}
                     <Autosuggest suggestions={suggestions}
                         onSuggestionsUpdateRequested={this._onSuggestionsUpdateRequested}
@@ -496,8 +497,10 @@ export default class MapPanelSearch extends React.Component {
                         renderSuggestion={this._renderSuggestion}
                         onSuggestionSelected={this._onSuggestionSelected}
                         inputProps={inputProps}/>
+
                     {/* Lat lng label */}
-                    <div className='map-search-latlng'>{this.state.latlng.lat}, {this.state.latlng.lng}</div>
+                    <div className='map-search-latlng'>{latlng.lat}, {latlng.lng}</div>
+
                     {/* Bookmark save button */}
                     <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
                         <Button className='map-panel-save-button' onClick={this._clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
