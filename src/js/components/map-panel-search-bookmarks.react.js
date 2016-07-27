@@ -85,23 +85,23 @@ export default class MapPanelSearch extends React.Component {
     componentDidMount () {
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
         EventEmitter.subscribe('moveend', data => {
-            let currentLatLng = map.getCenter();
-            let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
-
-            // Only update location if the map center has moved more than a given delta
-            // This is actually really necessary because EVERY update in the editor reloads
-            // the map, which fires moveend events despite not actually moving the map
-            // But we also have the bonus of not needing to make a reverse geocode request
-            // for small changes of the map center.
-            if (delta > MAP_UPDATE_DELTA) {
-                this._setCurrentLatLng(currentLatLng);
-                this._reverseGeocode(currentLatLng);
-                this.setState({ bookmarkActive: '' });
-            }
-            if (this.goToActive) {
-                this.setState({ bookmarkActive: 'active-fill' });
-                this.goToActive = false;
-            }
+            // let currentLatLng = map.getCenter();
+            // let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
+            //
+            // // Only update location if the map center has moved more than a given delta
+            // // This is actually really necessary because EVERY update in the editor reloads
+            // // the map, which fires moveend events despite not actually moving the map
+            // // But we also have the bonus of not needing to make a reverse geocode request
+            // // for small changes of the map center.
+            // if (delta > MAP_UPDATE_DELTA) {
+            //     this._setCurrentLatLng(currentLatLng);
+            //     this._reverseGeocode(currentLatLng);
+            //     this.setState({ bookmarkActive: '' });
+            // }
+            // if (this.goToActive) {
+            //     this.setState({ bookmarkActive: 'active-fill' });
+            //     this.goToActive = false;
+            // }
         });
 
         // Need a notification when all bookmarks are cleared succesfully in order to re-render list

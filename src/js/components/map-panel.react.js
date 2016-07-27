@@ -5,12 +5,11 @@ import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
+import MapPanelZoom from './MapPanelZoom';
 import MapPanelSearch from './map-panel-search-bookmarks.react';
 
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
-// Required event dispatch and subscription for now while parts of app are React components and others are not
-import { EventEmitter } from './event-emitter';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
@@ -28,7 +27,6 @@ export default class MapPanel extends React.Component {
         super(props);
         this.state = {
             open: true, // Whether panel should be open or not
-            zoom: map.getZoom(), // Current map zoom position to display
             geolocatorButton: 'bt-map-arrow', // Icon to display for the geolocator button
             geolocateActive: {
                 active: 'false'
@@ -38,19 +36,6 @@ export default class MapPanel extends React.Component {
         this._toggleMapPanel = this._toggleMapPanel.bind(this);
         this._clickGeolocator = this._clickGeolocator.bind(this);
         this._onGeolocateSuccess = this._onGeolocateSuccess.bind(this);
-        this._clickZoomIn = this._clickZoomIn.bind(this);
-        this._clickZoomOut = this._clickZoomOut.bind(this);
-    }
-
-    /**
-     * Official React lifecycle method
-     * Invoked once immediately after the initial rendering occurs.
-     * Temporary requirement is to subscribe to events from map becuase it is
-     * not a React component
-     */
-    componentDidMount () {
-        // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('zoomend', data => { this._setZoomLabel(); });
     }
 
     /**
@@ -58,33 +43,6 @@ export default class MapPanel extends React.Component {
      */
     _toggleMapPanel () {
         this.setState({ open: !this.state.open });
-    }
-
-    /** Zoom functionality **/
-
-    /**
-     * Zoom into the map when user click ZoomOut button
-     */
-    _setZoomLabel () {
-        let currentZoom = map.getZoom();
-        let fractionalNumber = Math.floor(currentZoom * 10) / 10;
-        this.setState({ zoom: fractionalNumber.toFixed(1) });
-    }
-
-    /**
-     * Zoom into the map when user click ZoomIn button
-     */
-    _clickZoomIn () {
-        map.zoomIn(1, { animate: true });
-        this._setZoomLabel();
-    }
-
-    /**
-     * Zoom into the map when user click ZoomOut button
-     */
-    _clickZoomOut () {
-        map.zoomOut(1, { animate: true });
-        this._setZoomLabel();
     }
 
     /** Geolocator functionality **/
@@ -218,8 +176,6 @@ export default class MapPanel extends React.Component {
      * Called every time state or props are changed
      */
     render () {
-        let mapzoom = parseFloat(this.state.zoom).toFixed(1);
-
         return (
             <div>
                 {/* Toggle map panel to show it*/}
@@ -232,17 +188,7 @@ export default class MapPanel extends React.Component {
                 {/* Map panel*/}
                 <Panel collapsible expanded={this.state.open} className='map-panel-collapsible'>
                     <div className='map-panel-toolbar'>
-                        <div className='map-panel-zoom'><span>z{mapzoom}</span></div>
-
-                        {/* Zoom buttons*/}
-                        <ButtonGroup className='buttons-plusminus'>
-                            <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}>
-                                <Button onClick={this._clickZoomIn} className='map-panel-zoomin'> <Icon type={'bt-plus'} /> </Button>
-                            </OverlayTrigger>
-                            <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Zoom out'}</Tooltip>}>
-                                <Button onClick={this._clickZoomOut}> <Icon type={'bt-minus'} /> </Button>
-                            </OverlayTrigger>
-                        </ButtonGroup>
+                        <MapPanelZoom />
 
                         {/* Search buttons*/}
                         <MapPanelSearch geolocateActive={this.state.geolocateActive}/>
