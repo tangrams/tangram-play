@@ -4,8 +4,8 @@ import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
+import MapPanelZoomIndicator from './MapPanelZoomIndicator';
 import { map } from '../map/map';
-import { EventEmitter } from './event-emitter';
 
 export default class MapPanelZoom extends React.Component {
     /**
@@ -24,19 +24,6 @@ export default class MapPanelZoom extends React.Component {
 
         this.onClickZoomIn = this.onClickZoomIn.bind(this);
         this.onClickZoomOut = this.onClickZoomOut.bind(this);
-        this.setZoomLabel = this.setZoomLabel.bind(this);
-    }
-
-    /**
-     * Official React lifecycle method
-     * Invoked once immediately after the initial rendering occurs.
-     * Temporary requirement is to subscribe to events from map becuase it is
-     * not a React component
-     */
-    componentDidMount () {
-        // Need to subscribe to map zooming events so that our React component
-        // plays nice with the non-React map
-        EventEmitter.subscribe('zoomend', data => { this.setZoomLabel(); });
     }
 
     /** Zoom functionality **/
@@ -46,7 +33,7 @@ export default class MapPanelZoom extends React.Component {
      */
     onClickZoomIn () {
         map.zoomIn(1, { animate: true });
-        this.setZoomLabel();
+        this.setState({ zoom: map.getZoom() });
     }
 
     /**
@@ -54,22 +41,13 @@ export default class MapPanelZoom extends React.Component {
      */
     onClickZoomOut () {
         map.zoomOut(1, { animate: true });
-        this.setZoomLabel();
-    }
-
-    /**
-     * Zoom into the map when user click ZoomOut button
-     */
-    setZoomLabel () {
-        const currentZoom = map.getZoom();
-        const fractionalNumber = Math.floor(currentZoom * 10) / 10;
-        this.setState({ zoom: Number.parseFloat(fractionalNumber).toFixed(1) });
+        this.setState({ zoom: map.getZoom() });
     }
 
     render () {
         return (
             <div className='map-panel-zoom-container'>
-                <div className='map-panel-zoom'>z{this.state.zoom}</div>
+                <MapPanelZoomIndicator zoom={this.state.zoom} />
 
                 {/* Zoom buttons */}
                 <ButtonGroup className='buttons-plusminus'>
