@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import 'leaflet-hash';
+import LeafletHash from './leaflet-hash';
 import { saveAs } from '../vendor/FileSaver.min.js';
 import Tangram from 'tangram';
 
@@ -31,7 +31,8 @@ export function initMap () {
 
     // Create Leaflet map
     map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
-    const hash = new L.Hash(map); // eslint-disable-line no-unused-vars
+
+    const hash = new LeafletHash(map, { hashUpdateInterval: 250 }); // eslint-disable-line no-unused-vars
 
     // Force Leaflet to update itself.
     // This resolves an issue where the map may sometimes not appear
