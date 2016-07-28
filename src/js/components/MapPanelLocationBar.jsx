@@ -30,13 +30,13 @@ export default class MapPanelLocationBar extends React.Component {
         super(props);
 
         const mapCenter = map.getCenter();
-
-        this.latlngLabelPrecision = 4;
+        const latlngLabelPrecision = 4;
 
         this.state = {
+            latlngLabelPrecision: latlngLabelPrecision,
             latlng: {
-                lat: mapCenter.lat.toFixed(this.latlngLabelPrecision),
-                lng: mapCenter.lng.toFixed(this.latlngLabelPrecision)
+                lat: mapCenter.lat.toFixed(latlngLabelPrecision),
+                lng: mapCenter.lng.toFixed(latlngLabelPrecision)
             }, // Represents lat lng of current position of the map
             value: '', // Represents text in the search bar
             placeholder: '', // Represents placeholder of the search bar
@@ -155,16 +155,21 @@ export default class MapPanelLocationBar extends React.Component {
         // based on the available screen width
         const mapcontainer = document.getElementById('map-container');
         const width = mapcontainer.offsetWidth;
+        let latlngLabelPrecision;
 
         if (width < 600) {
-            this.latlngLabelPrecision = 2;
+            latlngLabelPrecision = 2;
         }
         else if (width < 800) {
-            this.latlngLabelPrecision = 3;
+            latlngLabelPrecision = 3;
         }
         else {
-            this.latlngLabelPrecision = 4;
+            latlngLabelPrecision = 4;
         }
+
+        this.setState({
+            latlngLabelPrecision: latlngLabelPrecision
+        });
     }
 
     /** Bookmark functionality **/
@@ -343,8 +348,8 @@ export default class MapPanelLocationBar extends React.Component {
         };
 
         const latlng = {
-            lat: parseFloat(this.state.latlng.lat).toFixed(this.latlngLabelPrecision),
-            lng: parseFloat(this.state.latlng.lng).toFixed(this.latlngLabelPrecision)
+            lat: parseFloat(this.state.latlng.lat).toFixed(this.state.latlngLabelPrecision),
+            lng: parseFloat(this.state.latlng.lng).toFixed(this.state.latlngLabelPrecision)
         };
 
         return (
