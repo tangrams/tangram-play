@@ -49,14 +49,14 @@ function bookmarkExists (newBookmark) {
 // Clear all the bookmarks
 function clearData () {
     LocalStorage.setItem(STORAGE_BOOKMARKS_KEY, JSON.stringify(DEFAULT_BOOKMARKS_OBJECT));
-    EventEmitter.dispatch('clearbookmarks', {});
+    EventEmitter.dispatch('bookmarks:clear', {});
     return true;
 }
 
 // Clear only one bookmark
 function deleteBookmark (index) {
     LocalStorage.deleteItem(STORAGE_BOOKMARKS_KEY, index);
-    EventEmitter.dispatch('clearbookmarks', {});
+    EventEmitter.dispatch('bookmarks:clear', {});
     return true;
 }
 
