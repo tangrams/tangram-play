@@ -4,19 +4,15 @@ import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
-import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Icon from './icon.react';
 
-import { httpGet, debounce } from '../tools/common';
-import bookmarks from '../map/bookmarks';
-import { map } from '../map/map';
-import { config } from '../config';
-import Modal from '../modals/modal';
-// Required event dispatch and subscription for now while parts of app are React components and others are not
 import { EventEmitter } from './event-emitter';
+import { map } from '../map/map';
+import { httpGet, debounce } from '../tools/common';
+import { config } from '../config';
+import bookmarks from '../map/bookmarks';
 
-const SEARCH_THROTTLE = 300; // in ms, time to wait before repeating a request
+const SEARCH_THROTTLE = 1000; // in ms, time to wait before repeating a request
 const MAP_UPDATE_DELTA = 0.002;
 let latlngLabelPrecision = 4;
 
@@ -25,32 +21,18 @@ let latlngLabelPrecision = 4;
  * by the user
  */
 function getMapChangeDelta (startLatLng, endLatLng) {
-    let startX = startLatLng.lat;
-    let startY = startLatLng.lng;
-    let endX = endLatLng.lat;
-    let endY = endLatLng.lng;
+    const startX = startLatLng.lat;
+    const startY = startLatLng.lng;
+    const endX = endLatLng.lat;
+    const endY = endLatLng.lng;
     return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
 }
 
-/**
- * Represents the search bar and bookmarks button on the map panel
- */
-export default class MapPanelSearch extends React.Component {
-    /**
-     * Used to setup the state of the component. Regular ES6 classes do not
-     * automatically bind 'this' to the instance, therefore this is the best
-     * place to bind event handlers
-     *
-     * @param props - parameters passed from the parent
-     */
+export default class MapPanelLocationBar extends React.Component {
     constructor (props) {
         super(props);
-        let mapcenter = map.getCenter();
 
-        // Temporarily using an active Button state because React doesn not
-        // guarantee that setState will be synchronouse
-        this.goToActive = false;
-        this.overrideBookmarkClose = false; // Most of the time we don't want to override the bookmark button toggle function
+        let mapcenter = map.getCenter();
 
         this.state = {
             latlng: {
@@ -61,7 +43,6 @@ export default class MapPanelSearch extends React.Component {
             placeholder: '', // Represents placeholder of the search bar
             suggestions: [], // Stores search suggestions from autocomplete
             bookmarkActive: '', // Represents wether bookmark button should show as active
-            bookmarks: this._updateBookmarks() // Stores all bookmarks,
         };
 
         // Set the value of the search bar to whatever the map is currently pointing to
@@ -73,18 +54,12 @@ export default class MapPanelSearch extends React.Component {
         this._renderSuggestion = this._renderSuggestion.bind(this);
         this._clickSave = this._clickSave.bind(this);
         this._setLabelPrecision = this._setLabelPrecision.bind(this);
-        this._shouldDropdownToggle = this._shouldDropdownToggle.bind(this);
     }
 
-    /**
-     * Official React lifecycle method
-     * Invoked once immediately after the initial rendering occurs.
-     * Temporary requirement is to subscribe to events from map becuase it is
-     * not a React component
-     */
     componentDidMount () {
-        // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('leaflet:moveend', data => {
+        // Need to subscribe to map zooming events so that our React component
+        // plays nice with the non-React map
+        EventEmitter.subscribe('leaflet:moveend', (data) => {
             let currentLatLng = map.getCenter();
             let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
 
@@ -103,14 +78,16 @@ export default class MapPanelSearch extends React.Component {
                     }
                 });
             }
-            if (this.goToActive) {
-                this.setState({ bookmarkActive: 'active-fill' });
-                this.goToActive = false;
-            }
         });
 
-        // Need a notification when all bookmarks are cleared succesfully in order to re-render list
-        EventEmitter.subscribe('clearbookmarks', data => { this._bookmarkCallback(); });
+        // Listeners to respond to Bookmark component state changes.
+        EventEmitter.subscribe('bookmarks:active', (data) => {
+            this.setState({ bookmarkActive: 'active-fill' });
+        });
+
+        EventEmitter.subscribe('bookmarks:inactive', (data) => {
+            this.setState({ bookmarkActive: '' });
+        });
 
         // Need a notification when divider moves to change the latlng label precision
         EventEmitter.subscribe('divider:drag', this._setLabelPrecision);
@@ -225,115 +202,6 @@ export default class MapPanelSearch extends React.Component {
         };
     }
 
-    /**
-     * Official React lifecycle method
-     * Invoked immediately after the component's updates are flushed to the DOM
-     * Using a ref to the DOM element overlay tooltip on top of the dropdown button
-     * to make sure its closed after user clicks on a bookmark
-     */
-    componentDidUpdate (prevProps, prevState) {
-        this.refs.culpritOverlay.hide();
-        this.overrideBookmarkClose = false;
-    }
-
-    /**
-     * Fires when a user clicks on a bookmark from bookmark list.
-     * Causes map and search panel to re-render to go to the location on the bookmark
-     * @param eventKey - each bookmark in the bookmark list identified by a unique
-     *      key
-     */
-    _clickGoToBookmark (eventKey) {
-        let bookmarks = this.state.bookmarks;
-        let bookmark = bookmarks[eventKey];
-
-        const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
-        const zoom = bookmark.zoom;
-
-        if (!coordinates || !zoom) {
-            return;
-        }
-
-        this.goToActive = true;
-        map.setView(coordinates, zoom);
-    }
-
-    /**
-     * Delete a single bookmark
-     * @param eventKey - the bookmark index to delete
-     */
-    _clickDeleteSingleBookmark (eventKey) {
-        this.overrideBookmarkClose = true; // We want to keep the dropdown open
-        bookmarks.deleteBookmark(eventKey);
-    }
-
-    /**
-     * Callback called when dropdown button wants to change state from open to closed
-     * @param isOpen - state that dropdown wants to render to. Either true or false
-     */
-    _shouldDropdownToggle (isOpen) {
-        if (this.overrideBookmarkClose) {
-            return true;
-        }
-        else {
-            return isOpen;
-        }
-    }
-
-    /**
-     * Delete all bookmarks
-     */
-    _clickDeleteBookmarks () {
-        const modal = new Modal('Are you sure you want to clear your bookmarks? This cannot be undone.', bookmarks.clearData);
-        modal.show();
-    }
-
-    /**
-     * Callback issued from 'bookmarks' object in order to update the panel UI.
-     * Causes a re-render of the bookmarks list
-     */
-    _bookmarkCallback () {
-        this.setState({ bookmarks: this._updateBookmarks() });
-        this.setState({ bookmarkActive: '' });
-    }
-
-    /**
-     * Fetches current bookmarks from 'bookmarks' object a causes re-render of
-     * bookmarks list.
-     */
-    _updateBookmarks () {
-        let newBookmarks = [];
-        let bookmarkList = bookmarks.readData().data;
-
-        for (let i = 0; i < bookmarkList.length; i++) {
-            const bookmark = bookmarkList[i];
-            let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
-
-            newBookmarks.push({
-                id: i,
-                label: bookmark.label,
-                lat: bookmark.lat.toFixed(4),
-                lng: bookmark.lng.toFixed(4),
-                zoom: fractionalZoom.toFixed(1),
-                onClick: this._clickGoToBookmark.bind(this),
-                active: ''
-            });
-        }
-
-        return newBookmarks;
-    }
-
-    /** Search bar functionality **/
-
-    /**
-     * Fires any time there's a change in the search bar
-     * Updates what is stored by value to correspond to what user is typing.
-     * @param event - event that caused the change
-     */
-    onChange (event, { newValue, method }) {
-        this.setState({
-            value: newValue
-        });
-    }
 
     /**
      * Returns the currently selected result in order to update the search bar
@@ -464,10 +332,19 @@ export default class MapPanelSearch extends React.Component {
         );
     }
 
+    /** Search bar functionality **/
+
     /**
-     * Official React lifecycle method
-     * Called every time state or props are changed
+     * Fires any time there's a change in the search bar
+     * Updates what is stored by value to correspond to what user is typing.
+     * @param event - event that caused the change
      */
+    onChange (event, { newValue, method }) {
+        this.setState({
+            value: newValue
+        });
+    }
+
     render () {
         const { suggestions } = this.state;
         const inputProps = {
@@ -482,78 +359,42 @@ export default class MapPanelSearch extends React.Component {
         };
 
         return (
-            <div className='map-panel-search-bookmarks'>
-                {/* Search bar*/}
-                <ButtonGroup className='map-search'>
-                    {/* Search button */}
-                    <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}>
-                        <Button className='map-panel-search-button'><Icon type={'bt-search'} /> </Button>
-                    </OverlayTrigger>
-
-                    {/* Autosuggest bar */}
-                    <Autosuggest suggestions={suggestions}
-                        onSuggestionsUpdateRequested={this._onSuggestionsUpdateRequested}
-                        getSuggestionValue={this._getSuggestionValue}
-                        renderSuggestion={this._renderSuggestion}
-                        onSuggestionSelected={this._onSuggestionSelected}
-                        inputProps={inputProps}/>
-
-                    {/* Lat lng label */}
-                    <div className='map-search-latlng'>{latlng.lat}, {latlng.lng}</div>
-
-                    {/* Bookmark save button */}
-                    <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}>
-                        <Button className='map-panel-save-button' onClick={this._clickSave}> <Icon type={'bt-star'} active={this.state.bookmarkActive}/> </Button>
-                    </OverlayTrigger>
-                </ButtonGroup>
-
-                {/* Bookmark button*/}
-                <OverlayTrigger rootClose ref='culpritOverlay' placement='bottom' overlay={<Tooltip id='tooltip-bookmark'>{'Bookmarks'}</Tooltip>}>
-                    <DropdownButton title={<Icon type={'bt-bookmark'} />} bsStyle='default' noCaret pullRight className='map-panel-bookmark-button' id='map-panel-bookmark-button' open={this._shouldDropdownToggle()} onToggle={this._shouldDropdownToggle}>
-                        {/* Defining an immediately-invoked function expression inside JSX to decide whether to render full bookmark list or not */}
-                        {(() => {
-                            let bookmarkDropdownList;
-
-                            // If no bookmarks, then display a no bookmarks message
-                            if (this.state.bookmarks.length === 0) {
-                                bookmarkDropdownList =
-                                    <MenuItem key='none' className='bookmark-dropdown-center'>
-                                        <div>No bookmarks yet!</div>
-                                    </MenuItem>;
-                            }
-                            // If there are bookmarks
-                            else {
-                                // Create the bookmarks list
-                                let list =
-                                    this.state.bookmarks.map((result, i) => {
-                                        return <MenuItem key={i}>
-                                                    <div className='bookmark-dropdown-info' eventKey={i} onClick={() => this._clickGoToBookmark(i)} >
-                                                        <div className='bookmark-dropdown-icon'><Icon type={'bt-map-marker'} /></div>
-                                                        <div>{result.label}<br />
-                                                            <span className='bookmark-dropdown-text'>{result.lat}, {result.lng}, z{result.zoom}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className='bookmark-dropdown-delete' eventKey={i} onClick={() => this._clickDeleteSingleBookmark(i)}>
-                                                        <Icon type={'bt-times'} />
-                                                    </div>
-                                                </MenuItem>;
-                                    });
-
-                                // Add a delete button at the end
-                                let deletebutton =
-                                    <MenuItem key='delete' onSelect={this._clickDeleteBookmarks} className='bookmark-dropdown-center clear-bookmarks'>
-                                        <div>Clear bookmarks</div>
-                                    </MenuItem>;
-
-                                // In React we have to use arrays if we want to concatenate two JSX fragments
-                                bookmarkDropdownList = [list, deletebutton];
-                            }
-
-                            return bookmarkDropdownList;
-                        })()}
-                    </DropdownButton>
+            <ButtonGroup className='map-search'>
+                {/* Search button */}
+                <OverlayTrigger
+                    rootClose
+                    placement='bottom'
+                    overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}
+                >
+                    <Button className='map-panel-search-button'>
+                        <Icon type={'bt-search'} />
+                    </Button>
                 </OverlayTrigger>
-            </div>
+
+                {/* Autosuggest bar */}
+                <Autosuggest
+                    suggestions={suggestions}
+                    onSuggestionsUpdateRequested={this._onSuggestionsUpdateRequested}
+                    getSuggestionValue={this._getSuggestionValue}
+                    renderSuggestion={this._renderSuggestion}
+                    onSuggestionSelected={this._onSuggestionSelected}
+                    inputProps={inputProps}
+                />
+
+                {/* Lat lng label */}
+                <div className='map-search-latlng'>{latlng.lat}, {latlng.lng}</div>
+
+                {/* Bookmark save button */}
+                <OverlayTrigger
+                    rootClose
+                    placement='bottom'
+                    overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}
+                >
+                    <Button className='map-panel-save-button' onClick={this._clickSave}>
+                        <Icon type={'bt-star'} active={this.state.bookmarkActive} />
+                    </Button>
+                </OverlayTrigger>
+            </ButtonGroup>
         );
     }
 }
@@ -561,6 +402,6 @@ export default class MapPanelSearch extends React.Component {
 /**
  * Prop validation required by React
  */
-MapPanelSearch.propTypes = {
+MapPanelLocationBar.propTypes = {
     geolocateActive: React.PropTypes.object
 };

@@ -6,7 +6,8 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './icon.react';
 import MapPanelZoom from './MapPanelZoom';
-import MapPanelSearch from './map-panel-search-bookmarks.react';
+import MapPanelLocationBar from './MapPanelLocationBar';
+import MapPanelBookmarks from './MapPanelBookmarks';
 
 import { map } from '../map/map';
 import ErrorModal from '../modals/modal.error';
@@ -191,7 +192,10 @@ export default class MapPanel extends React.Component {
                         <MapPanelZoom />
 
                         {/* Search buttons*/}
-                        <MapPanelSearch geolocateActive={this.state.geolocateActive}/>
+                        <div className='map-panel-search-bookmarks'>
+                            <MapPanelLocationBar geolocateActive={this.state.geolocateActive} />
+                            <MapPanelBookmarks />
+                        </div>
 
                         {/* Locate me button*/}
                         <ButtonGroup>
