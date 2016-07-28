@@ -8,11 +8,9 @@ import Icon from './icon.react';
 
 import { EventEmitter } from './event-emitter';
 import { map } from '../map/map';
-import { httpGet, debounce } from '../tools/common';
 import { config } from '../config';
 import bookmarks from '../map/bookmarks';
 
-const SEARCH_THROTTLE = 1000; // in ms, time to wait before repeating a request
 const MAP_UPDATE_DELTA = 0.002;
 let latlngLabelPrecision = 4;
 
@@ -32,12 +30,12 @@ export default class MapPanelLocationBar extends React.Component {
     constructor (props) {
         super(props);
 
-        let mapcenter = map.getCenter();
+        const mapCenter = map.getCenter();
 
         this.state = {
             latlng: {
-                lat: mapcenter.lat.toFixed(latlngLabelPrecision),
-                lng: mapcenter.lng.toFixed(latlngLabelPrecision)
+                lat: mapCenter.lat.toFixed(latlngLabelPrecision),
+                lng: mapCenter.lng.toFixed(latlngLabelPrecision)
             }, // Represents lat lng of current position of the map
             value: '', // Represents text in the search bar
             placeholder: '', // Represents placeholder of the search bar
@@ -46,22 +44,24 @@ export default class MapPanelLocationBar extends React.Component {
         };
 
         // Set the value of the search bar to whatever the map is currently pointing to
-        this._reverseGeocode(mapcenter);
+        this.reverseGeocode(mapCenter);
 
         this.onChange = this.onChange.bind(this);
+
         this._onSuggestionsUpdateRequested = this._onSuggestionsUpdateRequested.bind(this);
         this._onSuggestionSelected = this._onSuggestionSelected.bind(this);
         this._renderSuggestion = this._renderSuggestion.bind(this);
         this._clickSave = this._clickSave.bind(this);
         this._setLabelPrecision = this._setLabelPrecision.bind(this);
+        this._makeRequest = this._makeRequest.bind(this);
     }
 
     componentDidMount () {
         // Need to subscribe to map zooming events so that our React component
         // plays nice with the non-React map
         EventEmitter.subscribe('leaflet:moveend', (data) => {
-            let currentLatLng = map.getCenter();
-            let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
+            const currentLatLng = map.getCenter();
+            const delta = getMapChangeDelta(this.state.latlng, currentLatLng);
 
             // Only update location if the map center has moved more than a given delta
             // This is actually really necessary because EVERY update in the editor reloads
@@ -69,7 +69,7 @@ export default class MapPanelLocationBar extends React.Component {
             // But we also have the bonus of not needing to make a reverse geocode request
             // for small changes of the map center.
             if (delta > MAP_UPDATE_DELTA) {
-                this._reverseGeocode(currentLatLng);
+                this.reverseGeocode(currentLatLng);
                 this.setState({
                     bookmarkActive: '',
                     latlng: {
@@ -94,53 +94,54 @@ export default class MapPanelLocationBar extends React.Component {
     }
 
     /**
-     * Given a latlng, make a request to API to find location details
-     * @param latlng - a latitude and longitude pair
-     */
-    _reverseGeocode (latlng) {
-        const lat = latlng.lat;
-        const lng = latlng.lng;
-        const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
-
-        debounce(httpGet(endpoint, (err, res) => {
-            if (err) {
-                console.error(err);
-            }
-
-            // TODO: Much more clever viewport/zoom based determination of current location
-            let response = JSON.parse(res);
-            if (!response.features || response.features.length === 0) {
-                // Sometimes reverse geocoding returns no results
-                this.setState({ placeholder: 'Unknown location' });
-                // Very first time we load the bar we don't want a value, we want a placeholder
-                if (this.state.value !== '') {
-                    this.setState({ value: 'Unknown location' });
-                }
-            }
-            else {
-                this.setState({ placeholder: response.features[0].properties.label });
-                // Very first time we load the bar we don't want a value, we want a placeholder
-                if (this.state.value !== '') {
-                    this.setState({ value: response.features[0].properties.label });
-                }
-            }
-        }), SEARCH_THROTTLE);
-    }
-
-    /** Geolocate functionality **/
-
-    /**
      * Official React lifecycle method
      * Invoked when a component is receiving new props. This method is not called for the initial render.
      * Every time user locates him or herself we need to update the value of the search bar
      * @param nextProps - the new incoming props
      */
     componentWillReceiveProps (nextProps) {
-        let geolocateActive = nextProps.geolocateActive;
+        const geolocateActive = nextProps.geolocateActive;
+
         // If the geolocate button has been activated, perform a reverseGeocode
         if (geolocateActive.active === 'true') {
-            this._reverseGeocode(geolocateActive.latlng);
+            this.reverseGeocode(geolocateActive.latlng);
         }
+    }
+
+    /**
+     * Given a latlng, make a request to API to find location details
+     * @param latlng - a latitude and longitude pair
+     */
+    reverseGeocode (latlng) {
+        const lat = latlng.lat;
+        const lng = latlng.lng;
+        const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
+
+        window.fetch(endpoint)
+            .then((response) => {
+                return response.json();
+            })
+            .then((response) => {
+                // TODO: Much more clever viewport/zoom based determination of current location
+                if (!response.features || response.features.length === 0) {
+                    // Sometimes reverse geocoding returns no results
+                    this.setState({ placeholder: 'Unknown location' });
+                    // Very first time we load the bar we don't want a value, we want a placeholder
+                    if (this.state.value !== '') {
+                        this.setState({ value: 'Unknown location' });
+                    }
+                }
+                else {
+                    this.setState({ placeholder: response.features[0].properties.label });
+                    // Very first time we load the bar we don't want a value, we want a placeholder
+                    if (this.state.value !== '') {
+                        this.setState({ value: response.features[0].properties.label });
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     /** LatLng label **/
@@ -152,8 +153,8 @@ export default class MapPanelLocationBar extends React.Component {
     _setLabelPrecision (event) {
         // Updates the precision of the lat-lng display label
         // based on the available screen width
-        let mapcontainer = document.getElementById('map-container');
-        let width = mapcontainer.offsetWidth;
+        const mapcontainer = document.getElementById('map-container');
+        const width = mapcontainer.offsetWidth;
 
         if (width < 600) {
             latlngLabelPrecision = 2;
@@ -172,10 +173,12 @@ export default class MapPanelLocationBar extends React.Component {
      * Fires when user wants to save a bookmark. Causes re-render of bookmark list and button
      */
     _clickSave () {
-        let data = this._getCurrentMapViewData();
+        const data = this._getCurrentMapViewData();
         if (bookmarks.saveBookmark(data)) {
-            this.setState({ bookmarks: this._updateBookmarks() });
-            this.setState({ bookmarkActive: 'active-fill' });
+            this.setState({
+                bookmarks: this._updateBookmarks(),
+                bookmarkActive: 'active-fill'
+            });
         }
     }
 
@@ -183,25 +186,16 @@ export default class MapPanelLocationBar extends React.Component {
      * Returns information for the current map view
      */
     _getCurrentMapViewData () {
-        let center = map.getCenter();
-        let zoom = map.getZoom();
-        let label = this.state.value || 'Unknown location';
-
-        // TODO: come up with a better distinction of when to show value and
-        // when to show label to user
-        if (label === 'Unknown location') {
-            label = this.state.placeholder;
-        }
+        const center = map.getCenter();
 
         return {
-            label,
+            label: this.state.value || this.state.placeholder,
             lat: center.lat,
             lng: center.lng,
-            zoom,
+            zoom: map.getZoom(),
             _date: new Date().toJSON()
         };
     }
-
 
     /**
      * Returns the currently selected result in order to update the search bar
@@ -240,6 +234,7 @@ export default class MapPanelLocationBar extends React.Component {
     _autocomplete (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
+
         this._makeRequest(endpoint);
     }
 
@@ -250,6 +245,7 @@ export default class MapPanelLocationBar extends React.Component {
     _search (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
+
         this._makeRequest(endpoint);
     }
 
@@ -258,27 +254,20 @@ export default class MapPanelLocationBar extends React.Component {
      * @param endpoint - the address or connection point to the web service
      */
     _makeRequest (endpoint) {
-        debounce(httpGet(endpoint, (err, res) => {
-            if (err) {
+        window.fetch(endpoint)
+            .then((response) => {
+                return response.json();
+            })
+            .then((results) => {
+                // Stores a new set of autocomplete suggestions in 'suggestions'
+                // data causing the search list to re-render
+                this.setState({
+                    suggestions: results.features
+                });
+            })
+            .catch((err) => {
                 console.error(err);
-            }
-            else {
-                this._showResults(JSON.parse(res));
-            }
-        }), SEARCH_THROTTLE);
-    }
-
-    /**
-     * Stores a new set of autocomplete suggestions in 'suggestions' data
-     * causing the search list to re-render
-     * @param results - list of search results to display from autocomplete results
-     */
-    _showResults (results) {
-        const features = results.features;
-
-        this.setState({
-            suggestions: features
-        });
+            });
     }
 
     /**
