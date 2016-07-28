@@ -32,6 +32,7 @@ import { debounce, createObjectURL } from './tools/common';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightRanges, updateLinesQueryString } from './editor/highlight';
 import { EventEmitter } from './components/event-emitter';
+import { initUserLogin } from './user/login';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
@@ -42,6 +43,9 @@ const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
+
+// Get user login state
+initUserLogin();
 
 class TangramPlay {
     constructor () {
