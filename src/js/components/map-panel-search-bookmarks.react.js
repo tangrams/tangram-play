@@ -84,7 +84,7 @@ export default class MapPanelSearch extends React.Component {
      */
     componentDidMount () {
         // Need to subscribe to map zooming events so that our React component plays nice with the non-React map
-        EventEmitter.subscribe('moveend', data => {
+        EventEmitter.subscribe('leaflet:moveend', data => {
             let currentLatLng = map.getCenter();
             let delta = getMapChangeDelta(this.state.latlng, currentLatLng);
 
