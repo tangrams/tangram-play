@@ -15,7 +15,7 @@ export default class MapPanelZoomIndicator extends React.Component {
     componentDidMount () {
         // Need to subscribe to map zooming events so that our React component
         // plays nice with the non-React map
-        EventEmitter.subscribe('zoomend', data => {
+        EventEmitter.subscribe('leaflet:zoomend', data => {
             this.setState({ zoom: map.getZoom() });
         });
     }
