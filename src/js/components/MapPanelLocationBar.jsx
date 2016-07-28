@@ -12,7 +12,6 @@ import { config } from '../config';
 import bookmarks from '../map/bookmarks';
 
 const MAP_UPDATE_DELTA = 0.002;
-let latlngLabelPrecision = 4;
 
 /**
  * Returns delta change between current position of the map and distance moved
@@ -32,10 +31,12 @@ export default class MapPanelLocationBar extends React.Component {
 
         const mapCenter = map.getCenter();
 
+        this.latlngLabelPrecision = 4;
+
         this.state = {
             latlng: {
-                lat: mapCenter.lat.toFixed(latlngLabelPrecision),
-                lng: mapCenter.lng.toFixed(latlngLabelPrecision)
+                lat: mapCenter.lat.toFixed(this.latlngLabelPrecision),
+                lng: mapCenter.lng.toFixed(this.latlngLabelPrecision)
             }, // Represents lat lng of current position of the map
             value: '', // Represents text in the search bar
             placeholder: '', // Represents placeholder of the search bar
@@ -47,13 +48,12 @@ export default class MapPanelLocationBar extends React.Component {
         this.reverseGeocode(mapCenter);
 
         this.onChange = this.onChange.bind(this);
-
-        this._onSuggestionsUpdateRequested = this._onSuggestionsUpdateRequested.bind(this);
-        this._onSuggestionSelected = this._onSuggestionSelected.bind(this);
-        this._renderSuggestion = this._renderSuggestion.bind(this);
-        this._clickSave = this._clickSave.bind(this);
-        this._setLabelPrecision = this._setLabelPrecision.bind(this);
-        this._makeRequest = this._makeRequest.bind(this);
+        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+        this.renderSuggestion = this.renderSuggestion.bind(this);
+        this.onClickSave = this.onClickSave.bind(this);
+        this.setLabelPrecision = this.setLabelPrecision.bind(this);
+        this.makeRequest = this.makeRequest.bind(this);
     }
 
     componentDidMount () {
@@ -90,7 +90,7 @@ export default class MapPanelLocationBar extends React.Component {
         });
 
         // Need a notification when divider moves to change the latlng label precision
-        EventEmitter.subscribe('divider:drag', this._setLabelPrecision);
+        EventEmitter.subscribe('divider:drag', this.setLabelPrecision);
     }
 
     /**
@@ -150,20 +150,20 @@ export default class MapPanelLocationBar extends React.Component {
      * Set a new latlng label with a new precision of diigts when divider moves
      * @param event - describes the divider move event that triggered the function
      */
-    _setLabelPrecision (event) {
+    setLabelPrecision (event) {
         // Updates the precision of the lat-lng display label
         // based on the available screen width
         const mapcontainer = document.getElementById('map-container');
         const width = mapcontainer.offsetWidth;
 
         if (width < 600) {
-            latlngLabelPrecision = 2;
+            this.latlngLabelPrecision = 2;
         }
         else if (width < 800) {
-            latlngLabelPrecision = 3;
+            this.latlngLabelPrecision = 3;
         }
         else {
-            latlngLabelPrecision = 4;
+            this.latlngLabelPrecision = 4;
         }
     }
 
@@ -172,11 +172,11 @@ export default class MapPanelLocationBar extends React.Component {
     /**
      * Fires when user wants to save a bookmark. Causes re-render of bookmark list and button
      */
-    _clickSave () {
-        const data = this._getCurrentMapViewData();
+    onClickSave () {
+        const data = this.getCurrentMapViewData();
         if (bookmarks.saveBookmark(data)) {
+            EventEmitter.dispatch('bookmarks:updated');
             this.setState({
-                bookmarks: this._updateBookmarks(),
                 bookmarkActive: 'active-fill'
             });
         }
@@ -185,7 +185,7 @@ export default class MapPanelLocationBar extends React.Component {
     /**
      * Returns information for the current map view
      */
-    _getCurrentMapViewData () {
+    getCurrentMapViewData () {
         const center = map.getCenter();
 
         return {
@@ -204,7 +204,7 @@ export default class MapPanelLocationBar extends React.Component {
      * @param suggestion - current suggestion in the autocomplete list being selected
      *      or hovered on by user
      */
-    _getSuggestionValue (suggestion) {
+    getSuggestionValue (suggestion) {
         return suggestion.properties.label;
     }
 
@@ -213,16 +213,16 @@ export default class MapPanelLocationBar extends React.Component {
      * call a new autocomplete search request
      * @param value - value to search for
      */
-    _onSuggestionsUpdateRequested ({ value, reason }) {
+    onSuggestionsUpdateRequested ({ value, reason }) {
         // If user presses ENTER on the input search bar
         if (reason === 'enter-input') {
-            this._search(value);
+            this.search(value);
         }
         // For all other interactions, like moving up and down the suggestion list
         else {
             // Only call autocomplete if user has typed more than 1 character
             if (value.length >= 2) {
-                this._autocomplete(value);
+                this.autocomplete(value);
             }
         }
     }
@@ -231,29 +231,29 @@ export default class MapPanelLocationBar extends React.Component {
      * Makes an autocomplete request to API based on what user has typed
      * @param query - value to search for
      */
-    _autocomplete (query) {
+    autocomplete (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
-        this._makeRequest(endpoint);
+        this.makeRequest(endpoint);
     }
 
     /**
      * Makes an search request to API when user presses ENTER
      * @param query - value to search for
      */
-    _search (query) {
+    search (query) {
         const center = map.getCenter();
         const endpoint = `//${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
-        this._makeRequest(endpoint);
+        this.makeRequest(endpoint);
     }
 
     /**
      * Makes a request to Mapzen API
      * @param endpoint - the address or connection point to the web service
      */
-    _makeRequest (endpoint) {
+    makeRequest (endpoint) {
         window.fetch(endpoint)
             .then((response) => {
                 return response.json();
@@ -276,7 +276,7 @@ export default class MapPanelLocationBar extends React.Component {
      * @param event - event that cause user to select a particular results from
      *      suggestions list
      */
-    _onSuggestionSelected (event, { suggestion }) {
+    onSuggestionSelected (event, { suggestion }) {
         const lat = suggestion.geometry.coordinates[1];
         const lng = suggestion.geometry.coordinates[0];
         map.setView({ lat: lat, lng: lng });
@@ -293,7 +293,7 @@ export default class MapPanelLocationBar extends React.Component {
      * Returns a JSX string for all the suggestions returned for autocomplete
      * @param suggestion - particular item from autocomplete result list to style
      */
-    _renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
+    renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
         let value;
         let label = suggestion.properties.label;
 
@@ -343,8 +343,8 @@ export default class MapPanelLocationBar extends React.Component {
         };
 
         const latlng = {
-            lat: parseFloat(this.state.latlng.lat).toFixed(latlngLabelPrecision),
-            lng: parseFloat(this.state.latlng.lng).toFixed(latlngLabelPrecision)
+            lat: parseFloat(this.state.latlng.lat).toFixed(this.latlngLabelPrecision),
+            lng: parseFloat(this.state.latlng.lng).toFixed(this.latlngLabelPrecision)
         };
 
         return (
@@ -363,10 +363,10 @@ export default class MapPanelLocationBar extends React.Component {
                 {/* Autosuggest bar */}
                 <Autosuggest
                     suggestions={suggestions}
-                    onSuggestionsUpdateRequested={this._onSuggestionsUpdateRequested}
-                    getSuggestionValue={this._getSuggestionValue}
-                    renderSuggestion={this._renderSuggestion}
-                    onSuggestionSelected={this._onSuggestionSelected}
+                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                    getSuggestionValue={this.getSuggestionValue}
+                    renderSuggestion={this.renderSuggestion}
+                    onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
                 />
 
@@ -379,7 +379,7 @@ export default class MapPanelLocationBar extends React.Component {
                     placement='bottom'
                     overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}
                 >
-                    <Button className='map-panel-save-button' onClick={this._clickSave}>
+                    <Button className='map-panel-save-button' onClick={this.onClickSave}>
                         <Icon type={'bt-star'} active={this.state.bookmarkActive} />
                     </Button>
                 </OverlayTrigger>
