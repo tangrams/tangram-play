@@ -57,6 +57,8 @@ function createFilenameSlug (map) {
     const lng = center.lng.toFixed(4).toString();
 
     // String format, eg.
-    // 2016-07-29 12.59.16 z8.7067.x76.2119.y-60.8138
+    // @8.7067&76.2119&-60.8138_2016-07-29_12.59.16
+    // @z&x&y is so that it can be pasted back into a hash in the URL.
+    // (Unfortunately forward slashes are not file system friendly.)
     return `@${zoom}&${lat}&${lng}_${year}-${month}-${day}_${hour}.${minute}.${second}`;
 }
