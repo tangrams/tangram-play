@@ -3,7 +3,8 @@ import Modal from './modal';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
 import { editor, getEditorContent } from '../editor/editor';
-import { map, getScreenshotData } from '../map/map';
+import { map } from '../map/map';
+import { getScreenshotData } from '../map/screenshot';
 // import { getLocationLabel } from '../map/search'; // TODO: implement now that move to react has changed this
 import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
 import { createThumbnail } from '../tools/thumbnail';
