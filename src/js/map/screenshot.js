@@ -58,5 +58,5 @@ function createFilenameSlug (map) {
 
     // String format, eg.
     // 2016-07-29 12.59.16 z8.7067.x76.2119.y-60.8138
-    return `${year}-${month}-${day} ${hour}.${minute}.${second} z${zoom}.x${lat}.y${lng}`;
+    return `@${zoom}&${lat}&${lng}_${year}-${month}-${day}_${hour}.${minute}.${second}`;
 }
