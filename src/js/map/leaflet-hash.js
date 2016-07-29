@@ -26,6 +26,8 @@ export default class LeafletHash {
         if (map) {
             this.init(map);
         }
+
+        this.onHashChange = this.onHashChange.bind(this);
     }
 
     init (map) {
@@ -126,7 +128,7 @@ export default class LeafletHash {
         // throttle calls to update() so that they only happen every
         // `changeDefer` ms
         if (!this.changeTimeout) {
-            this.changeTimeout = setTimeout(() => {
+            this.changeTimeout = window.setTimeout(() => {
                 this.update();
                 this.changeTimeout = null;
             }, this.changeDefer);
@@ -136,7 +138,7 @@ export default class LeafletHash {
     startListening () {
         this.map.on('moveend', L.Util.throttle(this.onMapMove, this.hashUpdateInterval, this), this);
 
-        L.DomEvent.addListener(window, 'hashchange', this.onHashChange);
+        L.DomEvent.addListener(window, 'hashchange', this.onHashChange, this);
 
         this.isListening = true;
     }
@@ -144,7 +146,7 @@ export default class LeafletHash {
     stopListening () {
         this.map.off('moveend', L.Util.throttle(this.onMapMove, this.hashUpdateInterval, this), this);
 
-        L.DomEvent.removeListener(window, 'hashchange', this.onHashChange);
+        L.DomEvent.removeListener(window, 'hashchange', this.onHashChange, this);
 
         this.isListening = false;
     }
