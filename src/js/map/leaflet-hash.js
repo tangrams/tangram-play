@@ -1,10 +1,14 @@
 /**
- * A reimplementation of mlevan's leaflet-hash in ES6.
- * Some additions
- * the constructor accepts an opts object whose only settle option right now
- * is `hashUpdateInterval` - how quickly to update the hash.
- * Also now accounts for zoom precision (so it displays zoom to x digits)
- * This requires recent browsers and Leaflet v1+
+ * A port of mlevan's leaflet-hash to ES2015 JavaScript.
+ * Original: https://github.com/mlevans/leaflet-hash
+ *
+ * Changelog:
+ * The constructor now accepts an `opts` object as a second parameter.
+ * The only option right now is `refreshInterval` - how quickly to update the hash.
+ * Also now accounts for fractional zoom precision (so it displays zoom to x digits)
+ * This deprecates support for very old browsers because it no longer checks
+ * for presence of hashchange event
+ * and assumes Leaflet v1+ with fractional zoom quantities
  */
 import L from 'leaflet';
 
@@ -14,7 +18,7 @@ export default class LeafletHash {
         this.lastHash = null;
         this.movingMap = false;
 
-        this.hashUpdateInterval = opts.hashUpdateInterval || 100;
+        this.refreshInterval = opts.refreshInterval || 100;
 
         // defer hash change updates every 100ms
         this.changeDefer = 100;
@@ -135,7 +139,7 @@ export default class LeafletHash {
     }
 
     startListening () {
-        this.map.on('moveend', L.Util.throttle(this.onMapMove, this.hashUpdateInterval, this), this);
+        this.map.on('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
 
         L.DomEvent.addListener(window, 'hashchange', this.onHashChange, this);
 
@@ -143,7 +147,7 @@ export default class LeafletHash {
     }
 
     stopListening () {
-        this.map.off('moveend', L.Util.throttle(this.onMapMove, this.hashUpdateInterval, this), this);
+        this.map.off('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
 
         L.DomEvent.removeListener(window, 'hashchange', this.onHashChange, this);
 

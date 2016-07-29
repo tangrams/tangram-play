@@ -33,7 +33,7 @@ export function initMap () {
     // Create Leaflet map
     map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
 
-    const hash = new LeafletHash(map, { hashUpdateInterval: 250 }); // eslint-disable-line no-unused-vars
+    const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
 
     // Now we turn the zoomSnap back on, after the load is complete.
     map.options.zoomSnap = 1;
