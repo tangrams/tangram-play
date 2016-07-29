@@ -32,6 +32,7 @@ export default class MapPanelBookmarks extends React.Component {
         };
 
         this.shouldDropdownToggle = this.shouldDropdownToggle.bind(this);
+        this.bookmarksClearedCallback = this.bookmarksClearedCallback.bind(this);
     }
 
     componentDidMount () {
@@ -59,11 +60,11 @@ export default class MapPanelBookmarks extends React.Component {
     /**
      * Fires when a user clicks on a bookmark from bookmark list.
      * Causes map and search panel to re-render to go to the location on the bookmark
-     * @param eventKey - each bookmark in the bookmark list identified by a unique
+     * @param key - each bookmark in the bookmark list identified by a unique
      *      key
      */
-    onClickGoToBookmark (eventKey) {
-        const bookmark = this.state.bookmarks[eventKey];
+    onClickGoToBookmark (key) {
+        const bookmark = this.state.bookmarks[key];
 
         const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
         const zoom = bookmark.zoom;
@@ -78,11 +79,11 @@ export default class MapPanelBookmarks extends React.Component {
 
     /**
      * Delete a single bookmark
-     * @param eventKey - the bookmark index to delete
+     * @param key - the bookmark index to delete
      */
-    onClickDeleteSingleBookmark (eventKey) {
+    onClickDeleteSingleBookmark (key) {
         this.overrideBookmarkClose = true; // We want to keep the dropdown open
-        bookmarks.deleteBookmark(eventKey);
+        bookmarks.deleteBookmark(key);
     }
 
     /**
@@ -157,6 +158,9 @@ export default class MapPanelBookmarks extends React.Component {
                     noCaret
                     pullRight
                     className='map-panel-bookmark-button'
+                    // The prop 'id' is required to make 'Dropdown' accessible
+                    // for users using assistive technologies such as screen readers
+                    id='map-panel-bookmark-button'
                     open={this.shouldDropdownToggle()}
                     onToggle={this.shouldDropdownToggle}
                 >
@@ -182,7 +186,6 @@ export default class MapPanelBookmarks extends React.Component {
                                     <MenuItem key={i}>
                                         <div
                                             className='bookmark-dropdown-info'
-                                            eventKey={i}
                                             onClick={() => this.onClickGoToBookmark(i)}
                                         >
                                             <div className='bookmark-dropdown-icon'>
@@ -198,7 +201,6 @@ export default class MapPanelBookmarks extends React.Component {
                                         </div>
                                         <div
                                             className='bookmark-dropdown-delete'
-                                            eventKey={i}
                                             onClick={() => this.onClickDeleteSingleBookmark(i)}
                                         >
                                             <Icon type={'bt-times'} />
