@@ -4,8 +4,7 @@
  * the constructor accepts an opts object whose only settle option right now
  * is `hashUpdateInterval` - how quickly to update the hash.
  * Also now accounts for zoom precision (so it displays zoom to x digits)
- * and does not set the zoom to the nearest integer on load
- * This necessarily assumes recent browsers and Leaflet v1+
+ * This requires recent browsers and Leaflet v1+
  */
 import L from 'leaflet';
 

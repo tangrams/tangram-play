@@ -16,7 +16,8 @@ export const map = L.map('map', {
     zoomControl: false,
     attributionControl: false,
     maxZoom: 24,
-    keyboardZoomOffset: 0.05
+    keyboardZoomOffset: 0.05,
+    zoomSnap: 0 // Set this to prevent zoom snapping on load.
 });
 
 // Declare these exports now, but Tangram is set up later.
@@ -34,6 +35,9 @@ export function initMap () {
 
     const hash = new LeafletHash(map, { hashUpdateInterval: 250 }); // eslint-disable-line no-unused-vars
 
+    // Now we turn the zoomSnap back on, after the load is complete.
+    map.options.zoomSnap = 1;
+
     // Force Leaflet to update itself.
     // This resolves an issue where the map may sometimes not appear
     // or only partially appear when this app is first loaded.
@@ -49,8 +53,6 @@ export function initMap () {
     });
 
     setupEventListeners();
-
-    // initMapToolbar();
 }
 
 /**
