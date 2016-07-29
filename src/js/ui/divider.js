@@ -1,5 +1,6 @@
 import LocalStorage from '../storage/localstorage';
 import { map } from '../map/map';
+import { editor } from '../editor/editor';
 import { EventEmitter } from '../components/event-emitter';
 
 // Import Greensock (GSAP)
@@ -46,6 +47,11 @@ export function initDivider () {
         onDrag: function () {
             onDividerPositionChange();
             EventEmitter.dispatch('divider:drag');
+
+            // When the divider moves, the editor width changes and might expose blank areas
+            // of the document that CodeMirror has not parsed and rendered. This forces the
+            // editor to refresh as the divider moves.
+            editor.refresh();
         },
         onDragEnd: function () {
             updateMapState();
