@@ -1,7 +1,7 @@
 import { editor, getNodesOfLine } from './editor';
-import TangramPlay from '../tangram-play';
 import TANGRAM_API from '../tangram-api.json';
 import { tangramLayer } from '../map/map';
+import { EventEmitter } from '../components/event-emitter';
 
 // Load some common functions
 import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
@@ -29,7 +29,7 @@ export default class SuggestManager {
         }
 
         // Trigger hint after each time the scene is uploaded
-        TangramPlay.on('sceneupdate', (args) => {
+        EventEmitter.dispatch('tangram:sceneupdate', (args) => {
             let bOpen = true;
 
             let line = editor.getCursor().line;

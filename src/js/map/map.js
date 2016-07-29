@@ -3,11 +3,11 @@ import LeafletHash from './leaflet-hash';
 import { saveAs } from '../vendor/FileSaver.min.js';
 import Tangram from 'tangram';
 
-import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { EventEmitter } from '../components/event-emitter';
+
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';
@@ -71,7 +71,7 @@ function initTangram (pathToSceneFile) {
 
     tangramLayer.scene.subscribe({
         load: function (args) {
-            TangramPlay.trigger('sceneupdate', args);
+            EventEmitter.dispatch('tangram:sceneupdate', args);
         },
 
         // Hides loading indicator after vector tiles have downloaded and rendered
