@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import 'leaflet-hash';
+import LeafletHash from './leaflet-hash';
 import { saveAs } from '../vendor/FileSaver.min.js';
 import Tangram from 'tangram';
 
@@ -16,7 +16,8 @@ export const map = L.map('map', {
     zoomControl: false,
     attributionControl: false,
     maxZoom: 24,
-    keyboardZoomOffset: 0.05
+    keyboardZoomOffset: 0.05,
+    zoomSnap: 0 // Enables fractional zoom.
 });
 
 // Declare these exports now, but Tangram is set up later.
@@ -31,7 +32,9 @@ export function initMap () {
 
     // Create Leaflet map
     map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
-    const hash = new L.Hash(map); // eslint-disable-line no-unused-vars
+
+    // Add leaflet-hash (forked version)
+    const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
 
     // Force Leaflet to update itself.
     // This resolves an issue where the map may sometimes not appear
@@ -48,8 +51,6 @@ export function initMap () {
     });
 
     setupEventListeners();
-
-    // initMapToolbar();
 }
 
 /**
