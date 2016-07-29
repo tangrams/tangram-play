@@ -1,6 +1,5 @@
 import L from 'leaflet';
 import LeafletHash from './leaflet-hash';
-import { saveAs } from '../vendor/FileSaver.min.js';
 import Tangram from 'tangram';
 
 import LocalStorage from '../storage/localstorage';
@@ -110,37 +109,6 @@ export function loadScene (pathToSceneFile, { reset = false, basePath = null } =
         // Preserve scene base path unless reset requested (e.g. reset on new file load)
         return tangramLayer.scene.load(pathToSceneFile, !reset && path);
     }
-}
-
-/**
- * Uses Tangram's native screenshot functionality to download an image.
- *
- * @public
- * @requires FileSaver
- */
-export function takeScreenshot () {
-    tangramLayer.scene.screenshot().then(function (result) {
-        let slug = new Date().toString();
-
-        // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
-        saveAs(result.blob, `tangram-${slug}.png`);
-    });
-}
-
-/**
- * Uses Tangram's native screenshot functionality to return a Promise
- * whose resolve function passes in an object containing two properities:
- *      blob - a Blob object representing the image binary
- *      url - a string containing a base64 data-URI
- *
- * @public
- * @returns Promise
- */
-export function getScreenshotData () {
-    return tangramLayer.scene.screenshot()
-        .then(function (result) {
-            return result;
-        });
 }
 
 function getMapStartLocation () {

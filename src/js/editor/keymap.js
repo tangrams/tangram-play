@@ -1,7 +1,7 @@
 import CodeMirror from 'codemirror';
 import { unfoldAll, foldByLevel } from './codemirror/tools';
 import { changeFontSize } from './codemirror/font-size';
-import { takeScreenshot } from '../map/map';
+import { takeScreenshot } from '../map/screenshot';
 
 /**
  * Creates and exports additional keybinding functionality to CodeMirror.
