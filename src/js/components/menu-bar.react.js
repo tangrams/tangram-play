@@ -11,11 +11,11 @@ import Icon from './icon.react';
 
 import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
-import { examplesModal } from '../modals/modal.examples';
+import ExamplesModal from '../modals/ExamplesModal';
+import AboutModal from '../modals/AboutModal';
 import { openURLModal } from '../modals/modal.open-url';
 import { openGistModal } from '../modals/modal.open-gist';
 import { saveGistModal } from '../modals/modal.save-gist';
-import AboutModal from '../modals/AboutModal';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
@@ -37,7 +37,9 @@ const _clickOpenURL = function () {
 };
 
 const _clickOpenExample = function () {
-    examplesModal.show();
+    EditorIO.checkSaveStateThen(() => {
+        ReactDOM.render(<ExamplesModal />, document.getElementById('modal-container'));
+    });
 };
 
 const _clickSaveFile = function () {
