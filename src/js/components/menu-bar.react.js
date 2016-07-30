@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Navbar from 'react-bootstrap/lib/Navbar';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
@@ -14,7 +15,7 @@ import { examplesModal } from '../modals/modal.examples';
 import { openURLModal } from '../modals/modal.open-url';
 import { openGistModal } from '../modals/modal.open-gist';
 import { saveGistModal } from '../modals/modal.save-gist';
-import { aboutModal } from '../modals/modal.about';
+import AboutModal from '../modals/AboutModal';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
@@ -52,7 +53,7 @@ const _clickSaveCamera = function () {
 };
 
 const _clickAbout = function () {
-    aboutModal.show();
+    ReactDOM.render(<AboutModal />, document.getElementById('modal-container'));
 };
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';

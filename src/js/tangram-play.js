@@ -419,7 +419,7 @@ var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
-import FileDrop from './file/drop';
+import OverlaysContainer from './ui/OverlaysContainer';
 
 let mountNode1 = document.getElementById('menu-bar');
 ReactDOM.render(<MenuBar />, mountNode1);
@@ -427,5 +427,5 @@ ReactDOM.render(<MenuBar />, mountNode1);
 let mountNode2 = document.getElementById('map-panel');
 ReactDOM.render(<MapPanel />, mountNode2);
 
-let mountNode3 = document.getElementById('filedrop');
-ReactDOM.render(<FileDrop />, mountNode3);
+let mountNode3 = document.getElementById('overlays-container');
+ReactDOM.render(<OverlaysContainer />, mountNode3);
