@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal.jsx'; // TODO: rename
+import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 
 import CodeMirror from 'codemirror';

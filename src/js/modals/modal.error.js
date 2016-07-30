@@ -1,4 +1,4 @@
-import Modal from './modal';
+import Modal from './modal-old';
 
 export default class ErrorModal extends Modal {
     constructor (error, confirm, abort) {

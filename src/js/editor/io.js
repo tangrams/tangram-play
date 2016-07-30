@@ -2,7 +2,7 @@ import _ from 'lodash';
 import TangramPlay from '../tangram-play';
 import { editor, getEditorContent } from './editor';
 import { saveAs } from '../vendor/FileSaver.min.js';
-import Modal from '../modals/modal';
+import Modal from '../modals/modal-old';
 
 const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
 

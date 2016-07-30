@@ -1,5 +1,5 @@
 import TangramPlay from '../tangram-play';
-import Modal from './modal';
+import Modal from './modal-old';
 import EditorIO from '../editor/io';
 
 import EXAMPLES_DATA from './examples.json';
@@ -92,4 +92,3 @@ class ExamplesModal extends Modal {
 }
 
 export const examplesModal = new ExamplesModal();
-

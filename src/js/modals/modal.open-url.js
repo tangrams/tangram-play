@@ -1,5 +1,5 @@
 import TangramPlay from '../tangram-play';
-import Modal from './modal';
+import Modal from './modal-old';
 import ErrorModal from './modal.error';
 import EditorIO from '../editor/io';
 

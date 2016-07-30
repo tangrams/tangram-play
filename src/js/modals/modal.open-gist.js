@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import TangramPlay from '../tangram-play';
-import Modal from './modal';
+import Modal from './modal-old';
 import ErrorModal from './modal.error';
 import EditorIO from '../editor/io';
 import LocalStorage from '../storage/localstorage';
