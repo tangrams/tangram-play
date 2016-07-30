@@ -180,7 +180,6 @@ export default class MapPanelLocationBar extends React.Component {
     onClickSave () {
         const data = this.getCurrentMapViewData();
         if (bookmarks.saveBookmark(data)) {
-            EventEmitter.dispatch('bookmarks:updated');
             this.setState({
                 bookmarkActive: 'active-fill'
             });

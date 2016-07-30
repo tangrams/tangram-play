@@ -28,6 +28,7 @@ function saveBookmark (newBookmark) {
     else {
         currentData.data.push(newBookmark);
         LocalStorage.setItem(STORAGE_BOOKMARKS_KEY, JSON.stringify(currentData));
+        EventEmitter.dispatch('bookmarks:updated');
         return true;
     }
 }
