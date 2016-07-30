@@ -7,24 +7,13 @@ import CodeMirror from 'codemirror';
 import L from 'leaflet';
 
 export default class AboutModal extends React.Component {
-    constructor (props) {
-        super(props);
-
-        this.state = {
-            visible: true
-        };
-
-        this.onClickClose = this.onClickClose.bind(this);
-    }
-
     onClickClose () {
-        this.setState({ visible: false });
         ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
     }
 
     render () {
         return (
-            <Modal className='about-modal' visible={this.state.visible}>
+            <Modal className='about-modal'>
                 <div className='modal-text modal-about-text'>
                     <h4>About Tangram Play (BETA)</h4>
 
