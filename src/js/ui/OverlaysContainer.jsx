@@ -9,7 +9,7 @@ export default class OverlaysContainer extends React.Component {
             <div>
                 <Shield />
                 <FileDrop />
-                <div id='modal-container'></div>
+                <div id='modal-container' className='modal-container' />
             </div>
         );
     }
