@@ -127,14 +127,21 @@ export default class WidgetLinkNumber extends React.Component {
 
         const val = Math.round(((this.value - this.min) / this.range) * this.width);
 
-        // point
+        // Zero line
         this.ctx.strokeStyle = this.overPoint ? this.selColor : this.fnColor;
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
-        this.ctx.moveTo(this.offsetX + val, this.height * 0.5);
-        this.ctx.lineTo(this.offsetX + val, this.height);
+        let middle = this.width / 2;
+        let xPos = (-(val - middle)) + middle;
+        this.ctx.moveTo(xPos, this.height * 0.5);
+        this.ctx.lineTo(xPos, this.height);
         this.ctx.closePath();
         this.ctx.stroke();
+
+        // Zero point / text marker
+        this.ctx.font = '14px Roboto';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('0', xPos, this.height / 2.5);
 
         this.overPoint = false;
     }
