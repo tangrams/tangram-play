@@ -198,14 +198,14 @@ export default class MapPanel extends React.Component {
                         </div>
 
                         {/* Locate me button*/}
-                        <ButtonGroup>
+                        <ButtonGroup className='buttons-locate'>
                             <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Locate me'}</Tooltip>}>
                                 <Button onClick={this._clickGeolocator}> <Icon type={this.state.geolocatorButton} /> </Button>
                             </OverlayTrigger>
                         </ButtonGroup>
 
                         {/* Toggle map panel to show it*/}
-                        <ButtonGroup>
+                        <ButtonGroup className='buttons-toggle'>
                             <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle map toolbar'}</Tooltip>}>
                                 <Button onClick={this._toggleMapPanel}> <Icon type={'bt-caret-up'} /> </Button>
                             </OverlayTrigger>

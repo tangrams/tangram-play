@@ -3,6 +3,7 @@
 .map-panel-search-bookmarks {
     display: flex;
     flex-grow: 1;
+    flex: 1 0 auto;
 }
 
 .map-panel i.btm.active {
