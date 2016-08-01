@@ -13,7 +13,7 @@ export default class AboutModal extends React.Component {
 
     render () {
         return (
-            <Modal className='about-modal'>
+            <Modal className='about-modal' cancelFunction={this.onClickClose}>
                 <div className='modal-text modal-about-text'>
                     <h4>About Tangram Play (BETA)</h4>
 
