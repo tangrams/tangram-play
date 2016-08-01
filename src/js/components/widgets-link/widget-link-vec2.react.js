@@ -55,6 +55,9 @@ export default class WidgetLinkVec2 extends React.Component {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+
+        // Set the original value
+        this.setValue(this.props.value);
     }
 
     /**
@@ -251,5 +254,6 @@ export default class WidgetLinkVec2 extends React.Component {
 WidgetLinkVec2.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
-    match: React.PropTypes.object
+    match: React.PropTypes.object,
+    value: React.PropTypes.object
 };
