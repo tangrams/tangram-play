@@ -243,7 +243,6 @@ function insertMarks (fromLine, toLine) {
 
                 if (!myboolean) {
                     let myel = createEl(mytype);
-                    // ReactDOM.unmountComponentAtNode(myel);
 
                     // inserts the widget into CodeMirror DOM
                     mybookmark = doc.setBookmark(node.range.to, {
@@ -258,6 +257,8 @@ function insertMarks (fromLine, toLine) {
 
                     if (mytype === 'color') {
                         ReactDOM.render(<WidgetColor bookmark={mybookmark}/>, myel);
+                        console.log("Creating color");
+                        console.log(myel);
                     }
                     else if (mytype === 'string') {
                         ReactDOM.render(<WidgetDropdown bookmark={mybookmark}/>, myel);

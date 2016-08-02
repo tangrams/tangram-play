@@ -57,9 +57,14 @@ export default class ColorPalette extends React.Component {
     addNewColor (data) {
         let colors = this.state.colors;
 
-        for (let color of colors) {
-            if (color.color.getRgbaString() === data.getRgbaString()) {
-                color.count = color.count + 1;
+        for (let i = 0; i < colors.length; i++) {
+            if (colors[i].color.getRgbaString() === data.getRgbaString()) {
+                colors[i].count = colors[i].count + 1;
+
+                this.setState({ colors: colors });
+                console.log("\n\nNew color");
+                this.printPalette(colors);
+
                 return;
             }
         }
@@ -71,6 +76,9 @@ export default class ColorPalette extends React.Component {
 
         colors.push(newColor);
         this.setState({ colors: colors });
+
+        console.log("\n\nNew color");
+        this.printPalette(colors);
     }
 
     /**
@@ -94,6 +102,9 @@ export default class ColorPalette extends React.Component {
                 return;
             }
         }
+
+        console.log("\n\nremoving color");
+        this.printPalette(colors);
     }
 
     /**
@@ -153,7 +164,7 @@ export default class ColorPalette extends React.Component {
         const oldC = this.state.currentColor;
         const newC = {
             color: newColor,
-            count: 1
+            count: oldC.count
         };
         this.setState({ currentColor: newC });
 
@@ -165,6 +176,8 @@ export default class ColorPalette extends React.Component {
         // Step 3: Alert each individual widget to that a color has changed
         // Each widget will have to check if the change applies to itself
         EventEmitter.dispatch('color-palette:color-change', { old: oldC.color, new: newC.color });
+        console.log("\nCOLOR CHANGE\n");
+        this.printPalette(colors);
     }
 
     /**
@@ -172,6 +185,12 @@ export default class ColorPalette extends React.Component {
      */
     clearColors () {
         this.setState({ colors: [] });
+    }
+
+    printPalette (array) {
+        for (let color of array) {
+            console.log("Color: " + color.color.getHexString() + " count: " + color.count);
+        }
     }
 
     /**

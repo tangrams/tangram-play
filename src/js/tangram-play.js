@@ -120,7 +120,6 @@ class TangramPlay {
     initAddons () {
         this.addons.suggestManager = new SuggestManager();
         this.addons.glslHelpers = new GlslWidgetsLink();
-        this.addons.errorsManager = new ErrorsManager();
         // this.addons.colorPalette = new ColorPalette();
     }
 
