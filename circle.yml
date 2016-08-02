@@ -2,29 +2,26 @@ machine:
   node:
     version: 4.4.4
   environment:
-    # We need to build React in a production environment.
-    NODE_ENV: production
+    NODE_ENV: test
 
 dependencies:
   # Gulp must be installed in the global environment.
   pre:
     - npm install -g gulp-cli
-  # Modules for compiling assets live in devDependencies, which are not
-  # installed in production environments by default. This overrides this.
-  override:
-    - npm install --production=false
   post:
     - npm install -g aws-cli
 
 test:
   post:
-    # For Precog. This should run even if tests fail.
+    # For Precog.
     - cp -R build data index.html $CIRCLE_ARTIFACTS
 
-# For hosting on mapzen.com. Only deploy if tests pass.
+# For hosting on mapzen.com. Only deploy if tests pass. Compiled files are
+# rebuilt for a production environment.
 deployment:
   production:
     branch: master
     commands:
+      - NODE_ENV=production gulp build
       - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DESTINATION --delete
       - ./deploy/invalidate_cloudfront.sh
