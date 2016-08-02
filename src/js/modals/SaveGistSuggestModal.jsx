@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
+import Tooltip from 'react-bootstrap/lib/Tooltip';
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import Modal from './Modal';
 import Icon from '../components/icon.react';
 
 import Clipboard from 'clipboard';
@@ -68,15 +70,19 @@ export default class SaveGistSuggestModal extends React.Component {
                             ref={(ref) => { this.urlInput = ref; }}
                             defaultValue={this.props.urlValue}
                         />
-                        <Button
-                            className='gist-saved-copy-btn'
-                            data-clipboard-target='#gist-saved-url'
-                            data-tooltip='Copy to clipboard'
-                            data-tooltip-alignment='right'
-                            ref={(ref) => { this.clipboardButton = ref; }}
+                        <OverlayTrigger
+                            rootClose
+                            placement='right'
+                            overlay={<Tooltip id='tooltip'>{'Copy to clipboard'}</Tooltip>}
                         >
-                            <Icon type='bt-copy' />
-                        </Button>
+                            <Button
+                                className='gist-saved-copy-btn'
+                                data-clipboard-target='#gist-saved-url'
+                                ref={(ref) => { this.clipboardButton = ref; }}
+                            >
+                                <Icon type='bt-copy' />
+                            </Button>
+                        </OverlayTrigger>
                     </div>
                 </div>
                 <div className='modal-buttons'>
