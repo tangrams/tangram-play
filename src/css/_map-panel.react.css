@@ -91,11 +91,16 @@
 }
 
 /* Style for button groups */
+.map-panel-zoom-container {
+    display: flex;
+}
+
 .map-panel-zoom {
     width: 38px;
     margin-right: 4px;
     font-size: 12px;
     text-align: center;
+    line-height: 38px;
 }
 
 .buttons-plusminus {

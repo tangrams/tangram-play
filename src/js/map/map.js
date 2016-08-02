@@ -6,6 +6,7 @@ import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { EventEmitter } from '../components/event-emitter';
+import throttle from 'lodash/throttle';
 
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
@@ -149,14 +150,16 @@ function getMapStartLocation () {
 
 /* New section to handle React components */
 
-// Need to setup dispatch services to let the React component MapPanel know when map has changed
+// Need to setup dispatch services to let the React component MapPanel
+// know when map has changed. These are throttled to prevent expensive
+// React operations to be performed in rapid succession.
 function setupEventListeners () {
     // Make sure that map zoom label changes when the map is done zooming
-    map.on('zoomend', function (e) {
-        EventEmitter.dispatch('zoomend', {});
-    });
+    map.on('zoomend', throttle((e) => {
+        EventEmitter.dispatch('leaflet:zoomend', {});
+    }), 500);
     // Any other time the map moves: drag, bookmark select, tangram play edit
-    map.on('moveend', function (e) { // drag
-        EventEmitter.dispatch('moveend', {});
-    });
+    map.on('moveend', throttle((e) => {
+        EventEmitter.dispatch('leaflet:moveend', {});
+    }), 1000);
 }
