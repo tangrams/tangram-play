@@ -167,6 +167,7 @@ export default class ColorPalette extends React.Component {
             count: oldC.count
         };
         this.setState({ currentColor: newC });
+        console.log("current color: " + oldC.color.getHexString());
 
         // Step 2: Then update the current color array with the new color
         let newColorArray = this.state.colors;

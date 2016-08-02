@@ -257,8 +257,8 @@ function insertMarks (fromLine, toLine) {
 
                     if (mytype === 'color') {
                         ReactDOM.render(<WidgetColor bookmark={mybookmark}/>, myel);
-                        console.log('Creating color');
-                        console.log(myel);
+                        // console.log('Creating color');
+                        // console.log(myel);
                     }
                     else if (mytype === 'string') {
                         ReactDOM.render(<WidgetDropdown bookmark={mybookmark}/>, myel);

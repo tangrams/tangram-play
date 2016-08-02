@@ -30,6 +30,7 @@ export default class WidgetColor extends React.Component {
             y: 0
         };
         this.bookmark = this.props.bookmark;
+        this.mounted = true;
 
         // Need to know width in case a widget is about to get rendered outside of the normal screen size
         // TODO: Don't hardcode this.
@@ -39,6 +40,8 @@ export default class WidgetColor extends React.Component {
         this.onClick = this.onClick.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onPaletteChange = this.onPaletteChange.bind(this);
+
+        console.log("new color picker");
     }
 
     /**
@@ -55,12 +58,14 @@ export default class WidgetColor extends React.Component {
     }
 
     componentWillUnmount () {
+        this.mounted = false;
+
         EventEmitter.dispatch('widgets:color-unmount', this.state.color);
         console.log('UNMOUNTING' + this.state.color.getHexString());
 
         // Do nothing on color palette changes if the React component has been unmounted.
         // This is to prevent following error: 'Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component.'
-        EventEmitter.subscribe('color-palette:color-change', data => {});
+        // EventEmitter.subscribe('color-palette:color-change', data => {});
     }
 
     /**
@@ -124,9 +129,12 @@ export default class WidgetColor extends React.Component {
      * @param data - the new color the user has chosen
      */
     onPaletteChange (data) {
-        if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
-            this.setState({ color: data.new });
-            this.setEditorValue(data.new.getVecString());
+        if (this.mounted) {
+            if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
+                console.log(data);
+                this.setState({ color: data.new });
+                this.setEditorValue(data.new.getVecString());
+            }
         }
     }
 

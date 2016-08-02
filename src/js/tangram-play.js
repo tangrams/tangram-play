@@ -87,6 +87,11 @@ class TangramPlay {
                     // Initialize addons after Tangram is done, because
                     // some addons depend on Tangram scene config being present
                     this.initAddons();
+
+                    // console.log("viewport margin: ");
+                    // editor.doc.eachLine(this.mylines);
+                    // console.log(editor.getViewport());
+                    // console.log(editor.lineCount());
                 });
             });
 
@@ -279,8 +284,43 @@ class TangramPlay {
             editor.scrollTo(left, top);
         }
 
+        this.parseEntireDoc() ;
+
         // Turn change watching back on.
         editor.on('changes', this._watchEditorForChanges);
+    }
+
+    mylines () {
+        // console.log("yes");
+    }
+
+    parseEntireDoc () {
+        // console.log("viewport margin: ");
+        // editor.doc.eachLine(this.mylines);
+        //
+        // let totallines = editor.lineCount();
+        // console.log(totallines);
+        // let to = editor.getViewport().to;
+        // console.log(to);
+        // // editor.scrollTo(0, totallines);
+        //
+        // for (let i = 0; i < totallines-1; i++) {
+        //     editor.getStateAfter(i, true);
+        //     // editor.getLineTokens(i,true);
+        //     // editor.getTokenAt(i,true);
+        //     // console.log(i);
+        // }
+
+        // console.log(editor);
+        editor.setOption('viewportMargin', Infinity);
+
+        window.setTimeout(this.removeViewport, 5000);
+
+        // editor.setOption('viewportMargin', 10);
+    }
+
+    removeViewport() {
+        editor.setOption('viewportMargin', 10);
     }
 
     // If editor is updated, send it to the map.
