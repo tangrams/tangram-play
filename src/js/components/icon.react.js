@@ -10,8 +10,18 @@ export default class Icon extends React.Component {
      * Called every time state or props are changed
      */
     render () {
+        let className = 'btm';
+
+        if (this.props.type) {
+            className += ` ${this.props.type}`;
+        }
+
+        if (this.props.active) {
+            className += ` ${this.props.active}`;
+        }
+
         return (
-            <i className={`btm ${this.props.type} ${this.props.active}`}></i>
+            <i className={className}></i>
         );
     }
 }
