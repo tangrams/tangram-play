@@ -2,7 +2,7 @@ import React from 'react';
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 
-import Icon from '../../src/js/components/icon.react';
+import Icon from '../../src/js/components/Icon';
 
 describe('<Icon />', () => {
     it('creates an <i> element', function () {
@@ -13,11 +13,7 @@ describe('<Icon />', () => {
         assert.isTrue(shallow(<Icon type='foo' />).contains(<i className='btm foo' />));
     });
 
-    it('passes through a class for the `active` prop', function () {
-        assert.isTrue(shallow(<Icon active='bar' />).contains(<i className='btm bar' />));
-    });
-
-    it('passes through classes for the `type` and `active` props', function () {
-        assert.isTrue(shallow(<Icon type='foo' active='bar' />).contains(<i className='btm foo bar' />));
+    it('set the active class when `active` is true', function () {
+        assert.isTrue(shallow(<Icon type='foo' active={true} />).contains(<i className='btm foo icon-active' />));
     });
 });

@@ -23,6 +23,7 @@ module.exports = function (config) {
 
         browserify: {
             debug: true,
+            extensions: ['.jsx'],
             transform: [
                 ['babelify', { presets: ['es2015', 'react'] }],
                 'brfs'
