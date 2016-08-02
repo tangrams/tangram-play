@@ -29,9 +29,10 @@ export default class WidgetLinkVec2 extends React.Component {
         this.cursor = this.props.cursor;
         this.match = this.props.match;
 
+        let VERTICAL_OFFSET = 40;
         let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
         this.x = editor.charCoords(linePos).left;
-        this.y = editor.charCoords(linePos).bottom - 80;
+        this.y = editor.charCoords(linePos).bottom - VERTICAL_OFFSET;
 
         this.fnColor = 'rgb(230, 230, 230)';
         this.selColor = 'rgb(40, 168, 107)';
@@ -55,6 +56,9 @@ export default class WidgetLinkVec2 extends React.Component {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+
+        // Set the original value
+        this.setValue(this.props.value);
     }
 
     /**
@@ -251,5 +255,6 @@ export default class WidgetLinkVec2 extends React.Component {
 WidgetLinkVec2.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
-    match: React.PropTypes.object
+    match: React.PropTypes.object,
+    value: React.PropTypes.object
 };

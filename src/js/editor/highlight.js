@@ -190,8 +190,15 @@ export function highlightRanges (lines) {
 
         // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
         // Just in case, the return value is clamped to a minimum value of 0.
-        const startLine = Math.max(Number(lines[0]) - 1, 0);
-        const endLine = Math.max(Number(lines[1]) - 1, 0);
+        let startLine = Math.max(Number(lines[0]) - 1, 0);
+        let endLine = Math.max(Number(lines[1]) - 1, 0);
+
+        // If a "range" is just a single number (`6` rather than `6-7`, say)
+        // then `endLine` will be NaN. In this case we make `endLine` equal
+        // to `startLine` so we can properly highlight the "range".
+        if (Number.isNaN(endLine)) {
+            endLine = startLine;
+        }
 
         // Only jump to the first range given.
         if (i === 0) {

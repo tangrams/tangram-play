@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import TangramPlay from '../tangram-play';
 import { map, tangramLayer } from './map';
 import { highlightBlock } from '../editor/highlight';
+import { EventEmitter } from '../components/event-emitter';
 
 const mountNode = document.getElementById('map-inspection-components');
 
@@ -373,7 +374,7 @@ function showPopup (selection) {
     map.on('popupclose', onPopupClose);
 
     // Attach a listener to clean up the popup when a new scene is loaded.
-    TangramPlay.on('sceneload', onNewScene);
+    EventEmitter.subscribe('tangram:sceneload', onNewScene);
 
     function onPopupClose (event) {
         // Leaflet will be responsible for destroying the elements on close.
@@ -393,7 +394,7 @@ function showPopup (selection) {
 
         // Clean up events from the map listeners
         map.off('popupclose', onPopupClose);
-        TangramPlay.off('sceneload', onNewScene);
+        EventEmitter.unsubscribe('tangram:sceneload', onNewScene);
     }
 
     function onNewScene (event) {

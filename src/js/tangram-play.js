@@ -18,23 +18,22 @@ import { editor, getEditorContent, setEditorContent, getNodesOfLine } from './ed
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
 import { initWidgetMarks } from './widgets/widgets-manager';
+import { initErrorsManager } from './editor/errors';
 import ErrorModal from './modals/modal.error';
 import SuggestManager from './editor/suggest';
-import ErrorsManager from './editor/errors';
 import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
-import { subscribeMixin } from './tools/mixin';
 import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';
 import { highlightRanges, updateLinesQueryString } from './editor/highlight';
+import { EventEmitter } from './components/event-emitter';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
-import { EventEmitter } from './components/event-emitter';
 
 const query = getQueryStringObject();
 
@@ -45,8 +44,6 @@ let initialLoad = true;
 
 class TangramPlay {
     constructor () {
-        subscribeMixin(this);
-
         initMap();
         this.addons = {};
 
@@ -74,12 +71,12 @@ class TangramPlay {
                     updateLinesQueryString();
                 }
 
-                // Add widgets marks.
+                // Add widgets marks and errors manager.
                 initWidgetMarks();
+                initErrorsManager();
 
                 // Things we do after Tangram is finished initializing
                 tangramLayer.scene.initializing.then(() => {
-                    this.trigger('sceneinit');
                     // Need to send a signal to the dropdown widgets of type source to populate
                     EventEmitter.dispatch('tangram:sceneinit', {});
 
@@ -120,6 +117,7 @@ class TangramPlay {
         this.addons.suggestManager = new SuggestManager();
         this.addons.glslHelpers = new GlslWidgetsLink();
         this.addons.errorsManager = new ErrorsManager();
+        // this.addons.colorPalette = new ColorPalette();
     }
 
     /**
@@ -246,7 +244,7 @@ class TangramPlay {
 
         // Trigger Events
         // Event object is empty right now.
-        this.trigger('sceneload', {});
+        EventEmitter.dispatch('tangram:sceneload', {});
     }
 
     // Update widgets & content after a batch of changes

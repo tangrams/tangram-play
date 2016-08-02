@@ -28,9 +28,10 @@ export default class WidgetLinkNumber extends React.Component {
         this.cursor = this.props.cursor;
         this.match = this.props.match;
 
+        let VERTICAL_OFFSET = 40;
         let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
         this.x = editor.charCoords(linePos).left;
-        this.y = editor.charCoords(linePos).bottom - 80;
+        this.y = editor.charCoords(linePos).bottom - VERTICAL_OFFSET;
 
         this.fnColor = 'rgb(230, 230, 230)';
         this.selColor = 'rgb(40, 168, 107)';
@@ -127,14 +128,21 @@ export default class WidgetLinkNumber extends React.Component {
 
         const val = Math.round(((this.value - this.min) / this.range) * this.width);
 
-        // point
+        // Zero line
         this.ctx.strokeStyle = this.overPoint ? this.selColor : this.fnColor;
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
-        this.ctx.moveTo(this.offsetX + val, this.height * 0.5);
-        this.ctx.lineTo(this.offsetX + val, this.height);
+        let middle = this.width / 2;
+        let xPos = (-(val - middle)) + middle;
+        this.ctx.moveTo(xPos, this.height * 0.5);
+        this.ctx.lineTo(xPos, this.height);
         this.ctx.closePath();
         this.ctx.stroke();
+
+        // Zero point / text marker
+        this.ctx.font = '14px Roboto';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('0', xPos, this.height / 2.5);
 
         this.overPoint = false;
     }

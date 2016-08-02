@@ -1,17 +1,9 @@
 import { config } from '../config';
 import { initCodeMirror } from './codemirror';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
-import { EventEmitter } from '../components/event-emitter';
 
 // Export an instantiated CodeMirror instance
 export const editor = initCodeMirror();
-
-// When the divider moves, the editor width changes and might expose blank areas
-// of the document that CodeMirror has not parsed and rendered. This forces the
-// editor to refresh as the divider moves.
-EventEmitter.subscribe('divider:drag', () => {
-    editor.refresh();
-});
 
 // Debug
 window.editor = editor;

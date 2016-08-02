@@ -52,7 +52,7 @@ export default class GlslWidgetsLink {
                     //     this.activeModal = newVec3Picker(cursor, match);
                     //     break;
                     case 'vec2':
-                        ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match}/>, widgetlink);
+                        ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
                         break;
                     case 'number':
                         ReactDOM.render(<WidgetLinkNumber display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);

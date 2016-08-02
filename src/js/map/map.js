@@ -1,13 +1,12 @@
 import L from 'leaflet';
-import 'leaflet-hash';
-import { saveAs } from '../vendor/FileSaver.min.js';
+import LeafletHash from './leaflet-hash';
 import Tangram from 'tangram';
 
-import TangramPlay from '../tangram-play';
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './loading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { EventEmitter } from '../components/event-emitter';
+
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';
@@ -16,7 +15,8 @@ export const map = L.map('map', {
     zoomControl: false,
     attributionControl: false,
     maxZoom: 24,
-    keyboardZoomOffset: 0.05
+    keyboardZoomOffset: 0.05,
+    zoomSnap: 0 // Enables fractional zoom.
 });
 
 // Declare these exports now, but Tangram is set up later.
@@ -31,7 +31,9 @@ export function initMap () {
 
     // Create Leaflet map
     map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
-    const hash = new L.Hash(map); // eslint-disable-line no-unused-vars
+
+    // Add leaflet-hash (forked version)
+    const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
 
     // Force Leaflet to update itself.
     // This resolves an issue where the map may sometimes not appear
@@ -48,8 +50,6 @@ export function initMap () {
     });
 
     setupEventListeners();
-
-    // initMapToolbar();
 }
 
 /**
@@ -70,7 +70,7 @@ function initTangram (pathToSceneFile) {
 
     tangramLayer.scene.subscribe({
         load: function (args) {
-            TangramPlay.trigger('sceneupdate', args);
+            EventEmitter.dispatch('tangram:sceneupdate', args);
         },
 
         // Hides loading indicator after vector tiles have downloaded and rendered
@@ -109,37 +109,6 @@ export function loadScene (pathToSceneFile, { reset = false, basePath = null } =
         // Preserve scene base path unless reset requested (e.g. reset on new file load)
         return tangramLayer.scene.load(pathToSceneFile, !reset && path);
     }
-}
-
-/**
- * Uses Tangram's native screenshot functionality to download an image.
- *
- * @public
- * @requires FileSaver
- */
-export function takeScreenshot () {
-    tangramLayer.scene.screenshot().then(function (result) {
-        let slug = new Date().toString();
-
-        // uses FileSaver.js: https://github.com/eligrey/FileSaver.js/
-        saveAs(result.blob, `tangram-${slug}.png`);
-    });
-}
-
-/**
- * Uses Tangram's native screenshot functionality to return a Promise
- * whose resolve function passes in an object containing two properities:
- *      blob - a Blob object representing the image binary
- *      url - a string containing a base64 data-URI
- *
- * @public
- * @returns Promise
- */
-export function getScreenshotData () {
-    return tangramLayer.scene.screenshot()
-        .then(function (result) {
-            return result;
-        });
 }
 
 function getMapStartLocation () {
