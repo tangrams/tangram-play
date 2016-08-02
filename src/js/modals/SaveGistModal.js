@@ -89,7 +89,7 @@ export default class SaveGistModal extends React.Component {
         // Start save timeout
         // TODO: This does not cancel the request if it is in progress
         this._timeout = window.setTimeout(() => {
-            errorCallback({ message: 'GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!' });
+            this.handleSaveError({ message: 'GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!' });
         }, SAVE_TIMEOUT);
     }
 
