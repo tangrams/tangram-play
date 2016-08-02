@@ -56,10 +56,10 @@ export default class WidgetColor extends React.Component {
 
     componentWillUnmount () {
         EventEmitter.dispatch('widgets:color-unmount', this.state.color);
-        console.log("UNMOUNTING" + this.state.color.getHexString());
+        console.log('UNMOUNTING' + this.state.color.getHexString());
 
         // Do nothing on color palette changes if the React component has been unmounted.
-        // This is to prevent following error: "Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component."
+        // This is to prevent following error: 'Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component.'
         EventEmitter.subscribe('color-palette:color-change', data => {});
     }
 
