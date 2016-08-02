@@ -3,7 +3,7 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
-import Icon from './icon.react';
+import Icon from './Icon';
 
 import bookmarks from '../map/bookmarks';
 import { map } from '../map/map';

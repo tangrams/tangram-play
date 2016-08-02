@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '../components/icon.react';
+import Icon from '../components/Icon';
 import EditorIO from '../editor/io';
 
 export default class FileDrop extends React.Component {

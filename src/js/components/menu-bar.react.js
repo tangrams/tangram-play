@@ -7,7 +7,7 @@ import Nav from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Icon from './icon.react';
+import Icon from './Icon';
 
 import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';

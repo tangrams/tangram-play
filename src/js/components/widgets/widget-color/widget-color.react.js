@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
 import DraggableModal from '../../draggable-modal.react';
-import Icon from '../../icon.react';
+import Icon from '../../Icon';
 import WidgetColorBox from './widget-color-box.react';
 
 import { setCodeMirrorValue } from '../../../editor/editor';
