@@ -28,6 +28,7 @@
 @import '_modals';
 @import '_modals.examples';
 @import '_modals.open-gist';
+@import '_modals.sign-in';
 @import '_shield';
 @import '_inputs';
 
