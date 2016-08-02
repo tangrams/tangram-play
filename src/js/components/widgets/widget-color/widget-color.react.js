@@ -41,7 +41,7 @@ export default class WidgetColor extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onPaletteChange = this.onPaletteChange.bind(this);
 
-        console.log("new color picker");
+        // console.log("new color picker");
     }
 
     /**
@@ -61,7 +61,7 @@ export default class WidgetColor extends React.Component {
         this.mounted = false;
 
         EventEmitter.dispatch('widgets:color-unmount', this.state.color);
-        console.log('UNMOUNTING' + this.state.color.getHexString());
+        // console.log('UNMOUNTING' + this.state.color.getHexString());
 
         // Do nothing on color palette changes if the React component has been unmounted.
         // This is to prevent following error: 'Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component.'
@@ -131,7 +131,7 @@ export default class WidgetColor extends React.Component {
     onPaletteChange (data) {
         if (this.mounted) {
             if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
-                console.log(data);
+                // console.log(data);
                 this.setState({ color: data.new });
                 this.setEditorValue(data.new.getVecString());
             }

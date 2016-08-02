@@ -62,8 +62,8 @@ export default class ColorPalette extends React.Component {
                 colors[i].count = colors[i].count + 1;
 
                 this.setState({ colors: colors });
-                console.log('\n\nNew color');
-                this.printPalette(colors);
+                // console.log('\n\nNew color');
+                // this.printPalette(colors);
 
                 return;
             }
@@ -77,8 +77,8 @@ export default class ColorPalette extends React.Component {
         colors.push(newColor);
         this.setState({ colors: colors });
 
-        console.log('\n\nNew color');
-        this.printPalette(colors);
+        // console.log('\n\nNew color');
+        // this.printPalette(colors);
     }
 
     /**
@@ -103,8 +103,8 @@ export default class ColorPalette extends React.Component {
             }
         }
 
-        console.log('\n\nremoving color');
-        this.printPalette(colors);
+        // console.log('\n\nremoving color');
+        // this.printPalette(colors);
     }
 
     /**
@@ -167,7 +167,7 @@ export default class ColorPalette extends React.Component {
             count: oldC.count
         };
         this.setState({ currentColor: newC });
-        console.log("current color: " + oldC.color.getHexString());
+        // console.log("current color: " + oldC.color.getHexString());
 
         // Step 2: Then update the current color array with the new color
         let newColorArray = this.state.colors;
@@ -177,8 +177,8 @@ export default class ColorPalette extends React.Component {
         // Step 3: Alert each individual widget to that a color has changed
         // Each widget will have to check if the change applies to itself
         EventEmitter.dispatch('color-palette:color-change', { old: oldC.color, new: newC.color });
-        console.log('\nCOLOR CHANGE\n');
-        this.printPalette(newColorArray);
+        // console.log('\nCOLOR CHANGE\n');
+        // this.printPalette(newColorArray);
     }
 
     /**
