@@ -23,7 +23,19 @@ module.exports = function (config) {
 
         browserify: {
             debug: true,
-            transform: [['babelify', { presets: 'es2015' }], 'brfs']
+            transform: [
+                ['babelify', { presets: ['es2015', 'react'] }],
+                'brfs'
+            ],
+            // Configuration required for enzyme to work; see
+            // http://airbnb.io/enzyme/docs/guides/browserify.html
+            configure: function (bundle) {
+                bundle.on('prebundle', function () {
+                    bundle.external('react/addons');
+                    bundle.external('react/lib/ReactContext');
+                    bundle.external('react/lib/ExecutionEnvironment');
+                });
+            }
         },
 
         plugins: [
