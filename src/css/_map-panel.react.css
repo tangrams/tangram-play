@@ -101,12 +101,22 @@
     font-size: 12px;
     text-align: center;
     line-height: 38px;
+    flex: 0 0 auto;
 }
 
 .buttons-plusminus {
     display: flex;
+    flex: 0 0 auto;
 
     .map-panel-zoomin {
         margin-right: 2px;
     }
+}
+
+.buttons-locate {
+    flex: 0 0 auto;
+}
+
+.buttons-toggle {
+    flex: 0 0 auto;
 }
