@@ -181,6 +181,7 @@
         font-size: 12px;
         margin-top: 16px;
         margin-bottom: 0;
+        user-select: auto;
     }
 }
 

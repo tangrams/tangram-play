@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { showShield, hideShield } from '../ui/shield';
+import { showShield, hideShield } from '../ui/Shield';
 
 export default class Modal {
     constructor (message, confirm = _.noop, abort = _.noop, options = {}) {

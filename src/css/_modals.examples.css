@@ -46,6 +46,8 @@
     hr {
         margin-left: var(--example-modal-option-padding);
         margin-right: var(--example-modal-option-padding);
+        margin-top: 10px;
+        margin-bottom: 8px;
     }
 }
 

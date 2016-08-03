@@ -40,8 +40,8 @@
         <div id='widget-links'></div>
     </div>
 
+    <div id='overlays-container' class='overlay-container'></div><!-- React transition zone -->
     <div class='overlay-container'>
-        <div class='shield' id='shield'></div>
         <div class='modal'>
             <p class='modal-text'></p>
             <div class='modal-buttons'>
@@ -53,25 +53,6 @@
             <p class='modal-text'></p>
             <div class='modal-buttons'>
                 <button class='modal-confirm'><i class='btm bt-check'></i> Continue</button>
-            </div>
-        </div>
-        <div class='modal about-modal'>
-            <div class='modal-text modal-about-text'>
-                <h4>About Tangram Play (BETA)</h4>
-                <p>
-                    Tangram <span class='about-tangram-version'>(unknown version)</span>
-                    <br>Leaflet <span class='about-leaflet-version'>(unknown version)</span>
-                    <br>CodeMirror <span class='about-cm-version'>(unknown version)</span>
-                </p>
-                <p>
-                    This is a <a href='https://mapzen.com/' target='_blank'>Mapzen</a> project and it is maintained by Patricio Gonzalez Vivo and Lou Huang.
-                </p>
-                <p>
-                    <a href='https://github.com/tangrams/tangram-play' target='_blank'>View source on GitHub</a>
-                </p>
-            </div>
-            <div class='modal-buttons'>
-                <button class='modal-confirm'>Got it</button>
             </div>
         </div>
         <div class='modal modal-alt save-gist-modal'>
@@ -124,14 +105,6 @@
                 <button class='modal-confirm'>Got it</button>
             </div>
         </div>
-        <div class='modal modal-alt example-modal'>
-            <p class='modal-text'></p>
-            <div class='modal-content example-list'></div>
-            <div class='modal-buttons'>
-                <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                <button class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
-            </div>
-        </div>
         <div class='modal modal-alt open-url-modal'>
             <p class='modal-text'></p>
             <div class='modal-content open-url-input'>
@@ -153,7 +126,6 @@
                 <button class='modal-confirm' disabled><i class='btm bt-check'></i> Open</button>
             </div>
         </div>
-        <div id='filedrop'></div>
     </div>
 
     <div id='mobile-message' class='mobile-message'>

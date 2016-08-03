@@ -7,43 +7,26 @@ export default class FileDrop extends React.Component {
         super(props);
 
         this.state = {
-            visibleFileDropArea: false
+            visible: false
         };
 
-        this._onDragEnter = this._onDragEnter.bind(this);
-        this._onDragOver = this._onDragOver.bind(this);
-        this._onDragLeave = this._onDragLeave.bind(this);
-        this._onDrop = this._onDrop.bind(this);
-    }
-
-    render () {
-        const displayStyle = this.state.visibleFileDropArea
-            ? { display: 'block' }
-            : { display: 'none' };
-
-        return (
-            <div className='filedrop-container' onDragEnter={this._onDragEnter} onDragLeave={this._onDragLeave} onDrop={this._onDrop} style={displayStyle}>
-                <div className='filedrop-indicator'>
-                    <div className='filedrop-icon'>
-                        <Icon type={'bt-upload'} />
-                    </div>
-                    <div className='filedrop-label'>Drop a file here to open</div>
-                </div>
-            </div>
-        );
+        this.onDragEnter = this.onDragEnter.bind(this);
+        this.onDragOver = this.onDragOver.bind(this);
+        this.onDragLeave = this.onDragLeave.bind(this);
+        this.onDrop = this.onDrop.bind(this);
     }
 
     // Set up drag/drop file event listeners to the window`
     componentWillMount () {
         // Capturing events here prevents them from getting delivered to CodeMirror
         // or resulting in a file navigation
-        window.addEventListener('dragenter', this._onDragEnter, true);
-        window.addEventListener('dragover', this._onDragOver, true);
-        window.addEventListener('drop', this._handleDropOnWindow, true);
+        window.addEventListener('dragenter', this.onDragEnter, true);
+        window.addEventListener('dragover', this.onDragOver, true);
+        window.addEventListener('drop', this.handleDropOnWindow, true);
     }
 
     // This handler is added to the window during the componentWillMount step
-    _onDragEnter (event) {
+    onDragEnter (event) {
         // Check to make sure that dropped items are files.
         // This prevents other drags (e.g. text in editor)
         // from turning on the file drop area.
@@ -53,18 +36,12 @@ export default class FileDrop extends React.Component {
         if (types !== null && ((types.indexOf) ? (types.indexOf('Files') !== -1) : types.contains('application/x-moz-file'))) {
             event.preventDefault();
             event.dataTransfer.dropEffect = 'copy';
-            this.setState({ visibleFileDropArea: true });
+            this.setState({ visible: true });
         }
     }
 
-    // Required to prevent browser from navigating to a file
-    // instead of receiving a data transfer
-    _handleDropOnWindow (event) {
-        event.preventDefault();
-    }
-
     // This handler is added to the drop area when it is rendered
-    _onDragOver (event) {
+    onDragOver (event) {
         // Required to prevent browser from navigating to a file
         // instead of receiving a data transfer
         event.preventDefault();
@@ -84,21 +61,50 @@ export default class FileDrop extends React.Component {
         event.dataTransfer.dropEffect = 'copy';
     }
 
-    _onDragLeave (event) {
+    onDragLeave (event) {
         event.preventDefault();
-        this.setState({ visibleFileDropArea: false });
+        this.setState({ visible: false });
     }
 
-    _onDrop (event) {
+    onDrop (event) {
         event.preventDefault();
-        this.setState({ visibleFileDropArea: false });
-        this._handleFiles(event.dataTransfer.files);
+        this.setState({ visible: false });
+        this.handleFiles(event.dataTransfer.files);
     }
 
-    _handleFiles (files) {
+    // Required to prevent browser from navigating to a file
+    // instead of receiving a data transfer
+    handleDropOnWindow (event) {
+        event.preventDefault();
+    }
+
+    handleFiles (files) {
         if (files.length > 0) {
             const file = files[0];
             EditorIO.open(file);
         }
+    }
+
+    render () {
+        const displayStyle = this.state.visible
+            ? { display: 'block' }
+            : { display: 'none' };
+
+        return (
+            <div
+                className='filedrop-container'
+                onDragEnter={this.onDragEnter}
+                onDragLeave={this.onDragLeave}
+                onDrop={this.onDrop}
+                style={displayStyle}
+            >
+                <div className='filedrop-indicator'>
+                    <div className='filedrop-icon'>
+                        <Icon type={'bt-upload'} />
+                    </div>
+                    <div className='filedrop-label'>Drop a file here to open</div>
+                </div>
+            </div>
+        );
     }
 }

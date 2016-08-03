@@ -7,7 +7,7 @@ import Icon from './icon.react';
 
 import bookmarks from '../map/bookmarks';
 import { map } from '../map/map';
-import Modal from '../modals/modal';
+import Modal from '../modals/modal-old';
 import { EventEmitter } from './event-emitter';
 
 /**

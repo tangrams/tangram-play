@@ -1,5 +1,5 @@
 import LocalStorage from '../storage/localstorage';
-import Modal from './modal';
+import Modal from './modal-old';
 import ErrorModal from './modal.error';
 import Clipboard from 'clipboard';
 import { editor, getEditorContent } from '../editor/editor';
