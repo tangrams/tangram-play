@@ -86,10 +86,9 @@ export default class SaveGistSuggestModal extends React.Component {
                     </div>
                 </div>
                 <div className='modal-buttons'>
-                    <Button
-                        className='modal-confirm'
-                        onClick={this.onClickConfirm}
-                    >Got it</Button>
+                    <Button className='modal-confirm' onClick={this.onClickConfirm}>
+                        Got it
+                    </Button>
                 </div>
             </Modal>
         );
