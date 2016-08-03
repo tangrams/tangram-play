@@ -254,14 +254,20 @@ function insertMarks (fromLine, toLine) {
                     // We attach a the node with all the info on the wiget to a property of the bookmark
                     // 'bookmark' becomes parent to property 'widgetInfo' that represents a node
                     mybookmark.widgetInfo = node.address;
+                    mybookmark.widgetPos = node.range; // Not necessary if we're not using color palette
 
                     if (mytype === 'color') {
-                        console.log(node);
                         ReactDOM.render(<WidgetColor bookmark={mybookmark} value={node.value}/>, myel);
                         // console.log('Creating color');
                         // console.log(myel);
                     }
                     else if (mytype === 'string') {
+                        if (node.widgetMark.key === undefined) {
+                            node.widgetMark.key = '';
+                        }
+                        if (node.widgetMark.options === undefined) {
+                            node.widgetMark.options = '';
+                        }
                         // We need to pass a few more values to the dropdown widget: a set of options and a key
                         ReactDOM.render(<WidgetDropdown bookmark={mybookmark} options={node.widgetMark.options} keyType={node.widgetMark.key}/>, myel);
                     }

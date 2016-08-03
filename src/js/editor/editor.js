@@ -182,11 +182,18 @@ export function setCodeMirrorValue (bookmark, value) {
     // return bookmark;
 
     const origin = '+value_change';
+
+    editor.getStateAfter(bookmark.widgetPos.from.line, true);
+    editor.getStateAfter(bookmark.widgetPos.to.line, true);
+
     const nodeArray = bookmark.lines[0].stateAfter.nodes;
     const address = bookmark.widgetInfo;
-    let node ;
+    let node;
 
-    for(let singleNode of nodeArray) {
+    console.log(nodeArray);
+    console.log(address);
+
+    for (let singleNode of nodeArray) {
         if (singleNode.address === address) {
             node = singleNode;
         }
@@ -220,8 +227,14 @@ export function setCodeMirrorValue (bookmark, value) {
     // editor.getStateAfter(node.range.from.line, true);
     // editor.getStateAfter(node.range.to.line, true);
 
+    // console.log(node.range.from.line);
+    // console.log(node.range.to.line);
+
     doc.replaceRange(value, fromPos, toPos, origin);
-    console.log(bookmark);
+
+    // console.log(node.range.from.line);
+    // console.log(node.range.to.line);
+    // console.log(bookmark);
 
     // And after the replacement
     // Believe this catches cases where we are changing lines outside of the viewport

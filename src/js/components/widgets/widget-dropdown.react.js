@@ -116,5 +116,7 @@ export default class WidgetDropdown extends React.Component {
  * Prop validation required by React
  */
 WidgetDropdown.propTypes = {
-    bookmark: React.PropTypes.object
+    bookmark: React.PropTypes.object,
+    keyType: React.PropTypes.string,
+    options: React.PropTypes.array
 };

@@ -176,5 +176,6 @@ export default class WidgetColor extends React.Component {
  * Prop validation required by React
  */
 WidgetColor.propTypes = {
-    bookmark: React.PropTypes.object
+    bookmark: React.PropTypes.object,
+    value: React.PropTypes.string
 };
