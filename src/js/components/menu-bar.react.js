@@ -14,8 +14,8 @@ import { openLocalFile } from '../file/open-local';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
 import SaveGistModal from '../modals/SaveGistModal';
+import OpenGistModal from '../modals/OpenGistModal';
 import { openURLModal } from '../modals/modal.open-url';
-import { openGistModal } from '../modals/modal.open-gist';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
@@ -29,7 +29,9 @@ const _clickOpenFile = function () {
 };
 
 const _clickOpenGist = function () {
-    openGistModal.show();
+    EditorIO.checkSaveStateThen(() => {
+        ReactDOM.render(<OpenGistModal />, document.getElementById('modal-container'));
+    });
 };
 
 const _clickOpenURL = function () {
