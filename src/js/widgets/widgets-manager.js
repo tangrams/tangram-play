@@ -253,15 +253,17 @@ function insertMarks (fromLine, toLine) {
                     });
                     // We attach a the node with all the info on the wiget to a property of the bookmark
                     // 'bookmark' becomes parent to property 'widgetInfo' that represents a node
-                    mybookmark.widgetInfo = node;
+                    mybookmark.widgetInfo = node.address;
 
                     if (mytype === 'color') {
-                        ReactDOM.render(<WidgetColor bookmark={mybookmark}/>, myel);
+                        console.log(node);
+                        ReactDOM.render(<WidgetColor bookmark={mybookmark} value={node.value}/>, myel);
                         // console.log('Creating color');
                         // console.log(myel);
                     }
                     else if (mytype === 'string') {
-                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark}/>, myel);
+                        // We need to pass a few more values to the dropdown widget: a set of options and a key
+                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark} options={node.widgetMark.options} keyType={node.widgetMark.key}/>, myel);
                     }
                     // Disabling vector for now
                     // else if (mytype === 'vector') {

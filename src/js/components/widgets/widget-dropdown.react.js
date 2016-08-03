@@ -24,13 +24,13 @@ export default class WidgetDropdown extends React.Component {
         super(props);
 
         this.bookmark = this.props.bookmark;
-        this.key = this.bookmark.widgetInfo.key;
+        this.key = this.props.keyType;
         this.value = '';
 
         // If the dropdown is NOT of type source
         if (this.key !== 'source') {
             this.state = {
-                options: this.bookmark.widgetInfo.widgetMark.options
+                options: this.props.options
             };
         }
         // If the dropdown is of type source

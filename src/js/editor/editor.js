@@ -134,8 +134,65 @@ export function getNodesInRange (from, to) {
  * @param {string} value - The new value to set to
  */
 export function setCodeMirrorValue (bookmark, value) {
+    // const origin = '+value_change';
+    // const node = bookmark.widgetInfo;
+    //
+    // const doc = editor.getDoc();
+    //
+    // // Force a space between the ':' and the value
+    // if (value === '') {
+    //     value = ' ' + value;
+    // }
+    //
+    // // Calculate beginning character of the value
+    // //               key:_[anchor]value
+    // //               ^ ^^^^
+    // //               | ||||__ + anchor.length
+    // //               | |||___ + 1
+    // //               | | `--- + 1
+    // //  range.from.ch  key.length
+    // const fromPos = {
+    //     line: node.range.from.line,
+    //     // Magic number: 2 refers to the colon + space between key and value
+    //     ch: node.range.from.ch + node.key.length + 2 + node.anchor.length
+    // };
+    // const toPos = node.range.to;
+    //
+    // // We should refresh the editor before the replacement
+    // // Believe this catches cases where we are parsing multiple colors that are in the viewport
+    // editor.getStateAfter(node.range.from.line, true);
+    // editor.getStateAfter(node.range.to.line, true);
+    //
+    // console.log(bookmark);
+    // doc.replaceRange(value, fromPos, toPos, origin);
+    //
+    // // And after the replacement
+    // // Believe this catches cases where we are changing lines outside of the viewport
+    // editor.getStateAfter(node.range.from.line, true);
+    // editor.getStateAfter(node.range.to.line, true);
+    //
+    // for (let linenode of bookmark.lines[0].stateAfter.nodes) {
+    //     if (node.address === linenode.address) {
+    //         bookmark.widgetInfo = linenode;
+    //         break;
+    //     }
+    // }
+    // console.log(bookmark.lines[0].stateAfter.nodes[0].range.from.line);
+    //
+    // return bookmark;
+
     const origin = '+value_change';
-    const node = bookmark.widgetInfo;
+    const nodeArray = bookmark.lines[0].stateAfter.nodes;
+    const address = bookmark.widgetInfo;
+    let node ;
+
+    for(let singleNode of nodeArray) {
+        if (singleNode.address === address) {
+            node = singleNode;
+        }
+    }
+
+    console.log(node);
 
     const doc = editor.getDoc();
 
@@ -160,24 +217,24 @@ export function setCodeMirrorValue (bookmark, value) {
 
     // We should refresh the editor before the replacement
     // Believe this catches cases where we are parsing multiple colors that are in the viewport
-    editor.getStateAfter(node.range.from.line, true);
-    editor.getStateAfter(node.range.to.line, true);
+    // editor.getStateAfter(node.range.from.line, true);
+    // editor.getStateAfter(node.range.to.line, true);
 
-    console.log(bookmark);
     doc.replaceRange(value, fromPos, toPos, origin);
+    console.log(bookmark);
 
     // And after the replacement
     // Believe this catches cases where we are changing lines outside of the viewport
-    editor.getStateAfter(node.range.from.line, true);
-    editor.getStateAfter(node.range.to.line, true);
+    // editor.getStateAfter(node.range.from.line, true);
+    // editor.getStateAfter(node.range.to.line, true);
 
-    for (let linenode of bookmark.lines[0].stateAfter.nodes) {
-        if (node.address === linenode.address) {
-            bookmark.widgetInfo = linenode;
-            break;
-        }
-    }
-    console.log(bookmark.lines[0].stateAfter.nodes[0].range.from.line);
+    // for (let linenode of bookmark.lines[0].stateAfter.nodes) {
+    //         if (node.address === linenode.address) {
+    //         bookmark.widgetInfo = linenode;
+    //         break;
+    //     }
+    // }
+    // console.log(bookmark.lines[0].stateAfter.nodes[0].range.from.line);
 
     return bookmark;
 }

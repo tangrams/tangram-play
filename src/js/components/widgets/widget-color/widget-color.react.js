@@ -25,7 +25,7 @@ export default class WidgetColor extends React.Component {
 
         this.state = {
             displayColorPicker: false,
-            color: new Color(this.props.bookmark.widgetInfo.value),
+            color: new Color(this.props.value),
             x: 0,
             y: 0
         };
