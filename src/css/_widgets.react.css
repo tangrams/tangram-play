@@ -38,7 +38,7 @@
 }
 
 .widget-modal {
-    z-index: var(--z08-overlay);
+    z-index: var(--z09-pickers);
     outline: none;
     margin-top: 47px;
     box-shadow: var(--modal-shadow);
