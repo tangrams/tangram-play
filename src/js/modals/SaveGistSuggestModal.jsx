@@ -24,6 +24,11 @@ export default class SaveGistSuggestModal extends React.Component {
         this.destroyModal();
     }
 
+    componentWillUnmount () {
+        // Clean up clipboard object
+        this.clipboard.destroy();
+    }
+
     // Sets up clipboard.js functionality. Not a React component.
     setupClipboard () {
         const clipboardButtonEl = ReactDOM.findDOMNode(this.clipboardButton);
@@ -48,7 +53,6 @@ export default class SaveGistSuggestModal extends React.Component {
     }
 
     destroyModal () {
-        this.clipboard.destroy();
         ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
     }
 
