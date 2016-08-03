@@ -1,17 +1,23 @@
+/* React: Color Palette */
+
 .colorpalette {
     position: absolute;
     z-index: var(--z01-colorpalette);
     right: 18px;
     bottom: 12px;
-    user-select: none;
-    pointer-events: none;
+    display: flex;
+    flex-direction: row;
 }
 
-.colorpalette-element {
+.colorpalette-color {
     display: inline-block;
+    position: relative;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.colorpalette-square {
     width: 20px;
     height: 20px;
-    margin-left: 5px;
     cursor: pointer;
-    pointer-events: auto;
 }

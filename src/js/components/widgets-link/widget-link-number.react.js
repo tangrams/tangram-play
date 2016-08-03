@@ -270,7 +270,7 @@ export default class WidgetLinkNumber extends React.Component {
      */
     render () {
         return (
-            <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onClick}>
+            <Modal dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onClick}>
                 <div className='drag'>
                     <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
                 </div>

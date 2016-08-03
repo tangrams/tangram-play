@@ -158,7 +158,17 @@ export function setCodeMirrorValue (bookmark, value) {
     };
     const toPos = node.range.to;
 
+    // We should refresh the editor before the replacement
+    // Believe this catches cases where we are parsing multiple colors that are in the viewport
+    editor.getStateAfter(node.range.from.line, true);
+    editor.getStateAfter(node.range.to.line, true);
+
     doc.replaceRange(value, fromPos, toPos, origin);
+
+    // And after the replacement
+    // Believe this catches cases where we are changing lines outside of the viewport
+    editor.getStateAfter(node.range.from.line, true);
+    editor.getStateAfter(node.range.to.line, true);
 
     for (let linenode of bookmark.lines[0].stateAfter.nodes) {
         if (node.address === linenode.address) {

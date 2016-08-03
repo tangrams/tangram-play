@@ -147,6 +147,7 @@ function clearMarks (fromLine, toLine) {
     const existingMarks = getExistingMarks(fromLine, toLine);
     // And remove them, if present.
     for (let bookmark of existingMarks) {
+        ReactDOM.unmountComponentAtNode(bookmark.replacedWith);
         bookmark.clear();
     }
 }
@@ -256,6 +257,8 @@ function insertMarks (fromLine, toLine) {
 
                     if (mytype === 'color') {
                         ReactDOM.render(<WidgetColor bookmark={mybookmark}/>, myel);
+                        console.log('Creating color');
+                        console.log(myel);
                     }
                     else if (mytype === 'string') {
                         ReactDOM.render(<WidgetDropdown bookmark={mybookmark}/>, myel);
@@ -271,6 +274,4 @@ function insertMarks (fromLine, toLine) {
             }
         }
     }
-    // Trigger an event for created widgets - this is picked up by the color palette
-    // EventEmitter.dispatch('widget_marks_created', { widgets: newWidgets });
 }

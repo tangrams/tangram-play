@@ -22,7 +22,6 @@ import { initErrorsManager } from './editor/errors';
 import ErrorModal from './modals/modal.error';
 import SuggestManager from './editor/suggest';
 import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
-// import ColorPalette from './widgets/color-palette';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
@@ -142,6 +141,8 @@ class TangramPlay {
      *      contents has been fetched.
      */
     load (scene) {
+        EventEmitter.dispatch('tangram:clear-palette', {});
+
         // Turn on loading indicator. This is turned off later
         // when Tangram reports that it's done.
         showSceneLoadingIndicator();
@@ -423,6 +424,7 @@ var ReactDOM = require('react-dom');
 
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
+import ColorPalette from './components/color-palette.react';
 import FileDrop from './file/drop';
 
 let mountNode1 = document.getElementById('menu-bar');
@@ -431,5 +433,8 @@ ReactDOM.render(<MenuBar />, mountNode1);
 let mountNode2 = document.getElementById('map-panel');
 ReactDOM.render(<MapPanel />, mountNode2);
 
-let mountNode3 = document.getElementById('filedrop');
-ReactDOM.render(<FileDrop />, mountNode3);
+let mountNode3 = document.getElementsByClassName('colorpalette');
+ReactDOM.render(<ColorPalette />, mountNode3[0]);
+
+let mountNode4 = document.getElementById('filedrop');
+ReactDOM.render(<FileDrop />, mountNode4);
