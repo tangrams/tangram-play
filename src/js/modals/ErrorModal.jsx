@@ -1,16 +1,16 @@
-import { noop } from 'lodash/noop';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/icon.react';
+import noop from 'lodash/noop';
 
 export default class ErrorModal extends React.Component {
     componentDidMount () {
         // Focus on the continue button when it is shown.
         // This is not currently the default action for modals, but may be in
         // the future.
-        this.continueButton.focus();
+        ReactDOM.findDOMNode(this.continueButton).focus();
     }
 
     // Always execute the confirm function after unmounting (clicking the
@@ -45,8 +45,8 @@ export default class ErrorModal extends React.Component {
     }
 }
 
-// Error message might be an Error object or a string
 ErrorModal.propTypes = {
+    // Error message might be an Error object or a string
     error: React.PropTypes.oneOfType([
         React.PropTypes.string,
         React.PropTypes.instanceOf(Error)

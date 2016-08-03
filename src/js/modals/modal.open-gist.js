@@ -1,7 +1,9 @@
 import _ from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import TangramPlay from '../tangram-play';
 import Modal from './modal-old';
-import ErrorModal from './modal.error';
+import ErrorModal from './ErrorModal';
 import EditorIO from '../editor/io';
 import LocalStorage from '../storage/localstorage';
 import { getSceneURLFromGistAPI } from '../tools/gist-url';
@@ -194,8 +196,7 @@ class OpenGistModal extends Modal {
         }
 
         // Show error modal
-        const errorModal = new ErrorModal(`Could not load the Gist! ${message}`);
-        errorModal.show();
+        ReactDOM.render(<ErrorModal error={`Could not load the Gist! ${message}`} />, document.getElementById('modal-container'));
 
         if (error.message === '404') {
             removeNonexistentGistFromLocalStorage(url);

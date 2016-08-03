@@ -19,7 +19,7 @@ import { editor, getEditorContent, setEditorContent, getNodesOfLine } from './ed
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
 import { initWidgetMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
-import ErrorModal from './modals/modal.error';
+import ErrorModal from './modals/ErrorModal';
 import SuggestManager from './editor/suggest';
 import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
 import LocalStorage from './storage/localstorage';
@@ -203,8 +203,7 @@ class TangramPlay {
     }
 
     _onLoadError (error) {
-        const errorModal = new ErrorModal(error.message);
-        errorModal.show();
+        ReactDOM.render(<ErrorModal error={error.message} />, document.getElementById('modal-container'));
         hideSceneLoadingIndicator();
 
         // TODO: editor should not be attached to this

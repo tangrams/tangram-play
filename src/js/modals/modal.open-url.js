@@ -1,6 +1,8 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import TangramPlay from '../tangram-play';
 import Modal from './modal-old';
-import ErrorModal from './modal.error';
+import ErrorModal from './ErrorModal';
 import EditorIO from '../editor/io';
 
 class OpenUrlModal extends Modal {
@@ -84,8 +86,7 @@ class OpenUrlModal extends Modal {
         window.clearTimeout(this._timeout);
 
         // Show error modal
-        const errorModal = new ErrorModal(`Something went wrong. ${error.message}`);
-        errorModal.show();
+        ReactDOM.render(<ErrorModal error={`Something went wrong. ${error.message}`} />, document.getElementById('modal-container'));
     }
 }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
@@ -10,7 +11,7 @@ import MapPanelLocationBar from './MapPanelLocationBar';
 import MapPanelBookmarks from './MapPanelBookmarks';
 
 import { map } from '../map/map';
-import ErrorModal from '../modals/modal.error';
+import ErrorModal from '../modals/ErrorModal';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
@@ -168,8 +169,7 @@ export default class MapPanel extends React.Component {
             }
         }
 
-        const modal = new ErrorModal({ message });
-        modal.show();
+        ReactDOM.render(<ErrorModal error={message} />, document.getElementById('modal-container'));
     }
 
     /**
