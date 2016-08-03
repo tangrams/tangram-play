@@ -163,6 +163,7 @@ export function setCodeMirrorValue (bookmark, value) {
     editor.getStateAfter(node.range.from.line, true);
     editor.getStateAfter(node.range.to.line, true);
 
+    console.log(bookmark);
     doc.replaceRange(value, fromPos, toPos, origin);
 
     // And after the replacement
@@ -176,6 +177,7 @@ export function setCodeMirrorValue (bookmark, value) {
             break;
         }
     }
+    console.log(bookmark.lines[0].stateAfter.nodes[0].range.from.line);
 
     return bookmark;
 }
