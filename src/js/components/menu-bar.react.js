@@ -15,7 +15,7 @@ import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
 import SaveGistModal from '../modals/SaveGistModal';
 import OpenGistModal from '../modals/OpenGistModal';
-import { openURLModal } from '../modals/modal.open-url';
+import OpenUrlModal from '../modals/OpenUrlModal';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
@@ -35,7 +35,9 @@ const _clickOpenGist = function () {
 };
 
 const _clickOpenURL = function () {
-    openURLModal.show();
+    EditorIO.checkSaveStateThen(() => {
+        ReactDOM.render(<OpenUrlModal />, document.getElementById('modal-container'));
+    });
 };
 
 const _clickOpenExample = function () {
