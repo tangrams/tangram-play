@@ -80,11 +80,6 @@
     color: var(--ui-component-text-color);
 }
 
-.map-panel-toolbar i.btm.active-fill {
-    color: yellow;
-    font-weight: 700;
-}
-
 .map-panel * .btn-group {
     margin-right: 2px;
     margin-left: 2px;

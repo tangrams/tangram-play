@@ -10,14 +10,10 @@ export default class Icon extends React.Component {
      * Called every time state or props are changed
      */
     render () {
-        let className = 'btm';
-
-        if (this.props.type) {
-            className += ` ${this.props.type}`;
-        }
+        let className = `btm ${this.props.type}`;
 
         if (this.props.active) {
-            className += ` ${this.props.active}`;
+            className += ' icon-active';
         }
 
         return (
@@ -30,6 +26,6 @@ export default class Icon extends React.Component {
  * Prop validation required by React
  */
 Icon.propTypes = {
-    type: React.PropTypes.string,
-    active: React.PropTypes.string
+    type: React.PropTypes.string.isRequired,
+    active: React.PropTypes.bool
 };

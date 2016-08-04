@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Icon from './icon.react';
+import Icon from './Icon';
 
 import { EventEmitter } from './event-emitter';
 import { map } from '../map/map';
@@ -41,7 +41,7 @@ export default class MapPanelLocationBar extends React.Component {
             value: '', // Represents text in the search bar
             placeholder: '', // Represents placeholder of the search bar
             suggestions: [], // Stores search suggestions from autocomplete
-            bookmarkActive: '', // Represents wether bookmark button should show as active
+            bookmarkActive: false, // Represents wether bookmark button should show as active
         };
 
         // Set the value of the search bar to whatever the map is currently pointing to
@@ -71,7 +71,7 @@ export default class MapPanelLocationBar extends React.Component {
             if (delta > MAP_UPDATE_DELTA) {
                 this.reverseGeocode(currentLatLng);
                 this.setState({
-                    bookmarkActive: '',
+                    bookmarkActive: false,
                     latlng: {
                         lat: currentLatLng.lat,
                         lng: currentLatLng.lng
@@ -82,11 +82,11 @@ export default class MapPanelLocationBar extends React.Component {
 
         // Listeners to respond to Bookmark component state changes.
         EventEmitter.subscribe('bookmarks:active', (data) => {
-            this.setState({ bookmarkActive: 'active-fill' });
+            this.setState({ bookmarkActive: true });
         });
 
         EventEmitter.subscribe('bookmarks:inactive', (data) => {
-            this.setState({ bookmarkActive: '' });
+            this.setState({ bookmarkActive: false });
         });
 
         // Need a notification when divider moves to change the latlng label precision
@@ -181,7 +181,7 @@ export default class MapPanelLocationBar extends React.Component {
         const data = this.getCurrentMapViewData();
         if (bookmarks.saveBookmark(data)) {
             this.setState({
-                bookmarkActive: 'active-fill'
+                bookmarkActive: true
             });
         }
     }
@@ -285,7 +285,7 @@ export default class MapPanelLocationBar extends React.Component {
         const lng = suggestion.geometry.coordinates[0];
         map.setView({ lat: lat, lng: lng });
         this.setState({
-            bookmarkActive: '',
+            bookmarkActive: false,
             latlng: {
                 lat: lat,
                 lng: lng

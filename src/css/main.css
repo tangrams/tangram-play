@@ -20,6 +20,7 @@
 @import '_divider';
 @import '_map';
 @import '_overlay';
+@import '_icon';
 
 /* + Menu */
 @import '_filedrop';
