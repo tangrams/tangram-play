@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
-import Icon from '../components/icon.react';
+import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
 import TangramPlay from '../tangram-play';

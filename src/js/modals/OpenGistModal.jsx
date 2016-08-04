@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
-import Icon from '../components/icon.react';
+import Icon from '../components/Icon';
 
 import TangramPlay from '../tangram-play';
 import ErrorModal from './ErrorModal';
