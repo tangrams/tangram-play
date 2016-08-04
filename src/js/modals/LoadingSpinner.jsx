@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '../components/icon.react';
+import Icon from '../components/Icon';
 
 // This should be a stateless component. Whether or not this displays should
 // be set in parent component's state and passed via the `on` prop.

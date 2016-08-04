@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Modal from './Modal';
-import Icon from '../components/icon.react';
+import Icon from '../components/Icon';
 
 import Clipboard from 'clipboard';
 
