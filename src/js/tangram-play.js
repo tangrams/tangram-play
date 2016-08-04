@@ -424,7 +424,7 @@ var ReactDOM = require('react-dom');
 import MenuBar from './components/menu-bar.react';
 import MapPanel from './components/map-panel.react';
 import OverlaysContainer from './ui/OverlaysContainer';
-import ColorPalette from './components/color-palette.react';
+// import ColorPalette from './components/color-palette.react';
 
 let mountNode1 = document.getElementById('menu-bar');
 ReactDOM.render(<MenuBar />, mountNode1);
@@ -435,5 +435,5 @@ ReactDOM.render(<MapPanel />, mountNode2);
 let mountNode3 = document.getElementById('overlays-container');
 ReactDOM.render(<OverlaysContainer />, mountNode3);
 
-let mountNode4 = document.getElementsByClassName('colorpalette');
-ReactDOM.render(<ColorPalette />, mountNode4[0]);
+// let mountNode4 = document.getElementsByClassName('colorpalette');
+// ReactDOM.render(<ColorPalette />, mountNode4[0]);
