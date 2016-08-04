@@ -7,6 +7,9 @@ import WidgetDropdown from '../components/widgets/widget-dropdown.react';
 // import WidgetVector from '../components/widgets/widget-vector/widget-vector.react';
 import WidgetToggle from '../components/widgets/widget-toggle.react';
 
+import { EventEmitter } from '../components/event-emitter';
+
+
 /**
  * Initializes widget marks in the current editor viewport and adds event
  * listeners to handle new marks that need to be created as the editor content
@@ -23,6 +26,8 @@ export function initWidgetMarks () {
     // CodeMirror only parses lines inside of the current viewport.
     // When we scroll, we start inserting marks on lines as they're parsed.
     editor.on('scroll', handleEditorScroll);
+
+    EventEmitter.subscribe('editor:inlinenodes', reparseInlineNodes);
 }
 
 /**
@@ -67,6 +72,11 @@ function handleEditorChanges (cm, changes) {
             }
 
             clearMarks(fromLine, toLine);
+
+            // Force CodeMirror to parse the last line of the code. Fixes a strange bug where the last line's node address is wrong
+            // const lastline = editorDoc.lastLine();
+            // editor.getStateAfter(lastline, true);
+
             insertMarks(fromLine, toLine);
         }
     }
@@ -81,6 +91,7 @@ function handleEditorChanges (cm, changes) {
  */
 function handleEditorScroll (cm) {
     const viewport = cm.getViewport();
+    // clearMarks(viewport.from, viewport.to);
     insertMarks(viewport.from, viewport.to);
 }
 
@@ -145,10 +156,30 @@ function getExistingMarks (fromLine, toLine) {
  */
 function clearMarks (fromLine, toLine) {
     const existingMarks = getExistingMarks(fromLine, toLine);
+
     // And remove them, if present.
     for (let bookmark of existingMarks) {
         ReactDOM.unmountComponentAtNode(bookmark.replacedWith);
         bookmark.clear();
+    }
+}
+
+/**
+ * Reparses lines that have inline nodes when a widget changes the text in the editor
+ */
+function reparseInlineNodes (data) {
+    clearInlineMarks(data);
+    insertMarks(data.line, data.line);
+}
+
+/**
+ * Clears widgets in inline nodes
+ */
+function clearInlineMarks (data) {
+    const existingMarks = getExistingMarks(data.from.line, data.from.line);
+
+    if (existingMarks.length === 1) {
+        return;
     }
 }
 
@@ -177,19 +208,21 @@ function createEl (type) {
     // return document.createDocumentFragment();
 }
 
-function isThereMark (to) {
+function isThereMark (node) {
+    const to = node.range.to;
+
     const doc = editor.getDoc();
     const otherMarks = doc.findMarksAt(to);
 
     // If there is a mark return true
     for (let mark of otherMarks) {
         if (mark.type === 'bookmark') {
-            return true;
+            return '';
         }
     }
 
     // If there is no mark at this location return false
-    return false;
+    return node;
 }
 
 /**
@@ -237,11 +270,11 @@ function insertMarks (fromLine, toLine) {
                     node.range.from.line = lineNumber;
                 }
 
-                let myboolean = isThereMark(node.range.to);
+                node = isThereMark(node);
 
                 let mybookmark = {};
 
-                if (!myboolean) {
+                if (node !== '') {
                     let myel = createEl(mytype);
 
                     // inserts the widget into CodeMirror DOM
@@ -251,33 +284,23 @@ function insertMarks (fromLine, toLine) {
                         clearWhenEmpty: true,
                         handleMouseEvents: false
                     });
-                    // We attach a the node with all the info on the wiget to a property of the bookmark
-                    // 'bookmark' becomes parent to property 'widgetInfo' that represents a node
-                    mybookmark.widgetInfo = node.address;
-                    mybookmark.widgetPos = node.range; // Not necessary if we're not using color palette
+                    // We attach only one property to a bookmark that only inline widgets will need to use to verify position within a node array
+                    mybookmark.widgetPos = node.range;
 
                     if (mytype === 'color') {
                         ReactDOM.render(<WidgetColor bookmark={mybookmark} value={node.value}/>, myel);
-                        // console.log('Creating color');
-                        // console.log(myel);
                     }
                     else if (mytype === 'string') {
-                        if (node.widgetMark.key === undefined) {
-                            node.widgetMark.key = '';
-                        }
-                        if (node.widgetMark.options === undefined) {
-                            node.widgetMark.options = '';
-                        }
-                        // We need to pass a few more values to the dropdown widget: a set of options and a key
-                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark} options={node.widgetMark.options} keyType={node.widgetMark.key}/>, myel);
+                        // We need to pass a few more values to the dropdown widget: a set of options, a key, and a sources string
+                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark} options={node.widgetMark.options} keyType={node.key} source={node.widgetMark.source}/>, myel);
+                    }
+                    else if (mytype === 'boolean') {
+                        ReactDOM.render(<WidgetToggle bookmark={mybookmark} value={node.value} />, myel);
                     }
                     // Disabling vector for now
                     // else if (mytype === 'vector') {
                     //     ReactDOM.render(<WidgetVector bookmark={mybookmark}/>, myel);
                     // }
-                    else if (mytype === 'boolean') {
-                        ReactDOM.render(<WidgetToggle bookmark={mybookmark}/>, myel);
-                    }
                 }
             }
         }

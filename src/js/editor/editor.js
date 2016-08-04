@@ -2,6 +2,9 @@ import { config } from '../config';
 import { initCodeMirror } from './codemirror';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
 
+import { EventEmitter } from '../components/event-emitter';
+
+
 // Export an instantiated CodeMirror instance
 export const editor = initCodeMirror();
 
@@ -134,72 +137,34 @@ export function getNodesInRange (from, to) {
  * @param {string} value - The new value to set to
  */
 export function setCodeMirrorValue (bookmark, value) {
-    // const origin = '+value_change';
-    // const node = bookmark.widgetInfo;
-    //
-    // const doc = editor.getDoc();
-    //
-    // // Force a space between the ':' and the value
-    // if (value === '') {
-    //     value = ' ' + value;
-    // }
-    //
-    // // Calculate beginning character of the value
-    // //               key:_[anchor]value
-    // //               ^ ^^^^
-    // //               | ||||__ + anchor.length
-    // //               | |||___ + 1
-    // //               | | `--- + 1
-    // //  range.from.ch  key.length
-    // const fromPos = {
-    //     line: node.range.from.line,
-    //     // Magic number: 2 refers to the colon + space between key and value
-    //     ch: node.range.from.ch + node.key.length + 2 + node.anchor.length
-    // };
-    // const toPos = node.range.to;
-    //
-    // // We should refresh the editor before the replacement
-    // // Believe this catches cases where we are parsing multiple colors that are in the viewport
-    // editor.getStateAfter(node.range.from.line, true);
-    // editor.getStateAfter(node.range.to.line, true);
-    //
-    // console.log(bookmark);
-    // doc.replaceRange(value, fromPos, toPos, origin);
-    //
-    // // And after the replacement
-    // // Believe this catches cases where we are changing lines outside of the viewport
-    // editor.getStateAfter(node.range.from.line, true);
-    // editor.getStateAfter(node.range.to.line, true);
-    //
-    // for (let linenode of bookmark.lines[0].stateAfter.nodes) {
-    //     if (node.address === linenode.address) {
-    //         bookmark.widgetInfo = linenode;
-    //         break;
-    //     }
-    // }
-    // console.log(bookmark.lines[0].stateAfter.nodes[0].range.from.line);
-    //
-    // return bookmark;
+    let foundInlineNodes = false;
 
     const origin = '+value_change';
 
+    // We should refresh the editor before the replacement
+    // Believe this catches cases where we are parsing multiple colors that are in the viewport
+    // TODO: probably not necessary if not using colorpalette probably
     editor.getStateAfter(bookmark.widgetPos.from.line, true);
     editor.getStateAfter(bookmark.widgetPos.to.line, true);
 
     const nodeArray = bookmark.lines[0].stateAfter.nodes;
-    const address = bookmark.widgetInfo;
     let node;
 
-    console.log(nodeArray);
-    console.log(address);
-
-    for (let singleNode of nodeArray) {
-        if (singleNode.address === address) {
-            node = singleNode;
+    // If only one node per line, always just fetch the node in Code Mirror's state after
+    // This will reduce all sorts of errors because most cases are one-widget lines.
+    if (nodeArray.length === 1) {
+        node = nodeArray[0];
+    }
+    // If inline nodes
+    else {
+        for (let singleNode of nodeArray) {
+            if (singleNode.range.from.ch === bookmark.widgetPos.from.ch) {
+                node = singleNode;
+                foundInlineNodes = true;
+                break;
+            }
         }
     }
-
-    console.log(node);
 
     const doc = editor.getDoc();
 
@@ -222,32 +187,17 @@ export function setCodeMirrorValue (bookmark, value) {
     };
     const toPos = node.range.to;
 
-    // We should refresh the editor before the replacement
-    // Believe this catches cases where we are parsing multiple colors that are in the viewport
-    // editor.getStateAfter(node.range.from.line, true);
-    // editor.getStateAfter(node.range.to.line, true);
-
-    // console.log(node.range.from.line);
-    // console.log(node.range.to.line);
-
     doc.replaceRange(value, fromPos, toPos, origin);
 
-    // console.log(node.range.from.line);
-    // console.log(node.range.to.line);
-    // console.log(bookmark);
-
-    // And after the replacement
-    // Believe this catches cases where we are changing lines outside of the viewport
-    // editor.getStateAfter(node.range.from.line, true);
-    // editor.getStateAfter(node.range.to.line, true);
-
-    // for (let linenode of bookmark.lines[0].stateAfter.nodes) {
-    //         if (node.address === linenode.address) {
-    //         bookmark.widgetInfo = linenode;
-    //         break;
-    //     }
-    // }
-    // console.log(bookmark.lines[0].stateAfter.nodes[0].range.from.line);
+    // If an inline node was changed, we'd like to reparse all the widgets in the line
+    if (foundInlineNodes) {
+        setTimeout(clearInlineNodes(fromPos), 0);
+    }
 
     return bookmark;
+}
+
+// If an inline node was changed, we'd like to reparse all the widgets in the line
+function clearInlineNodes (fromPos) {
+    EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
 }

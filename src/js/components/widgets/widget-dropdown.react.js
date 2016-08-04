@@ -36,7 +36,7 @@ export default class WidgetDropdown extends React.Component {
         // If the dropdown is of type source
         else {
             // Try to find the sources from the tangram scene
-            let obj = getAddressSceneContent(tangramLayer.scene, this.bookmark.widgetInfo.widgetMark.source);
+            let obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
             let keys = (obj) ? Object.keys(obj) : {};
 
             // If the tangram scene has not yet loaded, set an empty options state in order for React to render
@@ -67,7 +67,7 @@ export default class WidgetDropdown extends React.Component {
     setSource () {
         // If the dropdown is of type source then get sources from tangramLayer.scene
         if (this.key === 'source') {
-            let obj = getAddressSceneContent(tangramLayer.scene, this.bookmark.widgetInfo.widgetMark.source);
+            let obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
             let keys = (obj) ? Object.keys(obj) : {};
 
             this.setState({ options: keys });
@@ -118,5 +118,6 @@ export default class WidgetDropdown extends React.Component {
 WidgetDropdown.propTypes = {
     bookmark: React.PropTypes.object,
     keyType: React.PropTypes.string,
-    options: React.PropTypes.array
+    options: React.PropTypes.array,
+    source: React.PropTypes.string
 };

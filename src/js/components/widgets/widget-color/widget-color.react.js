@@ -114,12 +114,14 @@ export default class WidgetColor extends React.Component {
      * @param newColor - color that user has chosen in the color picker widget. Object of type Color
      */
     onChange (newColor) {
-        const oldColor = this.state.color;
+        if (this.mounted) {
+            const oldColor = this.state.color;
 
-        this.setState({ color: newColor });
-        this.setEditorValue(newColor.getVecString());
+            this.setState({ color: newColor });
+            this.setEditorValue(newColor.getVecString());
 
-        EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
+            EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
+        }
     }
 
     /**
@@ -152,23 +154,25 @@ export default class WidgetColor extends React.Component {
      * Called every time state or props are changed
      */
     render () {
-        let widgetStyle = { backgroundColor: this.state.color.getRgbaString() };
+        if (this.mounted) {
+            let widgetStyle = { backgroundColor: this.state.color.getRgbaString() };
 
-        return (
-            <div>
-                {/* The widget button user clicks to open color picker */}
-                <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
+            return (
+                <div>
+                    {/* The widget button user clicks to open color picker */}
+                    <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
 
-                {/* Draggable modal */}
-                <Modal dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
-                    <div className='drag'>
-                        <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
-                    </div>
-                    {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color.getRgba() } onChange={ this.onChange }/>
-                </Modal>
-            </div>
-        );
+                    {/* Draggable modal */}
+                    <Modal dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
+                        <div className='drag'>
+                            <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                        </div>
+                        {/* The actual color picker */}
+                        <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
+                    </Modal>
+                </div>
+            );
+        }
     }
 }
 
