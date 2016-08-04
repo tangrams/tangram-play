@@ -37,12 +37,12 @@ export default class Modal extends React.Component {
     render () {
         let classNames = 'modal';
 
-        if (this.props.className !== '') {
+        if (this.props.className) {
             classNames = `${classNames} ${this.props.className}`;
         }
 
         return (
-            <div className={classNames} style={{display: 'block'}}>
+            <div className={classNames}>
                 {this.props.children}
             </div>
         );
