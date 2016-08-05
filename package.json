@@ -94,7 +94,7 @@
     "babel-polyfill": "6.7.4",
     "clipboard": "1.5.10",
     "codemirror": "5.14.0",
-    "color": "^0.11.3",
+    "color": "0.11.3",
     "gsap": "1.18.3",
     "leaflet": "1.0.0-rc.2",
     "lodash": "4.11.1",
@@ -108,7 +108,7 @@
     "react-dom": "15.2.1",
     "react-draggable": "2.1.2",
     "three": "0.78.0",
-    "tinycolor2": "^1.4.1",
+    "tinycolor2": "1.4.1",
     "whatwg-fetch": "0.11.0"
   },
   "browserify-shim": {
