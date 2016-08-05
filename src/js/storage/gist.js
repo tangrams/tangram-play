@@ -4,6 +4,8 @@ import { getScreenshotData } from '../map/screenshot';
 // import { getLocationLabel } from '../map/search'; // TODO: implement now that move to react has changed this
 import { createThumbnail } from '../tools/thumbnail';
 
+import L from 'leaflet';
+
 const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
 
@@ -36,7 +38,11 @@ export function saveToGist (data, successCallback, errorCallback) {
                 lng: map.getCenter().lng,
                 zoom: map.getZoom()
             },
-            date: new Date().toJSON()
+            date: new Date().toJSON(),
+            versions: {
+                tangram: window.Tangram.version,
+                leaflet: L.version
+            }
         };
 
         // This is a single YAML file
