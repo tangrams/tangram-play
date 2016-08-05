@@ -68,7 +68,7 @@ export default class WidgetDropdown extends React.Component {
         // If the dropdown is of type source then get sources from tangramLayer.scene
         if (this.key === 'source') {
             let obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
-            let keys = (obj) ? Object.keys(obj) : {};
+            let keys = (obj) ? Object.keys(obj) : [];
 
             this.setState({ options: keys });
         }
@@ -120,4 +120,8 @@ WidgetDropdown.propTypes = {
     keyType: React.PropTypes.string,
     options: React.PropTypes.array,
     source: React.PropTypes.string
+};
+
+WidgetDropdown.defaultProps = {
+    options: []
 };
