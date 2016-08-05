@@ -6,16 +6,6 @@
     text-indent: initial;
 }
 
-/* For the draggable modal */
-
-.drag {
-    background-color: var(--ui-component-color);
-    cursor: move;
-    height: 20px;
-    justify-content: flex-end;
-    display: flex;
-}
-
 /* React Widgets */
 
 .widget {

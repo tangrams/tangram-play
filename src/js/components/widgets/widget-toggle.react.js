@@ -20,7 +20,7 @@ export default class WidgetToggle extends React.Component {
         this.bookmark = this.props.bookmark;
 
         this.state = {
-            value: this.bookmark.widgetInfo.value
+            value: this.props.value
         };
 
         this.onChange = this.onChange.bind(this);
@@ -74,5 +74,6 @@ export default class WidgetToggle extends React.Component {
  * Prop validation required by React
  */
 WidgetToggle.propTypes = {
-    bookmark: React.PropTypes.object
+    bookmark: React.PropTypes.object,
+    value: React.PropTypes.string
 };

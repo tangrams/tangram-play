@@ -6,7 +6,8 @@ import Icon from '../../Icon';
 import WidgetColorBox from './widget-color-box.react';
 
 import { setCodeMirrorValue } from '../../../editor/editor';
-import ColorConverter from './color-converter';
+import Color from './color';
+import { EventEmitter } from '../../event-emitter';
 
 /**
  * Represents a color picker widget
@@ -21,13 +22,15 @@ export default class WidgetColor extends React.Component {
      */
     constructor (props) {
         super(props);
+
         this.state = {
             displayColorPicker: false,
-            color: this.processUserColor(this.props.bookmark.widgetInfo.value),
+            color: new Color(this.props.value),
             x: 0,
             y: 0
         };
         this.bookmark = this.props.bookmark;
+        this.mounted = true;
 
         // Need to know width in case a widget is about to get rendered outside of the normal screen size
         // TODO: Don't hardcode this.
@@ -36,43 +39,36 @@ export default class WidgetColor extends React.Component {
 
         this.onClick = this.onClick.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onPaletteChange = this.onPaletteChange.bind(this);
     }
 
     /**
-     * Process the color text as the user types it out in Code Mirror. The color
-     * text as typed by the user has to be converted to rgb values for the actual widget
-     *
-     * @param color - current color being typed by the user
+     * React lifecycle function. Gets called once when DIV is mounted
      */
-    processUserColor (color) {
-        // If a hex color
-        if (color.charAt(0) === '\'' && (color.charAt(color.length - 1) === '\'')) {
-            return color.replace(/'/g, '');
+    componentDidMount () {
+        // Colorpalette section
+        /*
+        // Only pass on colors that are valid. i.e. as the user types the color widget is white by default but
+        // the widget does not representa  fully valid color
+        if (this.state.color.valid) {
+            EventEmitter.dispatch('widgets:color', this.state.color);
         }
-        // If a vec color
-        else if ((color.charAt(0) === '[') && (color.charAt(color.length - 1) === ']')) {
-            let colorString = color;
-            colorString = colorString.replace('[', '');
-            colorString = colorString.replace(']', '');
-            colorString = colorString.split(',');
 
-            if (colorString.length >= 3) {
-                let vec = { v: colorString[0], e: colorString[1], c: colorString[2] };
-                let rgb = ColorConverter.vec2rgb(vec);
-                rgb.a = 1.0; // We need to add an alpha by default so that the widget button can update css properly
+        EventEmitter.subscribe('color-palette:color-change', data => { this.onPaletteChange(data); });
+        */
+    }
 
-                if (colorString.length === 4) {
-                    rgb.a = parseFloat(colorString[3]);
-                }
-                return rgb;
-            }
+    componentWillUnmount () {
+        this.mounted = false;
 
-            return 'black';
-        }
-        // If a normal css color
-        else {
-            return color;
-        }
+        // Colorpalette section
+        /*
+        EventEmitter.dispatch('widgets:color-unmount', this.state.color);
+
+        // Do nothing on color palette changes if the React component has been unmounted.
+        // This is to prevent following error: 'Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component.'
+        EventEmitter.subscribe('color-palette:color-change', data => {});
+        */
     }
 
     /**
@@ -118,15 +114,32 @@ export default class WidgetColor extends React.Component {
      * Function gets called any time the user changes a color in the color picker
      * widget
      *
-     * @param color - color that user has chosen in the color picker widget
+     * @param newColor - color that user has chosen in the color picker widget. Object of type Color
      */
-    onChange (color) {
-        this.setState({ color: color.rgb });
+    onChange (newColor) {
+        if (this.mounted) {
+            const oldColor = this.state.color;
 
-        let vecColor = ColorConverter.rgb2vec(color.rgb);
-        let vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (color.rgb.a).toFixed(2) + ']';
+            this.setState({ color: newColor });
+            this.setEditorValue(newColor.getVecString());
 
-        this.setEditorValue(vecColorString);
+            EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
+        }
+    }
+
+    /**
+     * Every time a user changes a color on the color palette, all color widgets
+     * need to check whether that change applies to their own internal color
+     *
+     * @param data - the new color the user has chosen
+     */
+    onPaletteChange (data) {
+        if (this.mounted) {
+            if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
+                this.setState({ color: data.new });
+                this.setEditorValue(data.new.getVecString());
+            }
+        }
     }
 
     /* SHARED METHOD FOR ALL WIDGETS */
@@ -143,40 +156,25 @@ export default class WidgetColor extends React.Component {
      * Called every time state or props are changed
      */
     render () {
-        let currentColor = this.state.color;
-        let widgetStyle;
+        if (this.mounted) {
+            let widgetStyle = { backgroundColor: this.state.color.getRgbaString() };
 
-        if (currentColor.r !== undefined) {
-            widgetStyle = { backgroundColor: 'rgba(' + parseInt(currentColor.r) + ',' + parseInt(currentColor.g) + ',' + parseInt(currentColor.b) + ',' + currentColor.a + ')' };
+            return (
+                <div>
+                    {/* The widget button user clicks to open color picker */}
+                    <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
+
+                    {/* Draggable modal */}
+                    <Modal dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
+                        <div className='drag'>
+                            <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                        </div>
+                        {/* The actual color picker */}
+                        <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
+                    </Modal>
+                </div>
+            );
         }
-        else {
-            // Have to parse a color correctly if it is a number in order to pass on as a css style
-            let colorCheck = parseFloat(this.state.color);
-
-            // if the color is represented as a number and not HEX or any other format
-            if (!isNaN(colorCheck)) {
-                widgetStyle = { backgroundColor: colorCheck };
-            }
-            else {
-                widgetStyle = { backgroundColor: this.state.color };
-            }
-        }
-
-        return (
-            <div>
-                {/* The widget button user clicks to open color picker */}
-                <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
-
-                {/* Draggable modal */}
-                <Modal id='modal-test' dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
-                    <div className='drag'>
-                        <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
-                    </div>
-                    {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
-                </Modal>
-            </div>
-        );
     }
 }
 
@@ -184,5 +182,6 @@ export default class WidgetColor extends React.Component {
  * Prop validation required by React
  */
 WidgetColor.propTypes = {
-    bookmark: React.PropTypes.object
+    bookmark: React.PropTypes.object,
+    value: React.PropTypes.string
 };
