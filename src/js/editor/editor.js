@@ -137,7 +137,7 @@ export function getNodesInRange (from, to) {
  * @param {string} value - The new value to set to
  */
 export function setCodeMirrorValue (bookmark, value) {
-    let foundInlineNodes = false;
+    let foundInlineNodes = null; // If an inline node is changed, we need to reparse all the other nodes in that line.
 
     const origin = '+value_change';
 
@@ -160,7 +160,7 @@ export function setCodeMirrorValue (bookmark, value) {
         for (let singleNode of nodeArray) {
             if (singleNode.range.from.ch === bookmark.widgetPos.from.ch) {
                 node = singleNode;
-                foundInlineNodes = true;
+                foundInlineNodes = node.range.from; // We found an inline node, log where it's at
                 break;
             }
         }
@@ -190,14 +190,15 @@ export function setCodeMirrorValue (bookmark, value) {
     doc.replaceRange(value, fromPos, toPos, origin);
 
     // If an inline node was changed, we'd like to reparse all the widgets in the line
-    if (foundInlineNodes) {
-        setTimeout(clearInlineNodes(fromPos), 0);
+    if (foundInlineNodes !== null) {
+        setTimeout(clearInlineNodes(foundInlineNodes), 0);
     }
 
     return bookmark;
 }
 
 // If an inline node was changed, we'd like to reparse all the widgets in the line
+// This function sends an event to our widgets-manager.js
 function clearInlineNodes (fromPos) {
     EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
 }

@@ -27,6 +27,7 @@ export function initWidgetMarks () {
     // When we scroll, we start inserting marks on lines as they're parsed.
     editor.on('scroll', handleEditorScroll);
 
+    // If an inline node is changed, we'd like to reparse all the other nodes in that line
     EventEmitter.subscribe('editor:inlinenodes', reparseInlineNodes);
 }
 
@@ -165,22 +166,30 @@ function clearMarks (fromLine, toLine) {
 }
 
 /**
+ * For inline nodes
  * Reparses lines that have inline nodes when a widget changes the text in the editor
+ * @param {Object} data contains the from.line and from.ch of the widget the user has just edited
  */
 function reparseInlineNodes (data) {
-    clearInlineMarks(data);
-    insertMarks(data.line, data.line);
-}
-
-/**
- * Clears widgets in inline nodes
- */
-function clearInlineMarks (data) {
+    const changedNodeCh = data.from.ch; // Contains the from character of the text the user has just edited
     const existingMarks = getExistingMarks(data.from.line, data.from.line);
 
+    // If there is only one node in the inline line, then do not do anything
     if (existingMarks.length === 1) {
         return;
     }
+    // If there is more than one node in the inline line,
+    // then only remove the ones that the user has not just edited
+    else {
+        for (let marker of existingMarks) {
+            if (marker.widgetPos.from.ch !== changedNodeCh) {
+                ReactDOM.unmountComponentAtNode(marker.replacedWith);
+                marker.clear();
+            }
+        }
+    }
+
+    insertMarks(data.from.line, data.from.line);
 }
 
 function createEl (type) {
@@ -205,7 +214,6 @@ function createEl (type) {
     }
 
     return el;
-    // return document.createDocumentFragment();
 }
 
 function isThereMark (node) {

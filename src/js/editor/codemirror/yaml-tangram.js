@@ -166,8 +166,8 @@ function getInlineNodes (str, nLine) {
         }
         else {
             // check for keypair
-            const isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|\[|\]|,|.|\s|#]*)\s*/gm.exec(str.substr(i));
-            // Before fixing inline nodes:
+            // This seems to check for inline nodes
+            let isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
             if (isNode) {
                 stack[level] = isNode[1];
                 i += isNode[1].length;
@@ -175,7 +175,8 @@ function getInlineNodes (str, nLine) {
                 let key = isNode[1];
                 let colon = isNode[2];
                 let value = isNode[3];
-                var isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*\]/gm);
+                // This regex checks for vec arrays
+                var isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?\]/gm);
                 if (isVector) {
                     value = isVector[0];
                 }
