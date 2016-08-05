@@ -10,7 +10,7 @@ export default class ErrorModal extends React.Component {
         // Focus on the continue button when it is shown.
         // This is not currently the default action for modals, but may be in
         // the future.
-        ReactDOM.findDOMNode(this.continueButton).focus();
+        ReactDOM.findDOMNode(this.continueButton).focus(); // eslint-disable-line react/no-find-dom-node
     }
 
     // Always execute the confirm function after unmounting (clicking the
