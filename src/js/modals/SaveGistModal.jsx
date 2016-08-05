@@ -6,7 +6,7 @@ import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
 import LocalStorage from '../storage/localstorage';
-import ErrorModal from './modal.error';
+import ErrorModal from './ErrorModal';
 import SaveGistSuccessModal from './SaveGistSuggestModal';
 import { saveToGist } from '../storage/gist';
 import { editor } from '../editor/editor';
@@ -178,8 +178,7 @@ export default class SaveGistModal extends React.Component {
         this.destroyModal();
 
         // Show error modal
-        const errorModal = new ErrorModal(`Uh oh! We tried to save your scene but something went wrong. ${error.message}`);
-        errorModal.show();
+        ReactDOM.render(<ErrorModal error={`Uh oh! We tried to save your scene but something went wrong. ${error.message}`} />, document.getElementById('modal-container'));
     }
 
     destroyModal () {

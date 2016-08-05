@@ -1,7 +1,7 @@
 /* MODALS */
 
 .modal {
-    display: none;
+    display: block; /* Default display mode */
     box-sizing: border-box;
     width: 400px;
     padding: 30px;

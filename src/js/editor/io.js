@@ -1,8 +1,10 @@
-import _ from 'lodash';
+import noop from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import TangramPlay from '../tangram-play';
 import { editor, getEditorContent } from './editor';
 import { saveAs } from '../vendor/FileSaver.min.js';
-import Modal from '../modals/modal-old';
 
 const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
 
@@ -23,14 +25,18 @@ const EditorIO = {
         saveAs(blob, 'scene.yaml');
         editor.doc.markClean();
     },
-    checkSaveStateThen (callback = _.noop) {
+    checkSaveStateThen (callback = noop) {
         if (editor.doc.isClean()) {
             callback();
         }
         else {
-            const unsavedModal = new Modal('Your scene has not been saved. Continue?', callback);
-            unsavedModal.show();
-            unsavedModal.confirmButton.focus();
+            ReactDOM.render(
+                <ConfirmDialogModal
+                    message='Your scene has not been saved. Continue?'
+                    confirmCallback={callback}
+                />,
+                document.getElementById('modal-container')
+            );
         }
     },
     loadContentFromFile (content) {
