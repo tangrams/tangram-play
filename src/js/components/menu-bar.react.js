@@ -13,9 +13,9 @@ import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
+import SaveGistModal from '../modals/SaveGistModal';
 import { openURLModal } from '../modals/modal.open-url';
 import { openGistModal } from '../modals/modal.open-gist';
-import { saveGistModal } from '../modals/modal.save-gist';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
@@ -47,7 +47,7 @@ const _clickSaveFile = function () {
 };
 
 const _clickSaveGist = function () {
-    saveGistModal.show();
+    ReactDOM.render(<SaveGistModal />, document.getElementById('modal-container'));
 };
 
 const _clickSaveCamera = function () {

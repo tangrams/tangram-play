@@ -13,5 +13,5 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
-    z-index: var(--z09-overlay);
+    z-index: var(--z08-overlay);
 }

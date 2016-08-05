@@ -1,0 +1,17 @@
+/* For the draggable modal for the widgets */
+
+.drag {
+    background-color: var(--ui-component-color);
+    cursor: move;
+    height: 20px;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.modal-content {
+    margin-top: 0;
+}
+
+.modal input:focus {
+    box-shadow: none;
+}

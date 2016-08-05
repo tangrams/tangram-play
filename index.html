@@ -32,12 +32,15 @@
             <div class='map-panel' id='map-panel'></div>
             <div id='map-inspection-components'></div>
         </div>
+
         <div class='divider' id='divider'><span class='divider-affordance'></span></div>
+
         <div class='editor-container' id='content'>
             <div class='editor' id='editor'></div>
         </div>
 
         <div id='widget-links'></div>
+        <div class='colorpalette'></div>
     </div>
 
     <div id='overlays-container' class='overlay-container'></div><!-- React transition zone -->
@@ -53,56 +56,6 @@
             <p class='modal-text'></p>
             <div class='modal-buttons'>
                 <button class='modal-confirm'><i class='btm bt-check'></i> Continue</button>
-            </div>
-        </div>
-        <div class='modal modal-alt save-gist-modal'>
-            <div class='modal-text modal-save-gist-text'>
-                <h4>
-                    Save this scene to gist
-                </h4>
-                <p>
-                    This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href='https://help.github.com/articles/about-gists/' target='_blank'>Learn more about anonymous gists</a>.
-                </p>
-            </div>
-            <hr>
-            <div class='modal-content'>
-                <label for='gist-name'>Scene name</label>
-                <input type='text' id='gist-name' placeholder='(default: Tangram scene)'>
-                <p>
-                    <label for='gist-description'>Scene description</label>
-                    <input type='text' id='gist-description' placeholder='(optional description)'>
-                </p>
-                <p>
-                    <label for='gist-public'>Public gist</label>
-                    <input type='checkbox' id='gist-public' checked>
-                </p>
-            </div>
-            <div class='modal-buttons'>
-                <div class='modal-thinking'>
-                    <i class='bts bt-spinner bt-pulse'></i> Working...
-                </div>
-                <button class='modal-cancel'><i class='btm bt-times'></i> Cancel</button>
-                <button class='modal-confirm'><i class='btm bt-check'></i> Save to gist</button>
-            </div>
-        </div>
-        <div class='modal save-gist-success-modal'>
-            <div class='modal-text'></div>
-            <div class='modal-content'>
-                <h4>
-                    Your gist has been saved.
-                </h4>
-                <p>
-                    Remember this URL!
-                </p>
-                <div class='input-bar'>
-                    <input type='text' id='gist-saved-url'>
-                    <button class='gist-saved-copy-btn' data-clipboard-target='#gist-saved-url' data-tooltip='Copy to clipboard' data-tooltip-alignment='right'>
-                        <i class='btm bt-copy'></i>
-                    </button>
-                </div>
-            </div>
-            <div class='modal-buttons'>
-                <button class='modal-confirm'>Got it</button>
             </div>
         </div>
         <div class='modal modal-alt open-url-modal'>
@@ -133,7 +86,7 @@
         <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
     </div>
 
-    <script src='https://mapzen.com/tangram/0.8/tangram.min.js'></script>
+    <script src='https://mapzen.com/tangram/0.9/tangram.min.js'></script>
     <script src='build/js/tangram-play.js'></script>
     <script>
         if (isMobile() === true) {

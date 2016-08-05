@@ -2,6 +2,9 @@ import { config } from '../config';
 import { initCodeMirror } from './codemirror';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
 
+import { EventEmitter } from '../components/event-emitter';
+
+
 // Export an instantiated CodeMirror instance
 export const editor = initCodeMirror();
 
@@ -134,8 +137,34 @@ export function getNodesInRange (from, to) {
  * @param {string} value - The new value to set to
  */
 export function setCodeMirrorValue (bookmark, value) {
+    let foundInlineNodes = null; // If an inline node is changed, we need to reparse all the other nodes in that line.
+
     const origin = '+value_change';
-    const node = bookmark.widgetInfo;
+
+    // We should refresh the editor before the replacement
+    // Believe this catches cases where we are parsing multiple colors that are in the viewport
+    // TODO: probably not necessary if not using colorpalette probably
+    editor.getStateAfter(bookmark.widgetPos.from.line, true);
+    editor.getStateAfter(bookmark.widgetPos.to.line, true);
+
+    const nodeArray = bookmark.lines[0].stateAfter.nodes;
+    let node;
+
+    // If only one node per line, always just fetch the node in Code Mirror's state after
+    // This will reduce all sorts of errors because most cases are one-widget lines.
+    if (nodeArray.length === 1) {
+        node = nodeArray[0];
+    }
+    // If inline nodes
+    else {
+        for (let singleNode of nodeArray) {
+            if (singleNode.range.from.ch === bookmark.widgetPos.from.ch) {
+                node = singleNode;
+                foundInlineNodes = node.range.from; // We found an inline node, log where it's at
+                break;
+            }
+        }
+    }
 
     const doc = editor.getDoc();
 
@@ -160,12 +189,16 @@ export function setCodeMirrorValue (bookmark, value) {
 
     doc.replaceRange(value, fromPos, toPos, origin);
 
-    for (let linenode of bookmark.lines[0].stateAfter.nodes) {
-        if (node.address === linenode.address) {
-            bookmark.widgetInfo = linenode;
-            break;
-        }
+    // If an inline node was changed, we'd like to reparse all the widgets in the line
+    if (foundInlineNodes !== null) {
+        setTimeout(clearInlineNodes(foundInlineNodes), 0);
     }
 
     return bookmark;
+}
+
+// If an inline node was changed, we'd like to reparse all the widgets in the line
+// This function sends an event to our widgets-manager.js
+function clearInlineNodes (fromPos) {
+    EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
 }
