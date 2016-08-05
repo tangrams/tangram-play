@@ -39,7 +39,7 @@ export default class WidgetColor extends React.Component {
 
         this.onClick = this.onClick.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.onPaletteChange = this.onPaletteChange.bind(this);
+        // this.onPaletteChange = this.onPaletteChange.bind(this);
     }
 
     /**
@@ -133,6 +133,7 @@ export default class WidgetColor extends React.Component {
      *
      * @param data - the new color the user has chosen
      */
+    /*
     onPaletteChange (data) {
         if (this.mounted) {
             if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
@@ -141,6 +142,7 @@ export default class WidgetColor extends React.Component {
             }
         }
     }
+    */
 
     /* SHARED METHOD FOR ALL WIDGETS */
     /**
