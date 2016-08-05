@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import WidgetLinkVec2 from './widget-link-vec2.react';
 import WidgetLinkNumber from './widget-link-number.react';
+import WidgetColor from '../widgets/widget-color/widget-color.react';
 
 export default class GlslWidgetsLink {
     constructor (main) {
@@ -24,18 +25,23 @@ export default class GlslWidgetsLink {
             }
 
             let cursor = editor.getCursor(true);
+            console.log(cursor);
 
             // Exit early if the cursor is not at a token
             let token = editor.getTokenAt(cursor);
 
             // Assume that we should trigger a widget-link
-            let shouldTriggerWidget = true;
+            let shouldTriggerWidget = false;
             // If it is not a glsl widget, then for now set our boolean to FALSE
-            if (token.state.innerMode === null || token.state.innerMode.helperType !== 'glsl') {
-                shouldTriggerWidget = false;
+            if (token.state.innerMode !== null && token.state.innerMode.helperType === 'glsl') {
+                console.log(token);
+                console.log("within a glsl shader");
+                shouldTriggerWidget = true;
             }
             // But if it is within a defines, then set to TRUE again
             if (token.state.nodes[0].address !== null && token.state.nodes[0].address.indexOf('shaders:defines') !== -1) {
+                console.log(token);
+                console.log("within a defines");
                 shouldTriggerWidget = true;
             }
             // If FALSE then return, we do not need to render a widget-link
@@ -49,19 +55,16 @@ export default class GlslWidgetsLink {
             if (match) {
                 let widgetlink = document.getElementById('widget-links');
 
-                // Disabling the vec3 and color picker widget-links for now
                 switch (match.type) {
-                    // case 'color':
-                    //     this.activeModal = newColorPicker(cursor, match);
-                    //
-                    //     // This picker has an additional toggle for a vec3
-                    //     this.activeModal.on('linkbutton', (color) => {
-                    //         this.activeModal = newVec3Picker(cursor, match);
-                    //     });
-                    //     break;
-                    // case 'vec3':
-                    //     this.activeModal = newVec3Picker(cursor, match);
-                    //     break;
+                    case 'vec3':
+                        console.log("found a vec3");
+                        // Cleaning up the value we send to the WidgetColor
+                        let cleanNum = match.string.substr(4);
+                        cleanNum = cleanNum.replace(/[()]/g, '');
+                        cleanNum = '[' + cleanNum + ']';
+
+                        ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true}/>, widgetlink);
+                        break;
                     case 'vec2':
                         ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
                         break;
@@ -77,19 +80,25 @@ export default class GlslWidgetsLink {
 
     getMatch (cursor) {
         // Types are put in order of priority
-        const types = [{
-            name: 'color',
-            pattern: /vec[3|4]\([\d|.|,\s]*\)/g
-        }, {
-            name: 'vec3',
-            pattern: /vec3\([-|\d|.|,\s]*\)/g
-        }, {
-            name: 'vec2',
-            pattern: /vec2\([-|\d|.|,\s]*\)/g
-        }, {
-            name: 'number',
-            pattern: /[-]?\d+\.\d+|\d+\.|\.\d+/g
-        }];
+        const types = [
+            // Disabling the color widget that used to appear together with vec3
+            // {
+            // name: 'color',
+            // pattern: /vec[3|4]\([\d|.|,\s]*\)/g
+            // },
+            {
+                name: 'vec3',
+                pattern: /vec3\([-|\d|.|,\s]*\)/g
+            },
+            {
+                name: 'vec2',
+                pattern: /vec2\([-|\d|.|,\s]*\)/g
+            },
+            {
+                name: 'number',
+                pattern: /[-]?\d+\.\d+|\d+\.|\.\d+/g
+            }
+        ];
 
         const line = editor.getLine(cursor.line);
 

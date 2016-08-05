@@ -6,7 +6,9 @@ import DraggableModal from '../draggable-modal.react';
 import Icon from '../Icon';
 
 import Vector from './vector';
-import { editor } from '../../editor/editor';
+
+import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
+
 
 /**
  * Represents a widget link for a vec2
@@ -31,8 +33,8 @@ export default class WidgetLinkVec2 extends React.Component {
 
         let VERTICAL_OFFSET = 40;
         let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
-        this.x = editor.charCoords(linePos).left;
-        this.y = editor.charCoords(linePos).bottom - VERTICAL_OFFSET;
+        this.x = getCoordinates(linePos).left;
+        this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
 
         this.fnColor = 'rgb(230, 230, 230)';
         this.selColor = 'rgb(40, 168, 107)';
@@ -151,12 +153,12 @@ export default class WidgetLinkVec2 extends React.Component {
      *
      * @param pos - the new position to write out to CodeMirror
      */
-    updateEditor (pos) {
+    setEditorShaderValue (pos) {
         let newpos = pos.getString();
         let start = { line: this.cursor.line, ch: this.match.start };
         let end = { line: this.cursor.line, ch: this.match.end };
         this.match.end = this.match.start + newpos.length;
-        editor.replaceRange(newpos, start, end);
+        setCodeMirrorShaderValue(newpos, start, end);
     }
 
     /* Mouse, scroll and click commands */
@@ -189,7 +191,7 @@ export default class WidgetLinkVec2 extends React.Component {
         this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
 
         this.drawCanvas();
-        this.updateEditor(this.value);
+        this.setEditorShaderValue(this.value);
     }
 
     /**
@@ -208,7 +210,7 @@ export default class WidgetLinkVec2 extends React.Component {
             // this.overPoint = true;
 
             this.drawCanvas();
-            this.updateEditor(this.value);
+            this.setEditorShaderValue(this.value);
         }
     }
 

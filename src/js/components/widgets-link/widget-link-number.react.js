@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import DraggableModal from '../draggable-modal.react';
 import Icon from '../Icon';
 
-import { editor } from '../../editor/editor';
+import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
 
 /**
  * Represents a widget link for a number
@@ -30,8 +30,8 @@ export default class WidgetLinkNumber extends React.Component {
 
         let VERTICAL_OFFSET = 40;
         let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
-        this.x = editor.charCoords(linePos).left;
-        this.y = editor.charCoords(linePos).bottom - VERTICAL_OFFSET;
+        this.x = getCoordinates(linePos).left;
+        this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
 
         this.fnColor = 'rgb(230, 230, 230)';
         this.selColor = 'rgb(40, 168, 107)';
@@ -162,11 +162,11 @@ export default class WidgetLinkNumber extends React.Component {
      *
      * @param string - the new number to write out to CodeMirror
      */
-    updateEditor (string) {
+    setEditorShaderValue (string) {
         const start = { line: this.cursor.line, ch: this.match.start };
         const end = { line: this.cursor.line, ch: this.match.end };
         this.match.end = this.match.start + string.length;
-        editor.replaceRange(string, start, end);
+        setCodeMirrorShaderValue(string, start, end);
     }
 
     /* Mouse, scroll and click commands */
@@ -211,7 +211,7 @@ export default class WidgetLinkNumber extends React.Component {
             this.prevOffset = x;
 
             this.drawCanvas();
-            this.updateEditor(this.value.toFixed(3));
+            this.setEditorShaderValue(this.value.toFixed(3));
         }
     }
 
@@ -259,7 +259,7 @@ export default class WidgetLinkNumber extends React.Component {
         // this.prevOffset = x;
 
         this.drawCanvas();
-        this.updateEditor(this.value.toFixed(3));
+        this.setEditorShaderValue(this.value.toFixed(3));
 
         this.prevWheelOffset = e.deltaY - this.prevWheelOffset;
     }
