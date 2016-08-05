@@ -9,7 +9,6 @@ import WidgetToggle from '../components/widgets/widget-toggle.react';
 
 import { EventEmitter } from '../components/event-emitter';
 
-
 /**
  * Initializes widget marks in the current editor viewport and adds event
  * listeners to handle new marks that need to be created as the editor content
@@ -313,4 +312,22 @@ function insertMarks (fromLine, toLine) {
             }
         }
     }
+}
+
+/* This section solves issues with shader bock widget-links.
+ * we need some indication that a normal widget is open. If not, you can click on a shader block
+ * and immediately after a normal widget and both will open. This is because our widget-link
+ * event listener listens for ALL mouse clicks.
+ */
+let widgetOpen = false;
+
+export function toggleWidgetOpen() {
+    widgetOpen = !widgetOpen;
+    console.log("**************");
+    console.log("widget is now" + widgetOpen);
+    console.log("**************");
+}
+
+export function isWidgetOpen() {
+    return widgetOpen;
 }

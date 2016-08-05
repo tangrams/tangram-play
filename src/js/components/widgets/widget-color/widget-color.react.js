@@ -6,7 +6,8 @@ import DraggableModal from '../../draggable-modal.react';
 import Icon from '../../Icon';
 import WidgetColorBox from './widget-color-box.react';
 
-import { setCodeMirrorValue } from '../../../editor/editor';
+import { setCodeMirrorValue, setCodeMirrorShaderValue, getCoordinates } from '../../../editor/editor';
+import { toggleWidgetOpen } from '../../../widgets/widgets-manager';
 import Color from './color';
 // import { EventEmitter } from '../../event-emitter';
 
@@ -25,7 +26,7 @@ export default class WidgetColor extends React.Component {
         super(props);
 
         this.state = {
-            displayColorPicker: false,
+            displayColorPicker: this.props.shader, // If it's a shader widget, defaults to TRUE, open. If it's not a shader widget, it's FALSE. we need to wait until user clicks button to open widget
             color: new Color(this.props.value)
         };
         this.bookmark = this.props.bookmark;
@@ -42,6 +43,17 @@ export default class WidgetColor extends React.Component {
         this.onClickExit = this.onClickExit.bind(this);
         this.onChange = this.onChange.bind(this);
         // this.onPaletteChange = this.onPaletteChange.bind(this);
+
+        /* This section is for the shader widget-links */
+        if (this.props.shader) {
+            console.log("within a shader");
+            this.cursor = this.props.cursor;
+            this.match = this.props.match;
+            let VERTICAL_OFFSET = 40;
+            let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user clicked on a line
+            this.x = getCoordinates(linePos).left;
+            this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
+        }
     }
 
     /**
@@ -71,6 +83,10 @@ export default class WidgetColor extends React.Component {
         // This is to prevent following error: 'Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component.'
         EventEmitter.subscribe('color-palette:color-change', data => {});
         */
+    }
+
+    toggleWidget () {
+        toggleWidgetOpen(); // Let widget-manager know that a widget is open
     }
 
     /**
@@ -114,6 +130,14 @@ export default class WidgetColor extends React.Component {
 
     onClickExit () {
         this.setState({ displayColorPicker: !this.state.displayColorPicker });
+
+        if (this.props.shader) {
+            let widgetlink = document.getElementById('widget-links');
+            ReactDOM.unmountComponentAtNode(widgetlink);
+        }
+        else {
+            toggleWidgetOpen(); // Let widget-manager know we've closed our widget
+        }
     }
 
     /**
@@ -127,7 +151,12 @@ export default class WidgetColor extends React.Component {
             // const oldColor = this.state.color; // For use within color palette
             this.setState({ color: newColor });
 
-            this.setEditorValue(newColor.getVecString());
+            if (this.props.shader) {
+                this.setEditorShaderValue(newColor.getVec3String());
+            }
+            else {
+                this.setEditorValue(newColor.getVecString());
+            }
 
             // EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
         }
@@ -160,6 +189,18 @@ export default class WidgetColor extends React.Component {
     }
 
     /**
+     * Update CodeMirror. Keeping the function same name as we used in the other widget-links
+     *
+     * @param color - the color to update within a shader block
+     */
+    setEditorShaderValue (color) {
+        let start = { line: this.cursor.line, ch: this.match.start };
+        let end = { line: this.cursor.line, ch: this.match.end };
+        this.match.end = this.match.start + color.length;
+        setCodeMirrorShaderValue(color, start, end);
+    }
+
+    /**
      * Official React lifecycle method
      * Called every time state or props are changed
      */
@@ -170,7 +211,14 @@ export default class WidgetColor extends React.Component {
             return (
                 <div>
                     {/* The widget button user clicks to open color picker */}
-                    <div className='widget widget-colorpicker' onClick={this.onClick} style={widgetStyle}></div>
+                    {(() => {
+                        if (this.props.shader) {
+                            return null;
+                        }
+                        else {
+                            return <div className='widget widget-colorpicker' onClick={this.onClick} onMouseDown={this.toggleWidget} style={widgetStyle}></div>;
+                        }
+                    })()}
 
                     {/* Draggable modal */}
                     <Modal dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClickExit}>
@@ -191,5 +239,10 @@ export default class WidgetColor extends React.Component {
  */
 WidgetColor.propTypes = {
     bookmark: React.PropTypes.object,
-    value: React.PropTypes.string
+    value: React.PropTypes.string,
+    // These props are only used for the widget-links within the shader blocks
+    shader: React.PropTypes.bool,
+    display: React.PropTypes.bool,
+    cursor: React.PropTypes.object,
+    match: React.PropTypes.object
 };

@@ -7,6 +7,8 @@ import WidgetLinkVec2 from './widget-link-vec2.react';
 import WidgetLinkNumber from './widget-link-number.react';
 import WidgetColor from '../widgets/widget-color/widget-color.react';
 
+import { isWidgetOpen } from '../../widgets/widgets-manager';
+
 export default class GlslWidgetsLink {
     constructor (main) {
         const wrapper = editor.getWrapperElement();
@@ -32,18 +34,20 @@ export default class GlslWidgetsLink {
 
             // Assume that we should trigger a widget-link
             let shouldTriggerWidget = false;
-            // If it is not a glsl widget, then for now set our boolean to FALSE
-            if (token.state.innerMode !== null && token.state.innerMode.helperType === 'glsl') {
-                console.log(token);
-                console.log("within a glsl shader");
-                shouldTriggerWidget = true;
+            console.log("is iwdget open???");
+            console.log(!isWidgetOpen());
+            console.log("\n\n");
+            if (!isWidgetOpen()) { // If a normal widget is NOT open
+                // If it is not a glsl widget, then for now set our boolean to FALSE
+                if (token.state.innerMode !== null && token.state.innerMode.helperType === 'glsl') {
+                    shouldTriggerWidget = true;
+                }
+                // But if it is within a defines, then set to TRUE again
+                if (token.state.nodes[0].address !== null && token.state.nodes[0].address.indexOf('shaders:defines') !== -1) {
+                    shouldTriggerWidget = true;
+                }
             }
-            // But if it is within a defines, then set to TRUE again
-            if (token.state.nodes[0].address !== null && token.state.nodes[0].address.indexOf('shaders:defines') !== -1) {
-                console.log(token);
-                console.log("within a defines");
-                shouldTriggerWidget = true;
-            }
+
             // If FALSE then return, we do not need to render a widget-link
             if (!shouldTriggerWidget) {
                 return;
@@ -57,13 +61,12 @@ export default class GlslWidgetsLink {
 
                 switch (match.type) {
                     case 'vec3':
-                        console.log("found a vec3");
                         // Cleaning up the value we send to the WidgetColor
                         let cleanNum = match.string.substr(4);
                         cleanNum = cleanNum.replace(/[()]/g, '');
                         cleanNum = '[' + cleanNum + ']';
 
-                        // ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true}/>, widgetlink);
+                        ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true}/>, widgetlink);
                         break;
                     case 'vec2':
                         ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
