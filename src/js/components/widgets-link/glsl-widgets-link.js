@@ -35,7 +35,7 @@ export default class GlslWidgetsLink {
                 shouldTriggerWidget = false;
             }
             // But if it is within a defines, then set to TRUE again
-            if (token.state.nodes[0].address.indexOf('shaders:defines') !== -1) {
+            if (token.state.nodes[0].address !== null && token.state.nodes[0].address.indexOf('shaders:defines') !== -1) {
                 shouldTriggerWidget = true;
             }
             // If FALSE then return, we do not need to render a widget-link
