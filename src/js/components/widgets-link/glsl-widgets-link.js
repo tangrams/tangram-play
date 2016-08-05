@@ -63,7 +63,7 @@ export default class GlslWidgetsLink {
                         cleanNum = cleanNum.replace(/[()]/g, '');
                         cleanNum = '[' + cleanNum + ']';
 
-                        ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true}/>, widgetlink);
+                        // ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true}/>, widgetlink);
                         break;
                     case 'vec2':
                         ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
