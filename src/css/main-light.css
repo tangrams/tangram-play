@@ -1,0 +1,15 @@
+@import 'main';
+
+:root {
+    --ui-editor-background-color: #fff;
+    --ui-base-color: #26282c;
+    --ui-component-color: #2e3033;
+    --ui-element-color: #fff;
+    --ui-active-color: #36383c;
+    --ui-highlight-color: yellow;
+    --ui-highlight-color-2: rgb(221, 221, 0);
+    --ui-component-text-color: #eefafa;
+    --ui-link-text-color: #e1eeee;
+    --ui-subtext-color: #c0c6c6;
+    --ui-border-color: #fff;
+}

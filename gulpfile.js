@@ -24,7 +24,7 @@ function handleErrors () {
 }
 
 // Build stylesheets
-gulp.task('css', function () {
+gulp.task('css-dark', function () {
     var postcss = require('gulp-postcss');
     var autoprefixer = require('autoprefixer');
     var cssimport = require('postcss-import');
@@ -47,7 +47,39 @@ gulp.task('css', function () {
         reporter()
     ];
 
-    return gulp.src('./src/css/main.css')
+    return gulp.src('./src/css/main-dark.css')
+        .on('error', handleErrors)
+        .pipe(sourcemaps.init())
+        .pipe(postcss(plugins))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('./build/css'))
+        .pipe(browserSync.stream());
+});
+
+gulp.task('css-light', function () {
+    var postcss = require('gulp-postcss');
+    var autoprefixer = require('autoprefixer');
+    var cssimport = require('postcss-import');
+    var nested = require('postcss-nested');
+    var customProperties = require('postcss-custom-properties');
+    var colorHexAlpha = require('postcss-color-hex-alpha');
+    var csswring = require('csswring');
+    var reporter = require('postcss-reporter');
+
+    var plugins = [
+        cssimport,
+        nested,
+        customProperties(),
+        colorHexAlpha(),
+        autoprefixer({ browsers: ['last 2 versions', 'IE >= 11'] }),
+        // preserveHacks is true because NOT preserving them doesn't mean
+        // delete the hack, it means turn it into real CSS. Which is not
+        // what we want!
+        csswring({ removeAllComments: true, preserveHacks: true }),
+        reporter()
+    ];
+
+    return gulp.src('./src/css/main-light.css')
         .on('error', handleErrors)
         .pipe(sourcemaps.init())
         .pipe(postcss(plugins))
@@ -103,11 +135,11 @@ gulp.task('js', function () {
 gulp.task('js-watch', ['js'], browserSync.reload);
 
 // Build files, do not watch
-gulp.task('build', ['css', 'js']);
+gulp.task('build', ['css-dark', 'css-light', 'js']);
 
 // Watch files, but do not run browsersync
 gulp.task('watch', ['build'], function () {
-    gulp.watch(paths.styles, ['css']);
+    gulp.watch(paths.styles, ['css-dark', 'css-light']);
     gulp.watch(paths.scripts, ['js']);
 });
 
@@ -124,7 +156,7 @@ gulp.task('serve', ['build'], function () {
         }
     });
 
-    gulp.watch(paths.styles, ['css']);
+    gulp.watch(paths.styles, ['css-dark', 'css-light']);
     gulp.watch(paths.scripts, ['js-watch']);
     gulp.watch(paths.app).on('change', browserSync.reload);
 });

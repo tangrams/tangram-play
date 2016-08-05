@@ -62,6 +62,18 @@ const _clickAbout = function () {
     ReactDOM.render(<AboutModal />, document.getElementById('modal-container'));
 };
 
+const _clickTheme = function () {
+    let currentCSS = document.getElementById('css');
+
+    let currentHref = currentCSS.getAttribute('href');
+    if (currentHref.indexOf('dark') !== -1) {
+        currentCSS.setAttribute('href', 'build/css/main-light.css');
+    }
+    else {
+        currentCSS.setAttribute('href', 'build/css/main-dark.css');
+    }
+};
+
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
 const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
 
@@ -122,6 +134,11 @@ export default class MenuBar extends React.Component {
 
                     {/* Right menu section */}
                     <Nav pullRight>
+                        {/* Theme button */}
+                        <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Change theme'}</Tooltip>}>
+                            <NavItem eventKey={'new'} onClick={_clickTheme} href='#'><Icon type={'bt-magic'} />Theme</NavItem>
+                        </OverlayTrigger>
+
                         {/* Introspection button */}
                         <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toggle inspect mode'}</Tooltip>}>
                             <NavItem eventKey={'new'} onClick={this._clickInspect.bind(this)} href='#' active={this.state.inspectActive}><Icon type={'bt-magic'} />Inspect</NavItem>
