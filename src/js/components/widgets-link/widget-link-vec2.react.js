@@ -256,5 +256,5 @@ WidgetLinkVec2.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
     match: React.PropTypes.object,
-    value: React.PropTypes.object
+    value: React.PropTypes.string
 };

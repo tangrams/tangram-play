@@ -28,7 +28,18 @@ export default class GlslWidgetsLink {
             // Exit early if the cursor is not at a token
             let token = editor.getTokenAt(cursor);
 
+            // Assume that we should trigger a widget-link
+            let shouldTriggerWidget = true;
+            // If it is not a glsl widget, then for now set our boolean to FALSE
             if (token.state.innerMode === null || token.state.innerMode.helperType !== 'glsl') {
+                shouldTriggerWidget = false;
+            }
+            // But if it is within a defines, then set to TRUE again
+            if (token.state.nodes[0].address.indexOf('shaders:defines') !== -1) {
+                shouldTriggerWidget = true;
+            }
+            // If FALSE then return, we do not need to render a widget-link
+            if (!shouldTriggerWidget) {
                 return;
             }
 
