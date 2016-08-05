@@ -47,7 +47,7 @@ export default class MapPanelLocationBar extends React.Component {
         // Set the value of the search bar to whatever the map is currently pointing to
         this.reverseGeocode(mapCenter);
 
-        this.onChange = this.onChange.bind(this);
+        this.onChangeAutosuggest = this.onChangeAutosuggest.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
@@ -332,10 +332,24 @@ export default class MapPanelLocationBar extends React.Component {
      * Updates what is stored by value to correspond to what user is typing.
      * @param event - event that caused the change
      */
-    onChange (event, { newValue, method }) {
+    onChangeAutosuggest (event, { newValue, method }) {
         this.setState({
             value: newValue
         });
+    }
+
+    /**
+     * Fires when user focuses on autosuggest
+     * Selects text in the input, if any. This allows the user to press
+     * Backspace once to clear input, or any other character to automatically
+     * begin a new search. This is intended to not conflict with WAI-ARIA
+     * guidelines set by react-autosuggest, but behaves similarly to browser
+     * location bars.
+     *
+     * @param event - event that caused the change
+     */
+    onFocusAutosuggest (event) {
+        event.target.select();
     }
 
     render () {
@@ -343,7 +357,8 @@ export default class MapPanelLocationBar extends React.Component {
         const inputProps = {
             placeholder: this.state.placeholder,
             value: this.state.value,
-            onChange: this.onChange
+            onChange: this.onChangeAutosuggest,
+            onFocus: this.onFocusAutosuggest
         };
 
         const latlng = {
@@ -372,6 +387,7 @@ export default class MapPanelLocationBar extends React.Component {
                     renderSuggestion={this.renderSuggestion}
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
+                    focusFirstSuggestion={true}
                 />
 
                 {/* Lat lng label */}
