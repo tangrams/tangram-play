@@ -18,10 +18,10 @@ export default class ConfirmDialogModal extends React.Component {
         // is by default. Set `focusConfirm={false}` for potentially dangerous
         // actions when you want to make sure the user has confirmed the action.
         if (this.props.focusConfirm === true) {
-            ReactDOM.findDOMNode(this.confirmButton).focus();
+            ReactDOM.findDOMNode(this.confirmButton).focus(); // eslint-disable-line react/no-find-dom-node
         }
         else {
-            ReactDOM.findDOMNode(this.cancelButton).focus();
+            ReactDOM.findDOMNode(this.cancelButton).focus(); // eslint-disable-line react/no-find-dom-node
         }
     }
 

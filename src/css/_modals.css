@@ -195,13 +195,16 @@
     .modal-text {
         display: none;
     }
+
     .modal-content {
         margin-top: 0;
     }
+
     /* Inputs */
     .gist-saved-copy-btn {
         margin-left: 2px;
         width: 44px;
+
         &:focus {
             box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
         }

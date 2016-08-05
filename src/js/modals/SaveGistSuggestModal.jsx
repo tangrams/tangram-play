@@ -31,7 +31,7 @@ export default class SaveGistSuggestModal extends React.Component {
 
     // Sets up clipboard.js functionality. Not a React component.
     setupClipboard () {
-        const clipboardButtonEl = ReactDOM.findDOMNode(this.clipboardButton);
+        const clipboardButtonEl = ReactDOM.findDOMNode(this.clipboardButton); // eslint-disable-line react/no-find-dom-node
 
         // Initiate clipboard button
         this.clipboard = new Clipboard(clipboardButtonEl);
