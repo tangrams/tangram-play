@@ -241,9 +241,6 @@ th {
   .dropup > .btn > .caret {
     border-top-color: #000 !important;
   }
-  .label {
-    border: 1px solid #000;
-  }
   .table {
     border-collapse: collapse !important;
   }
@@ -2484,12 +2481,6 @@ legend {
   border: 0;
   border-bottom: 1px solid #e5e5e5;
 }
-label {
-  display: inline-block;
-  max-width: 100%;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
 input[type="search"] {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
@@ -2984,20 +2975,6 @@ select[multiple].input-lg {
           user-select: none;
   background-image: none;
   border: 1px solid transparent;
-}
-.btn:focus,
-.btn:active:focus,
-.btn.active:focus,
-.btn.focus,
-.btn:active.focus,
-.btn.active.focus {
-
-}
-.btn:hover,
-.btn:focus,
-.btn.focus {
-  color: #333;
-  text-decoration: none;
 }
 .btn:active,
 .btn.active {
