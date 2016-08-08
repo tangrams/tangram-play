@@ -11,6 +11,11 @@ dependencies:
   post:
     - npm install -g aws-cli
 
+test:
+  post:
+    # For Precog.
+    - cp -R build data index.html $CIRCLE_ARTIFACTS
+
 # For hosting on mapzen.com. Only deploy if tests pass. Compiled files are
 # rebuilt for a production environment.
 deployment:
