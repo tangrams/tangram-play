@@ -84,7 +84,6 @@
     --z08: 1000;
     --z09: 1100;
     --z10: 1200;
-    --z11: 1300;
 
     /**
      *  Z-INDEX COMPONENTS
@@ -111,7 +110,7 @@
     --z04-map-loading: var(--z04);
 
     /* 07: Anything that should display on top of all Leaflet elements */
-    --z07-menu-dropdown: var(--z07);
+    --z07-menu: var(--z07);
 
     /* 08: Overlays */
     --z08-overlay: var(--z08);
@@ -121,5 +120,4 @@
     --z09-tooltip: var(--z09);
     --z10-dropdown-button: var(--z10);
     --z10-mobile-message: var(--z10);
-    --z11-brand: var(--z11);
 }
