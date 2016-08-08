@@ -39,12 +39,36 @@ const EditorIO = {
             );
         }
     },
+    /**
+     * Wrap FileReader in a Promise and returns it.
+     */
     loadContentFromFile (content) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            TangramPlay.load({ contents: event.target.result });
-        };
-        reader.readAsText(content);
+        return new Promise(function (resolve, reject) {
+            // Rejects the Promise immediately if the `content` argument is not
+            // a Blob object provided by a browser's file input control.
+            if (!content instanceof Blob) {
+                reject('Unable to load your file: it is not a valid file type.');
+            }
+
+            const reader = new FileReader();
+
+            // Resolves when FileReader is completely done loading. The `load`
+            // event can fire before the end of a file is encountered so we
+            // listen for `loadend` instead. The Promise resolves with the value
+            // of the file contents but also loads into the editor.
+            reader.addEventListener('loadend', (event) => {
+                TangramPlay.load({ contents: event.target.result });
+                resolve(event.target.result);
+            });
+
+            // If FileReader encounters an error, the Promise is rejected with
+            // the value of the error property on the FileReader object.
+            reader.addEventListener('error', (event) => {
+                reject(reader.error);
+            });
+
+            reader.readAsText(content);
+        });
     }
 };
 
