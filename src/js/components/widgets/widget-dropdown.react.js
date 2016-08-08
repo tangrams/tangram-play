@@ -2,7 +2,7 @@ import React from 'react';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 
-import { setCodeMirrorValue } from '../../editor/editor';
+import { setCodeMirrorValue, setCursor } from '../../editor/editor';
 import { tangramLayer } from '../../map/map';
 import { getAddressSceneContent } from '../../editor/codemirror/yaml-tangram';
 import _ from 'lodash';
@@ -51,6 +51,7 @@ export default class WidgetDropdown extends React.Component {
 
         this.onChange = this.onChange.bind(this);
         this.setSource = this.setSource.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     /**
@@ -83,6 +84,14 @@ export default class WidgetDropdown extends React.Component {
         this.setEditorValue(this.value);
     }
 
+    /**
+     * Called each time dropdown button is clicked to move the cursor to the right line
+     */
+    onClick () {
+        // Set the editor cursor to the correct line. (When you click on the widget button it doesn't move the cursor)
+        setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
+    }
+
     /* SHARED METHOD FOR ALL WIDGETS */
     /**
      *  Use this method within a widget to communicate a value
@@ -98,9 +107,9 @@ export default class WidgetDropdown extends React.Component {
      */
     render () {
         if (this.state.options.length !== 0) {
-            return (<FormGroup className='widget-dropdown' controlId='widget-form-dropdown'>
+            return (<FormGroup className='widget-dropdown' controlId='widget-form-dropdown' onClick={this.onClick}>
                         <FormControl componentClass='select' className='widget-form-control' placeholder='select' onChange={this.onChange}>
-                            {this.state.options.map(function (result, i) {
+                            {this.state.options.map((result, i) => {
                                 return <option key={i} value={result}>{result}</option>;
                             })}
                         </FormControl>

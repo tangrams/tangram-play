@@ -6,8 +6,7 @@ import DraggableModal from '../../draggable-modal.react';
 import Icon from '../../Icon';
 import WidgetColorBox from './widget-color-box.react';
 
-import { setCodeMirrorValue, setCodeMirrorShaderValue, getCoordinates } from '../../../editor/editor';
-import { toggleWidgetOpen } from '../../../widgets/widgets-manager';
+import { setCodeMirrorValue, setCodeMirrorShaderValue, getCoordinates, setCursor } from '../../../editor/editor';
 import Color from './color';
 // import { EventEmitter } from '../../event-emitter';
 
@@ -46,7 +45,6 @@ export default class WidgetColor extends React.Component {
 
         /* This section is for the shader widget-links */
         if (this.props.shader) {
-            console.log("within a shader");
             this.cursor = this.props.cursor;
             this.match = this.props.match;
             let VERTICAL_OFFSET = 40;
@@ -85,14 +83,13 @@ export default class WidgetColor extends React.Component {
         */
     }
 
-    toggleWidget () {
-        toggleWidgetOpen(); // Let widget-manager know that a widget is open
-    }
-
     /**
      * Open or close the color picker widget
      */
     onClick (e) {
+        // Set the editor cursor to the correct line. (When you click on the widget button it doesn't move the cursor)
+        setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
+
         // Every time user clicks, modal position has to be updated.
         // This is because the user might have scrolled the CodeMirror editor
 
@@ -134,9 +131,6 @@ export default class WidgetColor extends React.Component {
         if (this.props.shader) {
             let widgetlink = document.getElementById('widget-links');
             ReactDOM.unmountComponentAtNode(widgetlink);
-        }
-        else {
-            toggleWidgetOpen(); // Let widget-manager know we've closed our widget
         }
     }
 
@@ -216,7 +210,7 @@ export default class WidgetColor extends React.Component {
                             return null;
                         }
                         else {
-                            return <div className='widget widget-colorpicker' onClick={this.onClick} onMouseDown={this.toggleWidget} style={widgetStyle}></div>;
+                            return <div className='widget widget-colorpicker' ref='widgetColorButton' onClick={this.onClick} style={widgetStyle}></div>;
                         }
                     })()}
 

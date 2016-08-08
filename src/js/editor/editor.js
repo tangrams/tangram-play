@@ -225,3 +225,14 @@ export function setCodeMirrorShaderValue (value, start, end) {
 export function getCoordinates (linePos) {
     return editor.charCoords(linePos);
 }
+
+/**
+ * Set the CodeMirror cursor to a specific place within the editor
+ *
+ * @param {Number} line - line on which to set cursor
+ * @param {Number} ch - ch on which to set cursor
+ */
+export function setCursor (line, ch) {
+    const doc = editor.getDoc();
+    doc.setCursor({line: line, ch: ch});
+}
