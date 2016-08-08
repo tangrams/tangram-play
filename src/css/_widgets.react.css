@@ -58,11 +58,16 @@
     width: 1em;
     height: 1em;
     cursor: pointer;
-    vertical-align: middle;
     margin-top: -0.15em;
+    display: flex;
+}
+
+.widget-toggle label {
+    display: flex;
 }
 
 .widget-toggle input[type=checkbox] {
+    position: relative;
     outline: none;
     margin-top: -0.15em;
 }

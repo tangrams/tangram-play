@@ -202,3 +202,37 @@ export function setCodeMirrorValue (bookmark, value) {
 function clearInlineNodes (fromPos) {
     EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
 }
+
+/* This section is for the shader widget links */
+
+/**
+ * Sets a text value within a shader block
+ *
+ * @public
+ * @param {string} value - The new value to set
+ * @param {Object} start - Start { line, ch }
+ * @param {Object} end - End { line, ch }
+ */
+export function setCodeMirrorShaderValue (value, start, end) {
+    editor.replaceRange(value, start, end);
+}
+
+/**
+ * Returns the left, bottom, right, top coordinates of the position we are clicking on
+ *
+ * @param {Object} linePos - position { line, ch } to lookup coordinates for
+ */
+export function getCoordinates (linePos) {
+    return editor.charCoords(linePos);
+}
+
+/**
+ * Set the CodeMirror cursor to a specific place within the editor
+ *
+ * @param {Number} line - line on which to set cursor
+ * @param {Number} ch - ch on which to set cursor
+ */
+export function setCursor (line, ch) {
+    const doc = editor.getDoc();
+    doc.setCursor({line: line, ch: ch});
+}

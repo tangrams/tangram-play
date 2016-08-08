@@ -9,7 +9,6 @@ import WidgetToggle from '../components/widgets/widget-toggle.react';
 
 import { EventEmitter } from '../components/event-emitter';
 
-
 /**
  * Initializes widget marks in the current editor viewport and adds event
  * listeners to handle new marks that need to be created as the editor content
@@ -296,7 +295,7 @@ function insertMarks (fromLine, toLine) {
                     mybookmark.widgetPos = node.range;
 
                     if (mytype === 'color') {
-                        ReactDOM.render(<WidgetColor bookmark={mybookmark} value={node.value}/>, myel);
+                        ReactDOM.render(<WidgetColor bookmark={mybookmark} value={node.value} shader={false} />, myel);
                     }
                     else if (mytype === 'string') {
                         // We need to pass a few more values to the dropdown widget: a set of options, a key, and a sources string

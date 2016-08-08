@@ -1,13 +1,14 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
 import DraggableModal from '../../draggable-modal.react';
 import Icon from '../../Icon';
 import WidgetColorBox from './widget-color-box.react';
 
-import { setCodeMirrorValue } from '../../../editor/editor';
+import { setCodeMirrorValue, setCodeMirrorShaderValue, getCoordinates, setCursor } from '../../../editor/editor';
 import Color from './color';
-import { EventEmitter } from '../../event-emitter';
+// import { EventEmitter } from '../../event-emitter';
 
 /**
  * Represents a color picker widget
@@ -24,13 +25,13 @@ export default class WidgetColor extends React.Component {
         super(props);
 
         this.state = {
-            displayColorPicker: false,
-            color: new Color(this.props.value),
-            x: 0,
-            y: 0
+            displayColorPicker: this.props.shader, // If it's a shader widget, defaults to TRUE, open. If it's not a shader widget, it's FALSE. we need to wait until user clicks button to open widget
+            color: new Color(this.props.value)
         };
         this.bookmark = this.props.bookmark;
         this.mounted = true;
+        this.x = 0;
+        this.y = 0;
 
         // Need to know width in case a widget is about to get rendered outside of the normal screen size
         // TODO: Don't hardcode this.
@@ -38,8 +39,19 @@ export default class WidgetColor extends React.Component {
         this.width = 250;
 
         this.onClick = this.onClick.bind(this);
+        this.onClickExit = this.onClickExit.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.onPaletteChange = this.onPaletteChange.bind(this);
+        // this.onPaletteChange = this.onPaletteChange.bind(this);
+
+        /* This section is for the shader widget-links */
+        if (this.props.shader) {
+            this.cursor = this.props.cursor;
+            this.match = this.props.match;
+            let VERTICAL_OFFSET = 40;
+            let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user clicked on a line
+            this.x = getCoordinates(linePos).left;
+            this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
+        }
     }
 
     /**
@@ -74,7 +86,10 @@ export default class WidgetColor extends React.Component {
     /**
      * Open or close the color picker widget
      */
-    onClick () {
+    onClick (e) {
+        // Set the editor cursor to the correct line. (When you click on the widget button it doesn't move the cursor)
+        setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
+
         // Every time user clicks, modal position has to be updated.
         // This is because the user might have scrolled the CodeMirror editor
 
@@ -105,9 +120,18 @@ export default class WidgetColor extends React.Component {
         }
 
         // Set the x and y of the modal that will contain the widget
-        this.setState({ x: posX });
-        this.setState({ y: posY });
+        this.x = posX;
+        this.y = posY;
         this.setState({ displayColorPicker: !this.state.displayColorPicker });
+    }
+
+    onClickExit () {
+        this.setState({ displayColorPicker: !this.state.displayColorPicker });
+
+        if (this.props.shader) {
+            let widgetlink = document.getElementById('widget-links');
+            ReactDOM.unmountComponentAtNode(widgetlink);
+        }
     }
 
     /**
@@ -118,12 +142,17 @@ export default class WidgetColor extends React.Component {
      */
     onChange (newColor) {
         if (this.mounted) {
-            const oldColor = this.state.color;
-
+            // const oldColor = this.state.color; // For use within color palette
             this.setState({ color: newColor });
-            this.setEditorValue(newColor.getVecString());
 
-            EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
+            if (this.props.shader) {
+                this.setEditorShaderValue(newColor.getVec3String());
+            }
+            else {
+                this.setEditorValue(newColor.getVecString());
+            }
+
+            // EventEmitter.dispatch('widgets:color-change', { old: oldColor, new: newColor });
         }
     }
 
@@ -133,6 +162,7 @@ export default class WidgetColor extends React.Component {
      *
      * @param data - the new color the user has chosen
      */
+    /*
     onPaletteChange (data) {
         if (this.mounted) {
             if (data.old.getRgbaString() === this.state.color.getRgbaString()) {
@@ -141,6 +171,7 @@ export default class WidgetColor extends React.Component {
             }
         }
     }
+    */
 
     /* SHARED METHOD FOR ALL WIDGETS */
     /**
@@ -149,6 +180,18 @@ export default class WidgetColor extends React.Component {
      */
     setEditorValue (string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
+    }
+
+    /**
+     * Update CodeMirror. Keeping the function same name as we used in the other widget-links
+     *
+     * @param color - the color to update within a shader block
+     */
+    setEditorShaderValue (color) {
+        let start = { line: this.cursor.line, ch: this.match.start };
+        let end = { line: this.cursor.line, ch: this.match.end };
+        this.match.end = this.match.start + color.length;
+        setCodeMirrorShaderValue(color, start, end);
     }
 
     /**
@@ -162,12 +205,19 @@ export default class WidgetColor extends React.Component {
             return (
                 <div>
                     {/* The widget button user clicks to open color picker */}
-                    <div className='widget widget-colorpicker' onClick={ this.onClick } style={widgetStyle}></div>
+                    {(() => {
+                        if (this.props.shader) {
+                            return null;
+                        }
+                        else {
+                            return <div className='widget widget-colorpicker' ref='widgetColorButton' onClick={this.onClick} style={widgetStyle}></div>;
+                        }
+                    })()}
 
                     {/* Draggable modal */}
-                    <Modal dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClick}>
+                    <Modal dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClickExit}>
                         <div className='drag'>
-                            <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                            <Button onClick={ this.onClickExit } className='widget-exit'><Icon type={'bt-times'} /></Button>
                         </div>
                         {/* The actual color picker */}
                         <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
@@ -183,5 +233,10 @@ export default class WidgetColor extends React.Component {
  */
 WidgetColor.propTypes = {
     bookmark: React.PropTypes.object,
-    value: React.PropTypes.string
+    value: React.PropTypes.string,
+    // These props are only used for the widget-links within the shader blocks
+    shader: React.PropTypes.bool,
+    display: React.PropTypes.bool,
+    cursor: React.PropTypes.object,
+    match: React.PropTypes.object
 };
