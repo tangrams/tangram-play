@@ -1,11 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
+
+import { editor } from '../editor/editor';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
@@ -22,10 +23,36 @@ export default class DocsPanel extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            open: true // Whether panel should be open or not
+            open: true, // Whether panel should be open or not
+            display: ''
         };
 
         this._togglePanel = this._togglePanel.bind(this);
+    }
+
+    componentDidMount () {
+        const wrapper = editor.getWrapperElement();
+
+        wrapper.addEventListener('mouseup', (event) => {
+            // bail out if we were doing a selection and not a click
+            if (editor.somethingSelected()) {
+                return;
+            }
+
+            let cursor = editor.getCursor(true);
+
+            let line = editor.lineInfo(cursor.line);
+            let nodes = line.handle.stateAfter.nodes;
+            let node;
+
+            if (nodes.length === 1) {
+                node = nodes[0].address;
+                this.setState({ display: node });
+            }
+            else {
+                console.log('line has more than one node');
+            }
+        });
     }
 
     /**
@@ -53,10 +80,10 @@ export default class DocsPanel extends React.Component {
                 <Panel collapsible expanded={this.state.open} className='docs-panel-collapsible'>
                     <div className='docs-panel-toolbar'>
 
-                        <div>Wording</div>
+                        <div className='docs-panel-toolbar-content'>{this.state.display}</div>
 
                         {/* Toggle docs panel to show it*/}
-                        <ButtonGroup>
+                        <ButtonGroup className='docs-panel-toolbar-toggle'>
                             <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Toggle docs toolbar'}</Tooltip>}>
                                 <Button onClick={this._togglePanel}> <Icon type={'bt-caret-down'} /> </Button>
                             </OverlayTrigger>

@@ -55,7 +55,6 @@
 
     .docs-panel-toolbar {
         display: flex;
-        align-items: center;
     }
 }
 
@@ -91,5 +90,12 @@
 
 .docs-panel * .btn-group {
     margin-right: 2px;
-    margin-left: 2px;
+}
+
+/* Toolbar buttons */
+
+.docs-panel-toolbar-toggle {
+    display: flex;
+    align-self: flex-end;
+    margin-left: auto;
 }
