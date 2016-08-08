@@ -1,0 +1,95 @@
+/* React DocsPanel */
+
+.editor-test {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.docs-panel {
+    position: absolute;
+    z-index: var(--z04-map-toolbar);
+    bottom: 0;
+    right: 0;
+    width: calc(100% - 54px);
+}
+
+/* Style for map panel button to show it */
+.docs-panel * .docs-panel-button-show {
+    color: var(--ui-component-text-color);
+    background-color: var(--ui-component-color);
+    border: none;
+    outline: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    &:hover {
+        color: var(--ui-highlight-color);
+        background-color: var(--ui-active-color);
+    }
+}
+
+.docs-panel-button-show > i.btm {
+    padding-right: 0;
+}
+
+/* Style for map panel */
+.docs-panel .panel {
+    border: none;
+    margin: 0;
+    z-index: var(--z07-menu);
+    opacity: 0.99; /* For panel to play nice with absolute positioned toggle button on the side */
+}
+
+.docs-panel-collapsible {
+    color: var(--ui-component-text-color);
+    background-color: var(--ui-component-color);
+
+    .panel-body {
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .docs-panel-toolbar {
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Style for all map panel buttons */
+.docs-panel * button {
+    padding: 0;
+    height: 38px;
+    width: 38px;
+    background-color: var(--ui-element-color);
+    color: var(--ui-component-text-color);
+    outline: none;
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
+}
+
+.docs-panel-toolbar button:hover i {
+    color: var(--ui-highlight-color);
+}
+
+.docs-panel * .btn {
+    border: none;
+}
+
+.docs-panel-toolbar i.btm {
+    padding-right: 0;
+    font-size: 12px;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+    color: var(--ui-component-text-color);
+}
+
+.docs-panel * .btn-group {
+    margin-right: 2px;
+    margin-left: 2px;
+}

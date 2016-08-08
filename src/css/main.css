@@ -48,6 +48,7 @@
 @import '_map-panel.react';
 @import '_map-panel-search-bookmarks.react';
 @import '_color-palette.react';
+@import '_docs-panel.react';
 
 /* + Bookmarks, Pickers, Widgets */
 @import '_widgets-modal.react';
