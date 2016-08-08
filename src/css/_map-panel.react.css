@@ -29,7 +29,7 @@
 .map-panel .panel {
     border: none;
     margin: 0;
-    z-index: var(--z07-menu-dropdown);
+    z-index: var(--z07-menu);
     opacity: 0.99; /* For panel to play nice with absolute positioned toggle button on the side */
 }
 

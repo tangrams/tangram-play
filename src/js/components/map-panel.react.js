@@ -10,6 +10,7 @@ import MapPanelZoom from './MapPanelZoom';
 import MapPanelLocationBar from './MapPanelLocationBar';
 import MapPanelBookmarks from './MapPanelBookmarks';
 
+import L from 'leaflet';
 import { map } from '../map/map';
 import ErrorModal from '../modals/ErrorModal';
 
