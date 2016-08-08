@@ -107,12 +107,12 @@ export default class WidgetDropdown extends React.Component {
     render () {
         if (this.state.options.length !== 0) {
             return (<FormGroup className='widget-dropdown' controlId='widget-form-dropdown' onClick={this.onClick}>
-                        <FormControl componentClass='select' className='widget-form-control' placeholder='select' onChange={this.onChange}>
-                            {this.state.options.map((result, i) => {
-                                return <option key={i} value={result}>{result}</option>;
-                            })}
-                        </FormControl>
-                    </FormGroup>);
+                <FormControl componentClass='select' className='widget-form-control' placeholder='select' onChange={this.onChange}>
+                    {this.state.options.map((result, i) => {
+                        return <option key={i} value={result}>{result}</option>;
+                    })}
+                </FormControl>
+            </FormGroup>);
         }
         else {
             return null;
