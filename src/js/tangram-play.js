@@ -4,10 +4,12 @@ import 'whatwg-fetch';
 
 // Error tracking
 // Load this before all other modules. Only load when run in production.
+// Requires `loose-envify` package in build process to set the correct `NODE_ENV`.
 import Raven from 'raven-js';
-if (window.location.hostname === 'mapzen.com' || window.location.hostname === 'www.mapzen.com') {
+if (process.env.NODE_ENV === 'production') {
     Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
-        whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/]
+        whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/],
+        environment: process.env.NODE_ENV
     }).install();
 }
 

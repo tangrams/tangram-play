@@ -6,6 +6,9 @@
  * an invisible file input element in memory, and then triggering a click
  * on it, which activates the browser's open dialog.
  */
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ErrorModal from '../modals/ErrorModal';
 import EditorIO from '../editor/io';
 
 const el = constructInvisibleFileInputElement();
@@ -23,7 +26,10 @@ function constructInvisibleFileInputElement () {
     fileSelector.style.display = 'none';
     fileSelector.addEventListener('change', function (event) {
         const files = event.target.files;
-        EditorIO.loadContentFromFile(files[0]);
+        EditorIO.loadContentFromFile(files[0]).catch((error) => {
+            // Show error modal
+            ReactDOM.render(<ErrorModal error={error.message || error} />, document.getElementById('modal-container'));
+        });
     });
     return fileSelector;
 }

@@ -13,17 +13,6 @@
   },
   "plugins": ["react"],
   "extends": ["plugin:react/recommended"],
-  "globals": {
-    "L": true,
-    "Modernizr": true,
-    "describe": true,
-    "it": true,
-    "sinon": true,
-    "_": true,
-    "before": true,
-    "beforeEach": true,
-    "afterEach": true
-  },
   "rules": {
     "accessor-pairs": 2,
     "arrow-spacing": [2, { "before": true, "after": true }],
