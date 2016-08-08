@@ -3,8 +3,8 @@
 import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Hue, Alpha } from 'react-color/lib/components/common';
-import Saturation from './widget-color-saturation.react';
-import WidgetColorInputFields from './widget-color-input-fields.react';
+import Saturation from './WidgetColorSaturation';
+import WidgetColorInputFields from './WidgetColorInputFields';
 import Color from './color';
 
 class WidgetColorBox extends React.Component {
