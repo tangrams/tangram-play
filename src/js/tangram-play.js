@@ -422,10 +422,10 @@ window.tangramPlay = tangramPlay;
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-import MenuBar from './components/menu-bar.react';
-import MapPanel from './components/map-panel.react';
+import MenuBar from './components/MenuBar';
+import MapPanel from './components/MapPanel';
 import OverlaysContainer from './ui/OverlaysContainer';
-// import ColorPalette from './components/color-palette.react';
+// import ColorPalette from './components/ColorPalette';
 
 let mountNode1 = document.getElementById('menu-bar');
 ReactDOM.render(<MenuBar />, mountNode1);

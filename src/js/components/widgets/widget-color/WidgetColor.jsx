@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
-import DraggableModal from '../../draggable-modal.react';
+import DraggableModal from '../../DraggableModal';
 import Icon from '../../Icon';
-import WidgetColorBox from './widget-color-box.react';
+import WidgetColorBox from './WidgetColorBox';
 
 import { setCodeMirrorValue, setCodeMirrorShaderValue, getCoordinates, setCursor } from '../../../editor/editor';
 import Color from './color';

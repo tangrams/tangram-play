@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
-import DraggableModal from '../../draggable-modal.react.js';
+import DraggableModal from '../../DraggableModal';
 import Icon from '../../Icon';
 import { setCodeMirrorValue } from '../../../editor/editor';
 

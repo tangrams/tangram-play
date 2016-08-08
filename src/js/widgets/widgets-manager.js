@@ -2,10 +2,10 @@ import { editor } from '../editor/editor';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import WidgetColor from '../components/widgets/widget-color/widget-color.react';
-import WidgetDropdown from '../components/widgets/widget-dropdown.react';
-// import WidgetVector from '../components/widgets/widget-vector/widget-vector.react';
-import WidgetToggle from '../components/widgets/widget-toggle.react';
+import WidgetColor from '../components/widgets/widget-color/WidgetColor';
+import WidgetDropdown from '../components/widgets/WidgetDropdown';
+// import WidgetVector from '../components/widgets/widget-vector/WidgetVector';
+import WidgetToggle from '../components/widgets/WidgetToggle';
 
 import { EventEmitter } from '../components/event-emitter';
 

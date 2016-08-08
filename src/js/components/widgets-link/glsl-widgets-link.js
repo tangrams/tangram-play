@@ -3,9 +3,9 @@ import { editor } from '../../editor/editor';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import WidgetLinkVec2 from './widget-link-vec2.react';
-import WidgetLinkNumber from './widget-link-number.react';
-import WidgetColor from '../widgets/widget-color/widget-color.react';
+import WidgetLinkVec2 from './WidgetLinkVec2';
+import WidgetLinkNumber from './WidgetLinkNumber';
+import WidgetColor from '../widgets/widget-color/WidgetColor';
 
 export default class GlslWidgetsLink {
     constructor (main) {
