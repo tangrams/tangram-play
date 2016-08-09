@@ -1,0 +1,57 @@
+{
+    "keys": [
+        {
+            "name": "sources",
+            "address": "sources",
+            "required": "yes",
+            "keyword": "yes",
+            "children": [
+                {
+                    "name": "Sources Name",
+                    "address": "^sources:(\\w|\\_|\\-|\\/)+$",
+                    "required": "yes",
+                    "keyword": "no",
+                    "children": [
+                        {
+                            "name": "type",
+                            "address": "^sources:(\\w|\\_|\\-|\/)+:type$",
+                            "required": "yes",
+                            "keyword": "yes",
+                            "options": [
+                                "GeoJSON",
+                                "TopoJSON",
+                                "MVT",
+                                "Raster"
+                            ]
+                        },
+                        {
+                            "name": "url",
+                            "address": "^sources:(\\w|\\_|\\-|\/)+:url$",
+                            "required": "yes",
+                            "keyword": "yes",
+                            "type": "string"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "layers",
+            "address": "layers",
+            "required": "yes",
+            "keyword": "yes",
+            "children": [
+
+            ]
+        },
+        {
+            "name": "cameras",
+            "address": "cameras",
+            "required": "yes",
+            "keyword": "yes",
+            "children": [
+
+            ]
+        }
+    ]
+}

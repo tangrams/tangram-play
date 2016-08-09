@@ -9,6 +9,8 @@ import Draggable from 'react-draggable';
 
 import { editor } from '../editor/editor';
 
+import TANGRAM from '../tangram-docs.json';
+
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
  * map.
@@ -29,7 +31,7 @@ export default class DocsPanel extends React.Component {
 
         this.state = {
             open: true, // Whether panel should be open or not
-            display: '',
+            display: '{}',
             height: INITIAL_HEIGHT
         };
 
@@ -57,7 +59,7 @@ export default class DocsPanel extends React.Component {
 
             if (nodes.length === 1) {
                 node = nodes[0].address;
-                this.setState({ display: node });
+                this.setState({ display: this.findMatch(node) });
             }
             else {
                 console.log('line has more than one node');
@@ -88,6 +90,36 @@ export default class DocsPanel extends React.Component {
         this.setState({ height: delta });
     }
 
+    findMatch (address) {
+        let currentTree = TANGRAM.keys; // Initializes to the tree at level 0
+        console.log(address);
+        let split = address.split(':');
+
+        let partialAddress;
+        let currentNode;
+        for (let i = 0; i < split.length; i++) {
+            // Construct a partial address for each child in the tree
+            if (i === 0) {
+                partialAddress = split[0];
+            }
+            else {
+                partialAddress = partialAddress + ':' + split[i];
+            }
+
+            // Find a match of that address within our docs JSON
+            for (let node of currentTree) {
+                let found = partialAddress.match(node.address);
+                if (found !== null) {
+                    currentNode = node;
+                    currentTree = node.children;
+                    break;
+                }
+            }
+        }
+
+        return JSON.stringify(currentNode);
+    }
+
     /**
      * Official React lifecycle method
      * Called every time state or props are changed
@@ -96,6 +128,12 @@ export default class DocsPanel extends React.Component {
         var divStyle = {
             height: this.state.height + 'px'
         };
+
+        let result = JSON.parse(this.state.display);
+
+        if (result['children']) {
+            result['children'] = JSON.stringify(result['children']);
+        }
 
         return (
             <div>
@@ -112,7 +150,20 @@ export default class DocsPanel extends React.Component {
                         <div className='docs-panel-toolbar' >
 
                             {/* Text within the docs panel */}
-                            <div className='docs-panel-toolbar-content'>{this.state.display}</div>
+                            <div className='docs-panel-toolbar-content'>
+                                {(() => {
+                                    const list = Object.keys(result).map((value, i) => {
+                                        return (
+                                            <div key={i}>
+                                                <div>{value}</div>
+                                                <div>{result[value]}</div>
+                                            </div>
+                                        );
+                                    });
+
+                                    return list;
+                                })()}
+                            </div>
 
                             {/* Toggle docs panel to hide it*/}
                             <ButtonGroup className='docs-panel-toolbar-toggle'>
