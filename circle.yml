@@ -23,8 +23,7 @@ deployment:
   production:
     branch: master
     commands:
-      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DESTINATION --delete
-      - ./deploy/invalidate_cloudfront.sh
+      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_PROD_DESTINATION --delete
   staging:
     branch: staging
     commands:
