@@ -104,7 +104,7 @@ nav {
     padding-left: 14px;
 }
 
-.menu-bar * li.open.dropdown {
+.menu-bar li.open.dropdown {
     z-index: var(--z10-dropdown-button);
 }
 

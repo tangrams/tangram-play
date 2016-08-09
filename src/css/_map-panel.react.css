@@ -6,7 +6,7 @@
 }
 
 /* Style for map panel button to show it */
-.map-panel * .map-panel-button-show {
+.map-panel .map-panel-button-show {
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
     border: none;
@@ -51,7 +51,7 @@
 }
 
 /* Style for all map panel buttons */
-.map-panel * button {
+.map-panel button {
     padding: 0;
     height: 38px;
     width: 38px;
@@ -68,7 +68,7 @@
     color: var(--ui-highlight-color);
 }
 
-.map-panel * .btn {
+.map-panel .btn {
     border: none;
 }
 
@@ -80,7 +80,7 @@
     color: var(--ui-component-text-color);
 }
 
-.map-panel * .btn-group {
+.map-panel .btn-group {
     margin-right: 2px;
     margin-left: 2px;
 }

@@ -89,7 +89,7 @@
     background-color: var(--ui-active-color);
 }
 
-.react-autosuggest__suggestions-container * strong {
+.react-autosuggest__suggestions-container strong {
     color: yellow;
     font-weight: 200;
 }
