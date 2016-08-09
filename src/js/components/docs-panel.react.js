@@ -75,9 +75,7 @@ export default class DocsPanel extends React.Component {
     closePanel () {
         this.lastSavedHeight = this.state.height;
 
-        this.setState({
-            height: 0
-        });
+        this.setState({ height: 0 });
     }
 
     onDrag (e, ui) {
@@ -87,10 +85,7 @@ export default class DocsPanel extends React.Component {
             delta = this.MIN_HEIGHT;
         }
 
-        // Add a little more height at the bottom, so if the drag is fast you can't see any slip
-        this.setState({
-            height: delta
-        });
+        this.setState({ height: delta });
     }
 
     /**
@@ -111,14 +106,15 @@ export default class DocsPanel extends React.Component {
                     </Button>
                 </OverlayTrigger>
 
-                {/* Docs panel*/}
+                {/* Docs panel */}
                 <Draggable axis='y' onDrag={this.onDrag}>
                     <Panel className='docs-panel-collapsible' style={divStyle}>
                         <div className='docs-panel-toolbar' >
 
+                            {/* Text within the docs panel */}
                             <div className='docs-panel-toolbar-content'>{this.state.display}</div>
 
-                            {/* Toggle docs panel to show it*/}
+                            {/* Toggle docs panel to hide it*/}
                             <ButtonGroup className='docs-panel-toolbar-toggle'>
                                 <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Close docs toolbar'}</Tooltip>}>
                                     <Button onClick={this.closePanel}> <Icon type={'bt-caret-down'} /> </Button>
@@ -128,7 +124,6 @@ export default class DocsPanel extends React.Component {
                         </div>
                     </Panel>
                 </Draggable>
-
             </div>
         );
     }
