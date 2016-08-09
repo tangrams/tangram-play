@@ -14,6 +14,7 @@ dependencies:
 test:
   post:
     # For Precog.
+    - NODE_ENV=production gulp build
     - cp -R build data index.html $CIRCLE_ARTIFACTS
 
 # For hosting on mapzen.com. Only deploy if tests pass. Compiled files are
@@ -22,7 +23,8 @@ deployment:
   production:
     branch: master
     commands:
-      - NODE_ENV=production gulp build
-      - cp -R build data index.html $CIRCLE_ARTIFACTS
-      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DESTINATION --delete
-      - ./deploy/invalidate_cloudfront.sh
+      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_PROD_DESTINATION --delete
+  staging:
+    branch: staging
+    commands:
+      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DEV_DESTINATION --delete
