@@ -23,18 +23,21 @@ export default class DocsPanel extends React.Component {
      */
     constructor (props) {
         super(props);
+
+        const INITIAL_HEIGHT = 50;
+        this.MIN_HEIGHT = 50;
+
         this.state = {
             open: true, // Whether panel should be open or not
             display: '',
-            activeDrags: 0,
-            height: 600,
-            y: 0
+            height: INITIAL_HEIGHT
         };
 
-        this.togglePanel = this.togglePanel.bind(this);
-        this.onStart = this.onStart.bind(this);
-        this.onStop = this.onStop.bind(this);
+        this.lastSavedHeight = INITIAL_HEIGHT;
+
+        this.openPanel = this.openPanel.bind(this);
         this.onDrag = this.onDrag.bind(this);
+        this.closePanel = this.closePanel.bind(this);
     }
 
     componentDidMount () {
@@ -65,20 +68,24 @@ export default class DocsPanel extends React.Component {
     /**
      * Toggle the panel so it is visible or not visible
      */
-    togglePanel () {
-        this.setState({ open: !this.state.open });
+    openPanel () {
+        this.setState({ height: this.lastSavedHeight });
     }
 
-    onStart () {
-      this.setState({activeDrags: ++this.state.activeDrags});
-    }
+    closePanel () {
+        this.lastSavedHeight = this.state.height;
 
-    onStop() {
-      this.setState({activeDrags: --this.state.activeDrags});
+        this.setState({
+            height: 0
+        });
     }
 
     onDrag (e, ui) {
-        const delta = this.state.height - (ui.y);
+        let delta = this.state.height - (ui.y);
+
+        if (delta < this.MIN_HEIGHT) {
+            delta = this.MIN_HEIGHT;
+        }
 
         // Add a little more height at the bottom, so if the drag is fast you can't see any slip
         this.setState({
@@ -91,39 +98,30 @@ export default class DocsPanel extends React.Component {
      * Called every time state or props are changed
      */
     render () {
-         const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
-
-        // var divStyle = {
-        //     height: this.state.height + 'px'
-        // };
-
-        // height: 'calc(400px - ' + this.state.y + 'px)'
-        // height: '400px'
-
-        // console.log(divStyle);
-
-        // style={divStyle}
+        var divStyle = {
+            height: this.state.height + 'px'
+        };
 
         return (
             <div>
                 {/* Toggle docs panel to show it*/}
-                <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Toogle docs toolbar'}</Tooltip>}>
-                    <Button onClick={this.togglePanel} className='docs-panel-button-show'>
+                <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Open docs toolbar'}</Tooltip>}>
+                    <Button onClick={this.openPanel} className='docs-panel-button-show'>
                         <Icon type={'bt-caret-up'} />
                     </Button>
                 </OverlayTrigger>
 
                 {/* Docs panel*/}
-                <Draggable axis="y" {...dragHandlers} onDrag={this.onDrag}>
-                    <Panel collapsible expanded={this.state.open} className='docs-panel-collapsible' >
-                        <div className='docs-panel-toolbar'>
+                <Draggable axis='y' onDrag={this.onDrag}>
+                    <Panel className='docs-panel-collapsible' style={divStyle}>
+                        <div className='docs-panel-toolbar' >
 
                             <div className='docs-panel-toolbar-content'>{this.state.display}</div>
 
                             {/* Toggle docs panel to show it*/}
                             <ButtonGroup className='docs-panel-toolbar-toggle'>
-                                <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Toggle docs toolbar'}</Tooltip>}>
-                                    <Button onClick={this.togglePanel}> <Icon type={'bt-caret-down'} /> </Button>
+                                <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Close docs toolbar'}</Tooltip>}>
+                                    <Button onClick={this.closePanel}> <Icon type={'bt-caret-down'} /> </Button>
                                 </OverlayTrigger>
                             </ButtonGroup>
 

@@ -1,19 +1,11 @@
 /* React DocsPanel */
 
-.editor-test {
-    position: relative;
-    height: 100%;
-    width: 100%;
-}
-
 .docs-panel {
     position: absolute;
     z-index: var(--z04-map-toolbar);
     bottom: 0;
     right: 0;
     width: calc(100% - 54px);
-    flex-direction: column;
-    display: flex;
 }
 
 /* Style for map panel button to show it */
@@ -47,13 +39,11 @@
 .docs-panel-collapsible {
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
-    /*height: 100%;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;*/
-    /*height: 100vh;*/
-    bottom: 0;
+    transform: translate(0, 0) !important; /* This is to prevent React Draggable from changing panel position */
+
+    /* Ease in and out of doc panel */
+    /* transition-timing-function: ease-in-out;
+    transition: 0.1s; */
 
     .panel-body {
         padding-top: 6px;

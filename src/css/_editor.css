@@ -13,6 +13,12 @@
     position: relative;
 }
 
+.editor-container-child {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
 .CodeMirror {
     font-family: var(--editor-font-family);
     font-size: 14px;
