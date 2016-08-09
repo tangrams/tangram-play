@@ -5,6 +5,7 @@ import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
+import Draggable from 'react-draggable';
 
 import { editor } from '../editor/editor';
 
@@ -24,10 +25,16 @@ export default class DocsPanel extends React.Component {
         super(props);
         this.state = {
             open: true, // Whether panel should be open or not
-            display: ''
+            display: '',
+            activeDrags: 0,
+            height: 600,
+            y: 0
         };
 
-        this._togglePanel = this._togglePanel.bind(this);
+        this.togglePanel = this.togglePanel.bind(this);
+        this.onStart = this.onStart.bind(this);
+        this.onStop = this.onStop.bind(this);
+        this.onDrag = this.onDrag.bind(this);
     }
 
     componentDidMount () {
@@ -58,8 +65,25 @@ export default class DocsPanel extends React.Component {
     /**
      * Toggle the panel so it is visible or not visible
      */
-    _togglePanel () {
+    togglePanel () {
         this.setState({ open: !this.state.open });
+    }
+
+    onStart () {
+      this.setState({activeDrags: ++this.state.activeDrags});
+    }
+
+    onStop() {
+      this.setState({activeDrags: --this.state.activeDrags});
+    }
+
+    onDrag (e, ui) {
+        const delta = this.state.height - (ui.y);
+
+        // Add a little more height at the bottom, so if the drag is fast you can't see any slip
+        this.setState({
+            height: delta
+        });
     }
 
     /**
@@ -67,30 +91,46 @@ export default class DocsPanel extends React.Component {
      * Called every time state or props are changed
      */
     render () {
+         const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
+
+        // var divStyle = {
+        //     height: this.state.height + 'px'
+        // };
+
+        // height: 'calc(400px - ' + this.state.y + 'px)'
+        // height: '400px'
+
+        // console.log(divStyle);
+
+        // style={divStyle}
+
         return (
             <div>
                 {/* Toggle docs panel to show it*/}
                 <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Toogle docs toolbar'}</Tooltip>}>
-                    <Button onClick={this._togglePanel} className='docs-panel-button-show'>
+                    <Button onClick={this.togglePanel} className='docs-panel-button-show'>
                         <Icon type={'bt-caret-up'} />
                     </Button>
                 </OverlayTrigger>
 
                 {/* Docs panel*/}
-                <Panel collapsible expanded={this.state.open} className='docs-panel-collapsible'>
-                    <div className='docs-panel-toolbar'>
+                <Draggable axis="y" {...dragHandlers} onDrag={this.onDrag}>
+                    <Panel collapsible expanded={this.state.open} className='docs-panel-collapsible' >
+                        <div className='docs-panel-toolbar'>
 
-                        <div className='docs-panel-toolbar-content'>{this.state.display}</div>
+                            <div className='docs-panel-toolbar-content'>{this.state.display}</div>
 
-                        {/* Toggle docs panel to show it*/}
-                        <ButtonGroup className='docs-panel-toolbar-toggle'>
-                            <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Toggle docs toolbar'}</Tooltip>}>
-                                <Button onClick={this._togglePanel}> <Icon type={'bt-caret-down'} /> </Button>
-                            </OverlayTrigger>
-                        </ButtonGroup>
+                            {/* Toggle docs panel to show it*/}
+                            <ButtonGroup className='docs-panel-toolbar-toggle'>
+                                <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Toggle docs toolbar'}</Tooltip>}>
+                                    <Button onClick={this.togglePanel}> <Icon type={'bt-caret-down'} /> </Button>
+                                </OverlayTrigger>
+                            </ButtonGroup>
 
-                    </div>
-                </Panel>
+                        </div>
+                    </Panel>
+                </Draggable>
+
             </div>
         );
     }
