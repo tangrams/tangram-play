@@ -96,7 +96,7 @@
         /* padding-top: 6px; */
         padding-bottom: 6px;
         padding-left: 8px;
-        /* padding-right: 8px; */
+        padding-right: 8px;
         flex-direction: row;
         height: 100%;
     }
@@ -145,6 +145,10 @@
     overflow-x: hidden;
     position: relative;
     height: 100%;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
 }
 
 .docs-panel-toolbar-content .container::-webkit-scrollbar {

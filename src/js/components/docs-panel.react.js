@@ -5,13 +5,12 @@ import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
-import Draggable from 'react-draggable';
 import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
 
-
 import { editor } from '../editor/editor';
+import Draggable from 'react-draggable';
 
 import TANGRAM from '../tangram-docs.json';
 
@@ -199,10 +198,6 @@ export default class DocsPanel extends React.Component {
         };
 
         let result = JSON.parse(this.state.display);
-
-        // if (result['children']) {
-        //     result['children'] = JSON.stringify(result['children']);
-        // }
 
         return (
             <div>
