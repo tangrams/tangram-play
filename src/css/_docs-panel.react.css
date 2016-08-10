@@ -79,7 +79,8 @@
 
 .docs-panel-collapsible {
     color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
+    /*background-color: var(--ui-component-color);*/
+    background-color: rgba(115,119,125,0.2);
     transform: translate(0, 0) !important; /* This is to prevent React Draggable from changing panel position */
 
     /* Ease in and out of doc panel */
@@ -88,14 +89,15 @@
 
     .panel-body {
         padding: 0;
-        /*padding-top: 6px;
-        padding-bottom: 6px;
-        padding-left: 8px;
-        padding-right: 8px;*/
     }
 
     .docs-panel-toolbar {
         display: flex;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-left: 8px;
+        padding-right: 8px;
+        flex-direction: row;
     }
 }
 
@@ -137,6 +139,23 @@
 
 .docs-panel-toolbar-toggle {
     display: flex;
-    align-self: flex-end;
     margin-left: auto;
+    align-self: flex-start;
+}
+
+/* Content formatting */
+
+.docs-content-key {
+    text-transform: capitalize;
+    padding-bottom: 12px;
+}
+
+.docs-content-value {
+    padding-left: 30px;
+    text-transform: none;
+    font-family: monospace;
+}
+
+.docs-content-child {
+    padding-left: 80px;
 }

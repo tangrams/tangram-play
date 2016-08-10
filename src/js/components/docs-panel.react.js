@@ -26,7 +26,7 @@ export default class DocsPanel extends React.Component {
     constructor (props) {
         super(props);
 
-        const INITIAL_HEIGHT = 50;
+        const INITIAL_HEIGHT = 400;
         this.MIN_HEIGHT = 50;
 
         this.state = {
@@ -117,7 +117,40 @@ export default class DocsPanel extends React.Component {
             }
         }
 
+        currentNode.originalAddress = address;
+
         return JSON.stringify(currentNode);
+    }
+
+    parseChildren (node) {
+        let list;
+
+        if (node['children'] !== undefined) {
+            list = node['children'].map((value, i) => {
+                console.log(value);
+                return (
+                    <div key={i} className='docs-content-child'>
+                        <div className='docs-content-key'>Name:
+                            <span className='docs-content-value'>
+                                {value.name}
+                            </span>
+                        </div>
+                        <div className='docs-content-key'>Description:
+                            <span className='docs-content-value'>
+                                {value.address}
+                            </span>
+                        </div>
+                    </div>
+                );
+            });
+        }
+        else {
+            list = null;
+        }
+
+        console.log(list);
+
+        return list;
     }
 
     /**
@@ -131,9 +164,9 @@ export default class DocsPanel extends React.Component {
 
         let result = JSON.parse(this.state.display);
 
-        if (result['children']) {
-            result['children'] = JSON.stringify(result['children']);
-        }
+        // if (result['children']) {
+        //     result['children'] = JSON.stringify(result['children']);
+        // }
 
         return (
             <div>
@@ -154,12 +187,26 @@ export default class DocsPanel extends React.Component {
                             <div className='docs-panel-toolbar-content'>
                                 {(() => {
                                     const list = Object.keys(result).map((value, i) => {
-                                        return (
-                                            <div key={i}>
-                                                <div>{value}</div>
-                                                <div>{result[value]}</div>
-                                            </div>
-                                        );
+                                        if (value === 'children') {
+                                            return (
+                                                <div key={i}>
+                                                    <div className='docs-content-key'>{value}:
+                                                        {this.parseChildren(result)}
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+                                        else {
+                                            return (
+                                                <div key={i}>
+                                                    <div className='docs-content-key'>{value}:
+                                                        <span className='docs-content-value'>
+                                                            {result[value]}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
                                     });
 
                                     return list;
