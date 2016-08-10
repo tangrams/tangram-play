@@ -3,18 +3,21 @@
         {
             "name": "sources",
             "address": "sources",
+            "description": "The sources element is a required top-level element in a Tangram scene file. It declares the beginning of a sources block. It takes only one kind of parameter: the source name. Any number of source names can be declared.",
             "required": "yes",
             "keyword": "yes",
             "children": [
                 {
-                    "name": "Sources Name",
+                    "name": "Source Name",
                     "address": "^sources:(\\w|\\_|\\-|\\/)+$",
+                    "description": "Specifies the beginning of a source block.",
                     "required": "yes",
                     "keyword": "no",
                     "children": [
                         {
                             "name": "type",
                             "address": "^sources:(\\w|\\_|\\-|\/)+:type$",
+                            "description": "Sets the type of the datasource. No default.",
                             "required": "yes",
                             "keyword": "yes",
                             "options": [
@@ -27,6 +30,7 @@
                         {
                             "name": "url",
                             "address": "^sources:(\\w|\\_|\\-|\/)+:url$",
+                            "description": "Specifies the source’s URL. No default.",
                             "required": "yes",
                             "keyword": "yes",
                             "type": "string"
@@ -38,6 +42,7 @@
         {
             "name": "layers",
             "address": "layers",
+            "description": "The layers element is a required top-level element in the scene file. It has only one kind of sub-element: a layer name, which defines individual layers with a layer filter.",
             "required": "yes",
             "keyword": "yes",
             "children": [
@@ -47,7 +52,8 @@
         {
             "name": "cameras",
             "address": "cameras",
-            "required": "yes",
+            "description": "The cameras element is a required top-level element in the scene file. Individual cameras are defined by a camera name under this element.",
+            "required": "no",
             "keyword": "yes",
             "children": [
 

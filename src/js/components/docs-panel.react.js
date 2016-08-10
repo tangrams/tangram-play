@@ -6,6 +6,10 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
 import Draggable from 'react-draggable';
+import Grid from 'react-bootstrap/lib/Grid';
+import Row from 'react-bootstrap/lib/Row';
+import Col from 'react-bootstrap/lib/Col';
+
 
 import { editor } from '../editor/editor';
 
@@ -55,11 +59,11 @@ export default class DocsPanel extends React.Component {
 
             let line = editor.lineInfo(cursor.line);
             let nodes = line.handle.stateAfter.nodes;
-            let node;
+            let address;
 
             if (nodes.length === 1) {
-                node = nodes[0].address;
-                this.setState({ display: this.findMatch(node) });
+                address = nodes[0].address;
+                this.setState({ display: this.findMatch(address) });
             }
             else {
                 console.log('line has more than one node');
@@ -122,33 +126,32 @@ export default class DocsPanel extends React.Component {
         return JSON.stringify(currentNode);
     }
 
-    parseChildren (node) {
+    onClickChild (address) {
+        this.setState({ display: this.findMatch(address) });
+    }
+
+    renderChildren (node) {
         let list;
 
         if (node['children'] !== undefined) {
             list = node['children'].map((value, i) => {
-                console.log(value);
                 return (
-                    <div key={i} className='docs-content-child'>
-                        <div className='docs-content-key'>Name:
-                            <span className='docs-content-value'>
-                                {value.name}
-                            </span>
-                        </div>
-                        <div className='docs-content-key'>Description:
-                            <span className='docs-content-value'>
-                                {value.address}
-                            </span>
-                        </div>
-                    </div>
+                    <Row key={i} className='child-row'>
+                        <Row>
+                            <Col md={2} className='capitalize'>name:</Col>
+                            <Col md={10} onClick={this.onClickChild.bind(this, value.address)} className='docs-link'><code>{value.name}</code></Col>
+                        </Row>
+                        <Row>
+                            <Col md={2} className='capitalize'>description:</Col>
+                            <Col md={10}><code>{value.description}</code></Col>
+                        </Row>
+                    </Row>
                 );
             });
         }
         else {
             list = null;
         }
-
-        console.log(list);
 
         return list;
     }
@@ -185,32 +188,30 @@ export default class DocsPanel extends React.Component {
                         <div className='docs-panel-toolbar' >
                             {/* Text within the docs panel */}
                             <div className='docs-panel-toolbar-content'>
-                                {(() => {
-                                    const list = Object.keys(result).map((value, i) => {
-                                        if (value === 'children') {
-                                            return (
-                                                <div key={i}>
-                                                    <div className='docs-content-key'>{value}:
-                                                        {this.parseChildren(result)}
-                                                    </div>
-                                                </div>
-                                            );
-                                        }
-                                        else {
-                                            return (
-                                                <div key={i}>
-                                                    <div className='docs-content-key'>{value}:
-                                                        <span className='docs-content-value'>
-                                                            {result[value]}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            );
-                                        }
-                                    });
+                                <Grid>
+                                    {(() => {
+                                        const list = Object.keys(result).map((value, i) => {
+                                            if (value === 'children') {
+                                                return (
+                                                    <Row key={i} className='toolbar-content-row'>
+                                                        <Col md={2} className='capitalize'>{value}:</Col>
+                                                        <Col md={10}>{this.renderChildren(result)}</Col>
+                                                    </Row>
+                                                );
+                                            }
+                                            else {
+                                                return (
+                                                    <Row key={i} className='toolbar-content-row'>
+                                                        <Col md={2} className='capitalize'>{value}:</Col>
+                                                        <Col md={10}><code>{result[value]}</code></Col>
+                                                    </Row>
+                                                );
+                                            }
+                                        });
 
-                                    return list;
-                                })()}
+                                        return list;
+                                    })()}
+                                </Grid>
                             </div>
 
                             {/* Toggle docs panel to hide it*/}

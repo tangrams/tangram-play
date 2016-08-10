@@ -138,24 +138,35 @@
 /* Toolbar buttons */
 
 .docs-panel-toolbar-toggle {
-    display: flex;
-    margin-left: auto;
-    align-self: flex-start;
+    position: absolute;
+    right: 10px;
 }
 
 /* Content formatting */
 
-.docs-content-key {
+.capitalize {
     text-transform: capitalize;
-    padding-bottom: 12px;
 }
 
-.docs-content-value {
-    padding-left: 30px;
-    text-transform: none;
-    font-family: monospace;
+.child-row {
+    padding-left: 15px;
+    padding-bottom: 10px;
 }
 
-.docs-content-child {
-    padding-left: 80px;
+.toolbar-content-row {
+    padding-bottom: 10px;
+}
+
+code {
+    background-color: transparent;
+}
+
+.docs-link code {
+    color: #bf4d6a;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.docs-link code:hover {
+    text-shadow: 0 0 1px #c34646;
 }
