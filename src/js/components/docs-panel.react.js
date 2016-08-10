@@ -96,12 +96,17 @@ export default class DocsPanel extends React.Component {
 
     findMatch (address, optionalBool) {
         let currentTree = TANGRAM.keys; // Initializes to the tree at level 0
-        console.log(address);
+        // console.log(address);
         let split = address.split(':');
 
         let partialAddress;
         let currentNode;
+        let currentParent;
         for (let i = 0; i < split.length; i++) {
+            if (currentNode !== undefined){
+                currentParent = currentNode;
+            }
+
             // Construct a partial address for each child in the tree
             if (i === 0) {
                 partialAddress = split[0];
@@ -122,6 +127,12 @@ export default class DocsPanel extends React.Component {
             }
         }
 
+        // Adding parent node
+        if (currentParent !== undefined) {
+            currentNode.parent = { 'name': currentParent.name, 'description': currentParent.description, 'example': currentParent.example };
+        }
+
+        // Adding original address searched (not the regex)
         if (optionalBool) {
             currentNode.originalAddress = address;
         }
@@ -155,6 +166,25 @@ export default class DocsPanel extends React.Component {
         else {
             list = null;
         }
+
+        return list;
+    }
+
+    renderParent (node) {
+        const parent = node.parent;
+
+        const list = (
+            <Row className='child-row'>
+                <Row>
+                    <Col md={2} className='capitalize'>name:</Col>
+                    <Col md={10} onClick={this.onClickChild.bind(this, parent.example)} className='docs-link'><code>{parent.name}</code></Col>
+                </Row>
+                <Row>
+                    <Col md={2} className='capitalize'>description:</Col>
+                    <Col md={10}><code>{parent.description}</code></Col>
+                </Row>
+            </Row>
+        );
 
         return list;
     }
@@ -199,6 +229,14 @@ export default class DocsPanel extends React.Component {
                                                     <Row key={i} className='toolbar-content-row'>
                                                         <Col md={2} className='capitalize'>{value}:</Col>
                                                         <Col md={10}>{this.renderChildren(result)}</Col>
+                                                    </Row>
+                                                );
+                                            }
+                                            else if (value === 'parent') {
+                                                return (
+                                                    <Row key={i} className='toolbar-content-row'>
+                                                        <Col md={2} className='capitalize'>{value}:</Col>
+                                                        <Col md={10}>{this.renderParent(result)}</Col>
                                                     </Row>
                                                 );
                                             }
