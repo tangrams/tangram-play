@@ -63,7 +63,7 @@ export default class DocsPanel extends React.Component {
 
             if (nodes.length === 1) {
                 address = nodes[0].address;
-                this.setState({ display: this.findMatch(address) });
+                this.setState({ display: this.findMatch(address, true) });
             }
             else {
                 console.log('line has more than one node');
@@ -94,7 +94,7 @@ export default class DocsPanel extends React.Component {
         this.setState({ height: delta });
     }
 
-    findMatch (address) {
+    findMatch (address, optionalBool) {
         let currentTree = TANGRAM.keys; // Initializes to the tree at level 0
         console.log(address);
         let split = address.split(':');
@@ -113,6 +113,7 @@ export default class DocsPanel extends React.Component {
             // Find a match of that address within our docs JSON
             for (let node of currentTree) {
                 let found = partialAddress.match(node.address);
+
                 if (found !== null) {
                     currentNode = node;
                     currentTree = node.children;
@@ -121,25 +122,27 @@ export default class DocsPanel extends React.Component {
             }
         }
 
-        currentNode.originalAddress = address;
+        if (optionalBool) {
+            currentNode.originalAddress = address;
+        }
 
         return JSON.stringify(currentNode);
     }
 
     onClickChild (address) {
-        this.setState({ display: this.findMatch(address) });
+        this.setState({ display: this.findMatch(address, false) });
     }
 
     renderChildren (node) {
         let list;
 
-        if (node['children'] !== undefined) {
-            list = node['children'].map((value, i) => {
+        if (node.children !== undefined) {
+            list = node.children.map((value, i) => {
                 return (
                     <Row key={i} className='child-row'>
                         <Row>
                             <Col md={2} className='capitalize'>name:</Col>
-                            <Col md={10} onClick={this.onClickChild.bind(this, value.address)} className='docs-link'><code>{value.name}</code></Col>
+                            <Col md={10} onClick={this.onClickChild.bind(this, value.example)} className='docs-link'><code>{value.name}</code></Col>
                         </Row>
                         <Row>
                             <Col md={2} className='capitalize'>description:</Col>
