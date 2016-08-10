@@ -103,7 +103,7 @@ export default class DocsPanel extends React.Component {
         let currentNode;
         let currentParent;
         for (let i = 0; i < split.length; i++) {
-            if (currentNode !== undefined){
+            if (currentNode !== undefined) {
                 currentParent = currentNode;
             }
 
@@ -129,7 +129,7 @@ export default class DocsPanel extends React.Component {
 
         // Adding parent node
         if (currentParent !== undefined) {
-            currentNode.parent = { 'name': currentParent.name, 'description': currentParent.description, 'example': currentParent.example };
+            currentNode.parent = { name: currentParent.name, description: currentParent.description, example: currentParent.example };
         }
 
         // Adding original address searched (not the regex)
