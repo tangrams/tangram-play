@@ -4,11 +4,12 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
-import SignInModal from '../modals/SignInModal';
+// import SignInModal from '../modals/SignInModal';
 import ErrorModal from '../modals/ErrorModal';
 
 import { EventEmitter } from './event-emitter';
 import { getUserLogin } from '../user/login';
+import { openLoginWindow } from '../user/login-window';
 import EditorIO from '../editor/io';
 
 export default class SignInButton extends React.Component {
@@ -34,7 +35,9 @@ export default class SignInButton extends React.Component {
     }
 
     onClickSignIn (event) {
-        ReactDOM.render(<SignInModal />, document.getElementById('modal-container'));
+        // What if we open the login window directly from here?
+        openLoginWindow();
+        // ReactDOM.render(<SignInModal />, document.getElementById('modal-container'));
     }
 
     /**

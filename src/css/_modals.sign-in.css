@@ -3,7 +3,7 @@
     flex-direction: column;
     width: 600px;
     height: 80%;
-    max-height: 900px;
+    max-height: 800px;
     min-height: 400px;
     /* Disabled because we are experimenting with locking the width in place.
     max-width: 1100px; /* Comfortable width to make mapzen.com look okay
