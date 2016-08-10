@@ -28,6 +28,47 @@
     padding-right: 0;
 }
 
+/* Docs divider */
+
+.docs-divider {
+    height: 8px;
+    cursor: row-resize;
+    background-color: var(--ui-base-color);
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.docs-divider:hover {
+    background-color: var(--ui-active-color);
+}
+
+.docs-divider-affordance,
+.docs-divider-affordance::after,
+.docs-divider-affordance::before {
+    display: flex;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--ui-component-text-color);
+    margin: auto;
+}
+
+.docs-divider-affordance::after,
+.docs-divider-affordance::before {
+    content: '';
+    position: absolute;
+}
+
+.docs-divider-affordance::after {
+    transform: translateX(10px);
+}
+
+.docs-divider-affordance::before {
+    transform: translateX(-10px);
+}
+
 /* Style for map panel */
 .docs-panel .panel {
     border: none;
@@ -46,10 +87,11 @@
     transition: 0.1s; */
 
     .panel-body {
-        padding-top: 6px;
+        padding: 0;
+        /*padding-top: 6px;
         padding-bottom: 6px;
         padding-left: 8px;
-        padding-right: 8px;
+        padding-right: 8px;*/
     }
 
     .docs-panel-toolbar {

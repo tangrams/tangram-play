@@ -145,10 +145,11 @@ export default class DocsPanel extends React.Component {
                 </OverlayTrigger>
 
                 {/* Docs panel */}
-                <Draggable axis='y' onDrag={this.onDrag}>
+                <Draggable axis='y' onDrag={this.onDrag} handle='.docs-divider'>
                     <Panel className='docs-panel-collapsible' style={divStyle}>
-                        <div className='docs-panel-toolbar' >
+                        <div className='docs-divider'><span className='docs-divider-affordance'></span></div>
 
+                        <div className='docs-panel-toolbar' >
                             {/* Text within the docs panel */}
                             <div className='docs-panel-toolbar-content'>
                                 {(() => {
