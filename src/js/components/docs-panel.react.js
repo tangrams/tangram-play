@@ -152,12 +152,12 @@ export default class DocsPanel extends React.Component {
                 return (
                     <Row key={i} className='child-row'>
                         <Row>
-                            <Col md={2} className='capitalize'>name:</Col>
-                            <Col md={10} onClick={this.onClickChild.bind(this, value.example)} className='docs-link'><code>{value.name}</code></Col>
+                            <Col sm={2} className='capitalize'>name:</Col>
+                            <Col sm={10} onClick={this.onClickChild.bind(this, value.example)} className='docs-link'><code>{value.name}</code></Col>
                         </Row>
                         <Row>
-                            <Col md={2} className='capitalize'>description:</Col>
-                            <Col md={10}><code>{value.description}</code></Col>
+                            <Col sm={2} className='capitalize'>description:</Col>
+                            <Col sm={10}><code>{value.description}</code></Col>
                         </Row>
                     </Row>
                 );
@@ -176,12 +176,12 @@ export default class DocsPanel extends React.Component {
         const list = (
             <Row className='child-row'>
                 <Row>
-                    <Col md={2} className='capitalize'>name:</Col>
-                    <Col md={10} onClick={this.onClickChild.bind(this, parent.example)} className='docs-link'><code>{parent.name}</code></Col>
+                    <Col sm={2} className='capitalize'>name:</Col>
+                    <Col sm={10} onClick={this.onClickChild.bind(this, parent.example)} className='docs-link'><code>{parent.name}</code></Col>
                 </Row>
                 <Row>
-                    <Col md={2} className='capitalize'>description:</Col>
-                    <Col md={10}><code>{parent.description}</code></Col>
+                    <Col sm={2} className='capitalize'>description:</Col>
+                    <Col sm={10}><code>{parent.description}</code></Col>
                 </Row>
             </Row>
         );
@@ -227,24 +227,24 @@ export default class DocsPanel extends React.Component {
                                             if (value === 'children') {
                                                 return (
                                                     <Row key={i} className='toolbar-content-row'>
-                                                        <Col md={2} className='capitalize'>{value}:</Col>
-                                                        <Col md={10}>{this.renderChildren(result)}</Col>
+                                                        <Col sm={2} className='capitalize'>{value}:</Col>
+                                                        <Col sm={10}>{this.renderChildren(result)}</Col>
                                                     </Row>
                                                 );
                                             }
                                             else if (value === 'parent') {
                                                 return (
                                                     <Row key={i} className='toolbar-content-row'>
-                                                        <Col md={2} className='capitalize'>{value}:</Col>
-                                                        <Col md={10}>{this.renderParent(result)}</Col>
+                                                        <Col sm={2} className='capitalize'>{value}:</Col>
+                                                        <Col sm={10}>{this.renderParent(result)}</Col>
                                                     </Row>
                                                 );
                                             }
                                             else {
                                                 return (
                                                     <Row key={i} className='toolbar-content-row'>
-                                                        <Col md={2} className='capitalize'>{value}:</Col>
-                                                        <Col md={10}><code>{result[value]}</code></Col>
+                                                        <Col sm={2} className='capitalize'>{value}:</Col>
+                                                        <Col sm={10}><code>{result[value]}</code></Col>
                                                     </Row>
                                                 );
                                             }
