@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
+import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
@@ -82,18 +84,26 @@ export default class SignInButton extends React.Component {
         });
     }
 
+    // Note on wording:
+    //   >  You "sign in" or "sign off" when accessing an account.
+    //   >  You "log on" or "log out" of a operating system session.
+    // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
     render () {
         if (this.state.isLoggedIn) {
             return (
                 <OverlayTrigger
                     rootClose
                     placement='bottom'
-                    overlay={<Tooltip id='tooltip'>{'Sign out'}</Tooltip>}
+                    overlay={<Tooltip id='tooltip'>{'This is you!'}</Tooltip>}
                 >
-                    <NavItem onClick={this.onClickSignOut} href='#' className='menu-sign-in'>
-                        <img src={this.state.avatar} className='sign-in-avatar' alt={this.state.nickname} />
-                        {this.state.nickname} <Icon type={'bt-sign-out'} />
-                    </NavItem>
+                    <NavDropdown
+                        title={<span><img src={this.state.avatar} className='sign-in-avatar' alt={this.state.nickname} /> {this.state.nickname}</span>}
+                        className='menu-sign-in'
+                    >
+                        <MenuItem onClick={this.onClickSignOut}>
+                            <Icon type={'bt-sign-out'} /> Sign out
+                        </MenuItem>
+                    </NavDropdown>
                 </OverlayTrigger>
             );
         }
