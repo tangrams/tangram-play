@@ -10,7 +10,8 @@ import { EventEmitter } from '../components/event-emitter';
  */
 
 let loginWindow;
-let pollWindowStateIntervalID;
+let pollWindowStateIntervalId;
+let redirectingTimerId;
 
 /**
  * Primary entry point for opening a login window.
@@ -30,7 +31,7 @@ export function openLoginWindow () {
         // We can't add load or close event listeners to the new window (they
         // don't trigger) so instead we poll the window at a set interval
         // and perform actions based on what we can detect inside of it.
-        pollWindowStateIntervalID = window.setInterval(pollWindowState, 300);
+        pollWindowStateIntervalId = window.setInterval(pollWindowState, 100);
     }
 
     // This new window should grab the user's attention immediately
@@ -41,13 +42,21 @@ export function openLoginWindow () {
 
 function pollWindowState () {
     if (!loginWindow || loginWindow.closed) {
-        window.clearInterval(pollWindowStateIntervalID);
+        window.clearInterval(pollWindowStateIntervalId);
         loginStateReady();
     }
     else {
         try {
+            // If it's exactly /developers, we're probably logged in now
             if (loginWindow.location.pathname === '/developers') {
-                loginStateReady();
+                adjustDonePageContent();
+                if (!redirectingTimerId) {
+                    redirectingTimerId = window.setTimeout(loginStateReady, 2000);
+                }
+            }
+            // Experimental: hack the view for developer pages.
+            if (loginWindow.location.pathname.indexOf('/developers/') === 0) {
+                adjustLoginPageContent();
             }
         }
         catch (e) {
@@ -84,7 +93,8 @@ function closeLoginWindow () {
  */
 function cleanup () {
     window.removeEventListener('unload', closeLoginWindow);
-    window.clearInterval(pollWindowStateIntervalID);
+    window.clearInterval(pollWindowStateIntervalId);
+    window.clearTimeout(redirectingTimerId);
 }
 
 /**
@@ -94,14 +104,14 @@ function cleanup () {
  */
 function adjustLoginPageContent () {
     const childDocument = loginWindow.document;
-    if (childDocument.querySelector('#dev_login')) {
+
+    // Only do this once
+    if (childDocument.querySelector('#dev_login') && !childDocument.getElementById('tangram-play-login-override-styles')) {
         const newStyleEl = document.createElement('style');
         const newStyleText = `
             body {
                 margin-top: 0;
                 overflow: hidden;
-                opacity: 0;
-                transition: opacity 250ms;
             }
             h3 {
                 line-height: 1.4em;
@@ -156,27 +166,84 @@ function adjustLoginPageContent () {
                 display: none;
             }
         `;
+        newStyleEl.id = 'tangram-play-login-override-styles';
         newStyleEl.textContent = newStyleText;
 
-        // Fade in script
-        const fadeInScriptEl = document.createElement('script');
-        fadeInScriptEl.type = 'text/javascript';
-        fadeInScriptEl.textContent = `
-            (function() {
-                document.body.style.opacity = 1;
-            })();
-        `;
-
         childDocument.head.appendChild(newStyleEl);
-        childDocument.head.appendChild(fadeInScriptEl);
         childDocument.querySelector('#dev_login h1').textContent = 'Sign in to Mapzen';
         childDocument.querySelector('#dev_login h3').textContent = 'You can save Tangram scenes to your Mapzen account and do other stuff good too';
     }
 }
 
+function adjustDonePageContent () {
+    const childDocument = loginWindow.document;
+
+    // Only do this once
+    if (!childDocument.getElementById('tangram-play-login-override-styles')) {
+        const newStyleEl = document.createElement('style');
+        const newStyleText = `
+            body {
+                margin-top: 0;
+                overflow: hidden;
+            }
+            body.hide-fixed-main-nav nav.navbar-fixed-top {
+                top: 0;
+            }
+            nav.navbar.navbar-default.navbar-fixed-top {
+                position: absolute;
+            }
+            .navbar-collapse.navbar-collapse.navbar-collapse {
+                display: none !important;
+            }
+            a.navbar-brand {
+                left: 50%;
+                position: absolute;
+                margin-left: -80px !important;
+                pointer-events: none;
+                user-select: none;
+                touch-action: none;
+            }
+            button.navbar-toggle {
+                display: none;
+            }
+            #tangram-play-override-redirecting {
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                height: 100%;
+                background-color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        `;
+        newStyleEl.id = 'tangram-play-login-override-styles';
+        newStyleEl.textContent = newStyleText;
+
+        childDocument.head.appendChild(newStyleEl);
+
+        const redirectEl = document.createElement('div');
+        redirectEl.id = 'tangram-play-override-redirecting';
+
+        const loadingSpinnerEl = document.createElement('div');
+        loadingSpinnerEl.className = 'loading-spinner-02';
+
+        const textEl = document.createTextNode('p');
+        textEl.textContent = 'Signed in! Redirecting...';
+
+        redirectEl.appendChild(loadingSpinnerEl);
+        redirectEl.appendChild(textEl);
+        childDocument.body.appendChild(redirectEl);
+    }
+}
+
 /**
  * Opens a new window for the login page and places it in the middle of the
- * app window.
+ * app window. This was taken from a StackOverflow answer that we've repurposed
+ * several times through mapzen.com but still has a problem with some browsers
+ * and some multi-monitor setups.
  */
 function popupCenter (url, title, w, h) {
     // Fixes dual-screen position                            Most browsers       Firefox
