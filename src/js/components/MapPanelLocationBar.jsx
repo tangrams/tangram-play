@@ -91,6 +91,17 @@ export default class MapPanelLocationBar extends React.Component {
 
         // Need a notification when divider moves to change the latlng label precision
         EventEmitter.subscribe('divider:drag', this.setLabelPrecision);
+
+        // Need to add an event listener to detect keydown on ENTER. Why? Because the react Autosuggest
+        // currently closes the panel upon 'Enter'
+        // Where that happens is here: https://github.com/moroshko/react-autosuggest/blob/master/src/Autosuggest.js
+        this.refs.autosuggestBar.input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                this.search(this.state.value);
+            }
+        });
     }
 
     /**
@@ -218,16 +229,9 @@ export default class MapPanelLocationBar extends React.Component {
      * @param value - value to search for
      */
     onSuggestionsUpdateRequested ({ value, reason }) {
-        // If user presses ENTER on the input search bar
-        if (reason === 'enter-input') {
-            this.search(value);
-        }
-        // For all other interactions, like moving up and down the suggestion list
-        else {
-            // Only call autocomplete if user has typed more than 1 character
-            if (value.length >= 2) {
-                this.autocomplete(value);
-            }
+        // Only call autocomplete if user has typed more than 1 character
+        if (value.length >= 2) {
+            this.autocomplete(value);
         }
     }
 
@@ -367,7 +371,7 @@ export default class MapPanelLocationBar extends React.Component {
         };
 
         return (
-            <ButtonGroup className='map-search'>
+            <ButtonGroup className='map-search' >
                 {/* Search button */}
                 <OverlayTrigger
                     rootClose
@@ -380,14 +384,14 @@ export default class MapPanelLocationBar extends React.Component {
                 </OverlayTrigger>
 
                 {/* Autosuggest bar */}
-                <Autosuggest
+                <Autosuggest ref='autosuggestBar'
                     suggestions={suggestions}
                     onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                     getSuggestionValue={this.getSuggestionValue}
                     renderSuggestion={this.renderSuggestion}
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
-                    focusFirstSuggestion={true}
+                    focusFirstSuggestion={false}
                 />
 
                 {/* Lat lng label */}
