@@ -95,8 +95,13 @@ export default class MapPanelLocationBar extends React.Component {
         // Need to add an event listener to detect keydown on ENTER. Why? Because the react Autosuggest
         // currently closes the panel upon 'Enter'
         // Where that happens is here: https://github.com/moroshko/react-autosuggest/blob/master/src/Autosuggest.js
-        this.refs.autosuggestBar.input.addEventListener('keydown', (e) => {
+        let autosuggestBar = document.getElementsByClassName('react-autosuggest__container')[0];
+        let c = autosuggestBar.firstChild;
+        console.log(c);
+        //this.refs.autosuggestBar.input.
+        c.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
+                console.log(this.refs.autosuggestBar);
                 e.preventDefault();
                 e.stopPropagation();
                 this.search(this.state.value);
@@ -392,6 +397,7 @@ export default class MapPanelLocationBar extends React.Component {
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
                     focusFirstSuggestion={false}
+                    alwaysRenderSuggestions={false}
                 />
 
                 {/* Lat lng label */}
