@@ -96,15 +96,20 @@ export default class MapPanelLocationBar extends React.Component {
         // currently closes the panel upon 'Enter'
         // Where that happens is here: https://github.com/moroshko/react-autosuggest/blob/master/src/Autosuggest.js
         let autosuggestBar = document.getElementsByClassName('react-autosuggest__container')[0];
-        let c = autosuggestBar.firstChild;
-        console.log(c);
-        //this.refs.autosuggestBar.input.
-        c.addEventListener('keydown', (e) => {
+        let inputDIV = autosuggestBar.firstChild;
+        inputDIV.addEventListener('keydown', (e) => {
+            // If the key user pressed is Enter
             if (e.key === 'Enter') {
-                console.log(this.refs.autosuggestBar);
-                e.preventDefault();
-                e.stopPropagation();
-                this.search(this.state.value);
+                // Find out whether the input div has an 'aria-activedescentant' property
+                // This property tells us whether the user is actually selecting a result from the list of suggestions
+                let bol = inputDIV.hasAttribute('aria-activedescendant');
+
+                // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
+                if (!bol) {
+                    this.search(this.state.value); // Perform a search request
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
             }
         });
     }
@@ -397,7 +402,6 @@ export default class MapPanelLocationBar extends React.Component {
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
                     focusFirstSuggestion={false}
-                    alwaysRenderSuggestions={false}
                 />
 
                 {/* Lat lng label */}
