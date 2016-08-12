@@ -25,7 +25,6 @@ export function openLoginWindow () {
         window.addEventListener('unload', closeLoginWindow);
 
         // Experimental.
-        loginWindow.document.body.style.opacity = 0;
         loginWindow.addEventListener('load', adjustLoginPageContent);
 
         // We can't add load or close event listeners to the new window (they
