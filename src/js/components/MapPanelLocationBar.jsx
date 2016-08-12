@@ -106,7 +106,7 @@ export default class MapPanelLocationBar extends React.Component {
 
                 // Also find out whether the panel is open or not
                 let ariaExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
-                ariaExpanded = (ariaExpanded === "true"); // Now its a boolean
+                ariaExpanded = (ariaExpanded === 'true'); // Now its a boolean
 
                 // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
                 // Aria has to be expanded as well
@@ -117,39 +117,20 @@ export default class MapPanelLocationBar extends React.Component {
                 }
                 // If aria es closed and user presses enter, then aria should open
                 else if (!ariaExpanded) {
-                    console.log("Panel should open");
+                    console.log('Panel should open');
 
                     e.preventDefault();
                     e.stopPropagation();
 
-                    //react-autosuggest__container
+                    inputDIV.onclick = function () { console.log('I WAS CLICKED'); };
 
-                    inputDIV.onclick=function(){ console.log("I WAS CLICKED"); };
-
-
-                    // inputDIV.focus();
-                    // inputDIV.select();
-
-                    let el = document.getElementsByClassName('navbar-header')[0];
-                    console.log(el);
-                    el.click();
+                    inputDIV.select();
+                    inputDIV.focus();
                     inputDIV.click();
+
+                    console.log(this.refs.autosuggestBar);
                     this.search(this.state.value);
-
-                    // let parent = inputDIV.parentElement;
-                    // parent.className += " react-autosuggest__container--open";
-                    // console.log(inputDIV.parentElement);
-                    // console.log(this.state.suggestions);
-                    // this.refs.autosuggestBar.input.setAttribute('aria-expanded', "true");
-
-
-                    // this.refs.autosuggestBar.input.setAttribute('aria-expanded', "true");
-                    // e.preventDefault();
-                    // e.stopPropagation();
-                    // this.refs.autosuggestBar.input.setAttribute('aria-expanded', "true");
-                    // this.refs.autosuggestBar.forceUpdate();
                 }
-
             }
         });
     }
@@ -279,7 +260,6 @@ export default class MapPanelLocationBar extends React.Component {
      * @param value - value to search for
      */
     onSuggestionsUpdateRequested ({ value, reason }) {
-        console.log("on suggestion update requests", reason);
         // Only call autocomplete if user has typed more than 1 character
         if (value.length >= 2) {
             this.autocomplete(value);
@@ -353,7 +333,7 @@ export default class MapPanelLocationBar extends React.Component {
      * @param suggestion - particular item from autocomplete result list to style
      */
     renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
-        console.log("rendering suggestions");
+        console.log('rendering suggestions');
         let value;
         let label = suggestion.properties.label;
 
@@ -409,7 +389,6 @@ export default class MapPanelLocationBar extends React.Component {
     }
 
     render () {
-        console.log("re rendering");
         const { suggestions } = this.state;
         const inputProps = {
             placeholder: this.state.placeholder,
