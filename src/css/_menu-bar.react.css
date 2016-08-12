@@ -104,6 +104,14 @@ nav {
     padding-left: 14px;
 }
 
+.dropdown-menu {
+    /* Ensure fixed-width alignment of Black Tie icons */
+    i {
+        width: 17px;
+        margin-right: 6px;
+    }
+}
+
 .menu-bar li.open.dropdown {
     z-index: var(--z10-dropdown-button);
 }
