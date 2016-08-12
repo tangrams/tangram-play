@@ -229,13 +229,28 @@ function adjustDonePageContent () {
 
         const loadingSpinnerEl = document.createElement('div');
         loadingSpinnerEl.className = 'loading-spinner-02';
+        loadingSpinnerEl.style.marginBottom = '10px';
 
-        const textEl = document.createTextNode('p');
+        const textEl = document.createElement('p');
         textEl.textContent = 'Signed in! Redirecting...';
+
+        // It is safe to close this window, but if the window doesn't close
+        // automatically for whatever reason, this link will appear
+        const closeEl = document.createElement('p');
+        closeEl.innerHTML = '<a href="javascript:window.close();" onClick="function(e){e.preventDefault();window.close();}">Click here to close this window.</a>';
+        closeEl.style.opacity = '0';
+        closeEl.style.userSelect = 'none';
 
         redirectEl.appendChild(loadingSpinnerEl);
         redirectEl.appendChild(textEl);
+        redirectEl.appendChild(closeEl);
         childDocument.body.appendChild(redirectEl);
+
+        // If window doesn't close automatically for some reason, activate this link
+        window.setTimeout(function () {
+            closeEl.style.opacity = '1';
+            closeEl.style.userSelect = 'auto';
+        }, 2000);
     }
 }
 
