@@ -95,21 +95,61 @@ export default class MapPanelLocationBar extends React.Component {
         // Need to add an event listener to detect keydown on ENTER. Why? Because the react Autosuggest
         // currently closes the panel upon 'Enter'
         // Where that happens is here: https://github.com/moroshko/react-autosuggest/blob/master/src/Autosuggest.js
-        let autosuggestBar = document.getElementsByClassName('react-autosuggest__container')[0];
-        let inputDIV = autosuggestBar.firstChild;
+        let inputDIV = this.refs.autosuggestBar.input;
+
         inputDIV.addEventListener('keydown', (e) => {
             // If the key user pressed is Enter
             if (e.key === 'Enter') {
                 // Find out whether the input div has an 'aria-activedescentant' property
                 // This property tells us whether the user is actually selecting a result from the list of suggestions
-                let bol = inputDIV.hasAttribute('aria-activedescendant');
+                let activeSuggestion = inputDIV.hasAttribute('aria-activedescendant'); // A boolean
+
+                // Also find out whether the panel is open or not
+                let ariaExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
+                ariaExpanded = (ariaExpanded === "true"); // Now its a boolean
 
                 // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
-                if (!bol) {
+                // Aria has to be expanded as well
+                if (!activeSuggestion && ariaExpanded) {
                     this.search(this.state.value); // Perform a search request
                     e.preventDefault();
                     e.stopPropagation();
                 }
+                // If aria es closed and user presses enter, then aria should open
+                else if (!ariaExpanded) {
+                    console.log("Panel should open");
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    //react-autosuggest__container
+
+                    inputDIV.onclick=function(){ console.log("I WAS CLICKED"); };
+
+
+                    // inputDIV.focus();
+                    // inputDIV.select();
+
+                    let el = document.getElementsByClassName('navbar-header')[0];
+                    console.log(el);
+                    el.click();
+                    inputDIV.click();
+                    this.search(this.state.value);
+
+                    // let parent = inputDIV.parentElement;
+                    // parent.className += " react-autosuggest__container--open";
+                    // console.log(inputDIV.parentElement);
+                    // console.log(this.state.suggestions);
+                    // this.refs.autosuggestBar.input.setAttribute('aria-expanded', "true");
+
+
+                    // this.refs.autosuggestBar.input.setAttribute('aria-expanded', "true");
+                    // e.preventDefault();
+                    // e.stopPropagation();
+                    // this.refs.autosuggestBar.input.setAttribute('aria-expanded', "true");
+                    // this.refs.autosuggestBar.forceUpdate();
+                }
+
             }
         });
     }
@@ -239,6 +279,7 @@ export default class MapPanelLocationBar extends React.Component {
      * @param value - value to search for
      */
     onSuggestionsUpdateRequested ({ value, reason }) {
+        console.log("on suggestion update requests", reason);
         // Only call autocomplete if user has typed more than 1 character
         if (value.length >= 2) {
             this.autocomplete(value);
@@ -312,6 +353,7 @@ export default class MapPanelLocationBar extends React.Component {
      * @param suggestion - particular item from autocomplete result list to style
      */
     renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
+        console.log("rendering suggestions");
         let value;
         let label = suggestion.properties.label;
 
@@ -367,6 +409,7 @@ export default class MapPanelLocationBar extends React.Component {
     }
 
     render () {
+        console.log("re rendering");
         const { suggestions } = this.state;
         const inputProps = {
             placeholder: this.state.placeholder,
