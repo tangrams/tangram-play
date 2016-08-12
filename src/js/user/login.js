@@ -13,12 +13,7 @@ If logged in, the response looks like this:
 */
 
 export function getUserLogin () {
-    // Only login if over HTTPS
-    if (!window.location.hostname.endsWith('mapzen.com')) {
-        // Returns a promise that resolves to an empty object if this does not run
-        return Promise.resolve({});
-    }
-    else {
+    if (window.location.hostname.endsWith('mapzen.com')) {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
                 return response.json();
@@ -26,5 +21,10 @@ export function getUserLogin () {
             .catch((error) => {
                 console.log(error);
             });
+    }
+    else {
+        // Returns a promise that resolves to an object with a property
+        // indicating that we did not bother fetching developer.json
+        return Promise.resolve({ hosted: false });
     }
 }

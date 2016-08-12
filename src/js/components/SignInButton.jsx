@@ -6,7 +6,6 @@ import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
-// import SignInModal from '../modals/SignInModal';
 import ErrorModal from '../modals/ErrorModal';
 
 import { EventEmitter } from './event-emitter';
@@ -37,9 +36,7 @@ export default class SignInButton extends React.Component {
     }
 
     onClickSignIn (event) {
-        // What if we open the login window directly from here?
         openLoginWindow();
-        // ReactDOM.render(<SignInModal />, document.getElementById('modal-container'));
     }
 
     /**
@@ -78,6 +75,13 @@ export default class SignInButton extends React.Component {
                 newState.isLoggedIn = true;
                 newState.nickname = data.nickname || null;
                 newState.avatar = data.avatar || null;
+            }
+
+            // If this is a self-hosted (or localhost) instance of Tangram Play
+            // (e.g. not on mapzen.com) then there is no login functionality
+            // and we effectively disable it
+            if (data.hosted === false) {
+                newState.serverContacted = false;
             }
 
             this.setState(newState);
