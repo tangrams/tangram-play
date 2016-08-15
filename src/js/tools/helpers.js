@@ -78,20 +78,6 @@ export function serializeToQueryString (obj = {}) {
 }
 
 /**
- * Empties a DOM element of all child nodes.
- * Effectively identical to jQuery's $(el).empty()
- * This is purportedly faster than clearning an element's
- * innerHTML property, e.g. el.innerHTML = '';
- *
- * @param {Node} el - the element to empty
- */
-export function emptyDOMElement (el) {
-    while (el.firstChild) {
-        el.removeChild(el.firstChild);
-    }
-}
-
-/**
  * Prepends a relative-protocol string to the beginning of a url.
  *
  * @param {string} url
