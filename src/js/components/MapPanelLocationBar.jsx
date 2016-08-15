@@ -47,6 +47,9 @@ export default class MapPanelLocationBar extends React.Component {
         // Set the value of the search bar to whatever the map is currently pointing to
         this.reverseGeocode(mapCenter);
 
+        this.relocatingMap = false;
+        this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
+
         this.onChangeAutosuggest = this.onChangeAutosuggest.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
@@ -60,23 +63,28 @@ export default class MapPanelLocationBar extends React.Component {
         // Need to subscribe to map zooming events so that our React component
         // plays nice with the non-React map
         EventEmitter.subscribe('leaflet:moveend', (data) => {
-            const currentLatLng = map.getCenter();
-            const delta = getMapChangeDelta(this.state.latlng, currentLatLng);
+            if (!this.relocatingMap) {
+                const currentLatLng = map.getCenter();
+                const delta = getMapChangeDelta(this.state.latlng, currentLatLng);
 
-            // Only update location if the map center has moved more than a given delta
-            // This is actually really necessary because EVERY update in the editor reloads
-            // the map, which fires moveend events despite not actually moving the map
-            // But we also have the bonus of not needing to make a reverse geocode request
-            // for small changes of the map center.
-            if (delta > MAP_UPDATE_DELTA) {
-                this.reverseGeocode(currentLatLng);
-                this.setState({
-                    bookmarkActive: false,
-                    latlng: {
-                        lat: currentLatLng.lat,
-                        lng: currentLatLng.lng
-                    }
-                });
+                // Only update location if the map center has moved more than a given delta
+                // This is actually really necessary because EVERY update in the editor reloads
+                // the map, which fires moveend events despite not actually moving the map
+                // But we also have the bonus of not needing to make a reverse geocode request
+                // for small changes of the map center.
+                if (delta > MAP_UPDATE_DELTA) {
+                    this.reverseGeocode(currentLatLng);
+                    this.setState({
+                        bookmarkActive: false,
+                        latlng: {
+                            lat: currentLatLng.lat,
+                            lng: currentLatLng.lng
+                        }
+                    });
+                }
+            }
+            else {
+                this.relocatingMap = false;
             }
         });
 
@@ -105,31 +113,31 @@ export default class MapPanelLocationBar extends React.Component {
                 let activeSuggestion = inputDIV.hasAttribute('aria-activedescendant'); // A boolean
 
                 // Also find out whether the panel is open or not
-                let ariaExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
-                ariaExpanded = (ariaExpanded === 'true'); // Now its a boolean
+                let dropdownExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
+                dropdownExpanded = (dropdownExpanded === 'true'); // Now its a boolean
 
                 // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
                 // Aria has to be expanded as well
-                if (!activeSuggestion && ariaExpanded) {
+                if (this.shouldCloseDropdownNextEnter && dropdownExpanded) {
+                    inputDIV.blur();
+                    inputDIV.select();
+                    this.shouldCloseDropdownNextEnter = false;
+                }
+                else if (!activeSuggestion && dropdownExpanded) {
                     this.search(this.state.value); // Perform a search request
+                    this.shouldCloseDropdownNextEnter = true;
                     e.preventDefault();
                     e.stopPropagation();
                 }
                 // If aria es closed and user presses enter, then aria should open
-                else if (!ariaExpanded) {
-                    console.log('Panel should open');
-
+                else if (!dropdownExpanded) {
+                    this.search(this.state.value);
                     e.preventDefault();
                     e.stopPropagation();
 
-                    inputDIV.onclick = function () { console.log('I WAS CLICKED'); };
-
-                    inputDIV.select();
+                    this.shouldCloseDropdownNextEnter = true;
+                    inputDIV.blur();
                     inputDIV.focus();
-                    inputDIV.click();
-
-                    console.log(this.refs.autosuggestBar);
-                    this.search(this.state.value);
                 }
             }
         });
@@ -318,6 +326,10 @@ export default class MapPanelLocationBar extends React.Component {
     onSuggestionSelected (event, { suggestion }) {
         const lat = suggestion.geometry.coordinates[1];
         const lng = suggestion.geometry.coordinates[0];
+
+        // Set a boolean that we will use to know if we should update our value once the map moves.
+        // If the map moves because of a suggestion being selected, we do NOT need to update our value in the 'leaflet:moveend' event listener
+        this.relocatingMap = true;
         map.setView({ lat: lat, lng: lng });
         this.setState({
             bookmarkActive: false,
@@ -333,7 +345,6 @@ export default class MapPanelLocationBar extends React.Component {
      * @param suggestion - particular item from autocomplete result list to style
      */
     renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
-        console.log('rendering suggestions');
         let value;
         let label = suggestion.properties.label;
 
