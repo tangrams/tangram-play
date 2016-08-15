@@ -134,3 +134,30 @@ nav {
     position: relative;
     background-color: var(--ui-base-color);
 }
+
+/* Sign in buttons */
+.menu-sign-in {
+    background-color: #7a0000;
+    color: #f1f1f1;
+
+    /* hover style override */
+    a:hover {
+        background-color: #8d0000;
+        color: white;
+    }
+
+    /* icon style override */
+    .btm {
+        padding-right: 0;
+        padding-left: 0.5em;
+    }
+}
+
+.sign-in-avatar {
+    display: inline-block;
+    margin-right: 0.5em;
+    margin-top: -3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}

@@ -19,6 +19,7 @@ import OpenUrlModal from '../modals/OpenUrlModal';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
+import SignInButton from './SignInButton';
 
 const _clickNew = function () {
     EditorIO.new();
@@ -140,6 +141,9 @@ export default class MenuBar extends React.Component {
                                 <MenuItem href={feedbackLink} target='_blank'><Icon type={'bt-comments'} />Feedback</MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
+
+                        {/* Sign in */}
+                        <SignInButton />
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
