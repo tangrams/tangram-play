@@ -1,6 +1,7 @@
 import { editor } from './editor';
 import { jumpToLine } from './codemirror/tools';
-import { isEmptyString, getQueryStringObject, serializeToQueryString } from '../tools/helpers';
+import { isEmptyString } from '../tools/helpers';
+import { getQueryStringObject, serializeToQueryString } from '../tools/url-state';
 
 const HIGHLIGHT_CLASS = 'editor-highlight';
 

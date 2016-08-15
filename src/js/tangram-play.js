@@ -27,7 +27,8 @@ import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
-import { getQueryStringObject, serializeToQueryString, prependProtocolToUrl } from './tools/helpers';
+import { prependProtocolToUrl } from './tools/helpers';
+import { getQueryStringObject, serializeToQueryString } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';

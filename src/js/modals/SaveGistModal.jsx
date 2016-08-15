@@ -10,7 +10,7 @@ import ErrorModal from './ErrorModal';
 import SaveGistSuccessModal from './SaveGistSuggestModal';
 import { saveToGist } from '../storage/gist';
 import { editor } from '../editor/editor';
-import { getQueryStringObject, serializeToQueryString } from '../tools/helpers';
+import { getQueryStringObject, serializeToQueryString } from '../tools/url-state';
 
 // Default values in UI
 const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
