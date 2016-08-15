@@ -289,17 +289,20 @@ class TangramPlay {
     updateContent () {
         const content = getEditorContent();
         const url = createObjectURL(content);
+        const isClean = editor.getDoc().isClean();
 
         // Send scene data to Tangram
         loadScene(url);
 
-        // Update the page URL. For editor changes in particular,
-        // the ?scene=parameter should be erased. This prevents
-        // reloading (or copy-pasting the URL) from directing to
+        // Update the page URL. For editor changes in particular (the editor
+        // state is not clean), the ?scene=parameter should be erased. This
+        // prevents reloading (or copy-pasting the URL) from directing to
         // the wrong scene.
         const queryObj = getQueryStringObject();
         if (queryObj.scene) {
-            delete queryObj.scene;
+            if (!isClean) {
+                delete queryObj.scene;
+            }
             const url = window.location.pathname;
             const queryString = serializeToQueryString(queryObj);
             window.history.replaceState({}, null, url + queryString + window.location.hash);
