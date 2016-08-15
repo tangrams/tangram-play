@@ -57,6 +57,10 @@ export default class Color {
 
     // Creates a tinycolor color object
     _processTinyColor (color) {
+        if (typeof color === 'string') {
+            color = color.replace(/ /g, '');
+        }
+
         let newColor = tinycolor(color);
 
         if (!newColor.isValid()) {
