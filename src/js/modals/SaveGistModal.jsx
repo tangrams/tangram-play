@@ -10,7 +10,7 @@ import ErrorModal from './ErrorModal';
 import SaveGistSuccessModal from './SaveGistSuggestModal';
 import { saveToGist } from '../storage/gist';
 import { editor } from '../editor/editor';
-import { getQueryStringObject, serializeToQueryString } from '../tools/url-state';
+import { replaceHistoryState } from '../tools/url-state';
 
 // Default values in UI
 const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
@@ -154,13 +154,7 @@ export default class SaveGistModal extends React.Component {
 
         // Update the page URL. The scene parameter should
         // reflect the new scene URL.
-        // TODO: Combine with similar functionality in
-        // tangram-play.js updateContent()
-        const queryObj = getQueryStringObject();
-        queryObj.scene = gist.url;
-        const url = window.location.pathname;
-        const queryString = serializeToQueryString(queryObj);
-        window.history.replaceState({}, null, url + queryString + window.location.hash);
+        replaceHistoryState({ scene: gist.url });
 
         // Show success modal
         // TODO

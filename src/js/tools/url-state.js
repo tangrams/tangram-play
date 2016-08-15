@@ -7,6 +7,52 @@
  */
 
 /**
+ * Replaces existing history state using `window.history.replaceState()`.
+ * We assume the same path (Tangram Play has no server-side handled routes)
+ * and hash (this is managed by leaflet-hash), and only the query strings
+ * are modified.
+ *
+ * @param {Object} props - new properties to add, change or remove from the
+ *          query string. This object is merged into a source object representing
+ *          the current query strings and then re-serialized into a url string.
+ *          To delete an existing query string, pass in a property whose value
+ *          is `null`.
+ */
+export function replaceHistoryState (props = {}) {
+    const locationPrefix = window.location.pathname;
+    const currentProps = getQueryStringObject();
+    const newProps = Object.assign({}, currentProps, props);
+    const queryString = serializeToQueryString(newProps);
+
+    // The new url must be a path relative to the host name because security
+    // policies prevent doing a replaceState when the url contains `localhost`,
+    // even when the current page is `localhost`. The relative path lets the
+    // the browser handle it so we don't trip any security alarms.
+    // We also keep the original hash in place -- it is handled by leaflet-hash.
+    window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
+}
+
+/**
+ * Like `replaceHistoryState()`, this pushes a new history state, using
+ * `window.history.pushState()`. The only exception is that the props passed
+ * into this function are not merged with the current query strings (we assume
+ * you want a fresh state) and we also pass it to the first parameter
+ * for `pushState()`.
+ *
+ * @param {Object} props - See `props` param for `replaceHistoryState()`.
+ *          This object is also passed to `pushState()`.
+ */
+export function pushHistoryState (props = {}) {
+    const locationPrefix = window.location.pathname;
+    const queryString = serializeToQueryString(props);
+
+    // Browser security policies prevent doing a pushstate where the URL
+    // includes 'http://localhost'. So we have to let the browser do the
+    // routing relative to the server
+    window.history.pushState(props, null, locationPrefix + queryString + window.location.hash);
+}
+
+/**
  * Gets a deserialized object from the current window's URL.
  * It breaks down the query string, e.g. '?scene=foo.yaml'
  * into this: { scene: "foo.yaml" }
@@ -48,7 +94,7 @@ export function getQueryStringObject (queryString = window.location.search) {
  * @param {Object} obj - set of key-value pairs
  * @returns {string} valid facsimile for window.location.search
  */
-export function serializeToQueryString (obj = {}) {
+function serializeToQueryString (obj = {}) {
     const str = [];
     for (let p in obj) {
         // Nulls or undefined are skipped. Do not test for "falsy" values

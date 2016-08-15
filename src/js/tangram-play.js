@@ -28,7 +28,7 @@ import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { prependProtocolToUrl } from './tools/helpers';
-import { getQueryStringObject, serializeToQueryString } from './tools/url-state';
+import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';
@@ -62,8 +62,8 @@ class TangramPlay {
 
         // TODO: Manage history / routing in its own module
         window.onpopstate = (e) => {
-            if (e.state && e.state.sceneUrl) {
-                this.load({ url: e.state.sceneUrl });
+            if (e.state && e.state.scene) {
+                this.load({ url: e.state.scene });
             }
         };
 
@@ -233,18 +233,9 @@ class TangramPlay {
         initialLoad = false;
 
         // Update history
-        // Can't do a pushstate where the URL includes 'http://localhost' due to security
-        // problems. So we have to let the browser do the routing relative to the server
-        const locationPrefix = window.location.pathname;
-        const queryObj = {};
-        if (scene.url) {
-            queryObj.scene = scene.url;
-        }
-        const queryString = serializeToQueryString(queryObj);
-
-        window.history.pushState({
-            sceneUrl: (scene.url) ? scene.url : null
-        }, null, locationPrefix + queryString + window.location.hash);
+        pushHistoryState({
+            scene: (scene.url) ? scene.url : null
+        });
 
         // Trigger Events
         // Event object is empty right now.
@@ -294,18 +285,14 @@ class TangramPlay {
         // Send scene data to Tangram
         loadScene(url);
 
-        // Update the page URL. For editor changes in particular (the editor
-        // state is not clean), the ?scene=parameter should be erased. This
-        // prevents reloading (or copy-pasting the URL) from directing to
-        // the wrong scene.
-        const queryObj = getQueryStringObject();
-        if (queryObj.scene) {
-            if (!isClean) {
-                delete queryObj.scene;
-            }
-            const url = window.location.pathname;
-            const queryString = serializeToQueryString(queryObj);
-            window.history.replaceState({}, null, url + queryString + window.location.hash);
+        // Update the page URL. When editor contents changes by user input
+        // and the the editor state is not clean), we erase the ?scene= state
+        // from the URL string. This prevents a situation where reloading (or
+        // copy-pasting the URL) loads the scene file from an earlier state.
+        if (!isClean) {
+            replaceHistoryState({
+                scene: null
+            });
         }
     }
 

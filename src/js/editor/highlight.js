@@ -1,7 +1,7 @@
 import { editor } from './editor';
 import { jumpToLine } from './codemirror/tools';
 import { isEmptyString } from '../tools/helpers';
-import { getQueryStringObject, serializeToQueryString } from '../tools/url-state';
+import { replaceHistoryState } from '../tools/url-state';
 
 const HIGHLIGHT_CLASS = 'editor-highlight';
 
@@ -322,14 +322,13 @@ function getAllHighlightedLines () {
  *
  */
 export function updateLinesQueryString () {
-    const locationPrefix = window.location.pathname;
-    const queryObj = getQueryStringObject();
     const allHighlightedLines = getAllHighlightedLines();
-
-    queryObj.lines = allHighlightedLines !== '' ? allHighlightedLines : null;
-
-    const queryString = serializeToQueryString(queryObj);
-    window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
+    if (allHighlightedLines !== '') {
+        replaceHistoryState({ lines: allHighlightedLines });
+    }
+    else {
+        replaceHistoryState({ lines: null });
+    }
 }
 
 /**
