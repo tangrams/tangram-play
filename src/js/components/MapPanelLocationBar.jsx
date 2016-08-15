@@ -47,6 +47,9 @@ export default class MapPanelLocationBar extends React.Component {
         // Set the value of the search bar to whatever the map is currently pointing to
         this.reverseGeocode(mapCenter);
 
+        this.relocatingMap = false;
+        this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
+
         this.onChangeAutosuggest = this.onChangeAutosuggest.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
@@ -60,23 +63,28 @@ export default class MapPanelLocationBar extends React.Component {
         // Need to subscribe to map zooming events so that our React component
         // plays nice with the non-React map
         EventEmitter.subscribe('leaflet:moveend', (data) => {
-            const currentLatLng = map.getCenter();
-            const delta = getMapChangeDelta(this.state.latlng, currentLatLng);
+            if (!this.relocatingMap) {
+                const currentLatLng = map.getCenter();
+                const delta = getMapChangeDelta(this.state.latlng, currentLatLng);
 
-            // Only update location if the map center has moved more than a given delta
-            // This is actually really necessary because EVERY update in the editor reloads
-            // the map, which fires moveend events despite not actually moving the map
-            // But we also have the bonus of not needing to make a reverse geocode request
-            // for small changes of the map center.
-            if (delta > MAP_UPDATE_DELTA) {
-                this.reverseGeocode(currentLatLng);
-                this.setState({
-                    bookmarkActive: false,
-                    latlng: {
-                        lat: currentLatLng.lat,
-                        lng: currentLatLng.lng
-                    }
-                });
+                // Only update location if the map center has moved more than a given delta
+                // This is actually really necessary because EVERY update in the editor reloads
+                // the map, which fires moveend events despite not actually moving the map
+                // But we also have the bonus of not needing to make a reverse geocode request
+                // for small changes of the map center.
+                if (delta > MAP_UPDATE_DELTA) {
+                    this.reverseGeocode(currentLatLng);
+                    this.setState({
+                        bookmarkActive: false,
+                        latlng: {
+                            lat: currentLatLng.lat,
+                            lng: currentLatLng.lng
+                        }
+                    });
+                }
+            }
+            else {
+                this.relocatingMap = false;
             }
         });
 
@@ -91,6 +99,49 @@ export default class MapPanelLocationBar extends React.Component {
 
         // Need a notification when divider moves to change the latlng label precision
         EventEmitter.subscribe('divider:drag', this.setLabelPrecision);
+
+        // Need to add an event listener to detect keydown on ENTER. Why? Because the react Autosuggest
+        // currently closes the panel upon 'Enter'
+        // Where that happens is here: https://github.com/moroshko/react-autosuggest/blob/master/src/Autosuggest.js
+        let inputDIV = this.refs.autosuggestBar.input;
+
+        inputDIV.addEventListener('keydown', (e) => {
+            // If the key user pressed is Enter
+            if (e.key === 'Enter') {
+                // Find out whether the input div has an 'aria-activedescentant' property
+                // This property tells us whether the user is actually selecting a result from the list of suggestions
+                let activeSuggestion = inputDIV.hasAttribute('aria-activedescendant'); // A boolean
+
+                // Also find out whether the panel is open or not
+                let dropdownExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
+                dropdownExpanded = (dropdownExpanded === 'true'); // Now its a boolean
+
+                // If the user is pressing Enter after a list of search results are displayed, the dropdown should close
+                if (!activeSuggestion && dropdownExpanded && this.shouldCloseDropdownNextEnter) {
+                    inputDIV.blur();
+                    inputDIV.select();
+                    this.shouldCloseDropdownNextEnter = false;
+                }
+                // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
+                // Aria has to be expanded as well
+                else if (!activeSuggestion && dropdownExpanded) {
+                    this.search(this.state.value); // Perform a search request
+                    this.shouldCloseDropdownNextEnter = true;
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                // If aria es closed and user presses enter, then aria should open
+                else if (!dropdownExpanded) {
+                    this.search(this.state.value);
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    this.shouldCloseDropdownNextEnter = true;
+                    inputDIV.blur();
+                    inputDIV.focus();
+                }
+            }
+        });
     }
 
     /**
@@ -218,16 +269,9 @@ export default class MapPanelLocationBar extends React.Component {
      * @param value - value to search for
      */
     onSuggestionsUpdateRequested ({ value, reason }) {
-        // If user presses ENTER on the input search bar
-        if (reason === 'enter-input') {
-            this.search(value);
-        }
-        // For all other interactions, like moving up and down the suggestion list
-        else {
-            // Only call autocomplete if user has typed more than 1 character
-            if (value.length >= 2) {
-                this.autocomplete(value);
-            }
+        // Only call autocomplete if user has typed more than 1 character
+        if (value.length >= 2) {
+            this.autocomplete(value);
         }
     }
 
@@ -283,6 +327,10 @@ export default class MapPanelLocationBar extends React.Component {
     onSuggestionSelected (event, { suggestion }) {
         const lat = suggestion.geometry.coordinates[1];
         const lng = suggestion.geometry.coordinates[0];
+
+        // Set a boolean that we will use to know if we should update our value once the map moves.
+        // If the map moves because of a suggestion being selected, we do NOT need to update our value in the 'leaflet:moveend' event listener
+        this.relocatingMap = true;
         map.setView({ lat: lat, lng: lng });
         this.setState({
             bookmarkActive: false,
@@ -367,7 +415,7 @@ export default class MapPanelLocationBar extends React.Component {
         };
 
         return (
-            <ButtonGroup className='map-search'>
+            <ButtonGroup className='map-search' >
                 {/* Search button */}
                 <OverlayTrigger
                     rootClose
@@ -380,14 +428,14 @@ export default class MapPanelLocationBar extends React.Component {
                 </OverlayTrigger>
 
                 {/* Autosuggest bar */}
-                <Autosuggest
+                <Autosuggest ref='autosuggestBar'
                     suggestions={suggestions}
                     onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                     getSuggestionValue={this.getSuggestionValue}
                     renderSuggestion={this.renderSuggestion}
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
-                    focusFirstSuggestion={true}
+                    focusFirstSuggestion={false}
                 />
 
                 {/* Lat lng label */}
