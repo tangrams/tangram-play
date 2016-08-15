@@ -95,16 +95,42 @@ export default class MapPanelLocationBar extends React.Component {
         // Need to add an event listener to detect keydown on ENTER. Why? Because the react Autosuggest
         // currently closes the panel upon 'Enter'
         // Where that happens is here: https://github.com/moroshko/react-autosuggest/blob/master/src/Autosuggest.js
-        let autosuggestBar = document.getElementsByClassName('react-autosuggest__container')[0];
-        let c = autosuggestBar.firstChild;
-        console.log(c);
-        //this.refs.autosuggestBar.input.
-        c.addEventListener('keydown', (e) => {
+        let inputDIV = this.refs.autosuggestBar.input;
+
+        inputDIV.addEventListener('keydown', (e) => {
+            // If the key user pressed is Enter
             if (e.key === 'Enter') {
-                console.log(this.refs.autosuggestBar);
-                e.preventDefault();
-                e.stopPropagation();
-                this.search(this.state.value);
+                // Find out whether the input div has an 'aria-activedescentant' property
+                // This property tells us whether the user is actually selecting a result from the list of suggestions
+                let activeSuggestion = inputDIV.hasAttribute('aria-activedescendant'); // A boolean
+
+                // Also find out whether the panel is open or not
+                let ariaExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
+                ariaExpanded = (ariaExpanded === 'true'); // Now its a boolean
+
+                // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
+                // Aria has to be expanded as well
+                if (!activeSuggestion && ariaExpanded) {
+                    this.search(this.state.value); // Perform a search request
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                // If aria es closed and user presses enter, then aria should open
+                else if (!ariaExpanded) {
+                    console.log('Panel should open');
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    inputDIV.onclick = function () { console.log('I WAS CLICKED'); };
+
+                    inputDIV.select();
+                    inputDIV.focus();
+                    inputDIV.click();
+
+                    console.log(this.refs.autosuggestBar);
+                    this.search(this.state.value);
+                }
             }
         });
     }
@@ -307,6 +333,7 @@ export default class MapPanelLocationBar extends React.Component {
      * @param suggestion - particular item from autocomplete result list to style
      */
     renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
+        console.log('rendering suggestions');
         let value;
         let label = suggestion.properties.label;
 
@@ -397,7 +424,6 @@ export default class MapPanelLocationBar extends React.Component {
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
                     focusFirstSuggestion={false}
-                    alwaysRenderSuggestions={false}
                 />
 
                 {/* Lat lng label */}
