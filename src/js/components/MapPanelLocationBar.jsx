@@ -116,13 +116,14 @@ export default class MapPanelLocationBar extends React.Component {
                 let dropdownExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
                 dropdownExpanded = (dropdownExpanded === 'true'); // Now its a boolean
 
-                // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
-                // Aria has to be expanded as well
-                if (this.shouldCloseDropdownNextEnter && dropdownExpanded) {
+                // If the user is pressing Enter after a list of search results are displayed, the dropdown should close
+                if (!activeSuggestion && dropdownExpanded && this.shouldCloseDropdownNextEnter) {
                     inputDIV.blur();
                     inputDIV.select();
                     this.shouldCloseDropdownNextEnter = false;
                 }
+                // Only if the user is pressing enter on the main search bar (NOT a suggestion) do we prevent the default Enter event from bubbling
+                // Aria has to be expanded as well
                 else if (!activeSuggestion && dropdownExpanded) {
                     this.search(this.state.value); // Perform a search request
                     this.shouldCloseDropdownNextEnter = true;
