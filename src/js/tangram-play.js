@@ -32,14 +32,12 @@ import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './t
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
 import { parseYamlString } from './editor/codemirror/yaml-tangram';
-import { highlightRanges, updateLinesQueryString } from './editor/highlight';
+import { initHighlight, highlightRanges } from './editor/highlight';
 import { EventEmitter } from './components/event-emitter';
 import { initUserLogin } from './user/login';
 
 // Import UI elements
 import { initDivider } from './ui/divider';
-
-const query = getQueryStringObject();
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
@@ -72,11 +70,13 @@ class TangramPlay {
         this.load(initialScene)
             .then(() => {
                 // Highlight lines if requested by the query string.
-                let lines = query.lines;
-                if (lines) {
-                    highlightRanges(lines);
-                    updateLinesQueryString();
+                const query = getQueryStringObject();
+                if (query.lines) {
+                    highlightRanges(query.lines);
                 }
+
+                // Turn on highlighting module
+                initHighlight();
 
                 // Add widgets marks and errors manager.
                 initWidgetMarks();
@@ -229,13 +229,17 @@ class TangramPlay {
 
         hideUnloadedState();
 
+        // Update history
+        // Don't push a new history state if we are loading a scene from the
+        // initial load of Tangram Play.
+        if (initialLoad === false) {
+            pushHistoryState({
+                scene: (scene.url) ? scene.url : null
+            });
+        }
+
         // This should only be true once
         initialLoad = false;
-
-        // Update history
-        pushHistoryState({
-            scene: (scene.url) ? scene.url : null
-        });
 
         // Trigger Events
         // Event object is empty right now.

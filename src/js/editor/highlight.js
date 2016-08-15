@@ -7,8 +7,18 @@ const HIGHLIGHT_CLASS = 'editor-highlight';
 
 let anchorLine;
 let targetLine;
+let hasInitiated = false;
 
-editor.on('gutterClick', function (cm, line, gutter, event) {
+// Add handlers for these events to the editor.
+export function initHighlight () {
+    if (hasInitiated === false) {
+        editor.on('gutterClick', onEditorGutterClick);
+        editor.on('changes', onEditorChanges);
+        hasInitiated = true;
+    }
+}
+
+function onEditorGutterClick (cm, line, gutter, event) {
     // Do work when the click occurs for the left (or main) mouse button only
     if (event.button !== 0) {
         return;
@@ -65,11 +75,11 @@ editor.on('gutterClick', function (cm, line, gutter, event) {
 
     // Update the query string
     updateLinesQueryString();
-});
+}
 
 // Editor operations, such as cut, paste, delete, or inserts, can mutate
 // highlighted lines. This will make sure the query string remains updated.
-editor.on('changes', function (cm, changes) {
+function onEditorChanges (cm, changes) {
     // Small performance tweak: if there's just one change on one line,
     // don't bother updating the query string, which must check the highlight
     // state on all lines
@@ -78,7 +88,7 @@ editor.on('changes', function (cm, changes) {
     }
 
     updateLinesQueryString();
-});
+}
 
 /**
  * Highlights a given line in the document.
