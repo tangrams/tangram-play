@@ -21,8 +21,8 @@ import { editor, getEditorContent, setEditorContent } from './editor/editor';
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
 import { initWidgetMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
+import { initSuggestions } from './editor/suggest';
 import ErrorModal from './modals/ErrorModal';
-import SuggestManager from './editor/suggest';
 import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
 import LocalStorage from './storage/localstorage';
 
@@ -79,6 +79,8 @@ class TangramPlay {
 
                     // Initialize addons after Tangram is done, because
                     // some addons depend on Tangram scene config being present
+                    // TODO: Verify if this is still true?
+                    initSuggestions();
                     this.initAddons();
                 });
             });
@@ -111,7 +113,6 @@ class TangramPlay {
 
     //  ADDONS
     initAddons () {
-        this.addons.suggestManager = new SuggestManager();
         this.addons.glslHelpers = new GlslWidgetsLink();
     }
 }
@@ -345,9 +346,6 @@ export default tangramPlay;
 // This is called here because right now divider position relies on
 // editor and map being set up already
 initDivider();
-
-// for debug
-window.tangramPlay = tangramPlay;
 
 /* ********************************* REACT ********************************* */
 
