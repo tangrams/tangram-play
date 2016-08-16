@@ -53,13 +53,19 @@ export function initGlslWidgetsLink () {
             let widgetlink = document.getElementById('widget-links');
 
             switch (match.type) {
+                case 'vec4':
                 case 'vec3':
                     // Cleaning up the value we send to the WidgetColor
                     let cleanNum = match.string.substr(4);
                     cleanNum = cleanNum.replace(/[()]/g, '');
                     cleanNum = '[' + cleanNum + ']';
 
-                    ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true}/>, widgetlink);
+                    if (match.type === 'vec4') {
+                        ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec4'/>, widgetlink);
+                    }
+                    else {
+                        ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec3'/>, widgetlink);
+                    }
                     break;
                 case 'vec2':
                     ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
@@ -77,11 +83,10 @@ export function initGlslWidgetsLink () {
 function getMatch (cursor) {
     // Types are put in order of priority
     const types = [
-        // Disabling the color widget that used to appear together with vec3
-        // {
-        // name: 'color',
-        // pattern: /vec[3|4]\([\d|.|,\s]*\)/g
-        // },
+        {
+            name: 'vec4',
+            pattern: /vec4\([-|\d|.|,\s]*\)/g
+        },
         {
             name: 'vec3',
             pattern: /vec3\([-|\d|.|,\s]*\)/g

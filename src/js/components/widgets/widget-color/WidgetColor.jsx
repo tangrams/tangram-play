@@ -145,8 +145,11 @@ export default class WidgetColor extends React.Component {
             // const oldColor = this.state.color; // For use within color palette
             this.setState({ color: newColor });
 
-            if (this.props.shader) {
+            if (this.props.shader && this.props.vec === 'vec3') {
                 this.setEditorShaderValue(newColor.getVec3String());
+            }
+            else if (this.props.shader && this.props.vec === 'vec4') {
+                this.setEditorShaderValue(newColor.getVec4String());
             }
             else {
                 this.setEditorValue(newColor.getVecString());
@@ -238,5 +241,6 @@ WidgetColor.propTypes = {
     shader: React.PropTypes.bool,
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
-    match: React.PropTypes.object
+    match: React.PropTypes.object,
+    vec: React.PropTypes.string
 };
