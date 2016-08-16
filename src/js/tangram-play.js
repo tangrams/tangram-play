@@ -1,17 +1,5 @@
-// Polyfills
-import 'babel-polyfill';
-import 'whatwg-fetch';
-
-// Error tracking
-// Load this before all other modules. Only load when run in production.
-// Requires `loose-envify` package in build process to set the correct `NODE_ENV`.
-import Raven from 'raven-js';
-if (process.env.NODE_ENV === 'production') {
-    Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
-        whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/],
-        environment: process.env.NODE_ENV
-    }).install();
-}
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
@@ -35,15 +23,12 @@ import { createObjectURL } from './tools/common';
 import { initHighlight, highlightRanges } from './editor/highlight';
 import { EventEmitter } from './components/event-emitter';
 
-// Import UI elements
-import { initDivider } from './ui/divider';
-
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
-function initTangramPlay () {
+export function initTangramPlay () {
     initMap();
 
     // TODO: Manage history / routing in its own module
@@ -330,31 +315,3 @@ function saveSceneContentsToLocalMemory (sceneData) {
 function getSceneContentsFromLocalMemory () {
     return JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
 }
-
-initTangramPlay();
-
-// This is called here because right now divider position relies on
-// editor and map being set up already
-initDivider();
-
-/* ********************************* REACT ********************************* */
-
-var React = require('react');
-var ReactDOM = require('react-dom');
-
-import MenuBar from './components/MenuBar';
-import MapPanel from './components/MapPanel';
-import OverlaysContainer from './ui/OverlaysContainer';
-// import ColorPalette from './components/ColorPalette';
-
-let mountNode1 = document.getElementById('menu-bar');
-ReactDOM.render(<MenuBar />, mountNode1);
-
-let mountNode2 = document.getElementById('map-panel');
-ReactDOM.render(<MapPanel />, mountNode2);
-
-let mountNode3 = document.getElementById('overlays-container');
-ReactDOM.render(<OverlaysContainer />, mountNode3);
-
-// let mountNode4 = document.getElementsByClassName('colorpalette');
-// ReactDOM.render(<ColorPalette />, mountNode4[0]);

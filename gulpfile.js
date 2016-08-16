@@ -67,7 +67,7 @@ gulp.task('js', function () {
     var envify = require('loose-envify');
 
     var bundle = browserify({
-        entries: 'src/js/tangram-play.js',
+        entries: 'src/js/main.js',
         debug: true,
         extensions: ['.jsx'],
         transform: [
@@ -81,7 +81,7 @@ gulp.task('js', function () {
     // because this doubles build time locally!
     if (process.env.NODE_ENV === 'production') {
         return bundle.bundle()
-            .pipe(source('tangram-play.js'))
+            .pipe(source('main.js'))
             .pipe(buffer())
             .pipe(sourcemaps.init({ loadMaps: true }))
                 // Add transformation tasks to the pipeline here.
@@ -93,7 +93,7 @@ gulp.task('js', function () {
     else {
         return bundle.bundle()
             .on('error', handleErrors)
-            .pipe(source('tangram-play.js'))
+            .pipe(source('main.js'))
             .pipe(gulp.dest('./build/js'));
     }
 });

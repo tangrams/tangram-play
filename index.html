@@ -18,40 +18,14 @@
     </script>
 </head>
 <body>
-    <div class='menu-bar' id='menu-bar'></div>
-
-    <div class='workspace-container'>
-        <div id='draggable-container'>
-            <div id='draggable-container-child'>
-            </div>
-        </div>
-
-        <div class='map-container' id='map-container'>
-            <div class='map-view' id='map'></div>
-            <div class='map-loading' id='map-loading'></div>
-            <div class='map-panel' id='map-panel'></div>
-            <div id='map-inspection-components'></div>
-        </div>
-
-        <div class='divider' id='divider'><span class='divider-affordance'></span></div>
-
-        <div class='editor-container' id='content'>
-            <div class='editor' id='editor'></div>
-        </div>
-
-        <div id='widget-links'></div>
-        <div class='colorpalette'></div>
-    </div>
-
-    <div id='overlays-container' class='overlay-container'></div><!-- React transition zone -->
-
+    <div id='tangram-play-app'></div>
     <div id='mobile-message' class='mobile-message'>
         <div id='dismiss-mobile-message' class='mobile-message-close'>&#215;</div>
         <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
     </div>
 
     <script src='https://mapzen.com/tangram/0.8/tangram.min.js'></script>
-    <script src='build/js/tangram-play.js'></script>
+    <script src='build/js/main.js'></script>
     <script>
         if (isMobile() === true) {
             document.getElementById('mobile-message').style.display = 'block';
