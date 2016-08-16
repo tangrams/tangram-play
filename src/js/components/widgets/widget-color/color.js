@@ -57,6 +57,16 @@ export default class Color {
 
     // Creates a tinycolor color object
     _processTinyColor (color) {
+        // Tangram.js's color parsing library (css-color-parser-js) allows
+        // spaces in color strings, with the following rationale:
+        //     "Remove all whitespace, not compliant, but should just be
+        //      more accepting."
+        // (https://github.com/deanm/css-color-parser-js/blob/master/csscolorparser.js#L132)
+        //
+        // This means someone can author a working scene file with colors
+        // like "light goldenrod yellow", and Tangram Play's color picker
+        // must also support this now. See discussion:
+        // https://github.com/tangrams/tangram-play/issues/519
         if (typeof color === 'string') {
             color = color.replace(/ /g, '');
         }
