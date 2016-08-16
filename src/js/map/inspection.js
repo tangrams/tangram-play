@@ -7,11 +7,21 @@ import { getNodesForAddress } from '../editor/editor';
 import { highlightBlock } from '../editor/highlight';
 import { EventEmitter } from '../components/event-emitter';
 
-const mountNode = document.getElementById('map-inspection-components');
+let mountNode;
 
 let isPopupOpen = false;
 let currentPopupX, currentPopupY;
 let globalIntrospectionState = false;
+
+// We use this to find the mountpoint and cache it so future calls we return
+// it directly. TODO: Something else?
+function getMountNode () {
+    if (!mountNode) {
+        mountNode = document.getElementById('map-inspection-components');
+    }
+
+    return mountNode;
+}
 
 // This is shared between the hover and the popup
 class TangramInspectionHeader extends React.Component {
@@ -308,7 +318,7 @@ export function handleInspectionHoverEvent (selection) {
         return;
     }
 
-    ReactDOM.render(<TangramInspectionHover selection={selection} />, mountNode);
+    ReactDOM.render(<TangramInspectionHover selection={selection} />, getMountNode());
 }
 
 export function handleInspectionClickEvent (selection) {
@@ -331,7 +341,7 @@ export function handleInspectionClickEvent (selection) {
     currentPopupY = selection.pixel.y;
 
     // Hides a hover popup, if any
-    ReactDOM.unmountComponentAtNode(mountNode);
+    ReactDOM.unmountComponentAtNode(getMountNode());
 
     // Mounts the inspection popup into a Leaflet popup element
     showPopup(selection);
@@ -425,5 +435,6 @@ export function setGlobalIntrospection (boolean) {
 
         // Cleanup
         map.closePopup();
+        ReactDOM.unmountComponentAtNode(getMountNode());
     }
 }
