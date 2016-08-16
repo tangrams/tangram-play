@@ -43,72 +43,70 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
-class TangramPlay {
-    constructor () {
-        initMap();
+function initTangramPlay () {
+    initMap();
 
-        // TODO: Manage history / routing in its own module
-        window.onpopstate = (e) => {
-            if (e.state && e.state.scene) {
-                load({ url: e.state.scene });
+    // TODO: Manage history / routing in its own module
+    window.onpopstate = (e) => {
+        if (e.state && e.state.scene) {
+            load({ url: e.state.scene });
+        }
+    };
+
+    // LOAD SCENE FILE
+    const initialScene = determineScene();
+    load(initialScene)
+        .then(() => {
+            // Highlight lines if requested by the query string.
+            const query = getQueryStringObject();
+            if (query.lines) {
+                highlightRanges(query.lines);
             }
-        };
 
-        // LOAD SCENE FILE
-        const initialScene = determineScene();
-        load(initialScene)
-            .then(() => {
-                // Highlight lines if requested by the query string.
-                const query = getQueryStringObject();
-                if (query.lines) {
-                    highlightRanges(query.lines);
-                }
+            // Turn on highlighting module
+            initHighlight();
 
-                // Turn on highlighting module
-                initHighlight();
+            // Add widgets marks and errors manager.
+            initWidgetMarks();
+            initErrorsManager();
 
-                // Add widgets marks and errors manager.
-                initWidgetMarks();
-                initErrorsManager();
+            // Things we do after Tangram is finished initializing
+            tangramLayer.scene.initializing.then(() => {
+                // Need to send a signal to the dropdown widgets of type source to populate
+                EventEmitter.dispatch('tangram:sceneinit', {});
 
-                // Things we do after Tangram is finished initializing
-                tangramLayer.scene.initializing.then(() => {
-                    // Need to send a signal to the dropdown widgets of type source to populate
-                    EventEmitter.dispatch('tangram:sceneinit', {});
-
-                    // Initialize addons after Tangram is done, because
-                    // some addons depend on Tangram scene config being present
-                    // TODO: Verify if this is still true?
-                    initSuggestions();
-                    initGlslWidgetsLink();
-                });
+                // Initialize addons after Tangram is done, because
+                // some addons depend on Tangram scene config being present
+                // TODO: Verify if this is still true?
+                initSuggestions();
+                initGlslWidgetsLink();
             });
-
-        // If the user bails for whatever reason, hastily shove the contents of
-        // the editor into some kind of storage. This overwrites whatever was
-        // there before. Note that there is not really a way of handling unload
-        // with our own UI and logic, since this allows for widespread abuse
-        // of normal browser functionality.
-        window.addEventListener('beforeunload', (event) => {
-            // TODO:
-            // Don't take original url or original base path from
-            // Tangram (it may be wrong). Instead, remember this
-            // in a "session" variable
-            /* eslint-disable camelcase */
-            const doc = editor.getDoc();
-            const sceneData = {
-                original_url: tangramLayer.scene.config_source,
-                original_base_path: tangramLayer.scene.config_path,
-                contents: getEditorContent(),
-                is_clean: doc.isClean(),
-                scrollInfo: editor.getScrollInfo(),
-                cursor: doc.getCursor()
-            };
-            /* eslint-enable camelcase */
-
-            saveSceneContentsToLocalMemory(sceneData);
         });
-    }
+
+    // If the user bails for whatever reason, hastily shove the contents of
+    // the editor into some kind of storage. This overwrites whatever was
+    // there before. Note that there is not really a way of handling unload
+    // with our own UI and logic, since this allows for widespread abuse
+    // of normal browser functionality.
+    window.addEventListener('beforeunload', (event) => {
+        // TODO:
+        // Don't take original url or original base path from
+        // Tangram (it may be wrong). Instead, remember this
+        // in a "session" variable
+        /* eslint-disable camelcase */
+        const doc = editor.getDoc();
+        const sceneData = {
+            original_url: tangramLayer.scene.config_source,
+            original_base_path: tangramLayer.scene.config_path,
+            contents: getEditorContent(),
+            is_clean: doc.isClean(),
+            scrollInfo: editor.getScrollInfo(),
+            cursor: doc.getCursor()
+        };
+        /* eslint-enable camelcase */
+
+        saveSceneContentsToLocalMemory(sceneData);
+    });
 }
 
 // Update widgets & content after a batch of changes
@@ -333,9 +331,7 @@ function getSceneContentsFromLocalMemory () {
     return JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
 }
 
-let tangramPlay = new TangramPlay();
-
-export default tangramPlay;
+initTangramPlay();
 
 // This is called here because right now divider position relies on
 // editor and map being set up already
