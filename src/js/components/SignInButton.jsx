@@ -9,7 +9,7 @@ import Icon from './Icon';
 import ErrorModal from '../modals/ErrorModal';
 
 import { EventEmitter } from './event-emitter';
-import { getUserLogin } from '../user/login';
+import { fetchUserLogin } from '../user/login';
 import { openLoginWindow } from '../user/login-window';
 import EditorIO from '../editor/io';
 
@@ -65,7 +65,7 @@ export default class SignInButton extends React.Component {
     }
 
     checkLoggedInState () {
-        getUserLogin().then((data) => {
+        fetchUserLogin().then((data) => {
             const newState = {
                 serverContacted: true
             };
