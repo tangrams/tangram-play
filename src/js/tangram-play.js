@@ -27,10 +27,11 @@ import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
+import debounce from 'lodash/debounce';
 import { prependProtocolToUrl } from './tools/helpers';
 import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
-import { debounce, createObjectURL } from './tools/common';
+import { createObjectURL } from './tools/common';
 import { initHighlight, highlightRanges } from './editor/highlight';
 import { EventEmitter } from './components/event-emitter';
 
@@ -47,22 +48,16 @@ class TangramPlay {
         initMap();
         this.addons = {};
 
-        // Wrap this.updateContent() in a debounce function
-        this.updateContent = debounce(this.updateContent, 500);
-
-        // Bind callback function to correct context
-        this._watchEditorForChanges = this._watchEditorForChanges.bind(this);
-
         // TODO: Manage history / routing in its own module
         window.onpopstate = (e) => {
             if (e.state && e.state.scene) {
-                this.load({ url: e.state.scene });
+                load({ url: e.state.scene });
             }
         };
 
         // LOAD SCENE FILE
         const initialScene = determineScene();
-        this.load(initialScene)
+        load(initialScene)
             .then(() => {
                 // Highlight lines if requested by the query string.
                 const query = getQueryStringObject();
@@ -119,180 +114,179 @@ class TangramPlay {
         this.addons.suggestManager = new SuggestManager();
         this.addons.glslHelpers = new GlslWidgetsLink();
     }
+}
 
-    /**
-     * This function is the canonical way to load a scene in Tangram Play.
-     * We want to avoid loading scene files directly into either Tangram
-     * or in CodeMirror and then having to update other parts of Tangram Play.
-     * Instead, we load new scenes here so that all the different parts
-     * of the application can be updated predictably. The load function takes
-     * either a URL path (for remote / external scenes), or the contents
-     * of a Tangram YAML file itself.
-     *
-     * @param {Object} scene - an object containing one of two properties:
-     *      scene.url - a URL path to load a scene from
-     *      scene.contents - Tangram YAML as a text blob
-     *      Do not pass in both! Currently `url` takes priority, but
-     *      this is not guaranteed behaviour.
-     * @returns {Promise} A promise which is resolved when a scene's
-     *      contents has been fetched.
-     */
-    load (scene) {
-        EventEmitter.dispatch('tangram:clear-palette', {});
+// Update widgets & content after a batch of changes
+// Wrap updateContent() in a debounce function
+const _watchEditorForChanges = debounce(updateContent, 500);
 
-        // Turn on loading indicator. This is turned off later
-        // when Tangram reports that it's done.
-        showSceneLoadingIndicator();
+/**
+ * This function is the canonical way to load a scene in Tangram Play.
+ * We want to avoid loading scene files directly into either Tangram
+ * or in CodeMirror and then having to update other parts of Tangram Play.
+ * Instead, we load new scenes here so that all the different parts
+ * of the application can be updated predictably. The load function takes
+ * either a URL path (for remote / external scenes), or the contents
+ * of a Tangram YAML file itself.
+ *
+ * @param {Object} scene - an object containing one of two properties:
+ *      scene.url - a URL path to load a scene from
+ *      scene.contents - Tangram YAML as a text blob
+ *      Do not pass in both! Currently `url` takes priority, but
+ *      this is not guaranteed behaviour.
+ * @returns {Promise} A promise which is resolved when a scene's
+ *      contents has been fetched.
+ */
+export function load (scene) {
+    EventEmitter.dispatch('tangram:clear-palette', {});
 
-        // Turn off watching for changes in editor.
-        editor.off('changes', this._watchEditorForChanges);
+    // Turn on loading indicator. This is turned off later
+    // when Tangram reports that it's done.
+    showSceneLoadingIndicator();
 
-        // Either we are passed a url path, or scene file contents
-        if (scene.url) {
-            let fetchPromise;
+    // Turn off watching for changes in editor.
+    editor.off('changes', _watchEditorForChanges);
 
-            // Provide protocol if it appears to be protocol-less URL
-            scene.url = prependProtocolToUrl(scene.url);
+    // Either we are passed a url path, or scene file contents
+    if (scene.url) {
+        let fetchPromise;
 
-            // If it appears to be a Gist URL:
-            if (isGistURL(scene.url) === true) {
-                fetchPromise = getSceneURLFromGistAPI(scene.url)
-                    .then(url => {
-                        // Update the scene URL property with the correct URL
-                        // to the raw YAML to ensure safe loading
-                        scene.url = url;
-                        return window.fetch(url);
-                    });
-            }
-            // Fetch the contents of a YAML file directly. This step
-            // allows us to verify contents (TODO) or error status.
-            else {
-                fetchPromise = window.fetch(scene.url);
-            }
+        // Provide protocol if it appears to be protocol-less URL
+        scene.url = prependProtocolToUrl(scene.url);
 
-            return fetchPromise.then(response => {
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('The scene you requested could not be found.');
-                    }
-                    else {
-                        throw new Error('Something went wrong loading the scene!');
-                    }
+        // If it appears to be a Gist URL:
+        if (isGistURL(scene.url) === true) {
+            fetchPromise = getSceneURLFromGistAPI(scene.url)
+                .then(url => {
+                    // Update the scene URL property with the correct URL
+                    // to the raw YAML to ensure safe loading
+                    scene.url = url;
+                    return window.fetch(url);
+                });
+        }
+        // Fetch the contents of a YAML file directly. This step
+        // allows us to verify contents (TODO) or error status.
+        else {
+            fetchPromise = window.fetch(scene.url);
+        }
+
+        return fetchPromise.then(response => {
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('The scene you requested could not be found.');
                 }
+                else {
+                    throw new Error('Something went wrong loading the scene!');
+                }
+            }
 
-                return response.text();
-            })
-            .then(contents => {
-                this._doLoadProcess({ url: scene.url, contents });
-            })
-            .catch(error => {
-                this._onLoadError(error);
-            });
-        }
-        else if (scene.contents) {
-            // If scene contents are provided, no asynchronous work is
-            // performed here, but wrap this response in a Promise anyway
-            // so that the return object is always a thenable.
-            return new Promise((resolve, reject) => {
-                this._doLoadProcess(scene);
-                resolve();
-            });
-        }
-    }
-
-    _onLoadError (error) {
-        ReactDOM.render(<ErrorModal error={error.message} />, document.getElementById('modal-container'));
-        hideSceneLoadingIndicator();
-
-        // TODO: editor should not be attached to this
-        if (initialLoad === true) {
-            showUnloadedState(editor);
-            editor.doc.markClean();
-        }
-    }
-
-    _doLoadProcess (scene) {
-        let url = scene.url || createObjectURL(scene.contents);
-
-        // Send url to map and contents to editor
-        // TODO: get contents from Tangram instead of another xhr request.
-        loadScene(url, {
-            reset: true,
-            basePath: scene['original_base_path']
+            return response.text();
+        })
+        .then(contents => {
+            _doLoadProcess({ url: scene.url, contents });
+        })
+        .catch(error => {
+            _onLoadError(error);
         });
-        this._setSceneContentsInEditor(scene);
+    }
+    else if (scene.contents) {
+        // If scene contents are provided, no asynchronous work is
+        // performed here, but wrap this response in a Promise anyway
+        // so that the return object is always a thenable.
+        return new Promise((resolve, reject) => {
+            _doLoadProcess(scene);
+            resolve();
+        });
+    }
+}
 
-        hideUnloadedState();
+function _onLoadError (error) {
+    ReactDOM.render(<ErrorModal error={error.message} />, document.getElementById('modal-container'));
+    hideSceneLoadingIndicator();
 
-        // Update history
-        // Don't push a new history state if we are loading a scene from the
-        // initial load of Tangram Play.
-        if (initialLoad === false) {
-            pushHistoryState({
-                scene: (scene.url) ? scene.url : null
-            });
-        }
+    // TODO: editor should not be attached to this
+    if (initialLoad === true) {
+        showUnloadedState(editor);
+        editor.doc.markClean();
+    }
+}
 
-        // This should only be true once
-        initialLoad = false;
+function _doLoadProcess (scene) {
+    let url = scene.url || createObjectURL(scene.contents);
 
-        // Trigger Events
-        // Event object is empty right now.
-        EventEmitter.dispatch('tangram:sceneload', {});
+    // Send url to map and contents to editor
+    // TODO: get contents from Tangram instead of another xhr request.
+    loadScene(url, {
+        reset: true,
+        basePath: scene['original_base_path']
+    });
+    _setSceneContentsInEditor(scene);
+
+    hideUnloadedState();
+
+    // Update history
+    // Don't push a new history state if we are loading a scene from the
+    // initial load of Tangram Play.
+    if (initialLoad === false) {
+        pushHistoryState({
+            scene: (scene.url) ? scene.url : null
+        });
     }
 
-    // Update widgets & content after a batch of changes
-    _watchEditorForChanges (cm, changes) {
-        this.updateContent();
+    // This should only be true once
+    initialLoad = false;
+
+    // Trigger Events
+    // Event object is empty right now.
+    EventEmitter.dispatch('tangram:sceneload', {});
+}
+
+function _setSceneContentsInEditor (sceneData) {
+    // Mark as "clean" if the contents are freshly loaded
+    // (there is no is_clean property defined) or if contents
+    // have been restored with the is_clean property set to "true"
+    // This is converted from JSON so the value is a string, not
+    // a Boolean. Otherwise, the document has not been previously
+    // saved and it is left in the "dirty" state.
+    const shouldMarkClean = (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true');
+
+    setEditorContent(sceneData.contents, shouldMarkClean);
+
+    // Restore cursor position, if provided.
+    if (sceneData.cursor) {
+        editor.doc.setCursor(sceneData.cursor, {
+            scroll: false
+        });
     }
 
-    _setSceneContentsInEditor (sceneData) {
-        // Mark as "clean" if the contents are freshly loaded
-        // (there is no is_clean property defined) or if contents
-        // have been restored with the is_clean property set to "true"
-        // This is converted from JSON so the value is a string, not
-        // a Boolean. Otherwise, the document has not been previously
-        // saved and it is left in the "dirty" state.
-        const shouldMarkClean = (typeof sceneData['is_clean'] === 'undefined' || sceneData['is_clean'] === 'true');
-
-        setEditorContent(sceneData.contents, shouldMarkClean);
-
-        // Restore cursor position, if provided.
-        if (sceneData.cursor) {
-            editor.doc.setCursor(sceneData.cursor, {
-                scroll: false
-            });
-        }
-
-        // Restores the part of the document that was scrolled to, if provided.
-        if (sceneData.scrollInfo) {
-            let left = sceneData.scrollInfo.left || 0;
-            let top = sceneData.scrollInfo.top || 0;
-            editor.scrollTo(left, top);
-        }
-
-        // Turn change watching back on.
-        editor.on('changes', this._watchEditorForChanges);
+    // Restores the part of the document that was scrolled to, if provided.
+    if (sceneData.scrollInfo) {
+        let left = sceneData.scrollInfo.left || 0;
+        let top = sceneData.scrollInfo.top || 0;
+        editor.scrollTo(left, top);
     }
 
-    // If editor is updated, send it to the map.
-    updateContent () {
-        const content = getEditorContent();
-        const url = createObjectURL(content);
-        const isClean = editor.getDoc().isClean();
+    // Turn change watching back on.
+    editor.on('changes', _watchEditorForChanges);
+}
 
-        // Send scene data to Tangram
-        loadScene(url);
+// If editor is updated, send it to the map.
+function updateContent () {
+    const content = getEditorContent();
+    const url = createObjectURL(content);
+    const isClean = editor.getDoc().isClean();
 
-        // Update the page URL. When editor contents changes by user input
-        // and the the editor state is not clean), we erase the ?scene= state
-        // from the URL string. This prevents a situation where reloading (or
-        // copy-pasting the URL) loads the scene file from an earlier state.
-        if (!isClean) {
-            replaceHistoryState({
-                scene: null
-            });
-        }
+    // Send scene data to Tangram
+    loadScene(url);
+
+    // Update the page URL. When editor contents changes by user input
+    // and the the editor state is not clean), we erase the ?scene= state
+    // from the URL string. This prevents a situation where reloading (or
+    // copy-pasting the URL) loads the scene file from an earlier state.
+    if (!isClean) {
+        replaceHistoryState({
+            scene: null
+        });
     }
 }
 

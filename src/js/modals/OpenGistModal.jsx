@@ -5,7 +5,7 @@ import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
 
-import TangramPlay from '../tangram-play';
+import { load } from '../tangram-play';
 import ErrorModal from './ErrorModal';
 import LocalStorage from '../storage/localstorage';
 import { getSceneURLFromGistAPI } from '../tools/gist-url';
@@ -48,11 +48,11 @@ export default class OpenGistModal extends React.Component {
     onClickConfirm () {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
-            TangramPlay.load({ url: this.state.selected });
+            load({ url: this.state.selected });
 
             getSceneURLFromGistAPI(this.state.selected)
                 .then((url) => {
-                    TangramPlay.load({ url });
+                    load({ url });
                 })
                 .catch((error) => {
                     this.handleError(error, this.state.selected);

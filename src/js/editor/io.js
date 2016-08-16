@@ -2,7 +2,7 @@ import noop from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
-import TangramPlay from '../tangram-play';
+import { load } from '../tangram-play';
 import { editor, getEditorContent } from './editor';
 import { saveAs } from '../vendor/FileSaver.min.js';
 
@@ -16,7 +16,7 @@ const EditorIO = {
     },
     new () {
         this.checkSaveStateThen(() => {
-            TangramPlay.load({ url: NEW_SCENE_PATH });
+            load({ url: NEW_SCENE_PATH });
         });
     },
     export () {
@@ -57,7 +57,7 @@ const EditorIO = {
             // listen for `loadend` instead. The Promise resolves with the value
             // of the file contents but also loads into the editor.
             reader.addEventListener('loadend', (event) => {
-                TangramPlay.load({ contents: event.target.result });
+                load({ contents: event.target.result });
                 resolve(event.target.result);
             });
 
