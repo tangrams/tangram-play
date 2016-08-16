@@ -110,6 +110,14 @@ export default class Color {
         return vecColorString;
     }
 
+    // For use within widget-links and shader blocks
+    // Returns vec string "[0.x, 0.x , 0.x]" No alpha.
+    getVec4String () {
+        const vecColor = this._rgb2vec();
+        const vecColorString = 'vec4(' + vecColor.v.toFixed(3) + ',' + vecColor.e.toFixed(3) + ',' + vecColor.c.toFixed(3) + ', ' + (this.color.getAlpha()).toFixed(2) + ')';
+        return vecColorString;
+    }
+
     // Returns hex string without '#'
     getHexString () {
         return this.color.toHexString().replace('#', '');
