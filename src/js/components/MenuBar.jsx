@@ -84,7 +84,7 @@ export default class MenuBar extends React.Component {
      */
     render () {
         return (
-            <Navbar inverse>
+            <Navbar inverse className='menu-bar'>
                 {/* The brand section */}
                 <Navbar.Header>
                     <Navbar.Brand>

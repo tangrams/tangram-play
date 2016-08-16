@@ -16,9 +16,6 @@ export default class App extends React.Component {
         // editor and map being set up already
         initDivider();
 
-        let mountNode1 = document.getElementById('menu-bar');
-        ReactDOM.render(<MenuBar />, mountNode1);
-
         let mountNode2 = document.getElementById('map-panel');
         ReactDOM.render(<MapPanel />, mountNode2);
 
@@ -32,7 +29,7 @@ export default class App extends React.Component {
     render () {
         return (
             <div>
-                <div className='menu-bar' id='menu-bar' />
+                <MenuBar />
 
                 <div className='workspace-container'>
                     <div id='draggable-container'>
