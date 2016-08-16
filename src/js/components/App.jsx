@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MenuBar from './MenuBar';
 import MapPanel from './MapPanel';
-import OverlaysContainer from '../ui/OverlaysContainer';
+import Shield from '../ui/Shield';
+import FileDrop from '../file/FileDrop';
 // import ColorPalette from './ColorPalette';
 
 import { initTangramPlay } from '../tangram-play';
@@ -18,12 +19,6 @@ export default class App extends React.Component {
 
         let mountNode2 = document.getElementById('map-panel');
         ReactDOM.render(<MapPanel />, mountNode2);
-
-        let mountNode3 = document.getElementById('overlays-container');
-        ReactDOM.render(<OverlaysContainer />, mountNode3);
-
-        // let mountNode4 = document.getElementsByClassName('colorpalette');
-        // ReactDOM.render(<ColorPalette />, mountNode4[0]);
     }
 
     render () {
@@ -53,10 +48,14 @@ export default class App extends React.Component {
                     </div>
 
                     <div id='widget-links' />
-                    <div className='colorpalette' />
+                    {/* <ColorPalette /> */}
                 </div>
 
-                <div id='overlays-container' className='overlay-container' />
+                <div className='overlay-container'>
+                    <Shield />
+                    <FileDrop />
+                    <div id='modal-container' className='modal-container' />
+                </div>
             </div>
         );
     }
