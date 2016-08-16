@@ -1,5 +1,4 @@
-import { editor } from './editor';
-import TangramPlay from '../tangram-play';
+import { editor, getNodesForAddress } from './editor';
 import { tangramLayer } from '../map/map';
 import { EventEmitter } from '../components/event-emitter';
 
@@ -64,7 +63,7 @@ function addWarning (args) {
             }
 
             const address = `styles:${style}:shaders:blocks:${block.name}`;
-            const node = TangramPlay.getNodesForAddress(address);
+            const node = getNodesForAddress(address);
 
             if (node) {
                 let nLine = node.range.from.line + 1 + block.line;

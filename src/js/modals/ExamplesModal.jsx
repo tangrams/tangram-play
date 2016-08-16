@@ -4,7 +4,7 @@ import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
 
-import TangramPlay from '../tangram-play';
+import { load } from '../tangram-play';
 import EXAMPLES_DATA from './examples.json';
 
 export default class ExamplesModal extends React.Component {
@@ -25,7 +25,7 @@ export default class ExamplesModal extends React.Component {
     onClickConfirm () {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
-            TangramPlay.load({ url: this.state.selected });
+            load({ url: this.state.selected });
         }
     }
 
