@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
-import TangramPlay from '../tangram-play';
+import { load } from '../tangram-play';
 
 export default class OpenUrlModal extends React.Component {
     constructor (props) {
@@ -32,7 +32,7 @@ export default class OpenUrlModal extends React.Component {
         });
 
         const url = this.input.value.trim();
-        TangramPlay.load({ url })
+        load({ url })
             .then(() => {
                 this.destroyModal();
             });

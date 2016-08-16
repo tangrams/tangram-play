@@ -2,8 +2,8 @@ import _ from 'lodash';
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TangramPlay from '../tangram-play';
 import { map, tangramLayer } from './map';
+import { getNodesForAddress } from '../editor/editor';
 import { highlightBlock } from '../editor/highlight';
 import { EventEmitter } from '../components/event-emitter';
 
@@ -140,7 +140,7 @@ class TangramInspectionPopup extends React.Component {
 
     onClickSourceName (event) {
         const name = event.currentTarget.dataset.sourceName;
-        const node = TangramPlay.getNodesForAddress('sources:' + name);
+        const node = getNodesForAddress('sources:' + name);
         if (node) {
             highlightBlock(node);
         }
@@ -175,7 +175,7 @@ class TangramInspectionPopup extends React.Component {
         event.target.classList.add('map-inspection-selected');
 
         // Highlight the block & jump to line.
-        const node = TangramPlay.getNodesForAddress(event.currentTarget.dataset.nodeAddress);
+        const node = getNodesForAddress(event.currentTarget.dataset.nodeAddress);
         highlightBlock(node);
     }
 
@@ -261,7 +261,7 @@ class TangramInspectionPopup extends React.Component {
                         <div className='map-inspection-layers-container' ref={(el) => { this._layersEl = el; }}>
                             {layers.map((item) => {
                                 const address = `layers:${item}`;
-                                const node = TangramPlay.getNodesForAddress(address);
+                                const node = getNodesForAddress(address);
 
                                 if (node) {
                                     return (
