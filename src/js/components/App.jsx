@@ -17,6 +17,10 @@ export default class App extends React.Component {
         // editor and map being set up already
         initDivider();
 
+        // This is not ported yet. Adding this directly to the React component
+        // causes a timer error to occur in the console.
+        // TODO: Figure this out later. It may have to do with timing of when
+        // the map itself is initiated.
         let mountNode2 = document.getElementById('map-panel');
         ReactDOM.render(<MapPanel />, mountNode2);
     }
