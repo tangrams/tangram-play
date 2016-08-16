@@ -12,13 +12,7 @@ import throttle from 'lodash/throttle';
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';
 
-export const map = L.map('map', {
-    zoomControl: false,
-    attributionControl: false,
-    maxZoom: 24,
-    keyboardZoomOffset: 0.05,
-    zoomSnap: 0 // Enables fractional zoom.
-});
+export let map;
 
 // Declare these exports now, but Tangram is set up later.
 // See initTangram() and loadScene().
@@ -27,6 +21,15 @@ export let tangramScene = null;
 
 // Initializes Leaflet-based map
 export function initMap () {
+    // Initalize Leaflet
+    map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false,
+        maxZoom: 24,
+        keyboardZoomOffset: 0.05,
+        zoomSnap: 0 // Enables fractional zoom.
+    });
+
     // Get map start position
     const mapStartLocation = getMapStartLocation();
 
