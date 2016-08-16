@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Core elements
 import { tangramLayer, initMap, loadScene } from './map/map';
-import { editor, getEditorContent, setEditorContent, getNodesOfLine } from './editor/editor';
+import { editor, getEditorContent, setEditorContent } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
@@ -31,7 +31,6 @@ import { prependProtocolToUrl } from './tools/helpers';
 import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { debounce, createObjectURL } from './tools/common';
-import { parseYamlString } from './editor/codemirror/yaml-tangram';
 import { initHighlight, highlightRanges } from './editor/highlight';
 import { EventEmitter } from './components/event-emitter';
 
@@ -294,58 +293,6 @@ class TangramPlay {
                 scene: null
             });
         }
-    }
-
-    getNodesForAddress (address) {
-        // NOTE:
-        // This is an expensive process because for each call need to iterate through each line until it founds the right
-        // address. Could be optimize if we store addresses in a map... but then the question is about how to keep it sync
-        //
-        let lastState;
-        for (let line = 0, size = editor.getDoc().size; line < size; line++) {
-            const lineHandle = editor.getLineHandle(line);
-
-            if (!lineHandle.stateAfter) {
-                // If the line is NOT parsed.
-                // ======================================================
-                //
-                // NOTE:
-                // Manually parse it in a temporal buffer to avoid conflicts with codemirror parser.
-                // This means outside the Line Handle
-                //
-                // Copy the last parsed state
-                var state = JSON.parse(JSON.stringify(lastState));
-                state.line = line;
-
-                // Parse the current state
-                state = parseYamlString(lineHandle.text, state, 4);
-
-                // Iterate through keys in this line
-                for (let key of state.nodes) {
-                    if (key.address === address) {
-                        return key;
-                    }
-                }
-                // if nothing was found. Record the state and try again
-                lastState = state;
-                // TODO:
-                // We might want to have two different parsers, a simpler one without keys and just address for
-                // the higliting and another more roboust that keep tracks of: pairs (key/values), their ranges (from-to positions),
-                // address and a some functions like getValue, setValue which could be use by widgets or others addons to modify content
-            }
-            else {
-                // it the line HAVE BEEN parsed (use the stateAfter)
-                // ======================================================
-                lastState = lineHandle.stateAfter;
-                let keys = getNodesOfLine(line);
-                for (let key of keys) {
-                    if (key.address === address) {
-                        return key;
-                    }
-                }
-            }
-        }
-        console.log('Fail searching', address);
     }
 }
 

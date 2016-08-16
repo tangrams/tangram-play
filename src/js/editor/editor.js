@@ -1,9 +1,9 @@
 import { config } from '../config';
 import { initCodeMirror } from './codemirror';
+import { parseYamlString } from './codemirror/yaml-tangram';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
 
 import { EventEmitter } from '../components/event-emitter';
-
 
 // Export an instantiated CodeMirror instance
 export const editor = initCodeMirror();
@@ -126,6 +126,66 @@ export function getNodesInRange (from, to) {
         }
     }
     return nodes;
+}
+
+/**
+ * Gets an array of nodes for a given address (formatted `like:this`).
+ *
+ * @public
+ * @param {string} address
+ * @returns {Array} nodes
+ */
+export function getNodesForAddress (address) {
+    // NOTE:
+    // This is an expensive process because it needs to iterate through every
+    // line until it finds the right address. Could be optimized if we store
+    // addresses in a map... but then the question is how we keep it synced
+    let lastState;
+    for (let line = 0, size = editor.getDoc().size; line < size; line++) {
+        const lineHandle = editor.getLineHandle(line);
+
+        if (!lineHandle.stateAfter) {
+            // If the line is NOT parsed.
+            // ======================================================
+            //
+            // NOTE:
+            // Manually parse it in a temporary buffer to avoid conflicts
+            // with CodeMirror parser.
+            // This means outside the Line Handle
+            //
+            // Copy the last parsed state
+            var state = JSON.parse(JSON.stringify(lastState));
+            state.line = line;
+
+            // Parse the current state
+            state = parseYamlString(lineHandle.text, state, 4);
+
+            // Iterate through keys in this line
+            for (let key of state.nodes) {
+                if (key.address === address) {
+                    return key;
+                }
+            }
+            // if nothing was found. Record the state and try again
+            lastState = state;
+            // TODO:
+            // We might want to have two different parsers, a simpler one without keys and just address for
+            // the higliting and another more roboust that keep tracks of: pairs (key/values), their ranges (from-to positions),
+            // address and a some functions like getValue, setValue which could be use by widgets or others addons to modify content
+        }
+        else {
+            // it the line HAVE BEEN parsed (use the stateAfter)
+            // ======================================================
+            lastState = lineHandle.stateAfter;
+            let keys = getNodesOfLine(line);
+            for (let key of keys) {
+                if (key.address === address) {
+                    return key;
+                }
+            }
+        }
+    }
+    console.log('Fail searching', address);
 }
 
 /**
