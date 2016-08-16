@@ -22,8 +22,8 @@ import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/load
 import { initWidgetMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
+import { initGlslWidgetsLink } from './components/widgets-link/glsl-widgets-link';
 import ErrorModal from './modals/ErrorModal';
-import GlslWidgetsLink from './components/widgets-link/glsl-widgets-link';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
@@ -46,7 +46,6 @@ let initialLoad = true;
 class TangramPlay {
     constructor () {
         initMap();
-        this.addons = {};
 
         // TODO: Manage history / routing in its own module
         window.onpopstate = (e) => {
@@ -81,7 +80,7 @@ class TangramPlay {
                     // some addons depend on Tangram scene config being present
                     // TODO: Verify if this is still true?
                     initSuggestions();
-                    this.initAddons();
+                    initGlslWidgetsLink();
                 });
             });
 
@@ -109,11 +108,6 @@ class TangramPlay {
 
             saveSceneContentsToLocalMemory(sceneData);
         });
-    }
-
-    //  ADDONS
-    initAddons () {
-        this.addons.glslHelpers = new GlslWidgetsLink();
     }
 }
 
