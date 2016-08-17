@@ -14,7 +14,7 @@ If logged in, the response looks like this:
 
 let cachedLoginData;
 
-export function fetchUserLogin () {
+export function requestUserLogin () {
     if (window.location.hostname.endsWith('mapzen.com')) {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
@@ -35,4 +35,15 @@ export function fetchUserLogin () {
 
 export function getCachedUserLogin () {
     return cachedLoginData;
+}
+
+/**
+ * Assumes this is only available when already logged in, so no host check
+ * is performed.
+ */
+export function requestUserLogout () {
+    return window.fetch('/api/developer/sign_out', {
+        method: 'POST',
+        credentials: 'same-origin'
+    });
 }
