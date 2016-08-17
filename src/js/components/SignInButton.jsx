@@ -9,7 +9,7 @@ import Icon from './Icon';
 import ErrorModal from '../modals/ErrorModal';
 
 import { EventEmitter } from './event-emitter';
-import { getUserLogin } from '../user/login';
+import { requestUserLogin, requestUserLogout } from '../user/login';
 import { openLoginWindow } from '../user/login-window';
 import EditorIO from '../editor/io';
 
@@ -45,10 +45,7 @@ export default class SignInButton extends React.Component {
      */
     onClickSignOut (event) {
         EditorIO.checkSaveStateThen(() => {
-            window.fetch('/api/developer/sign_out', {
-                method: 'POST',
-                credentials: 'same-origin'
-            }).then((response) => {
+            requestUserLogout().then((response) => {
                 if (response.ok) {
                     this.setState({
                         isLoggedIn: false,
@@ -65,7 +62,7 @@ export default class SignInButton extends React.Component {
     }
 
     checkLoggedInState () {
-        getUserLogin().then((data) => {
+        requestUserLogin().then((data) => {
             const newState = {
                 serverContacted: true
             };
