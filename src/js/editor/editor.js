@@ -6,10 +6,14 @@ import { injectAPIKey, suppressAPIKeys } from './api-keys';
 import { EventEmitter } from '../components/event-emitter';
 
 // Export an instantiated CodeMirror instance
-export const editor = initCodeMirror();
+export let editor;
 
 // Debug
 window.editor = editor;
+
+export function initEditor () {
+    editor = initCodeMirror(document.getElementById('editor'));
+}
 
 // Sets or gets scene contents in the editor.
 // =============================================================================

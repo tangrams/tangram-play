@@ -50,8 +50,7 @@ const INDENT_UNIT = 4;
  * @public
  * @returns {CodeMirror} an instance of the CodeMirror editor.
  */
-export function initCodeMirror () {
-    const el = document.getElementById('editor');
+export function initCodeMirror (el) {
     const cm = new CodeMirror(el, {
         mode: 'text/x-yaml-tangram',
         theme: 'tangram',

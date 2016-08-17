@@ -13,14 +13,18 @@ const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
 const STORAGE_POSITION_KEY = 'divider-position-x';
 
 // Cache element references
-const dividerEl = document.getElementById('divider');
-const mapEl = document.getElementById('map-container');
-const contentEl = document.getElementById('content');
+let dividerEl;
+let mapEl;
+let contentEl;
 
 let draggable;
 
 export function initDivider () {
     const transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
+
+    dividerEl = document.getElementById('divider');
+    mapEl = document.getElementById('map-container');
+    contentEl = document.getElementById('content');
 
     if (dividerEl.style.hasOwnProperty('transform')) {
         dividerEl.style.transform = transformStyle;
