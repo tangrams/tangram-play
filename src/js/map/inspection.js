@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import capitalize from 'lodash/capitalize';
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -30,7 +30,7 @@ class TangramInspectionHeader extends React.Component {
     formatKindValue (text) {
         if (typeof text === 'string') {
             text = text.replace(/_/g, ' ');
-            text = _.capitalize(text);
+            text = capitalize(text);
         }
         else {
             text = '';

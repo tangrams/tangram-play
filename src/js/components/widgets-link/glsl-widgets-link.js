@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import clone from 'lodash/clone';
 import { editor } from '../../editor/editor';
 
 import React from 'react';
@@ -184,7 +184,7 @@ function findAllMatches (pattern, string) {
         // the array of returned matches. The match result
         // is an array with .index and .input properties,
         // which will also be cloned.
-        matches.push(_.clone(match));
+        matches.push(clone(match));
     }
     /* eslint-enable no-cond-assign */
 

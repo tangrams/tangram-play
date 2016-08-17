@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import reverse from 'lodash/reverse';
+import reject from 'lodash/reject';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from './Modal';
@@ -33,7 +34,7 @@ export default class OpenGistModal extends React.Component {
 
         if (gists && gists.arr) {
             // Reverse-sort the gists; most recent will display up top
-            _.reverse(gists.arr);
+            reverse(gists.arr);
         }
 
         this.setState({
@@ -222,7 +223,7 @@ function removeNonexistentGistFromLocalStorage (url) {
     const gists = JSON.parse(LocalStorage.getItem(STORAGE_SAVED_GISTS));
 
     // Filter the unfound gist URL from the gist list
-    gists.arr = _.reject(gists.arr, (item) => {
+    gists.arr = reject(gists.arr, (item) => {
         // Each item in the array is a string. Instead of checking whether
         // the string is JSON-parsable, however, we'll assume that if any part
         // of the string contains the url, then we can reject that item.

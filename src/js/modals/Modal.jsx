@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import noop from 'lodash/noop';
 import React from 'react';
 import { EventEmitter } from '../components/event-emitter';
 
@@ -58,5 +58,5 @@ Modal.propTypes = {
 
 Modal.defaultProps = {
     disableEsc: false,
-    cancelFunction: _.noop
+    cancelFunction: noop
 };
