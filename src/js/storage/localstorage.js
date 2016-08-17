@@ -9,6 +9,8 @@
  *  This module manages namespacing for Tangram Play to prevent name
  *  collisions with other libraries, browser extensions, etc.
  */
+import localforage from 'localforage';
+
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 
 const LocalStorage = {

@@ -96,6 +96,7 @@
     "codemirror": "5.17.0",
     "gsap": "1.19.0",
     "leaflet": "1.0.0-rc.2",
+    "localforage": "1.4.2",
     "lodash": "4.15.0",
     "raven-js": "3.5.1",
     "react": "15.3.1",

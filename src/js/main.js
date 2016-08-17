@@ -17,6 +17,23 @@ if (process.env.NODE_ENV === 'production') {
     }).install();
 }
 
+// Local storage
+import localforage from 'localforage';
+
+// Set and persist localForage options. This must be called before any other
+// calls to localForage are made, but can be called after localForage is loaded.
+localforage.config({
+    name: 'Tangram Play',
+    storeName: 'tangram_play'
+});
+
+// Convert all current localStorage items to localforage
+// We want to do this very early on, because other scripts may need to read
+// in the expected format / location in localforage
+// TODO: Remove when migration is deemed unnecessary
+import { migrateLocalStorageToForage } from './storage/migrate';
+migrateLocalStorageToForage();
+
 // React components
 import App from './components/App';
 
