@@ -1,4 +1,4 @@
-import LocalStorage from '../storage/localstorage';
+import localforage from 'localforage';
 import { map } from '../map/map';
 import { editor } from '../editor/editor';
 import { EventEmitter } from '../components/event-emitter';
@@ -20,59 +20,66 @@ let contentEl;
 let draggable;
 
 export function initDivider () {
-    const transformStyle = 'translate3d(' + getStartingPosition() + 'px, 0px, 0px)';
-
     dividerEl = document.getElementById('divider');
     mapEl = document.getElementById('map-container');
     contentEl = document.getElementById('content');
 
-    if (dividerEl.style.hasOwnProperty('transform')) {
-        dividerEl.style.transform = transformStyle;
-    }
-    else if (dividerEl.style.hasOwnProperty('webkitTransform')) {
-        // For Safari
-        dividerEl.style.webkitTransform = transformStyle;
-    }
-    else {
-        // For Firefox
-        dividerEl.style.transform = transformStyle;
-    }
+    // This reads from local storage, which is asynchronous
+    // This unfortunately creates a bit of lag when this renders
+    // (TODO: make this go away in Reactification)
+    getStartingPosition()
+        .then((posX) => {
+            const transformStyle = `translate3d(${posX}px, 0px, 0px)`;
 
-    // Override starting position
-    dividerEl.style.left = 'auto';
-    draggable = Draggable.create(dividerEl, {
-        type: 'x',
-        bounds: getBounds(),
-        cursor: 'col-resize',
-        zIndexBoost: false,
-        onPress: function () {
-            this.target.classList.add('divider-is-dragging');
-        },
-        onDrag: function () {
+            if (dividerEl.style.hasOwnProperty('transform')) {
+                dividerEl.style.transform = transformStyle;
+            }
+            else if (dividerEl.style.hasOwnProperty('webkitTransform')) {
+                // For Safari
+                dividerEl.style.webkitTransform = transformStyle;
+            }
+            else {
+                // For Firefox
+                dividerEl.style.transform = transformStyle;
+            }
+
+            // Override starting position
+            dividerEl.style.left = 'auto';
+            draggable = Draggable.create(dividerEl, {
+                type: 'x',
+                bounds: getBounds(),
+                cursor: 'col-resize',
+                zIndexBoost: false,
+                onPress: function () {
+                    this.target.classList.add('divider-is-dragging');
+                },
+                onDrag: function () {
+                    onDividerPositionChange();
+                    EventEmitter.dispatch('divider:drag');
+
+                    // When the divider moves, the editor width changes and might expose blank areas
+                    // of the document that CodeMirror has not parsed and rendered. This forces the
+                    // editor to refresh as the divider moves.
+                    editor.refresh();
+                },
+                onDragEnd: function () {
+                    updateMapState();
+                    saveDividerPosition();
+                    EventEmitter.dispatch('divider:dragend');
+                },
+                onRelease: function () {
+                    this.target.classList.remove('divider-is-dragging');
+                }
+            });
+
+            window.addEventListener('resize', function () {
+                onDividerPositionChange();
+                updateMapState();
+            });
+
             onDividerPositionChange();
-            EventEmitter.dispatch('divider:drag');
-
-            // When the divider moves, the editor width changes and might expose blank areas
-            // of the document that CodeMirror has not parsed and rendered. This forces the
-            // editor to refresh as the divider moves.
-            editor.refresh();
-        },
-        onDragEnd: function () {
             updateMapState();
-            saveDividerPosition();
-            EventEmitter.dispatch('divider:dragend');
-        },
-        onRelease: function () {
-            this.target.classList.remove('divider-is-dragging');
-        }
-    });
-
-    window.addEventListener('resize', function () {
-        onDividerPositionChange();
-        updateMapState();
-    });
-
-    onDividerPositionChange();
+        });
 }
 
 function onDividerPositionChange () {
@@ -101,22 +108,24 @@ function updateMapState () {
 function saveDividerPosition () {
     const posX = dividerEl.getBoundingClientRect().left;
     if (posX) {
-        LocalStorage.setItem(STORAGE_POSITION_KEY, posX);
+        localforage.setItem(STORAGE_POSITION_KEY, posX);
     }
 }
 
 function getStartingPosition () {
-    const storedPosition = LocalStorage.getItem(STORAGE_POSITION_KEY);
-    if (storedPosition) {
-        return storedPosition;
-    }
+    return localforage.getItem(STORAGE_POSITION_KEY)
+        .then((storedPosition) => {
+            if (storedPosition) {
+                return storedPosition;
+            }
 
-    if (window.innerWidth > 1024) {
-        return Math.floor(window.innerWidth * 0.6);
-    }
-    else {
-        return Math.floor(window.innerWidth / 2);
-    }
+            if (window.innerWidth > 1024) {
+                return Math.floor(window.innerWidth * 0.6);
+            }
+            else {
+                return Math.floor(window.innerWidth / 2);
+            }
+        });
 }
 
 function getBounds () {
