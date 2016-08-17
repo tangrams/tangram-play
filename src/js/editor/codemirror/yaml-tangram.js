@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import startsWith from 'lodash/startsWith';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';
@@ -88,7 +88,7 @@ export function getAddressForLevel (address, level) {
  */
 function isShader (address) {
     const re = /shaders:blocks:(global|width|position|normal|color|filter)$/;
-    return _.startsWith(address, 'styles') && re.test(address);
+    return startsWith(address, 'styles') && re.test(address);
 }
 
 /**

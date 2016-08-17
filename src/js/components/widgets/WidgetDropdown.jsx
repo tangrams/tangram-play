@@ -5,7 +5,7 @@ import FormControl from 'react-bootstrap/lib/FormControl';
 import { setCodeMirrorValue, setCursor } from '../../editor/editor';
 import { tangramLayer } from '../../map/map';
 import { getAddressSceneContent } from '../../editor/codemirror/yaml-tangram';
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 import { EventEmitter } from '../event-emitter';
 
@@ -40,7 +40,7 @@ export default class WidgetDropdown extends React.Component {
             let keys = (obj) ? Object.keys(obj) : {};
 
             // If the tangram scene has not yet loaded, set an empty options state in order for React to render
-            if (_.isEmpty(keys)) {
+            if (isEmpty(keys)) {
                 keys = [];
             }
 

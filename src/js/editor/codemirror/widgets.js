@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import filter from 'lodash/filter';
 import TANGRAM_API from '../../tangram-api.json';
 import { isEmptyString } from '../../tools/helpers';
 
@@ -42,7 +42,7 @@ export class WidgetMark {
 
 // Only certain types of values in Tangram syntax will have widgets, so
 // filter out all other ones.
-const listOfWidgetMarkConstructors = _.filter(TANGRAM_API.values, function (item) {
+const listOfWidgetMarkConstructors = filter(TANGRAM_API.values, function (item) {
     return item.type === 'color' || item.type === 'vector' || item.type === 'boolean' || item.type === 'string';
 });
 
