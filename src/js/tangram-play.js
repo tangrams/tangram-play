@@ -97,7 +97,7 @@ export function initTangramPlay () {
         //     scrollInfo: editor's scroll position
         //     cursor: where the cursor was positioned in the document.
         // }
-        localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, JSON.stringify(sceneData));
+        localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
     });
 }
 
