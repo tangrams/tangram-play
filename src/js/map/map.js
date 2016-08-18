@@ -3,7 +3,7 @@ import LeafletHash from './leaflet-hash';
 import Tangram from 'tangram';
 
 import LocalStorage from '../storage/localstorage';
-import { hideSceneLoadingIndicator } from './loading';
+import { hideSceneLoadingIndicator } from './MapLoading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { EventEmitter } from '../components/event-emitter';
 import throttle from 'lodash/throttle';

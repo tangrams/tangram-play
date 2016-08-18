@@ -1,6 +1,6 @@
 import React from 'react';
 import MapPanel from './MapPanel';
-import MapLoading from '../map/loading';
+import MapLoading from '../map/MapLoading';
 import { initMap } from '../map/map';
 import { EventEmitter } from './event-emitter';
 

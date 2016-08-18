@@ -37,6 +37,8 @@ export default class MapLoading extends React.Component {
 
 /**
  * Shows the scene loading indicator.
+ *
+ * TODO: Deprecate / remove. Map loading should be set via application state.
  */
 export function showSceneLoadingIndicator () {
     EventEmitter.dispatch('maploading:on', {});
@@ -44,6 +46,8 @@ export function showSceneLoadingIndicator () {
 
 /**
  * Hide the scene loading indicator.
+ *
+ * TODO: Deprecate / remove. Map loading should be set via application state.
  */
 export function hideSceneLoadingIndicator () {
     EventEmitter.dispatch('maploading:off', {});
