@@ -179,7 +179,7 @@ export default class MapPanel extends React.Component {
      */
     render () {
         return (
-            <div>
+            <div className='map-panel'>
                 {/* Toggle map panel to show it*/}
                 <OverlayTrigger rootClose placement='bottom' overlay={<Tooltip id='tooltip'>{'Toogle map toolbar'}</Tooltip>}>
                     <Button onClick={this._toggleMapPanel} className='map-panel-button-show'>

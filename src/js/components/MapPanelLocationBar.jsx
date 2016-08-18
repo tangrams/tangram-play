@@ -29,14 +29,13 @@ export default class MapPanelLocationBar extends React.Component {
     constructor (props) {
         super(props);
 
-        const mapCenter = map.getCenter();
         const latlngLabelPrecision = 4;
 
         this.state = {
             latlngLabelPrecision: latlngLabelPrecision,
             latlng: {
-                lat: mapCenter.lat.toFixed(latlngLabelPrecision),
-                lng: mapCenter.lng.toFixed(latlngLabelPrecision)
+                lat: 0,
+                lng: 0
             }, // Represents lat lng of current position of the map
             value: '', // Represents text in the search bar
             placeholder: '', // Represents placeholder of the search bar
@@ -44,8 +43,18 @@ export default class MapPanelLocationBar extends React.Component {
             bookmarkActive: false, // Represents wether bookmark button should show as active
         };
 
-        // Set the value of the search bar to whatever the map is currently pointing to
-        this.reverseGeocode(mapCenter);
+        EventEmitter.subscribe('map:init', () => {
+            const mapCenter = map.getCenter();
+            this.setState({
+                latlng: {
+                    lat: mapCenter.lat,
+                    lng: mapCenter.lng
+                }
+            });
+
+            // Set the value of the search bar to whatever the map is currently pointing to
+            this.reverseGeocode(mapCenter);
+        });
 
         this.relocatingMap = false;
         this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
