@@ -30,8 +30,13 @@ function moveEverything () {
                 case 'gists':
                     newValue = JSON.parse(value).arr || [];
                     for (let i = 0, j = newValue.length; i < j; i++) {
-                        newValue[i] = JSON.parse(newValue[i]) || {};
-                        // TODO: Convert base64 URLs to image blob?
+                        try {
+                            // TODO: Convert base64 URLs to image blob?
+                            newValue[i] = JSON.parse(newValue[i]);
+                        }
+                        catch (err) {
+                            console.log(`[migrating localstorage] ${newValue[i]} is either a legacy Gist format or an unparseable entry; it is not being migrated.`);
+                        }
                     }
                     break;
                 case 'last-content':
