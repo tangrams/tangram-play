@@ -17,7 +17,8 @@ export default class OpenGistModal extends React.Component {
         super(props);
 
         this.state = {
-            gists: null,
+            loaded: false,
+            gists: [],
             selected: null
         };
 
@@ -33,12 +34,19 @@ export default class OpenGistModal extends React.Component {
             .then((gists) => {
                 if (Array.isArray(gists)) {
                     // Reverse-sort the gists; most recent will display up top
+                    // Note this mutates the original array.
                     reverse(gists);
-                }
 
-                this.setState({
-                    gists: gists
-                });
+                    this.setState({
+                        loaded: true,
+                        gists: gists
+                    });
+                }
+                else {
+                    this.setState({
+                        loaded: true
+                    });
+                }
             });
     }
 
@@ -99,92 +107,56 @@ export default class OpenGistModal extends React.Component {
 
         let gistList;
 
-        if (!gists || !gists.arr || gists.arr.length === 0) {
+        if (this.state.loaded === true && gists.length === 0) {
             gistList = 'No gists have been saved!';
         }
         else {
-            gistList = gists.arr.map((item, index) => {
-                // We have two types of things in this array.
-                // LEGACY: it's just a string for the gist URL.
-                // CURRENT: an object that has information in it.
-                // We'll try to JSON.parse the item first; if it works,
-                // then we can create a new entry for it. Otherwise,
-                // fallback to the string-only url.
-                let isLegacy = false;
-                try {
-                    item = JSON.parse(item);
-                }
-                // Not JSON-parseable; LEGACY gist url format.
-                catch (e) {
-                    isLegacy = true;
-                }
-
+            gistList = gists.map((item, index) => {
                 // If the scene is selected, a special class is applied later to it
                 let classString = 'open-gist-option';
 
-                if (isLegacy === false) {
-                    // TODO: don't hardcode
-                    const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
+                // TODO: Do not hardcode.
+                const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
 
-                    item.description = item.description.replace(descPlaceholder, '');
-                    if (item.description.length === 0) {
-                        item.description = 'No description provided.';
-                    }
+                item.description = item.description.replace(descPlaceholder, '');
+                if (item.description.length === 0) {
+                    item.description = 'No description provided.';
+                }
 
-                    if (this.state.selected === item.url) {
-                        classString += ' open-gist-selected';
-                    }
+                if (this.state.selected === item.url) {
+                    classString += ' open-gist-selected';
+                }
 
-                    // TODO:
-                    // There is actually a lot more info stored than is currently being
-                    // displayed. We have date, user, public gist or not, and map view.
-                    return (
-                        <div
-                            className={classString}
-                            key={index}
-                            data-url={item.url}
-                            onClick={() => { this.setState({ selected: item.url }); }}
-                            onDoubleClick={this.onClickConfirm}
-                        >
-                            <div className='open-gist-option-thumbnail'>
-                                <img src={item.thumbnail} />
+                // TODO:
+                // There is actually a lot more info stored than is currently being
+                // displayed. We have date, user, public gist or not, and map view.
+                return (
+                    <div
+                        className={classString}
+                        key={index}
+                        data-url={item.url}
+                        onClick={() => { this.setState({ selected: item.url }); }}
+                        onDoubleClick={this.onClickConfirm}
+                    >
+                        <div className='open-gist-option-thumbnail'>
+                            <img src={item.thumbnail} />
+                        </div>
+                        <div className='open-gist-option-info'>
+                            <div className='open-gist-option-name'>
+                                {item.name}
                             </div>
-                            <div className='open-gist-option-info'>
-                                <div className='open-gist-option-name'>
-                                    {item.name}
-                                </div>
-                                <div className='open-gist-option-description'>
-                                    {item.description}
-                                </div>
-                                <div className='open-gist-option-date'>
-                                    {/* Show the date this was saved.
-                                        TODO: better formatting;
-                                        maybe use moment.js */}
-                                    Saved on {new Date(item['created_at']).toLocaleString()}
-                                </div>
+                            <div className='open-gist-option-description'>
+                                {item.description}
+                            </div>
+                            <div className='open-gist-option-date'>
+                                {/* Show the date this was saved.
+                                    TODO: better formatting;
+                                    maybe use moment.js */}
+                                Saved on {new Date(item['created_at']).toLocaleString()}
                             </div>
                         </div>
-                    );
-                }
-                else {
-                    if (this.state.selected === item) {
-                        classString += ' open-gist-selected';
-                    }
-
-                    return (
-                        <div
-                            className={classString}
-                            key={index}
-                            data-url={item}
-                            onClick={() => { this.setState({ selected: item }); }}
-                            onDoubleClick={this.onClickConfirm}
-                        >
-                            <div className='open-gist-option-legacy-name'>
-                                {item}
-                            </div>
-                        </div>
-                    );
-                }
+                    </div>
+                );
             });
         }
 
@@ -220,15 +192,13 @@ export default class OpenGistModal extends React.Component {
  * @param {string} url - the Gist to remove
  */
 function removeNonexistentGistFromLocalStorage (url) {
-    const gists = JSON.parse(LocalStorage.getItem(STORAGE_SAVED_GISTS));
+    localforage.getItem(STORAGE_SAVED_GISTS)
+        .then((gists) => {
+            // Filter the unfound gist URL from the gist list
+            gists = reject(gists, (item) => {
+                return url === item.url;
+            });
 
-    // Filter the unfound gist URL from the gist list
-    gists.arr = reject(gists.arr, (item) => {
-        // Each item in the array is a string. Instead of checking whether
-        // the string is JSON-parsable, however, we'll assume that if any part
-        // of the string contains the url, then we can reject that item.
-        return new RegExp(url).test(item);
-    });
-
-    LocalStorage.setItem(STORAGE_SAVED_GISTS, JSON.stringify(gists));
+            localforage.setItem(STORAGE_SAVED_GISTS, gists);
+        });
 }
