@@ -6,6 +6,7 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
 
+import throttle from 'lodash/throttle';
 import { EventEmitter } from './event-emitter';
 import { map } from '../map/map';
 import { config } from '../config';
@@ -62,6 +63,13 @@ export default class MapPanelLocationBar extends React.Component {
 
                     this.setState(newState);
                 });
+        });
+
+        // Create a throttled version of `this.unthrottledReverseGeocode()`.
+        // Always call this and not the undebounced version.
+        this.reverseGeocode = throttle(this.unthrottledReverseGeocode, 1000, {
+            leading: true, // Apparently this function becomes undefined if `leading: false` (???)
+            trailing: true
         });
 
         this.relocatingMap = false;
@@ -185,11 +193,15 @@ export default class MapPanelLocationBar extends React.Component {
 
     /**
      * Given a latlng, make a request to API to find location details
+     * Do not use this method directly. In `constructor()`` we throttle this
+     * function to prevent frequent API calls and attach it to
+     * `this.reverseGeocode()`. Call that method instead. Its arguments and
+     * return value will remain the same.
      *
      * @param {object} latlng - a latitude and longitude pair
      * @returns {Promise} - resolves with a new state object
      */
-    reverseGeocode (latlng) {
+    unthrottledReverseGeocode (latlng) {
         const lat = latlng.lat;
         const lng = latlng.lng;
         const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
