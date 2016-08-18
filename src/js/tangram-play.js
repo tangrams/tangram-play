@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 // Core elements
 import { tangramLayer, loadScene } from './map/map';
-import { editor, initEditor, getEditorContent, setEditorContent } from './editor/editor';
+import { editor, getEditorContent, setEditorContent } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
@@ -29,8 +29,6 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 let initialLoad = true;
 
 export function initTangramPlay () {
-    initEditor();
-
     // TODO: Manage history / routing in its own module
     window.onpopstate = (e) => {
         if (e.state && e.state.scene) {

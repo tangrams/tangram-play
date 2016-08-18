@@ -11,8 +11,16 @@ export let editor;
 // Debug
 window.editor = editor;
 
-export function initEditor () {
-    editor = initCodeMirror(document.getElementById('editor'));
+/**
+ * Imported by the <Editor> React component, to be called when it mounts.
+ * It is here (instead of importing `initCodeMirror()` directly) so that this
+ * module can continue to export the `editor` reference to the CodeMirror
+ * instance. This may change in the future if this is confusing.
+ *
+ * @param {Node} el - reference to the editor's container DOM node.
+ */
+export function initEditor (el) {
+    editor = initCodeMirror(el);
 }
 
 // Sets or gets scene contents in the editor.
