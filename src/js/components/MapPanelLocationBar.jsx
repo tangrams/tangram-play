@@ -45,15 +45,23 @@ export default class MapPanelLocationBar extends React.Component {
 
         EventEmitter.subscribe('map:init', () => {
             const mapCenter = map.getCenter();
-            this.setState({
-                latlng: {
-                    lat: mapCenter.lat,
-                    lng: mapCenter.lng
-                }
-            });
 
-            // Set the value of the search bar to whatever the map is currently pointing to
-            this.reverseGeocode(mapCenter);
+            // Set the value of the search bar to whatever the map is currently
+            // pointing to. this.reverseGeocode() returns a Promise (if
+            // successful), passing in the value of the place to display.
+            // Do all state mutation after this returns to force setState
+            // to batch.
+            this.reverseGeocode(mapCenter)
+                .then((state = {}) => {
+                    const newState = Object.assign({}, state, {
+                        latlng: {
+                            lat: mapCenter.lat,
+                            lng: mapCenter.lng
+                        }
+                    });
+
+                    this.setState(newState);
+                });
         });
 
         this.relocatingMap = false;
@@ -82,14 +90,18 @@ export default class MapPanelLocationBar extends React.Component {
                 // But we also have the bonus of not needing to make a reverse geocode request
                 // for small changes of the map center.
                 if (delta > MAP_UPDATE_DELTA) {
-                    this.reverseGeocode(currentLatLng);
-                    this.setState({
-                        bookmarkActive: false,
-                        latlng: {
-                            lat: currentLatLng.lat,
-                            lng: currentLatLng.lng
-                        }
-                    });
+                    this.reverseGeocode(currentLatLng)
+                        .then((state = {}) => {
+                            const newState = Object.assign({}, state, {
+                                bookmarkActive: false,
+                                latlng: {
+                                    lat: currentLatLng.lat,
+                                    lng: currentLatLng.lng
+                                }
+                            });
+
+                            this.setState(newState);
+                        });
                 }
             }
             else {
@@ -164,40 +176,49 @@ export default class MapPanelLocationBar extends React.Component {
 
         // If the geolocate button has been activated, perform a reverseGeocode
         if (geolocateActive.active === 'true') {
-            this.reverseGeocode(geolocateActive.latlng);
+            this.reverseGeocode(geolocateActive.latlng)
+                .then((state) => {
+                    this.setState(state);
+                });
         }
     }
 
     /**
      * Given a latlng, make a request to API to find location details
-     * @param latlng - a latitude and longitude pair
+     *
+     * @param {object} latlng - a latitude and longitude pair
+     * @returns {Promise} - resolves with a new state object
      */
     reverseGeocode (latlng) {
         const lat = latlng.lat;
         const lng = latlng.lng;
         const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
-        window.fetch(endpoint)
+        return window.fetch(endpoint)
             .then((response) => {
                 return response.json();
             })
             .then((response) => {
+                const state = {};
+
                 // TODO: Much more clever viewport/zoom based determination of current location
                 if (!response.features || response.features.length === 0) {
                     // Sometimes reverse geocoding returns no results
-                    this.setState({ placeholder: 'Unknown location' });
+                    state.placeholder = 'Unknown location';
                     // Very first time we load the bar we don't want a value, we want a placeholder
                     if (this.state.value !== '') {
-                        this.setState({ value: 'Unknown location' });
+                        state.value = 'Unknown location';
                     }
                 }
                 else {
-                    this.setState({ placeholder: response.features[0].properties.label });
+                    state.placeholder = response.features[0].properties.label;
                     // Very first time we load the bar we don't want a value, we want a placeholder
                     if (this.state.value !== '') {
-                        this.setState({ value: response.features[0].properties.label });
+                        state.value = response.features[0].properties.label;
                     }
                 }
+
+                return state;
             })
             .catch((error) => {
                 console.error(error);
