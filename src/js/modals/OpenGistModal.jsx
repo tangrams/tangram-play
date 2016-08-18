@@ -7,7 +7,7 @@ import Icon from '../components/Icon';
 
 import { load } from '../tangram-play';
 import ErrorModal from './ErrorModal';
-import LocalStorage from '../storage/localstorage';
+import localforage from 'localforage';
 import { getSceneURLFromGistAPI } from '../tools/gist-url';
 
 const STORAGE_SAVED_GISTS = 'gists';
@@ -28,17 +28,18 @@ export default class OpenGistModal extends React.Component {
         // Always load new set of saved Gists from memory each
         // time this modal is opened, in case it has changed
         // during use
-        // Gists are currently stored in LocalStorage
-        const gists = JSON.parse(LocalStorage.getItem(STORAGE_SAVED_GISTS));
+        // Gists are currently stored via localforage
+        localforage.getItem(STORAGE_SAVED_GISTS)
+            .then((gists) => {
+                if (Array.isArray(gists)) {
+                    // Reverse-sort the gists; most recent will display up top
+                    reverse(gists);
+                }
 
-        if (gists && gists.arr) {
-            // Reverse-sort the gists; most recent will display up top
-            reverse(gists.arr);
-        }
-
-        this.setState({
-            gists: gists
-        });
+                this.setState({
+                    gists: gists
+                });
+            });
     }
 
     onClickCancel () {
