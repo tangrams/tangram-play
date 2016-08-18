@@ -2,15 +2,16 @@
 
 .divider {
     position: absolute;
-    left: 50%; /* Starting position; this is overridden by scripts */
+    left: 0;
     top: 0;
     width: 8px;
     height: 100%;
     opacity: 1;
     background-color: var(--ui-base-color);
-    z-index: var(--z01-divider);
+    z-index: var(--z05-divider);
     cursor: col-resize;
     user-select: none;
+    transform: translate(0, 0) !important; /* Override react-draggable transform */
 }
 
 .divider:hover {

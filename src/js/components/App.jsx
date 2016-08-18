@@ -1,7 +1,6 @@
 import React from 'react';
 import Map from './Map';
 import Editor from './Editor';
-import Divider from './Divider';
 import MenuBar from './MenuBar';
 import Shield from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
@@ -31,7 +30,6 @@ export default class App extends React.Component {
 
                     <div>
                         <Map />
-                        <Divider />
                         <Editor />
                     </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 // import DocsPanel from './DocsPanel';
 import { initEditor } from '../editor/editor';
+import Divider from './Divider';
 
 export default class Editor extends React.Component {
     componentDidMount () {
@@ -16,6 +17,7 @@ export default class Editor extends React.Component {
         return (
             /* id='content' is used only as a hook for Divider right now */
             <div className='editor-container' id='content'>
+                <Divider />
                 <div className='editor' id='editor' ref={(ref) => { this.editorEl = ref; }} />
                 {/* <DocsPanel ref={(ref) => { this.docsPanel = ref; }} /> */}
             </div>

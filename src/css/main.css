@@ -103,7 +103,6 @@
     /* 01: Anything that needs to be on a z-index > 0 || auto */
     /* Sometimes an element only needs z01 within its own stacking context */
     --z01-colorpalette: var(--z01);
-    --z01-divider: var(--z01);
     --z01-filedrop: var(--z01);
     --z01-modal: var(--z01);
     --z01-sandbox: var(--z01);
@@ -112,6 +111,9 @@
     --z04-map-toolbar: var(--z04);
     --z04-map-inspection: var(--z04);
     --z04-map-loading: var(--z04);
+
+    /* 05: Above all map UI, below all other UI */
+    --z05-divider: var(--z05);
 
     /* 07: Anything that should display on top of all Leaflet elements */
     --z07-menu: var(--z07);
