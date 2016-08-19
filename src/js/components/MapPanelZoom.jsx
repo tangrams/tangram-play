@@ -6,6 +6,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
 import MapPanelZoomIndicator from './MapPanelZoomIndicator';
 import { map } from '../map/map';
+import { EventEmitter } from './event-emitter';
 
 export default class MapPanelZoom extends React.Component {
     /**
@@ -19,11 +20,23 @@ export default class MapPanelZoom extends React.Component {
         super(props);
 
         this.state = {
-            zoom: map.getZoom() // Current map zoom position to display
+            zoom: 0 // Current map zoom position to display
         };
 
         this.onClickZoomIn = this.onClickZoomIn.bind(this);
         this.onClickZoomOut = this.onClickZoomOut.bind(this);
+    }
+
+    componentDidMount () {
+        EventEmitter.subscribe('map:init', () => {
+            this.setState({ zoom: map.getZoom() });
+        });
+
+        // Need to subscribe to map zooming events so that our React component
+        // plays nice with the non-React map
+        EventEmitter.subscribe('leaflet:zoomend', (data) => {
+            this.setState({ zoom: map.getZoom() });
+        });
     }
 
     /** Zoom functionality **/

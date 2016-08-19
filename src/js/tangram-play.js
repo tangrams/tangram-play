@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // Core elements
-import { tangramLayer, initMap, loadScene } from './map/map';
+import { tangramLayer, loadScene } from './map/map';
 import { editor, initEditor, getEditorContent, setEditorContent } from './editor/editor';
 
 // Addons
-import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/loading';
+import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
 import { initWidgetMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
@@ -29,7 +29,6 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 let initialLoad = true;
 
 export function initTangramPlay () {
-    initMap();
     initEditor();
 
     // TODO: Manage history / routing in its own module

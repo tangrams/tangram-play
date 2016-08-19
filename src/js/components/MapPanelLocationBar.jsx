@@ -6,6 +6,7 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
 
+import throttle from 'lodash/throttle';
 import { EventEmitter } from './event-emitter';
 import { map } from '../map/map';
 import { config } from '../config';
@@ -29,14 +30,13 @@ export default class MapPanelLocationBar extends React.Component {
     constructor (props) {
         super(props);
 
-        const mapCenter = map.getCenter();
         const latlngLabelPrecision = 4;
 
         this.state = {
             latlngLabelPrecision: latlngLabelPrecision,
             latlng: {
-                lat: mapCenter.lat.toFixed(latlngLabelPrecision),
-                lng: mapCenter.lng.toFixed(latlngLabelPrecision)
+                lat: 0,
+                lng: 0
             }, // Represents lat lng of current position of the map
             value: '', // Represents text in the search bar
             placeholder: '', // Represents placeholder of the search bar
@@ -44,8 +44,33 @@ export default class MapPanelLocationBar extends React.Component {
             bookmarkActive: false, // Represents wether bookmark button should show as active
         };
 
-        // Set the value of the search bar to whatever the map is currently pointing to
-        this.reverseGeocode(mapCenter);
+        EventEmitter.subscribe('map:init', () => {
+            const mapCenter = map.getCenter();
+
+            // Set the value of the search bar to whatever the map is currently
+            // pointing to. this.reverseGeocode() returns a Promise (if
+            // successful), passing in the value of the place to display.
+            // Do all state mutation after this returns to force setState
+            // to batch.
+            this.reverseGeocode(mapCenter)
+                .then((state = {}) => {
+                    const newState = Object.assign({}, state, {
+                        latlng: {
+                            lat: mapCenter.lat,
+                            lng: mapCenter.lng
+                        }
+                    });
+
+                    this.setState(newState);
+                });
+        });
+
+        // Create a throttled version of `this.unthrottledReverseGeocode()`.
+        // Always call this and not the undebounced version.
+        this.reverseGeocode = throttle(this.unthrottledReverseGeocode, 1000, {
+            leading: true, // Apparently this function becomes undefined if `leading: false` (???)
+            trailing: true
+        });
 
         this.relocatingMap = false;
         this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
@@ -73,14 +98,18 @@ export default class MapPanelLocationBar extends React.Component {
                 // But we also have the bonus of not needing to make a reverse geocode request
                 // for small changes of the map center.
                 if (delta > MAP_UPDATE_DELTA) {
-                    this.reverseGeocode(currentLatLng);
-                    this.setState({
-                        bookmarkActive: false,
-                        latlng: {
-                            lat: currentLatLng.lat,
-                            lng: currentLatLng.lng
-                        }
-                    });
+                    this.reverseGeocode(currentLatLng)
+                        .then((state = {}) => {
+                            const newState = Object.assign({}, state, {
+                                bookmarkActive: false,
+                                latlng: {
+                                    lat: currentLatLng.lat,
+                                    lng: currentLatLng.lng
+                                }
+                            });
+
+                            this.setState(newState);
+                        });
                 }
             }
             else {
@@ -155,40 +184,53 @@ export default class MapPanelLocationBar extends React.Component {
 
         // If the geolocate button has been activated, perform a reverseGeocode
         if (geolocateActive.active === 'true') {
-            this.reverseGeocode(geolocateActive.latlng);
+            this.reverseGeocode(geolocateActive.latlng)
+                .then((state) => {
+                    this.setState(state);
+                });
         }
     }
 
     /**
      * Given a latlng, make a request to API to find location details
-     * @param latlng - a latitude and longitude pair
+     * Do not use this method directly. In `constructor()`` we throttle this
+     * function to prevent frequent API calls and attach it to
+     * `this.reverseGeocode()`. Call that method instead. Its arguments and
+     * return value will remain the same.
+     *
+     * @param {object} latlng - a latitude and longitude pair
+     * @returns {Promise} - resolves with a new state object
      */
-    reverseGeocode (latlng) {
+    unthrottledReverseGeocode (latlng) {
         const lat = latlng.lat;
         const lng = latlng.lng;
         const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
-        window.fetch(endpoint)
+        return window.fetch(endpoint)
             .then((response) => {
                 return response.json();
             })
             .then((response) => {
+                const state = {};
+
                 // TODO: Much more clever viewport/zoom based determination of current location
                 if (!response.features || response.features.length === 0) {
                     // Sometimes reverse geocoding returns no results
-                    this.setState({ placeholder: 'Unknown location' });
+                    state.placeholder = 'Unknown location';
                     // Very first time we load the bar we don't want a value, we want a placeholder
                     if (this.state.value !== '') {
-                        this.setState({ value: 'Unknown location' });
+                        state.value = 'Unknown location';
                     }
                 }
                 else {
-                    this.setState({ placeholder: response.features[0].properties.label });
+                    state.placeholder = response.features[0].properties.label;
                     // Very first time we load the bar we don't want a value, we want a placeholder
                     if (this.state.value !== '') {
-                        this.setState({ value: response.features[0].properties.label });
+                        state.value = response.features[0].properties.label;
                     }
                 }
+
+                return state;
             })
             .catch((error) => {
                 console.error(error);
