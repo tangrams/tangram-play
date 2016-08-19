@@ -1,5 +1,6 @@
 import React from 'react';
 import Map from './Map';
+import Editor from './Editor';
 import MenuBar from './MenuBar';
 import Shield from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
@@ -34,9 +35,7 @@ export default class App extends React.Component {
                         <span className='divider-affordance' />
                     </div>
 
-                    <div className='editor-container' id='content'>
-                        <div className='editor' id='editor' />
-                    </div>
+                    <Editor />
 
                     <div id='widget-links' />
                     {/* <ColorPalette /> */}
