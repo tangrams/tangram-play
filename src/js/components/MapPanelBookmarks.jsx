@@ -7,7 +7,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Icon from './Icon';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 
-import bookmarks from '../map/bookmarks';
+import { getLocationBookmarks, clearLocationBookmarks, deleteLocationBookmark } from '../map/bookmarks';
 import { map } from '../map/map';
 import { EventEmitter } from './event-emitter';
 
@@ -29,22 +29,23 @@ export default class MapPanelBookmarks extends React.Component {
         this.overrideBookmarkClose = false;
 
         this.state = {
-            bookmarks: this.updateBookmarks() // Stores all bookmarks
+            bookmarks: null // We will fill this in during `componentWillMount`
         };
 
+        this.onClickDeleteBookmarks = this.onClickDeleteBookmarks.bind(this);
+        this.onClickConfirmClearAllBookmarks = this.onClickConfirmClearAllBookmarks.bind(this);
+        this.updateBookmarks = this.updateBookmarks.bind(this);
         this.shouldDropdownToggle = this.shouldDropdownToggle.bind(this);
-        this.bookmarksClearedCallback = this.bookmarksClearedCallback.bind(this);
+    }
+
+    componentWillMount () {
+        // Get bookmarks from localstorage.
+        getLocationBookmarks().then(this.updateBookmarks);
     }
 
     componentDidMount () {
-        // Need a notification when all bookmarks are cleared succesfully in order to re-render list
-        EventEmitter.subscribe('bookmarks:clear', this.bookmarksClearedCallback);
-
-        EventEmitter.subscribe('bookmarks:updated', (data) => {
-            this.setState({
-                bookmarks: this.updateBookmarks()
-            });
-        });
+        // Listen for changes to bookmarks from other components
+        EventEmitter.subscribe('bookmarks:updated', this.updateBookmarks);
     }
 
     /**
@@ -61,6 +62,7 @@ export default class MapPanelBookmarks extends React.Component {
     /**
      * Fires when a user clicks on a bookmark from bookmark list.
      * Causes map and search panel to re-render to go to the location on the bookmark
+     *
      * @param key - each bookmark in the bookmark list identified by a unique
      *      key
      */
@@ -75,20 +77,44 @@ export default class MapPanelBookmarks extends React.Component {
         }
 
         map.setView(coordinates, zoom);
+
+        // Activates highlighted state on the location bar
         EventEmitter.dispatch('bookmarks:active');
     }
 
     /**
-     * Delete a single bookmark
-     * @param key - the bookmark index to delete
+     * Delete a single bookmark. Use a guaranteed unique ID to find the correct
+     * bookmark to delete. Using React's key position from the render loop
+     * is not reliable since it may not be in sync with the current state of data.
+     *
+     * @param uid - the unique ID of the bookmark to delete
      */
-    onClickDeleteSingleBookmark (key) {
+    onClickDeleteSingleBookmark (uid) {
         this.overrideBookmarkClose = true; // We want to keep the dropdown open
-        bookmarks.deleteBookmark(key);
+
+        deleteLocationBookmark(uid)
+            .then(this.updateBookmarks)
+            .then(() => {
+                // Removes a highlighted state on the location bar, if any
+                EventEmitter.dispatch('bookmarks:inactive');
+            });
+    }
+
+    /**
+     * Clears all current bookmarks.
+     */
+    onClickConfirmClearAllBookmarks () {
+        clearLocationBookmarks()
+            .then(this.updateBookmarks)
+            .then(() => {
+                // Removes a highlighted state on the location bar, if any
+                EventEmitter.dispatch('bookmarks:inactive');
+            });
     }
 
     /**
      * Callback called when dropdown button wants to change state from open to closed
+     *
      * @param isOpen - state that dropdown wants to render to. Either true or false
      */
     shouldDropdownToggle (isOpen) {
@@ -107,37 +133,26 @@ export default class MapPanelBookmarks extends React.Component {
         ReactDOM.render(
             <ConfirmDialogModal
                 message='Are you sure you want to clear your bookmarks? This cannot be undone.'
-                confirmCallback={bookmarks.clearData}
+                confirmCallback={this.onClickConfirmClearAllBookmarks}
             />,
             document.getElementById('modal-container')
         );
     }
 
     /**
-     * Callback issued from 'bookmarks' object in order to update the panel UI.
-     * Causes a re-render of the bookmarks list
+     * Given new bookmarks object from store, convert to state object and
+     * trigger a re-render of bookmarks list.
      */
-    bookmarksClearedCallback () {
-        this.setState({
-            bookmarks: this.updateBookmarks()
-        });
-        EventEmitter.dispatch('bookmarks:inactive');
-    }
-
-    /**
-     * Fetches current bookmarks from 'bookmarks' object a causes re-render of
-     * bookmarks list.
-     */
-    updateBookmarks () {
+    updateBookmarks (bookmarks) {
         const newBookmarks = [];
-        const bookmarkList = bookmarks.readData().data;
 
-        for (let i = 0; i < bookmarkList.length; i++) {
-            const bookmark = bookmarkList[i];
+        for (let i = 0; i < bookmarks.length; i++) {
+            const bookmark = bookmarks[i];
             let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
 
             newBookmarks.push({
                 id: i,
+                _date: bookmark._date,
                 label: bookmark.label,
                 lat: bookmark.lat.toFixed(4),
                 lng: bookmark.lng.toFixed(4),
@@ -147,7 +162,9 @@ export default class MapPanelBookmarks extends React.Component {
             });
         }
 
-        return newBookmarks;
+        this.setState({
+            bookmarks: newBookmarks
+        });
     }
 
     render () {
@@ -175,6 +192,11 @@ export default class MapPanelBookmarks extends React.Component {
                         list or not */}
                     {(() => {
                         let bookmarkDropdownList;
+
+                        // Haven't loaded bookmarks yet
+                        if (this.state.bookmarks === null) {
+                            return null;
+                        }
 
                         // If no bookmarks, then display a no bookmarks message
                         if (this.state.bookmarks.length === 0) {
@@ -207,7 +229,7 @@ export default class MapPanelBookmarks extends React.Component {
                                         </div>
                                         <div
                                             className='bookmark-dropdown-delete'
-                                            onClick={() => this.onClickDeleteSingleBookmark(i)}
+                                            onClick={() => this.onClickDeleteSingleBookmark(result._date)}
                                         >
                                             <Icon type={'bt-times'} />
                                         </div>

@@ -10,7 +10,7 @@ import { throttle } from 'lodash';
 import { EventEmitter } from './event-emitter';
 import { map } from '../map/map';
 import { config } from '../config';
-import bookmarks from '../map/bookmarks';
+import { saveLocationBookmark } from '../map/bookmarks';
 
 const MAP_UPDATE_DELTA = 0.002;
 
@@ -272,11 +272,11 @@ export default class MapPanelLocationBar extends React.Component {
      */
     onClickSave () {
         const data = this.getCurrentMapViewData();
-        if (bookmarks.saveBookmark(data)) {
-            this.setState({
-                bookmarkActive: true
+        saveLocationBookmark(data)
+            .then((bookmarks) => {
+                this.setState({ bookmarkActive: true });
+                EventEmitter.dispatch('bookmarks:updated', bookmarks);
             });
-        }
     }
 
     /**
