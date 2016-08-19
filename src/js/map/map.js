@@ -1,12 +1,12 @@
 import L from 'leaflet';
 import LeafletHash from './leaflet-hash';
 import Tangram from 'tangram';
+import { throttle } from 'lodash';
+import { EventEmitter } from '../components/event-emitter';
 
 import LocalStorage from '../storage/localstorage';
 import { hideSceneLoadingIndicator } from './MapLoading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
-import { EventEmitter } from '../components/event-emitter';
-import throttle from 'lodash/throttle';
 
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766

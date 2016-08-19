@@ -6,7 +6,7 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
 
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash';
 import { EventEmitter } from './event-emitter';
 import { map } from '../map/map';
 import { config } from '../config';

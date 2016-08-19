@@ -1,13 +1,12 @@
 import React from 'react';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
+import { isEmpty } from 'lodash';
+import { EventEmitter } from '../event-emitter';
 
 import { setCodeMirrorValue, setCursor } from '../../editor/editor';
 import { tangramLayer } from '../../map/map';
 import { getAddressSceneContent } from '../../editor/codemirror/yaml-tangram';
-import isEmpty from 'lodash/isEmpty';
-
-import { EventEmitter } from '../event-emitter';
 
 /**
  * Represents a dropdown widget

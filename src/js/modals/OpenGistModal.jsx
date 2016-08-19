@@ -1,5 +1,4 @@
-import reverse from 'lodash/reverse';
-import reject from 'lodash/reject';
+import { reverse, reject } from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from './Modal';

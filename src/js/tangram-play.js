@@ -15,7 +15,7 @@ import ErrorModal from './modals/ErrorModal';
 import LocalStorage from './storage/localstorage';
 
 // Import Utils
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 import { prependProtocolToUrl } from './tools/helpers';
 import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';

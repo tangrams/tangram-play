@@ -1,4 +1,4 @@
-import capitalize from 'lodash/capitalize';
+import { capitalize } from 'lodash';
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';

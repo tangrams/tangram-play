@@ -1,4 +1,4 @@
-import startsWith from 'lodash/startsWith';
+import { startsWith } from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';

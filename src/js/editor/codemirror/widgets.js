@@ -1,4 +1,4 @@
-import filter from 'lodash/filter';
+import { filter } from 'lodash';
 import TANGRAM_API from '../../tangram-api.json';
 import { isEmptyString } from '../../tools/helpers';
 

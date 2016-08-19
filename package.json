@@ -97,7 +97,7 @@
     "color": "0.11.3",
     "gsap": "1.19.0",
     "leaflet": "1.0.0-rc.2",
-    "lodash": "4.14.1",
+    "lodash": "4.15.0",
     "raven-js": "3.3.0",
     "react": "15.3.0",
     "react-addons-shallow-compare": "15.3.0",

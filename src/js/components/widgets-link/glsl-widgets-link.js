@@ -1,4 +1,4 @@
-import clone from 'lodash/clone';
+import { clone } from 'lodash';
 import { editor } from '../../editor/editor';
 
 import React from 'react';

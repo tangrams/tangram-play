@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
-import noop from 'lodash/noop';
+import { noop } from 'lodash';
 
 export default class ConfirmDialogModal extends React.Component {
     constructor (props) {

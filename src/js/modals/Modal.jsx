@@ -1,5 +1,5 @@
-import noop from 'lodash/noop';
 import React from 'react';
+import { noop } from 'lodash';
 import { EventEmitter } from '../components/event-emitter';
 
 export default class Modal extends React.Component {
