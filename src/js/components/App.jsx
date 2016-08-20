@@ -1,21 +1,17 @@
 import React from 'react';
 import Map from './Map';
 import Editor from './Editor';
+import Divider from './Divider';
 import MenuBar from './MenuBar';
 import Shield from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
 // import ColorPalette from './ColorPalette';
 
 import { initTangramPlay } from '../tangram-play';
-import { initDivider } from '../ui/divider';
 
 export default class App extends React.Component {
     componentDidMount () {
         initTangramPlay();
-
-        // This is called here because right now divider position relies on
-        // editor and map being set up already
-        initDivider();
     }
 
     render () {
@@ -29,13 +25,11 @@ export default class App extends React.Component {
                         </div>
                     </div>
 
-                    <Map />
-
-                    <div className='divider' id='divider'>
-                        <span className='divider-affordance' />
+                    <div>
+                        <Map />
+                        <Divider />
+                        <Editor />
                     </div>
-
-                    <Editor />
 
                     <div id='widget-links' />
                     {/* <ColorPalette /> */}

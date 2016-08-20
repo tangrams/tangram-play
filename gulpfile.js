@@ -58,7 +58,7 @@ gulp.task('css', function () {
 
 // Build Javascripts
 gulp.task('js', function () {
-    var browserify = require('browserify');
+    var browserifyInc = require('browserify-incremental');
     var shim = require('browserify-shim');
     var babelify = require('babelify');
     var source = require('vinyl-source-stream');
@@ -66,7 +66,7 @@ gulp.task('js', function () {
     var uglify = require('gulp-uglify');
     var envify = require('loose-envify');
 
-    var bundle = browserify({
+    var bundle = browserifyInc({
         entries: 'src/js/main.js',
         debug: true,
         extensions: ['.jsx'],
@@ -74,7 +74,9 @@ gulp.task('js', function () {
             babelify.configure({ presets: ['es2015', 'react'] }),
             shim,
             envify
-        ]
+        ],
+        // Option for browserify-incremental
+        cacheFile: './browserify-cache.json'
     });
 
     // Only uglify for deployment/production build,
