@@ -101,7 +101,7 @@
     "react": "15.3.1",
     "react-addons-shallow-compare": "15.3.1",
     "react-addons-test-utils": "15.3.1",
-    "react-autosuggest": "3.9.0",
+    "react-autosuggest": "5.1.0",
     "react-bootstrap": "0.30.2",
     "react-color": "2.2.2",
     "react-dom": "15.3.1",

@@ -64,11 +64,9 @@
 }
 
 .react-autosuggest__suggestions-container {
-    list-style-type: none;
     font-size: 12px;
     font-weight: 200;
     background-color: var(--ui-component-color);
-    padding: 0;
     margin: 0;
     margin-top: 4px;
     white-space: nowrap;
@@ -83,6 +81,11 @@
     li:hover {
         background-color: var(--ui-active-color);
     }
+}
+
+.react-autosuggest__suggestions-list {
+    list-style: none;
+    padding: 0;
 }
 
 .react-autosuggest__suggestion--focused {
