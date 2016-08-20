@@ -119,9 +119,13 @@
         outline: none;
         width: 100%;
         display: flex;
-        /* align-items: center; */
-        justify-content: center;
         justify-content: space-between;
+    }
+
+    .bookmark-dropdown-center a {
+        justify-content: center; /* Override previous style */
+        text-align: center;
+        padding: 8px;
     }
 
     li {
@@ -152,10 +156,8 @@
     color: var(--ui-border-color);
 }
 
-.dropdown-menu.dropdown-menu-right .bookmark-dropdown-center a {
-    justify-content: center;
-    padding-top: 8px;
-    padding-bottom: 8px;
+.bookmark-dropdown-clear:hover {
+    background-color: var(--ui-active-color);
 }
 
 .bookmark-dropdown-delete {
@@ -167,13 +169,15 @@
     padding-right: 8px;
     padding-top: 8px;
     padding-bottom: 8px;
+    text-align: center;
+
+    &:hover {
+        background-color: var(--ui-active-color);
+    }
 
     i.btm {
         font-size: 6px;
         font-weight: 900;
+        margin: 0;
     }
-}
-
-.bookmark-dropdown-delete:hover {
-    background-color: var(--ui-active-color);
 }

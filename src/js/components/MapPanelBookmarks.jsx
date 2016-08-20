@@ -156,7 +156,7 @@ export default class MapPanelBookmarks extends React.Component {
                 rootClose
                 placement='bottom'
                 ref={(ref) => { this.culpritOverlay = ref; }}
-                overlay={<Tooltip id='tooltip-bookmark'>{'Bookmarks'}</Tooltip>}
+                overlay={<Tooltip id='tooltip-bookmark'>{'Locations'}</Tooltip>}
             >
                 <DropdownButton
                     title={<Icon type={'bt-bookmark'} />}
@@ -180,7 +180,7 @@ export default class MapPanelBookmarks extends React.Component {
                         if (this.state.bookmarks.length === 0) {
                             bookmarkDropdownList = (
                                 <MenuItem key='none' className='bookmark-dropdown-center'>
-                                    <div>No bookmarks yet!</div>
+                                    No locations bookmarked!
                                 </MenuItem>
                             );
                         }
@@ -220,9 +220,9 @@ export default class MapPanelBookmarks extends React.Component {
                                 <MenuItem
                                     key='delete'
                                     onSelect={this.onClickDeleteBookmarks}
-                                    className='bookmark-dropdown-center clear-bookmarks'
+                                    className='bookmark-dropdown-center bookmark-dropdown-clear'
                                 >
-                                    <div>Clear bookmarks</div>
+                                    Clear bookmarks
                                 </MenuItem>
                             );
 
