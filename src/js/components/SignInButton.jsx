@@ -9,8 +9,8 @@ import Icon from './Icon';
 import ErrorModal from '../modals/ErrorModal';
 
 import { EventEmitter } from './event-emitter';
-import { requestUserLogin, requestUserLogout } from '../user/login';
-import { openLoginWindow } from '../user/login-window';
+import { requestUserSignIn, requestUserSignOut } from '../user/sign-in';
+import { openSignInWindow } from '../user/sign-in-window';
 import EditorIO from '../editor/io';
 
 export default class SignInButton extends React.Component {
@@ -36,7 +36,7 @@ export default class SignInButton extends React.Component {
     }
 
     onClickSignIn (event) {
-        openLoginWindow();
+        openSignInWindow();
     }
 
     /**
@@ -45,7 +45,7 @@ export default class SignInButton extends React.Component {
      */
     onClickSignOut (event) {
         EditorIO.checkSaveStateThen(() => {
-            requestUserLogout().then((response) => {
+            requestUserSignOut().then((response) => {
                 if (response.ok) {
                     this.setState({
                         isLoggedIn: false,
@@ -62,7 +62,7 @@ export default class SignInButton extends React.Component {
     }
 
     checkLoggedInState () {
-        requestUserLogin().then((data) => {
+        requestUserSignIn().then((data) => {
             const newState = {
                 serverContacted: true
             };
@@ -75,7 +75,7 @@ export default class SignInButton extends React.Component {
             }
 
             // If this is a self-hosted (or localhost) instance of Tangram Play
-            // (e.g. not on mapzen.com) then there is no login functionality
+            // (e.g. not on mapzen.com) then there is no sign-in functionality
             // and we effectively disable it
             if (data.hosted === false) {
                 newState.serverContacted = false;
@@ -110,7 +110,7 @@ export default class SignInButton extends React.Component {
         }
         // Logged out state. Only display if server is contacted and has confirmed
         // no user is logged in. This is to prevent this button from having a
-        // "Sign in" momentarily flash before the login-state API is contacted.
+        // "Sign in" momentarily flash before the sign-in-state API is contacted.
         else if (this.state.serverContacted && !this.state.isLoggedIn) {
             return (
                 <NavItem onClick={this.onClickSignIn} href='#' className='menu-sign-in'>

@@ -1,31 +1,31 @@
 import { EventEmitter } from '../components/event-emitter';
 
 /**
- * This modal loads mapzen.com's login flow into an iframe, so it outsources
+ * This modal loads mapzen.com's sign-in flow into an iframe, so it outsources
  * as much of it as possible out of Tangram Play. When the iframe source looks
  * like the user has successfully signed in / signed up, we toggle the state
- * on the login window and the user log in state in the application.
+ * on the sign-in window and the user log in state in the application.
  * Due to web security restrictions, this must be tested on mapzen.com and
  * should not be loaded in other contexts (e.g. localhost)
  */
 
-let loginWindow;
+let signInWindow;
 let pollWindowStateIntervalId;
 let redirectingTimerId;
 
 /**
- * Primary entry point for opening a login window.
+ * Primary entry point for opening a sign-in window.
  */
-export function openLoginWindow () {
+export function openSignInWindow () {
     // Only open if not open already; or was closed from a previous attempt.
     // If it's already open, focus on that instead.
-    if (!loginWindow || loginWindow.closed === true) {
-        loginWindow = popupCenter('/developers/sign_in', 'Login to Mapzen Developer Portal', 650, 650);
-        loginWindow.addEventListener('close', cleanup);
-        window.addEventListener('unload', closeLoginWindow);
+    if (!signInWindow || signInWindow.closed === true) {
+        signInWindow = popupCenter('/developers/sign_in', 'Sign in to Mapzen Developer Portal', 650, 650);
+        signInWindow.addEventListener('close', cleanup);
+        window.addEventListener('unload', closeSignInWindow);
 
         // Experimental.
-        loginWindow.addEventListener('load', adjustLoginPageContent);
+        signInWindow.addEventListener('load', adjustSignInPageContent);
 
         // We can't add load or close event listeners to the new window (they
         // don't trigger) so instead we poll the window at a set interval
@@ -36,26 +36,26 @@ export function openLoginWindow () {
     // This new window should grab the user's attention immediately
     // Apparently, this doesn't work in all browsers (e.g. Chrome) due to
     // security policies.
-    loginWindow.focus();
+    signInWindow.focus();
 }
 
 function pollWindowState () {
-    if (!loginWindow || loginWindow.closed) {
+    if (!signInWindow || signInWindow.closed) {
         window.clearInterval(pollWindowStateIntervalId);
-        loginStateReady();
+        signInStateReady();
     }
     else {
         try {
             // If it's exactly /developers, we're probably logged in now
-            if (loginWindow.location.pathname === '/developers') {
+            if (signInWindow.location.pathname === '/developers') {
                 adjustDonePageContent();
                 if (!redirectingTimerId) {
-                    redirectingTimerId = window.setTimeout(loginStateReady, 2000);
+                    redirectingTimerId = window.setTimeout(signInStateReady, 2000);
                 }
             }
             // Experimental: hack the view for developer pages.
-            if (loginWindow.location.pathname.indexOf('/developers/') === 0) {
-                adjustLoginPageContent();
+            if (signInWindow.location.pathname.indexOf('/developers/') === 0) {
+                adjustSignInPageContent();
             }
         }
         catch (e) {
@@ -65,25 +65,25 @@ function pollWindowState () {
 }
 
 /**
- * Called when user completes the flow in the login window.
+ * Called when user completes the flow in the sign-in window.
  */
-function loginStateReady () {
+function signInStateReady () {
     EventEmitter.dispatch('mapzen:sign_in', {});
-    closeLoginWindow();
+    closeSignInWindow();
 
     // Returns focus to the original parent window.
     window.focus();
 }
 
 /**
- * Closes the login window. This is called when we detect that the user
- * completes the login flow, and if the app window is closed.
- * Closing the login window should automatically clean up after itself
+ * Closes the sign-in window. This is called when we detect that the user
+ * completes the sign-in flow, and if the app window is closed.
+ * Closing the sign-in window should automatically clean up after itself
  * due to the `close` event handler.
  */
-function closeLoginWindow () {
-    if (loginWindow) {
-        loginWindow.close();
+function closeSignInWindow () {
+    if (signInWindow) {
+        signInWindow.close();
     }
 }
 
@@ -91,21 +91,21 @@ function closeLoginWindow () {
  * Cleans up event listeners from the app window to prevent memory leaks.
  */
 function cleanup () {
-    window.removeEventListener('unload', closeLoginWindow);
+    window.removeEventListener('unload', closeSignInWindow);
     window.clearInterval(pollWindowStateIntervalId);
     window.clearTimeout(redirectingTimerId);
 }
 
 /**
- * A super hacky experiment to restyle Mapzen's stock login page just the way
+ * A super hacky experiment to restyle Mapzen's stock sign-in page just the way
  * we like it. There's no guarantee this works forever especially as DOM
  * elements, class selectors and styles may evolve over time.
  */
-function adjustLoginPageContent () {
-    const childDocument = loginWindow.document;
+function adjustSignInPageContent () {
+    const childDocument = signInWindow.document;
 
     // Only do this once
-    if (childDocument.querySelector('#dev_login') && !childDocument.getElementById('tangram-play-login-override-styles')) {
+    if (childDocument.querySelector('#dev_login') && !childDocument.getElementById('tangram-play-signin-override-styles')) {
         const newStyleEl = document.createElement('style');
         const newStyleText = `
             body {
@@ -165,7 +165,7 @@ function adjustLoginPageContent () {
                 display: none;
             }
         `;
-        newStyleEl.id = 'tangram-play-login-override-styles';
+        newStyleEl.id = 'tangram-play-signin-override-styles';
         newStyleEl.textContent = newStyleText;
 
         childDocument.head.appendChild(newStyleEl);
@@ -175,10 +175,10 @@ function adjustLoginPageContent () {
 }
 
 function adjustDonePageContent () {
-    const childDocument = loginWindow.document;
+    const childDocument = signInWindow.document;
 
     // Only do this once
-    if (!childDocument.getElementById('tangram-play-login-override-styles')) {
+    if (!childDocument.getElementById('tangram-play-signin-override-styles')) {
         const newStyleEl = document.createElement('style');
         const newStyleText = `
             body {
@@ -218,7 +218,7 @@ function adjustDonePageContent () {
                 align-items: center;
             }
         `;
-        newStyleEl.id = 'tangram-play-login-override-styles';
+        newStyleEl.id = 'tangram-play-signin-override-styles';
         newStyleEl.textContent = newStyleText;
 
         childDocument.head.appendChild(newStyleEl);
@@ -254,7 +254,7 @@ function adjustDonePageContent () {
 }
 
 /**
- * Opens a new window for the login page and places it in the middle of the
+ * Opens a new window for the sign-in page and places it in the middle of the
  * app window. This was taken from a StackOverflow answer that we've repurposed
  * several times through mapzen.com but still has a problem with some browsers
  * and some multi-monitor setups.

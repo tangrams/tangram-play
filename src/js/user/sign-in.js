@@ -1,5 +1,5 @@
 /**
- * Login to mapzen.com
+ * SignIn to mapzen.com
  *
  */
 /*
@@ -12,14 +12,14 @@ If logged in, the response looks like this:
 {"logged_in":true,"id":7,"email":"name@domain.com","nickname":"name","admin":true}
 */
 
-let cachedLoginData;
+let cachedSignInData;
 
-export function requestUserLogin () {
+export function requestUserSignIn () {
     if (window.location.hostname.endsWith('mapzen.com')) {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
                 const data = response.json();
-                cachedLoginData = data;
+                cachedSignInData = data;
                 return data;
             })
             .catch((error) => {
@@ -33,15 +33,15 @@ export function requestUserLogin () {
     }
 }
 
-export function getCachedUserLogin () {
-    return cachedLoginData;
+export function getCachedUserSignInData () {
+    return cachedSignInData;
 }
 
 /**
  * Assumes this is only available when already logged in, so no host check
  * is performed.
  */
-export function requestUserLogout () {
+export function requestUserSignOut () {
     return window.fetch('/api/developer/sign_out', {
         method: 'POST',
         credentials: 'same-origin'

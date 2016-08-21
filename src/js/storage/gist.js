@@ -3,7 +3,7 @@ import { map } from '../map/map';
 import { getScreenshotData } from '../map/screenshot';
 // import { getLocationLabel } from '../map/search'; // TODO: implement now that move to react has changed this
 import { createThumbnail } from '../tools/thumbnail';
-import { getCachedUserLogin } from '../user/login';
+import { getCachedUserSignInData } from '../user/sign-in';
 
 import L from 'leaflet';
 
@@ -30,7 +30,7 @@ export function saveToGist (data, successCallback, errorCallback) {
         return createThumbnail(screenshot.url, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
     }).then(thumbnail => {
         const files = {};
-        const cachedLogin = getCachedUserLogin();
+        const cachedUserData = getCachedUserSignInData();
         const metadata = {
             name: sceneName,
             view: {
@@ -45,7 +45,7 @@ export function saveToGist (data, successCallback, errorCallback) {
                 tangram: window.Tangram.version,
                 leaflet: L.version
             },
-            user: cachedLogin ? cachedLogin.nickname : null
+            user: cachedUserData ? cachedUserData.nickname : null
         };
 
         // This is a single YAML file
