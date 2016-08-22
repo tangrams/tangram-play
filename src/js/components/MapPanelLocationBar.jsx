@@ -471,7 +471,7 @@ export default class MapPanelLocationBar extends React.Component {
                     renderSuggestion={this.renderSuggestion}
                     onSuggestionSelected={this.onSuggestionSelected}
                     inputProps={inputProps}
-                    focusFirstSuggestion={true}
+                    focusFirstSuggestion={false}
                 />
 
                 {/* Lat lng label */}
