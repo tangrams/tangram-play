@@ -27,9 +27,21 @@ export default class Map extends React.Component {
             <div className='map-container' id='map-container'>
                 <div className='map-view' id='map' />
                 <MapLoading />
-                <MapPanel />
+                {(() => {
+                    if (this.props.panel) {
+                        return (<MapPanel />);
+                    }
+                })()}
                 <div id='map-inspection-components' />
             </div>
         );
     }
 }
+
+Map.propTypes = {
+    panel: React.PropTypes.bool
+};
+
+Map.defaultProps = {
+    panel: true
+};
