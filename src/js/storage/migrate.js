@@ -5,7 +5,13 @@ const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 // This is a temporary migration.
 // TODO: Remove / deprecate in v1.0 or when appropriate.
 export function migrateLocalStorageToForage () {
-    if (!window.localStorage) {
+    // Wrapped in try/catch to avoid "Access denied" errors.
+    try {
+        if (!('localStorage' in window)) {
+            return;
+        }
+    }
+    catch (error) {
         return;
     }
 
