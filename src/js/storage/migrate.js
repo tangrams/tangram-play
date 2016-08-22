@@ -70,9 +70,8 @@ function moveEverything () {
                         });
                     }
                 }).catch((err) => {
-                    console.log(`[migrating localstorage] Error checking if ${newKeyName} is already in storage.`);
+                    console.log(`[migrating localstorage] Error checking if ${newKeyName} is already in storage.`, err);
                 });
-
         }
     }
 }
