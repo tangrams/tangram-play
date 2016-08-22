@@ -28,6 +28,11 @@ function moveEverything () {
 
             let newValue;
 
+            // Skip lat, lng, zoom
+            if (newKeyName === 'latitude' || newKeyName === 'longitude' || newKeyName === 'zoom') {
+                continue;
+            }
+
             // We can store different data types, so we're converting these now.
             switch (newKeyName) {
                 case 'bookmarks':
@@ -49,9 +54,9 @@ function moveEverything () {
                     newValue = JSON.parse(value) || {};
                     break;
                 case 'divider-position-x':
-                case 'latitude':
-                case 'longitude':
-                case 'zoom':
+                // case 'latitude':
+                // case 'longitude':
+                // case 'zoom':
                     newValue = Number(value);
                     break;
                 case 'map-toolbar-display':
@@ -80,4 +85,34 @@ function moveEverything () {
                 });
         }
     }
+
+    convertMapViewToObject();
+}
+
+function convertMapViewToObject () {
+    const lat = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'latitude');
+    const lng = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'longitude');
+    const zoom = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'zoom');
+
+    // If any of these are not present, then this is not meaningful to save
+    // - let's move on
+    if (!lat || !lng || !zoom) {
+        return;
+    }
+
+    const obj = {
+        lat: Number(lat),
+        lng: Number(lng),
+        zoom: Number(zoom)
+    };
+
+    localforage.setItem('last-map-view', obj)
+        .then(() => {
+            window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'latitude');
+            window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'longitude');
+            window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'zoom');
+        })
+        .catch((err) => {
+            console.log('[migrating localstorage] Error converting map view to object', err);
+        });
 }
