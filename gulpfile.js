@@ -58,6 +58,7 @@ gulp.task('css', function () {
 
 // Build Javascripts
 gulp.task('js', function () {
+    var browserify = require('browserify');
     var browserifyInc = require('browserify-incremental');
     var shim = require('browserify-shim');
     var babelify = require('babelify');
@@ -66,7 +67,17 @@ gulp.task('js', function () {
     var uglify = require('gulp-uglify');
     var envify = require('loose-envify');
 
-    var bundle = browserifyInc({
+    // Set which browserify type to use for different environments.
+    // In development, we use incremental browserify so rebuilds are faster.
+    var browserifyEnv = browserifyInc;
+
+    // In production, we use normal browserify because loose-envify only works
+    // for normal browserify - not for incremental browserify.
+    if (process.env.NODE_ENV === 'production') {
+        browserifyEnv = browserify;
+    }
+
+    var bundle = browserifyEnv({
         entries: 'src/js/main.js',
         debug: true,
         extensions: ['.jsx'],
