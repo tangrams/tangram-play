@@ -385,25 +385,19 @@ export default class MapPanelLocationBar extends React.Component {
 
     /**
      * Returns a JSX string for all the suggestions returned for autocomplete
+     * This must be a pure function (react-autosuggest optimizes rendering
+     * performance based on this assumption).
+     *
      * @param suggestion - particular item from autocomplete result list to style
      */
-    renderSuggestion (suggestion, { currentValue, valueBeforeUpDown }) {
-        let value;
-        let label = suggestion.properties.label;
+    renderSuggestion (suggestion, { query }) {
+        const label = suggestion.properties.label;
 
-        // Have to highlight in a different way because of this limitation in rendering JSX and HTML tags
-        // Read: https://facebook.github.io/react/tips/dangerously-set-inner-html.html
-        if (valueBeforeUpDown === null) {
-            value = this.state.value;
-        }
-        else {
-            value = valueBeforeUpDown;
-        }
-
-        let r = new RegExp('(' + value + ')', 'gi');
-        var parts = label.split(r);
+        // Highlight the input query
+        const r = new RegExp('(' + query + ')', 'gi');
+        const parts = label.split(r);
         for (var i = 0; i < parts.length; i++) {
-            if (parts[i].toLowerCase() === value.toLowerCase()) {
+            if (parts[i].toLowerCase() === query.toLowerCase()) {
                 parts[i] = <strong key={i}>{parts[i]}</strong>;
             }
         }
