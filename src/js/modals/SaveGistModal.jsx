@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
-import LocalStorage from '../storage/localstorage';
+import localforage from 'localforage';
 import ErrorModal from './ErrorModal';
 import SaveGistSuccessModal from './SaveGistSuggestModal';
 import { saveToGist } from '../storage/gist';
@@ -144,7 +144,17 @@ export default class SaveGistModal extends React.Component {
         };
 
         // Store response in localstorage
-        LocalStorage.pushItem(STORAGE_SAVED_GISTS, JSON.stringify(saveData));
+        // This is stored as an array of saveData
+        localforage.getItem(STORAGE_SAVED_GISTS)
+            .then((gists) => {
+                if (Array.isArray(gists)) {
+                    gists.push(saveData);
+                }
+                else {
+                    gists = [];
+                }
+                localforage.setItem(STORAGE_SAVED_GISTS, gists);
+            });
 
         // Close the modal
         this.destroyModal();

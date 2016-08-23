@@ -44,8 +44,7 @@
 }
 
 .open-gist-selected {
-    .open-gist-option-name,
-    .open-gist-option-legacy-name {
+    .open-gist-option-name {
         color: var(--ui-highlight-color);
     }
 }
@@ -53,11 +52,6 @@
 .open-gist-option-name {
     line-height: 24px;
     margin-bottom: 0.5em;
-}
-
-.open-gist-option-legacy-name {
-    font-size: 14px;
-    line-height: 24px;
 }
 
 .open-gist-option-description {

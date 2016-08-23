@@ -4,7 +4,7 @@ import Tangram from 'tangram';
 import { throttle } from 'lodash';
 import { EventEmitter } from '../components/event-emitter';
 
-import LocalStorage from '../storage/localstorage';
+import localforage from 'localforage';
 import { hideSceneLoadingIndicator } from './MapLoading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 
@@ -31,13 +31,28 @@ export function initMap () {
     });
 
     // Get map start position
-    const mapStartLocation = getMapStartLocation();
+    getMapStartLocation()
+        .then((mapStartLocation) => {
+            // Create Leaflet map
+            map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
 
-    // Create Leaflet map
-    map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
+            // Add leaflet-hash (forked version)
+            const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
 
-    // Add leaflet-hash (forked version)
-    const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
+            // Report ready to other things that depend on map state.
+            // The problem is that the other map-based sub-components like MapPanel
+            // cannot assume that the map exists already when they're mounted,
+            // because the children of this component will be mounted before
+            // the parent's componentDidMount() is called. So, like all other
+            // inter-component communication outside of the React framework, we
+            // currently use an EventEmitter to report a ready state, which then
+            // populates the sub-components' state. I'd imagine this situation to
+            // improve when we look into a react-leaflet implementation.
+            EventEmitter.dispatch('map:init');
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 
     // Force Leaflet to update itself.
     // This resolves an issue where the map may sometimes not appear
@@ -47,10 +62,12 @@ export function initMap () {
     }, 0);
 
     // Set up a listener to record current map view settings when user leaves
-    window.addEventListener('unload', function (event) {
-        LocalStorage.setItem('latitude', map.getCenter().lat);
-        LocalStorage.setItem('longitude', map.getCenter().lng);
-        LocalStorage.setItem('zoom', map.getZoom());
+    window.addEventListener('beforeunload', function (event) {
+        localforage.setItem('last-map-view', {
+            lat: map.getCenter().lat,
+            lng: map.getCenter().lng,
+            zoom: map.getZoom()
+        });
     });
 
     setupEventListeners();
@@ -117,7 +134,7 @@ export function loadScene (pathToSceneFile, { reset = false, basePath = null } =
 
 function getMapStartLocation () {
     // Set default location
-    let startLocation = {
+    let defaultStartLocation = {
         latlng: [0.0, 0.0],
         zoom: 3
     };
@@ -129,26 +146,27 @@ function getMapStartLocation () {
         // Convert from strings
         urlHash = urlHash.map(Number);
 
-        startLocation = {
+        return Promise.resolve({
             latlng: [urlHash[1], urlHash[2]],
             zoom: urlHash[0]
-        };
+        });
     }
-    // If no valid URL hash is provided, check localStorage to see if
+    // If no valid URL hash is provided, check local storage to see if
     // lat & lng & zoom have been saved from a previous session
     else {
-        let previousLat = Number(LocalStorage.getItem('latitude'));
-        let previousLng = Number(LocalStorage.getItem('longitude'));
-        let previousZoom = Number(LocalStorage.getItem('zoom'));
-        if (previousLat && previousLng && previousZoom) {
-            startLocation = {
-                latlng: [previousLat, previousLng],
-                zoom: previousZoom
-            };
-        }
+        return localforage.getItem('last-map-view')
+            .then((view) => {
+                if (view && view.lat && view.lng && view.zoom) {
+                    return {
+                        latlng: [view.lat, view.lng],
+                        zoom: view.zoom
+                    };
+                }
+                else {
+                    return defaultStartLocation;
+                }
+            });
     }
-
-    return startLocation;
 }
 
 /* New section to handle React components */

@@ -7,12 +7,12 @@ import { editor, getEditorContent, setEditorContent } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
+import localforage from 'localforage';
 import { initWidgetMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
 import { initGlslWidgetsLink } from './components/widgets-link/glsl-widgets-link';
 import ErrorModal from './modals/ErrorModal';
-import LocalStorage from './storage/localstorage';
 
 // Import Utils
 import { debounce } from 'lodash';
@@ -37,8 +37,8 @@ export function initTangramPlay () {
     };
 
     // LOAD SCENE FILE
-    const initialScene = determineScene();
-    load(initialScene)
+    determineScene()
+        .then(load)
         .then(() => {
             // Highlight lines if requested by the query string.
             const query = getQueryStringObject();
@@ -88,7 +88,16 @@ export function initTangramPlay () {
         };
         /* eslint-enable camelcase */
 
-        saveSceneContentsToLocalMemory(sceneData);
+        // Expects an object of format:
+        // {
+        //     original_url: 'http://valid.url/path/scene.yaml',
+        //     original_base_path: 'http://valid.url/path/',
+        //     contents: 'Contents of scene.yaml',
+        //     is_clean: boolean value; false indicates original contents were modified without saving
+        //     scrollInfo: editor's scroll position
+        //     cursor: where the cursor was positioned in the document.
+        // }
+        localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
     });
 }
 
@@ -274,42 +283,31 @@ function hideUnloadedState () {
     document.querySelector('.map-view').classList.remove('map-view-not-loaded');
 }
 
-// Determine what is the scene url and content to load during start-up
+/**
+ * Determine what is the scene url and content to load during start-up
+ * Reading local memory is asynchronous, so this returns a Promise
+ *
+ * @returns {Promise} - resolves to an object of scene data.
+ */
 function determineScene () {
-    let scene = {};
-
     // If there is a query, return it
     let query = getQueryStringObject();
     if (query.scene) {
-        scene.url = query.scene;
-        return scene;
+        return new Promise((resolve, reject) => {
+            resolve({ url: query.scene });
+        });
     }
 
-    // Else if there is something saved in memory (LocalStorage), return that
+    // Else if there is something saved in memory (localforage), return that
     // Check that contents exist and that it is not empty.
-    let sceneData = getSceneContentsFromLocalMemory();
-    if (sceneData && sceneData.contents && sceneData.contents.trim().length > 0) {
-        return sceneData;
-    }
-
-    // Else load the default scene file.
-    scene.url = DEFAULT_SCENE;
-    return scene;
-}
-
-function saveSceneContentsToLocalMemory (sceneData) {
-    // Expects an object of format:
-    // {
-    //     original_url: 'http://valid.url/path/scene.yaml',
-    //     original_base_path: 'http://valid.url/path/',
-    //     contents: 'Contents of scene.yaml',
-    //     is_clean: boolean value; false indicates original contents were modified without saving
-    //     scrollInfo: editor's scroll position
-    //     cursor: where the cursor was positioned in the document.
-    // }
-    LocalStorage.setItem(STORAGE_LAST_EDITOR_CONTENT, JSON.stringify(sceneData));
-}
-
-function getSceneContentsFromLocalMemory () {
-    return JSON.parse(LocalStorage.getItem(STORAGE_LAST_EDITOR_CONTENT));
+    return localforage.getItem(STORAGE_LAST_EDITOR_CONTENT)
+        .then((sceneData) => {
+            if (sceneData && sceneData.contents && sceneData.contents.trim().length > 0) {
+                return sceneData;
+            }
+            // Else load the default scene file.
+            else {
+                return { url: DEFAULT_SCENE };
+            }
+        });
 }
