@@ -22,6 +22,7 @@ export default class OpenGistModal extends React.Component {
             selected: null
         };
 
+        this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
     }
 
@@ -51,7 +52,7 @@ export default class OpenGistModal extends React.Component {
     }
 
     onClickCancel () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
+        this.component.unmount();
     }
 
     onClickConfirm () {
@@ -162,7 +163,11 @@ export default class OpenGistModal extends React.Component {
 
         // Render the entire modal
         return (
-            <Modal className='modal-alt open-gist-modal'>
+            <Modal
+                className='modal-alt open-gist-modal'
+                ref={(ref) => { this.component = ref; }}
+                cancelFunction={this.onClickClose}
+            >
                 <h4>Open a previously saved Gist</h4>
 
                 <div className='modal-content open-gist-list'>

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { noop } from 'lodash';
 import { EventEmitter } from '../components/event-emitter';
 
@@ -6,6 +7,7 @@ export default class Modal extends React.Component {
     constructor (props) {
         super(props);
 
+        this.storeRefs = this.storeRefs.bind(this);
         this.handleEscKey = this.handleEscKey.bind(this);
     }
 
@@ -23,14 +25,40 @@ export default class Modal extends React.Component {
         window.removeEventListener('keydown', this.handleEscKey, false);
     }
 
-    // Function to handle when the escape key is pressed.
-    // Should be the same function as if you pressed the Cancel button.
-    // Events are passed to the function as the first parameter.
+    /**
+     * Unmounts this component. Can be called by parent components using a ref.
+     *
+     * @public
+     */
+    unmount () {
+        ReactDOM.unmountComponentAtNode(this.el.parentNode);
+    }
+
+    /**
+     * Stores reference to this modal's DOM node locally, and sends to parent
+     * component if a callback function is provided.
+     */
+    storeRefs (ref) {
+        this.el = ref;
+        this.props.setRef(ref);
+    }
+
+    /**
+     * Function to handle when the escape key is pressed.
+     * Should be the same function as if you pressed the Cancel button.
+     * Events are passed to the function as the first parameter.
+     */
     handleEscKey (event) {
         const key = event.keyCode || event.which;
 
         if (key === 27 && !this.props.disableEsc) {
-            this.props.cancelFunction(event);
+            if (this.props.cancelFunction !== noop) {
+                this.props.cancelFunction(event);
+            }
+            // Without a cancel function handler, just unmount
+            else {
+                this.unmount();
+            }
         }
     }
 
@@ -42,7 +70,7 @@ export default class Modal extends React.Component {
         }
 
         return (
-            <div className={classNames}>
+            <div className={classNames} ref={this.storeRefs}>
                 {this.props.children}
             </div>
         );
@@ -53,10 +81,12 @@ Modal.propTypes = {
     children: React.PropTypes.node,
     className: React.PropTypes.string,
     disableEsc: React.PropTypes.bool,
-    cancelFunction: React.PropTypes.func
+    cancelFunction: React.PropTypes.func,
+    setRef: React.PropTypes.func,
 };
 
 Modal.defaultProps = {
     disableEsc: false,
-    cancelFunction: noop
+    cancelFunction: noop,
+    setRef: noop
 };

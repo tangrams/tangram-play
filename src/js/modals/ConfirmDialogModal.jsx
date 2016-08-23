@@ -26,25 +26,22 @@ export default class ConfirmDialogModal extends React.Component {
     }
 
     onClickCancel () {
-        this.destroyModal();
+        this.component.unmount();
         this.props.cancelCallback();
     }
 
     onClickConfirm () {
-        // Clean up this modal first before running the callback, because if
-        // a new modal is opened in the callback then `destroyModal()` will get
-        // rid of it!
-        this.destroyModal();
+        this.component.unmount();
         this.props.confirmCallback();
-    }
-
-    destroyModal () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
     }
 
     render () {
         return (
-            <Modal className='error-modal' cancelCallback={this.onClickClose}>
+            <Modal
+                className='error-modal'
+                ref={(ref) => { this.component = ref; }}
+                cancelFunction={this.onClickCancel}
+            >
                 <p className='modal-text'>
                     {this.props.message}
                 </p>

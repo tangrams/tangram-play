@@ -1,19 +1,28 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 
 import CodeMirror from 'codemirror';
 import L from 'leaflet';
 
-export default class AboutModal extends React.Component {
+export default class AboutModal extends React.PureComponent {
+    constructor (props) {
+        super(props);
+
+        this.onClickClose = this.onClickClose.bind(this);
+    }
+
     onClickClose () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
+        this.component.unmount();
     }
 
     render () {
         return (
-            <Modal className='about-modal' cancelFunction={this.onClickClose}>
+            <Modal
+                className='about-modal'
+                ref={(ref) => { this.component = ref; }}
+                cancelFunction={this.onClickClose}
+            >
                 <div className='modal-text modal-about-text'>
                     <h4>About Tangram Play (BETA)</h4>
 

@@ -20,12 +20,16 @@ export default class ErrorModal extends React.Component {
     }
 
     onClickClose () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
+        this.component.unmount();
     }
 
     render () {
         return (
-            <Modal className='error-modal' cancelFunction={this.onClickClose}>
+            <Modal
+                className='error-modal'
+                ref={(ref) => { this.component = ref; }}
+                cancelFunction={this.onClickClose}
+            >
                 <p className='modal-text'>
                     {this.props.error.message || this.props.error}
                 </p>
