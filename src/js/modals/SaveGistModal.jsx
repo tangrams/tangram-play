@@ -7,7 +7,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 import localforage from 'localforage';
 import ErrorModal from './ErrorModal';
-import SaveGistSuccessModal from './SaveGistSuggestModal';
+import SaveGistSuccessModal from './SaveGistSuccessModal';
 import { saveToGist } from '../storage/gist';
 import { editor } from '../editor/editor';
 import { replaceHistoryState } from '../tools/url-state';
@@ -96,7 +96,7 @@ export default class SaveGistModal extends React.Component {
     onClickCancel (event) {
         window.clearTimeout(this._timeout);
         this.resetInputs();
-        this.destroyModal();
+        this.component.unmount();
     }
 
     setReadyUI () {
@@ -157,7 +157,7 @@ export default class SaveGistModal extends React.Component {
             });
 
         // Close the modal
-        this.destroyModal();
+        this.component.unmount();
 
         // Mark as clean state in the editor
         editor.doc.markClean();
@@ -179,14 +179,10 @@ export default class SaveGistModal extends React.Component {
      */
     handleSaveError (error) {
         // Close the modal
-        this.destroyModal();
+        this.component.unmount();
 
         // Show error modal
         ReactDOM.render(<ErrorModal error={`Uh oh! We tried to save your scene but something went wrong. ${error.message}`} />, document.getElementById('modal-container'));
-    }
-
-    destroyModal () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
     }
 
     render () {
@@ -195,6 +191,7 @@ export default class SaveGistModal extends React.Component {
             <Modal
                 className='modal-alt save-gist-modal'
                 disableEsc={this.state.thinking}
+                ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
                 <div className='modal-text modal-save-gist-text'>

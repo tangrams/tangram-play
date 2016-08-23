@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
@@ -34,12 +33,12 @@ export default class OpenUrlModal extends React.Component {
         const url = this.input.value.trim();
         load({ url })
             .then(() => {
-                this.destroyModal();
+                this.component.unmount();
             });
     }
 
     onClickCancel (event) {
-        this.destroyModal();
+        this.component.unmount();
     }
 
     onKeyUpInput (event) {
@@ -58,15 +57,12 @@ export default class OpenUrlModal extends React.Component {
         }
     }
 
-    destroyModal () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
-    }
-
     render () {
         return (
             <Modal
                 className='modal-alt open-url-modal'
                 disableEsc={this.state.thinking}
+                ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
                 <h4>Open a scene file from URL</h4>

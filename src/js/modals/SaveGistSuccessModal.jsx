@@ -8,7 +8,7 @@ import Icon from '../components/Icon';
 
 import Clipboard from 'clipboard';
 
-export default class SaveGistSuggestModal extends React.Component {
+export default class SaveGistSuccessModal extends React.Component {
     constructor (props) {
         super(props);
 
@@ -21,7 +21,7 @@ export default class SaveGistSuggestModal extends React.Component {
     }
 
     onClickConfirm (event) {
-        this.destroyModal();
+        this.component.unmount();
     }
 
     componentWillUnmount () {
@@ -52,13 +52,13 @@ export default class SaveGistSuggestModal extends React.Component {
         clipboardButtonEl.focus();
     }
 
-    destroyModal () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
-    }
-
     render () {
         return (
-            <Modal className='save-gist-success-modal'>
+            <Modal
+                className='save-gist-success-modal'
+                ref={(ref) => { this.component = ref; }}
+                cancelFunction={this.onClickConfirm}
+            >
                 <div className='modal-content'>
                     <h4>
                         Your gist has been saved.
@@ -99,6 +99,6 @@ export default class SaveGistSuggestModal extends React.Component {
     }
 }
 
-SaveGistSuggestModal.propTypes = {
+SaveGistSuccessModal.propTypes = {
     urlValue: React.PropTypes.string
 };

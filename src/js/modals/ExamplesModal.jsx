@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
@@ -15,11 +14,12 @@ export default class ExamplesModal extends React.Component {
             selected: null
         };
 
+        this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
     }
 
     onClickCancel () {
-        ReactDOM.unmountComponentAtNode(document.getElementById('modal-container'));
+        this.component.unmount();
     }
 
     onClickConfirm () {
@@ -78,7 +78,11 @@ export default class ExamplesModal extends React.Component {
 
         // Render the entire modal
         return (
-            <Modal className='modal-alt example-modal'>
+            <Modal
+                className='modal-alt example-modal'
+                ref={(ref) => { this.component = ref; }}
+                cancelFunction={this.onClickCancel}
+            >
                 <h4>Choose an example to open</h4>
 
                 <div className='modal-content example-list'>
