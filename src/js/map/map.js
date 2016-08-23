@@ -156,14 +156,14 @@ function getMapStartLocation () {
     else {
         return localforage.getItem('last-map-view')
             .then((view) => {
-                if (view.lat && view.lng && view.zoom) {
+                if (view && view.lat && view.lng && view.zoom) {
                     return {
                         latlng: [view.lat, view.lng],
                         zoom: view.zoom
                     };
                 }
                 else {
-                    return Promise.resolve(defaultStartLocation);
+                    return defaultStartLocation;
                 }
             });
     }
