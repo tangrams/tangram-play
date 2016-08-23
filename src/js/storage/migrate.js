@@ -76,7 +76,7 @@ function moveEverything () {
                                 console.log(`[migrating localstorage] Saved ${value} to ${newKeyName}`);
 
                                 // Delete the saved value.
-                                window.localStorage.removeItem(keyName);
+                                // window.localStorage.removeItem(keyName);
                             }
                         });
                     }
@@ -106,12 +106,17 @@ function convertMapViewToObject () {
         zoom: Number(zoom)
     };
 
-    localforage.setItem('last-map-view', obj)
-        .then(() => {
-            window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'latitude');
-            window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'longitude');
-            window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'zoom');
+    localforage.getItem('last-map-view')
+        .then((value) => {
+            if (!value) {
+                return localforage.setItem('last-map-view', obj);
+            }
         })
+        // .then(() => {
+        //     window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'latitude');
+        //     window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'longitude');
+        //     window.localStorage.removeItem(LOCAL_STORAGE_PREFIX + 'zoom');
+        // })
         .catch((err) => {
             console.log('[migrating localstorage] Error converting map view to object', err);
         });
