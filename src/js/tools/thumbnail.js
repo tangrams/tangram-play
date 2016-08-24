@@ -67,8 +67,10 @@ export function createThumbnail (imageData, targetWidth, targetHeight, retina = 
             // Draws the source image to the canvas. This does the scaling and cropping.
             context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight);
 
-            // Returns the thumbnail's dataURL value as the resolve value of this Promise
-            resolve(canvas.toDataURL());
+            // Returns an image blob as the resolve value of this Promise
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            }, 'image/png');
         };
 
         image.onerror = function () {
