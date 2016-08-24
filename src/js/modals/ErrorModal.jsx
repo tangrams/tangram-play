@@ -6,6 +6,12 @@ import Icon from '../components/Icon';
 import { noop } from 'lodash';
 
 export default class ErrorModal extends React.Component {
+    constructor (props) {
+        super(props);
+
+        this.onClickClose = this.onClickClose.bind(this);
+    }
+
     componentDidMount () {
         // Focus on the continue button when it is shown.
         // This is not currently the default action for modals, but may be in
