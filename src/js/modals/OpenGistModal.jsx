@@ -104,7 +104,14 @@ export default class OpenGistModal extends React.Component {
     }
 
     render () {
-        const gists = this.state.gists;
+        let gists = this.state.gists;
+
+        // NOTE:
+        // string-only gists urls are migrated anyway;
+        // we'll skip these for now, filter them out
+        gists = reject(gists, function (item) {
+            return typeof item !== 'string';
+        });
 
         let gistList;
 
@@ -115,13 +122,6 @@ export default class OpenGistModal extends React.Component {
             gistList = gists.map((item, index) => {
                 // If the scene is selected, a special class is applied later to it
                 let classString = 'open-gist-option';
-
-                // NOTE:
-                // string-only gists urls are migrated anyway;
-                // we'll skip these for now, do not display.
-                if (typeof item === 'string') {
-                    return null;
-                }
 
                 // TODO: Do not hardcode.
                 const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
