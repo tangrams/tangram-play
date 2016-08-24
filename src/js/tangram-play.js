@@ -51,20 +51,25 @@ export function initTangramPlay () {
             // Turn on highlighting module
             initHighlight();
 
-            // Add widgets marks and errors manager.
-            initWidgetMarks();
-            initErrorsManager();
+            if (window.isEmbedded === undefined) {
+                // Add widgets marks and errors manager.
+                initWidgetMarks();
+                initErrorsManager();
+            }
 
             // Things we do after Tangram is finished initializing
             tangramLayer.scene.initializing.then(() => {
                 // Need to send a signal to the dropdown widgets of type source to populate
                 EventEmitter.dispatch('tangram:sceneinit', {});
 
-                // Initialize addons after Tangram is done, because
-                // some addons depend on Tangram scene config being present
-                // TODO: Verify if this is still true?
-                initSuggestions();
-                initGlslWidgetsLink();
+
+                if (window.isEmbedded === undefined) {
+                    // Initialize addons after Tangram is done, because
+                    // some addons depend on Tangram scene config being present
+                    // TODO: Verify if this is still true?
+                    initSuggestions();
+                    initGlslWidgetsLink();
+                }
             });
         });
 
@@ -99,7 +104,10 @@ export function initTangramPlay () {
         //     scrollInfo: editor's scroll position
         //     cursor: where the cursor was positioned in the document.
         // }
-        localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
+
+        if (window.isEmbedded === undefined) {
+            localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
+        }
     });
 }
 
