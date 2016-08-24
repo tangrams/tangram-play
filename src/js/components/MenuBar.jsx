@@ -164,10 +164,10 @@ export default class MenuBar extends React.Component {
                                 id="save-dropdown"
                             >
                                 <MenuItem onClick={_clickSaveFile}>
-                                    <Icon type="bt-folder" />Save to file
+                                    <Icon type="bt-folder" />Save to your computer
                                 </MenuItem>
                                 <MenuItem onClick={_clickSaveGist}>
-                                    <Icon type="bt-code" />Save to Gist
+                                    <Icon type="bt-cloud-upload" />Save to your Mapzen account
                                 </MenuItem>
                                 <MenuItem onClick={_clickSaveCamera}>
                                     <Icon type="bt-camera" />Take a screenshot

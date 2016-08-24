@@ -6,7 +6,7 @@
  * size then cropping it, but doing it in a canvas, and returning a Promise
  * object representing the result of the operation. Its resolved value is the
  * base64 representation of the thumbnail image. Note that this operation does
- * not do any other kind of image optimization (e.g. sharpening, compression)/
+ * not do any other kind of image optimization (e.g. sharpening, compression)
  *
  * @param {Blob} imageBlob - blob of image data
  * @param {Number} targetWidth - desired thumbnail width in pixels
