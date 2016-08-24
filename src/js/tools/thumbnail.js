@@ -8,13 +8,13 @@
  * base64 representation of the thumbnail image. Note that this operation does
  * not do any other kind of image optimization (e.g. sharpening, compression)/
  *
- * @param {string} imageData - base64 representation of image data
+ * @param {Blob} imageBlob - blob of image data
  * @param {Number} targetWidth - desired thumbnail width in pixels
  * @param {Number} targetHeight - desired thumbnail height in pixels
  * @param {Boolean} retina - if true, the result thumbnail is 2x its target size
  * @returns {Promise}
  */
-export function createThumbnail (imageData, targetWidth, targetHeight, retina = true) {
+export function createThumbnail (imageBlob, targetWidth, targetHeight, retina = true) {
     // Create an in-memory canvas to render the original image data to.
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -29,7 +29,7 @@ export function createThumbnail (imageData, targetWidth, targetHeight, retina = 
     canvas.width = targetWidth;
     canvas.height = targetHeight;
 
-    // Wraps image loading in a Promise object and returns it
+    // Wrap image loading in a Promise object and returns it
     return new Promise(function (resolve, reject) {
         var image = new Image();
 
@@ -64,10 +64,13 @@ export function createThumbnail (imageData, targetWidth, targetHeight, retina = 
                 sourceY = 0;
             }
 
-            // Draws the source image to the canvas. This does the scaling and cropping.
+            // Draw the source image to the canvas. This does the scaling and cropping.
             context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight);
 
-            // Returns an image blob as the resolve value of this Promise
+            // Revoke the object URL for the blob; this prevents memory leakage
+            URL.revokeObjectURL(image.src);
+
+            // Return an image blob as the resolve value of this Promise
             canvas.toBlob((blob) => {
                 resolve(blob);
             }, 'image/png');
@@ -77,6 +80,6 @@ export function createThumbnail (imageData, targetWidth, targetHeight, retina = 
             reject('Unable to create thumbnail.');
         };
 
-        image.src = imageData;
+        image.src = URL.createObjectURL(imageBlob);
     });
 }
