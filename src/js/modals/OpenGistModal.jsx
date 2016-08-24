@@ -110,7 +110,7 @@ export default class OpenGistModal extends React.Component {
         // string-only gists urls are migrated anyway;
         // we'll skip these for now, filter them out
         gists = reject(gists, function (item) {
-            return typeof item !== 'string';
+            return typeof item === 'string';
         });
 
         let gistList;
