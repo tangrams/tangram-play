@@ -29,7 +29,8 @@ export default class MapPanelBookmarks extends React.Component {
         this.overrideBookmarkClose = false;
 
         this.state = {
-            bookmarks: null // We will fill this in during `componentWillMount`
+            bookmarks: null, // We will fill this in during `componentWillMount`,
+            open: false // Controls whether bookmark should be open or closed
         };
 
         this.onClickDeleteBookmarks = this.onClickDeleteBookmarks.bind(this);
@@ -119,10 +120,10 @@ export default class MapPanelBookmarks extends React.Component {
      */
     shouldDropdownToggle (isOpen) {
         if (this.overrideBookmarkClose) {
-            return true;
+            this.setState({ open: true });
         }
         else {
-            return isOpen;
+            this.setState({ open: isOpen });
         }
     }
 
@@ -184,7 +185,7 @@ export default class MapPanelBookmarks extends React.Component {
                     // The prop 'id' is required to make 'Dropdown' accessible
                     // for users using assistive technologies such as screen readers
                     id='map-panel-bookmark-button'
-                    open={this.shouldDropdownToggle()}
+                    open={this.state.open}
                     onToggle={this.shouldDropdownToggle}
                 >
                     {/* Define an immediately-invoked function expression
