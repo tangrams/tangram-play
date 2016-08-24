@@ -1,11 +1,14 @@
 import React from 'react';
 import Map from './Map';
 import Editor from './Editor';
-// import ColorPalette from './ColorPalette';
+import RefreshButton from './RefreshButton';
 
 import { initTangramPlay } from '../tangram-play';
 import { initDivider } from '../ui/divider';
 
+/**
+ * This class is identical to normal Tangram Play but represents an embedded version of the app
+ */
 export default class AppEmbedded extends React.Component {
     componentDidMount () {
         initTangramPlay();
@@ -30,6 +33,7 @@ export default class AppEmbedded extends React.Component {
                 </div>
 
                 <Editor />
+                <RefreshButton />
             </div>
         );
     }

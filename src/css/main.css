@@ -54,6 +54,9 @@
 @import '_widgets.react';
 @import '_widget-color.react';
 
+/* Embedded Tangram Play */
+@import '_embeddedPlay';
+
 /* VARIABLES */
 
 :root {

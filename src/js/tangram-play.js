@@ -28,6 +28,8 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
+let initialScene = ''; // This is where we'll store an initial scene file for purposes of embedded play.
+
 export function initTangramPlay () {
     // TODO: Manage history / routing in its own module
     window.onpopstate = (e) => {
@@ -197,6 +199,8 @@ function _onLoadError (error) {
 }
 
 function _doLoadProcess (scene) {
+    initialScene = scene; // Store our intial scene for use within embedded Tangram Play
+
     let url = scene.url || createObjectURL(scene.contents);
 
     // Send url to map and contents to editor
@@ -281,6 +285,12 @@ function showUnloadedState (editor) {
 
 function hideUnloadedState () {
     document.querySelector('.map-view').classList.remove('map-view-not-loaded');
+}
+
+// This function is only used by the embedded version of Tangram Play.
+// We need it in order to refresh the original scene file if user makes any changes in the editor
+export function reloadOriginalScene () {
+    _setSceneContentsInEditor(initialScene);
 }
 
 /**
