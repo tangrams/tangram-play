@@ -62,10 +62,10 @@ gulp.task('js', function () {
     var browserifyInc = require('browserify-incremental');
     var shim = require('browserify-shim');
     var babelify = require('babelify');
-    var source = require('vinyl-source-stream');
     var buffer = require('vinyl-buffer');
     var uglify = require('gulp-uglify');
     var envify = require('loose-envify');
+    var tap = require('gulp-tap');
 
     // Set which browserify type to use for different environments.
     // In development, we use incremental browserify so rebuilds are faster.
@@ -77,8 +77,7 @@ gulp.task('js', function () {
         browserifyEnv = browserify;
     }
 
-    var bundle = browserifyEnv({
-        entries: 'src/js/main.js',
+    var opts = {
         debug: true,
         extensions: ['.jsx'],
         transform: [
@@ -88,13 +87,23 @@ gulp.task('js', function () {
         ],
         // Option for browserify-incremental
         cacheFile: './browserify-cache.json'
-    });
+    };
 
     // Only uglify for deployment/production build,
     // because this doubles build time locally!
     if (process.env.NODE_ENV === 'production') {
-        return bundle.bundle()
-            .pipe(source('main.js'))
+        return gulp.src(['src/js/main.js', 'src/js/embedded.js'], {
+            read: false // no need to read files because browserify does.
+        })
+            // transform file objects using gulp-tap plugin
+            .pipe(tap(function (file) {
+                gutil.log('bundling ' + file.path);
+
+                // replace file contents with browserify's bundle stream
+                file.contents = browserifyEnv(file.path, opts).bundle();
+            }))
+            // transform streaming contents into buffer contents (because
+            // gulp-sourcemaps does not support streaming contents)
             .pipe(buffer())
             .pipe(sourcemaps.init({ loadMaps: true }))
                 // Add transformation tasks to the pipeline here.
@@ -104,9 +113,17 @@ gulp.task('js', function () {
             .pipe(gulp.dest('./build/js'));
     }
     else {
-        return bundle.bundle()
+        return gulp.src(['src/js/main.js', 'src/js/embedded.js'], {
+            read: false // no need to read files because browserify does.
+        })
+            // transform file objects using gulp-tap plugin
+            .pipe(tap(function (file) {
+                gutil.log('bundling ' + file.path);
+
+                // replace file contents with browserify's bundle stream
+                file.contents = browserifyEnv(file.path, opts).bundle();
+            }))
             .on('error', handleErrors)
-            .pipe(source('main.js'))
             .pipe(gulp.dest('./build/js'));
     }
 });
