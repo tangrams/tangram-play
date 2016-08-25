@@ -57,11 +57,6 @@ export function initTangramPlay () {
                 initErrorsManager();
             }
 
-            if (window.isEmbedded) {
-                // We want to blur the editor so it does not create a cursor in the embedded play
-                editor.getInputField().blur();
-            }
-
             // Things we do after Tangram is finished initializing
             tangramLayer.scene.initializing.then(() => {
                 // Need to send a signal to the dropdown widgets of type source to populate
