@@ -28,6 +28,8 @@ const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialLoad = true;
 
+let initialScene = ''; // This is where we'll store an initial scene file for purposes of embedded play.
+
 export function initTangramPlay () {
     // TODO: Manage history / routing in its own module
     window.onpopstate = (e) => {
@@ -49,20 +51,30 @@ export function initTangramPlay () {
             // Turn on highlighting module
             initHighlight();
 
-            // Add widgets marks and errors manager.
-            initWidgetMarks();
-            initErrorsManager();
+            if (window.isEmbedded === undefined) {
+                // Add widgets marks and errors manager.
+                initWidgetMarks();
+                initErrorsManager();
+            }
+
+            if (window.isEmbedded) {
+                // We want to blur the editor so it does not create a cursor in the embedded play
+                editor.getInputField().blur();
+            }
 
             // Things we do after Tangram is finished initializing
             tangramLayer.scene.initializing.then(() => {
                 // Need to send a signal to the dropdown widgets of type source to populate
                 EventEmitter.dispatch('tangram:sceneinit', {});
 
-                // Initialize addons after Tangram is done, because
-                // some addons depend on Tangram scene config being present
-                // TODO: Verify if this is still true?
-                initSuggestions();
-                initGlslWidgetsLink();
+
+                if (window.isEmbedded === undefined) {
+                    // Initialize addons after Tangram is done, because
+                    // some addons depend on Tangram scene config being present
+                    // TODO: Verify if this is still true?
+                    initSuggestions();
+                    initGlslWidgetsLink();
+                }
             });
         });
 
@@ -97,7 +109,10 @@ export function initTangramPlay () {
         //     scrollInfo: editor's scroll position
         //     cursor: where the cursor was positioned in the document.
         // }
-        localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
+
+        if (window.isEmbedded === undefined) {
+            localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
+        }
     });
 }
 
@@ -197,6 +212,8 @@ function _onLoadError (error) {
 }
 
 function _doLoadProcess (scene) {
+    initialScene = scene; // Store our intial scene for use within embedded Tangram Play
+
     let url = scene.url || createObjectURL(scene.contents);
 
     // Send url to map and contents to editor
@@ -237,11 +254,13 @@ function _setSceneContentsInEditor (sceneData) {
 
     setEditorContent(sceneData.contents, shouldMarkClean);
 
-    // Restore cursor position, if provided.
-    if (sceneData.cursor) {
-        editor.doc.setCursor(sceneData.cursor, {
-            scroll: false
-        });
+    if (window.isEmbedded === undefined) {
+        // Restore cursor position, if provided.
+        if (sceneData.cursor) {
+            editor.doc.setCursor(sceneData.cursor, {
+                scroll: false
+            });
+        }
     }
 
     // Restores the part of the document that was scrolled to, if provided.
@@ -281,6 +300,12 @@ function showUnloadedState (editor) {
 
 function hideUnloadedState () {
     document.querySelector('.map-view').classList.remove('map-view-not-loaded');
+}
+
+// This function is only used by the embedded version of Tangram Play.
+// We need it in order to refresh the original scene file if user makes any changes in the editor
+export function reloadOriginalScene () {
+    _setSceneContentsInEditor(initialScene);
 }
 
 /**
