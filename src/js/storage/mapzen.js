@@ -120,13 +120,6 @@ function uploadFile (contents, filepath, type = 'plain/text') {
             method: 'POST',
             body: formData
         });
-    }).then((response) => {
-        if (response.ok) {
-            console.log('upload successful');
-        }
-        else {
-            console.log('upload failed');
-        }
     }).catch((error) => {
         console.error('there is an error:', error);
     });
