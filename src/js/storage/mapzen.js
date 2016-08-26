@@ -220,7 +220,20 @@ function downloadAndUpdateSceneList (data, savedLocations) {
                         return response.json();
                     })
                     .then((sceneList) => {
-                        sceneList.push(sceneData);
+                        let foundExistingName = false;
+
+                        // If the scene exists already, overwrite the former
+                        for (let i = 0; i < sceneList.length; i++) {
+                            if (sceneList[i].name === sceneData.name) {
+                                sceneList[i] = sceneData;
+                                foundExistingName = true;
+                                break;
+                            }
+                        }
+                        // If not found, push to the end of array
+                        if (foundExistingName === false) {
+                            sceneList.push(sceneData);
+                        }
 
                         return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
                     })
