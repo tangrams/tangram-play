@@ -227,8 +227,6 @@ export default class MenuBar extends React.Component {
                                 <MenuItem href={tutorialLink} target='_blank'>
                                     <Icon type={'bt-notebook'} />Tutorial
                                 </MenuItem>
-
-
                                 <MenuItem href={feedbackLink} target='_blank'>
                                     <Icon type={'bt-comments'} />Feedback
                                 </MenuItem>
