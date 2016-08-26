@@ -252,16 +252,12 @@ export default class WidgetLinkNumber extends React.Component {
     onWheel (e) {
         let x = e.deltaY;
 
-        let vel = x - this.prevWheelOffset;
-        let offset = this.offsetX - vel;
+        let offset = this.offsetX - x;
 
         this.setValue(offset / this.center);
-        // this.prevOffset = x;
 
         this.drawCanvas();
         this.setEditorShaderValue(this.value.toFixed(3));
-
-        this.prevWheelOffset = e.deltaY - this.prevWheelOffset;
     }
 
     /**
