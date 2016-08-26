@@ -6,20 +6,17 @@ import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
 import ErrorModal from './ErrorModal';
-import SaveGistSuccessModal from './SaveGistSuccessModal';
+import SaveToCloudSuccessModal from './SaveToCloudSuccessModal';
 import { saveToMapzenUserAccount } from '../storage/mapzen';
 import { editor } from '../editor/editor';
 import { replaceHistoryState } from '../tools/url-state';
 
 // Default values in UI
-const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
-const DEFAULT_GIST_SCENE_FILENAME = 'scene.yaml';
-const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Play.';
+const DEFAULT_SCENE_NAME = 'Tangram scene';
 
-// const STORAGE_SAVED_GISTS = 'gists';
 const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
-export default class SaveGistModal extends React.Component {
+export default class SaveToCloudModal extends React.Component {
     constructor (props) {
         super(props);
 
@@ -59,28 +56,15 @@ export default class SaveGistModal extends React.Component {
         // Name of the scene
         let name = this.nameInput.value;
         if (name.length === 0) {
-            name = DEFAULT_GIST_SCENE_NAME;
+            name = DEFAULT_SCENE_NAME;
         }
 
-        // Filename
-        // Currently, set it to default value.
-        // We will re-address filenames in multi-tab scenario.
-        let filename = DEFAULT_GIST_SCENE_FILENAME;
-
-        // Description is either set to default (if blank)
+        // Description is optional
         // or appended to the user-produced value
-        let description;
-        if (this.descriptionInput.value.length === 0 || this.descriptionInput.value.trim() === DEFAULT_GIST_DESCRIPTION) {
-            description = `[${DEFAULT_GIST_DESCRIPTION}]`;
-        }
-        else {
-            // Newlines are not accepted on gist descriptions, apparently.
-            description = this.descriptionInput.value + ` [${DEFAULT_GIST_DESCRIPTION}]`;
-        }
+        const description = this.descriptionInput.value.trim();
 
         const data = {
             name,
-            filename,
             description,
             public: this.publicCheckbox.checked
         };
@@ -91,8 +75,9 @@ export default class SaveGistModal extends React.Component {
 
         // Start save timeout
         // TODO: This does not cancel the request if it is in progress
+        // TODO: Test this
         this._timeout = window.setTimeout(() => {
-            this.handleSaveError({ message: 'GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!' });
+            this.handleSaveError({ message: 'The server haven’t responded in a while, so we’re going stop trying. Please try again later!' });
         }, SAVE_TIMEOUT);
     }
 
@@ -116,9 +101,9 @@ export default class SaveGistModal extends React.Component {
      * settings might be used.
      */
     resetInputs () {
-        this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
+        this.descriptionInput.value = '';
         this.descriptionInput.blur();
-        this.nameInput.value = DEFAULT_GIST_SCENE_NAME;
+        this.nameInput.value = DEFAULT_SCENE_NAME;
         this.nameInput.blur();
         this.publicCheckbox.checked = true;
         this.publicCheckbox.blur();
@@ -143,7 +128,7 @@ export default class SaveGistModal extends React.Component {
 
         // Show success modal
         // TODO
-        ReactDOM.render(<SaveGistSuccessModal urlValue={data.files.scene} />, document.getElementById('modal-container'));
+        ReactDOM.render(<SaveToCloudSuccessModal urlValue={data.files.scene} />, document.getElementById('modal-container'));
     }
 
     /**
@@ -153,8 +138,10 @@ export default class SaveGistModal extends React.Component {
      * @param {Error} Thrown by something else
      */
     handleSaveError (error) {
-        // Close the modal
-        this.component.unmount();
+        // Close the modal, if present
+        if (this.component) {
+            this.component.unmount();
+        }
 
         // Show error modal
         ReactDOM.render(<ErrorModal error={`Uh oh! We tried to save your scene but something went wrong. ${error.message}`} />, document.getElementById('modal-container'));
@@ -164,44 +151,43 @@ export default class SaveGistModal extends React.Component {
         return (
             /* Modal disableEsc is true if we are waiting for a response */
             <Modal
-                className='modal-alt save-gist-modal'
+                className='modal-alt save-to-cloud-modal'
                 disableEsc={this.state.thinking}
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
-                <div className='modal-text modal-save-gist-text'>
-                    <h4>Save this scene to gist</h4>
+                <div className='modal-text'>
+                    <h4>Save this scene to your Mapzen account</h4>
                     <p>
-                        This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href='https://help.github.com/articles/about-gists/' target='_blank'>Learn more about anonymous gists</a>.
+                        This uploads your Tangram scene file to your Mapzen account, so you'll have a permanent link to share publicly.
                     </p>
                 </div>
 
                 <hr />
 
                 <div className='modal-content'>
-                    <label htmlFor='gist-name'>Scene name</label>
+                    <label htmlFor='save-scene-name'>Scene name</label>
                     <input
                         type='text'
-                        id='gist-name'
+                        id='save-scene-name'
                         ref={(ref) => { this.nameInput = ref; }}
                         placeholder='(default: Tangram scene)'
-                        defaultValue={DEFAULT_GIST_SCENE_NAME}
+                        defaultValue={DEFAULT_SCENE_NAME}
                     />
                     <p>
-                        <label htmlFor='gist-description'>Scene description</label>
+                        <label htmlFor='save-scene-description'>Scene description</label>
                         <input
                             type='text'
-                            id='gist-description'
+                            id='save-scene-description'
                             ref={(ref) => { this.descriptionInput = ref; }}
                             placeholder='(optional description)'
-                            defaultValue={DEFAULT_GIST_DESCRIPTION}
                         />
                     </p>
                     <p>
-                        <label htmlFor='gist-public'>Public gist</label>
+                        <label htmlFor='save-scene-public'>Public gist</label>
                         <input
                             type='checkbox'
-                            id='gist-public'
+                            id='save-scene-public'
                             ref={(ref) => { this.publicCheckbox = ref; }}
                             defaultChecked
                             style={{ marginLeft: '0.5em' }}
@@ -223,7 +209,7 @@ export default class SaveGistModal extends React.Component {
                         disabled={this.state.thinking}
                         onClick={this.onClickConfirm}
                     >
-                        <Icon type={'bt-check'} /> Save to gist
+                        <Icon type={'bt-check'} /> Save
                     </Button>
                 </div>
             </Modal>

@@ -13,7 +13,7 @@ import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
-import SaveGistModal from '../modals/SaveGistModal';
+import SaveToCloudModal from '../modals/SaveToCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
 import { toggleFullscreen } from '../ui/fullscreen';
@@ -51,8 +51,8 @@ const _clickSaveFile = function () {
     EditorIO.export();
 };
 
-const _clickSaveGist = function () {
-    ReactDOM.render(<SaveGistModal />, document.getElementById('modal-container'));
+const _clickSaveToCloud = function () {
+    ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
 };
 
 const _clickSaveCamera = function () {
@@ -166,7 +166,7 @@ export default class MenuBar extends React.Component {
                                 <MenuItem onClick={_clickSaveFile}>
                                     <Icon type="bt-folder" />Save to your computer
                                 </MenuItem>
-                                <MenuItem onClick={_clickSaveGist}>
+                                <MenuItem onClick={_clickSaveToCloud}>
                                     <Icon type="bt-cloud-upload" />Save to your Mapzen account
                                 </MenuItem>
                                 <MenuItem onClick={_clickSaveCamera}>
