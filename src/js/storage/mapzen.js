@@ -3,7 +3,6 @@ import { map } from '../map/map';
 import { getScreenshotData } from '../map/screenshot';
 // import { getLocationLabel } from '../map/search'; // TODO: implement now that move to react has changed this
 import { createThumbnail } from '../tools/thumbnail';
-import { getCachedUserSignInData } from '../user/sign-in';
 
 import { find } from 'lodash';
 import L from 'leaflet';
@@ -37,13 +36,11 @@ const SCENELIST_FILEPATH = 'scenelist.json';
 */
 
 export function saveToMapzenUserAccount (data, successCallback, errorCallback) {
-    const { sceneName } = data;
-
     // Add timestamp to `data`
-    data.date = new Date().toJSON();
+    data.timestamp = new Date().toJSON();
 
     // Get a scene directory by slugifying the scene name, add a trailing slash.
-    const sceneDir = slugify(sceneName) + '/';
+    const sceneDir = slugify(data.name) + '/';
 
     // These are Promises. Each creates its own contents and makes
     // individual upload requests. We resolve this function when all Promises
@@ -147,12 +144,8 @@ function makeAndUploadThumbnail (sceneDir) {
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
 function makeAndUploadMetadata (data, sceneDir) {
-    const { sceneName, description, isPublic } = data;
-    const cachedUserData = getCachedUserSignInData();
-    const metadata = {
-        name: sceneName,
-        description: description,
-        isPublic: isPublic,
+    // Add some additional view information to the metadata.
+    const metadata = Object.assign({}, data, {
         view: {
             // label: getLocationLabel(), // TODO: change now that search component is React
             label: '',
@@ -164,8 +157,7 @@ function makeAndUploadMetadata (data, sceneDir) {
             tangram: window.Tangram.version,
             leaflet: L.version
         },
-        user: cachedUserData ? cachedUserData.nickname : null
-    };
+    });
 
     // Store metadata
     return uploadFile(JSON.stringify(metadata), sceneDir + METADATA_FILEPATH, 'application/json');

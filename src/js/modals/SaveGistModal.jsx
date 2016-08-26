@@ -58,9 +58,9 @@ export default class SaveGistModal extends React.Component {
         });
 
         // Name of the scene
-        let sceneName = this.nameInput.value;
-        if (sceneName.length === 0) {
-            sceneName = DEFAULT_GIST_SCENE_NAME;
+        let name = this.nameInput.value;
+        if (name.length === 0) {
+            name = DEFAULT_GIST_SCENE_NAME;
         }
 
         // Filename
@@ -80,10 +80,10 @@ export default class SaveGistModal extends React.Component {
         }
 
         const data = {
-            sceneName,
+            name,
             filename,
             description,
-            isPublic: this.publicCheckbox.checked
+            public: this.publicCheckbox.checked
         };
 
         saveToMapzenUserAccount(data)
