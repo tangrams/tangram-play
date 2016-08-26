@@ -131,6 +131,7 @@ export default class SaveGistModal extends React.Component {
     // and display a helpful message
     handleSaveSuccess (data) {
         // const gist = data.gist;
+        console.log('handleSaveSuccess', data);
 
         // Create storage object
         // const saveData = {

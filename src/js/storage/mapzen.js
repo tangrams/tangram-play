@@ -5,6 +5,7 @@ import { getScreenshotData } from '../map/screenshot';
 import { createThumbnail } from '../tools/thumbnail';
 import { getCachedUserSignInData } from '../user/sign-in';
 
+import { find } from 'lodash';
 import L from 'leaflet';
 
 const METADATA_DIR = '.tangramplay/';
@@ -12,6 +13,7 @@ const METADATA_FILEPATH = METADATA_DIR + 'metadata.json';
 const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
 const THUMBNAIL_FILEPATH = METADATA_DIR + 'thumbnail.png';
+const SCENELIST_FILEPATH = 'scenelist.json';
 
 /*
     Store files like this:
@@ -37,6 +39,9 @@ const THUMBNAIL_FILEPATH = METADATA_DIR + 'thumbnail.png';
 export function saveToMapzenUserAccount (data, successCallback, errorCallback) {
     const { sceneName } = data;
 
+    // Add timestamp to `data`
+    data.date = new Date().toJSON();
+
     // Get a scene directory by slugifying the scene name, add a trailing slash.
     const sceneDir = slugify(sceneName) + '/';
 
@@ -48,39 +53,14 @@ export function saveToMapzenUserAccount (data, successCallback, errorCallback) {
     const uploadScene = makeAndUploadScene(data, sceneDir);
 
     return Promise.all([uploadThumbnail, uploadMetadata, uploadScene])
-        .then((responses) => {
-            console.log(responses);
-            // Should all be responses[x].ok
+        .then((savedLocations) => {
+            console.log(savedLocations);
+            // Should all be urls of the saved files.
+            return downloadAndUpdateSceneList(data, savedLocations);
 
             // Return some useful data for the success handler
+            // Errors are handled by the function that called `saveToMapzenUserAccount`
         });
-
-    //     // Make the post
-    //     window.fetch('https://api.github.com/gists', {
-    //         method: 'POST',
-    //         // POSTing to /gists API requires a JSON blob of
-    //         // MIME-type 'application/json'
-    //         body: JSON.stringify(data)
-    //     }).then(response => {
-    //         switch (response.status) {
-    //             case 201:
-    //                 return response.json();
-    //             case 403:
-    //                 throw new Error('It looks like somebody (probably not you) was asking GitHub’s servers to do too many things so we’re not allowed to ask them to save your scene right now. Try again a little later when things cool down a bit.');
-    //             default:
-    //                 throw new Error(`We got a ${response.status} code back from GitHub’s servers and don’t know what to do about it. Sorry, it’s a programmer error!`);
-    //         }
-    //     }).then((gist) => {
-    //         successCallback({
-    //             metadata: metadata,
-    //             gist: gist,
-    //             thumbnail: thumbnail
-    //         });
-    //     }).catch((error) => {
-    //         console.error(error);
-    //         errorCallback(error);
-    //     });
-    // });
 }
 
 // super quickly written slugify function. only replaces whitespace with dashes.
@@ -102,26 +82,38 @@ function slugify (string) {
  */
 function uploadFile (contents, filepath, type = 'plain/text') {
     const APP_NAME = 'play';
+    let uploadedFileUrl;
 
     return window.fetch(`/api/uploads/new?app=${APP_NAME}&path=${filepath}`, {
         credentials: 'same-origin'
     }).then((response) => {
         return response.json();
     }).then((upload) => {
-        var formData = new FormData();
+        const formData = new FormData();
         Object.keys(upload.fields).forEach(field => {
             formData.append(field, upload.fields[field]);
         });
 
-        var blob = new Blob([contents], { type: type });
+        const blob = new Blob([contents], { type: type });
         formData.append('file', blob, filepath);
+
+        // Remember the location of the file we want to save.
+        uploadedFileUrl = upload.url + upload.path;
 
         return window.fetch(upload.url, {
             method: 'POST',
             body: formData
         });
-    }).catch((error) => {
-        console.error('there is an error:', error);
+    }).then((response) => {
+        // If uploaded, return the url of the uploaded file.
+        if (response.ok) {
+            return uploadedFileUrl;
+        }
+        else {
+            // Caller should catch this error.
+            // For now it just passes the status code.
+            throw new Error(response.status);
+        }
     });
 }
 
@@ -168,7 +160,6 @@ function makeAndUploadMetadata (data, sceneDir) {
             lng: map.getCenter().lng,
             zoom: map.getZoom()
         },
-        date: new Date().toJSON(),
         versions: {
             tangram: window.Tangram.version,
             leaflet: L.version
@@ -201,4 +192,73 @@ function makeAndUploadScene (data, sceneDir) {
 
     // Store metadata
     return uploadFile(content, sceneDir + filename, 'application/x-yaml');
+}
+
+/**
+ * Downloads the scene list (or creates a new one if not already present) and
+ * appends saved scene data to it. TODO: Replace overwritten scene files.
+ *
+ * @params {Object} data - data passed to saveToMapzenUserAccount()
+ * @params {Array} savedLocations - array of saved files. This is created by
+ *          Promise.all() and values should be in order:
+ *          - savedLocations[0] - thumbnail.png
+ *          - savedLocations[1] - metadata.json
+ *          - savedLocations[2] - scene.yaml
+ * @returns {Promise} - fulfilled with the response of the POST request.
+ */
+function downloadAndUpdateSceneList (data, savedLocations) {
+    const fetchOpts = {
+        credentials: 'same-origin'
+    };
+
+    return window.fetch('https://dev.mapzen.com/api/uploads?app=play', fetchOpts)
+        .then((response) => {
+            return response.json();
+        })
+        .then(isThereASceneListFile)
+        .then((sceneListFile) => {
+            console.log('downloadAndUpdateSceneList', data);
+            const sceneData = Object.assign({}, data, {
+                files: {
+                    thumbnail: savedLocations[0],
+                    metadata: savedLocations[1],
+                    scene: savedLocations[2]
+                }
+            });
+
+            if (sceneListFile) {
+                return window.fetch(sceneListFile, fetchOpts)
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((sceneList) => {
+                        sceneList.push(sceneData);
+
+                        return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
+                    });
+            }
+            // Create a new one of these
+            else {
+                const sceneList = [];
+                sceneList.push(sceneData);
+
+                return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
+            }
+        });
+}
+
+/**
+ * Checks the uploads object at `/api/uploads?app=play` to see if we have an
+ * existing `scenelist.json`. This is so that we can make the check without
+ * causing a 404 if it doesn't exist.
+ *
+ * @params {Object} uploadsObj - JSON-parsed object of upload data from the
+ *          /api/uploads?app=play` endpoint.
+ * @returns {string|null} - the full URL of the scenelist.json, or null if
+ *          not found.
+ */
+function isThereASceneListFile (uploadsObj) {
+    return find(uploadsObj.uploads, (url) => {
+        return url.match(/https:\/\/mapzen-uploads.s3.amazonaws.com\/play\/[a-z0-9-]+\/scenelist.json/);
+    });
 }
