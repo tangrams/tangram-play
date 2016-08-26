@@ -65,6 +65,7 @@ const _clickAbout = function () {
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
 const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
+const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/dist/#/';
 
 /**
  * Represents the navbar for the application
@@ -223,6 +224,11 @@ export default class MenuBar extends React.Component {
                                 <MenuItem href={documentationLink} target='_blank'>
                                     <Icon type={'bt-book'} />Documentation
                                 </MenuItem>
+                                <MenuItem href={tutorialLink} target='_blank'>
+                                    <Icon type={'bt-notebook'} />Tutorial
+                                </MenuItem>
+
+
                                 <MenuItem href={feedbackLink} target='_blank'>
                                     <Icon type={'bt-comments'} />Feedback
                                 </MenuItem>
