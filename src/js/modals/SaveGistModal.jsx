@@ -5,12 +5,11 @@ import Button from 'react-bootstrap/lib/Button';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
-// import localforage from 'localforage';
 import ErrorModal from './ErrorModal';
 import SaveGistSuccessModal from './SaveGistSuccessModal';
 import { saveToMapzenUserAccount } from '../storage/mapzen';
 import { editor } from '../editor/editor';
-// import { replaceHistoryState } from '../tools/url-state';
+import { replaceHistoryState } from '../tools/url-state';
 
 // Default values in UI
 const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
@@ -129,38 +128,9 @@ export default class SaveGistModal extends React.Component {
     // mark as clean state in the editor,
     // remember the success response,
     // and display a helpful message
+    //
+    // `data` is (currently) the object saved to `scenelist.json`
     handleSaveSuccess (data) {
-        // const gist = data.gist;
-        console.log('handleSaveSuccess', data);
-
-        // Create storage object
-        // const saveData = {
-        //     name: data.metadata.name,
-        //     description: data.gist.description,
-        //     view: data.metadata.view,
-        //     user: data.gist.user,
-        //     url: data.gist.url,
-        //     public: data.gist.public,
-        //     /* eslint-disable camelcase */
-        //     created_at: data.gist.created_at,
-        //     updated_at: data.gist.updated_at,
-        //     /* eslint-enable camelcase */
-        //     thumbnail: data.thumbnail
-        // };
-
-        // Store response in localstorage
-        // This is stored as an array of saveData
-        // localforage.getItem(STORAGE_SAVED_GISTS)
-        //     .then((gists) => {
-        //         if (Array.isArray(gists)) {
-        //             gists.push(saveData);
-        //         }
-        //         else {
-        //             gists = [];
-        //         }
-        //         localforage.setItem(STORAGE_SAVED_GISTS, gists);
-        //     });
-
         // Close the modal
         this.component.unmount();
 
@@ -169,11 +139,11 @@ export default class SaveGistModal extends React.Component {
 
         // Update the page URL. The scene parameter should
         // reflect the new scene URL.
-        // replaceHistoryState({ scene: gist.url });
+        replaceHistoryState({ scene: data.files.scene });
 
         // Show success modal
         // TODO
-        ReactDOM.render(<SaveGistSuccessModal urlValue='hey it worked' />, document.getElementById('modal-container'));
+        ReactDOM.render(<SaveGistSuccessModal urlValue={data.files.scene} />, document.getElementById('modal-container'));
     }
 
     /**

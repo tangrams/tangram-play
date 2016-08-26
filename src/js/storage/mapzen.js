@@ -14,6 +14,11 @@ const THUMBNAIL_HEIGHT = 81;
 const THUMBNAIL_FILEPATH = METADATA_DIR + 'thumbnail.png';
 const SCENELIST_FILEPATH = 'scenelist.json';
 
+// We don't allow this to be customized (yet) and in the future you might
+// have multiple scene files anyway, so we'll do that all at once when we figure
+// it out.
+const SCENE_FILENAME = 'scene.yaml';
+
 /*
     Store files like this:
         ./scene-name-slug/scene.yaml
@@ -51,12 +56,10 @@ export function saveToMapzenUserAccount (data, successCallback, errorCallback) {
 
     return Promise.all([uploadThumbnail, uploadMetadata, uploadScene])
         .then((savedLocations) => {
-            console.log(savedLocations);
             // Should all be urls of the saved files.
+            // Returns some an object containing metadata for the success handler
+            // Errors should be handled upstream as well
             return downloadAndUpdateSceneList(data, savedLocations);
-
-            // Return some useful data for the success handler
-            // Errors are handled by the function that called `saveToMapzenUserAccount`
         });
 }
 
@@ -164,26 +167,19 @@ function makeAndUploadMetadata (data, sceneDir) {
 }
 
 /**
- * Creates and uploads the current scene file.
+ * Creates and uploads the current scene file. We assume one editor document
+ * and one scene file.
  *
  * @params {Object} data - data passed to saveToMapzenUserAccount()
  * @params {string} sceneDir - slugified scene name to use as scene directory
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
 function makeAndUploadScene (data, sceneDir) {
-    let { filename } = data;
-
-    // Append ".yaml" to the end of a filename if it does not
-    // end with either ".yaml" or ".yml". We will also specify MIME type later.
-    if (!filename.endsWith('.yaml') && !filename.endsWith('.yml')) {
-        filename += '.yaml';
-    }
-
-    // This is a single YAML file
+    // This is a single YAML file for now
     const content = getEditorContent();
 
     // Store metadata
-    return uploadFile(content, sceneDir + filename, 'application/x-yaml');
+    return uploadFile(content, sceneDir + SCENE_FILENAME, 'application/x-yaml');
 }
 
 /**
@@ -196,20 +192,20 @@ function makeAndUploadScene (data, sceneDir) {
  *          - savedLocations[0] - thumbnail.png
  *          - savedLocations[1] - metadata.json
  *          - savedLocations[2] - scene.yaml
- * @returns {Promise} - fulfilled with the response of the POST request.
+ * @returns {Promise} - fulfilled with the object of scene data saved to
+ *          `scenelist.json`
  */
 function downloadAndUpdateSceneList (data, savedLocations) {
     const fetchOpts = {
         credentials: 'same-origin'
     };
 
-    return window.fetch('https://dev.mapzen.com/api/uploads?app=play', fetchOpts)
+    return window.fetch('/api/uploads?app=play', fetchOpts)
         .then((response) => {
             return response.json();
         })
         .then(isThereASceneListFile)
         .then((sceneListFile) => {
-            console.log('downloadAndUpdateSceneList', data);
             const sceneData = Object.assign({}, data, {
                 files: {
                     thumbnail: savedLocations[0],
@@ -227,6 +223,9 @@ function downloadAndUpdateSceneList (data, savedLocations) {
                         sceneList.push(sceneData);
 
                         return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
+                    })
+                    .then((sceneListUrl) => {
+                        return sceneData;
                     });
             }
             // Create a new one of these
@@ -234,7 +233,10 @@ function downloadAndUpdateSceneList (data, savedLocations) {
                 const sceneList = [];
                 sceneList.push(sceneData);
 
-                return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
+                return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json')
+                    .then((sceneListUrl) => {
+                        return sceneData;
+                    });
             }
         });
 }
@@ -251,6 +253,7 @@ function downloadAndUpdateSceneList (data, savedLocations) {
  */
 function isThereASceneListFile (uploadsObj) {
     return find(uploadsObj.uploads, (url) => {
+        // TODO: Don't hardcode this URL!!
         return url.match(/https:\/\/mapzen-uploads.s3.amazonaws.com\/play\/[a-z0-9-]+\/scenelist.json/);
     });
 }
