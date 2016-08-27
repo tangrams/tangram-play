@@ -34,6 +34,13 @@ export default class OpenGistModal extends React.Component {
         localforage.getItem(STORAGE_SAVED_GISTS)
             .then((gists) => {
                 if (Array.isArray(gists)) {
+                    // NOTE:
+                    // string-only gists urls are migrated anyway;
+                    // we'll skip these for now, filter them out
+                    gists = reject(gists, function (item) {
+                        return typeof item === 'string';
+                    });
+
                     // Reverse-sort the gists; most recent will display up top
                     // Note this mutates the original array.
                     reverse(gists);
@@ -105,13 +112,6 @@ export default class OpenGistModal extends React.Component {
 
     render () {
         let gists = this.state.gists;
-
-        // NOTE:
-        // string-only gists urls are migrated anyway;
-        // we'll skip these for now, filter them out
-        gists = reject(gists, function (item) {
-            return typeof item === 'string';
-        });
 
         let gistList;
 

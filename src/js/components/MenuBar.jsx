@@ -9,16 +9,19 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 
+import localforage from 'localforage';
 import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
 import SaveToCloudModal from '../modals/SaveToCloudModal';
+import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
+import { requestUserSignInState } from '../user/sign-in';
 import SignInButton from './SignInButton';
 
 const _clickNew = function () {
@@ -55,6 +58,12 @@ const _clickSaveToCloud = function () {
     ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
 };
 
+const _clickOpenFromCloud = function () {
+    EditorIO.checkSaveStateThen(() => {
+        ReactDOM.render(<OpenFromCloudModal />, document.getElementById('modal-container'));
+    });
+};
+
 const _clickSaveCamera = function () {
     takeScreenshot();
 };
@@ -75,8 +84,37 @@ export default class MenuBar extends React.Component {
         super(props);
         this.state = {
             inspectActive: false, // Represents whether inspect mode is on / off
-            fullscreenActive: false
+            fullscreenActive: false,
+            legacyGistMenu: false,
+            mapzenAccount: false
         };
+    }
+
+    // Determine whether some menu items should display
+    componentWillMount () {
+        // Only display "Open a gist" if user has saved gists. This is a
+        // legacy feature. It will be completely removed in the future.
+        const STORAGE_SAVED_GISTS = 'gists';
+        localforage.getItem(STORAGE_SAVED_GISTS)
+            .then((gists) => {
+                if (Array.isArray(gists)) {
+                    this.setState({
+                        legacyGistMenu: true
+                    });
+                }
+            });
+
+        // Only display items related to Mapzen account if Tangram Play is
+        // loaded from a domain with Mapzen account capabilities.
+        requestUserSignInState().then((data) => {
+            // If `data` doesn't contain a `hosted` property then it is a
+            // mapzen.com domain.
+            if (!data.hosted) {
+                this.setState({
+                    mapzenAccount: true
+                });
+            }
+        });
     }
 
     _clickFullscreen () {
@@ -141,9 +179,24 @@ export default class MenuBar extends React.Component {
                                 <MenuItem onClick={_clickOpenFile}>
                                     <Icon type="bt-folder" />Open a file
                                 </MenuItem>
-                                <MenuItem onClick={_clickOpenGist}>
-                                    <Icon type="bt-code" />Open a saved Gist
-                                </MenuItem>
+                                {(() => {
+                                    if (this.state.mapzenAccount) {
+                                        return (
+                                            <MenuItem onClick={_clickOpenFromCloud}>
+                                                <Icon type="bt-cloud-download" />Open from your Mapzen account
+                                            </MenuItem>
+                                        );
+                                    }
+                                })()}
+                                {(() => {
+                                    if (this.state.legacyGistMenu) {
+                                        return (
+                                            <MenuItem onClick={_clickOpenGist}>
+                                                <Icon type="bt-code" />Open a saved Gist (Legacy)
+                                            </MenuItem>
+                                        );
+                                    }
+                                })()}
                                 <MenuItem onClick={_clickOpenURL}>
                                     <Icon type="bt-link" />Open from URL
                                 </MenuItem>
@@ -166,9 +219,15 @@ export default class MenuBar extends React.Component {
                                 <MenuItem onClick={_clickSaveFile}>
                                     <Icon type="bt-folder" />Save to your computer
                                 </MenuItem>
-                                <MenuItem onClick={_clickSaveToCloud}>
-                                    <Icon type="bt-cloud-upload" />Save to your Mapzen account
-                                </MenuItem>
+                                {(() => {
+                                    if (this.state.mapzenAccount) {
+                                        return (
+                                            <MenuItem onClick={_clickSaveToCloud}>
+                                                <Icon type="bt-cloud-upload" />Save to your Mapzen account
+                                            </MenuItem>
+                                        );
+                                    }
+                                })()}
                                 <MenuItem onClick={_clickSaveCamera}>
                                     <Icon type="bt-camera" />Take a screenshot
                                 </MenuItem>

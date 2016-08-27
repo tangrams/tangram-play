@@ -238,7 +238,7 @@ function downloadAndUpdateSceneList (data, savedLocations) {
  * @returns {Promise} - resolved with an array of saved scene data (or empty
  *          array if nothing is saved yet)
  */
-function fetchSceneList () {
+export function fetchSceneList () {
     const fetchOpts = {
         credentials: 'same-origin'
     };

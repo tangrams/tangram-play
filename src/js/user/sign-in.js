@@ -22,7 +22,7 @@ let cachedSignInData;
  * @returns {Promise} - resolved value is contents of `/api/developer.json` or
  *          an object indicating that we are not hosted on a Mapzen domain.
  */
-export function requestUserSignIn () {
+export function requestUserSignInState () {
     if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname)) {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
