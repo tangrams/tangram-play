@@ -184,7 +184,7 @@ function makeAndUploadScene (data, sceneDir) {
 
 /**
  * Downloads the scene list (or creates a new one if not already present) and
- * appends saved scene data to it. TODO: Replace overwritten scene files.
+ * appends saved scene data to it.
  *
  * @params {Object} data - data passed to saveToMapzenUserAccount()
  * @params {Array} savedLocations - array of saved files. This is created by
@@ -196,77 +196,78 @@ function makeAndUploadScene (data, sceneDir) {
  *          `scenelist.json`
  */
 function downloadAndUpdateSceneList (data, savedLocations) {
-    const fetchOpts = {
-        credentials: 'same-origin'
-    };
+    const sceneData = Object.assign({}, data, {
+        files: {
+            thumbnail: savedLocations[0],
+            metadata: savedLocations[1],
+            scene: savedLocations[2]
+        }
+    });
 
-    return window.fetch('/api/uploads?app=play', fetchOpts)
-        .then((response) => {
-            return response.json();
-        })
-        .then(isThereASceneListFile)
-        .then((sceneListFile) => {
-            const sceneData = Object.assign({}, data, {
-                files: {
-                    thumbnail: savedLocations[0],
-                    metadata: savedLocations[1],
-                    scene: savedLocations[2]
+    // The resolved value `sceneList` of `fetchSceneList` is current
+    // scenelist.json contents or an empty array if it doesn't exist yet.
+    return fetchSceneList()
+        .then((sceneList) => {
+            let foundExistingName = false;
+
+            // If the scene exists already, overwrite its position in the list
+            for (let i = 0; i < sceneList.length; i++) {
+                if (sceneList[i].name === sceneData.name) {
+                    sceneList[i] = sceneData;
+                    foundExistingName = true;
+                    break;
                 }
-            });
-
-            if (sceneListFile) {
-                return window.fetch(sceneListFile, fetchOpts)
-                    .then((response) => {
-                        return response.json();
-                    })
-                    .then((sceneList) => {
-                        let foundExistingName = false;
-
-                        // If the scene exists already, overwrite the former
-                        for (let i = 0; i < sceneList.length; i++) {
-                            if (sceneList[i].name === sceneData.name) {
-                                sceneList[i] = sceneData;
-                                foundExistingName = true;
-                                break;
-                            }
-                        }
-                        // If not found, push to the end of array
-                        if (foundExistingName === false) {
-                            sceneList.push(sceneData);
-                        }
-
-                        return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
-                    })
-                    .then((sceneListUrl) => {
-                        return sceneData;
-                    });
             }
-            // Create a new one of these
-            else {
-                const sceneList = [];
+            // If not found, push to the end of array
+            if (foundExistingName === false) {
                 sceneList.push(sceneData);
-
-                return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json')
-                    .then((sceneListUrl) => {
-                        return sceneData;
-                    });
             }
+
+            return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
+        })
+        .then((sceneListUrl) => {
+            return sceneData;
         });
 }
 
 /**
- * Checks the uploads object at `/api/uploads?app=play` to see if we have an
- * existing `scenelist.json`. This is so that we can make the check without
- * causing a 404 if it doesn't exist.
+ * Fetches `scenelist.json` from the user account. Returns a Promise, resolved
+ * with its contents in the form of an Array, or an empty Array if the file is
+ * not found.
  *
- * @params {Object} uploadsObj - JSON-parsed object of upload data from the
- *          /api/uploads?app=play` endpoint.
- * @returns {string|null} - the full URL of the scenelist.json, or null if
- *          not found.
+ * @returns {Promise} - resolved with an array of saved scene data (or empty
+ *          array if nothing is saved yet)
  */
-function isThereASceneListFile (uploadsObj) {
-    return find(uploadsObj.uploads, (url) => {
-        // TODO: Don't hardcode this URL!!
-        return url.match(/https:\/\/mapzen-uploads.s3.amazonaws.com\/play\/[a-z0-9-]+\/scenelist.json/);
-    });
+function fetchSceneList () {
+    const fetchOpts = {
+        credentials: 'same-origin'
+    };
+
+    // Checks the uploads object at `/api/uploads?app=play` to see if we have an
+    // existing `scenelist.json`. This is so that we can make the check without
+    // causing a 404 if it doesn't exist.
+    return window.fetch('/api/uploads?app=play', fetchOpts)
+        .then((response) => {
+            return response.json();
+        })
+        .then((uploadsObj) => {
+            return find(uploadsObj.uploads, (url) => {
+                // TODO: Don't hardcode this URL!!
+                return url.match(/https:\/\/mapzen-uploads.s3.amazonaws.com\/play\/[a-z0-9-]+\/scenelist.json/);
+            });
+        })
+        .then((sceneListFile) => {
+            // `sceneListFile` is a url
+            if (sceneListFile) {
+                return window.fetch(sceneListFile, fetchOpts)
+                    .then((response) => {
+                        return response.json();
+                    });
+            }
+            // If not found, `sceneListFile` is null.
+            // Create a new one of these
+            else {
+                return [];
+            }
+        });
 }
