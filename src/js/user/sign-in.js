@@ -17,13 +17,14 @@ let cachedSignInData;
 /**
  * Request user sign-in information from mapzen.com. This only works with
  * mapzen.com, dev.mapzen.com, or www.mapzen.com. Other mapzen.com domains
- * (e.g. Precog) do not have this `/api/developer.json` endpoint.
+ * (e.g. Precog) do not have this `/api/developer.json` endpoint. Also check for
+ * https protocol. A no-CORS error is thrown if accessed on http
  *
  * @returns {Promise} - resolved value is contents of `/api/developer.json` or
  *          an object indicating that we are not hosted on a Mapzen domain.
  */
 export function requestUserSignInState () {
-    if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname)) {
+    if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) && window.location.protocol === 'https:') {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
                 const data = response.json();
