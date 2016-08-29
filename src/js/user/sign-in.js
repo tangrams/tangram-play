@@ -23,7 +23,7 @@ let cachedSignInData;
  *          an object indicating that we are not hosted on a Mapzen domain.
  */
 export function requestUserSignIn () {
-    if (/^([dev|www].)?mapzen.com$/.test(window.location.hostname)) {
+    if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname)) {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
                 const data = response.json();
