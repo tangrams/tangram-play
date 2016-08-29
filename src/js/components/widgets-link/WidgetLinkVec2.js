@@ -7,8 +7,8 @@ import Icon from '../Icon';
 
 import Vector from './vector';
 
+import { getDevicePixelRatio } from '../../tools/common';
 import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
-
 
 /**
  * Represents a widget link for a vec2
@@ -31,8 +31,8 @@ export default class WidgetLinkVec2 extends React.Component {
         this.cursor = this.props.cursor;
         this.match = this.props.match;
 
-        let VERTICAL_OFFSET = 40;
-        let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
+        const VERTICAL_OFFSET = 40;
+        const linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
         this.x = getCoordinates(linePos).left;
         this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
 
@@ -67,6 +67,16 @@ export default class WidgetLinkVec2 extends React.Component {
      * React lifecycle method called once DIV is mounted
      */
     componentDidMount () {
+        // Set canvas for high-pixel-density (e.g. Retina screens)
+        this.canvas.style.width = this.width + 'px';
+        this.canvas.style.height = this.height + 'px';
+
+        this.ctx = this.canvas.getContext('2d');
+        this.ratio = getDevicePixelRatio(this.ctx);
+        this.canvas.width = this.width * this.ratio;
+        this.canvas.height = this.height * this.ratio;
+        this.ctx.scale(this.ratio, this.ratio);
+
         // Once the canvas DIV is mounted, we can draw it
         this.drawCanvas();
     }
@@ -75,7 +85,6 @@ export default class WidgetLinkVec2 extends React.Component {
      * Draws the canvas
      */
     drawCanvas () {
-        this.ctx = this.refs.canvas.getContext('2d');
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         // frame
@@ -85,8 +94,8 @@ export default class WidgetLinkVec2 extends React.Component {
 
         this.ctx.beginPath();
         this.ctx.lineWidth = 0.25;
-        let sections = 20;
-        let step = this.width / sections;
+        const sections = 20;
+        const step = this.width / sections;
         for (let i = 0; i < sections; i++) {
             this.ctx.moveTo(i * step, 0);
             this.ctx.lineTo(i * step, this.height);
@@ -114,7 +123,7 @@ export default class WidgetLinkVec2 extends React.Component {
         let x = Math.round(((this.value.x - this.min) / this.range) * this.width);
         let y = Math.round(((1 - (this.value.y - this.min) / this.range)) * this.height);
 
-        let half = this.size / 2;
+        const half = this.size / 2;
 
         if (x < half) {
             x = half;
@@ -132,7 +141,7 @@ export default class WidgetLinkVec2 extends React.Component {
         // point
         this.ctx.fillStyle = this.overPoint ? this.selColor : this.fnColor;
         this.ctx.beginPath();
-        let radius = this.overPoint ? 4 : 3;
+        const radius = this.overPoint ? 4 : 3;
         this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         this.ctx.fill();
 
@@ -154,9 +163,9 @@ export default class WidgetLinkVec2 extends React.Component {
      * @param pos - the new position to write out to CodeMirror
      */
     setEditorShaderValue (pos) {
-        let newpos = pos.getString();
-        let start = { line: this.cursor.line, ch: this.match.start };
-        let end = { line: this.cursor.line, ch: this.match.end };
+        const newpos = pos.getString();
+        const start = { line: this.cursor.line, ch: this.match.start };
+        const end = { line: this.cursor.line, ch: this.match.end };
         this.match.end = this.match.start + newpos.length;
         setCodeMirrorShaderValue(newpos, start, end);
     }
@@ -171,7 +180,7 @@ export default class WidgetLinkVec2 extends React.Component {
     onClick () {
         this.setState({ displayPicker: !this.state.displayPicker });
 
-        let widgetlink = document.getElementById('widget-links');
+        const widgetlink = document.getElementById('widget-links');
         ReactDOM.unmountComponentAtNode(widgetlink);
     }
 
@@ -182,10 +191,9 @@ export default class WidgetLinkVec2 extends React.Component {
         this.drag = true; // START a drag event
         this.overPoint = true; // Change the look of the point within the canvas
 
-        let mousePos = this.getMousePos(this.refs.canvas, e);
-
-        let x = mousePos.x;
-        let y = mousePos.y;
+        const mousePos = this.getMousePos(this.canvas, e);
+        const x = mousePos.x;
+        const y = mousePos.y;
 
         this.value.x = ((this.range / this.width) * x) - (this.range - this.max);
         this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
@@ -199,10 +207,9 @@ export default class WidgetLinkVec2 extends React.Component {
      */
     onMouseMove (e) {
         if (this.drag === true) { // If DRAG event is true
-            let mousePos = this.getMousePos(this.refs.canvas, e);
-
-            let x = mousePos.x;
-            let y = mousePos.y;
+            const mousePos = this.getMousePos(this.canvas, e);
+            const x = mousePos.x;
+            const y = mousePos.y;
 
             this.value.x = ((this.range / this.width) * x) - (this.range - this.max);
             this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
@@ -227,7 +234,7 @@ export default class WidgetLinkVec2 extends React.Component {
      * Function to get a mouse position within the canvas element
      */
     getMousePos (canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
             y: evt.clientY - rect.top
@@ -240,12 +247,28 @@ export default class WidgetLinkVec2 extends React.Component {
      */
     render () {
         return (
-            <Modal dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onClick}>
+            <Modal
+                dialogComponentClass={DraggableModal}
+                x={this.x}
+                y={this.y}
+                enforceFocus={false}
+                className='widget-modal'
+                show={this.state.displayPicker}
+                onHide={this.onClick}
+            >
                 <div className='drag'>
-                    <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                    <Button onClick={ this.onClick } className='widget-exit'>
+                        <Icon type={'bt-times'} />
+                    </Button>
                 </div>
                 {/* The actual widget link */}
-                <canvas className='widget-link-canvas' ref='canvas' width={this.width} height={this.height} onMouseDown={this.onMouseDown} onMouseMove={this.onMouseMove} onMouseUp={this.onMouseUp}/>
+                <canvas
+                    className='widget-link-canvas'
+                    ref={(ref) => { this.canvas = ref; }}
+                    onMouseDown={this.onMouseDown}
+                    onMouseMove={this.onMouseMove}
+                    onMouseUp={this.onMouseUp}
+                />
             </Modal>
         );
     }
