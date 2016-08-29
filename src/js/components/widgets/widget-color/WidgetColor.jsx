@@ -123,7 +123,7 @@ export default class WidgetColor extends React.Component {
     }
 
     onClickExit () {
-        this.setState({ displayColorPicker: !this.state.displayColorPicker });
+        this.setState({ displayColorPicker: false });
 
         if (this.props.shader) {
             let widgetlink = document.getElementById('widget-links');

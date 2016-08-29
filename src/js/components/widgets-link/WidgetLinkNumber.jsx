@@ -184,7 +184,7 @@ export default class WidgetLinkNumber extends React.Component {
      * Meaning, onHide will only be called once to unmount the widget
      */
     onHide () {
-        this.setState({ displayPicker: !this.state.displayPicker });
+        this.setState({ displayPicker: false });
 
         const widgetlink = document.getElementById('widget-links');
         ReactDOM.unmountComponentAtNode(widgetlink);
