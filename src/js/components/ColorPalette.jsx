@@ -1,9 +1,5 @@
 import React from 'react';
-
-import Modal from 'react-bootstrap/lib/Modal';
-import Button from 'react-bootstrap/lib/Button';
-import DraggableModal from './DraggableModal';
-import Icon from './Icon';
+import FloatingPanel from '../FloatingPanel';
 import WidgetColorBox from './widgets/widget-color/WidgetColorBox';
 
 import { EventEmitter } from './event-emitter';
@@ -217,14 +213,21 @@ export default class ColorPalette extends React.Component {
                 {/* List of colors in the palette */}
                 <div>{ colors }</div>
 
-                {/* Draggable modal */}
-                <Modal dialogComponentClass={DraggableModal} x={this.state.x} y={this.state.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onHide}>
-                    <div className='drag'>
-                        <Button onClick={ this.onHide } className='widget-exit'><Icon type={'bt-times'} /></Button>
-                    </div>
-                    {/* The actual color picker */}
-                    <WidgetColorBox className={'widget-color-picker'} color={ this.state.currentColor.color.getRgba() } onChange={ this.onChange }/>
-                </Modal>
+                {/* Floating panel */}
+                <FloatingPanel
+                    x={this.x}
+                    y={this.y}
+                    width={this.width}
+                    height={this.height}
+                    show={this.state.displayPicker}
+                    onHide={this.onHide}
+                >
+                    <WidgetColorBox
+                        className={'widget-color-picker'}
+                        color={ this.state.currentColor.color.getRgba() }
+                        onChange={ this.onChange }
+                    />
+                </FloatingPanel>
             </div>
         );
     }
