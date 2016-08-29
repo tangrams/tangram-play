@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from 'react-bootstrap/lib/Modal';
-import Button from 'react-bootstrap/lib/Button';
-import DraggableModal from '../../DraggableModal';
-import Icon from '../../Icon';
+import FloatingPanel from '../../FloatingPanel';
 import WidgetColorBox from './WidgetColorBox';
 
 import { setCodeMirrorValue, setCodeMirrorShaderValue, getCoordinates, setCursor } from '../../../editor/editor';
@@ -217,14 +214,17 @@ export default class WidgetColor extends React.Component {
                         }
                     })()}
 
-                    {/* Draggable modal */}
-                    <Modal dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayColorPicker} onHide={this.onClickExit}>
-                        <div className='drag'>
-                            <Button onClick={ this.onClickExit } className='widget-exit'><Icon type={'bt-times'} /></Button>
-                        </div>
-                        {/* The actual color picker */}
+                    {/* Floating panel */}
+                    <FloatingPanel
+                        x={this.x}
+                        y={this.y}
+                        width={this.width}
+                        height={this.height}
+                        show={this.state.displayColorPicker}
+                        onHide={this.onClickExit}
+                    >
                         <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
-                    </Modal>
+                    </FloatingPanel>
                 </div>
             );
         }
