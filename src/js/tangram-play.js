@@ -41,6 +41,7 @@ export function initTangramPlay () {
     // LOAD SCENE FILE
     determineScene()
         .then(load)
+        // Things we do after Tangram is finished initializing
         .then(() => {
             // Highlight lines if requested by the query string.
             const query = getQueryStringObject();
@@ -51,26 +52,20 @@ export function initTangramPlay () {
             // Turn on highlighting module
             initHighlight();
 
+            // Initialize addons after Tangram is done, because
+            // some addons depend on Tangram scene config being present
+            // TODO: Verify if this is still true?
             if (window.isEmbedded === undefined) {
                 // Add widgets marks and errors manager.
                 initWidgetMarks();
                 initErrorsManager();
+
+                initSuggestions();
+                initGlslWidgetsLink();
             }
 
-            // Things we do after Tangram is finished initializing
-            tangramLayer.scene.initializing.then(() => {
-                // Need to send a signal to the dropdown widgets of type source to populate
-                EventEmitter.dispatch('tangram:sceneinit', {});
-
-
-                if (window.isEmbedded === undefined) {
-                    // Initialize addons after Tangram is done, because
-                    // some addons depend on Tangram scene config being present
-                    // TODO: Verify if this is still true?
-                    initSuggestions();
-                    initGlslWidgetsLink();
-                }
-            });
+            // Need to send a signal to the dropdown widgets of type source to populate
+            EventEmitter.dispatch('tangram:sceneinit', {});
         });
 
     // If the user bails for whatever reason, hastily shove the contents of
@@ -178,7 +173,7 @@ export function load (scene) {
             return response.text();
         })
         .then(contents => {
-            _doLoadProcess({ url: scene.url, contents });
+            return _doLoadProcess({ url: scene.url, contents });
         })
         .catch(error => {
             _onLoadError(error);
@@ -236,6 +231,9 @@ function _doLoadProcess (scene) {
     // Trigger Events
     // Event object is empty right now.
     EventEmitter.dispatch('tangram:sceneload', {});
+
+    // Return the Promise from Tangram initializing
+    return tangramLayer.scene.initializing;
 }
 
 function _setSceneContentsInEditor (sceneData) {

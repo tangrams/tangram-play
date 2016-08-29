@@ -18,6 +18,10 @@ export default class AppEmbedded extends React.Component {
         initDivider();
     }
 
+    shouldComponentUpdate () {
+        return false;
+    }
+
     render () {
         return (
             <div className='workspace-container'>
