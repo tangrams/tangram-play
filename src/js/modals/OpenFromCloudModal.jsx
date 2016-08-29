@@ -73,7 +73,7 @@ export default class OpenFromCloudModal extends React.Component {
         else {
             sceneList = scenes.map((item, index) => {
                 // If the scene is selected, a special class is applied later to it
-                let classString = 'open-gist-option';
+                let classString = 'open-from-cloud-option';
 
                 // Placeholder text for no description.
                 if (item.description.length === 0) {
@@ -81,7 +81,7 @@ export default class OpenFromCloudModal extends React.Component {
                 }
 
                 if (this.state.selected === item.url) {
-                    classString += ' open-gist-selected';
+                    classString += ' open-from-cloud-selected';
                 }
 
                 // TODO:
@@ -95,17 +95,17 @@ export default class OpenFromCloudModal extends React.Component {
                         onClick={() => { this.setState({ selected: item.files.scene }); }}
                         onDoubleClick={this.onClickConfirm}
                     >
-                        <div className='open-gist-option-thumbnail'>
+                        <div className='open-from-cloud-option-thumbnail'>
                             <img src={item.files.thumbnail} />
                         </div>
-                        <div className='open-gist-option-info'>
-                            <div className='open-gist-option-name'>
+                        <div className='open-from-cloud-option-info'>
+                            <div className='open-from-cloud-option-name'>
                                 {item.name}
                             </div>
-                            <div className='open-gist-option-description'>
+                            <div className='open-from-cloud-option-description'>
                                 {item.description}
                             </div>
-                            <div className='open-gist-option-date'>
+                            <div className='open-from-cloud-option-date'>
                                 {/* Show the date this was saved.
                                     TODO: better formatting;
                                     maybe use moment.js */}
@@ -120,13 +120,13 @@ export default class OpenFromCloudModal extends React.Component {
         // Render the entire modal
         return (
             <Modal
-                className='modal-alt open-gist-modal'
+                className='modal-alt open-from-cloud-modal'
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickClose}
             >
                 <h4>Open a saved scene from your Mapzen account</h4>
 
-                <div className='modal-content open-gist-list'>
+                <div className='modal-content open-from-cloud-list'>
                     {sceneList}
                 </div>
 

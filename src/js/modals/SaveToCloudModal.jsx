@@ -184,7 +184,7 @@ export default class SaveToCloudModal extends React.Component {
                         />
                     </p>
                     <p>
-                        <label htmlFor='save-scene-public'>Public gist</label>
+                        <label htmlFor='save-scene-public'>Public scene</label>
                         <input
                             type='checkbox'
                             id='save-scene-public'
