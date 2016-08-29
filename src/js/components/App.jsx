@@ -14,6 +14,10 @@ export default class App extends React.Component {
         initTangramPlay();
     }
 
+    shouldComponentUpdate () {
+        return false;
+    }
+
     render () {
         return (
             <div>
