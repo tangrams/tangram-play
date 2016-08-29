@@ -254,10 +254,13 @@ export default class WidgetLinkNumber extends React.Component {
     }
 
     /**
-     * When user srolls wheel
+     * When user scrolls wheel
      * TODO: fine tune this scroll function
      */
     onWheel (e) {
+        // Prevent swipe nagivation on Chrome/Mac
+        e.preventDefault();
+
         const x = e.deltaY;
         const offset = this.offsetX - x;
 
