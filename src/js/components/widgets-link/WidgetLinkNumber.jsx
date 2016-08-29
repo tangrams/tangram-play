@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import DraggableModal from '../DraggableModal';
 import Icon from '../Icon';
 
+import { getDevicePixelRatio } from '../../tools/common';
 import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
 
 /**
@@ -28,8 +29,8 @@ export default class WidgetLinkNumber extends React.Component {
         this.cursor = this.props.cursor;
         this.match = this.props.match;
 
-        let VERTICAL_OFFSET = 40;
-        let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
+        const VERTICAL_OFFSET = 40;
+        const linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
         this.x = getCoordinates(linePos).left;
         this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
 
@@ -69,6 +70,16 @@ export default class WidgetLinkNumber extends React.Component {
      * React lifecycle method called once DIV is mounted
      */
     componentDidMount () {
+        // Set canvas for high-pixel-density (e.g. Retina screens)
+        this.canvas.style.width = this.width + 'px';
+        this.canvas.style.height = this.height + 'px';
+
+        this.ctx = this.canvas.getContext('2d');
+        this.ratio = getDevicePixelRatio(this.ctx);
+        this.canvas.width = this.width * this.ratio;
+        this.canvas.height = this.height * this.ratio;
+        this.ctx.scale(this.ratio, this.ratio);
+
         this.drawCanvas();
     }
 
@@ -76,7 +87,6 @@ export default class WidgetLinkNumber extends React.Component {
      * Draws the canvas
      */
     drawCanvas () {
-        this.ctx = this.refs.canvas.getContext('2d');
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         // horizontal line
@@ -179,7 +189,7 @@ export default class WidgetLinkNumber extends React.Component {
     onClick () {
         this.setState({ displayPicker: !this.state.displayPicker });
 
-        let widgetlink = document.getElementById('widget-links');
+        const widgetlink = document.getElementById('widget-links');
         ReactDOM.unmountComponentAtNode(widgetlink);
     }
 
@@ -190,7 +200,7 @@ export default class WidgetLinkNumber extends React.Component {
         this.drag = true; // START of a drag event
         this.overPoint = true; // Change the look of the point within the canvas
 
-        let mousePos = this.getMousePos(this.refs.canvas, e);
+        const mousePos = this.getMousePos(this.canvas, e);
         this.prevOffset = mousePos.x;
         this.drawCanvas();
     }
@@ -200,12 +210,10 @@ export default class WidgetLinkNumber extends React.Component {
      */
     onMouseMove (e) {
         if (this.drag === true) { // If user is dragging mouse
-            let mousePos = this.getMousePos(this.refs.canvas, e);
-
-            let x = mousePos.x;
-
-            let vel = x - this.prevOffset;
-            let offset = this.offsetX - vel;
+            const mousePos = this.getMousePos(this.canvas, e);
+            const x = mousePos.x;
+            const vel = x - this.prevOffset;
+            const offset = this.offsetX - vel;
 
             this.setValue(offset / this.center);
             this.prevOffset = x;
@@ -238,7 +246,7 @@ export default class WidgetLinkNumber extends React.Component {
      * Function to get a mouse position within the canvas element
      */
     getMousePos (canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
             y: evt.clientY - rect.top
@@ -250,9 +258,8 @@ export default class WidgetLinkNumber extends React.Component {
      * TODO: fine tune this scroll function
      */
     onWheel (e) {
-        let x = e.deltaY;
-
-        let offset = this.offsetX - x;
+        const x = e.deltaY;
+        const offset = this.offsetX - x;
 
         this.setValue(offset / this.center);
 
@@ -266,12 +273,30 @@ export default class WidgetLinkNumber extends React.Component {
      */
     render () {
         return (
-            <Modal dialogComponentClass={DraggableModal} x={this.x} y={this.y} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.onClick}>
+            <Modal
+                dialogComponentClass={DraggableModal}
+                x={this.x}
+                y={this.y}
+                enforceFocus={false}
+                className='widget-modal'
+                show={this.state.displayPicker}
+                onHide={this.onClick}
+            >
                 <div className='drag'>
-                    <Button onClick={ this.onClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
+                    <Button onClick={ this.onClick } className='widget-exit'>
+                        <Icon type={'bt-times'} />
+                    </Button>
                 </div>
                 {/* The actual widget link */}
-                <canvas className='widget-link-canvas' ref='canvas' width={this.width} height={this.height} onMouseDown={this.onMouseDown} onMouseMove={this.onMouseMove} onMouseUp={this.onMouseUp} onMouseLeave={this.onMouseLeave} onWheel={this.onWheel}/>
+                <canvas
+                    className='widget-link-canvas'
+                    ref={(ref) => { this.canvas = ref; }}
+                    onMouseDown={this.onMouseDown}
+                    onMouseMove={this.onMouseMove}
+                    onMouseUp={this.onMouseUp}
+                    onMouseLeave={this.onMouseLeave}
+                    onWheel={this.onWheel}
+                />
             </Modal>
         );
     }
