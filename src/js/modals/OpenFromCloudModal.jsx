@@ -80,7 +80,7 @@ export default class OpenFromCloudModal extends React.Component {
                     item.description = 'No description provided.';
                 }
 
-                if (this.state.selected === item.url) {
+                if (this.state.selected === item.files.scene) {
                     classString += ' open-from-cloud-selected';
                 }
 
