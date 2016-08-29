@@ -14,8 +14,16 @@ If logged in, the response looks like this:
 
 let cachedSignInData;
 
+/**
+ * Request user sign-in information from mapzen.com. This only works with
+ * mapzen.com, dev.mapzen.com, or www.mapzen.com. Other mapzen.com domains
+ * (e.g. Precog) do not have this `/api/developer.json` endpoint.
+ *
+ * @returns {Promise} - resolved value is contents of `/api/developer.json` or
+ *          an object indicating that we are not hosted on a Mapzen domain.
+ */
 export function requestUserSignIn () {
-    if (window.location.hostname.endsWith('mapzen.com')) {
+    if (/^([dev|www].)?mapzen.com$/.test(window.location.hostname)) {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
                 const data = response.json();
