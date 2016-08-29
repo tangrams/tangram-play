@@ -8,10 +8,12 @@ import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
+import { EventEmitter } from './event-emitter';
 
 import localforage from 'localforage';
 import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
+import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
 import SaveToCloudModal from '../modals/SaveToCloudModal';
@@ -22,6 +24,7 @@ import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
+import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
 
 const _clickNew = function () {
@@ -54,14 +57,64 @@ const _clickSaveFile = function () {
     EditorIO.export();
 };
 
-const _clickSaveToCloud = function () {
+const unsubscribeSaveToCloud = function () {
+    EventEmitter.unsubscribe('mapzen:sign_in', _clickSaveToCloud);
+};
+
+const showSaveToCloudModal = function () {
+    unsubscribeSaveToCloud();
     ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
 };
 
-const _clickOpenFromCloud = function () {
+const _clickSaveToCloud = function () {
+    requestUserSignInState()
+        .then((data) => {
+            if (data.id) {
+                showSaveToCloudModal();
+            }
+            else {
+                ReactDOM.render(
+                    <ConfirmDialogModal
+                        message='You are not signed in! Please sign in now.'
+                        confirmCallback={openSignInWindow}
+                        cancelCallback={unsubscribeSaveToCloud}
+                    />,
+                    document.getElementById('modal-container')
+                );
+                EventEmitter.subscribe('mapzen:sign_in', _clickSaveToCloud);
+            }
+        });
+};
+
+const unsubscribeOpenFromCloud = function () {
+    EventEmitter.unsubscribe('mapzen:sign_in', _clickOpenFromCloud);
+};
+
+const showOpenFromCloudModal = function () {
+    unsubscribeOpenFromCloud();
     EditorIO.checkSaveStateThen(() => {
         ReactDOM.render(<OpenFromCloudModal />, document.getElementById('modal-container'));
     });
+};
+
+const _clickOpenFromCloud = function () {
+    requestUserSignInState()
+        .then((data) => {
+            if (data.id) {
+                showOpenFromCloudModal();
+            }
+            else {
+                ReactDOM.render(
+                    <ConfirmDialogModal
+                        message='You are not signed in! Please sign in now.'
+                        confirmCallback={openSignInWindow}
+                        cancelCallback={unsubscribeOpenFromCloud}
+                    />,
+                    document.getElementById('modal-container')
+                );
+                EventEmitter.subscribe('mapzen:sign_in', _clickOpenFromCloud);
+            }
+        });
 };
 
 const _clickSaveCamera = function () {
