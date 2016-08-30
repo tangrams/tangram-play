@@ -1,22 +1,17 @@
 // Class essentially taken from 'react-color': https://github.com/casesandberg/react-color/blob/master/src/components/sketched/Sketch.js
 
 import React from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
 import { Hue, Alpha } from 'react-color/lib/components/common';
-import Saturation from './WidgetColorSaturation';
-import WidgetColorInputFields from './WidgetColorInputFields';
+import ColorPickerSaturation from './ColorPickerSaturation';
+import ColorPickerInputFields from './ColorPickerInputFields';
 import Color from './color';
 
-class WidgetColorBox extends React.Component {
+export default class ColorPicker extends React.PureComponent {
     constructor (props) {
         super(props);
         this.onChangeSaturation = this.onChangeSaturation.bind(this);
         this.onChangeHueAlpha = this.onChangeHueAlpha.bind(this);
         this.onChangeInputs = this.onChangeInputs.bind(this);
-    }
-
-    shouldComponentUpdate () {
-        return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
     onChangeSaturation (data) {
@@ -46,26 +41,38 @@ class WidgetColorBox extends React.Component {
 
     render () {
         return (
-            <div className='widget-color-box'>
-                <div className='saturation'>
-                    <Saturation className='saturation2' color={this.props.color} onChange={ this.onChangeSaturation }/>
-                </div>
-                <div className='controls flexbox-fix'>
-                    <div className='sliders'>
-                        <div className='hue'>
-                            <Hue className='hue2' hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
+            <div className='colorpicker-container'>
+                <ColorPickerSaturation
+                    color={this.props.color}
+                    onChange={this.onChangeSaturation}
+                />
+
+                <div className='colorpicker-controls'>
+                    <div className='colorpicker-sliders'>
+                        <div className='colorpicker-slider-hue'>
+                            <Hue
+                                hsl={this.props.color.getHsl()}
+                                onChange={this.onChangeHueAlpha}
+                            />
                         </div>
-                        <div className='alpha'>
-                            <Alpha className='alpha2' rgb={this.props.color.getRgba()} hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
+                        <div className='colorpicker-slider-alpha'>
+                            <Alpha
+                                rgb={this.props.color.getRgba()}
+                                hsl={this.props.color.getHsl()}
+                                onChange={this.onChangeHueAlpha}
+                            />
                         </div>
                     </div>
-                    <div className='color'>
-                        <div className='widget-color-box-active-color' style={{ backgroundColor: this.props.color.getRgbaString() }}/>
-                    </div>
+                    <div
+                        className='colorpicker-active-color'
+                        style={{ backgroundColor: this.props.color.getRgbaString() }}
+                    />
                 </div>
-                <div className='fields'>
-                    <WidgetColorInputFields {...this.props} onChange={ this.onChangeInputs } />
-                </div>
+
+                <ColorPickerInputFields
+                    {...this.props}
+                    onChange={this.onChangeInputs}
+                />
             </div>
         );
     }
@@ -74,9 +81,7 @@ class WidgetColorBox extends React.Component {
 /**
  * Prop validation required by React
  */
-WidgetColorBox.propTypes = {
+ColorPicker.propTypes = {
     color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
-
-export default WidgetColorBox;

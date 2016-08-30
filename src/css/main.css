@@ -49,10 +49,10 @@
 @import '_map-panel-search-bookmarks.react';
 @import '_color-palette.react';
 
-/* + Widgets */
+/* + Bookmarks, Pickers, Widgets */
 @import '_widgets-modal.react';
 @import '_widgets.react';
-@import '_widget-color.react';
+@import '_color';
 
 /* Embedded Tangram Play */
 @import '_embeddedPlay';

@@ -1,9 +1,9 @@
 import React from 'react';
 import FloatingPanel from '../FloatingPanel';
-import WidgetColorBox from './widgets/widget-color/WidgetColorBox';
+import ColorPicker from './widgets/color/ColorPicker';
 
 import { EventEmitter } from './event-emitter';
-import Color from './widgets/widget-color/color';
+import Color from './widgets/color/color';
 
 /**
  * Represents the color palette will all current colors in the Tangram yaml
@@ -222,8 +222,8 @@ export default class ColorPalette extends React.Component {
                     show={this.state.displayPicker}
                     onHide={this.onHide}
                 >
-                    <WidgetColorBox
-                        className={'widget-color-picker'}
+                    <ColorPicker
+                        className={'colorpicker'}
                         color={ this.state.currentColor.color.getRgba() }
                         onChange={ this.onChange }
                     />

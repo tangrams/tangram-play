@@ -1,23 +1,17 @@
 // Class essentially taken from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
-
 import React from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
 
-export default class Saturation extends React.Component {
-
+export default class ColorPickerSaturation extends React.PureComponent {
     constructor (props) {
         super(props);
 
-        this.width = 220;
+        // TODO: don't harcode. These numbers are duplicated in CSS.
+        this.width = 230;
         this.height = 165;
 
         this.onChange = this.onChange.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
-    }
-
-    shouldComponentUpdate () {
-        return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
     componentWillUnmount () {
@@ -29,7 +23,7 @@ export default class Saturation extends React.Component {
             e.preventDefault();
         }
 
-        const container = this.refs.container;
+        const container = this.container;
         const boundingBox = container.getBoundingClientRect();
         let x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX;
         let y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY;
@@ -83,15 +77,20 @@ export default class Saturation extends React.Component {
             left: this.props.color.getHsv().s * 100 + '%'
         };
 
-        const pointer = <div className='circle' />;
-
         return (
-            <div className='widget-color-saturation' ref='container' onMouseDown={ this.onMouseDown }
-                onTouchMove={ this.onChange }
-                onTouchStart={ this.onChange } style={ style1 }>
-                <div className='white'>
-                    <div className='black' />
-                    <div className='pointer' ref='pointer' style={style2}>{ pointer }</div>
+            <div
+                className='colorpicker-saturation'
+                ref={(ref) => { this.container = ref; }}
+                onMouseDown={this.onMouseDown}
+                onTouchMove={this.onChange}
+                onTouchStart={this.onChange}
+                style={style1}
+            >
+                <div className='colorpicker-saturation-white'>
+                    <div className='colorpicker-saturation-black' />
+                    <div className='colorpicker-saturation-pointer' style={style2}>
+                        <div className='colorpicker-saturation-circle' />
+                    </div>
                 </div>
             </div>
         );
@@ -101,9 +100,7 @@ export default class Saturation extends React.Component {
 /**
  * Prop validation required by React
  */
-Saturation.propTypes = {
+ColorPickerSaturation.propTypes = {
     color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
-
-export default Saturation;
