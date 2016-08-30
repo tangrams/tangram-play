@@ -1,24 +1,4 @@
 /* React: Widget Color */
-
-.panel-close-glyph {
-    position: absolute;
-    height: 100%;
-    width: 20px;
-    margin-top: -1px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 13px;
-    color: var(--ui-component-text-color);
-    cursor: pointer;
-
-    &:hover {
-        color: var(--ui-highlight-color);
-        background-color: var(--ui-active-color);
-    }
-}
-
 /* color-picker.react */
 
 .widget-colorpicker {

@@ -86,7 +86,8 @@ export default class FloatingPanel extends React.Component {
                 x={this.state.x}
                 y={this.state.y}
             >
-                <div className='drag'>
+                <div className='panel-topbar'>
+                    <div className='panel-dragger' />
                     <PanelCloseButton onClick={this.props.onHide} />
                 </div>
                 {this.props.children}
