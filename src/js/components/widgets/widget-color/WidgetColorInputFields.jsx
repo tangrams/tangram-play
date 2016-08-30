@@ -27,7 +27,10 @@ export default class WidgetColorInputFields extends React.Component {
             this.props.onChange(data.hex);
         }
         else if (data.r || data.g || data.b || data.a) {
-            let a = parseInt(data.a);
+            let a = parseFloat(data.a);
+
+            // Clamp a between 0-1 range
+            a = Math.max(Math.min(a, 1), 0);
 
             if (a === 0) {
                 this.props.onChange({
@@ -42,7 +45,7 @@ export default class WidgetColorInputFields extends React.Component {
                     r: data.r || color.r,
                     g: data.g || color.g,
                     b: data.b || color.b,
-                    a: (a / 100) || color.a
+                    a: a || color.a
                 });
             }
         }
@@ -67,7 +70,7 @@ export default class WidgetColorInputFields extends React.Component {
                     <EditableInput label='b' value={color.b} onChange={this.onChange} />
                 </div>
                 <div className='colorpicker-input-alpha'>
-                    <EditableInput label='a' value={Math.round(color.a * 100)} onChange={this.onChange} />
+                    <EditableInput label='a' value={color.a.toFixed(2)} onChange={this.onChange} />
                 </div>
             </div>
         );
