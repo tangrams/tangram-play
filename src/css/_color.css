@@ -1,5 +1,6 @@
-/* React: Widget Color */
-/* color-picker.react */
+/* Color bookmarks and pickers */
+
+/* ColorBookmark.jsx */
 
 .bookmark-color {
     box-sizing: border-box;
@@ -14,7 +15,7 @@
     margin-top: -0.15em;
 }
 
-/* color-picker-box.react */
+/* ColorPicker.jsx */
 
 .colorpicker-container {
     width: 230px;
@@ -33,6 +34,19 @@
     flex: 1;
 }
 
+.colorpicker-slider-hue {
+    position: relative;
+    height: 10px;
+    overflow: hidden;
+}
+
+.colorpicker-slider-alpha {
+    position: relative;
+    height: 10px;
+    margin-top: 4px;
+    overflow: hidden;
+}
+
 .colorpicker-active-color {
     width: 24px;
     height: 24px;
@@ -41,20 +55,7 @@
     margin-left: 4px;
 }
 
-.colorpicker-slider-hue {
-    position: relative;
-    height: 10px;
-    overflow: hidden;
-}
-
-.colorpicker-slider-alpha  {
-    position: relative;
-    height: 10px;
-    margin-top: 4px;
-    overflow: hidden;
-}
-
-/* color-picker-input-fields.react */
+/* ColorPickerInputFields.jsx */
 
 .colorpicker-input-fields {
     display: flex;
@@ -94,7 +95,7 @@
     color: var(--ui-subtext-color);
 }
 
-/* color-picker-saturation.react  */
+/* ColorPickerSaturation.jsx  */
 
 .colorpicker-saturation {
     position: relative;
