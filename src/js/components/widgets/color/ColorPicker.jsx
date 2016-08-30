@@ -6,7 +6,7 @@ import ColorPickerSaturation from './ColorPickerSaturation';
 import ColorPickerInputFields from './ColorPickerInputFields';
 import Color from './color';
 
-class ColorPicker extends React.PureComponent {
+export default class ColorPicker extends React.PureComponent {
     constructor (props) {
         super(props);
         this.onChangeSaturation = this.onChangeSaturation.bind(this);
@@ -42,21 +42,37 @@ class ColorPicker extends React.PureComponent {
     render () {
         return (
             <div className='colorpicker-container'>
-                <ColorPickerSaturation color={this.props.color} onChange={ this.onChangeSaturation }/>
+                <ColorPickerSaturation
+                    color={this.props.color}
+                    onChange={this.onChangeSaturation}
+                />
 
                 <div className='colorpicker-controls'>
                     <div className='colorpicker-sliders'>
                         <div className='colorpicker-slider-hue'>
-                            <Hue hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
+                            <Hue
+                                hsl={this.props.color.getHsl()}
+                                onChange={this.onChangeHueAlpha}
+                            />
                         </div>
                         <div className='colorpicker-slider-alpha'>
-                            <Alpha rgb={this.props.color.getRgba()} hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
+                            <Alpha
+                                rgb={this.props.color.getRgba()}
+                                hsl={this.props.color.getHsl()}
+                                onChange={this.onChangeHueAlpha}
+                            />
                         </div>
                     </div>
-                    <div className='colorpicker-active-color' style={{ backgroundColor: this.props.color.getRgbaString() }}/>
+                    <div
+                        className='colorpicker-active-color'
+                        style={{ backgroundColor: this.props.color.getRgbaString() }}
+                    />
                 </div>
 
-                <ColorPickerInputFields {...this.props} onChange={this.onChangeInputs} />
+                <ColorPickerInputFields
+                    {...this.props}
+                    onChange={this.onChangeInputs}
+                />
             </div>
         );
     }
@@ -69,5 +85,3 @@ ColorPicker.propTypes = {
     color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
-
-export default ColorPicker;
