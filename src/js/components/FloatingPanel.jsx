@@ -16,7 +16,12 @@ export default class FloatingPanel extends React.Component {
     }
 
     componentWillMount () {
-        this.recalculatePosition();
+        // Set the state with the results of the recalculated position
+        this.setState(this.recalculatePosition(this.state));
+    }
+
+    componentWillReceiveProps (nextProps) {
+        this.setState(this.recalculatePosition(nextProps));
     }
 
     /**
@@ -26,33 +31,31 @@ export default class FloatingPanel extends React.Component {
      * appear outside of the viewport. This function takes into account the
      * panels' `width` and `height` values and ensures that `x` and `y` is
      * recalculated to keep the panel inside the viewport.
+     *
+     * @param {Object} state - object containing properties `x` and `y`
+     *          (e.g. from `state` or `props`)
+     * @returns {Object} - object containing properties `x` and `y` that should
+     *          be passed to `setState()`
      */
-    componentWillReceiveProps (nextProps) {
-        this.setState({
-            x: nextProps.x,
-            y: nextProps.y,
-        });
-
-        this.recalculatePosition();
-    }
-
-    recalculatePosition () {
+    recalculatePosition (state) {
         // Magic number: a vertical distance in pixels to offset from the
         // provided Y value to give it a little bit of breathing room.
         const VERTICAL_POSITION_BUFFER = 5;
 
+        // TODO: don't hardcode this bounding element.
         const workspaceEl = document.getElementsByClassName('workspace-container')[0];
         const workspaceBounds = workspaceEl.getBoundingClientRect();
 
         const width = this.props.width;
         const height = this.props.height;
 
-        let posX = this.props.x;
-        let posY = this.props.y + VERTICAL_POSITION_BUFFER;
+        // Read position from current state
+        let posX = state.x;
+        let posY = state.y + VERTICAL_POSITION_BUFFER;
 
         // Prevent positions from going negative
-        posX = Math.max(posX, 0);
-        posY = Math.max(posY, 0);
+        posX = Math.max(posX, workspaceBounds.left);
+        posY = Math.max(posY, workspaceBounds.top);
 
         // Calculate maximum position values
         const maxX = posX + width;
@@ -66,10 +69,10 @@ export default class FloatingPanel extends React.Component {
             posY = workspaceBounds.height - height;
         }
 
-        this.setState({
+        return {
             x: posX,
             y: posY
-        });
+        };
     }
 
     render () {

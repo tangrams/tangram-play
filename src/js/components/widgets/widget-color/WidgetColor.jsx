@@ -23,7 +23,7 @@ export default class WidgetColor extends React.Component {
 
         this.state = {
             displayColorPicker: this.props.shader, // If it's a shader widget, defaults to TRUE, open. If it's not a shader widget, it's FALSE. we need to wait until user clicks button to open widget
-            color: new Color(this.props.value)
+            color: new Color(this.props.value),
         };
         this.bookmark = this.props.bookmark;
         this.mounted = true;
@@ -44,10 +44,11 @@ export default class WidgetColor extends React.Component {
         if (this.props.shader) {
             this.cursor = this.props.cursor;
             this.match = this.props.match;
-            let VERTICAL_OFFSET = 40;
-            let linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user clicked on a line
+
+            // Position where user clicked on a line
+            const linePos = { line: this.cursor.line, ch: this.match.start };
             this.x = getCoordinates(linePos).left;
-            this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
+            this.y = getCoordinates(linePos).bottom;
         }
     }
 
@@ -84,42 +85,18 @@ export default class WidgetColor extends React.Component {
      * Open or close the color picker widget
      */
     onClick (e) {
-        // Set the editor cursor to the correct line. (When you click on the widget button it doesn't move the cursor)
+        // Set the editor cursor to the correct line. (When you click on the
+        // widget button it doesn't move the cursor)
         setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
 
         // Every time user clicks, modal position has to be updated.
         // This is because the user might have scrolled the CodeMirror editor
-
-        // Magic numbers
-        // Vertical distance in pixels to offset from the bookmark element
-        const VERTICAL_POSITION_BUFFER = 5;
-
-        // Vertical distance in pixels to correct for locking modal position to
-        // the workspace area. This works in conjunction with a hard-coded
-        // margin-top property on the modal to keep the modal in place.
-        const WORKSPACE_VERTICAL_CORRECTION = 47;
-
-        const bookmarkPos = this.bookmark.widgetNode.querySelector('.widget').getBoundingClientRect();
-        let posX = bookmarkPos.left;
-        let posY = bookmarkPos.bottom + VERTICAL_POSITION_BUFFER - WORKSPACE_VERTICAL_CORRECTION;
-
-        const workspaceEl = document.getElementsByClassName('workspace-container')[0];
-        const workspaceBounds = workspaceEl.getBoundingClientRect();
-        const maxX = posX + this.width;
-        const maxY = posY + this.height;
-
-        // Check if the widget would render outside of the workspace container area
-        if (maxX > workspaceBounds.width) {
-            posX = workspaceBounds.width - this.width;
-        }
-        if (maxY > workspaceBounds.height) {
-            posY = workspaceBounds.height - this.height;
-        }
+        const bookmarkPosition = this.colorPickerBookmark.getBoundingClientRect();
 
         // Set the x and y of the modal that will contain the widget
-        this.x = posX;
-        this.y = posY;
-        this.setState({ displayColorPicker: !this.state.displayColorPicker });
+        this.x = bookmarkPosition.left;
+        this.y = bookmarkPosition.bottom;
+        this.setState({ displayColorPicker: true });
     }
 
     onClickExit () {
@@ -188,8 +165,8 @@ export default class WidgetColor extends React.Component {
      * @param color - the color to update within a shader block
      */
     setEditorShaderValue (color) {
-        let start = { line: this.cursor.line, ch: this.match.start };
-        let end = { line: this.cursor.line, ch: this.match.end };
+        const start = { line: this.cursor.line, ch: this.match.start };
+        const end = { line: this.cursor.line, ch: this.match.end };
         this.match.end = this.match.start + color.length;
         setCodeMirrorShaderValue(color, start, end);
     }
@@ -200,7 +177,7 @@ export default class WidgetColor extends React.Component {
      */
     render () {
         if (this.mounted) {
-            let widgetStyle = { backgroundColor: this.state.color.getRgbaString() };
+            const widgetStyle = { backgroundColor: this.state.color.getRgbaString() };
 
             return (
                 <div>
@@ -210,7 +187,14 @@ export default class WidgetColor extends React.Component {
                             return null;
                         }
                         else {
-                            return <div className='widget widget-colorpicker' ref='widgetColorButton' onClick={this.onClick} style={widgetStyle}></div>;
+                            return (
+                                <div
+                                    className='widget widget-colorpicker'
+                                    ref={(ref) => { this.colorPickerBookmark = ref; }}
+                                    onClick={this.onClick}
+                                    style={widgetStyle}
+                                />
+                            );
                         }
                     })()}
 

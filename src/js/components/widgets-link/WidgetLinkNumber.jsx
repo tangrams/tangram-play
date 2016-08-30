@@ -26,10 +26,9 @@ export default class WidgetLinkNumber extends React.Component {
         this.cursor = this.props.cursor;
         this.match = this.props.match;
 
-        const VERTICAL_OFFSET = 40;
         const linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
         this.x = getCoordinates(linePos).left;
-        this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
+        this.y = getCoordinates(linePos).bottom;
 
         this.fnColor = 'rgb(230, 230, 230)';
         this.selColor = 'rgb(40, 168, 107)';
