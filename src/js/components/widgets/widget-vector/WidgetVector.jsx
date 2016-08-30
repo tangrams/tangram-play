@@ -1,8 +1,5 @@
 import React from 'react';
-import Modal from 'react-bootstrap/lib/Modal';
-import Button from 'react-bootstrap/lib/Button';
-import DraggableModal from '../../DraggableModal';
-import Icon from '../../Icon';
+import FloatingPanel from '../../FloatingPanel';
 import { setCodeMirrorValue } from '../../../editor/editor';
 
 import THREE from 'three';
@@ -40,7 +37,7 @@ export default class WidgetVector extends React.Component {
     componentDidUpdate () {
         if (window.WebGLRenderingContext) {
             renderer = new THREE.WebGLRenderer({ antialias: true });
-            this.refs.mytest.appendChild(renderer.domElement);
+            this.vectorPicker.appendChild(renderer.domElement);
 
             renderer.setSize(300, 300);
             renderer.setClearColor(0xeeeeee, 1.0);
@@ -166,14 +163,17 @@ export default class WidgetVector extends React.Component {
                 {/* The widget button user clicks to open color picker */}
                 <div className='widget widget-vectorpicker' onClick={ this.handleClick }></div>
 
-                {/* Draggable modal */}
-                <Modal dialogComponentClass={DraggableModal} enforceFocus={false} className='widget-modal' show={this.state.displayPicker} onHide={this.handleClick}>
-                    <div className='drag'>
-                        <Button onClick={ this.handleClick } className='widget-exit'><Icon type={'bt-times'} /></Button>
-                    </div>
-                    {/* The actual color picker */}
-                    <div ref='mytest'></div>
-                </Modal>
+                {/* Floating panel */}
+                <FloatingPanel
+                    x={this.x}
+                    y={this.y}
+                    width={this.width}
+                    height={this.height}
+                    show={this.state.displayPicker}
+                    onHide={this.handleClick}
+                >
+                    <div ref={(ref) => { this.vectorPicker = ref; }}></div>
+                </FloatingPanel>
             </div>
        );
     }

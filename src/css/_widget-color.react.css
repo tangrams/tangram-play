@@ -1,27 +1,4 @@
 /* React: Widget Color */
-
-.widget-exit {
-    padding: 0;
-    background-color: transparent;
-    outline: none;
-    border-color: transparent;
-    border: transparent;
-    padding-right: 14px;
-    text-align: center;
-    justify-content: center;
-    display: flex;
-}
-
-.widget-exit i {
-    font-size: 8px;
-    font-weight: 600;
-    color: white;
-}
-
-.widget-exit i:hover {
-    color: yellow;
-}
-
 /* color-picker.react */
 
 .widget-colorpicker {

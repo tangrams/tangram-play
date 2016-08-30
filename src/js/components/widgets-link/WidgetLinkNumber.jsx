@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from 'react-bootstrap/lib/Modal';
-import Button from 'react-bootstrap/lib/Button';
-import DraggableModal from '../DraggableModal';
-import Icon from '../Icon';
+import FloatingPanel from '../FloatingPanel';
 
 import { getDevicePixelRatio } from '../../tools/common';
 import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
@@ -29,10 +26,9 @@ export default class WidgetLinkNumber extends React.Component {
         this.cursor = this.props.cursor;
         this.match = this.props.match;
 
-        const VERTICAL_OFFSET = 40;
         const linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
         this.x = getCoordinates(linePos).left;
-        this.y = getCoordinates(linePos).bottom - VERTICAL_OFFSET;
+        this.y = getCoordinates(linePos).bottom;
 
         this.fnColor = 'rgb(230, 230, 230)';
         this.selColor = 'rgb(40, 168, 107)';
@@ -56,7 +52,7 @@ export default class WidgetLinkNumber extends React.Component {
 
         this.drag = false;
 
-        this.onClick = this.onClick.bind(this);
+        this.onHide = this.onHide.bind(this);
         this.setValue = this.setValue.bind(this);
         this.drawCanvas = this.drawCanvas.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -184,10 +180,10 @@ export default class WidgetLinkNumber extends React.Component {
 
     /**
      * Widget links are handled slightly differently. For now they are simply unmounted from the DOM and recreated again
-     * Meaning, handleClick will only be called once to unmount the widget
+     * Meaning, onHide will only be called once to unmount the widget
      */
-    onClick () {
-        this.setState({ displayPicker: !this.state.displayPicker });
+    onHide () {
+        this.setState({ displayPicker: false });
 
         const widgetlink = document.getElementById('widget-links');
         ReactDOM.unmountComponentAtNode(widgetlink);
@@ -276,21 +272,14 @@ export default class WidgetLinkNumber extends React.Component {
      */
     render () {
         return (
-            <Modal
-                dialogComponentClass={DraggableModal}
+            <FloatingPanel
                 x={this.x}
                 y={this.y}
-                enforceFocus={false}
-                className='widget-modal'
+                width={this.width}
+                height={this.height}
                 show={this.state.displayPicker}
-                onHide={this.onClick}
+                onHide={this.onHide}
             >
-                <div className='drag'>
-                    <Button onClick={ this.onClick } className='widget-exit'>
-                        <Icon type={'bt-times'} />
-                    </Button>
-                </div>
-                {/* The actual widget link */}
                 <canvas
                     className='widget-link-canvas'
                     ref={(ref) => { this.canvas = ref; }}
@@ -300,7 +289,7 @@ export default class WidgetLinkNumber extends React.Component {
                     onMouseLeave={this.onMouseLeave}
                     onWheel={this.onWheel}
                 />
-            </Modal>
+            </FloatingPanel>
         );
     }
 }
