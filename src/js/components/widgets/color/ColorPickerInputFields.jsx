@@ -3,7 +3,7 @@
 import React from 'react';
 import { EditableInput } from 'react-color/lib/components/common';
 
-export default class WidgetColorInputFields extends React.PureComponent {
+export default class ColorPickerInputFields extends React.PureComponent {
     constructor (props) {
         super(props);
         this.onChange = this.onChange.bind(this);
@@ -75,7 +75,7 @@ export default class WidgetColorInputFields extends React.PureComponent {
 /**
  * Prop validation required by React
  */
-WidgetColorInputFields.propTypes = {
+ColorPickerInputFields.propTypes = {
     color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };

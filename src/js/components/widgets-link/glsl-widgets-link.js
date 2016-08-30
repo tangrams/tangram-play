@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import WidgetLinkVec2 from './WidgetLinkVec2';
 import WidgetLinkNumber from './WidgetLinkNumber';
-import WidgetColor from '../widgets/widget-color/WidgetColor';
+import ColorBookmark from '../widgets/color/ColorBookmark';
 
 export function initGlslWidgetsLink () {
     const wrapper = editor.getWrapperElement();
@@ -55,16 +55,16 @@ export function initGlslWidgetsLink () {
             switch (match.type) {
                 case 'vec4':
                 case 'vec3':
-                    // Cleaning up the value we send to the WidgetColor
+                    // Cleaning up the value we send to the ColorBookmark
                     let cleanNum = match.string.substr(4);
                     cleanNum = cleanNum.replace(/[()]/g, '');
                     cleanNum = '[' + cleanNum + ']';
 
                     if (match.type === 'vec4') {
-                        ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec4'/>, widgetlink);
+                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec4'/>, widgetlink);
                     }
                     else {
-                        ReactDOM.render(<WidgetColor display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec3'/>, widgetlink);
+                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec3'/>, widgetlink);
                     }
                     break;
                 case 'vec2':

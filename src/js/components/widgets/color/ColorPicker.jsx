@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { Hue, Alpha } from 'react-color/lib/components/common';
-import Saturation from './WidgetColorSaturation';
-import WidgetColorInputFields from './WidgetColorInputFields';
+import ColorPickerSaturation from './ColorPickerSaturation';
+import ColorPickerInputFields from './ColorPickerInputFields';
 import Color from './color';
 
-class WidgetColorBox extends React.PureComponent {
+class ColorPicker extends React.PureComponent {
     constructor (props) {
         super(props);
         this.onChangeSaturation = this.onChangeSaturation.bind(this);
@@ -42,7 +42,7 @@ class WidgetColorBox extends React.PureComponent {
     render () {
         return (
             <div className='colorpicker-container'>
-                <Saturation color={this.props.color} onChange={ this.onChangeSaturation }/>
+                <ColorPickerSaturation color={this.props.color} onChange={ this.onChangeSaturation }/>
 
                 <div className='colorpicker-controls'>
                     <div className='colorpicker-sliders'>
@@ -56,7 +56,7 @@ class WidgetColorBox extends React.PureComponent {
                     <div className='colorpicker-active-color' style={{ backgroundColor: this.props.color.getRgbaString() }}/>
                 </div>
 
-                <WidgetColorInputFields {...this.props} onChange={this.onChangeInputs} />
+                <ColorPickerInputFields {...this.props} onChange={this.onChangeInputs} />
             </div>
         );
     }
@@ -65,9 +65,9 @@ class WidgetColorBox extends React.PureComponent {
 /**
  * Prop validation required by React
  */
-WidgetColorBox.propTypes = {
+ColorPicker.propTypes = {
     color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
 
-export default WidgetColorBox;
+export default ColorPicker;

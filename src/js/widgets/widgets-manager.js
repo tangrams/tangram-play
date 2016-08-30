@@ -2,7 +2,7 @@ import { editor } from '../editor/editor';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import WidgetColor from '../components/widgets/widget-color/WidgetColor';
+import ColorBookmark from '../components/widgets/color/ColorBookmark';
 import WidgetDropdown from '../components/widgets/WidgetDropdown';
 // import WidgetVector from '../components/widgets/widget-vector/WidgetVector';
 import WidgetToggle from '../components/widgets/WidgetToggle';
@@ -295,7 +295,7 @@ function insertMarks (fromLine, toLine) {
                     mybookmark.widgetPos = node.range;
 
                     if (mytype === 'color') {
-                        ReactDOM.render(<WidgetColor bookmark={mybookmark} value={node.value} shader={false} />, myel);
+                        ReactDOM.render(<ColorBookmark bookmark={mybookmark} value={node.value} shader={false} />, myel);
                     }
                     else if (mytype === 'string') {
                         // We need to pass a few more values to the dropdown widget: a set of options, a key, and a sources string

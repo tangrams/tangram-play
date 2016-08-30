@@ -1,7 +1,7 @@
 // Class essentially taken from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
 import React from 'react';
 
-export default class Saturation extends React.PureComponent {
+export default class ColorPickerSaturation extends React.PureComponent {
     constructor (props) {
         super(props);
 
@@ -100,9 +100,7 @@ export default class Saturation extends React.PureComponent {
 /**
  * Prop validation required by React
  */
-Saturation.propTypes = {
+ColorPickerSaturation.propTypes = {
     color: React.PropTypes.object,
     onChange: React.PropTypes.func
 };
-
-export default Saturation;
