@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from 'react-bootstrap/lib/Modal';
 import DraggableModal from './DraggableModal';
-import PanelCloseButton from './PanelCloseButton';
 
 export default class FloatingPanel extends React.Component {
     constructor (props) {
@@ -86,9 +85,9 @@ export default class FloatingPanel extends React.Component {
                 x={this.state.x}
                 y={this.state.y}
             >
-                <div className='panel-topbar'>
-                    <div className='panel-dragger' />
-                    <PanelCloseButton onClick={this.props.onHide} />
+                <div className='floating-panel-topbar'>
+                    <div className='floating-panel-drag' />
+                    <div className='floating-panel-close' onClick={this.props.onHide}>×</div>
                 </div>
                 {this.props.children}
             </Modal>

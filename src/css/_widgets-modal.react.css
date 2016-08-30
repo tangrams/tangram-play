@@ -1,18 +1,18 @@
 /* For the draggable modal for the widgets */
 
-.panel-topbar {
+.floating-panel-topbar {
     display: flex;
     background-color: var(--ui-component-color);
     height: 20px;
     justify-content: flex-end;
 }
 
-.panel-dragger {
+.floating-panel-drag {
     flex-grow: 1;
     cursor: move;
 }
 
-.panel-close-glyph {
+.floating-panel-close {
     height: 100%;
     width: 20px;
     margin-top: -1px;
@@ -31,7 +31,6 @@
         background-color: var(--ui-active-color);
     }
 }
-
 
 .modal-content {
     margin-top: 0;

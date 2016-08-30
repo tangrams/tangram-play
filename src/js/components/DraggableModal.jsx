@@ -16,7 +16,7 @@ export default class DraggableModal extends React.PureComponent {
                 bounds='#draggable-container'
                 defaultPosition={{x: this.props.x, y: this.props.y}}
                 zIndex={1800}
-                handle='.panel-dragger'
+                handle='.floating-panel-drag'
             >
                 <ModalDialog {...this.props} />
             </Draggable>
