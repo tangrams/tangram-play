@@ -1,25 +1,22 @@
 /* React: Widget Color */
 
-.widget-exit {
-    padding: 0;
-    background-color: transparent;
-    outline: none;
-    border-color: transparent;
-    border: transparent;
-    padding-right: 14px;
-    text-align: center;
-    justify-content: center;
+.panel-close-glyph {
+    position: absolute;
+    height: 100%;
+    width: 20px;
+    margin-top: -1px;
     display: flex;
-}
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 13px;
+    color: var(--ui-component-text-color);
+    cursor: pointer;
 
-.widget-exit i {
-    font-size: 8px;
-    font-weight: 600;
-    color: white;
-}
-
-.widget-exit i:hover {
-    color: yellow;
+    &:hover {
+        color: var(--ui-highlight-color);
+        background-color: var(--ui-active-color);
+    }
 }
 
 /* color-picker.react */

@@ -1,6 +1,7 @@
 /* For the draggable modal for the widgets */
 
 .drag {
+    position: relative;
     background-color: var(--ui-component-color);
     cursor: move;
     height: 20px;
