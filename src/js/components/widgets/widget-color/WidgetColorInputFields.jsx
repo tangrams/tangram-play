@@ -14,6 +14,12 @@ export default class WidgetColorInputFields extends React.Component {
         return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
+    /**
+     * Handle changes in input fields.
+     * Signature of the `data` object passed in uses EditableInput's `label`
+     * prop as the property name. e.g. `label='r'` becomes `data.r`. Do not
+     * change these labels! (Use CSS to style these elements if necessary.)
+     */
     onChange (data) {
         let color = this.props.color.getRgba();
 
@@ -43,24 +49,25 @@ export default class WidgetColorInputFields extends React.Component {
     }
 
     render () {
-        let color = this.props.color.getRgba();
-        let hex = this.props.color.getHexString().toUpperCase();
+        const color = this.props.color.getRgba();
+        const hex = this.props.color.getHexString();
+
         return (
-            <div className='widget-color-box-fields'>
-                <div className='widget-color-box-double'>
-                    <EditableInput className='input' label='hex' value={ hex } onChange={ this.onChange }/>
+            <div className='colorpicker-input-fields'>
+                <div className='colorpicker-input-double'>
+                    <EditableInput label='hex' value={hex} onChange={this.onChange} />
                 </div>
-                <div className='widget-color-box-single'>
-                    <EditableInput className='input' label='r' value={ color.r } onChange={ this.onChange }/>
+                <div className='colorpicker-input-single'>
+                    <EditableInput label='r' value={color.r} onChange={this.onChange} />
                 </div>
-                <div className='widget-color-box-single'>
-                    <EditableInput className='input' label='g' value={ color.g } onChange={ this.onChange } />
+                <div className='colorpicker-input-single'>
+                    <EditableInput label='g' value={color.g} onChange={this.onChange} />
                 </div>
-                <div className='widget-color-box-single'>
-                    <EditableInput className='input' label='b' value={ color.b } onChange={ this.onChange } />
+                <div className='colorpicker-input-single'>
+                    <EditableInput label='b' value={color.b} onChange={this.onChange} />
                 </div>
-                <div className='widget-color-box-alpha'>
-                    <EditableInput is='input' label='a' value={ Math.round(color.a * 100) } onChange={ this.onChange } />
+                <div className='colorpicker-input-alpha'>
+                    <EditableInput label='a' value={Math.round(color.a * 100)} onChange={this.onChange} />
                 </div>
             </div>
         );

@@ -3,7 +3,12 @@ import ReactDOM from 'react-dom';
 import FloatingPanel from '../../FloatingPanel';
 import WidgetColorBox from './WidgetColorBox';
 
-import { setCodeMirrorValue, setCodeMirrorShaderValue, getCoordinates, setCursor } from '../../../editor/editor';
+import {
+    setCodeMirrorValue,
+    setCodeMirrorShaderValue,
+    getCoordinates,
+    setCursor
+} from '../../../editor/editor';
 import Color from './color';
 // import { EventEmitter } from '../../event-emitter';
 
@@ -189,7 +194,7 @@ export default class WidgetColor extends React.Component {
                         else {
                             return (
                                 <div
-                                    className='widget widget-colorpicker'
+                                    className='widget bookmark-colorpicker'
                                     ref={(ref) => { this.colorPickerBookmark = ref; }}
                                     onClick={this.onClick}
                                     style={widgetStyle}
@@ -207,7 +212,7 @@ export default class WidgetColor extends React.Component {
                         show={this.state.displayColorPicker}
                         onHide={this.onClickExit}
                     >
-                        <WidgetColorBox className={'widget-color-picker'} color={ this.state.color } onChange={ this.onChange }/>
+                        <WidgetColorBox className={'colorpicker'} color={ this.state.color } onChange={ this.onChange }/>
                     </FloatingPanel>
                 </div>
             );

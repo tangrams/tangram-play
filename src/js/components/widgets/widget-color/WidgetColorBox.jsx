@@ -46,26 +46,22 @@ class WidgetColorBox extends React.Component {
 
     render () {
         return (
-            <div className='widget-color-box'>
-                <div className='saturation'>
-                    <Saturation className='saturation2' color={this.props.color} onChange={ this.onChangeSaturation }/>
-                </div>
-                <div className='controls flexbox-fix'>
-                    <div className='sliders'>
-                        <div className='hue'>
-                            <Hue className='hue2' hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
+            <div className='colorpicker-container'>
+                <Saturation color={this.props.color} onChange={ this.onChangeSaturation }/>
+
+                <div className='colorpicker-controls'>
+                    <div className='colorpicker-sliders'>
+                        <div className='colorpicker-slider-hue'>
+                            <Hue hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
                         </div>
-                        <div className='alpha'>
-                            <Alpha className='alpha2' rgb={this.props.color.getRgba()} hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
+                        <div className='colorpicker-slider-alpha'>
+                            <Alpha rgb={this.props.color.getRgba()} hsl={this.props.color.getHsl()} onChange={ this.onChangeHueAlpha } />
                         </div>
                     </div>
-                    <div className='color'>
-                        <div className='widget-color-box-active-color' style={{ backgroundColor: this.props.color.getRgbaString() }}/>
-                    </div>
+                    <div className='colorpicker-active-color' style={{ backgroundColor: this.props.color.getRgbaString() }}/>
                 </div>
-                <div className='fields'>
-                    <WidgetColorInputFields {...this.props} onChange={ this.onChangeInputs } />
-                </div>
+
+                <WidgetColorInputFields {...this.props} onChange={this.onChangeInputs} />
             </div>
         );
     }

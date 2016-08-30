@@ -223,7 +223,7 @@ export default class ColorPalette extends React.Component {
                     onHide={this.onHide}
                 >
                     <WidgetColorBox
-                        className={'widget-color-picker'}
+                        className={'colorpicker'}
                         color={ this.state.currentColor.color.getRgba() }
                         onChange={ this.onChange }
                     />
