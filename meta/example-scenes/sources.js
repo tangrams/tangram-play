@@ -38,6 +38,10 @@ const IMAGE_SOURCES = {
         image: 'https://cloud.githubusercontent.com/assets/853051/11136794/c8c54190-8966-11e5-9017-b7f06d6841bb.png',
         scene: null
     },
+    'walkabout': {
+        image: 'https://s3.amazonaws.com/static-prod.mapzen.com/resources/maps-page-hero/walkabout-style.png',
+        scene: null
+    },
     // End house styles
     'gotham': {
         image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/1d60a85ed384150d8a98c26fa30f5a4123c1224f/styles/gotham.png',
