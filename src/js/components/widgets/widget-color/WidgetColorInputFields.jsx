@@ -1,17 +1,12 @@
 // Class essentially taken from 'react-color' https://github.com/casesandberg/react-color/blob/master/src/components/sketched/SketchFields.js
 
 import React from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
 import { EditableInput } from 'react-color/lib/components/common';
 
-export default class WidgetColorInputFields extends React.Component {
+export default class WidgetColorInputFields extends React.PureComponent {
     constructor (props) {
         super(props);
         this.onChange = this.onChange.bind(this);
-    }
-
-    shouldComponentUpdate () {
-        return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
     /**

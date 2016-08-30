@@ -1,22 +1,17 @@
 // Class essentially taken from 'react-color': https://github.com/casesandberg/react-color/blob/master/src/components/sketched/Sketch.js
 
 import React from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
 import { Hue, Alpha } from 'react-color/lib/components/common';
 import Saturation from './WidgetColorSaturation';
 import WidgetColorInputFields from './WidgetColorInputFields';
 import Color from './color';
 
-class WidgetColorBox extends React.Component {
+class WidgetColorBox extends React.PureComponent {
     constructor (props) {
         super(props);
         this.onChangeSaturation = this.onChangeSaturation.bind(this);
         this.onChangeHueAlpha = this.onChangeHueAlpha.bind(this);
         this.onChangeInputs = this.onChangeInputs.bind(this);
-    }
-
-    shouldComponentUpdate () {
-        return shallowCompare.bind(this, this, arguments[0], arguments[1]);
     }
 
     onChangeSaturation (data) {
