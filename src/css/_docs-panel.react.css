@@ -5,7 +5,8 @@
     z-index: var(--z04-map-toolbar);
     bottom: 0;
     right: 0;
-    width: calc(100% - 54px);
+    /* TODO: don't hardcode magic number */
+    width: calc(100% - 62px);
     padding-left: 2px;
 }
 
@@ -74,7 +75,6 @@
     border: none;
     margin: 0;
     z-index: var(--z07-menu);
-    opacity: 0.99; /* For panel to play nice with absolute positioned toggle button on the side */
 }
 
 .docs-panel-collapsible {
@@ -96,8 +96,6 @@
         display: flex;
         /* padding-top: 6px; */
         padding-bottom: 6px;
-        padding-left: 8px;
-        padding-right: 8px;
         flex-direction: row;
         height: 100%;
     }
@@ -121,7 +119,7 @@
     color: var(--ui-highlight-color);
 }
 
-.docs-panel * .btn {
+.docs-panel .btn {
     border: none;
 }
 
@@ -133,7 +131,7 @@
     color: var(--ui-component-text-color);
 }
 
-.docs-panel * .btn-group {
+.docs-panel .btn-group {
     /* margin-right: 2px; */
 }
 
@@ -147,8 +145,8 @@
     position: relative;
     height: 100%;
     padding-top: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 28px;
+    padding-right: 28px;
     padding-bottom: 20px;
 }
 
