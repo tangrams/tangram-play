@@ -386,6 +386,7 @@ export default class MapPanelLocationBar extends React.Component {
         map.setView({ lat: lat, lng: lng });
         this.setState({
             bookmarkActive: false,
+            placeholder: suggestion.properties.label,
             latlng: {
                 lat: lat,
                 lng: lng
