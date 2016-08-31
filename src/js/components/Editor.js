@@ -1,5 +1,5 @@
 import React from 'react';
-import DocsPanel from './DocsPanel';
+// import DocsPanel from './DocsPanel';
 import { initEditor } from '../editor/editor';
 
 export default class Editor extends React.Component {
@@ -7,7 +7,9 @@ export default class Editor extends React.Component {
         // instantiate CodeMirror with the editor container element's
         // DOM node reference
         initEditor(this.editorEl);
-        this.docsPanel.init();
+
+        // DocsPanel is temporarily disabled.
+        // this.docsPanel.init();
     }
 
     render () {
@@ -16,7 +18,7 @@ export default class Editor extends React.Component {
             <div className='editor-container' id='content'>
                 <div className='editor-container-child'>
                     <div className='editor' id='editor' ref={(ref) => { this.editorEl = ref; }} />
-                    <DocsPanel ref={(ref) => { this.docsPanel = ref; }} />
+                    {/* <DocsPanel ref={(ref) => { this.docsPanel = ref; }} /> */}
                 </div>
             </div>
         );
