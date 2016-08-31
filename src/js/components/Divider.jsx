@@ -16,10 +16,14 @@ export default class Divider extends React.Component {
         super(props);
 
         this.state = {
-            startPosX: 0
+            startPosX: 0, // Fill this in later
+            position: { // We need this to sync position state manually
+                x: 0,
+                y: 0
+            }
         };
 
-        this.throttledRefresh = throttle(this.refreshMapAndEditor, 100);
+        this.throttledRefresh = throttle(this.refreshMapAndEditor, 20);
         this.onResizeWindow = this.onResizeWindow.bind(this);
         this.changeMapAndEditorSize = this.changeMapAndEditorSize.bind(this);
         this.onDrag = this.onDrag.bind(this);
@@ -59,6 +63,21 @@ export default class Divider extends React.Component {
 
     onStop (event, position) {
         const posX = position.node.getBoundingClientRect().left;
+
+        // React-draggable internally manages its state if the `position` prop
+        // is not provided. Using a combination of JavaScript and CSS we can
+        // lock the minimum and maximum positions of the divider, BUT internally
+        // react-draggable does not know that. So we must manually reset the
+        // `position` to 0 so that it does not store a delta internally. If
+        // it were allowed to store a delta, a user would be dragging a "phantom"
+        // divider back to its bounded location before any interaction is
+        // possible.
+        this.setState({
+            position: {
+                x: 0,
+                y: 0
+            }
+        });
 
         // Save the position in local memory
         localforage.setItem(STORAGE_POSITION_KEY, posX);
@@ -109,6 +128,7 @@ export default class Divider extends React.Component {
         return (
             <Draggable
                 axis='x'
+                position={this.state.position}
                 defaultClassNameDragging='divider-is-dragging'
                 onDrag={this.onDrag}
                 onStop={this.onStop}
