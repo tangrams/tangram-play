@@ -106,6 +106,7 @@
     --z01-filedrop: var(--z01);
     --z01-modal: var(--z01);
     --z01-sandbox: var(--z01);
+    --z01-divider: var(--z01);
 
     /* 04: Anything that should display on top of Leaflet overlays */
     --z04-map-toolbar: var(--z04);
@@ -113,7 +114,6 @@
     --z04-map-loading: var(--z04);
 
     /* 05: Above all map UI, below all other UI */
-    --z05-divider: var(--z05);
 
     /* 07: Anything that should display on top of all Leaflet elements */
     --z07-menu: var(--z07);
