@@ -45,14 +45,14 @@ export function saveToMapzenUserAccount (data, successCallback, errorCallback) {
     data.timestamp = new Date().toJSON();
 
     // Get a scene directory by slugifying the scene name, add a trailing slash.
-    const sceneDir = slugify(data.name) + '/';
+    const slug = slugify(data.name) + '/';
 
     // These are Promises. Each creates its own contents and makes
     // individual upload requests. We resolve this function when all Promises
     // resolve.
-    const uploadThumbnail = makeAndUploadThumbnail(sceneDir);
-    const uploadMetadata = makeAndUploadMetadata(data, sceneDir);
-    const uploadScene = makeAndUploadScene(data, sceneDir);
+    const uploadThumbnail = makeAndUploadThumbnail(slug);
+    const uploadMetadata = makeAndUploadMetadata(data, slug);
+    const uploadScene = makeAndUploadScene(data, slug);
 
     return Promise.all([uploadThumbnail, uploadMetadata, uploadScene])
         .then((savedLocations) => {
@@ -120,10 +120,10 @@ function uploadFile (contents, filepath, type = 'plain/text') {
 /**
  * Creates and uploads a thumbnail image of the current map scene.
  *
- * @params {string} sceneDir - slugified scene name to use as scene directory
+ * @params {string} slug - slugified scene name to use as scene directory
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
-function makeAndUploadThumbnail (sceneDir) {
+function makeAndUploadThumbnail (slug) {
     // Grab a screenshot from the map and convert it to a thumbnail at a fixed
     // dimension. This makes file sizes and layout more predictable.
     return getScreenshotData()
@@ -135,7 +135,7 @@ function makeAndUploadThumbnail (sceneDir) {
         })
         .then((thumbnail) => {
             // Make upload request
-            return uploadFile(thumbnail, sceneDir + THUMBNAIL_FILEPATH, 'image/png');
+            return uploadFile(thumbnail, slug + THUMBNAIL_FILEPATH, 'image/png');
         });
 }
 
@@ -143,12 +143,13 @@ function makeAndUploadThumbnail (sceneDir) {
  * Creates and uploads metadata information about the current scene.
  *
  * @params {Object} data - data passed to saveToMapzenUserAccount()
- * @params {string} sceneDir - slugified scene name to use as scene directory
+ * @params {string} slug - slugified scene name to use as scene directory
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
-function makeAndUploadMetadata (data, sceneDir) {
+function makeAndUploadMetadata (data, slug) {
     // Add some additional view information to the metadata.
     const metadata = Object.assign({}, data, {
+        slug: slug,
         view: {
             // label: getLocationLabel(), // TODO: change now that search component is React
             label: '',
@@ -163,7 +164,7 @@ function makeAndUploadMetadata (data, sceneDir) {
     });
 
     // Store metadata
-    return uploadFile(JSON.stringify(metadata), sceneDir + METADATA_FILEPATH, 'application/json');
+    return uploadFile(JSON.stringify(metadata), slug + METADATA_FILEPATH, 'application/json');
 }
 
 /**
@@ -171,15 +172,15 @@ function makeAndUploadMetadata (data, sceneDir) {
  * and one scene file.
  *
  * @params {Object} data - data passed to saveToMapzenUserAccount()
- * @params {string} sceneDir - slugified scene name to use as scene directory
+ * @params {string} slug - slugified scene name to use as scene directory
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
-function makeAndUploadScene (data, sceneDir) {
+function makeAndUploadScene (data, slug) {
     // This is a single YAML file for now
     const content = getEditorContent();
 
     // Store metadata
-    return uploadFile(content, sceneDir + SCENE_FILENAME, 'application/x-yaml');
+    return uploadFile(content, slug + SCENE_FILENAME, 'application/x-yaml');
 }
 
 /**
