@@ -76,7 +76,8 @@ export default class MapPanelLocationBar extends React.Component {
         this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
 
         this.onChangeAutosuggest = this.onChangeAutosuggest.bind(this);
-        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
+        this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.onClickSave = this.onClickSave.bind(this);
@@ -310,11 +311,20 @@ export default class MapPanelLocationBar extends React.Component {
      * call a new autocomplete search request
      * @param value - value to search for
      */
-    onSuggestionsUpdateRequested ({ value, reason }) {
+    onSuggestionsFetchRequested ({ value }) {
         // Only call autocomplete if user has typed more than 1 character
         if (value.length >= 2) {
             this.autocomplete(value);
         }
+    }
+
+    /**
+     * Required, as of react-autosuggest@6.0.0, to set suggestions to blank
+     */
+    onSuggestionsClearRequested () {
+        this.setState({
+            suggestions: []
+        });
     }
 
     /**
@@ -466,7 +476,8 @@ export default class MapPanelLocationBar extends React.Component {
                 {/* Autosuggest bar */}
                 <Autosuggest ref='autosuggestBar'
                     suggestions={suggestions}
-                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                     getSuggestionValue={this.getSuggestionValue}
                     renderSuggestion={this.renderSuggestion}
                     onSuggestionSelected={this.onSuggestionSelected}
