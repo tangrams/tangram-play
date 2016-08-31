@@ -223,7 +223,11 @@
                 "TopoJSON",
                 "MVT",
                 "Raster"
-            ]
+            ],
+            "required": "yes",
+            "keyword": "yes",
+            "definition": "Sets the type of the datasource.",
+            "default": "none"
         },
         {
             "address": "^sources:(\\w|\\_|\\-|\\/)+:max_zoom$",
