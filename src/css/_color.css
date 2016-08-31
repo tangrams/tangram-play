@@ -4,7 +4,6 @@
 
 .bookmark-color {
     box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
     max-width: 14px;
     max-height: 14px;
@@ -13,6 +12,16 @@
     cursor: pointer;
     vertical-align: middle;
     margin-top: -0.15em;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+}
+
+.bookmark-color-swatch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* ColorPicker.jsx */
@@ -53,6 +62,14 @@
     position: relative;
     margin-top: 4px;
     margin-left: 4px;
+}
+
+.colorpicker-active-color-swatch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* ColorPickerInputFields.jsx */

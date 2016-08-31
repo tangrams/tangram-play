@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Checkboard } from 'react-color/lib/components/common';
 import FloatingPanel from '../../FloatingPanel';
 import ColorPicker from './ColorPicker';
 
@@ -182,7 +183,7 @@ export default class ColorBookmark extends React.Component {
      */
     render () {
         if (this.mounted) {
-            const widgetStyle = { backgroundColor: this.state.color.getRgbaString() };
+            const colorStyle = { backgroundColor: this.state.color.getRgbaString() };
 
             return (
                 <div>
@@ -197,8 +198,10 @@ export default class ColorBookmark extends React.Component {
                                     className='widget bookmark-color'
                                     ref={(ref) => { this.colorPickerBookmark = ref; }}
                                     onClick={this.onClick}
-                                    style={widgetStyle}
-                                />
+                                >
+                                    <Checkboard size='3' />
+                                    <div className='bookmark-color-swatch' style={colorStyle} />
+                                </div>
                             );
                         }
                     })()}

@@ -1,7 +1,7 @@
 // Class essentially taken from 'react-color': https://github.com/casesandberg/react-color/blob/master/src/components/sketched/Sketch.js
 
 import React from 'react';
-import { Hue, Alpha } from 'react-color/lib/components/common';
+import { Hue, Alpha, Checkboard } from 'react-color/lib/components/common';
 import ColorPickerSaturation from './ColorPickerSaturation';
 import ColorPickerInputFields from './ColorPickerInputFields';
 import Color from './color';
@@ -63,10 +63,10 @@ export default class ColorPicker extends React.PureComponent {
                             />
                         </div>
                     </div>
-                    <div
-                        className='colorpicker-active-color'
-                        style={{ backgroundColor: this.props.color.getRgbaString() }}
-                    />
+                    <div className='colorpicker-active-color'>
+                        <Checkboard size='6' />
+                        <div className='colorpicker-active-color-swatch' style={{ backgroundColor: this.props.color.getRgbaString() }} />
+                    </div>
                 </div>
 
                 <ColorPickerInputFields
