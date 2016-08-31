@@ -4,7 +4,6 @@ import Editor from './Editor';
 import RefreshButton from './RefreshButton';
 
 import { initTangramPlay } from '../tangram-play';
-import { initDivider } from '../ui/divider';
 
 /**
  * This class is identical to normal Tangram Play but represents an embedded version of the app
@@ -12,10 +11,6 @@ import { initDivider } from '../ui/divider';
 export default class AppEmbedded extends React.Component {
     componentDidMount () {
         initTangramPlay();
-
-        // This is called here because right now divider position relies on
-        // editor and map being set up already
-        initDivider();
     }
 
     shouldComponentUpdate () {
@@ -30,13 +25,11 @@ export default class AppEmbedded extends React.Component {
                     </div>
                 </div>
 
-                <Map panel={false} />
-
-                <div className='divider' id='divider'>
-                    <span className='divider-affordance' />
+                <div>
+                    <Map panel={false} />
+                    <Editor />
                 </div>
 
-                <Editor />
                 <RefreshButton />
             </div>
         );
