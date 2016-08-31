@@ -45,7 +45,11 @@ export default class DocsPanel extends React.Component {
         this.closePanel = this.closePanel.bind(this);
     }
 
-    componentDidMount () {
+    /**
+     * This needs to be called by the parent component after it has
+     * mounted, since it relies on the editor being present and ready
+     */
+    init () {
         const wrapper = editor.getWrapperElement();
 
         wrapper.addEventListener('mouseup', (event) => {
