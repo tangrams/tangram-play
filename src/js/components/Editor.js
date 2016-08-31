@@ -1,5 +1,5 @@
 import React from 'react';
-import DocsPanel from './docs-panel.react';
+import DocsPanel from './DocsPanel';
 import { initEditor } from '../editor/editor';
 
 export default class Editor extends React.Component {
@@ -15,7 +15,7 @@ export default class Editor extends React.Component {
             <div className='editor-container' id='content'>
                 <div className='editor-container-child'>
                     <div className='editor' id='editor' ref={(ref) => { this.editorEl = ref; }} />
-                    <div className='docs-panel' id='docs-panel'><DocsPanel /></div>
+                    <DocsPanel />
                 </div>
             </div>
         );

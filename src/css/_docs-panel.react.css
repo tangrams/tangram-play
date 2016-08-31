@@ -10,7 +10,7 @@
 }
 
 /* Style for map panel button to show it */
-.docs-panel * .docs-panel-button-show {
+.docs-panel .docs-panel-button-show {
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
     border: none;

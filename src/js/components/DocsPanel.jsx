@@ -200,7 +200,7 @@ export default class DocsPanel extends React.Component {
         let result = JSON.parse(this.state.display);
 
         return (
-            <div>
+            <div className='docs-panel'>
                 {/* Toggle docs panel to show it*/}
                 <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Open docs toolbar'}</Tooltip>}>
                     <Button onClick={this.openPanel} className='docs-panel-button-show'>
