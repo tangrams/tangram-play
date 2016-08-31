@@ -1,14 +1,10 @@
-scene:
-    background:
-        color: '#353535'
-
 cameras:
     perspective:
         type: perspective
         vanishing_point: [0, -500]
 
 lights:
-    light1:
+    directional1:
         type: directional
         direction: [.1, .5, -1]
         diffuse: .7
@@ -25,16 +21,9 @@ styles:
 sources:
     mapzen:
         type: TopoJSON
-        url: https://vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson
+        url: https://vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-JUsa0Gc
 
 layers:
-    earth:
-        data: { source: mapzen }
-        draw:
-            polygons:
-                order: 0
-                color: '#555'
-
     water:
         data: { source: mapzen }
         draw:
@@ -42,13 +31,20 @@ layers:
                 order: 2
                 color: '#353535'
 
+    earth:
+        data: { source: mapzen }
+        draw:
+            polygons:
+                order: 0
+                color: '#555'
+
     landuse:
         data: { source: mapzen }
         draw:
             polygons:
                 order: 1
                 color: '#666'
-                
+
     roads:
         data: { source: mapzen }
         filter: { not: { kind: ferry } }
@@ -57,29 +53,25 @@ layers:
                 order: 2
                 color: '#777'
                 width: 5
-
         labels:
-            filter:
-                name: true
-                aeroway: false
-                tunnel: false
-                railway: false
-                not: { kind: rail }
-
-            draw:
-                text:
-                    font:
-                        fill: white
-                        family: Helvetica
-                        size: 11px
-
+            filter: { name: true }
             highway:
-                filter: { kind: highway }
+                filter: { kind: highway, $zoom: { min: 7 } }
                 draw:
                     text:
                         font:
+                            family: Helvetica
+                            fill: white
                             size: 12px
                             weight: bold
+            not_highway:
+                filter: { not: { kind: highway }, $zoom: { min: 13 } }
+                draw:
+                    text:
+                        font:
+                            family: Helvetica
+                            fill: white
+                            size: 11px
 
     buildings:
         data: { source: mapzen }
@@ -87,12 +79,10 @@ layers:
         draw:
             polygons:
                 order: 50
-                color: '#4d4d4d'
-
+                color: '#999'
         extruded:
             filter: { $zoom: { min: 15 } }
             draw:
                 polygons:
                     style: buildings
-                    color: '#999'
                     extrude: function () { return feature.height > 0 || $zoom >= 16; }
