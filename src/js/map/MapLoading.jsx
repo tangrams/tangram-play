@@ -16,12 +16,12 @@ export default class MapLoading extends React.Component {
     componentDidMount () {
         // When a Modal component fires "on", shield turns itself on.
         EventEmitter.subscribe('maploading:on', () => {
-            this.setState({ visible: true });
+            this.setState({ loading: true });
         });
 
         // When a Modal component fires "off", shield turns itself off.
         EventEmitter.subscribe('maploading:off', () => {
-            this.setState({ visible: false });
+            this.setState({ loading: false });
         });
     }
 
