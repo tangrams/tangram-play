@@ -9,16 +9,29 @@ export default class SignInOverlay extends React.Component {
         this.state = {
             visible: false
         };
+
+        this.show = this.show.bind(this);
+        this.hide = this.hide.bind(this);
     }
 
     componentDidMount () {
         EventEmitter.subscribe('sign_in:on', () => {
-            this.setState({ visible: true });
+            this.show();
         });
 
         EventEmitter.subscribe('sign_in:off', () => {
-            this.setState({ visible: false });
+            this.hide();
         });
+    }
+
+    show () {
+        this.setState({ visible: true });
+    }
+
+    hide () {
+        window.setTimeout(() => {
+            this.setState({ visible: false });
+        }, 1600);
     }
 
     render () {
@@ -28,7 +41,7 @@ export default class SignInOverlay extends React.Component {
 
         return (
             <div className="shield sign-in-overlay" style={displayStyle}>
-                <h1>waiting for sign in</h1>
+                <div className="sign-in-overlay-title">Waiting for you to sign in...</div>
             </div>
         );
     }
