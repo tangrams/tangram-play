@@ -41,7 +41,9 @@ export default class RefreshButton extends React.Component {
      */
     render () {
         return (
-            <Button className='refresh-button' onClick={this.onClick}><Icon type={this.state.button} /></Button>
+            <Button className="refresh-button" onClick={this.onClick}>
+                <Icon type={this.state.button} />
+            </Button>
         );
     }
 }

@@ -79,17 +79,17 @@ export default class ColorPickerSaturation extends React.PureComponent {
 
         return (
             <div
-                className='colorpicker-saturation'
+                className="colorpicker-saturation"
                 ref={(ref) => { this.container = ref; }}
                 onMouseDown={this.onMouseDown}
                 onTouchMove={this.onChange}
                 onTouchStart={this.onChange}
                 style={style1}
             >
-                <div className='colorpicker-saturation-white'>
-                    <div className='colorpicker-saturation-black' />
-                    <div className='colorpicker-saturation-pointer' style={style2}>
-                        <div className='colorpicker-saturation-circle' />
+                <div className="colorpicker-saturation-white">
+                    <div className="colorpicker-saturation-black" />
+                    <div className="colorpicker-saturation-pointer" style={style2}>
+                        <div className="colorpicker-saturation-circle" />
                     </div>
                 </div>
             </div>

@@ -51,21 +51,21 @@ export default class ColorPickerInputFields extends React.PureComponent {
         const hex = this.props.color.getHexString();
 
         return (
-            <div className='colorpicker-input-fields'>
-                <div className='colorpicker-input-double'>
-                    <EditableInput label='hex' value={hex} onChange={this.onChange} />
+            <div className="colorpicker-input-fields">
+                <div className="colorpicker-input-double">
+                    <EditableInput label="hex" value={hex} onChange={this.onChange} />
                 </div>
-                <div className='colorpicker-input-single'>
-                    <EditableInput label='r' value={color.r} onChange={this.onChange} />
+                <div className="colorpicker-input-single">
+                    <EditableInput label="r" value={color.r} onChange={this.onChange} />
                 </div>
-                <div className='colorpicker-input-single'>
-                    <EditableInput label='g' value={color.g} onChange={this.onChange} />
+                <div className="colorpicker-input-single">
+                    <EditableInput label="g" value={color.g} onChange={this.onChange} />
                 </div>
-                <div className='colorpicker-input-single'>
-                    <EditableInput label='b' value={color.b} onChange={this.onChange} />
+                <div className="colorpicker-input-single">
+                    <EditableInput label="b" value={color.b} onChange={this.onChange} />
                 </div>
-                <div className='colorpicker-input-alpha'>
-                    <EditableInput label='a' value={color.a.toFixed(2)} onChange={this.onChange} />
+                <div className="colorpicker-input-alpha">
+                    <EditableInput label="a" value={color.a.toFixed(2)} onChange={this.onChange} />
                 </div>
             </div>
         );

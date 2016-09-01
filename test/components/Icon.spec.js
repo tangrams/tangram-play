@@ -10,10 +10,10 @@ describe('<Icon />', () => {
     });
 
     it('passes through a class for the `type` prop', function () {
-        assert.isTrue(shallow(<Icon type='foo' />).contains(<i className='btm foo' />));
+        assert.isTrue(shallow(<Icon type="foo" />).contains(<i className="btm foo" />));
     });
 
     it('set the active class when `active` is true', function () {
-        assert.isTrue(shallow(<Icon type='foo' active={true} />).contains(<i className='btm foo icon-active' />));
+        assert.isTrue(shallow(<Icon type="foo" active={true} />).contains(<i className="btm foo icon-active" />));
     });
 });

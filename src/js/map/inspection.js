@@ -71,13 +71,13 @@ class TangramInspectionHeader extends React.Component {
         const UNKNOWN_LABEL = 'Unknown feature';
 
         return (
-            <div className='map-inspection-header'>
-                <div className='map-inspection-header-label'>{name || kind || UNKNOWN_LABEL}</div>
+            <div className="map-inspection-header">
+                <div className="map-inspection-header-label">{name || kind || UNKNOWN_LABEL}</div>
                 {(() => {
                     // Only render this part if the feature properties have provided
                     // a name AND a `kind` property (Mapzen vector tiles).
                     if (name && kind) {
-                        return <div className='map-inspection-header-sublabel'>{kind}</div>;
+                        return <div className="map-inspection-header-sublabel">{kind}</div>;
                     }
                 })()}
             </div>
@@ -127,7 +127,10 @@ class TangramInspectionHover extends React.Component {
         }
         else {
             return (
-                <div className='map-inspection map-inspection-hover' ref={(el) => { this._el = el; }}>
+                <div
+                    className="map-inspection map-inspection-hover"
+                    ref={(el) => { this._el = el; }}
+                >
                     <TangramInspectionHeader feature={this.props.selection.feature} />
                 </div>
             );
@@ -213,18 +216,18 @@ class TangramInspectionPopup extends React.Component {
             const layers = this.props.selection.feature.layers;
 
             return (
-                <div className='map-inspection' ref={(el) => { this._el = el; }}>
+                <div className="map-inspection" ref={(el) => { this._el = el; }}>
                     <TangramInspectionHeader feature={this.props.selection.feature} />
-                    <div className='map-inspection-source'>
-                        <div className='map-inspection-label'>Data source</div>
-                        <div className='map-inspection-properties-table-wrapper'>
-                            <table className='map-inspection-properties-table'>
+                    <div className="map-inspection-source">
+                        <div className="map-inspection-label">Data source</div>
+                        <div className="map-inspection-properties-table-wrapper">
+                            <table className="map-inspection-properties-table">
                                 <tbody>
                                     <tr
                                         onClick={this.onClickSourceName}
                                         data-source-name={this.props.selection.feature.source_name}
                                     >
-                                        <td className='map-inspection-source-item-label'>Name</td>
+                                        <td className="map-inspection-source-item-label">Name</td>
                                         <td>{this.props.selection.feature.source_name}</td>
                                     </tr>
                                     {(() => {
@@ -236,7 +239,7 @@ class TangramInspectionPopup extends React.Component {
                                         if (this.props.selection.feature.source_layer) {
                                             return (
                                                 <tr>
-                                                    <td className='map-inspection-source-item-label'>Layer</td>
+                                                    <td className="map-inspection-source-item-label">Layer</td>
                                                     <td>{this.props.selection.feature.source_layer}</td>
                                                 </tr>
                                             );
@@ -246,10 +249,10 @@ class TangramInspectionPopup extends React.Component {
                             </table>
                         </div>
                     </div>
-                    <div className='map-inspection-properties'>
-                        <div className='map-inspection-label'>Properties</div>
-                        <div className='map-inspection-properties-table-wrapper'>
-                            <table className='map-inspection-properties-table'>
+                    <div className="map-inspection-properties">
+                        <div className="map-inspection-label">Properties</div>
+                        <div className="map-inspection-properties-table-wrapper">
+                            <table className="map-inspection-properties-table">
                                 <tbody>
                                     {sortedProperties.map((item) => {
                                         const key = item[0];
@@ -266,9 +269,9 @@ class TangramInspectionPopup extends React.Component {
                             </table>
                         </div>
                     </div>
-                    <div className='map-inspection-layers'>
-                        <div className='map-inspection-label'>Layers</div>
-                        <div className='map-inspection-layers-container' ref={(el) => { this._layersEl = el; }}>
+                    <div className="map-inspection-layers">
+                        <div className="map-inspection-label">Layers</div>
+                        <div className="map-inspection-layers-container" ref={(el) => { this._layersEl = el; }}>
                             {layers.map((item) => {
                                 const address = `layers:${item}`;
                                 const node = getNodesForAddress(address);
@@ -276,7 +279,7 @@ class TangramInspectionPopup extends React.Component {
                                 if (node) {
                                     return (
                                         <div
-                                            className='map-inspection-layer-item'
+                                            className="map-inspection-layer-item"
                                             key={item}
                                             onMouseDown={this.onMouseDownLayer}
                                             onMouseOut={this.onMouseOutLayer}
@@ -284,15 +287,15 @@ class TangramInspectionPopup extends React.Component {
                                             onClick={this.onClickLayer}
                                             data-node-address={address}
                                         >
-                                            <span className='map-inspection-layer-icon icon-layers'></span>
+                                            <span className="map-inspection-layer-icon icon-layers"></span>
                                             {item}
                                         </div>
                                     );
                                 }
                                 else {
                                     return (
-                                        <div className='map-inspection-layer-item' key={item}>
-                                            <span className='map-inspection-layer-icon icon-imported'></span>
+                                        <div className="map-inspection-layer-item" key={item}>
+                                            <span className="map-inspection-layer-icon icon-imported"></span>
                                             {item}
                                         </div>
                                     );
@@ -300,7 +303,7 @@ class TangramInspectionPopup extends React.Component {
                             })}
                         </div>
                     </div>
-                    <div className='map-inspection-close' onClick={this.onClickClose}>×</div>
+                    <div className="map-inspection-close" onClick={this.onClickClose}>×</div>
                 </div>
             );
         }

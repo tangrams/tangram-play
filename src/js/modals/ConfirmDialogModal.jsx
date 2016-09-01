@@ -38,29 +38,29 @@ export default class ConfirmDialogModal extends React.Component {
     render () {
         return (
             <Modal
-                className='error-modal'
+                className="error-modal"
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
-                <p className='modal-text'>
+                <p className="modal-text">
                     {this.props.message}
                 </p>
 
-                <div className='modal-buttons'>
+                <div className="modal-buttons">
                     <Button
-                        className='modal-cancel'
+                        className="modal-cancel"
                         onClick={this.onClickCancel}
                         ref={(ref) => { this.cancelButton = ref; }}
                     >
-                        <Icon type={'bt-times'} />
+                        <Icon type="bt-times" />
                         Cancel
                     </Button>
                     <Button
-                        className='modal-confirm'
+                        className="modal-confirm"
                         onClick={this.onClickConfirm}
                         ref={(ref) => { this.confirmButton = ref; }}
                     >
-                        <Icon type={'bt-check'} />
+                        <Icon type="bt-check" />
                         Continue
                     </Button>
                 </div>

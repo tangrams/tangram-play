@@ -13,10 +13,10 @@ export default class DraggableModal extends React.PureComponent {
     render () {
         return (
             <Draggable
-                bounds='#draggable-container'
+                bounds="#draggable-container"
                 defaultPosition={{x: this.props.x, y: this.props.y}}
                 zIndex={1800}
-                handle='.floating-panel-drag'
+                handle=".floating-panel-drag"
             >
                 <ModalDialog {...this.props} />
             </Draggable>

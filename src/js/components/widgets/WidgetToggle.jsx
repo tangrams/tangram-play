@@ -64,8 +64,11 @@ export default class WidgetToggle extends React.Component {
      */
     render () {
         return (
-            <Checkbox className='widget widget-toggle' onChange={this.onChange} inputRef={ref => { this.input = ref; }}>
-            </Checkbox>
+            <Checkbox
+                className="widget widget-toggle"
+                onChange={this.onChange}
+                inputRef={ref => { this.input = ref; }}
+            />
         );
     }
 }

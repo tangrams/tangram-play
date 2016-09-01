@@ -22,9 +22,9 @@ export default class App extends React.Component {
             <div>
                 <MenuBar />
 
-                <div className='workspace-container'>
-                    <div id='draggable-container'>
-                        <div id='draggable-container-child'>
+                <div className="workspace-container">
+                    <div id="draggable-container">
+                        <div id="draggable-container-child">
                         </div>
                     </div>
 
@@ -33,14 +33,14 @@ export default class App extends React.Component {
                         <Editor />
                     </div>
 
-                    <div id='widget-links' />
+                    <div id="widget-links" />
                     {/* <ColorPalette /> */}
                 </div>
 
-                <div className='overlay-container'>
+                <div className="overlay-container">
                     <Shield />
                     <FileDrop />
-                    <div id='modal-container' className='modal-container' />
+                    <div id="modal-container" className="modal-container" />
                 </div>
             </div>
         );

@@ -13,7 +13,7 @@ export default class LoadingSpinner extends React.Component {
 
         return (
             <div className={className}>
-                <Icon type={'bts bt-spinner bt-pulse'} />
+                <Icon type="bts bt-spinner bt-pulse" />
                 {this.props.msg || 'Working...'}
             </div>
         );

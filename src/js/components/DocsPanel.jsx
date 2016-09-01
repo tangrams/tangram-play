@@ -153,13 +153,13 @@ export default class DocsPanel extends React.Component {
         if (node.children !== undefined) {
             list = node.children.map((value, i) => {
                 return (
-                    <Row key={i} className='child-row'>
+                    <Row key={i} className="child-row">
                         <Row>
-                            <Col sm={2} className='capitalize'>name:</Col>
-                            <Col sm={10} onClick={this.onClickChild.bind(this, value.example)} className='docs-link'><code>{value.name}</code></Col>
+                            <Col sm={2} className="capitalize">name:</Col>
+                            <Col sm={10} onClick={this.onClickChild.bind(this, value.example)} className="docs-link"><code>{value.name}</code></Col>
                         </Row>
                         <Row>
-                            <Col sm={2} className='capitalize'>description:</Col>
+                            <Col sm={2} className="capitalize">description:</Col>
                             <Col sm={10}><code>{value.description}</code></Col>
                         </Row>
                     </Row>
@@ -177,13 +177,13 @@ export default class DocsPanel extends React.Component {
         const parent = node.parent;
 
         const list = (
-            <Row className='child-row'>
+            <Row className="child-row">
                 <Row>
-                    <Col sm={2} className='capitalize'>name:</Col>
-                    <Col sm={10} onClick={this.onClickChild.bind(this, parent.example)} className='docs-link'><code>{parent.name}</code></Col>
+                    <Col sm={2} className="capitalize">name:</Col>
+                    <Col sm={10} onClick={this.onClickChild.bind(this, parent.example)} className="docs-link"><code>{parent.name}</code></Col>
                 </Row>
                 <Row>
-                    <Col sm={2} className='capitalize'>description:</Col>
+                    <Col sm={2} className="capitalize">description:</Col>
                     <Col sm={10}><code>{parent.description}</code></Col>
                 </Row>
             </Row>
@@ -204,45 +204,45 @@ export default class DocsPanel extends React.Component {
         let result = JSON.parse(this.state.display);
 
         return (
-            <div className='docs-panel'>
+            <div className="docs-panel">
                 {/* Toggle docs panel to show it*/}
-                <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Open docs toolbar'}</Tooltip>}>
-                    <Button onClick={this.openPanel} className='docs-panel-button-show'>
-                        <Icon type={'bt-caret-up'} />
+                <OverlayTrigger rootClose placement="top" overlay={<Tooltip id="tooltip">Open docs toolbar</Tooltip>}>
+                    <Button onClick={this.openPanel} className="docs-panel-button-show">
+                        <Icon type="bt-caret-up" />
                     </Button>
                 </OverlayTrigger>
 
                 {/* Docs panel */}
-                <Draggable axis='y' onDrag={this.onDrag} handle='.docs-divider'>
-                    <Panel className='docs-panel-collapsible' style={divStyle}>
-                        <div className='docs-divider'><span className='docs-divider-affordance'></span></div>
+                <Draggable axis="y" onDrag={this.onDrag} handle=".docs-divider">
+                    <Panel className="docs-panel-collapsible" style={divStyle}>
+                        <div className="docs-divider"><span className="docs-divider-affordance"></span></div>
 
-                        <div className='docs-panel-toolbar' >
+                        <div className="docs-panel-toolbar" >
                             {/* Text within the docs panel */}
-                            <div className='docs-panel-toolbar-content'>
+                            <div className="docs-panel-toolbar-content">
                                 <Grid>
                                     {(() => {
                                         const list = Object.keys(result).map((value, i) => {
                                             if (value === 'children') {
                                                 return (
-                                                    <Row key={i} className='toolbar-content-row'>
-                                                        <Col sm={2} className='capitalize'>{value}:</Col>
+                                                    <Row key={i} className="toolbar-content-row">
+                                                        <Col sm={2} className="capitalize">{value}:</Col>
                                                         <Col sm={10}>{this.renderChildren(result)}</Col>
                                                     </Row>
                                                 );
                                             }
                                             else if (value === 'parent') {
                                                 return (
-                                                    <Row key={i} className='toolbar-content-row'>
-                                                        <Col sm={2} className='capitalize'>{value}:</Col>
+                                                    <Row key={i} className="toolbar-content-row">
+                                                        <Col sm={2} className="capitalize">{value}:</Col>
                                                         <Col sm={10}>{this.renderParent(result)}</Col>
                                                     </Row>
                                                 );
                                             }
                                             else {
                                                 return (
-                                                    <Row key={i} className='toolbar-content-row'>
-                                                        <Col sm={2} className='capitalize'>{value}:</Col>
+                                                    <Row key={i} className="toolbar-content-row">
+                                                        <Col sm={2} className="capitalize">{value}:</Col>
                                                         <Col sm={10}><code>{result[value]}</code></Col>
                                                     </Row>
                                                 );
@@ -255,9 +255,15 @@ export default class DocsPanel extends React.Component {
                             </div>
 
                             {/* Toggle docs panel to hide it*/}
-                            <ButtonGroup className='docs-panel-toolbar-toggle'>
-                                <OverlayTrigger rootClose placement='top' overlay={<Tooltip id='tooltip'>{'Close docs toolbar'}</Tooltip>}>
-                                    <Button onClick={this.closePanel}> <Icon type={'bt-caret-down'} /> </Button>
+                            <ButtonGroup className="docs-panel-toolbar-toggle">
+                                <OverlayTrigger
+                                    rootClose
+                                    placement="top"
+                                    overlay={<Tooltip id="tooltip">Close docs toolbar</Tooltip>}
+                                >
+                                    <Button onClick={this.closePanel}>
+                                        <Icon type="bt-caret-down" />
+                                    </Button>
                                 </OverlayTrigger>
                             </ButtonGroup>
 

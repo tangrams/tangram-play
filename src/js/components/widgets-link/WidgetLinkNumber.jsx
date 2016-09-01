@@ -281,7 +281,7 @@ export default class WidgetLinkNumber extends React.Component {
                 onHide={this.onHide}
             >
                 <canvas
-                    className='widget-link-canvas'
+                    className="widget-link-canvas"
                     ref={(ref) => { this.canvas = ref; }}
                     onMouseDown={this.onMouseDown}
                     onMouseMove={this.onMouseMove}

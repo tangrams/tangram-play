@@ -127,17 +127,17 @@ export default class Divider extends React.Component {
     render () {
         return (
             <Draggable
-                axis='x'
+                axis="x"
                 position={this.state.position}
-                defaultClassNameDragging='divider-is-dragging'
+                defaultClassNameDragging="divider-is-dragging"
                 onDrag={this.onDrag}
                 onStop={this.onStop}
             >
                 <div
-                    className='divider'
+                    className="divider"
                     ref={(ref) => { this.dividerEl = ref; }}
                 >
-                    <span className='divider-affordance' />
+                    <span className="divider-affordance" />
                 </div>
             </Draggable>
         );

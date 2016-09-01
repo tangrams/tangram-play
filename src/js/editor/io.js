@@ -32,7 +32,7 @@ const EditorIO = {
         else {
             ReactDOM.render(
                 <ConfirmDialogModal
-                    message='Your scene has not been saved. Continue?'
+                    message="Your scene has not been saved. Continue?"
                     confirmCallback={callback}
                 />,
                 document.getElementById('modal-container')

@@ -32,21 +32,21 @@ export default class ErrorModal extends React.Component {
     render () {
         return (
             <Modal
-                className='error-modal'
+                className="error-modal"
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickClose}
             >
-                <p className='modal-text'>
+                <p className="modal-text">
                     {this.props.error.message || this.props.error}
                 </p>
 
-                <div className='modal-buttons'>
+                <div className="modal-buttons">
                     <Button
-                        className='modal-confirm'
+                        className="modal-confirm"
                         onClick={this.onClickClose}
                         ref={(ref) => { this.continueButton = ref; }}
                     >
-                        <Icon type={'bt-check'} />
+                        <Icon type="bt-check" />
                         Continue
                     </Button>
                 </div>

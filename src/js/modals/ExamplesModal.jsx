@@ -60,8 +60,8 @@ export default class ExamplesModal extends React.Component {
                         onClick={() => { this.setState({ selected: scene.url }); }}
                         onDoubleClick={this.onClickConfirm}
                     >
-                        <div className='example-option-name'>{scene.name}</div>
-                        <div className='example-thumbnail' style={thumbnailStyle} />
+                        <div className="example-option-name">{scene.name}</div>
+                        <div className="example-thumbnail" style={thumbnailStyle} />
                     </div>
                 );
             });
@@ -69,7 +69,7 @@ export default class ExamplesModal extends React.Component {
             // Render the category container element
             return (
                 <section key={categoryIndex}>
-                    <h2 className='example-list-header'>{category.category}</h2>
+                    <h2 className="example-list-header">{category.category}</h2>
                     <hr />
                     {scenes}
                 </section>
@@ -79,26 +79,26 @@ export default class ExamplesModal extends React.Component {
         // Render the entire modal
         return (
             <Modal
-                className='modal-alt example-modal'
+                className="modal-alt example-modal"
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
                 <h4>Choose an example to open</h4>
 
-                <div className='modal-content example-list'>
+                <div className="modal-content example-list">
                     {examples}
                 </div>
 
-                <div className='modal-buttons'>
-                    <Button onClick={this.onClickCancel} className='modal-cancel'>
-                        <Icon type={'bt-times'} /> Cancel
+                <div className="modal-buttons">
+                    <Button onClick={this.onClickCancel} className="modal-cancel">
+                        <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
                         onClick={this.onClickConfirm}
-                        className='modal-confirm'
+                        className="modal-confirm"
                         disabled={this.state.selected === null}
                     >
-                        <Icon type={'bt-check'} /> Open
+                        <Icon type="bt-check" /> Open
                     </Button>
                 </div>
             </Modal>

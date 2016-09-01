@@ -60,39 +60,39 @@ export default class OpenUrlModal extends React.Component {
     render () {
         return (
             <Modal
-                className='modal-alt open-url-modal'
+                className="modal-alt open-url-modal"
                 disableEsc={this.state.thinking}
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
                 <h4>Open a scene file from URL</h4>
 
-                <div className='modal-content open-url-input'>
+                <div className="modal-content open-url-input">
                     <input
-                        type='text'
-                        id='open-url-input'
-                        placeholder='https://'
-                        spellCheck='false'
+                        type="text"
+                        id="open-url-input"
+                        placeholder="https://"
+                        spellCheck="false"
                         ref={(ref) => { this.input = ref; }}
                         onKeyUp={this.onKeyUpInput}
                     />
                 </div>
 
-                <div className='modal-buttons'>
+                <div className="modal-buttons">
                     <LoadingSpinner on={this.state.thinking} />
                     <Button
-                        className='modal-cancel'
+                        className="modal-cancel"
                         disabled={this.state.thinking}
                         onClick={this.onClickCancel}
                     >
-                        <Icon type={'bt-times'} /> Cancel
+                        <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
-                        className='modal-confirm'
+                        className="modal-confirm"
                         disabled={!this.state.validInput || this.state.thinking}
                         onClick={this.onClickConfirm}
                     >
-                        <Icon type={'bt-check'} /> Open
+                        <Icon type="bt-check" /> Open
                     </Button>
                 </div>
             </Modal>

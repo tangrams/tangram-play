@@ -19,9 +19,9 @@ export default class AppEmbedded extends React.Component {
 
     render () {
         return (
-            <div className='workspace-container'>
-                <div id='draggable-container'>
-                    <div id='draggable-container-child'>
+            <div className="workspace-container">
+                <div id="draggable-container">
+                    <div id="draggable-container-child">
                     </div>
                 </div>
 
