@@ -61,11 +61,11 @@ export default class SaveToCloudSuccessModal extends React.Component {
     render () {
         return (
             <Modal
-                className='save-to-cloud-success-modal'
+                className="save-to-cloud-success-modal"
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickConfirm}
             >
-                <div className='modal-content'>
+                <div className="modal-content">
                     <h4>
                         Your scene has been saved!
                     </h4>
@@ -73,43 +73,43 @@ export default class SaveToCloudSuccessModal extends React.Component {
                         Share your scene with the link below.
                     </p>
 
-                    <div className='input-bar'>
+                    <div className="input-bar">
                         <input
-                            type='text'
-                            readOnly='true'
+                            type="text"
+                            readOnly="true"
                             ref={(ref) => { this.viewUrl = ref; }}
                             defaultValue={`https://dev.mapzen.com/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
                         />
                         <OverlayTrigger
                             rootClose
-                            placement='right'
-                            overlay={<Tooltip id='tooltip'>{'Copy to clipboard'}</Tooltip>}
+                            placement="right"
+                            overlay={<Tooltip id="tooltip">Copy to clipboard</Tooltip>}
                         >
                             <Button
-                                className='saved-scene-copy-btn'
-                                data-clipboard-target='#saved-scene-url'
+                                className="saved-scene-copy-btn"
+                                data-clipboard-target="#saved-scene-url"
                                 ref={(ref) => { this.clipboardButton = ref; }}
                             >
-                                <Icon type='bt-copy' />
+                                <Icon type="bt-copy" />
                             </Button>
                         </OverlayTrigger>
                         <OverlayTrigger
                             rootClose
-                            placement='right'
-                            overlay={<Tooltip id='tooltip'>{'View in new tab'}</Tooltip>}
+                            placement="right"
+                            overlay={<Tooltip id="tooltip">View in new tab</Tooltip>}
                         >
                             <Button
-                                className='saved-scene-copy-btn'
+                                className="saved-scene-copy-btn"
                                 onClick={this.onClickViewUrl}
                             >
-                                <Icon type='bt-external-link' />
+                                <Icon type="bt-external-link" />
                             </Button>
                         </OverlayTrigger>
                     </div>
                 </div>
 
-                <div className='modal-buttons'>
-                    <Button className='modal-confirm' onClick={this.onClickConfirm}>
+                <div className="modal-buttons">
+                    <Button className="modal-confirm" onClick={this.onClickConfirm}>
                         Got it
                     </Button>
                 </div>

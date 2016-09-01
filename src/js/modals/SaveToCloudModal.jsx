@@ -151,12 +151,12 @@ export default class SaveToCloudModal extends React.Component {
         return (
             /* Modal disableEsc is true if we are waiting for a response */
             <Modal
-                className='modal-alt save-to-cloud-modal'
+                className="modal-alt save-to-cloud-modal"
                 disableEsc={this.state.thinking}
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
-                <div className='modal-text'>
+                <div className="modal-text">
                     <h4>Save this scene to your Mapzen account</h4>
                     <p>
                         This uploads your Tangram scene file to your Mapzen account, so you'll have a permanent link to share publicly.
@@ -165,29 +165,29 @@ export default class SaveToCloudModal extends React.Component {
 
                 <hr />
 
-                <div className='modal-content'>
-                    <label htmlFor='save-scene-name'>Scene name</label>
+                <div className="modal-content">
+                    <label htmlFor="save-scene-name">Scene name</label>
                     <input
-                        type='text'
-                        id='save-scene-name'
+                        type="text"
+                        id="save-scene-name"
                         ref={(ref) => { this.nameInput = ref; }}
-                        placeholder='(default: Tangram scene)'
+                        placeholder="(default: Tangram scene)"
                         defaultValue={DEFAULT_SCENE_NAME}
                     />
                     <p>
-                        <label htmlFor='save-scene-description'>Scene description</label>
+                        <label htmlFor="save-scene-description">Scene description</label>
                         <input
-                            type='text'
-                            id='save-scene-description'
+                            type="text"
+                            id="save-scene-description"
                             ref={(ref) => { this.descriptionInput = ref; }}
-                            placeholder='(optional description)'
+                            placeholder="(optional description)"
                         />
                     </p>
                     <p>
-                        <label htmlFor='save-scene-public'>Public scene</label>
+                        <label htmlFor="save-scene-public">Public scene</label>
                         <input
-                            type='checkbox'
-                            id='save-scene-public'
+                            type="checkbox"
+                            id="save-scene-public"
                             ref={(ref) => { this.publicCheckbox = ref; }}
                             defaultChecked
                             style={{ marginLeft: '0.5em' }}
@@ -195,21 +195,21 @@ export default class SaveToCloudModal extends React.Component {
                     </p>
                 </div>
 
-                <div className='modal-buttons'>
+                <div className="modal-buttons">
                     <LoadingSpinner on={this.state.thinking} />
                     <Button
-                        className='modal-cancel'
+                        className="modal-cancel"
                         disabled={this.state.thinking}
                         onClick={this.onClickCancel}
                     >
-                        <Icon type={'bt-times'} /> Cancel
+                        <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
-                        className='modal-confirm'
+                        className="modal-confirm"
                         disabled={this.state.thinking}
                         onClick={this.onClickConfirm}
                     >
-                        <Icon type={'bt-check'} /> Save
+                        <Icon type="bt-check" /> Save
                     </Button>
                 </div>
             </Modal>

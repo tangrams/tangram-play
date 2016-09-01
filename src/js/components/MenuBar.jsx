@@ -75,7 +75,7 @@ const _clickSaveToCloud = function () {
             else {
                 ReactDOM.render(
                     <ConfirmDialogModal
-                        message='You are not signed in! Please sign in now.'
+                        message="You are not signed in! Please sign in now."
                         confirmCallback={openSignInWindow}
                         cancelCallback={unsubscribeSaveToCloud}
                     />,
@@ -106,7 +106,7 @@ const _clickOpenFromCloud = function () {
             else {
                 ReactDOM.render(
                     <ConfirmDialogModal
-                        message='You are not signed in! Please sign in now.'
+                        message="You are not signed in! Please sign in now."
                         confirmCallback={openSignInWindow}
                         cancelCallback={unsubscribeOpenFromCloud}
                     />,

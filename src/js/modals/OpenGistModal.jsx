@@ -146,17 +146,17 @@ export default class OpenGistModal extends React.Component {
                         onClick={() => { this.setState({ selected: item.url }); }}
                         onDoubleClick={this.onClickConfirm}
                     >
-                        <div className='open-from-cloud-option-thumbnail'>
+                        <div className="open-from-cloud-option-thumbnail">
                             <img src={item.thumbnail} />
                         </div>
-                        <div className='open-from-cloud-option-info'>
-                            <div className='open-from-cloud-option-name'>
+                        <div className="open-from-cloud-option-info">
+                            <div className="open-from-cloud-option-name">
                                 {item.name}
                             </div>
-                            <div className='open-from-cloud-option-description'>
+                            <div className="open-from-cloud-option-description">
                                 {item.description}
                             </div>
-                            <div className='open-from-cloud-option-date'>
+                            <div className="open-from-cloud-option-date">
                                 {/* Show the date this was saved.
                                     TODO: better formatting;
                                     maybe use moment.js */}
@@ -171,26 +171,26 @@ export default class OpenGistModal extends React.Component {
         // Render the entire modal
         return (
             <Modal
-                className='modal-alt open-from-cloud-modal'
+                className="modal-alt open-from-cloud-modal"
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickClose}
             >
                 <h4>Open a previously saved Gist</h4>
 
-                <div className='modal-content open-from-cloud-list'>
+                <div className="modal-content open-from-cloud-list">
                     {gistList}
                 </div>
 
-                <div className='modal-buttons'>
-                    <Button onClick={this.onClickCancel} className='modal-cancel'>
-                        <Icon type={'bt-times'} /> Cancel
+                <div className="modal-buttons">
+                    <Button onClick={this.onClickCancel} className="modal-cancel">
+                        <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
                         onClick={this.onClickConfirm}
-                        className='modal-confirm'
+                        className="modal-confirm"
                         disabled={this.state.selected === null}
                     >
-                        <Icon type={'bt-check'} /> Open
+                        <Icon type="bt-check" /> Open
                     </Button>
                 </div>
             </Modal>
