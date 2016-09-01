@@ -1,3 +1,4 @@
+import { showSignInOverlay, hideSignInOverlay } from '../components/SignInOverlay';
 import { EventEmitter } from '../components/event-emitter';
 
 /**
@@ -11,7 +12,6 @@ import { EventEmitter } from '../components/event-emitter';
 
 let signInWindow;
 let pollWindowStateIntervalId;
-let redirectingTimerId;
 
 /**
  * Primary entry point for opening a sign-in window.
@@ -23,6 +23,9 @@ export function openSignInWindow () {
         signInWindow = popupCenter('/developers/sign_in', 'Sign in to Mapzen Developer Portal', 650, 650);
         signInWindow.addEventListener('close', cleanup);
         window.addEventListener('unload', closeSignInWindow);
+
+        // Show an overlay in the app window.
+        showSignInOverlay();
 
         // Experimental.
         signInWindow.addEventListener('load', adjustSignInPageContent);
@@ -48,10 +51,7 @@ function pollWindowState () {
         try {
             // If it's exactly /developers, we're probably logged in now
             if (signInWindow.location.pathname === '/developers') {
-                adjustDonePageContent();
-                if (!redirectingTimerId) {
-                    redirectingTimerId = window.setTimeout(signInStateReady, 2000);
-                }
+                signInStateReady();
             }
             // Experimental: hack the view for developer pages.
             if (signInWindow.location.pathname.indexOf('/developers/') === 0) {
@@ -70,6 +70,7 @@ function pollWindowState () {
 function signInStateReady () {
     EventEmitter.dispatch('mapzen:sign_in', {});
     closeSignInWindow();
+    hideSignInOverlay();
 
     // Returns focus to the original parent window.
     window.focus();
@@ -93,7 +94,6 @@ function closeSignInWindow () {
 function cleanup () {
     window.removeEventListener('unload', closeSignInWindow);
     window.clearInterval(pollWindowStateIntervalId);
-    window.clearTimeout(redirectingTimerId);
 }
 
 /**
@@ -171,85 +171,6 @@ function adjustSignInPageContent () {
         childDocument.head.appendChild(newStyleEl);
         childDocument.querySelector('#dev_login h1').textContent = 'Sign in to Mapzen';
         childDocument.querySelector('#dev_login h3').textContent = 'You can save Tangram scenes to your Mapzen account and do other stuff good too';
-    }
-}
-
-function adjustDonePageContent () {
-    const childDocument = signInWindow.document;
-
-    // Only do this once
-    if (!childDocument.getElementById('tangram-play-signin-override-styles')) {
-        const newStyleEl = document.createElement('style');
-        const newStyleText = `
-            body {
-                margin-top: 0;
-                overflow: hidden;
-            }
-            body.hide-fixed-main-nav nav.navbar-fixed-top {
-                top: 0;
-            }
-            nav.navbar.navbar-default.navbar-fixed-top {
-                position: absolute;
-            }
-            .navbar-collapse.navbar-collapse.navbar-collapse {
-                display: none !important;
-            }
-            a.navbar-brand {
-                left: 50%;
-                position: absolute;
-                margin-left: -80px !important;
-                pointer-events: none;
-                user-select: none;
-                touch-action: none;
-            }
-            button.navbar-toggle {
-                display: none;
-            }
-            #tangram-play-override-redirecting {
-                position: fixed;
-                top: 0px;
-                left: 0px;
-                width: 100%;
-                height: 100%;
-                background-color: white;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-        `;
-        newStyleEl.id = 'tangram-play-signin-override-styles';
-        newStyleEl.textContent = newStyleText;
-
-        childDocument.head.appendChild(newStyleEl);
-
-        const redirectEl = document.createElement('div');
-        redirectEl.id = 'tangram-play-override-redirecting';
-
-        const loadingSpinnerEl = document.createElement('div');
-        loadingSpinnerEl.className = 'loading-spinner-02';
-        loadingSpinnerEl.style.marginBottom = '10px';
-
-        const textEl = document.createElement('p');
-        textEl.textContent = 'Signed in! Redirecting...';
-
-        // It is safe to close this window, but if the window doesn't close
-        // automatically for whatever reason, this link will appear
-        const closeEl = document.createElement('p');
-        closeEl.innerHTML = '<a href="javascript:window.close();" onClick="function(e){e.preventDefault();window.close();}">Click here to close this window.</a>';
-        closeEl.style.opacity = '0';
-        closeEl.style.userSelect = 'none';
-
-        redirectEl.appendChild(loadingSpinnerEl);
-        redirectEl.appendChild(textEl);
-        redirectEl.appendChild(closeEl);
-        childDocument.body.appendChild(redirectEl);
-
-        // If window doesn't close automatically for some reason, activate this link
-        window.setTimeout(function () {
-            closeEl.style.opacity = '1';
-            closeEl.style.userSelect = 'auto';
-        }, 2000);
     }
 }
 

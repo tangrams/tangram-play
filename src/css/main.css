@@ -54,6 +54,9 @@
 @import '_widgets.react';
 @import '_color';
 
+/* Etc */
+@import '_sign-in-overlay';
+
 /* Embedded Tangram Play */
 @import '_embeddedPlay';
 

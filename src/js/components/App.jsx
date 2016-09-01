@@ -4,6 +4,7 @@ import Editor from './Editor';
 import MenuBar from './MenuBar';
 import Shield from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
+import SignInOverlay from './SignInOverlay';
 // import ColorPalette from './ColorPalette';
 
 import { initTangramPlay } from '../tangram-play';
@@ -40,6 +41,7 @@ export default class App extends React.Component {
                 <div className="overlay-container">
                     <Shield />
                     <FileDrop />
+                    <SignInOverlay />
                     <div id="modal-container" className="modal-container" />
                 </div>
             </div>
