@@ -414,9 +414,10 @@ export default class MapPanelLocationBar extends React.Component {
         }
 
         return (
-            <span>
-                <Icon type={'bt-map-marker'} />{parts}
-            </span>
+            <div className='map-search-suggestion-item'>
+                <Icon type={'bt-map-marker'} />
+                {parts}
+            </div>
         );
     }
 

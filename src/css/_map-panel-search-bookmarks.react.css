@@ -53,6 +53,10 @@
         appearance: none;
         outline: none;
         border: 0;
+        /* When focused, input has a 1px dotted bottom border. When not
+           focused, this border should be made transparent to prevent
+           layout off-by-one-pixel issues. */
+        border-bottom: 1px solid transparent;
         color: var(--ui-component-text-color);
         padding-top: 6px;
         padding-bottom: 0;
@@ -64,18 +68,28 @@
 }
 
 .react-autosuggest__suggestions-container {
+    position: absolute; /* Allow list to float separately from input element */
+    left: 0;
+    width: 100%;
     font-size: 12px;
     font-weight: 200;
     background-color: var(--ui-component-color);
     margin: 0;
-    margin-top: 4px;
+    margin-top: 3px;
     white-space: nowrap;
+
+    ul {
+        margin: 0;
+    }
 
     li {
         border-top: 1px solid var(--ui-active-color);
         cursor: pointer;
         line-height: 1.4;
-        padding: 10px;
+
+        &:first-child {
+            border-top: 0;
+        }
     }
 
     li:hover {
@@ -102,6 +116,22 @@
     font-size: 10px;
     padding-right: 10px;
     font-weight: 900;
+}
+
+.map-search-suggestion-item {
+    padding: 10px;
+    padding-left: 0; /* Space for icon */
+
+    /* Prevent super-long labels from breaking layout */
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    & > i.btm {
+        padding: 0;
+        width: 38px;
+        margin-right: 5px; /* Align text with input */
+        text-align: center;
+    }
 }
 
 /* Bookmark list dropdown */
