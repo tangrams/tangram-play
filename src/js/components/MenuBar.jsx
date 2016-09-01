@@ -160,9 +160,7 @@ export default class MenuBar extends React.Component {
         // Only display items related to Mapzen account if Tangram Play is
         // loaded from a domain with Mapzen account capabilities.
         requestUserSignInState().then((data) => {
-            // If `data` doesn't contain a `hosted` property then it is a
-            // mapzen.com domain.
-            if (!data.hosted) {
+            if (data) {
                 this.setState({
                     mapzenAccount: true
                 });

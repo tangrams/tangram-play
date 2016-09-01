@@ -63,6 +63,12 @@ export default class SignInButton extends React.Component {
 
     checkLoggedInState () {
         requestUserSignInState().then((data) => {
+            // `data` is null if we are not hosted in the right place
+            if (!data) {
+                return;
+            }
+
+            // This tells us we've contacted mapzen.com and the API is valid
             const newState = {
                 serverContacted: true
             };
@@ -72,13 +78,6 @@ export default class SignInButton extends React.Component {
                 newState.isLoggedIn = true;
                 newState.nickname = data.nickname || null;
                 newState.avatar = data.avatar || null;
-            }
-
-            // If this is a self-hosted (or localhost) instance of Tangram Play
-            // (e.g. not on mapzen.com) then there is no sign-in functionality
-            // and we effectively disable it
-            if (data.hosted === false) {
-                newState.serverContacted = false;
             }
 
             this.setState(newState);
