@@ -102,13 +102,13 @@ export default class MenuBar extends React.Component {
      */
     render () {
         return (
-            <Navbar inverse className='menu-bar'>
+            <Navbar inverse className="menu-bar">
                 {/* The brand section */}
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <span className='brand'>
+                        <span className="brand">
                             Tangram Play
-                            <span className='brand-tag'>BETA</span>
+                            <span className="brand-tag">BETA</span>
                         </span>
                     </Navbar.Brand>
                     <Navbar.Toggle />
@@ -120,35 +120,35 @@ export default class MenuBar extends React.Component {
                         {/* New button*/}
                         <OverlayTrigger
                             rootClose
-                            placement='bottom'
-                            overlay={<Tooltip id='tooltip'>{'New scene'}</Tooltip>}
+                            placement="bottom"
+                            overlay={<Tooltip id="tooltip">New scene</Tooltip>}
                         >
-                            <NavItem eventKey={'new'} onClick={_clickNew}>
-                                <Icon type={'bt-file'} />New
+                            <NavItem eventKey="new" onClick={_clickNew}>
+                                <Icon type="bt-file" />New
                             </NavItem>
                         </OverlayTrigger>
 
                         {/* Open dropdown */}
                         <OverlayTrigger
                             rootClose
-                            placement='bottom'
-                            overlay={<Tooltip id='tooltip'>{'Open scene'}</Tooltip>}
+                            placement="bottom"
+                            overlay={<Tooltip id="tooltip">Open scene</Tooltip>}
                         >
                             <NavDropdown
-                                title={<span><Icon type={'bt-upload'} />Open</span>}
-                                id='open-dropdown'
+                                title={<span><Icon type="bt-upload" />Open</span>}
+                                id="open-dropdown"
                             >
                                 <MenuItem onClick={_clickOpenFile}>
-                                    <Icon type={'bt-folder'} />Open a file
+                                    <Icon type="bt-folder" />Open a file
                                 </MenuItem>
                                 <MenuItem onClick={_clickOpenGist}>
-                                    <Icon type={'bt-code'} />Open a saved Gist
+                                    <Icon type="bt-code" />Open a saved Gist
                                 </MenuItem>
                                 <MenuItem onClick={_clickOpenURL}>
-                                    <Icon type={'bt-link'} />Open from URL
+                                    <Icon type="bt-link" />Open from URL
                                 </MenuItem>
                                 <MenuItem onClick={_clickOpenExample}>
-                                    <Icon type={'bt-map'} />Choose example
+                                    <Icon type="bt-map" />Choose example
                                 </MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
@@ -156,21 +156,21 @@ export default class MenuBar extends React.Component {
                         {/* Save dropdown */}
                         <OverlayTrigger
                             rootClose
-                            placement='bottom'
-                            overlay={<Tooltip id='tooltip'>{'Save scene'}</Tooltip>}
+                            placement="bottom"
+                            overlay={<Tooltip id="tooltip">Save scene</Tooltip>}
                         >
                             <NavDropdown
-                                title={<span><Icon type={'bt-download'} />Save</span>}
-                                id='save-dropdown'
+                                title={<span><Icon type="bt-download" />Save</span>}
+                                id="save-dropdown"
                             >
                                 <MenuItem onClick={_clickSaveFile}>
-                                    <Icon type={'bt-folder'} />Save to file
+                                    <Icon type="bt-folder" />Save to file
                                 </MenuItem>
                                 <MenuItem onClick={_clickSaveGist}>
-                                    <Icon type={'bt-code'} />Save to Gist
+                                    <Icon type="bt-code" />Save to Gist
                                 </MenuItem>
                                 <MenuItem onClick={_clickSaveCamera}>
-                                    <Icon type={'bt-camera'} />Take a screenshot
+                                    <Icon type="bt-camera" />Take a screenshot
                                 </MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>
@@ -181,54 +181,54 @@ export default class MenuBar extends React.Component {
                         {/* Introspection button */}
                         <OverlayTrigger
                             rootClose
-                            placement='bottom'
-                            overlay={<Tooltip id='tooltip'>{'Toggle inspect mode'}</Tooltip>}
+                            placement="bottom"
+                            overlay={<Tooltip id="tooltip">Toggle inspect mode</Tooltip>}
                         >
                             <NavItem
-                                eventKey={'new'}
+                                eventKey="new"
                                 onClick={this._clickInspect.bind(this)}
                                 active={this.state.inspectActive}
                             >
-                                <Icon type={'bt-magic'} />Inspect
+                                <Icon type="bt-magic" />Inspect
                             </NavItem>
                         </OverlayTrigger>
 
                         {/* Fullscreen button */}
                         <OverlayTrigger
                             rootClose
-                            placement='bottom'
-                            overlay={<Tooltip id='tooltip'>{'View fullscreen'}</Tooltip>}
+                            placement="bottom"
+                            overlay={<Tooltip id="tooltip">View fullscreen</Tooltip>}
                         >
                             <NavItem
-                                eventKey={'new'}
+                                eventKey="new"
                                 onClick={this._clickFullscreen.bind(this)}
                                 active={this.state.fullscreenActive}
                             >
-                                <Icon type={'bt-maximize'} />Fullscreen
+                                <Icon type="bt-maximize" />Fullscreen
                             </NavItem>
                         </OverlayTrigger>
 
                         {/* Help dropdown */}
                         <OverlayTrigger
                             rootClose
-                            placement='bottom'
-                            overlay={<Tooltip id='tooltip'>{'Documentation and help'}</Tooltip>}
+                            placement="bottom"
+                            overlay={<Tooltip id="tooltip">Documentation and help</Tooltip>}
                         >
                             <NavDropdown
-                                title={<span><Icon type={'bt-question-circle'} />Help</span>}
-                                id='help-dropdown'
+                                title={<span><Icon type="bt-question-circle" />Help</span>}
+                                id="help-dropdown"
                             >
                                 <MenuItem onClick={_clickAbout}>
-                                    <Icon type={'bt-info-circle'} />About
+                                    <Icon type="bt-info-circle" />About
                                 </MenuItem>
-                                <MenuItem href={documentationLink} target='_blank'>
-                                    <Icon type={'bt-book'} />Documentation
+                                <MenuItem href={documentationLink} target="_blank">
+                                    <Icon type="bt-book" />Documentation
                                 </MenuItem>
-                                <MenuItem href={tutorialLink} target='_blank'>
-                                    <Icon type={'bt-notebook'} />Tutorial
+                                <MenuItem href={tutorialLink} target="_blank">
+                                    <Icon type="bt-notebook" />Tutorial
                                 </MenuItem>
-                                <MenuItem href={feedbackLink} target='_blank'>
-                                    <Icon type={'bt-comments'} />Feedback
+                                <MenuItem href={feedbackLink} target="_blank">
+                                    <Icon type="bt-comments" />Feedback
                                 </MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>

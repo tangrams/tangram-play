@@ -13,15 +13,15 @@ export default class Map extends React.Component {
 
     render () {
         return (
-            <div className='map-container' id='map-container'>
-                <div className='map-view' id='map' />
+            <div className="map-container" id="map-container">
+                <div className="map-view" id="map" />
                 <MapLoading />
                 {(() => {
                     if (this.props.panel) {
                         return (<MapPanel />);
                     }
                 })()}
-                <div id='map-inspection-components' />
+                <div id="map-inspection-components" />
             </div>
         );
     }

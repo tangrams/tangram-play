@@ -414,8 +414,8 @@ export default class MapPanelLocationBar extends React.Component {
         }
 
         return (
-            <div className='map-search-suggestion-item'>
-                <Icon type={'bt-map-marker'} />
+            <div className="map-search-suggestion-item">
+                <Icon type="bt-map-marker" />
                 {parts}
             </div>
         );
@@ -463,20 +463,20 @@ export default class MapPanelLocationBar extends React.Component {
         };
 
         return (
-            <ButtonGroup className='map-search' >
+            <ButtonGroup className="map-search" >
                 {/* Search button */}
                 <OverlayTrigger
                     rootClose
-                    placement='bottom'
-                    overlay={<Tooltip id='tooltip'>{'Search for a location'}</Tooltip>}
+                    placement="bottom"
+                    overlay={<Tooltip id="tooltip">Search for a location</Tooltip>}
                 >
-                    <Button className='map-panel-search-button'>
-                        <Icon type={'bt-search'} />
+                    <Button className="map-panel-search-button">
+                        <Icon type="bt-search" />
                     </Button>
                 </OverlayTrigger>
 
                 {/* Autosuggest bar */}
-                <Autosuggest ref='autosuggestBar'
+                <Autosuggest ref="autosuggestBar"
                     suggestions={suggestions}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                     onSuggestionsClearRequested={this.onSuggestionsClearRequested}
@@ -488,16 +488,16 @@ export default class MapPanelLocationBar extends React.Component {
                 />
 
                 {/* Lat lng label */}
-                <div className='map-search-latlng'>{latlng.lat}, {latlng.lng}</div>
+                <div className="map-search-latlng">{latlng.lat}, {latlng.lng}</div>
 
                 {/* Bookmark save button */}
                 <OverlayTrigger
                     rootClose
-                    placement='bottom'
-                    overlay={<Tooltip id='tooltip'>{'Bookmark location'}</Tooltip>}
+                    placement="bottom"
+                    overlay={<Tooltip id="tooltip">Bookmark location</Tooltip>}
                 >
-                    <Button className='map-panel-save-button' onClick={this.onClickSave}>
-                        <Icon type={'bt-star'} active={this.state.bookmarkActive} />
+                    <Button className="map-panel-save-button" onClick={this.onClickSave}>
+                        <Icon type="bt-star" active={this.state.bookmarkActive} />
                     </Button>
                 </OverlayTrigger>
             </ButtonGroup>

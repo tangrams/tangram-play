@@ -41,21 +41,21 @@ export default class ColorPicker extends React.PureComponent {
 
     render () {
         return (
-            <div className='colorpicker-container'>
+            <div className="colorpicker-container">
                 <ColorPickerSaturation
                     color={this.props.color}
                     onChange={this.onChangeSaturation}
                 />
 
-                <div className='colorpicker-controls'>
-                    <div className='colorpicker-sliders'>
-                        <div className='colorpicker-slider-hue'>
+                <div className="colorpicker-controls">
+                    <div className="colorpicker-sliders">
+                        <div className="colorpicker-slider-hue">
                             <Hue
                                 hsl={this.props.color.getHsl()}
                                 onChange={this.onChangeHueAlpha}
                             />
                         </div>
-                        <div className='colorpicker-slider-alpha'>
+                        <div className="colorpicker-slider-alpha">
                             <Alpha
                                 rgb={this.props.color.getRgba()}
                                 hsl={this.props.color.getHsl()}
@@ -63,9 +63,12 @@ export default class ColorPicker extends React.PureComponent {
                             />
                         </div>
                     </div>
-                    <div className='colorpicker-active-color'>
-                        <Checkboard size='6' />
-                        <div className='colorpicker-active-color-swatch' style={{ backgroundColor: this.props.color.getRgbaString() }} />
+                    <div className="colorpicker-active-color">
+                        <Checkboard size="6" />
+                        <div
+                            className="colorpicker-active-color-swatch"
+                            style={{ backgroundColor: this.props.color.getRgbaString() }}
+                        />
                     </div>
                 </div>
 

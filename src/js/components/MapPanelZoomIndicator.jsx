@@ -8,7 +8,7 @@ export default class MapPanelZoomIndicator extends React.PureComponent {
 
     render () {
         return (
-            <div className='map-panel-zoom'>
+            <div className="map-panel-zoom">
                 z{this.formatZoom(this.props.zoom)}
             </div>
         );

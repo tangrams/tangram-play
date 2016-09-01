@@ -54,7 +54,7 @@ export default class SignInButton extends React.Component {
                     });
                 }
                 else {
-                    ReactDOM.render(<ErrorModal error='Unable to sign you out.' />, document.getElementById('modal-container'));
+                    ReactDOM.render(<ErrorModal error="Unable to sign you out." />, document.getElementById('modal-container'));
                     console.log(response);
                 }
             });
@@ -94,15 +94,15 @@ export default class SignInButton extends React.Component {
             return (
                 <OverlayTrigger
                     rootClose
-                    placement='bottom'
-                    overlay={<Tooltip id='tooltip'>{'This is you!'}</Tooltip>}
+                    placement="bottom"
+                    overlay={<Tooltip id="tooltip">This is you!</Tooltip>}
                 >
                     <NavDropdown
-                        title={<span><img src={this.state.avatar} className='sign-in-avatar' alt={this.state.nickname} /> {this.state.nickname}</span>}
-                        className='menu-sign-in'
+                        title={<span><img src={this.state.avatar} className="sign-in-avatar" alt={this.state.nickname} /> {this.state.nickname}</span>}
+                        className="menu-sign-in"
                     >
                         <MenuItem onClick={this.onClickSignOut}>
-                            <Icon type={'bt-sign-out'} /> Sign out
+                            <Icon type="bt-sign-out" /> Sign out
                         </MenuItem>
                     </NavDropdown>
                 </OverlayTrigger>
@@ -113,8 +113,8 @@ export default class SignInButton extends React.Component {
         // "Sign in" momentarily flash before the sign-in-state API is contacted.
         else if (this.state.serverContacted && !this.state.isLoggedIn) {
             return (
-                <NavItem onClick={this.onClickSignIn} href='#' className='menu-sign-in'>
-                    Sign in <Icon type={'bt-sign-in'} />
+                <NavItem onClick={this.onClickSignIn} href="#" className="menu-sign-in">
+                    Sign in <Icon type="bt-sign-in" />
                 </NavItem>
             );
         }

@@ -92,17 +92,17 @@ export default class FileDrop extends React.Component {
 
         return (
             <div
-                className='filedrop-container'
+                className="filedrop-container"
                 onDragEnter={this.onDragEnter}
                 onDragLeave={this.onDragLeave}
                 onDrop={this.onDrop}
                 style={displayStyle}
             >
-                <div className='filedrop-indicator'>
-                    <div className='filedrop-icon'>
-                        <Icon type={'bt-upload'} />
+                <div className="filedrop-indicator">
+                    <div className="filedrop-icon">
+                        <Icon type="bt-upload" />
                     </div>
-                    <div className='filedrop-label'>Drop a file here to open</div>
+                    <div className="filedrop-label">Drop a file here to open</div>
                 </div>
             </div>
         );

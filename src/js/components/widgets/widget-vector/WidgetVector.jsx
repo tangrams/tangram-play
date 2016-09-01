@@ -161,7 +161,7 @@ export default class WidgetVector extends React.Component {
         return (
             <div>
                 {/* The widget button user clicks to open color picker */}
-                <div className='widget widget-vectorpicker' onClick={ this.handleClick }></div>
+                <div className="widget widget-vectorpicker" onClick={ this.handleClick } />
 
                 {/* Floating panel */}
                 <FloatingPanel
@@ -172,7 +172,7 @@ export default class WidgetVector extends React.Component {
                     show={this.state.displayPicker}
                     onHide={this.handleClick}
                 >
-                    <div ref={(ref) => { this.vectorPicker = ref; }}></div>
+                    <div ref={(ref) => { this.vectorPicker = ref; }} />
                 </FloatingPanel>
             </div>
        );

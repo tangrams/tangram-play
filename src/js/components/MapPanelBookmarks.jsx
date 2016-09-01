@@ -133,7 +133,7 @@ export default class MapPanelBookmarks extends React.Component {
     onClickDeleteBookmarks () {
         ReactDOM.render(
             <ConfirmDialogModal
-                message='Are you sure you want to clear your bookmarks? This cannot be undone.'
+                message="Are you sure you want to clear your bookmarks? This cannot be undone."
                 confirmCallback={this.onClickConfirmClearAllBookmarks}
             />,
             document.getElementById('modal-container')
@@ -172,19 +172,19 @@ export default class MapPanelBookmarks extends React.Component {
         return (
             <OverlayTrigger
                 rootClose
-                placement='bottom'
+                placement="bottom"
                 ref={(ref) => { this.culpritOverlay = ref; }}
-                overlay={<Tooltip id='tooltip-bookmark'>{'Locations'}</Tooltip>}
+                overlay={<Tooltip id="tooltip-bookmark">Locations</Tooltip>}
             >
                 <DropdownButton
-                    title={<Icon type={'bt-bookmark'} />}
-                    bsStyle='default'
+                    title={<Icon type="bt-bookmark" />}
+                    bsStyle="default"
                     noCaret
                     pullRight
-                    className='map-panel-bookmark-button'
+                    className="map-panel-bookmark-button"
                     // The prop 'id' is required to make 'Dropdown' accessible
                     // for users using assistive technologies such as screen readers
-                    id='map-panel-bookmark-button'
+                    id="map-panel-bookmark-button"
                     open={this.state.open}
                     onToggle={this.shouldDropdownToggle}
                 >
@@ -202,7 +202,7 @@ export default class MapPanelBookmarks extends React.Component {
                         // If no bookmarks, then display a no bookmarks message
                         if (this.state.bookmarks.length === 0) {
                             bookmarkDropdownList = (
-                                <MenuItem key='none' className='bookmark-dropdown-center'>
+                                <MenuItem key="none" className="bookmark-dropdown-center">
                                     No locations bookmarked!
                                 </MenuItem>
                             );
@@ -214,25 +214,25 @@ export default class MapPanelBookmarks extends React.Component {
                                 return (
                                     <MenuItem key={i}>
                                         <div
-                                            className='bookmark-dropdown-info'
+                                            className="bookmark-dropdown-info"
                                             onClick={() => this.onClickGoToBookmark(i)}
                                         >
-                                            <div className='bookmark-dropdown-icon'>
-                                                <Icon type={'bt-map-marker'} />
+                                            <div className="bookmark-dropdown-icon">
+                                                <Icon type="bt-map-marker" />
                                             </div>
                                             <div>
                                                 {result.label}
                                                 <br />
-                                                <span className='bookmark-dropdown-text'>
+                                                <span className="bookmark-dropdown-text">
                                                     {result.lat}, {result.lng}, z{result.zoom}
                                                 </span>
                                             </div>
                                         </div>
                                         <div
-                                            className='bookmark-dropdown-delete'
+                                            className="bookmark-dropdown-delete"
                                             onClick={() => this.onClickDeleteSingleBookmark(result._date)}
                                         >
-                                            <Icon type={'bt-times'} />
+                                            <Icon type="bt-times" />
                                         </div>
                                     </MenuItem>
                                 );
@@ -241,9 +241,9 @@ export default class MapPanelBookmarks extends React.Component {
                             // Add a delete button at the end
                             const deletebutton = (
                                 <MenuItem
-                                    key='delete'
+                                    key="delete"
                                     onSelect={this.onClickDeleteBookmarks}
-                                    className='bookmark-dropdown-center bookmark-dropdown-clear'
+                                    className="bookmark-dropdown-center bookmark-dropdown-clear"
                                 >
                                     Clear bookmarks
                                 </MenuItem>

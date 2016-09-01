@@ -16,9 +16,9 @@ export default class Editor extends React.Component {
     render () {
         return (
             /* id='content' is used only as a hook for Divider right now */
-            <div className='editor-container' id='content'>
+            <div className="editor-container" id="content">
                 <Divider />
-                <div className='editor' id='editor' ref={(ref) => { this.editorEl = ref; }} />
+                <div className="editor" id="editor" ref={(ref) => { this.editorEl = ref; }} />
                 {/* <DocsPanel ref={(ref) => { this.docsPanel = ref; }} /> */}
             </div>
         );

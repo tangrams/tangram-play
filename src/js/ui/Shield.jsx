@@ -30,7 +30,7 @@ export default class Shield extends React.Component {
             ? { display: 'block' }
             : { display: 'none' };
 
-        return <div className='shield' style={displayStyle} />;
+        return <div className="shield" style={displayStyle} />;
     }
 }
 

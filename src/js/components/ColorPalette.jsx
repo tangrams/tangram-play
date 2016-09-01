@@ -204,7 +204,7 @@ export default class ColorPalette extends React.Component {
                 let widgetStyle = { backgroundColor: color.color.getRgbaString() };
 
                 // This represents each squared div for a color in the color palette
-                colors.push(<div key={i} className='colorpalette-color' onClick={ this.onClick.bind(null, color, i) }><div className='colorpalette-square' style={widgetStyle}></div></div>);
+                colors.push(<div key={i} className="colorpalette-color" onClick={ this.onClick.bind(null, color, i) }><div className="colorpalette-square" style={widgetStyle}></div></div>);
             }
         }
 
@@ -223,7 +223,7 @@ export default class ColorPalette extends React.Component {
                     onHide={this.onHide}
                 >
                     <ColorPicker
-                        className={'colorpicker'}
+                        className="colorpicker"
                         color={ this.state.currentColor.color.getRgba() }
                         onChange={ this.onChange }
                     />

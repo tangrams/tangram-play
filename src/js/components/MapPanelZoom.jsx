@@ -59,28 +59,28 @@ export default class MapPanelZoom extends React.Component {
 
     render () {
         return (
-            <div className='map-panel-zoom-container'>
+            <div className="map-panel-zoom-container">
                 <MapPanelZoomIndicator zoom={this.state.zoom} />
 
                 {/* Zoom buttons */}
-                <ButtonGroup className='buttons-plusminus'>
+                <ButtonGroup className="buttons-plusminus">
                     <OverlayTrigger
                         rootClose
-                        placement='bottom'
-                        overlay={<Tooltip id='tooltip'>{'Zoom in'}</Tooltip>}
+                        placement="bottom"
+                        overlay={<Tooltip id="tooltip">Zoom in</Tooltip>}
                     >
-                        <Button onClick={this.onClickZoomIn} className='map-panel-zoomin'>
-                            <Icon type={'bt-plus'} />
+                        <Button onClick={this.onClickZoomIn} className="map-panel-zoomin">
+                            <Icon type="bt-plus" />
                         </Button>
                     </OverlayTrigger>
 
                     <OverlayTrigger
                         rootClose
-                        placement='bottom'
-                        overlay={<Tooltip id='tooltip'>{'Zoom out'}</Tooltip>}
+                        placement="bottom"
+                        overlay={<Tooltip id="tooltip">Zoom out</Tooltip>}
                     >
                         <Button onClick={this.onClickZoomOut}>
-                            <Icon type={'bt-minus'} />
+                            <Icon type="bt-minus" />
                         </Button>
                     </OverlayTrigger>
                 </ButtonGroup>

@@ -61,17 +61,17 @@ export function initGlslWidgetsLink () {
                     cleanNum = '[' + cleanNum + ']';
 
                     if (match.type === 'vec4') {
-                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec4'/>, widgetlink);
+                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec="vec4" />, widgetlink);
                     }
                     else {
-                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec='vec3'/>, widgetlink);
+                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec="vec3" />, widgetlink);
                     }
                     break;
                 case 'vec2':
-                    ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
+                    ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string} />, widgetlink);
                     break;
                 case 'number':
-                    ReactDOM.render(<WidgetLinkNumber display={true} cursor={cursor} match={match} value={match.string}/>, widgetlink);
+                    ReactDOM.render(<WidgetLinkNumber display={true} cursor={cursor} match={match} value={match.string} />, widgetlink);
                     break;
                 default:
                     break;

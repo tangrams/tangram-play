@@ -195,12 +195,12 @@ export default class ColorBookmark extends React.Component {
                         else {
                             return (
                                 <div
-                                    className='widget bookmark-color'
+                                    className="widget bookmark-color"
                                     ref={(ref) => { this.colorPickerBookmark = ref; }}
                                     onClick={this.onClick}
                                 >
-                                    <Checkboard size='3' />
-                                    <div className='bookmark-color-swatch' style={colorStyle} />
+                                    <Checkboard size="3" />
+                                    <div className="bookmark-color-swatch" style={colorStyle} />
                                 </div>
                             );
                         }

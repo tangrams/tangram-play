@@ -78,16 +78,16 @@ export default class FloatingPanel extends React.Component {
         return (
             <Modal
                 dialogComponentClass={DraggableModal}
-                className='widget-modal'
+                className="widget-modal"
                 enforceFocus={false}
                 show={this.props.show}
                 onHide={this.props.onHide}
                 x={this.state.x}
                 y={this.state.y}
             >
-                <div className='floating-panel-topbar'>
-                    <div className='floating-panel-drag' />
-                    <div className='floating-panel-close' onClick={this.props.onHide}>×</div>
+                <div className="floating-panel-topbar">
+                    <div className="floating-panel-drag" />
+                    <div className="floating-panel-close" onClick={this.props.onHide}>×</div>
                 </div>
                 {this.props.children}
             </Modal>
