@@ -17,14 +17,16 @@
 }
 
 .map-search-latlng {
-    align-items: center;
     display: flex;
-    font-size: 12px;
+    align-items: center;
+    height: 38px;
+    font-size: 10px;
     font-weight: 200;
-    line-height: 28px;
     color: var(--ui-border-color);
     white-space: nowrap;
     padding-left: 6px;
+    margin-top: 1px; /* Align with input text */
+    margin-bottom: -1px; /* Recover margin from top */
 }
 
 .map-panel-search-button {
@@ -46,9 +48,9 @@
 
     input {
         width: 100%;
+        height: 24px;
         font-size: 12px;
         font-weight: 200;
-        line-height: 28px;
         background-color: transparent;
         appearance: none;
         outline: none;
@@ -58,7 +60,7 @@
            layout off-by-one-pixel issues. */
         border-bottom: 1px solid transparent;
         color: var(--ui-component-text-color);
-        padding-top: 6px;
+        margin-top: 7px;
         padding-bottom: 0;
 
         &:focus {
@@ -75,7 +77,7 @@
     font-weight: 200;
     background-color: var(--ui-component-color);
     margin: 0;
-    margin-top: 3px;
+    margin-top: 8px;
     white-space: nowrap;
 
     ul {
