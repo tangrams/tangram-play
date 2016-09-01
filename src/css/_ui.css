@@ -14,5 +14,7 @@ a:active {
 }
 
 hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
     border: 1px solid var(--ui-element-color);
 }

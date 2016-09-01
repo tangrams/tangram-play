@@ -12,7 +12,6 @@
 @import 'codemirror/addon/hint/show-hint.css';
 
 /* CORE */
-
 @import '_application';
 @import '_typography';
 @import '_workspace';
