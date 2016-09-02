@@ -65,7 +65,7 @@ const _clickAbout = function () {
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
 const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
-const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/dist/#/';
+const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
 
 /**
  * Represents the navbar for the application
