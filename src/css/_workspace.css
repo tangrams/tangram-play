@@ -2,10 +2,11 @@
 
 .workspace-container {
     position: absolute;
-    height: calc(100% - 44px);
     top: 44px;
     left: 0;
-    width: 100%;
+    /* Setting absolute right position instead of width: 100% improves resizing
+       performance when dragging the left edge of window */
+    right: 0;
     bottom: 0;
     background-color: var(--ui-editor-background-color); /* Background color during loading */
 }
