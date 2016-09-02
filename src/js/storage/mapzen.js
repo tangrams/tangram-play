@@ -7,6 +7,7 @@ import { createThumbnail } from '../tools/thumbnail';
 import { find } from 'lodash';
 import L from 'leaflet';
 
+const APP_NAME = 'play';
 const METADATA_DIR = '.tangramplay/';
 const METADATA_FILEPATH = METADATA_DIR + 'metadata.json';
 const THUMBNAIL_WIDTH = 144;
@@ -81,7 +82,6 @@ function slugify (string) {
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
 function uploadFile (contents, filepath, type = 'plain/text') {
-    const APP_NAME = 'play';
     let uploadedFileUrl;
 
     return window.fetch(`/api/uploads/new?app=${APP_NAME}&path=${filepath}`, {
@@ -247,7 +247,7 @@ export function fetchSceneList () {
     // Checks the uploads object at `/api/uploads?app=play` to see if we have an
     // existing `scenelist.json`. This is so that we can make the check without
     // causing a 404 if it doesn't exist.
-    return window.fetch('/api/uploads?app=play', fetchOpts)
+    return window.fetch(`/api/uploads?app=${APP_NAME}`, fetchOpts)
         .then((response) => {
             return response.json();
         })
