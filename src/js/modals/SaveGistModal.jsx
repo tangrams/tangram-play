@@ -189,44 +189,44 @@ export default class SaveGistModal extends React.Component {
         return (
             /* Modal disableEsc is true if we are waiting for a response */
             <Modal
-                className='modal-alt save-gist-modal'
+                className="modal-alt save-to-cloud-modal"
                 disableEsc={this.state.thinking}
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickCancel}
             >
-                <div className='modal-text modal-save-gist-text'>
+                <div className="modal-text">
                     <h4>Save this scene to gist</h4>
                     <p>
-                        This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href='https://help.github.com/articles/about-gists/' target='_blank'>Learn more about anonymous gists</a>.
+                        This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href="https://help.github.com/articles/about-gists/" target="_blank">Learn more about anonymous gists</a>.
                     </p>
                 </div>
 
                 <hr />
 
-                <div className='modal-content'>
-                    <label htmlFor='gist-name'>Scene name</label>
+                <div className="modal-content">
+                    <label htmlFor="gist-name">Scene name</label>
                     <input
-                        type='text'
-                        id='gist-name'
+                        type="text"
+                        id="gist-name"
                         ref={(ref) => { this.nameInput = ref; }}
-                        placeholder='(default: Tangram scene)'
+                        placeholder="(default: Tangram scene)"
                         defaultValue={DEFAULT_GIST_SCENE_NAME}
                     />
                     <p>
-                        <label htmlFor='gist-description'>Scene description</label>
+                        <label htmlFor="gist-description">Scene description</label>
                         <input
-                            type='text'
-                            id='gist-description'
+                            type="text"
+                            id="gist-description"
                             ref={(ref) => { this.descriptionInput = ref; }}
-                            placeholder='(optional description)'
+                            placeholder="(optional description)"
                             defaultValue={DEFAULT_GIST_DESCRIPTION}
                         />
                     </p>
                     <p>
-                        <label htmlFor='gist-public'>Public gist</label>
+                        <label htmlFor="gist-public">Public gist</label>
                         <input
-                            type='checkbox'
-                            id='gist-public'
+                            type="checkbox"
+                            id="gist-public"
                             ref={(ref) => { this.publicCheckbox = ref; }}
                             defaultChecked
                             style={{ marginLeft: '0.5em' }}
@@ -234,21 +234,21 @@ export default class SaveGistModal extends React.Component {
                     </p>
                 </div>
 
-                <div className='modal-buttons'>
+                <div className="modal-buttons">
                     <LoadingSpinner on={this.state.thinking} />
                     <Button
-                        className='modal-cancel'
+                        className="modal-cancel"
                         disabled={this.state.thinking}
                         onClick={this.onClickCancel}
                     >
-                        <Icon type={'bt-times'} /> Cancel
+                        <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
-                        className='modal-confirm'
+                        className="modal-confirm"
                         disabled={this.state.thinking}
                         onClick={this.onClickConfirm}
                     >
-                        <Icon type={'bt-check'} /> Save to gist
+                        <Icon type="bt-check" /> Save to gist
                     </Button>
                 </div>
             </Modal>

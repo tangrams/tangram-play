@@ -55,42 +55,42 @@ export default class SaveGistSuccessModal extends React.Component {
     render () {
         return (
             <Modal
-                className='save-gist-success-modal'
+                className="save-to-cloud-success-modal"
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickConfirm}
             >
-                <div className='modal-content'>
+                <div className="modal-content">
                     <h4>
                         Your gist has been saved.
                     </h4>
                     <p>
                         Remember this URL!
                     </p>
-                    <div className='input-bar'>
+                    <div className="input-bar">
                         <input
-                            type='text'
-                            id='gist-saved-url'
-                            readOnly='true'
+                            type="text"
+                            id="gist-saved-url"
+                            readOnly="true"
                             ref={(ref) => { this.urlInput = ref; }}
                             defaultValue={this.props.urlValue}
                         />
                         <OverlayTrigger
                             rootClose
-                            placement='right'
-                            overlay={<Tooltip id='tooltip'>{'Copy to clipboard'}</Tooltip>}
+                            placement="right"
+                            overlay={<Tooltip id="tooltip">Copy to clipboard</Tooltip>}
                         >
                             <Button
-                                className='gist-saved-copy-btn'
-                                data-clipboard-target='#gist-saved-url'
+                                className="saved-scene-copy-btn"
+                                data-clipboard-target="#gist-saved-url"
                                 ref={(ref) => { this.clipboardButton = ref; }}
                             >
-                                <Icon type='bt-copy' />
+                                <Icon type="bt-copy" />
                             </Button>
                         </OverlayTrigger>
                     </div>
                 </div>
-                <div className='modal-buttons'>
-                    <Button className='modal-confirm' onClick={this.onClickConfirm}>
+                <div className="modal-buttons">
+                    <Button className="modal-confirm" onClick={this.onClickConfirm}>
                         Got it
                     </Button>
                 </div>
