@@ -299,7 +299,7 @@ function insertMarks (fromLine, toLine) {
                     }
                     else if (mytype === 'string') {
                         // We need to pass a few more values to the dropdown widget: a set of options, a key, and a sources string
-                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark} options={node.widgetMark.options} keyType={node.key} source={node.widgetMark.source}/>, myel);
+                        ReactDOM.render(<WidgetDropdown bookmark={mybookmark} options={node.widgetMark.options} keyType={node.key} source={node.widgetMark.source} initialValue={node.value} />, myel);
                     }
                     else if (mytype === 'boolean') {
                         ReactDOM.render(<WidgetToggle bookmark={mybookmark} value={node.value} />, myel);
