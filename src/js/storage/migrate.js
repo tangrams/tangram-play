@@ -5,7 +5,7 @@ let FORCE_MIGRATE = false;
 
 // This is a temporary migration.
 // TODO: Remove / deprecate in v1.0 or when appropriate.
-export function migrateLocalStorageToForage () {
+export function migrateLocalStorageToForage() {
     // Wrapped in try/catch to avoid "Access denied" errors.
     try {
         if (!('localStorage' in window)) {
@@ -25,8 +25,8 @@ window.migrateLocalStorage = function () {
     migrateLocalStorageToForage();
 };
 
-function moveEverything () {
-    for (let keyName in window.localStorage) {
+function moveEverything() {
+    for (const keyName in window.localStorage) {
         if (keyName.startsWith(LOCAL_STORAGE_PREFIX)) {
             // Strips prefix from keyname, e.g. `tangram-play-longitude`
             // becomes `longitude`
@@ -101,7 +101,7 @@ function moveEverything () {
     convertMapViewToObject();
 }
 
-function convertMapViewToObject () {
+function convertMapViewToObject() {
     const lat = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'latitude');
     const lng = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'longitude');
     const zoom = window.localStorage.getItem(LOCAL_STORAGE_PREFIX + 'zoom');
@@ -115,7 +115,7 @@ function convertMapViewToObject () {
     const obj = {
         lat: Number(lat),
         lng: Number(lng),
-        zoom: Number(zoom)
+        zoom: Number(zoom),
     };
 
     localforage.getItem('last-map-view')

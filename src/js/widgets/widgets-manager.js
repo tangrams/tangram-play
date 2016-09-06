@@ -14,7 +14,7 @@ import { EventEmitter } from '../components/event-emitter';
  * listeners to handle new marks that need to be created as the editor content
  * is changed on scrolled.
  */
-export function initWidgetMarks () {
+export function initWidgetMarks() {
     // On initialization, insert all marks in the current viewport.
     const viewport = editor.getViewport();
     insertMarks(viewport.from, viewport.to);
@@ -37,10 +37,10 @@ export function initWidgetMarks () {
  * @param {Array} changes - an array of change objects representing changes in
  *          editor content.
  */
-function handleEditorChanges (cm, changes) {
-    for (let change of changes) {
+function handleEditorChanges(cm, changes) {
+    for (const change of changes) {
         // Each change object specifies a range of lines
-        let fromLine = change.from.line;
+        const fromLine = change.from.line;
         let toLine = change.to.line;
 
         // Changes from a widget popup mark its origin as `+value_change`
@@ -89,7 +89,7 @@ function handleEditorChanges (cm, changes) {
  *
  * @param {CodeMirror} cm - instance of CodeMirror editor.
  */
-function handleEditorScroll (cm) {
+function handleEditorScroll(cm) {
     const viewport = cm.getViewport();
     // clearMarks(viewport.from, viewport.to);
     insertMarks(viewport.from, viewport.to);
@@ -111,7 +111,7 @@ function handleEditorScroll (cm) {
  * @param {Number} toLine - Optional. The line number to look to. If not
  *          provided, just the fromLine is checked.
  */
-function getExistingMarks (fromLine, toLine) {
+function getExistingMarks(fromLine, toLine) {
     // If `to` is not provided, use `from`.
     toLine = fromLine;
 
@@ -122,8 +122,8 @@ function getExistingMarks (fromLine, toLine) {
         const lineContent = doc.getLine(line) || '';
 
         // Create position objects representing the range of this line
-        const fromPos = { line: line, ch: 0 };
-        const toPos = { line: line, ch: lineContent.length };
+        const fromPos = { line, ch: 0 };
+        const toPos = { line, ch: lineContent.length };
 
         // Look for existing text markers within this range
         const foundMarks = doc.findMarks(fromPos, toPos) || [];
@@ -154,11 +154,11 @@ function getExistingMarks (fromLine, toLine) {
  * @param {Number} toLine - Optional. The line number to clear to. If not
  *          provided, just the fromLine is checked.
  */
-function clearMarks (fromLine, toLine) {
+function clearMarks(fromLine, toLine) {
     const existingMarks = getExistingMarks(fromLine, toLine);
 
     // And remove them, if present.
-    for (let bookmark of existingMarks) {
+    for (const bookmark of existingMarks) {
         ReactDOM.unmountComponentAtNode(bookmark.replacedWith);
         bookmark.clear();
     }
@@ -169,7 +169,7 @@ function clearMarks (fromLine, toLine) {
  * Reparses lines that have inline nodes when a widget changes the text in the editor
  * @param {Object} data contains the from.line and from.ch of the widget the user has just edited
  */
-function reparseInlineNodes (data) {
+function reparseInlineNodes(data) {
     const changedNodeCh = data.from.ch; // Contains the from character of the text the user has just edited
     const existingMarks = getExistingMarks(data.from.line, data.from.line);
 
@@ -180,7 +180,7 @@ function reparseInlineNodes (data) {
     // If there is more than one node in the inline line,
     // then only remove the ones that the user has not just edited
     else {
-        for (let marker of existingMarks) {
+        for (const marker of existingMarks) {
             if (marker.widgetPos.from.ch !== changedNodeCh) {
                 ReactDOM.unmountComponentAtNode(marker.replacedWith);
                 marker.clear();
@@ -191,8 +191,8 @@ function reparseInlineNodes (data) {
     insertMarks(data.from.line, data.from.line);
 }
 
-function createEl (type) {
-    let el = document.createElement('div');
+function createEl(type) {
+    const el = document.createElement('div');
 
     switch (type) {
         case 'color':
@@ -215,14 +215,14 @@ function createEl (type) {
     return el;
 }
 
-function isThereMark (node) {
+function isThereMark(node) {
     const to = node.range.to;
 
     const doc = editor.getDoc();
     const otherMarks = doc.findMarksAt(to);
 
     // If there is a mark return true
-    for (let mark of otherMarks) {
+    for (const mark of otherMarks) {
         if (mark.type === 'bookmark') {
             return '';
         }
@@ -238,7 +238,7 @@ function isThereMark (node) {
  * @param {Number} toLine - Optional. The line number to insert to. If not
  *          provided, just the fromLine is checked.
  */
-function insertMarks (fromLine, toLine) {
+function insertMarks(fromLine, toLine) {
     // If `to` is not provided, use `from`.
     toLine = (toLine || fromLine);
 
@@ -269,7 +269,7 @@ function insertMarks (fromLine, toLine) {
             if (node.widgetMark && lineHandle.text.trim() !== '') {
                 const lineNumber = doc.getLineNumber(lineHandle);
 
-                let mytype = node.widgetMark.type;
+                const mytype = node.widgetMark.type;
 
                 // TODO: What does this do?
                 if (lineNumber) {
@@ -282,14 +282,14 @@ function insertMarks (fromLine, toLine) {
                 let mybookmark = {};
 
                 if (node !== '') {
-                    let myel = createEl(mytype);
+                    const myel = createEl(mytype);
 
                     // inserts the widget into CodeMirror DOM
                     mybookmark = doc.setBookmark(node.range.to, {
                         widget: myel, // inserted DOM element into position
                         insertLeft: true,
                         clearWhenEmpty: true,
-                        handleMouseEvents: false
+                        handleMouseEvents: false,
                     });
                     // We attach only one property to a bookmark that only inline widgets will need to use to verify position within a node array
                     mybookmark.widgetPos = node.range;

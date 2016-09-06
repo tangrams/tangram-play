@@ -26,7 +26,7 @@ const gistIdRegexp = /\/\/(?:(?:gist.github.com|gist.githubusercontent.com)(?:\/
  * @param {string} url - any possible variation of a Gist URL
  * @returns {Boolean}
  */
-export function isGistURL (url) {
+export function isGistURL(url) {
     if ((url.includes('api.github.com/gists') || url.includes('gist.github.com')) &&
         url.match(gistIdRegexp).length > 1) {
         return true;
@@ -50,7 +50,7 @@ export function isGistURL (url) {
  * @todo This function does not respect requests for specific commit
  *      SHAs or different files within a gist.
  */
-export function getGistURL (url) {
+export function getGistURL(url) {
     // The last capture group of the RegExp should be the gistID
     const gistId = url.match(gistIdRegexp).pop();
     return 'https://api.github.com/gists/' + gistId;
@@ -67,7 +67,7 @@ export function getGistURL (url) {
  * @param {string} url - any possible variation of a Gist URL
  * @returns {Promise} fulfilled with scene file's raw URL value
  */
-export function getSceneURLFromGistAPI (url) {
+export function getSceneURLFromGistAPI(url) {
     // Make sure that the URL is the Gist API's single gist manifest endpoint.
     url = getGistURL(url);
 
@@ -83,7 +83,7 @@ export function getSceneURLFromGistAPI (url) {
 
             // Iterate through gist.files, an object whose keys are the filenames of each file.
             // Find the first file with type "text/x-yaml".
-            for (let id in gist.files) {
+            for (const id in gist.files) {
                 const file = gist.files[id];
                 if (file.type === 'text/x-yaml') {
                     yamlFile = file;

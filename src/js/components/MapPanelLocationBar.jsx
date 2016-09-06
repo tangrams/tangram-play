@@ -9,7 +9,7 @@ import Icon from './Icon';
 import { throttle } from 'lodash';
 import { EventEmitter } from './event-emitter';
 import { map } from '../map/map';
-import { config } from '../config';
+import config from '../config';
 import { saveLocationBookmark } from '../map/bookmarks';
 
 const MAP_UPDATE_DELTA = 0.002;

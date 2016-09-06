@@ -15,7 +15,7 @@ let globalIntrospectionState = false;
 
 // We use this to find the mountpoint and cache it so future calls we return
 // it directly. TODO: Something else?
-function getMountNode () {
+function getMountNode() {
     if (!mountNode) {
         mountNode = document.getElementById('map-inspection-components');
     }
@@ -25,7 +25,7 @@ function getMountNode () {
 
 // This is shared between the hover and the popup
 class TangramInspectionHeader extends React.Component {
-    determineKindValue (properties) {
+    determineKindValue(properties) {
         // Kind is usually present on properties in Mapzen vector tile service.
         // (For more info: https://mapzen.com/documentation/vector-tiles/layers/)
         if (properties.kind) {
@@ -37,7 +37,7 @@ class TangramInspectionHeader extends React.Component {
         }
     }
 
-    formatKindValue (text) {
+    formatKindValue(text) {
         if (typeof text === 'string') {
             text = text.replace(/_/g, ' ');
             text = capitalize(text);
@@ -49,7 +49,7 @@ class TangramInspectionHeader extends React.Component {
         return text;
     }
 
-    determineFeatureName (properties) {
+    determineFeatureName(properties) {
         if (properties.name) {
             return properties.name;
         }
@@ -64,7 +64,7 @@ class TangramInspectionHeader extends React.Component {
         }
     }
 
-    render () {
+    render() {
         const properties = this.props.feature.properties;
         const kind = this.formatKindValue(this.determineKindValue(properties));
         const name = this.determineFeatureName(properties);
@@ -86,17 +86,17 @@ class TangramInspectionHeader extends React.Component {
 }
 
 TangramInspectionHeader.propTypes = {
-    feature: React.PropTypes.object
+    feature: React.PropTypes.object,
 };
 
 class TangramInspectionHover extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.position = this.applyHoverPosition.bind(this);
     }
 
-    componentDidUpdate () {
+    componentDidUpdate() {
         // Put the component in the right place, if rendered. Some conditions
         // may prevent rendering; see the render() function.
         if (this._el) {
@@ -104,7 +104,7 @@ class TangramInspectionHover extends React.Component {
         }
     }
 
-    applyHoverPosition () {
+    applyHoverPosition() {
         const rect = this._el.getBoundingClientRect();
         const width = rect.width;
         const height = rect.height;
@@ -118,7 +118,7 @@ class TangramInspectionHover extends React.Component {
         this._el.style.top = (pixelY - height - offsetY) + 'px';
     }
 
-    render () {
+    render() {
         // The .feature property does not always exist. For instance, when
         // the map is being dragged, there is no feature being picked. In this
         // case we do not render the component.
@@ -139,11 +139,11 @@ class TangramInspectionHover extends React.Component {
 }
 
 TangramInspectionHover.propTypes = {
-    selection: React.PropTypes.object
+    selection: React.PropTypes.object,
 };
 
 class TangramInspectionPopup extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.onMouseDownLayer = this.onMouseDownLayer.bind(this);
@@ -151,7 +151,7 @@ class TangramInspectionPopup extends React.Component {
         this.onClickClose = this.onClickClose.bind(this);
     }
 
-    onClickSourceName (event) {
+    onClickSourceName(event) {
         const name = event.currentTarget.dataset.sourceName;
         const node = getNodesForAddress('sources:' + name);
         if (node) {
@@ -160,29 +160,29 @@ class TangramInspectionPopup extends React.Component {
     }
 
     // Active highlighting
-    onMouseDownLayer (event) {
+    onMouseDownLayer(event) {
         // Be sure to destroy all other `active` classes on other layers
         const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
-        for (var i = 0; i < layersNodeList.length; i++) {
+        for (let i = 0; i < layersNodeList.length; i++) {
             layersNodeList[i].classList.remove('active');
         }
         event.target.classList.add('active');
     }
 
-    onMouseOutLayer (event) {
+    onMouseOutLayer(event) {
         event.target.classList.remove('active');
     }
 
-    onMouseUpLayer (event) {
+    onMouseUpLayer(event) {
         event.target.classList.remove('active');
     }
 
     // If node is present, clicking on it should allow scrolling to
     // its position in the editor.
-    onClickLayer (event) {
+    onClickLayer(event) {
         // Be sure to destroy all other `selected` classes on other layers
         const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
-        for (var i = 0; i < layersNodeList.length; i++) {
+        for (let i = 0; i < layersNodeList.length; i++) {
             layersNodeList[i].classList.remove('map-inspection-selected');
         }
         event.target.classList.add('map-inspection-selected');
@@ -192,12 +192,12 @@ class TangramInspectionPopup extends React.Component {
         highlightBlock(node);
     }
 
-    onClickClose (event) {
+    onClickClose(event) {
         map.closePopup();
     }
 
-    sortFeatureProperties (properties) {
-        let sorted = [];
+    sortFeatureProperties(properties) {
+        const sorted = [];
         Object.keys(properties)
             .sort()
             .forEach(function (v, i) {
@@ -207,7 +207,7 @@ class TangramInspectionPopup extends React.Component {
         return sorted;
     }
 
-    render () {
+    render() {
         if (!this.props.selection.feature) {
             return null;
         }
@@ -287,7 +287,7 @@ class TangramInspectionPopup extends React.Component {
                                             onClick={this.onClickLayer}
                                             data-node-address={address}
                                         >
-                                            <span className="map-inspection-layer-icon icon-layers"></span>
+                                            <span className="map-inspection-layer-icon icon-layers" />
                                             {item}
                                         </div>
                                     );
@@ -295,7 +295,7 @@ class TangramInspectionPopup extends React.Component {
                                 else {
                                     return (
                                         <div className="map-inspection-layer-item" key={item}>
-                                            <span className="map-inspection-layer-icon icon-imported"></span>
+                                            <span className="map-inspection-layer-icon icon-imported" />
                                             {item}
                                         </div>
                                     );
@@ -311,10 +311,10 @@ class TangramInspectionPopup extends React.Component {
 }
 
 TangramInspectionPopup.propTypes = {
-    selection: React.PropTypes.object
+    selection: React.PropTypes.object,
 };
 
-export function handleInspectionHoverEvent (selection) {
+export function handleInspectionHoverEvent(selection) {
     // Do not show when global introspection is off, or if the
     // full popup is open already.
     if (globalIntrospectionState === false || isPopupOpen === true) {
@@ -324,7 +324,7 @@ export function handleInspectionHoverEvent (selection) {
     ReactDOM.render(<TangramInspectionHover selection={selection} />, getMountNode());
 }
 
-export function handleInspectionClickEvent (selection) {
+export function handleInspectionClickEvent(selection) {
     // Experiment: only show popups when global introspection is on.
     if (globalIntrospectionState === false) {
         return;
@@ -356,14 +356,14 @@ export function handleInspectionClickEvent (selection) {
  * map is panned or zoomed. It also allows the map to be scrolled into place to show
  * the entire popup when it opens.
  */
-function showPopup (selection) {
+function showPopup(selection) {
     const leafletEvent = selection.leaflet_event;
     const popup = L.popup({
         closeButton: false,
         closeOnClick: false,
         autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
         offset: [0, -6],
-        className: 'map-inspection-popup'
+        className: 'map-inspection-popup',
     });
 
     // This is just a placeholder div to mount into. This placeholder div is
@@ -389,7 +389,7 @@ function showPopup (selection) {
     // Attach a listener to clean up the popup when a new scene is loaded.
     EventEmitter.subscribe('tangram:sceneload', onNewScene);
 
-    function onPopupClose (event) {
+    function onPopupClose(event) {
         // Leaflet will be responsible for destroying the elements on close.
 
         // Provide an animation out. Like the transition in, removing the transform
@@ -410,7 +410,7 @@ function showPopup (selection) {
         EventEmitter.unsubscribe('tangram:sceneload', onNewScene);
     }
 
-    function onNewScene (event) {
+    function onNewScene(event) {
         map.closePopup(popup);
     }
 
@@ -425,7 +425,7 @@ function showPopup (selection) {
  * @param {Boolean} - when `true`, the interactive flag is turned on for all
  *          geometry. when `false`, interactivity defers to scene file rules.
  */
-export function setGlobalIntrospection (boolean) {
+export function setGlobalIntrospection(boolean) {
     tangramLayer.scene.setIntrospection(boolean);
     globalIntrospectionState = boolean;
 

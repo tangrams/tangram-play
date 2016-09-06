@@ -13,14 +13,14 @@ import EditorIO from '../editor/io';
 
 const el = constructInvisibleFileInputElement();
 
-export function openLocalFile () {
+export function openLocalFile() {
     EditorIO.checkSaveStateThen(() => {
         el.click();
     });
 }
 
-function constructInvisibleFileInputElement () {
-    let fileSelector = document.createElement('input');
+function constructInvisibleFileInputElement() {
+    const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('accept', 'text/x-yaml');
     fileSelector.style.display = 'none';

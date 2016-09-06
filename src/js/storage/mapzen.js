@@ -41,7 +41,7 @@ const SCENE_FILENAME = 'scene.yaml';
     Eventually Tangram Play per-user settings may be stored in the root
 */
 
-export function saveToMapzenUserAccount (data, successCallback, errorCallback) {
+export function saveToMapzenUserAccount(data, successCallback, errorCallback) {
     // Add timestamp to `data`
     data.timestamp = new Date().toJSON();
 
@@ -67,7 +67,7 @@ export function saveToMapzenUserAccount (data, successCallback, errorCallback) {
 // super quickly written slugify function. only replaces whitespace with dashes.
 // does not deal with funky characters. or condense spaces, all that stuff.
 // should also eventually enforce a maximum length. or handle errors.
-function slugify (string) {
+function slugify(string) {
     return string.trim().toLowerCase().replace(/\s/g, '-');
 }
 
@@ -81,11 +81,11 @@ function slugify (string) {
  * @param {string} type - MIME type of contents. Defaults to 'plain/text'.
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
-function uploadFile (contents, filepath, type = 'plain/text') {
+function uploadFile(contents, filepath, type = 'plain/text') {
     let uploadedFileUrl;
 
     return window.fetch(`/api/uploads/new?app=${APP_NAME}&path=${filepath}`, {
-        credentials: 'same-origin'
+        credentials: 'same-origin',
     }).then((response) => {
         return response.json();
     }).then((upload) => {
@@ -94,7 +94,7 @@ function uploadFile (contents, filepath, type = 'plain/text') {
             formData.append(field, upload.fields[field]);
         });
 
-        const blob = new Blob([contents], { type: type });
+        const blob = new Blob([contents], { type });
         formData.append('file', blob, filepath);
 
         // Remember the location of the file we want to save.
@@ -102,7 +102,7 @@ function uploadFile (contents, filepath, type = 'plain/text') {
 
         return window.fetch(upload.url, {
             method: 'POST',
-            body: formData
+            body: formData,
         });
     }).then((response) => {
         // If uploaded, return the url of the uploaded file.
@@ -123,7 +123,7 @@ function uploadFile (contents, filepath, type = 'plain/text') {
  * @params {string} slug - slugified scene name to use as scene directory
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
-function makeAndUploadThumbnail (slug) {
+function makeAndUploadThumbnail(slug) {
     // Grab a screenshot from the map and convert it to a thumbnail at a fixed
     // dimension. This makes file sizes and layout more predictable.
     return getScreenshotData()
@@ -146,20 +146,20 @@ function makeAndUploadThumbnail (slug) {
  * @params {string} slug - slugified scene name to use as scene directory
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
-function makeAndUploadMetadata (data, slug) {
+function makeAndUploadMetadata(data, slug) {
     // Add some additional view information to the metadata.
     const metadata = Object.assign({}, data, {
-        slug: slug,
+        slug,
         view: {
             // label: getLocationLabel(), // TODO: change now that search component is React
             label: '',
             lat: map.getCenter().lat,
             lng: map.getCenter().lng,
-            zoom: map.getZoom()
+            zoom: map.getZoom(),
         },
         versions: {
             tangram: window.Tangram.version,
-            leaflet: L.version
+            leaflet: L.version,
         },
     });
 
@@ -175,7 +175,7 @@ function makeAndUploadMetadata (data, slug) {
  * @params {string} slug - slugified scene name to use as scene directory
  * @returns {Promise} - fulfilled with the response of the POST request.
  */
-function makeAndUploadScene (data, slug) {
+function makeAndUploadScene(data, slug) {
     // This is a single YAML file for now
     const content = getEditorContent();
 
@@ -196,13 +196,13 @@ function makeAndUploadScene (data, slug) {
  * @returns {Promise} - fulfilled with the object of scene data saved to
  *          `scenelist.json`
  */
-function downloadAndUpdateSceneList (data, savedLocations) {
+function downloadAndUpdateSceneList(data, savedLocations) {
     const sceneData = Object.assign({}, data, {
         files: {
             thumbnail: savedLocations[0],
             metadata: savedLocations[1],
-            scene: savedLocations[2]
-        }
+            scene: savedLocations[2],
+        },
     });
 
     // The resolved value `sceneList` of `fetchSceneList` is current
@@ -239,9 +239,9 @@ function downloadAndUpdateSceneList (data, savedLocations) {
  * @returns {Promise} - resolved with an array of saved scene data (or empty
  *          array if nothing is saved yet)
  */
-export function fetchSceneList () {
+export function fetchSceneList() {
     const fetchOpts = {
-        credentials: 'same-origin'
+        credentials: 'same-origin',
     };
 
     // Checks the uploads object at `/api/uploads?app=play` to see if we have an

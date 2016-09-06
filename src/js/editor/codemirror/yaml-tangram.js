@@ -17,7 +17,7 @@ const ADDRESS_KEY_DELIMITER = ':';
  * @param {string} address - in the form of 'key1:key2:key3'
  * @return {mixed} content - Whatever is stored as a value for that key
  */
-export function getAddressSceneContent (tangramScene, address) {
+export function getAddressSceneContent(tangramScene, address) {
     try {
         const keys = getKeysFromAddress(address);
 
@@ -43,7 +43,7 @@ export function getAddressSceneContent (tangramScene, address) {
  * @param {Array} keys - an array of keys
  * @return {string} address - in the form of 'key1:key2:key3'
  */
-function getAddressFromKeys (keys) {
+function getAddressFromKeys(keys) {
     return keys.join(ADDRESS_KEY_DELIMITER);
 }
 
@@ -55,7 +55,7 @@ function getAddressFromKeys (keys) {
  * @param {string} address - in the form of 'key1:key2:key3'
  * @return {Array} keys
  */
-function getKeysFromAddress (address) {
+function getKeysFromAddress(address) {
     return address.split(ADDRESS_KEY_DELIMITER);
 }
 
@@ -66,7 +66,7 @@ function getKeysFromAddress (address) {
  * @param {Number} level - the level of address to obtain
  * @return {string} address - truncated to maximum of `level`, e.g. 'key1:key2'
  */
-export function getAddressForLevel (address, level) {
+export function getAddressForLevel(address, level) {
     const keys = getKeysFromAddress(address);
     const newKeys = keys.slice(0, level);
     return getAddressFromKeys(newKeys);
@@ -86,7 +86,7 @@ export function getAddressForLevel (address, level) {
  * @param {string} address - the address of the key-value pair
  * @return {Boolean} bool - `true` if address is a shader block
  */
-function isShader (address) {
+function isShader(address) {
     const re = /shaders:blocks:(global|width|position|normal|color|filter)$/;
     return startsWith(address, 'styles') && re.test(address);
 }
@@ -101,7 +101,7 @@ function isShader (address) {
  * @return {Boolean} bool - `true` if value appears to be a JavaScript function
  * @todo This returns false if any parameters are passed to a function.
  */
-function isContentJS (value) {
+function isContentJS(value) {
     // Regex pattern. Content can begin with any amount of whitespace.
     // Where whitespace is allowed, it can be any amount of whitespace.
     // Content may begin with a pipe "|" character for YAML multi-line
@@ -111,8 +111,8 @@ function isContentJS (value) {
     return re.test(value);
 }
 
-function isAfterKey (str, pos) {
-    let key = /^\s*(\w+):/gm.exec(str);
+function isAfterKey(str, pos) {
+    const key = /^\s*(\w+):/gm.exec(str);
     if (key === undefined) {
         return true;
     }
@@ -125,7 +125,7 @@ function isAfterKey (str, pos) {
 //  ===============================================================================
 
 //  Get the address of a line state ( usually from the first key of a line )
-function getKeyAddressFromState (state) {
+function getKeyAddressFromState(state) {
     if (state.nodes && state.nodes.length > 0) {
         return state.nodes[0].address;
     }
@@ -134,9 +134,9 @@ function getKeyAddressFromState (state) {
     }
 }
 
-function getAnchorFromValue (value) {
+function getAnchorFromValue(value) {
     if (/(^\s*(&\w+)\s+)/.test(value)) {
-        let link = /(^\s*(&\w+)\s+)/gm.exec(value);
+        const link = /(^\s*(&\w+)\s+)/gm.exec(value);
         return link[1];
     }
     else {
@@ -147,14 +147,14 @@ function getAnchorFromValue (value) {
 // Given a YAML string return an array of keys
 // TODO: We will need a different way of parsing YAML flow notation,
 // since this function does not cover the full range of legal YAML specification
-function getInlineNodes (str, nLine) {
-    let rta = [];
-    let stack = [];
+function getInlineNodes(str, nLine) {
+    const rta = [];
+    const stack = [];
     let i = 0;
     let level = 0;
 
     while (i < str.length) {
-        let curr = str.substr(i, 1);
+        const curr = str.substr(i, 1);
         if (curr === '{') {
             // Go one level up
             level++;
@@ -167,20 +167,20 @@ function getInlineNodes (str, nLine) {
         else {
             // check for keypair
             // This seems to check for inline nodes
-            let isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
+            const isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
             if (isNode) {
                 stack[level] = isNode[1];
                 i += isNode[1].length;
 
-                let key = isNode[1];
-                let colon = isNode[2];
+                const key = isNode[1];
+                const colon = isNode[2];
                 let value = isNode[3];
                 // This regex checks for vec arrays
-                var isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?\]/gm);
+                const isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?\]/gm);
                 if (isVector) {
                     value = isVector[0];
                 }
-                let anchor = getAnchorFromValue(value);
+                const anchor = getAnchorFromValue(value);
                 value = value.substr(anchor.length);
 
                 rta.push({
@@ -188,9 +188,9 @@ function getInlineNodes (str, nLine) {
                     // result for address will come back as ':key1:key2:etc' because stack[0]
                     // is undefined, but it will still be joined in getAddressFromKeys()
                     address: getAddressFromKeys(stack),
-                    key: key,
-                    value: value,
-                    anchor: anchor,
+                    key,
+                    value,
+                    anchor,
                     range: {
                         from: {
                             line: nLine,
@@ -199,7 +199,7 @@ function getInlineNodes (str, nLine) {
                             line: nLine,
                             ch: i + colon.length + value.length + 1 },
                     },
-                    index: rta.length + 1
+                    index: rta.length + 1,
                 });
             }
         }
@@ -209,13 +209,13 @@ function getInlineNodes (str, nLine) {
 }
 
 // Add Address to token states
-export function parseYamlString (string, state, tabSize) {
+export function parseYamlString(string, state, tabSize) {
     const regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
     const node = regex.exec(string);
 
     // Each node entry is based off of this object.
     // TODO: Also make this available to to getInlineNodes(), above.
-    let nodeEntry = {
+    const nodeEntry = {
         address: '',
         key: '',
         anchor: '',
@@ -223,14 +223,14 @@ export function parseYamlString (string, state, tabSize) {
         range: {
             from: {
                 line: state.line,
-                ch: 0
+                ch: 0,
             },
             to: {
                 line: state.line,
-                ch: 0
-            }
+                ch: 0,
+            },
         },
-        index: 0
+        index: 0,
     };
 
     // If looks like a node
@@ -252,7 +252,7 @@ export function parseYamlString (string, state, tabSize) {
             state.keyStack[level] = nodeKey;
         }
         else if (level < state.keyLevel) {
-            let diff = state.keyLevel - level;
+            const diff = state.keyLevel - level;
             for (let i = 0; i < diff; i++) {
                 state.keyStack.pop();
             }
@@ -275,7 +275,7 @@ export function parseYamlString (string, state, tabSize) {
 
             state.nodes = [nodeEntry];
 
-            let subNodes = getInlineNodes(nodeValue, state.line);
+            const subNodes = getInlineNodes(nodeValue, state.line);
             for (let i = 0; i < subNodes.length; i++) {
                 subNodes[i].address = address + subNodes[i].address;
                 subNodes[i].range.from.ch += spaces + nodeKey.length + nodeSeparator.length;
@@ -313,7 +313,7 @@ export function parseYamlString (string, state, tabSize) {
 
 // Extend YAML with line comment character (not provided by CodeMirror).
 CodeMirror.extendMode('yaml', {
-    lineComment: '#'
+    lineComment: '#',
 });
 
 CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
@@ -323,7 +323,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
     const jsMode = CodeMirror.getMode(config, 'javascript');
 
     return {
-        startState: function () {
+        startState() {
             const state = CodeMirror.startState(yamlMode);
 
             // Augment YAML state object with other information.
@@ -339,11 +339,11 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 innerState: null,
                 shouldChangeInnerMode: false,
                 singleLineInnerMode: false,
-                parentBlockIndent: 0
+                parentBlockIndent: 0,
             });
         },
         // Makes a safe copy of the original state object.
-        copyState: function (originalState) {
+        copyState(originalState) {
             const state = CodeMirror.copyState(yamlMode, originalState);
 
             // Also, make a safe copy of the inner state object, if present.
@@ -353,15 +353,15 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
 
             return state;
         },
-        innerMode: function (state) {
+        innerMode(state) {
             return {
                 state: state.innerState || state,
-                mode: state.innerMode || yamlMode
+                mode: state.innerMode || yamlMode,
             };
         },
         // By default, CodeMirror skips blank lines when tokenizing a document.
         // This updates the state for blank lines.
-        blankLine: function (state) {
+        blankLine(state) {
             state.string = '';
 
             // We need to know the exact line number for our YAML addressing system.
@@ -373,7 +373,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
             // line that is not blank.
             state.indentation = 0;
         },
-        token: function (stream, state) {
+        token(stream, state) {
             const address = getKeyAddressFromState(state);
 
             if (stream.pos === 0) {
@@ -480,7 +480,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
         // the multi-line pipe character, the new line indented one indentUnit
         // past the previous indentation. Otherwise, retain the previous
         // indentation.
-        indent: function (state, textAfter) {
+        indent(state, textAfter) {
             // Indentation in YAML mode
             if (state.innerMode === null) {
                 const node = state.nodes[0] || null;
@@ -509,7 +509,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
             const innerIndent = state.innerMode.indent(state.innerState, textAfter);
             return state.indentation + innerIndent;
         },
-        fold: 'indent'
+        fold: 'indent',
     };
 }, 'yaml', 'x-shader/x-fragment');
 

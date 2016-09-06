@@ -10,7 +10,7 @@ let targetLine;
 let hasInitiated = false;
 
 // Add handlers for these events to the editor.
-export function initHighlight () {
+export function initHighlight() {
     if (hasInitiated === false) {
         editor.on('gutterClick', onEditorGutterClick);
         editor.on('changes', onEditorChanges);
@@ -18,7 +18,7 @@ export function initHighlight () {
     }
 }
 
-function onEditorGutterClick (cm, line, gutter, event) {
+function onEditorGutterClick(cm, line, gutter, event) {
     // Do work when the click occurs for the left (or main) mouse button only
     if (event.button !== 0) {
         return;
@@ -79,7 +79,7 @@ function onEditorGutterClick (cm, line, gutter, event) {
 
 // Editor operations, such as cut, paste, delete, or inserts, can mutate
 // highlighted lines. This will make sure the query string remains updated.
-function onEditorChanges (cm, changes) {
+function onEditorChanges(cm, changes) {
     // Small performance tweak: if there's just one change on one line,
     // don't bother updating the query string, which must check the highlight
     // state on all lines
@@ -96,7 +96,7 @@ function onEditorChanges (cm, changes) {
  * @param {CodeMirror Doc} doc - The document to add a highlight to.
  * @param {Number} line - The line number to add a highlight to.
  */
-function highlightLine (doc, line) {
+function highlightLine(doc, line) {
     doc.addLineClass(line, 'gutter', HIGHLIGHT_CLASS);
     doc.addLineClass(line, 'background', HIGHLIGHT_CLASS);
 }
@@ -107,7 +107,7 @@ function highlightLine (doc, line) {
  * @param {CodeMirror Doc} doc - The document to remove a highlight from.
  * @param {Number} line - The line number to remove a highlight from.
  */
-function unhighlightLine (doc, line) {
+function unhighlightLine(doc, line) {
     doc.removeLineClass(line, 'gutter', HIGHLIGHT_CLASS);
     doc.removeLineClass(line, 'background', HIGHLIGHT_CLASS);
 }
@@ -121,7 +121,7 @@ function unhighlightLine (doc, line) {
  *          that was performed. Returns `true` if a line was highlighted,
  *          and `false` if a line was unhighlighted.
  */
-function toggleHighlightLine (doc, line) {
+function toggleHighlightLine(doc, line) {
     if (isLineHighlighted(line)) {
         unhighlightLine(doc, line);
         return false;
@@ -142,7 +142,7 @@ function toggleHighlightLine (doc, line) {
  * @param {Number} to - Required. The line number to end
  *          highlighting on. Lines are zero-indexed.
  */
-function highlightLines (startLine, endLine) {
+function highlightLines(startLine, endLine) {
     const doc = editor.getDoc();
 
     // Swap arguments if startLine is higher than endLine
@@ -164,7 +164,7 @@ function highlightLines (startLine, endLine) {
  * @param {Number} to - Required. The line number to end
  *          unhighlighting on. Lines are zero-indexed.
  */
-function unhighlightLines (startLine, endLine) {
+function unhighlightLines(startLine, endLine) {
     const doc = editor.getDoc();
 
     // Swap arguments if startLine is higher than endLine
@@ -193,7 +193,7 @@ function unhighlightLines (startLine, endLine) {
  * @param {String} lines - Required. A human-readable sequence of lines and
  *          line ranges to highlight.
  */
-export function highlightRanges (lines) {
+export function highlightRanges(lines) {
     const ranges = lines.split(',');
 
     for (let i = 0, j = ranges.length; i < j; i++) {
@@ -201,7 +201,7 @@ export function highlightRanges (lines) {
 
         // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
         // Just in case, the return value is clamped to a minimum value of 0.
-        let startLine = Math.max(Number(lines[0]) - 1, 0);
+        const startLine = Math.max(Number(lines[0]) - 1, 0);
         let endLine = Math.max(Number(lines[1]) - 1, 0);
 
         // If a "range" is just a single number (`6` rather than `6-7`, say)
@@ -228,7 +228,7 @@ export function highlightRanges (lines) {
  *
  * @param {Object} node - YAML-Tangram node object
  */
-export function highlightBlock (node) {
+export function highlightBlock(node) {
     const doc = editor.getDoc();
 
     // Scroll the top of the block into view. Do this first so that
@@ -277,7 +277,7 @@ export function highlightBlock (node) {
 /**
  * Removes highlights from all lines in the document.
  */
-function unhighlightAll () {
+function unhighlightAll() {
     const doc = editor.getDoc();
 
     for (let i = 0, j = doc.lineCount(); i <= j; i++) {
@@ -293,7 +293,7 @@ function unhighlightAll () {
  * @param {Number} line - the line number to check.
  * @returns {Boolean}
  */
-function isLineHighlighted (line) {
+function isLineHighlighted(line) {
     const lineInfo = editor.lineInfo(line);
 
     // .bgClass may be null
@@ -312,7 +312,7 @@ function isLineHighlighted (line) {
  * @returns {String} linenumbers - in the format of '2-5,10,18-20', as
  *          returned by getLineNumberString() function
  */
-function getAllHighlightedLines () {
+function getAllHighlightedLines() {
     const lineNumbers = [];
 
     for (let i = 0, j = editor.getDoc().lineCount(); i < j; i++) {
@@ -331,7 +331,7 @@ function getAllHighlightedLines () {
  * document.
  *
  */
-export function updateLinesQueryString () {
+export function updateLinesQueryString() {
     const allHighlightedLines = getAllHighlightedLines();
     if (allHighlightedLines !== '') {
         replaceHistoryState({ lines: allHighlightedLines });
@@ -350,7 +350,7 @@ export function updateLinesQueryString () {
  * [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] => ['1-10']
  *
  */
-function getLineNumberRanges (array) {
+function getLineNumberRanges(array) {
     const ranges = [];
     let start, end;
 
@@ -375,7 +375,7 @@ function getLineNumberRanges (array) {
  * This is ideal for storing in URL strings.
  *
  */
-function getLineNumberString (array) {
+function getLineNumberString(array) {
     // Line number arrays are zero-indexed, so before converting to a string,
     // we increment each number by one.
     array = array.map(number => {

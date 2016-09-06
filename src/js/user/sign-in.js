@@ -23,7 +23,7 @@ let cachedSignInData;
  *          API is available.
  * @todo Handle errors related to fetching API.
  */
-export function requestUserSignInState () {
+export function requestUserSignInState() {
     if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) && window.location.protocol === 'https:') {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
@@ -43,7 +43,7 @@ export function requestUserSignInState () {
     }
 }
 
-export function getCachedUserSignInData () {
+export function getCachedUserSignInData() {
     return cachedSignInData;
 }
 
@@ -51,9 +51,9 @@ export function getCachedUserSignInData () {
  * Assumes this is only available when already logged in, so no host check
  * is performed.
  */
-export function requestUserSignOut () {
+export function requestUserSignOut() {
     return window.fetch('/api/developer/sign_out', {
         method: 'POST',
-        credentials: 'same-origin'
+        credentials: 'same-origin',
     });
 }

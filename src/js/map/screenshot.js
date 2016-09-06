@@ -7,7 +7,7 @@ import { map, tangramScene } from './map';
  * @public
  * @requires FileSaver
  */
-export function takeScreenshot () {
+export function takeScreenshot() {
     tangramScene.screenshot().then(function (result) {
         const slug = createFilenameSlug(map);
 
@@ -25,7 +25,7 @@ export function takeScreenshot () {
  * @public
  * @returns Promise
  */
-export function getScreenshotData () {
+export function getScreenshotData() {
     return tangramScene.screenshot().then(function (result) {
         return result;
     });
@@ -38,7 +38,7 @@ export function getScreenshotData () {
  * @param {Leaflet} map - we'll get the map view data from this.
  * @returns {string} - see format in comments, inline
  */
-function createFilenameSlug (map) {
+function createFilenameSlug(map) {
     const date = new Date();
 
     // Get string values for each portion of the date, left-padding the

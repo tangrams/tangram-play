@@ -3,7 +3,7 @@ import TANGRAM_API from '../../tangram-api.json';
 import { isEmptyString } from '../../tools/helpers';
 
 export class WidgetMark {
-    constructor (datum) {
+    constructor(datum) {
         // Widgets exist for different types of Tangram scene syntax.
         //      value - a widget exists for this type of value (not used?)
         //      key - a widget exists when the key matches this
@@ -30,7 +30,7 @@ export class WidgetMark {
         this.source = datum.source || null;
     }
 
-    match (node) {
+    match(node) {
         if (this.matchAgainst) {
             return RegExp(this.matchPattern).test(node[this.matchAgainst]);
         }
@@ -56,16 +56,16 @@ const allWidgetMarkConstructors = listOfWidgetMarkConstructors.map(function (ite
  * Given a state from YAML-Tangram parser, adds matching widget constructors
  * to each node.
  */
-export function attachWidgetMarkConstructorsToDocumentState (state) {
+export function attachWidgetMarkConstructorsToDocumentState(state) {
     const nodes = state.nodes || [];
-    for (let node of nodes) {
+    for (const node of nodes) {
         const value = node.value;
         if (value === '|' || isEmptyString(value)) {
             continue;
         }
 
         // Check for widgets to add
-        for (let widgetMark of allWidgetMarkConstructors) {
+        for (const widgetMark of allWidgetMarkConstructors) {
             if (widgetMark.match(node)) {
                 node.widgetMark = widgetMark;
                 break;

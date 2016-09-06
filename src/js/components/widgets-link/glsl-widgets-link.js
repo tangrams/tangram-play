@@ -7,7 +7,7 @@ import WidgetLinkVec2 from './WidgetLinkVec2';
 import WidgetLinkNumber from './WidgetLinkNumber';
 import ColorBookmark from '../widgets/color/ColorBookmark';
 
-export function initGlslWidgetsLink () {
+export function initGlslWidgetsLink() {
     const wrapper = editor.getWrapperElement();
 
     wrapper.addEventListener('mouseup', (event) => {
@@ -18,7 +18,7 @@ export function initGlslWidgetsLink () {
             return;
         }
 
-        let cursor = editor.getCursor(true);
+        const cursor = editor.getCursor(true);
 
         // If the user clicks somewhere that is not where the cursor is
         // This checks for cases where a user clicks on a normal widget (not glsl) but the cursor is over a shader block
@@ -27,7 +27,7 @@ export function initGlslWidgetsLink () {
         }
 
         // Exit early if the cursor is not at a token
-        let token = editor.getTokenAt(cursor);
+        const token = editor.getTokenAt(cursor);
 
         // Assume that we should trigger a widget-link
         let shouldTriggerWidget = false;
@@ -47,10 +47,10 @@ export function initGlslWidgetsLink () {
         }
 
         // see if there is a match on the cursor click
-        let match = getMatch(cursor);
+        const match = getMatch(cursor);
 
         if (match) {
-            let widgetlink = document.getElementById('widget-links');
+            const widgetlink = document.getElementById('widget-links');
 
             switch (match.type) {
                 case 'vec4':
@@ -61,17 +61,17 @@ export function initGlslWidgetsLink () {
                     cleanNum = '[' + cleanNum + ']';
 
                     if (match.type === 'vec4') {
-                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec="vec4" />, widgetlink);
+                        ReactDOM.render(<ColorBookmark display cursor={cursor} match={match} value={cleanNum} shader vec="vec4" />, widgetlink);
                     }
                     else {
-                        ReactDOM.render(<ColorBookmark display={true} cursor={cursor} match={match} value={cleanNum} shader={true} vec="vec3" />, widgetlink);
+                        ReactDOM.render(<ColorBookmark display cursor={cursor} match={match} value={cleanNum} shader vec="vec3" />, widgetlink);
                     }
                     break;
                 case 'vec2':
-                    ReactDOM.render(<WidgetLinkVec2 display={true} cursor={cursor} match={match} value={match.string} />, widgetlink);
+                    ReactDOM.render(<WidgetLinkVec2 display cursor={cursor} match={match} value={match.string} />, widgetlink);
                     break;
                 case 'number':
-                    ReactDOM.render(<WidgetLinkNumber display={true} cursor={cursor} match={match} value={match.string} />, widgetlink);
+                    ReactDOM.render(<WidgetLinkNumber display cursor={cursor} match={match} value={match.string} />, widgetlink);
                     break;
                 default:
                     break;
@@ -80,46 +80,46 @@ export function initGlslWidgetsLink () {
     });
 }
 
-function getMatch (cursor) {
+function getMatch(cursor) {
     // Types are put in order of priority
     const types = [
         {
             name: 'vec4',
-            pattern: /vec4\([-|\d|.|,\s]*\)/g
+            pattern: /vec4\([-|\d|.|,\s]*\)/g,
         },
         {
             name: 'vec3',
-            pattern: /vec3\([-|\d|.|,\s]*\)/g
+            pattern: /vec3\([-|\d|.|,\s]*\)/g,
         },
         {
             name: 'vec2',
-            pattern: /vec2\([-|\d|.|,\s]*\)/g
+            pattern: /vec2\([-|\d|.|,\s]*\)/g,
         },
         {
             name: 'number',
-            pattern: /[-]?\d+\.\d+|\d+\.|\.\d+/g
-        }
+            pattern: /[-]?\d+\.\d+|\d+\.|\.\d+/g,
+        },
     ];
 
     const line = editor.getLine(cursor.line);
 
-    for (let type of types) {
+    for (const type of types) {
         const matches = findAllMatches(type.pattern, line);
 
         // If there are matches, determine if the cursor is in one of them.
         // If so, return that widget type, otherwise, we test the next type
         // to see if it matches.
-        for (let match of matches) {
-            let val = match[0];
-            let len = val.length;
-            let start = match.index;
-            let end = match.index + len;
+        for (const match of matches) {
+            const val = match[0];
+            const len = val.length;
+            const start = match.index;
+            const end = match.index + len;
             if (cursor.ch >= start && cursor.ch <= end) {
                 return {
                     type: type.name,
-                    start: start,
-                    end: end,
-                    string: val
+                    start,
+                    end,
+                    string: val,
                 };
             }
         }
@@ -134,7 +134,7 @@ function getMatch (cursor) {
  * Find whether the current CodeMirror cursor and a given click event match up in the
  * location on the page
  */
-function cursorAndClickDontMatch (cursor, event) {
+function cursorAndClickDontMatch(cursor, event) {
     const cursorCoords = editor.cursorCoords(true, 'window');
     const cursorX = cursorCoords.left;
     const cursorY = cursorCoords.top;
@@ -166,7 +166,7 @@ function cursorAndClickDontMatch (cursor, event) {
  * @param {RegExp} pattern - regular expression to test
  * @param {string} string - the string to test against
  */
-function findAllMatches (pattern, string) {
+function findAllMatches(pattern, string) {
     const matches = [];
 
     // Ensure that the provided RegExp is global.

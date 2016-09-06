@@ -5,9 +5,9 @@ const requestFullscreen = Modernizr.prefixed('requestFullscreen', document.docum
 const exitFullscreen = Modernizr.prefixed('exitFullscreen', document) ||
                        Modernizr.prefixed('cancelFullScreen', document);
 
-export function toggleFullscreen () {
+export function toggleFullscreen() {
     // Is there a current fullscreen element?
-    let fullscreenElement = Modernizr.prefixed('fullscreenElement', document) || Modernizr.prefixed('fullScreenElement', document);
+    const fullscreenElement = Modernizr.prefixed('fullscreenElement', document) || Modernizr.prefixed('fullScreenElement', document);
     if (!fullscreenElement) {
         // Special case for webkit
         if (document.documentElement.webkitRequestFullscreen) {

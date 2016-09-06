@@ -16,7 +16,7 @@ let pollWindowStateIntervalId;
 /**
  * Primary entry point for opening a sign-in window.
  */
-export function openSignInWindow () {
+export function openSignInWindow() {
     // Only open if not open already; or was closed from a previous attempt.
     // If it's already open, focus on that instead.
     if (!signInWindow || signInWindow.closed === true) {
@@ -42,7 +42,7 @@ export function openSignInWindow () {
     signInWindow.focus();
 }
 
-function pollWindowState () {
+function pollWindowState() {
     if (!signInWindow || signInWindow.closed) {
         window.clearInterval(pollWindowStateIntervalId);
         signInStateReady();
@@ -67,7 +67,7 @@ function pollWindowState () {
 /**
  * Called when user completes the flow in the sign-in window.
  */
-function signInStateReady () {
+function signInStateReady() {
     EventEmitter.dispatch('mapzen:sign_in', {});
     closeSignInWindow();
     hideSignInOverlay();
@@ -82,7 +82,7 @@ function signInStateReady () {
  * Closing the sign-in window should automatically clean up after itself
  * due to the `close` event handler.
  */
-function closeSignInWindow () {
+function closeSignInWindow() {
     if (signInWindow) {
         signInWindow.close();
     }
@@ -91,7 +91,7 @@ function closeSignInWindow () {
 /**
  * Cleans up event listeners from the app window to prevent memory leaks.
  */
-function cleanup () {
+function cleanup() {
     window.removeEventListener('unload', closeSignInWindow);
     window.clearInterval(pollWindowStateIntervalId);
 }
@@ -101,7 +101,7 @@ function cleanup () {
  * we like it. There's no guarantee this works forever especially as DOM
  * elements, class selectors and styles may evolve over time.
  */
-function adjustSignInPageContent () {
+function adjustSignInPageContent() {
     const childDocument = signInWindow.document;
 
     // Only do this once
@@ -180,7 +180,7 @@ function adjustSignInPageContent () {
  * several times through mapzen.com but still has a problem with some browsers
  * and some multi-monitor setups.
  */
-function popupCenter (url, title, w, h) {
+function popupCenter(url, title, w, h) {
     // Fixes dual-screen position                            Most browsers       Firefox
     const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screen.left;
     const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screen.top;

@@ -17,7 +17,7 @@
  *          otherwise, it's a dataURL string
  * @returns {Promise}
  */
-export function createThumbnail (imageData, targetWidth, targetHeight, retina = true, returnBlob = true) {
+export function createThumbnail(imageData, targetWidth, targetHeight, retina = true, returnBlob = true) {
     // Create an in-memory canvas to render the original image data to.
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -34,7 +34,7 @@ export function createThumbnail (imageData, targetWidth, targetHeight, retina = 
 
     // Wrap image loading in a Promise object and returns it
     return new Promise(function (resolve, reject) {
-        var image = new Image();
+        const image = new Image();
 
         image.onload = function () {
             const aspectRatio = targetWidth / targetHeight;

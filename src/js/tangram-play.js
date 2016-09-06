@@ -30,7 +30,7 @@ let initialLoad = true;
 
 let initialScene = ''; // This is where we'll store an initial scene file for purposes of embedded play.
 
-export function initTangramPlay () {
+export function initTangramPlay() {
     // TODO: Manage history / routing in its own module
     window.onpopstate = (e) => {
         if (e.state && e.state.scene) {
@@ -86,7 +86,7 @@ export function initTangramPlay () {
             contents: getEditorContent(),
             is_clean: doc.isClean(),
             scrollInfo: editor.getScrollInfo(),
-            cursor: doc.getCursor()
+            cursor: doc.getCursor(),
         };
         /* eslint-enable camelcase */
 
@@ -127,7 +127,7 @@ const _watchEditorForChanges = debounce(updateContent, 500);
  * @returns {Promise} A promise which is resolved when a scene's
  *      contents has been fetched.
  */
-export function load (scene) {
+export function load(scene) {
     EventEmitter.dispatch('tangram:clear-palette', {});
 
     // Turn on loading indicator. This is turned off later
@@ -190,7 +190,7 @@ export function load (scene) {
     }
 }
 
-function _onLoadError (error) {
+function _onLoadError(error) {
     ReactDOM.render(<ErrorModal error={error.message} />, document.getElementById('modal-container'));
     hideSceneLoadingIndicator();
 
@@ -201,16 +201,16 @@ function _onLoadError (error) {
     }
 }
 
-function _doLoadProcess (scene) {
+function _doLoadProcess(scene) {
     initialScene = scene; // Store our intial scene for use within embedded Tangram Play
 
-    let url = scene.url || createObjectURL(scene.contents);
+    const url = scene.url || createObjectURL(scene.contents);
 
     // Send url to map and contents to editor
     // TODO: get contents from Tangram instead of another xhr request.
     loadScene(url, {
         reset: true,
-        basePath: scene['original_base_path']
+        basePath: scene['original_base_path'],
     });
     _setSceneContentsInEditor(scene);
 
@@ -221,7 +221,7 @@ function _doLoadProcess (scene) {
     // initial load of Tangram Play.
     if (initialLoad === false) {
         pushHistoryState({
-            scene: (scene.url) ? scene.url : null
+            scene: (scene.url) ? scene.url : null,
         });
     }
 
@@ -236,7 +236,7 @@ function _doLoadProcess (scene) {
     return tangramLayer.scene.initializing;
 }
 
-function _setSceneContentsInEditor (sceneData) {
+function _setSceneContentsInEditor(sceneData) {
     // Mark as "clean" if the contents are freshly loaded
     // (there is no is_clean property defined) or if contents
     // have been restored with the is_clean property set to "true"
@@ -251,15 +251,15 @@ function _setSceneContentsInEditor (sceneData) {
         // Restore cursor position, if provided.
         if (sceneData.cursor) {
             editor.doc.setCursor(sceneData.cursor, {
-                scroll: false
+                scroll: false,
             });
         }
     }
 
     // Restores the part of the document that was scrolled to, if provided.
     if (sceneData.scrollInfo) {
-        let left = sceneData.scrollInfo.left || 0;
-        let top = sceneData.scrollInfo.top || 0;
+        const left = sceneData.scrollInfo.left || 0;
+        const top = sceneData.scrollInfo.top || 0;
         editor.scrollTo(left, top);
     }
 
@@ -268,7 +268,7 @@ function _setSceneContentsInEditor (sceneData) {
 }
 
 // If editor is updated, send it to the map.
-function updateContent () {
+function updateContent() {
     const content = getEditorContent();
     const url = createObjectURL(content);
     const isClean = editor.getDoc().isClean();
@@ -282,22 +282,22 @@ function updateContent () {
     // copy-pasting the URL) loads the scene file from an earlier state.
     if (!isClean) {
         replaceHistoryState({
-            scene: null
+            scene: null,
         });
     }
 }
 
-function showUnloadedState (editor) {
+function showUnloadedState(editor) {
     document.querySelector('.map-view').classList.add('map-view-not-loaded');
 }
 
-function hideUnloadedState () {
+function hideUnloadedState() {
     document.querySelector('.map-view').classList.remove('map-view-not-loaded');
 }
 
 // This function is only used by the embedded version of Tangram Play.
 // We need it in order to refresh the original scene file if user makes any changes in the editor
-export function reloadOriginalScene () {
+export function reloadOriginalScene() {
     _setSceneContentsInEditor(initialScene);
 }
 
@@ -307,9 +307,9 @@ export function reloadOriginalScene () {
  *
  * @returns {Promise} - resolves to an object of scene data.
  */
-function determineScene () {
+function determineScene() {
     // If there is a query, return it
-    let query = getQueryStringObject();
+    const query = getQueryStringObject();
     if (query.scene) {
         return new Promise((resolve, reject) => {
             resolve({ url: query.scene });

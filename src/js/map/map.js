@@ -20,14 +20,14 @@ export let tangramLayer = null;
 export let tangramScene = null;
 
 // Initializes Leaflet-based map
-export function initMap () {
+export function initMap() {
     // Initalize Leaflet
     map = L.map('map', {
         zoomControl: false,
         attributionControl: false,
         maxZoom: 24,
         keyboardZoomOffset: 0.05,
-        zoomSnap: 0 // Enables fractional zoom.
+        zoomSnap: 0, // Enables fractional zoom.
     });
 
     // Get map start position
@@ -66,7 +66,7 @@ export function initMap () {
         localforage.setItem('last-map-view', {
             lat: map.getCenter().lat,
             lng: map.getCenter().lng,
-            zoom: map.getZoom()
+            zoom: map.getZoom(),
         });
     });
 
@@ -78,30 +78,30 @@ export function initMap () {
  * Tangram must be initialized with a scene file. Only initialize Tangram when
  * Tangram Play knows what scene to load, not before. See loadScene().
  */
-function initTangram (pathToSceneFile) {
+function initTangram(pathToSceneFile) {
     // Add Tangram Layer
     tangramLayer = Tangram.leafletLayer({
         scene: pathToSceneFile,
         events: {
             hover: handleInspectionHoverEvent,
-            click: handleInspectionClickEvent
-        }
+            click: handleInspectionClickEvent,
+        },
     });
     tangramLayer.addTo(map);
 
     tangramLayer.scene.subscribe({
-        load: function (args) {
+        load(args) {
             EventEmitter.dispatch('tangram:sceneupdate', args);
         },
 
         // Hides loading indicator after vector tiles have downloaded and rendered
         // Plus a short delay to ease the transition
         /* eslint-disable camelcase */
-        view_complete: function () {
+        view_complete() {
             window.setTimeout(() => {
                 hideSceneLoadingIndicator();
             }, 250);
-        }
+        },
         /* eslint-enable camelcase */
     });
 
@@ -114,7 +114,7 @@ function initTangram (pathToSceneFile) {
 }
 
 // Sends a scene path and base path to Tangram.
-export function loadScene (pathToSceneFile, { reset = false, basePath = null } = {}) {
+export function loadScene(pathToSceneFile, { reset = false, basePath = null } = {}) {
     // Initialize Tangram if it's not already set.
     // Tangram must be initialized with a scene file.
     // We only initialize Tangram when Tangram Play
@@ -132,11 +132,11 @@ export function loadScene (pathToSceneFile, { reset = false, basePath = null } =
     }
 }
 
-function getMapStartLocation () {
+function getMapStartLocation() {
     // Set default location
-    let defaultStartLocation = {
+    const defaultStartLocation = {
         latlng: [0.0, 0.0],
-        zoom: 3
+        zoom: 3,
     };
 
     // URL Parsing
@@ -148,7 +148,7 @@ function getMapStartLocation () {
 
         return Promise.resolve({
             latlng: [urlHash[1], urlHash[2]],
-            zoom: urlHash[0]
+            zoom: urlHash[0],
         });
     }
     // If no valid URL hash is provided, check local storage to see if
@@ -159,7 +159,7 @@ function getMapStartLocation () {
                 if (view && view.lat && view.lng && view.zoom) {
                     return {
                         latlng: [view.lat, view.lng],
-                        zoom: view.zoom
+                        zoom: view.zoom,
                     };
                 }
                 else {
@@ -174,7 +174,7 @@ function getMapStartLocation () {
 // Need to setup dispatch services to let the React component MapPanel
 // know when map has changed. These are throttled to prevent expensive
 // React operations to be performed in rapid succession.
-function setupEventListeners () {
+function setupEventListeners() {
     // Make sure that map zoom label changes when the map is done zooming
     map.on('zoomend', throttle((e) => {
         EventEmitter.dispatch('leaflet:zoomend', {});

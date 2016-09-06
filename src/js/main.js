@@ -13,7 +13,7 @@ import Raven from 'raven-js';
 if (process.env.NODE_ENV === 'production') {
     Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
         whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/],
-        environment: process.env.NODE_ENV
+        environment: process.env.NODE_ENV,
     }).install();
 }
 
@@ -24,7 +24,7 @@ import localforage from 'localforage';
 // calls to localForage are made, but can be called after localForage is loaded.
 localforage.config({
     name: 'Tangram Play',
-    storeName: 'tangram_play'
+    storeName: 'tangram_play',
 });
 
 // Convert all current localStorage items to localforage

@@ -50,7 +50,7 @@ const INDENT_UNIT = 4;
  * @public
  * @returns {CodeMirror} an instance of the CodeMirror editor.
  */
-export function initCodeMirror (el) {
+export function initCodeMirror(el) {
     let autofocus = true;
 
     // If we're using an embedded version of play, we don't want the CodeMirror instance to focus by default
@@ -70,14 +70,14 @@ export function initCodeMirror (el) {
         lineNumbers: true,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         foldGutter: {
-            rangeFinder: CodeMirror.fold.indent
+            rangeFinder: CodeMirror.fold.indent,
         },
         styleActiveLine: true,
         showCursorWhenSelecting: true,
-        autofocus: autofocus,
+        autofocus,
         showTrailingSpace: true,
         matchBrackets: true,
-        autoCloseBrackets: true
+        autoCloseBrackets: true,
     });
 
     // Better line wrapping. Wrapped lines are based on the indentation
@@ -118,7 +118,7 @@ export function initCodeMirror (el) {
  * @param {Number} amount - number of rulers to add, total. Defaults to 10.
  * @returns {Object} a valid value for CodeMirror's `rulers` option.
  */
-function createRulersOption (indentSize = INDENT_UNIT, amount = 10) {
+function createRulersOption(indentSize = INDENT_UNIT, amount = 10) {
     const rulers = [];
     for (let i = 1; i < amount; i++) {
         rulers.push({ column: i * indentSize });

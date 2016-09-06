@@ -9,7 +9,7 @@ const STORAGE_BOOKMARKS_KEY = 'bookmarks';
  *
  * @returns {Promise} - resolved value is current bookmarks content
  */
-export function getLocationBookmarks () {
+export function getLocationBookmarks() {
     return localforage.getItem(STORAGE_BOOKMARKS_KEY)
         .then((bookmarks) => {
             // If not set previously, then this value is null, so return an
@@ -35,7 +35,7 @@ export function getLocationBookmarks () {
         }
  * @returns {Promise} - resolved value is current bookmarks content after save
  */
-export function saveLocationBookmark (newBookmark) {
+export function saveLocationBookmark(newBookmark) {
     return getLocationBookmarks()
         .then((bookmarks) => {
             bookmarks.push(newBookmark);
@@ -70,7 +70,7 @@ export function saveLocationBookmark (newBookmark) {
  * @param {string} uid - unique identifier for bookmark.
  * @returns {Promise} - resolved value is current bookmarks content after delete
  */
-export function deleteLocationBookmark (uid) {
+export function deleteLocationBookmark(uid) {
     return getLocationBookmarks()
         .then((bookmarks) => {
             // Reject the bookmark with this given uid
@@ -88,7 +88,7 @@ export function deleteLocationBookmark (uid) {
  *
  * @returns {Promise} - resolved value is empty array
  */
-export function clearLocationBookmarks () {
+export function clearLocationBookmarks() {
     return localforage.setItem(STORAGE_BOOKMARKS_KEY, [])
         .catch((error) => {
             console.error(error);

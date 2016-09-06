@@ -1,4 +1,4 @@
-export function returnTrue () {}
+export function returnTrue() {}
 
 /**
  * Checks is a string is empty.
@@ -10,7 +10,7 @@ export function returnTrue () {}
  * @param {string} str - the string to check
  * @returns {Boolean}
  */
-export function isEmptyString (str) {
+export function isEmptyString(str) {
     return (!str || str.trim().length === 0);
 }
 
@@ -19,7 +19,7 @@ export function isEmptyString (str) {
  *
  * @param {string} url
  */
-export function prependProtocolToUrl (url) {
+export function prependProtocolToUrl(url) {
     // Look for whether or not the url string appears to begin with a valid
     // scheme. "The scheme consists of a sequence of characters beginning with
     // a letter and followed by any combination of letters, digits, plus (+),

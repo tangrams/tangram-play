@@ -5,7 +5,7 @@ import { EventEmitter } from '../components/event-emitter';
 const lineWidgets = [];
 const blockErrors = new Set();
 
-export function initErrorsManager () {
+export function initErrorsManager() {
     editor.on('changes', (cm, changesObjs) => {
         clearAllErrors();
     });
@@ -18,12 +18,12 @@ export function initErrorsManager () {
             },
             warning: (args) => {
                 addWarning(args);
-            }
+            },
         });
     });
 }
 
-function clearAllErrors () {
+function clearAllErrors() {
     for (let i = 0; i < lineWidgets.length; i++) {
         editor.removeLineWidget(lineWidgets[i]);
     }
@@ -31,10 +31,10 @@ function clearAllErrors () {
     blockErrors.clear();
 }
 
-function addError (args) {
+function addError(args) {
     if (args.type !== undefined) {
-        let msg = document.createElement('div');
-        let icon = msg.appendChild(document.createElement('span'));
+        const msg = document.createElement('div');
+        const icon = msg.appendChild(document.createElement('span'));
         icon.className = 'btm bt-exclamation-triangle error-icon';
         msg.appendChild(document.createTextNode(args.error.reason));
         msg.className = 'error';
@@ -42,20 +42,20 @@ function addError (args) {
     }
 }
 
-function addWarning (args) {
+function addWarning(args) {
     if (args.type === 'styles') {
         // Only show first error, cascading errors can be confusing
-        let errors = args['shader_errors'].slice(0, 1);
+        const errors = args['shader_errors'].slice(0, 1);
 
         for (let i = 0; i < errors.length; i++) {
-            let style = errors[i].block.scope;
+            const style = errors[i].block.scope;
 
             // Skip generic errors not originating in style-sheet
             if (style === 'ShaderProgram') {
                 continue;
             }
 
-            let block = errors[i].block;
+            const block = errors[i].block;
 
             // De-dupe errors per block
             if (blockErrors.has(JSON.stringify(block))) {
@@ -66,10 +66,10 @@ function addWarning (args) {
             const node = getNodesForAddress(address);
 
             if (node) {
-                let nLine = node.range.from.line + 1 + block.line;
+                const nLine = node.range.from.line + 1 + block.line;
 
-                let msg = document.createElement('div');
-                let icon = msg.appendChild(document.createElement('span'));
+                const msg = document.createElement('div');
+                const icon = msg.appendChild(document.createElement('span'));
                 icon.className = 'btm bt-exclamation-circle warning-icon';
                 msg.appendChild(document.createTextNode(errors[i].message));
                 msg.className = 'warning';
@@ -82,11 +82,11 @@ function addWarning (args) {
         }
     }
     else if (args.type === 'duplicate') {
-        for (let node of args.nodes) {
+        for (const node of args.nodes) {
             console.log(node);
-            let nLine = node.widget.range.to.line + 1;
-            let msg = document.createElement('div');
-            let icon = msg.appendChild(document.createElement('span'));
+            const nLine = node.widget.range.to.line + 1;
+            const msg = document.createElement('div');
+            const icon = msg.appendChild(document.createElement('span'));
             icon.className = 'btm bt-exclamation-circle warning-icon';
             msg.appendChild(document.createTextNode(`Duplicate key ${node.key} (${node.address})`));
             msg.className = 'warning';

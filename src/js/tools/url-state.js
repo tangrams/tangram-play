@@ -18,7 +18,7 @@
  *          To delete an existing query string, pass in a property whose value
  *          is `null`.
  */
-export function replaceHistoryState (props = {}) {
+export function replaceHistoryState(props = {}) {
     const locationPrefix = window.location.pathname;
     const currentProps = getQueryStringObject();
     const newProps = Object.assign({}, currentProps, props);
@@ -42,7 +42,7 @@ export function replaceHistoryState (props = {}) {
  * @param {Object} props - See `props` param for `replaceHistoryState()`.
  *          This object is also passed to `pushState()`.
  */
-export function pushHistoryState (props = {}) {
+export function pushHistoryState(props = {}) {
     const locationPrefix = window.location.pathname;
     const queryString = serializeToQueryString(props);
 
@@ -60,7 +60,7 @@ export function pushHistoryState (props = {}) {
  * @param {string} queryString - defaults to window.location.search
  * @returns {Object} deserialized key-value pairs
  */
-export function getQueryStringObject (queryString = window.location.search) {
+export function getQueryStringObject(queryString = window.location.search) {
     // Slices off the initial '?' separator on the string,
     // then splits the string into an array of key-value pairs
     const arr = queryString.slice(1).split('&');
@@ -94,9 +94,9 @@ export function getQueryStringObject (queryString = window.location.search) {
  * @param {Object} obj - set of key-value pairs
  * @returns {string} valid facsimile for window.location.search
  */
-function serializeToQueryString (obj = {}) {
+function serializeToQueryString(obj = {}) {
     const str = [];
-    for (let p in obj) {
+    for (const p in obj) {
         // Nulls or undefined are skipped. Do not test for "falsy" values
         // here. Values like `0` or `false` should be stored in the query.
         if (obj[p] === null || typeof obj[p] === 'undefined') {

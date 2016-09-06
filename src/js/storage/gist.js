@@ -10,7 +10,7 @@ import L from 'leaflet';
 const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
 
-export function saveToGist (data, successCallback, errorCallback) {
+export function saveToGist(data, successCallback, errorCallback) {
     let { filename, sceneName, description, isPublic } = data;
 
     // Append ".yaml" to the end of a filename if it does not
@@ -38,14 +38,14 @@ export function saveToGist (data, successCallback, errorCallback) {
                 label: '',
                 lat: map.getCenter().lat,
                 lng: map.getCenter().lng,
-                zoom: map.getZoom()
+                zoom: map.getZoom(),
             },
             date: new Date().toJSON(),
             versions: {
                 tangram: window.Tangram.version,
-                leaflet: L.version
+                leaflet: L.version,
             },
-            user: cachedUserData ? cachedUserData.nickname : null
+            user: cachedUserData ? cachedUserData.nickname : null,
         };
 
         // This is a single YAML file
@@ -53,7 +53,7 @@ export function saveToGist (data, successCallback, errorCallback) {
         // We cannot specify MIME type here so filename should have the
         // correct extension (see above)
         files[filename] = {
-            content: getEditorContent()
+            content: getEditorContent(),
         };
 
         // GitHub Gist does not appear to have a limit on filesize,
@@ -61,18 +61,18 @@ export function saveToGist (data, successCallback, errorCallback) {
         // (unoptimized, but that's the limitations of our thumbnail function)
         // We cannot store binary data over this API - this is stored as a data URL.
         files['thumbnail.png'] = {
-            content: thumbnail
+            content: thumbnail,
         };
 
         // Store metadata
         files['.tangramplay'] = {
-            content: JSON.stringify(metadata)
+            content: JSON.stringify(metadata),
         };
 
         const data = {
-            description: description,
+            description,
             public: isPublic,
-            files: files
+            files,
         };
 
         // Make the post
@@ -80,7 +80,7 @@ export function saveToGist (data, successCallback, errorCallback) {
             method: 'POST',
             // POSTing to /gists API requires a JSON blob of
             // MIME-type 'application/json'
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         }).then(response => {
             switch (response.status) {
                 case 201:
@@ -92,9 +92,9 @@ export function saveToGist (data, successCallback, errorCallback) {
             }
         }).then((gist) => {
             successCallback({
-                metadata: metadata,
-                gist: gist,
-                thumbnail: thumbnail
+                metadata,
+                gist,
+                thumbnail,
             });
         }).catch((error) => {
             console.error(error);

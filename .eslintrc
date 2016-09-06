@@ -12,7 +12,6 @@
     "es6": true
   },
   "plugins": ["react"],
-  // Not ready for this yet: "airbnb"
   "extends": ["plugin:react/recommended"],
   "rules": {
     // Override airbnb indentation
@@ -20,10 +19,6 @@
     "react/jsx-indent": [2, 4],
     "react/jsx-indent-props": [2, 4],
     // --End override airbnb indentation
-
-    // Airbnb style transition
-    "jsx-quotes": ["warn", "prefer-double"],
-    // --End airbnb style transition
 
     "accessor-pairs": 2,
     "arrow-spacing": [2, { "before": true, "after": true }],

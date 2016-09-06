@@ -1,16 +1,16 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/clike/clike.js';
 
-function words (str) {
-    let obj = {};
-    let keys = str.split(' ');
+function words(str) {
+    const obj = {};
+    const keys = str.split(' ');
     for (let i = 0; i < keys.length; ++i) {
         obj[keys[i]] = true;
     }
     return obj;
 }
 
-function cppHook (stream, state) {
+function cppHook(stream, state) {
     if (!state.startOfLine) {
         return false;
     }
@@ -31,14 +31,14 @@ function cppHook (stream, state) {
     return 'meta';
 }
 
-function def (mimes, mode) {
+function def(mimes, mode) {
     if (typeof mimes === 'string') {
         mimes = [mimes];
     }
-    let words = [];
-    function add (obj) {
+    const words = [];
+    function add(obj) {
         if (obj) {
-            for (var prop in obj) {
+            for (const prop in obj) {
                 if (obj.hasOwnProperty(prop)) {
                     words.push(prop);
                 }
@@ -85,6 +85,6 @@ def(['glsl', 'x-shader/x-vertex', 'x-shader/x-fragment'], {
                  'gl_FragColor gl_Position gl_PointSize gl_FragCoord '),
     hooks: { '#': cppHook },
     modeProps: {
-        fold: ['brace', 'include']
-    }
+        fold: ['brace', 'include'],
+    },
 });

@@ -15,14 +15,14 @@ import 'codemirror/addon/hint/show-hint';
 const keySuggestions = [];
 const valueSuggestions = [];
 
-export function initSuggestions () {
+export function initSuggestions() {
     // Initialize tokens
-    for (let datum of TANGRAM_API.keys) {
+    for (const datum of TANGRAM_API.keys) {
         keySuggestions.push(new Suggestion(datum));
     }
 
     // Initialize tokens
-    for (let datum of TANGRAM_API.values) {
+    for (const datum of TANGRAM_API.values) {
         valueSuggestions.push(new Suggestion(datum));
     }
 
@@ -30,10 +30,10 @@ export function initSuggestions () {
     EventEmitter.dispatch('tangram:sceneupdate', (args) => {
         let bOpen = true;
 
-        let line = editor.getCursor().line;
-        let stateAfter = editor.getLineHandle(line).stateAfter;
+        const line = editor.getCursor().line;
+        const stateAfter = editor.getLineHandle(line).stateAfter;
         if (stateAfter && stateAfter.innerMode && stateAfter.innerMode.helperType) {
-            let helperType = stateAfter.innerMode.helperType;
+            const helperType = stateAfter.innerMode.helperType;
             if (helperType === 'glsl' || helperType === 'javascript') {
                 bOpen = false;
             }
@@ -76,44 +76,44 @@ export function initSuggestions () {
                     },
                     Esc: (cm, handle) => {
                         handle.close();
-                    }
-                }
+                    },
+                },
             });
         }
     });
 }
 
-export function hint (editor, options) {
-    let cursor = { line: editor.getCursor().line, ch: editor.getCursor().ch };
+export function hint(editor, options) {
+    const cursor = { line: editor.getCursor().line, ch: editor.getCursor().ch };
     cursor.ch = cursor.ch - 1;
     // console.log("Cursor", cursor);
 
-    let range = editor.findWordAt(cursor);
-    let from = range.anchor;
-    let to = range.head;
+    const range = editor.findWordAt(cursor);
+    const from = range.anchor;
+    const to = range.head;
     // console.log("RANGE",from,to);
 
-    let line = cursor.line;
+    const line = cursor.line;
     let list = [];
 
     let wasKey = false;
     let address = '/';
 
     // What's the main key of the line?
-    let nodes = getNodesOfLine(line);
+    const nodes = getNodesOfLine(line);
     if (nodes) {
         // Get key pair where the cursor is
-        let node = nodes[0];
+        const node = nodes[0];
 
         if (node) {
             // If there is no key search for a KEY
             if (node.key === '') {
                 // Fallback the address to match
-                let actualLevel = getLineInd(editor, line);
+                const actualLevel = getLineInd(editor, line);
                 address = getAddressForLevel(node.address, actualLevel);
                 node.address = address;
                 // Suggest key
-                for (let datum of keySuggestions) {
+                for (const datum of keySuggestions) {
                     if (datum.check(node)) {
                         list.push.apply(list, datum.getList(node));
                     }
@@ -123,7 +123,7 @@ export function hint (editor, options) {
             // if it have a key search for the value
             else {
                 // Suggest value
-                for (let datum of valueSuggestions) {
+                for (const datum of valueSuggestions) {
                     if (datum.check(node)) {
                         list.push.apply(list, datum.getList(node));
                         break;
@@ -138,8 +138,8 @@ export function hint (editor, options) {
 
             // If the word is already begin to type, filter outcome
             if (string !== '') {
-                let matchedList = [];
-                let match = RegExp('^' + string + '.*');
+                const matchedList = [];
+                const match = RegExp('^' + string + '.*');
                 for (let i = 0; i < list.length; i++) {
                     if (list[i] !== string && match.test(list[i])) {
                         matchedList.push(list[i]);
@@ -150,12 +150,12 @@ export function hint (editor, options) {
         }
     }
 
-    let result = { list: list, from: from, to: to };
+    const result = { list, from, to };
     CodeMirror.on(result, 'pick', (completion) => {
         // If is a key autocomplete with de default value
         if (wasKey) {
             // console.log(address+'/'+completion);
-            let defaultValue = getDefault(address, completion);
+            const defaultValue = getDefault(address, completion);
             editor.replaceRange(': ' + defaultValue,
                 { line: result.to.line, ch: result.to.ch + completion.length },
                 { line: result.to.line, ch: result.to.ch + completion.length + 1 },
@@ -166,14 +166,14 @@ export function hint (editor, options) {
     return result;
 }
 
-function getDefault (address, completion) {
-    let key = {
+function getDefault(address, completion) {
+    const key = {
         address: address + '/' + completion,
         key: completion,
-        value: ''
+        value: '',
     };
     let defaultValue = '';
-    for (let datum of valueSuggestions) {
+    for (const datum of valueSuggestions) {
         if (datum.check(key, true)) {
             defaultValue = datum.getDefault();
             break;
@@ -183,7 +183,7 @@ function getDefault (address, completion) {
 }
 
 class Suggestion {
-    constructor (datum) {
+    constructor(datum) {
         //  TODO: must be a better way to do this
         if (datum.address) {
             this.checkAgainst = 'address';
@@ -214,7 +214,7 @@ class Suggestion {
         }
     }
 
-    check (node, forceLevel) {
+    check(node, forceLevel) {
         if (node && this.checkAgainst) {
             let rightLevel = true;
             if (!forceLevel && this.level) {
@@ -227,13 +227,13 @@ class Suggestion {
         }
     }
 
-    getDefault () {
+    getDefault() {
         return this.defaultValue || '';
     }
 
-    getList (node) {
-        let scene = tangramLayer.scene;
-        let list = [];
+    getList(node) {
+        const scene = tangramLayer.scene;
+        const list = [];
         let presentNodes = [];
 
         // Add options
@@ -243,13 +243,13 @@ class Suggestion {
 
         // Add sources
         if (this.source) {
-            let obj = getAddressSceneContent(scene, this.source);
-            let keyFromSource = obj ? Object.keys(obj) : [];
+            const obj = getAddressSceneContent(scene, this.source);
+            const keyFromSource = obj ? Object.keys(obj) : [];
             Array.prototype.push.apply(list, keyFromSource);
         }
 
         // Take out present keys
-        let obj = getAddressSceneContent(scene, node.address);
+        const obj = getAddressSceneContent(scene, node.address);
         presentNodes = obj ? Object.keys(obj) : [];
         for (let j = list.length - 1; j >= 0; j--) {
             if (presentNodes.indexOf(list[j]) > -1) {
