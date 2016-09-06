@@ -8,33 +8,25 @@ import Icon from '../components/Icon';
 
 import Clipboard from 'clipboard';
 
-export default class SaveToCloudSuccessModal extends React.Component {
+export default class SaveGistSuccessModal extends React.Component {
     constructor (props) {
         super(props);
 
         this.onClickConfirm = this.onClickConfirm.bind(this);
-        this.onClickViewUrl = this.onClickViewUrl.bind(this);
     }
 
     componentDidMount () {
         this.setupClipboard();
-        this.viewUrl.select();
-    }
-
-    componentWillUnmount () {
-        // Clean up clipboard object
-        this.clipboard.destroy();
+        this.urlInput.select();
     }
 
     onClickConfirm (event) {
         this.component.unmount();
     }
 
-    onClickViewUrl () {
-        const newTab = window.open(this.viewUrl.value, 'tangram-viewer');
-        if (newTab) {
-            newTab.focus();
-        }
+    componentWillUnmount () {
+        // Clean up clipboard object
+        this.clipboard.destroy();
     }
 
     // Sets up clipboard.js functionality. Not a React component.
@@ -56,6 +48,8 @@ export default class SaveToCloudSuccessModal extends React.Component {
             console.error('Action:', e.action);
             console.error('Trigger:', e.trigger);
         });
+
+        clipboardButtonEl.focus();
     }
 
     render () {
@@ -67,19 +61,18 @@ export default class SaveToCloudSuccessModal extends React.Component {
             >
                 <div className="modal-content">
                     <h4>
-                        Your scene has been saved!
+                        Your gist has been saved.
                     </h4>
                     <p>
-                        Share your scene with the link below.
+                        Remember this URL!
                     </p>
-
                     <div className="input-bar">
                         <input
-                            id="saved-scene-url"
                             type="text"
+                            id="gist-saved-url"
                             readOnly="true"
-                            ref={(ref) => { this.viewUrl = ref; }}
-                            defaultValue={`https://dev.mapzen.com/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
+                            ref={(ref) => { this.urlInput = ref; }}
+                            defaultValue={this.props.urlValue}
                         />
                         <OverlayTrigger
                             rootClose
@@ -88,27 +81,14 @@ export default class SaveToCloudSuccessModal extends React.Component {
                         >
                             <Button
                                 className="saved-scene-copy-btn"
-                                data-clipboard-target="#saved-scene-url"
+                                data-clipboard-target="#gist-saved-url"
                                 ref={(ref) => { this.clipboardButton = ref; }}
                             >
                                 <Icon type="bt-copy" />
                             </Button>
                         </OverlayTrigger>
-                        <OverlayTrigger
-                            rootClose
-                            placement="right"
-                            overlay={<Tooltip id="tooltip">View in new tab</Tooltip>}
-                        >
-                            <Button
-                                className="saved-scene-copy-btn"
-                                onClick={this.onClickViewUrl}
-                            >
-                                <Icon type="bt-external-link" />
-                            </Button>
-                        </OverlayTrigger>
                     </div>
                 </div>
-
                 <div className="modal-buttons">
                     <Button className="modal-confirm" onClick={this.onClickConfirm}>
                         Got it
@@ -119,6 +99,6 @@ export default class SaveToCloudSuccessModal extends React.Component {
     }
 }
 
-SaveToCloudSuccessModal.propTypes = {
+SaveGistSuccessModal.propTypes = {
     urlValue: React.PropTypes.string
 };

@@ -16,6 +16,7 @@ import { openLocalFile } from '../file/open-local';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
+import SaveGistModal from '../modals/SaveGistModal'; // LEGACY.
 import SaveToCloudModal from '../modals/SaveToCloudModal';
 import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
@@ -55,6 +56,10 @@ const _clickOpenExample = function () {
 
 const _clickSaveFile = function () {
     EditorIO.export();
+};
+
+const _clickSaveGist = function () {
+    ReactDOM.render(<SaveGistModal />, document.getElementById('modal-container'));
 };
 
 const unsubscribeSaveToCloud = function () {
@@ -141,6 +146,8 @@ export default class MenuBar extends React.Component {
             legacyGistMenu: false,
             mapzenAccount: false
         };
+
+        this.getUserData = this.getUserData.bind(this);
     }
 
     // Determine whether some menu items should display
@@ -159,8 +166,20 @@ export default class MenuBar extends React.Component {
 
         // Only display items related to Mapzen account if Tangram Play is
         // loaded from a domain with Mapzen account capabilities.
+        this.getUserData();
+    }
+
+    componentDidMount () {
+        EventEmitter.subscribe('mapzen:sign_in', this.getUserData);
+        EventEmitter.subscribe('mapzen:sign_out', () => {
+            this.setState({ mapzenAccount: false });
+        });
+    }
+
+    getUserData () {
         requestUserSignInState().then((data) => {
-            if (data) {
+            // Note: currently this is only enabled for admin accounts.
+            if (data && data.admin === true) {
                 this.setState({
                     mapzenAccount: true
                 });
@@ -243,7 +262,7 @@ export default class MenuBar extends React.Component {
                                     if (this.state.legacyGistMenu) {
                                         return (
                                             <MenuItem onClick={_clickOpenGist}>
-                                                <Icon type="bt-code" />Open a saved Gist (Legacy)
+                                                <Icon type="bt-code" />Open a saved Gist
                                             </MenuItem>
                                         );
                                     }
@@ -279,6 +298,9 @@ export default class MenuBar extends React.Component {
                                         );
                                     }
                                 })()}
+                                <MenuItem onClick={_clickSaveGist}>
+                                    <Icon type="bt-code" />Save to Gist
+                                </MenuItem>
                                 <MenuItem onClick={_clickSaveCamera}>
                                     <Icon type="bt-camera" />Take a screenshot
                                 </MenuItem>

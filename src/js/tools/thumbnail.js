@@ -1,6 +1,7 @@
 /**
  * Creates a thumbnail from image source or image data.
- * Designed to work well with base64 input (e.g. a canvas.toDataURL() result.
+ * Designed to work well with base64 input (e.g. a canvas.toDataURL() result
+ * or with a Blob object containing image data.
  *
  * The thumbnail is created by scaling the image to cover the desired thumbnail
  * size then cropping it, but doing it in a canvas, and returning a Promise
@@ -8,13 +9,15 @@
  * base64 representation of the thumbnail image. Note that this operation does
  * not do any other kind of image optimization (e.g. sharpening, compression)
  *
- * @param {Blob} imageBlob - blob of image data
+ * @param {Blob|string} image - blob or base64 representation of image data
  * @param {Number} targetWidth - desired thumbnail width in pixels
  * @param {Number} targetHeight - desired thumbnail height in pixels
  * @param {Boolean} retina - if true, the result thumbnail is 2x its target size
+ * @param {Boolean} returnBlob - if true, the returned result is an image blob,
+ *          otherwise, it's a dataURL string
  * @returns {Promise}
  */
-export function createThumbnail (imageBlob, targetWidth, targetHeight, retina = true) {
+export function createThumbnail (imageData, targetWidth, targetHeight, retina = true, returnBlob = true) {
     // Create an in-memory canvas to render the original image data to.
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -70,16 +73,22 @@ export function createThumbnail (imageBlob, targetWidth, targetHeight, retina = 
             // Revoke the object URL for the blob; this prevents memory leakage
             URL.revokeObjectURL(image.src);
 
-            // Return an image blob as the resolve value of this Promise
-            canvas.toBlob((blob) => {
-                resolve(blob);
-            }, 'image/png');
+            if (returnBlob) {
+                // Return an image blob as the resolve value of this Promise
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/png');
+            }
+            else {
+                // Returns the thumbnail's dataURL value as the resolve value of this Promise
+                resolve(canvas.toDataURL());
+            }
         };
 
         image.onerror = function () {
             reject('Unable to create thumbnail.');
         };
 
-        image.src = URL.createObjectURL(imageBlob);
+        image.src = (typeof imageData === 'string') ? imageData : URL.createObjectURL(imageData);
     });
 }
