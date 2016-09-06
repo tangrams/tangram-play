@@ -146,6 +146,8 @@ export default class MenuBar extends React.Component {
             legacyGistMenu: false,
             mapzenAccount: false
         };
+
+        this.getUserData = this.getUserData.bind(this);
     }
 
     // Determine whether some menu items should display
@@ -164,6 +166,14 @@ export default class MenuBar extends React.Component {
 
         // Only display items related to Mapzen account if Tangram Play is
         // loaded from a domain with Mapzen account capabilities.
+        this.getUserData();
+    }
+
+    componentDidMount () {
+        EventEmitter.subscribe('mapzen:sign_in', this.getUserData);
+    }
+
+    getUserData () {
         requestUserSignInState().then((data) => {
             // Note: currently this is only enabled for admin accounts.
             if (data && data.admin === true) {

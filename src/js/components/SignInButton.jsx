@@ -21,7 +21,8 @@ export default class SignInButton extends React.Component {
             serverContacted: false,
             isLoggedIn: false,
             nickname: null,
-            avatar: null
+            avatar: null,
+            admin: false
         };
 
         this.onClickSignIn = this.onClickSignIn.bind(this);
@@ -50,7 +51,8 @@ export default class SignInButton extends React.Component {
                     this.setState({
                         isLoggedIn: false,
                         nickname: null,
-                        avatar: null
+                        avatar: null,
+                        admin: false
                     });
                 }
                 else {
@@ -78,6 +80,7 @@ export default class SignInButton extends React.Component {
                 newState.isLoggedIn = true;
                 newState.nickname = data.nickname || null;
                 newState.avatar = data.avatar || null;
+                newState.admin = data.admin || false;
             }
 
             this.setState(newState);
