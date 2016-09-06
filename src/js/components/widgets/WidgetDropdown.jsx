@@ -133,6 +133,7 @@ export default class WidgetDropdown extends React.Component {
                         className="widget-form-control"
                         placeholder="select"
                         onChange={this.onChange}
+                        value={initialValue}
                     >
                         {options.map((result, i) => {
                             return (
@@ -140,7 +141,6 @@ export default class WidgetDropdown extends React.Component {
                                     key={i}
                                     value={result}
                                     disabled={result === '(select one)'}
-                                    selected={result === initialValue}
                                 >
                                     {result}
                                 </option>
