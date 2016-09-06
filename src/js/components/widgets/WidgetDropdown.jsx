@@ -1,7 +1,7 @@
 import React from 'react';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
-import { isEmpty } from 'lodash';
+import { clone } from 'lodash';
 import { EventEmitter } from '../event-emitter';
 
 import { setCodeMirrorValue, setCursor } from '../../editor/editor';
@@ -26,27 +26,26 @@ export default class WidgetDropdown extends React.Component {
         this.key = this.props.keyType;
         this.value = '';
 
+        let options;
+
         // If the dropdown is NOT of type source
         if (this.key !== 'source') {
-            this.state = {
-                options: this.props.options
-            };
+            options = this.props.options;
         }
         // If the dropdown is of type source
         else {
             // Try to find the sources from the tangram scene
-            let obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
-            let keys = (obj) ? Object.keys(obj) : {};
-
-            // If the tangram scene has not yet loaded, set an empty options state in order for React to render
-            if (isEmpty(keys)) {
-                keys = [];
-            }
-
+            // If the tangram scene has not yet loaded, set an empty options
+            // state in order for React to render
             // Keys WILL NOT be empty in cases where users presses 'New' button on the same scene file.
             // Keys WILL be empty when users reload the whole page
-            this.state = { options: keys };
+            const obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
+            options = (obj) ? Object.keys(obj) : [];
         }
+
+        this.state = {
+            options: options
+        };
 
         this.onChange = this.onChange.bind(this);
         this.setSource = this.setSource.bind(this);
@@ -105,6 +104,23 @@ export default class WidgetDropdown extends React.Component {
      * Called every time state or props are changed
      */
     render () {
+        // Clone a copy of the original options array.
+        const options = clone(this.state.options);
+        const initialValue = this.props.initialValue;
+
+        // If the initial value is blank, we add a disabled "select one"
+        // choice to the options array.
+        if (!initialValue || initialValue.length === 0) {
+            options.unshift('(select one)');
+        }
+
+        // If the initial value in the editor is not one of the options, we
+        // append it to the options dropdown. This allows a user to recover the
+        // original value easily.
+        if (initialValue && options.indexOf(initialValue) === -1) {
+            options.push(initialValue);
+        }
+
         if (this.state.options.length !== 0) {
             return (
                 <FormGroup
@@ -118,8 +134,17 @@ export default class WidgetDropdown extends React.Component {
                         placeholder="select"
                         onChange={this.onChange}
                     >
-                        {this.state.options.map((result, i) => {
-                            return <option key={i} value={result}>{result}</option>;
+                        {options.map((result, i) => {
+                            return (
+                                <option
+                                    key={i}
+                                    value={result}
+                                    disabled={result === '(select one)'}
+                                    selected={result === initialValue}
+                                >
+                                    {result}
+                                </option>
+                            );
                         })}
                     </FormControl>
                 </FormGroup>
@@ -138,7 +163,8 @@ WidgetDropdown.propTypes = {
     bookmark: React.PropTypes.object,
     keyType: React.PropTypes.string,
     options: React.PropTypes.array,
-    source: React.PropTypes.string
+    source: React.PropTypes.string,
+    initialValue: React.PropTypes.string
 };
 
 WidgetDropdown.defaultProps = {
