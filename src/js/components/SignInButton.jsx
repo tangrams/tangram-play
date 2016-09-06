@@ -94,14 +94,30 @@ export default class SignInButton extends React.Component {
     // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
     render () {
         if (this.state.isLoggedIn) {
+            const ButtonContents = (
+                <span>
+                    <img src={this.state.avatar} className="sign-in-avatar" alt={this.state.nickname} /> {this.state.nickname}
+                    {(() => {
+                        if (this.state.admin === true) {
+                            return (<span className="sign-in-admin-star">★</span>);
+                        }
+                    })()}
+                </span>
+            );
+
+            let tooltipContents = 'This is you!';
+            if (this.state.admin === true) {
+                tooltipContents = 'You are a Mapzen admin.';
+            }
+
             return (
                 <OverlayTrigger
                     rootClose
                     placement="bottom"
-                    overlay={<Tooltip id="tooltip">This is you!</Tooltip>}
+                    overlay={<Tooltip id="tooltip">{tooltipContents}</Tooltip>}
                 >
                     <NavDropdown
-                        title={<span><img src={this.state.avatar} className="sign-in-avatar" alt={this.state.nickname} /> {this.state.nickname}</span>}
+                        title={ButtonContents}
                         className="menu-sign-in"
                     >
                         <MenuItem onClick={this.onClickSignOut}>

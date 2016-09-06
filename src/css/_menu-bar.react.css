@@ -160,4 +160,11 @@ nav {
     width: 20px;
     height: 20px;
     border-radius: 50%;
+    vertical-align: middle;
+}
+
+.sign-in-admin-star {
+    color: lightgoldenrodyellow;
+    text-shadow: -1px 1px 0 #e69f00, -2px 2px 0 #cc8401, -3px 3px 0 #bd7100;
+    margin-left: 0.1em;
 }
