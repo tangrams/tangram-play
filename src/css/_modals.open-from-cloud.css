@@ -1,10 +1,10 @@
 
-.open-gist-modal {
+.open-from-cloud-modal {
     width: 600px;
     height: 600px;
 }
 
-.open-gist-list {
+.open-from-cloud-list {
     /* Ensure this fits within a variable-height modal.
        TODO: Don't use a magic number */
     height: calc(100% - 120px);
@@ -28,7 +28,7 @@
     }
 }
 
-.open-gist-option {
+.open-from-cloud-option {
     display: flex;
     flex-direction: row;
     padding: 10px;
@@ -38,36 +38,36 @@
         background-color: var(--ui-active-color);
     }
 
-    &.open-gist-selected {
+    &.open-from-cloud-selected {
         background-color: var(--ui-active-color);
     }
 }
 
-.open-gist-selected {
-    .open-gist-option-name {
+.open-from-cloud-selected {
+    .open-from-cloud-option-name {
         color: var(--ui-highlight-color);
     }
 }
 
-.open-gist-option-name {
+.open-from-cloud-option-name {
     line-height: 24px;
     margin-bottom: 0.5em;
 }
 
-.open-gist-option-description {
+.open-from-cloud-option-description {
     font-size: 14px;
     line-height: 1.4;
     color: var(--ui-subtext-color);
 }
 
-.open-gist-option-date {
+.open-from-cloud-option-date {
     margin-top: 1em;
     font-size: 11px;
     color: var(--ui-subtext-color);
 }
 
 /* We need a container element for the image so we can highlight, see below */
-.open-gist-option-thumbnail {
+.open-from-cloud-option-thumbnail {
     position: relative;
     margin-right: 10px;
     line-height: 0; /* Removes baseline from image */
@@ -79,7 +79,7 @@
 }
 
 /* box-shadow is overlapped by the image, so a pseudo element puts it in the right place */
-.open-gist-selected .open-gist-option-thumbnail::after {
+.open-from-cloud-selected .open-from-cloud-option-thumbnail::after {
     position: absolute;
     display: block;
     content: '';

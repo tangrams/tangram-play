@@ -9,7 +9,7 @@ import Icon from './Icon';
 import ErrorModal from '../modals/ErrorModal';
 
 import { EventEmitter } from './event-emitter';
-import { requestUserSignIn, requestUserSignOut } from '../user/sign-in';
+import { requestUserSignInState, requestUserSignOut } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
 import EditorIO from '../editor/io';
 
@@ -21,7 +21,8 @@ export default class SignInButton extends React.Component {
             serverContacted: false,
             isLoggedIn: false,
             nickname: null,
-            avatar: null
+            avatar: null,
+            admin: false
         };
 
         this.onClickSignIn = this.onClickSignIn.bind(this);
@@ -50,8 +51,10 @@ export default class SignInButton extends React.Component {
                     this.setState({
                         isLoggedIn: false,
                         nickname: null,
-                        avatar: null
+                        avatar: null,
+                        admin: false
                     });
+                    EventEmitter.dispatch('mapzen:sign_out', {});
                 }
                 else {
                     ReactDOM.render(<ErrorModal error="Unable to sign you out." />, document.getElementById('modal-container'));
@@ -62,7 +65,13 @@ export default class SignInButton extends React.Component {
     }
 
     checkLoggedInState () {
-        requestUserSignIn().then((data) => {
+        requestUserSignInState().then((data) => {
+            // `data` is null if we are not hosted in the right place
+            if (!data) {
+                return;
+            }
+
+            // This tells us we've contacted mapzen.com and the API is valid
             const newState = {
                 serverContacted: true
             };
@@ -72,13 +81,7 @@ export default class SignInButton extends React.Component {
                 newState.isLoggedIn = true;
                 newState.nickname = data.nickname || null;
                 newState.avatar = data.avatar || null;
-            }
-
-            // If this is a self-hosted (or localhost) instance of Tangram Play
-            // (e.g. not on mapzen.com) then there is no sign-in functionality
-            // and we effectively disable it
-            if (data.hosted === false) {
-                newState.serverContacted = false;
+                newState.admin = data.admin || false;
             }
 
             this.setState(newState);
@@ -91,14 +94,30 @@ export default class SignInButton extends React.Component {
     // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
     render () {
         if (this.state.isLoggedIn) {
+            const ButtonContents = (
+                <span>
+                    <img src={this.state.avatar} className="sign-in-avatar" alt={this.state.nickname} /> {this.state.nickname}
+                    {(() => {
+                        if (this.state.admin === true) {
+                            return (<span className="sign-in-admin-star">★</span>);
+                        }
+                    })()}
+                </span>
+            );
+
+            let tooltipContents = 'This is you!';
+            if (this.state.admin === true) {
+                tooltipContents = 'You are a Mapzen admin.';
+            }
+
             return (
                 <OverlayTrigger
                     rootClose
                     placement="bottom"
-                    overlay={<Tooltip id="tooltip">This is you!</Tooltip>}
+                    overlay={<Tooltip id="tooltip">{tooltipContents}</Tooltip>}
                 >
                     <NavDropdown
-                        title={<span><img src={this.state.avatar} className="sign-in-avatar" alt={this.state.nickname} /> {this.state.nickname}</span>}
+                        title={ButtonContents}
                         className="menu-sign-in"
                     >
                         <MenuItem onClick={this.onClickSignOut}>

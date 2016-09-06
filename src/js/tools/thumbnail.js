@@ -1,20 +1,23 @@
 /**
  * Creates a thumbnail from image source or image data.
- * Designed to work well with base64 input (e.g. a canvas.toDataURL() result.
+ * Designed to work well with base64 input (e.g. a canvas.toDataURL() result
+ * or with a Blob object containing image data.
  *
  * The thumbnail is created by scaling the image to cover the desired thumbnail
  * size then cropping it, but doing it in a canvas, and returning a Promise
  * object representing the result of the operation. Its resolved value is the
  * base64 representation of the thumbnail image. Note that this operation does
- * not do any other kind of image optimization (e.g. sharpening, compression)/
+ * not do any other kind of image optimization (e.g. sharpening, compression)
  *
- * @param {string} imageData - base64 representation of image data
+ * @param {Blob|string} image - blob or base64 representation of image data
  * @param {Number} targetWidth - desired thumbnail width in pixels
  * @param {Number} targetHeight - desired thumbnail height in pixels
  * @param {Boolean} retina - if true, the result thumbnail is 2x its target size
+ * @param {Boolean} returnBlob - if true, the returned result is an image blob,
+ *          otherwise, it's a dataURL string
  * @returns {Promise}
  */
-export function createThumbnail (imageData, targetWidth, targetHeight, retina = true) {
+export function createThumbnail (imageData, targetWidth, targetHeight, retina = true, returnBlob = true) {
     // Create an in-memory canvas to render the original image data to.
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -29,7 +32,7 @@ export function createThumbnail (imageData, targetWidth, targetHeight, retina = 
     canvas.width = targetWidth;
     canvas.height = targetHeight;
 
-    // Wraps image loading in a Promise object and returns it
+    // Wrap image loading in a Promise object and returns it
     return new Promise(function (resolve, reject) {
         var image = new Image();
 
@@ -64,17 +67,28 @@ export function createThumbnail (imageData, targetWidth, targetHeight, retina = 
                 sourceY = 0;
             }
 
-            // Draws the source image to the canvas. This does the scaling and cropping.
+            // Draw the source image to the canvas. This does the scaling and cropping.
             context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight);
 
-            // Returns the thumbnail's dataURL value as the resolve value of this Promise
-            resolve(canvas.toDataURL());
+            // Revoke the object URL for the blob; this prevents memory leakage
+            URL.revokeObjectURL(image.src);
+
+            if (returnBlob) {
+                // Return an image blob as the resolve value of this Promise
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/png');
+            }
+            else {
+                // Returns the thumbnail's dataURL value as the resolve value of this Promise
+                resolve(canvas.toDataURL());
+            }
         };
 
         image.onerror = function () {
             reject('Unable to create thumbnail.');
         };
 
-        image.src = imageData;
+        image.src = (typeof imageData === 'string') ? imageData : URL.createObjectURL(imageData);
     });
 }

@@ -26,7 +26,7 @@
 @import '_tooltip.react';
 @import '_modals';
 @import '_modals.examples';
-@import '_modals.open-gist';
+@import '_modals.open-from-cloud';
 @import '_shield';
 @import '_inputs';
 
@@ -53,6 +53,9 @@
 @import '_widgets-modal.react';
 @import '_widgets.react';
 @import '_color';
+
+/* Etc */
+@import '_sign-in-overlay';
 
 /* Embedded Tangram Play */
 @import '_embeddedPlay';

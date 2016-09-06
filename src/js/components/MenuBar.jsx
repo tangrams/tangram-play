@@ -8,17 +8,24 @@ import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
+import { EventEmitter } from './event-emitter';
 
+import localforage from 'localforage';
 import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
+import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
-import SaveGistModal from '../modals/SaveGistModal';
+import SaveGistModal from '../modals/SaveGistModal'; // LEGACY.
+import SaveToCloudModal from '../modals/SaveToCloudModal';
+import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
+import { requestUserSignInState } from '../user/sign-in';
+import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
 
 const _clickNew = function () {
@@ -55,6 +62,66 @@ const _clickSaveGist = function () {
     ReactDOM.render(<SaveGistModal />, document.getElementById('modal-container'));
 };
 
+const unsubscribeSaveToCloud = function () {
+    EventEmitter.unsubscribe('mapzen:sign_in', _clickSaveToCloud);
+};
+
+const showSaveToCloudModal = function () {
+    unsubscribeSaveToCloud();
+    ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
+};
+
+const _clickSaveToCloud = function () {
+    requestUserSignInState()
+        .then((data) => {
+            if (data.id) {
+                showSaveToCloudModal();
+            }
+            else {
+                ReactDOM.render(
+                    <ConfirmDialogModal
+                        message="You are not signed in! Please sign in now."
+                        confirmCallback={openSignInWindow}
+                        cancelCallback={unsubscribeSaveToCloud}
+                    />,
+                    document.getElementById('modal-container')
+                );
+                EventEmitter.subscribe('mapzen:sign_in', _clickSaveToCloud);
+            }
+        });
+};
+
+const unsubscribeOpenFromCloud = function () {
+    EventEmitter.unsubscribe('mapzen:sign_in', _clickOpenFromCloud);
+};
+
+const showOpenFromCloudModal = function () {
+    unsubscribeOpenFromCloud();
+    EditorIO.checkSaveStateThen(() => {
+        ReactDOM.render(<OpenFromCloudModal />, document.getElementById('modal-container'));
+    });
+};
+
+const _clickOpenFromCloud = function () {
+    requestUserSignInState()
+        .then((data) => {
+            if (data.id) {
+                showOpenFromCloudModal();
+            }
+            else {
+                ReactDOM.render(
+                    <ConfirmDialogModal
+                        message="You are not signed in! Please sign in now."
+                        confirmCallback={openSignInWindow}
+                        cancelCallback={unsubscribeOpenFromCloud}
+                    />,
+                    document.getElementById('modal-container')
+                );
+                EventEmitter.subscribe('mapzen:sign_in', _clickOpenFromCloud);
+            }
+        });
+};
+
 const _clickSaveCamera = function () {
     takeScreenshot();
 };
@@ -75,8 +142,49 @@ export default class MenuBar extends React.Component {
         super(props);
         this.state = {
             inspectActive: false, // Represents whether inspect mode is on / off
-            fullscreenActive: false
+            fullscreenActive: false,
+            legacyGistMenu: false,
+            mapzenAccount: false
         };
+
+        this.getUserData = this.getUserData.bind(this);
+    }
+
+    // Determine whether some menu items should display
+    componentWillMount () {
+        // Only display "Open a gist" if user has saved gists. This is a
+        // legacy feature. It will be completely removed in the future.
+        const STORAGE_SAVED_GISTS = 'gists';
+        localforage.getItem(STORAGE_SAVED_GISTS)
+            .then((gists) => {
+                if (Array.isArray(gists)) {
+                    this.setState({
+                        legacyGistMenu: true
+                    });
+                }
+            });
+
+        // Only display items related to Mapzen account if Tangram Play is
+        // loaded from a domain with Mapzen account capabilities.
+        this.getUserData();
+    }
+
+    componentDidMount () {
+        EventEmitter.subscribe('mapzen:sign_in', this.getUserData);
+        EventEmitter.subscribe('mapzen:sign_out', () => {
+            this.setState({ mapzenAccount: false });
+        });
+    }
+
+    getUserData () {
+        requestUserSignInState().then((data) => {
+            // Note: currently this is only enabled for admin accounts.
+            if (data && data.admin === true) {
+                this.setState({
+                    mapzenAccount: true
+                });
+            }
+        });
     }
 
     _clickFullscreen () {
@@ -141,9 +249,24 @@ export default class MenuBar extends React.Component {
                                 <MenuItem onClick={_clickOpenFile}>
                                     <Icon type="bt-folder" />Open a file
                                 </MenuItem>
-                                <MenuItem onClick={_clickOpenGist}>
-                                    <Icon type="bt-code" />Open a saved Gist
-                                </MenuItem>
+                                {(() => {
+                                    if (this.state.mapzenAccount) {
+                                        return (
+                                            <MenuItem onClick={_clickOpenFromCloud}>
+                                                <Icon type="bt-cloud-download" />Open from your Mapzen account
+                                            </MenuItem>
+                                        );
+                                    }
+                                })()}
+                                {(() => {
+                                    if (this.state.legacyGistMenu) {
+                                        return (
+                                            <MenuItem onClick={_clickOpenGist}>
+                                                <Icon type="bt-code" />Open a saved Gist
+                                            </MenuItem>
+                                        );
+                                    }
+                                })()}
                                 <MenuItem onClick={_clickOpenURL}>
                                     <Icon type="bt-link" />Open from URL
                                 </MenuItem>
@@ -164,8 +287,17 @@ export default class MenuBar extends React.Component {
                                 id="save-dropdown"
                             >
                                 <MenuItem onClick={_clickSaveFile}>
-                                    <Icon type="bt-folder" />Save to file
+                                    <Icon type="bt-folder" />Save to your computer
                                 </MenuItem>
+                                {(() => {
+                                    if (this.state.mapzenAccount) {
+                                        return (
+                                            <MenuItem onClick={_clickSaveToCloud}>
+                                                <Icon type="bt-cloud-upload" />Save to your Mapzen account
+                                            </MenuItem>
+                                        );
+                                    }
+                                })()}
                                 <MenuItem onClick={_clickSaveGist}>
                                     <Icon type="bt-code" />Save to Gist
                                 </MenuItem>

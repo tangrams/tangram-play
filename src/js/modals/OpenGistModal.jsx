@@ -34,6 +34,13 @@ export default class OpenGistModal extends React.Component {
         localforage.getItem(STORAGE_SAVED_GISTS)
             .then((gists) => {
                 if (Array.isArray(gists)) {
+                    // NOTE:
+                    // string-only gists urls are migrated anyway;
+                    // we'll skip these for now, filter them out
+                    gists = reject(gists, function (item) {
+                        return typeof item === 'string';
+                    });
+
                     // Reverse-sort the gists; most recent will display up top
                     // Note this mutates the original array.
                     reverse(gists);
@@ -106,13 +113,6 @@ export default class OpenGistModal extends React.Component {
     render () {
         let gists = this.state.gists;
 
-        // NOTE:
-        // string-only gists urls are migrated anyway;
-        // we'll skip these for now, filter them out
-        gists = reject(gists, function (item) {
-            return typeof item === 'string';
-        });
-
         let gistList;
 
         if (this.state.loaded === true && gists.length === 0) {
@@ -121,7 +121,7 @@ export default class OpenGistModal extends React.Component {
         else {
             gistList = gists.map((item, index) => {
                 // If the scene is selected, a special class is applied later to it
-                let classString = 'open-gist-option';
+                let classString = 'open-from-cloud-option';
 
                 // TODO: Do not hardcode.
                 const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
@@ -132,7 +132,7 @@ export default class OpenGistModal extends React.Component {
                 }
 
                 if (this.state.selected === item.url) {
-                    classString += ' open-gist-selected';
+                    classString += ' open-from-cloud-selected';
                 }
 
                 // TODO:
@@ -146,17 +146,17 @@ export default class OpenGistModal extends React.Component {
                         onClick={() => { this.setState({ selected: item.url }); }}
                         onDoubleClick={this.onClickConfirm}
                     >
-                        <div className='open-gist-option-thumbnail'>
+                        <div className="open-from-cloud-option-thumbnail">
                             <img src={item.thumbnail} />
                         </div>
-                        <div className='open-gist-option-info'>
-                            <div className='open-gist-option-name'>
+                        <div className="open-from-cloud-option-info">
+                            <div className="open-from-cloud-option-name">
                                 {item.name}
                             </div>
-                            <div className='open-gist-option-description'>
+                            <div className="open-from-cloud-option-description">
                                 {item.description}
                             </div>
-                            <div className='open-gist-option-date'>
+                            <div className="open-from-cloud-option-date">
                                 {/* Show the date this was saved.
                                     TODO: better formatting;
                                     maybe use moment.js */}
@@ -171,26 +171,26 @@ export default class OpenGistModal extends React.Component {
         // Render the entire modal
         return (
             <Modal
-                className='modal-alt open-gist-modal'
+                className="modal-alt open-from-cloud-modal"
                 ref={(ref) => { this.component = ref; }}
                 cancelFunction={this.onClickClose}
             >
                 <h4>Open a previously saved Gist</h4>
 
-                <div className='modal-content open-gist-list'>
+                <div className="modal-content open-from-cloud-list">
                     {gistList}
                 </div>
 
-                <div className='modal-buttons'>
-                    <Button onClick={this.onClickCancel} className='modal-cancel'>
-                        <Icon type={'bt-times'} /> Cancel
+                <div className="modal-buttons">
+                    <Button onClick={this.onClickCancel} className="modal-cancel">
+                        <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
                         onClick={this.onClickConfirm}
-                        className='modal-confirm'
+                        className="modal-confirm"
                         disabled={this.state.selected === null}
                     >
-                        <Icon type={'bt-check'} /> Open
+                        <Icon type="bt-check" /> Open
                     </Button>
                 </div>
             </Modal>

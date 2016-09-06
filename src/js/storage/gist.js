@@ -27,7 +27,7 @@ export function saveToGist (data, successCallback, errorCallback) {
     // convert it to a thumbnail at a fixed dimension. This
     // makes file sizes and layout more predictable.
     getScreenshotData().then((screenshot) => {
-        return createThumbnail(screenshot.url, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+        return createThumbnail(screenshot.url, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, true, false);
     }).then(thumbnail => {
         const files = {};
         const cachedUserData = getCachedUserSignInData();
@@ -59,6 +59,7 @@ export function saveToGist (data, successCallback, errorCallback) {
         // GitHub Gist does not appear to have a limit on filesize,
         // but this thumbnail image should clock in at around ~90kb to ~120kb
         // (unoptimized, but that's the limitations of our thumbnail function)
+        // We cannot store binary data over this API - this is stored as a data URL.
         files['thumbnail.png'] = {
             content: thumbnail
         };
