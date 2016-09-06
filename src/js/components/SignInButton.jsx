@@ -54,6 +54,7 @@ export default class SignInButton extends React.Component {
                         avatar: null,
                         admin: false
                     });
+                    EventEmitter.dispatch('mapzen:sign_out', {});
                 }
                 else {
                     ReactDOM.render(<ErrorModal error="Unable to sign you out." />, document.getElementById('modal-container'));

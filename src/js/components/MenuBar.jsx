@@ -171,6 +171,9 @@ export default class MenuBar extends React.Component {
 
     componentDidMount () {
         EventEmitter.subscribe('mapzen:sign_in', this.getUserData);
+        EventEmitter.subscribe('mapzen:sign_out', () => {
+            this.setState({ mapzenAccount: false });
+        });
     }
 
     getUserData () {
