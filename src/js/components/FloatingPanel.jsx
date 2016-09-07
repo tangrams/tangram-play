@@ -3,23 +3,23 @@ import Modal from 'react-bootstrap/lib/Modal';
 import DraggableModal from './DraggableModal';
 
 export default class FloatingPanel extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             x: this.props.x,
-            y: this.props.y
+            y: this.props.y,
         };
 
         this.recalculatePosition = this.recalculatePosition.bind(this);
     }
 
-    componentWillMount () {
+    componentWillMount() {
         // Set the state with the results of the recalculated position
         this.setState(this.recalculatePosition(this.state));
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
         this.setState(this.recalculatePosition(nextProps));
     }
 
@@ -36,7 +36,7 @@ export default class FloatingPanel extends React.Component {
      * @returns {Object} - object containing properties `x` and `y` that should
      *          be passed to `setState()`
      */
-    recalculatePosition (state) {
+    recalculatePosition(state) {
         // Magic number: a vertical distance in pixels to offset from the
         // provided Y value to give it a little bit of breathing room.
         const VERTICAL_POSITION_BUFFER = 5;
@@ -70,11 +70,11 @@ export default class FloatingPanel extends React.Component {
 
         return {
             x: posX,
-            y: posY
+            y: posY,
         };
     }
 
-    render () {
+    render() {
         return (
             <Modal
                 dialogComponentClass={DraggableModal}
@@ -102,5 +102,5 @@ FloatingPanel.propTypes = {
     width: React.PropTypes.number,
     show: React.PropTypes.bool,
     onHide: React.PropTypes.func,
-    children: React.PropTypes.node
+    children: React.PropTypes.node,
 };

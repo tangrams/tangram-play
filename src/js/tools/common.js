@@ -14,6 +14,7 @@ export function getDevicePixelRatio(ctx) {
 }
 
 export function createObjectURL(string) {
-    const create = (window.URL && window.URL.createObjectURL) || (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
+    const create = (window.URL && window.URL.createObjectURL) ||
+        (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
     return create(new Blob([string]));
 }

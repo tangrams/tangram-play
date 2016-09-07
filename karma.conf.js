@@ -12,13 +12,14 @@ module.exports = function (config) {
             // 'build/js/modernizr.js',
             // 'index.html',
             // Test suites
-            'test/**/*.js'
+            'test/**/*.js',
+            'test/**/*.jsx',
         ],
 
         exclude: [],
         preprocessors: {
             // 'src/js/**/*.js': ['browserify'],
-            'test/**/*.js': ['browserify']
+            'test/**/*.js': ['browserify'],
         },
 
         browserify: {
@@ -26,7 +27,7 @@ module.exports = function (config) {
             extensions: ['.jsx'],
             transform: [
                 ['babelify', { presets: ['es2015', 'react'] }],
-                'brfs'
+                'brfs',
             ],
             // Configuration required for enzyme to work; see
             // http://airbnb.io/enzyme/docs/guides/browserify.html
@@ -36,7 +37,7 @@ module.exports = function (config) {
                     bundle.external('react/lib/ReactContext');
                     bundle.external('react/lib/ExecutionEnvironment');
                 });
-            }
+            },
         },
 
         plugins: [
@@ -44,7 +45,7 @@ module.exports = function (config) {
             'karma-sinon',
             'karma-phantomjs-launcher',
             'karma-mocha-reporter',
-            'karma-browserify'
+            'karma-browserify',
         ],
         reporters: ['mocha'],
 
@@ -55,6 +56,6 @@ module.exports = function (config) {
         autoWatch: false,
         browsers: ['PhantomJS'],
 
-        singleRun: true
+        singleRun: true,
     });
 };

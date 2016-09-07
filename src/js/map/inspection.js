@@ -1,3 +1,5 @@
+/* eslint-disable react/no-multi-comp */
+// TODO: Separate out; make JSX files
 import { capitalize } from 'lodash';
 import L from 'leaflet';
 import React from 'react';
@@ -5,12 +7,13 @@ import ReactDOM from 'react-dom';
 import { map, tangramLayer } from './map';
 import { getNodesForAddress } from '../editor/editor';
 import { highlightBlock } from '../editor/highlight';
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 let mountNode;
 
 let isPopupOpen = false;
-let currentPopupX, currentPopupY;
+let currentPopupX;
+let currentPopupY;
 let globalIntrospectionState = false;
 
 // We use this to find the mountpoint and cache it so future calls we return
@@ -30,38 +33,39 @@ class TangramInspectionHeader extends React.Component {
         // (For more info: https://mapzen.com/documentation/vector-tiles/layers/)
         if (properties.kind) {
             return properties.kind;
-        }
-        // Sometimes there's no kind value but a key-value of "land: 'base'" (are there other values?)
-        else if (properties.land) {
+        } else if (properties.land) {
+            // Sometimes there's no kind value but a key-value of "land: 'base'" (are there other values?)
             return 'land';
         }
+
+        return null;
     }
 
     formatKindValue(text) {
+        let formattedText;
+
         if (typeof text === 'string') {
-            text = text.replace(/_/g, ' ');
-            text = capitalize(text);
-        }
-        else {
-            text = '';
+            formattedText = text.replace(/_/g, ' ');
+            formattedText = capitalize(formattedText);
+        } else {
+            formattedText = '';
         }
 
-        return text;
+        return formattedText;
     }
 
     determineFeatureName(properties) {
         if (properties.name) {
             return properties.name;
-        }
-        else if (properties['route_name']) {
-            return properties['route_name'];
-        }
-        else if (properties.land) {
+        } else if (properties.route_name) {
+            return properties.route_name;
+        } else if (properties.land) {
             return properties.land;
+        } else if (properties.addr_housenumber && properties.addr_street) {
+            return `${properties.addr_housenumber} ${properties.addr_street}`;
         }
-        else if (properties['addr_housenumber'] && properties['addr_street']) {
-            return `${properties['addr_housenumber']} ${properties['addr_street']}`;
-        }
+
+        return null;
     }
 
     render() {
@@ -79,6 +83,7 @@ class TangramInspectionHeader extends React.Component {
                     if (name && kind) {
                         return <div className="map-inspection-header-sublabel">{kind}</div>;
                     }
+                    return null;
                 })()}
             </div>
         );
@@ -99,13 +104,13 @@ class TangramInspectionHover extends React.Component {
     componentDidUpdate() {
         // Put the component in the right place, if rendered. Some conditions
         // may prevent rendering; see the render() function.
-        if (this._el) {
+        if (this.el) {
             this.applyHoverPosition();
         }
     }
 
     applyHoverPosition() {
-        const rect = this._el.getBoundingClientRect();
+        const rect = this.el.getBoundingClientRect();
         const width = rect.width;
         const height = rect.height;
         const pixelX = this.props.selection.pixel.x;
@@ -114,8 +119,8 @@ class TangramInspectionHover extends React.Component {
         // TODO: don't hardcode magic number
         const offsetY = 24;
 
-        this._el.style.left = (pixelX - width / 2) + 'px';
-        this._el.style.top = (pixelY - height - offsetY) + 'px';
+        this.el.style.left = `${pixelX - (width / 2)}px`;
+        this.el.style.top = `${pixelY - height - offsetY}px`;
     }
 
     render() {
@@ -125,16 +130,15 @@ class TangramInspectionHover extends React.Component {
         if (!this.props.selection.feature) {
             return null;
         }
-        else {
-            return (
-                <div
-                    className="map-inspection map-inspection-hover"
-                    ref={(el) => { this._el = el; }}
-                >
-                    <TangramInspectionHeader feature={this.props.selection.feature} />
-                </div>
-            );
-        }
+
+        return (
+            <div
+                className="map-inspection map-inspection-hover"
+                ref={(el) => { this.el = el; }}
+            >
+                <TangramInspectionHeader feature={this.props.selection.feature} />
+            </div>
+        );
     }
 }
 
@@ -153,7 +157,7 @@ class TangramInspectionPopup extends React.Component {
 
     onClickSourceName(event) {
         const name = event.currentTarget.dataset.sourceName;
-        const node = getNodesForAddress('sources:' + name);
+        const node = getNodesForAddress(`sources:${name}`);
         if (node) {
             highlightBlock(node);
         }
@@ -162,7 +166,7 @@ class TangramInspectionPopup extends React.Component {
     // Active highlighting
     onMouseDownLayer(event) {
         // Be sure to destroy all other `active` classes on other layers
-        const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
+        const layersNodeList = this.layersEl.querySelectorAll('.map-inspection-layer-item');
         for (let i = 0; i < layersNodeList.length; i++) {
             layersNodeList[i].classList.remove('active');
         }
@@ -181,7 +185,7 @@ class TangramInspectionPopup extends React.Component {
     // its position in the editor.
     onClickLayer(event) {
         // Be sure to destroy all other `selected` classes on other layers
-        const layersNodeList = this._layersEl.querySelectorAll('.map-inspection-layer-item');
+        const layersNodeList = this.layersEl.querySelectorAll('.map-inspection-layer-item');
         for (let i = 0; i < layersNodeList.length; i++) {
             layersNodeList[i].classList.remove('map-inspection-selected');
         }
@@ -200,7 +204,7 @@ class TangramInspectionPopup extends React.Component {
         const sorted = [];
         Object.keys(properties)
             .sort()
-            .forEach(function (v, i) {
+            .forEach((v, i) => {
                 sorted.push([v, properties[v]]);
             });
 
@@ -211,108 +215,174 @@ class TangramInspectionPopup extends React.Component {
         if (!this.props.selection.feature) {
             return null;
         }
-        else {
-            const sortedProperties = this.sortFeatureProperties(this.props.selection.feature.properties);
-            const layers = this.props.selection.feature.layers;
+        const sortedProperties = this.sortFeatureProperties(this.props.selection.feature.properties);
+        const layers = this.props.selection.feature.layers;
 
-            return (
-                <div className="map-inspection" ref={(el) => { this._el = el; }}>
-                    <TangramInspectionHeader feature={this.props.selection.feature} />
-                    <div className="map-inspection-source">
-                        <div className="map-inspection-label">Data source</div>
-                        <div className="map-inspection-properties-table-wrapper">
-                            <table className="map-inspection-properties-table">
-                                <tbody>
-                                    <tr
-                                        onClick={this.onClickSourceName}
-                                        data-source-name={this.props.selection.feature.source_name}
-                                    >
-                                        <td className="map-inspection-source-item-label">Name</td>
-                                        <td>{this.props.selection.feature.source_name}</td>
-                                    </tr>
-                                    {(() => {
-                                        // Not all data sources will have multiple layers.
-                                        // For instance, https://vector.mapzen.com/osm/earth/{z}/{x}/{y}.topojson
-                                        // is just the earth layer. In this situation, the
-                                        // `selection.feature` object reported by Tangram
-                                        // does not contain a `source_layer` property.
-                                        if (this.props.selection.feature.source_layer) {
-                                            return (
-                                                <tr>
-                                                    <td className="map-inspection-source-item-label">Layer</td>
-                                                    <td>{this.props.selection.feature.source_layer}</td>
-                                                </tr>
-                                            );
-                                        }
-                                    })()}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div className="map-inspection-properties">
-                        <div className="map-inspection-label">Properties</div>
-                        <div className="map-inspection-properties-table-wrapper">
-                            <table className="map-inspection-properties-table">
-                                <tbody>
-                                    {sortedProperties.map((item) => {
-                                        const key = item[0];
-                                        const value = item[1];
-
+        return (
+            <div className="map-inspection" ref={(el) => { this.el = el; }}>
+                <TangramInspectionHeader feature={this.props.selection.feature} />
+                <div className="map-inspection-source">
+                    <div className="map-inspection-label">Data source</div>
+                    <div className="map-inspection-properties-table-wrapper">
+                        <table className="map-inspection-properties-table">
+                            <tbody>
+                                <tr
+                                    onClick={this.onClickSourceName}
+                                    data-source-name={this.props.selection.feature.source_name}
+                                >
+                                    <td className="map-inspection-source-item-label">Name</td>
+                                    <td>{this.props.selection.feature.source_name}</td>
+                                </tr>
+                                {(() => {
+                                    // Not all data sources will have multiple layers.
+                                    // For instance, https://vector.mapzen.com/osm/earth/{z}/{x}/{y}.topojson
+                                    // is just the earth layer. In this situation, the
+                                    // `selection.feature` object reported by Tangram
+                                    // does not contain a `source_layer` property.
+                                    if (this.props.selection.feature.source_layer) {
                                         return (
-                                            <tr key={key}>
-                                                <td>{key}</td>
-                                                <td>{value}</td>
+                                            <tr>
+                                                <td className="map-inspection-source-item-label">Layer</td>
+                                                <td>{this.props.selection.feature.source_layer}</td>
                                             </tr>
                                         );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
+                                    }
+                                    return null;
+                                })()}
+                            </tbody>
+                        </table>
                     </div>
-                    <div className="map-inspection-layers">
-                        <div className="map-inspection-label">Layers</div>
-                        <div className="map-inspection-layers-container" ref={(el) => { this._layersEl = el; }}>
-                            {layers.map((item) => {
-                                const address = `layers:${item}`;
-                                const node = getNodesForAddress(address);
-
-                                if (node) {
-                                    return (
-                                        <div
-                                            className="map-inspection-layer-item"
-                                            key={item}
-                                            onMouseDown={this.onMouseDownLayer}
-                                            onMouseOut={this.onMouseOutLayer}
-                                            onMouseUp={this.onMouseUpLayer}
-                                            onClick={this.onClickLayer}
-                                            data-node-address={address}
-                                        >
-                                            <span className="map-inspection-layer-icon icon-layers" />
-                                            {item}
-                                        </div>
-                                    );
-                                }
-                                else {
-                                    return (
-                                        <div className="map-inspection-layer-item" key={item}>
-                                            <span className="map-inspection-layer-icon icon-imported" />
-                                            {item}
-                                        </div>
-                                    );
-                                }
-                            })}
-                        </div>
-                    </div>
-                    <div className="map-inspection-close" onClick={this.onClickClose}>×</div>
                 </div>
-            );
-        }
+                <div className="map-inspection-properties">
+                    <div className="map-inspection-label">Properties</div>
+                    <div className="map-inspection-properties-table-wrapper">
+                        <table className="map-inspection-properties-table">
+                            <tbody>
+                                {sortedProperties.map((item) => {
+                                    const key = item[0];
+                                    const value = item[1];
+
+                                    return (
+                                        <tr key={key}>
+                                            <td>{key}</td>
+                                            <td>{value}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div className="map-inspection-layers">
+                    <div className="map-inspection-label">Layers</div>
+                    <div className="map-inspection-layers-container" ref={(el) => { this.layersEl = el; }}>
+                        {layers.map((item) => {
+                            const address = `layers:${item}`;
+                            const node = getNodesForAddress(address);
+
+                            if (node) {
+                                return (
+                                    <div
+                                        className="map-inspection-layer-item"
+                                        key={item}
+                                        onMouseDown={this.onMouseDownLayer}
+                                        onMouseOut={this.onMouseOutLayer}
+                                        onMouseUp={this.onMouseUpLayer}
+                                        onClick={this.onClickLayer}
+                                        data-node-address={address}
+                                    >
+                                        <span className="map-inspection-layer-icon icon-layers" />
+                                        {item}
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <div className="map-inspection-layer-item" key={item}>
+                                    <span className="map-inspection-layer-icon icon-imported" />
+                                    {item}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+                <div className="map-inspection-close" onClick={this.onClickClose}>×</div>
+            </div>
+        );
     }
 }
 
 TangramInspectionPopup.propTypes = {
     selection: React.PropTypes.object,
 };
+
+/**
+ * Attaches this content to Leaflet's L.popup object. This allows the inspector to
+ * be attached to the lat/lng coordinate, so that it is in the right position when the
+ * map is panned or zoomed. It also allows the map to be scrolled into place to show
+ * the entire popup when it opens.
+ */
+function showPopup(selection) {
+    const leafletEvent = selection.leaflet_event;
+    const popup = L.popup({
+        closeButton: false,
+        closeOnClick: false,
+        autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
+        offset: [0, -6],
+        className: 'map-inspection-popup',
+    });
+
+    // This is just a placeholder div to mount into. This placeholder div is
+    // attached to the Leaflet popup.
+    const el = document.createElement('div');
+    ReactDOM.render(<TangramInspectionPopup selection={selection} />, el);
+
+    popup
+        .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
+        .setContent(el)
+        .openOn(map);
+
+    // Provide an animation in. By itself, the translateZ doesn't mean anything.
+    // It's just a "transition from" point. Leaflet adds an animation class
+    // which we hook into to provide a Y-position transform from zero.
+    popup._container.style.transform = 'translateZ(100px)'; // eslint-disable-line no-underscore-dangle
+
+    function onNewScene(event) {
+        map.closePopup(popup);
+    }
+
+    function onPopupClose(event) {
+        // Leaflet will be responsible for destroying the elements on close.
+
+        // Provide an animation out. Like the transition in, removing the transform
+        // style here just provides a "transition to" point. We use the Leaflet
+        // popup class to provide the Y-position transform.
+        event.popup._container.style.transform = null; // eslint-disable-line no-underscore-dangle
+        isPopupOpen = false;
+
+        // Clean up React DOM
+        // NOTE we should just something like ReactTransitionGroup to handle
+        // the appropriate timing after animation is over.
+        window.setTimeout(() => {
+            ReactDOM.unmountComponentAtNode(el);
+        }, 120);
+
+        // Clean up events from the map listeners
+        map.off('popupclose', onPopupClose);
+        EventEmitter.unsubscribe('tangram:sceneload', onNewScene);
+    }
+
+    // Attach a listener to the popup close event to clean up. Note that there
+    // can be various ways of closing this popup: the X button, or by clicking
+    // elsewhere on the map and opening a new popup.
+    map.on('popupclose', onPopupClose);
+
+    // Attach a listener to clean up the popup when a new scene is loaded.
+    EventEmitter.subscribe('tangram:sceneload', onNewScene);
+
+    // Record this state
+    isPopupOpen = true;
+}
 
 export function handleInspectionHoverEvent(selection) {
     // Do not show when global introspection is off, or if the
@@ -351,74 +421,6 @@ export function handleInspectionClickEvent(selection) {
 }
 
 /**
- * Attaches this content to Leaflet's L.popup object. This allows the inspector to
- * be attached to the lat/lng coordinate, so that it is in the right position when the
- * map is panned or zoomed. It also allows the map to be scrolled into place to show
- * the entire popup when it opens.
- */
-function showPopup(selection) {
-    const leafletEvent = selection.leaflet_event;
-    const popup = L.popup({
-        closeButton: false,
-        closeOnClick: false,
-        autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
-        offset: [0, -6],
-        className: 'map-inspection-popup',
-    });
-
-    // This is just a placeholder div to mount into. This placeholder div is
-    // attached to the Leaflet popup.
-    const el = document.createElement('div');
-    ReactDOM.render(<TangramInspectionPopup selection={selection} />, el);
-
-    popup
-        .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
-        .setContent(el)
-        .openOn(map);
-
-    // Provide an animation in. By itself, the translateZ doesn't mean anything.
-    // It's just a "transition from" point. Leaflet adds an animation class
-    // which we hook into to provide a Y-position transform from zero.
-    popup._container.style.transform = 'translateZ(100px)';
-
-    // Attach a listener to the popup close event to clean up. Note that there
-    // can be various ways of closing this popup: the X button, or by clicking
-    // elsewhere on the map and opening a new popup.
-    map.on('popupclose', onPopupClose);
-
-    // Attach a listener to clean up the popup when a new scene is loaded.
-    EventEmitter.subscribe('tangram:sceneload', onNewScene);
-
-    function onPopupClose(event) {
-        // Leaflet will be responsible for destroying the elements on close.
-
-        // Provide an animation out. Like the transition in, removing the transform
-        // style here just provides a "transition to" point. We use the Leaflet
-        // popup class to provide the Y-position transform.
-        event.popup._container.style.transform = null;
-        isPopupOpen = false;
-
-        // Clean up React DOM
-        // NOTE we should just something like ReactTransitionGroup to handle
-        // the appropriate timing after animation is over.
-        window.setTimeout(() => {
-            ReactDOM.unmountComponentAtNode(el);
-        }, 120);
-
-        // Clean up events from the map listeners
-        map.off('popupclose', onPopupClose);
-        EventEmitter.unsubscribe('tangram:sceneload', onNewScene);
-    }
-
-    function onNewScene(event) {
-        map.closePopup(popup);
-    }
-
-    // Record this state
-    isPopupOpen = true;
-}
-
-/**
  * Turns on global introspection mode for Tangram.
  *
  * @public
@@ -432,8 +434,7 @@ export function setGlobalIntrospection(boolean) {
     // Turn mouse cursor into a crosshair when on the map
     if (boolean === true) {
         map.getContainer().classList.add('map-crosshair');
-    }
-    else {
+    } else {
         map.getContainer().classList.remove('map-crosshair');
 
         // Cleanup

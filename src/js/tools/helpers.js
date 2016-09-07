@@ -37,10 +37,9 @@ export function prependProtocolToUrl(url) {
     // guess whether the protocol is https://, http:// or something else. However,
     // we can let the browser decide.
     if (url.search(schemePattern) !== 0 && url.search(domainPattern) === 0) {
-        return '//' + url;
+        return `//${url}`;
     }
+
     // If the string does already start with a protocol (scheme), return it as is.
-    else {
-        return url;
-    }
+    return url;
 }

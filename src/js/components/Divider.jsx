@@ -5,22 +5,65 @@ import { throttle } from 'lodash';
 import localforage from 'localforage';
 import { map } from '../map/map';
 import { editor } from '../editor/editor';
-import { EventEmitter } from './event-emitter';
+import EventEmitter from './event-emitter';
 
 const EDITOR_MINIMUM_WIDTH = 160; // integer, in pixels
 const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
 const STORAGE_POSITION_KEY = 'divider-position-x';
 
+/**
+ * Clamps the position to a value to make sure that the map and editor are
+ * never below their minimum widths. This is important to check when
+ * viewport may change (e.g. the user resizes it)
+ *
+ * @param {Number} x - the current position of the divider
+ * @returns {Number} x - the clamped, if needed, position to place the divider.
+ */
+function clampPosition(x) {
+    const min = MAP_MINIMUM_WIDTH;
+    const max = window.innerWidth - EDITOR_MINIMUM_WIDTH;
+    return Math.min(Math.max(x, min), max);
+}
+
+/**
+ * Retrieves the starting position of the divider: a number value, in pixels,
+ * that the divider element's left edge should be offset from the left edge
+ * of the viewport.
+ *
+ * Restore it from memory, if saved from a previous session.
+ * Otherwise, put it at a default position based on current viewport width.
+ *
+ * @returns {Number} x - the position to place the divider.
+ */
+function getStartingPosition() {
+    return localforage.getItem(STORAGE_POSITION_KEY)
+        .then((storedPosition) => {
+            if (storedPosition) {
+                // Number is stored as string, cast it to number, then clamp
+                // the number to the permitted range, because viewport sizes
+                // may differ between sessions
+                return clampPosition(storedPosition);
+            }
+
+            if (window.innerWidth > 1024) {
+                return Math.floor(window.innerWidth * 0.6);
+            }
+
+            // If window.innerWidth <= 1024
+            return Math.floor(window.innerWidth / 2);
+        });
+}
+
 export default class Divider extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             startPosX: 0, // Fill this in later
             position: { // We need this to sync position state manually
                 x: 0,
-                y: 0
-            }
+                y: 0,
+            },
         };
 
         this.throttledRefresh = throttle(this.refreshMapAndEditor, 20);
@@ -37,7 +80,7 @@ export default class Divider extends React.Component {
     // responsible for this here. Starting position is an asynchronous
     // function (because it reads from localforage) so it is retrieved and
     // set on state.
-    componentDidMount () {
+    componentDidMount() {
         // Cache element references for map and editor
         this.mapEl = document.getElementById('map-container');
         this.contentEl = document.getElementById('content');
@@ -48,20 +91,20 @@ export default class Divider extends React.Component {
         getStartingPosition()
             .then((posX) => {
                 this.setState({
-                    startPosX: posX
+                    startPosX: posX,
                 });
 
                 this.changeMapAndEditorSize(posX);
             });
     }
 
-    onDrag (event, position) {
+    onDrag(event, position) {
         const posX = this.contentEl.getBoundingClientRect().left;
         this.changeMapAndEditorSize(clampPosition(posX + position.x));
         EventEmitter.dispatch('divider:drag');
     }
 
-    onStop (event, position) {
+    onStop(event, position) {
         const posX = position.node.getBoundingClientRect().left;
 
         // React-draggable internally manages its state if the `position` prop
@@ -75,8 +118,8 @@ export default class Divider extends React.Component {
         this.setState({
             position: {
                 x: 0,
-                y: 0
-            }
+                y: 0,
+            },
         });
 
         // Save the position in local memory
@@ -85,7 +128,7 @@ export default class Divider extends React.Component {
         EventEmitter.dispatch('divider:dragend');
     }
 
-    onResizeWindow () {
+    onResizeWindow() {
         // Window size has changed; update position
         const currentXPos = this.contentEl.getBoundingClientRect().left;
         const clampedXPos = clampPosition(currentXPos);
@@ -97,9 +140,9 @@ export default class Divider extends React.Component {
      * Not very React-friendly, but is quite fast.
      * TODO: Explore optimal ways to replace this.
      */
-    changeMapAndEditorSize (positionX) {
-        this.mapEl.style.width = positionX + 'px';
-        this.contentEl.style.width = (window.innerWidth - positionX) + 'px';
+    changeMapAndEditorSize(positionX) {
+        this.mapEl.style.width = `${positionX}px`;
+        this.contentEl.style.width = `${window.innerWidth - positionX}px`;
 
         this.throttledRefresh();
     }
@@ -109,22 +152,22 @@ export default class Divider extends React.Component {
      * during or after a divider drag. This may be expensive so it is
      * throttled and aliased as `this.throttledRefresh()`.
      */
-    refreshMapAndEditor () {
+    refreshMapAndEditor() {
         editor.refresh();
 
         // Also refresh the map
         map.invalidateSize({
             pan: {
-                animate: false
+                animate: false,
             },
             zoom: {
-                animate: false
+                animate: false,
             },
-            debounceMoveend: true
+            debounceMoveend: true,
         });
     }
 
-    render () {
+    render() {
         return (
             <Draggable
                 axis="x"
@@ -142,47 +185,4 @@ export default class Divider extends React.Component {
             </Draggable>
         );
     }
-}
-
-/**
- * Clamps the position to a value to make sure that the map and editor are
- * never below their minimum widths. This is important to check when
- * viewport may change (e.g. the user resizes it)
- *
- * @param {Number} x - the current position of the divider
- * @returns {Number} x - the clamped, if needed, position to place the divider.
- */
-function clampPosition (x) {
-    const min = MAP_MINIMUM_WIDTH;
-    const max = window.innerWidth - EDITOR_MINIMUM_WIDTH;
-    return Math.min(Math.max(x, min), max);
-}
-
-/**
- * Retrieves the starting position of the divider: a number value, in pixels,
- * that the divider element's left edge should be offset from the left edge
- * of the viewport.
- *
- * Restore it from memory, if saved from a previous session.
- * Otherwise, put it at a default position based on current viewport width.
- *
- * @returns {Number} x - the position to place the divider.
- */
-function getStartingPosition () {
-    return localforage.getItem(STORAGE_POSITION_KEY)
-        .then((storedPosition) => {
-            if (storedPosition) {
-                // Number is stored as string, cast it to number, then clamp
-                // the number to the permitted range, because viewport sizes
-                // may differ between sessions
-                return clampPosition(storedPosition);
-            }
-
-            if (window.innerWidth > 1024) {
-                return Math.floor(window.innerWidth * 0.6);
-            }
-            else {
-                return Math.floor(window.innerWidth / 2);
-            }
-        });
 }

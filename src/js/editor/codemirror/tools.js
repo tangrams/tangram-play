@@ -9,9 +9,8 @@ export function getSpaces(str) {
     if (space) {
         return (space[1].match(/\s/g) || []).length;
     }
-    else {
-        return 0;
-    }
+
+    return 0;
 }
 
 //  Get the indentation level of a line
@@ -63,7 +62,7 @@ export function jumpToLine(cm, nLine) {
 }
 
 //  Jump to a specific line
-export function jumpToLineAt(cm, nLine, offset) {
+export function jumpToLineAt(cm, nLine) {
     const t = cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top;
     cm.scrollTo(null, t);
 }
@@ -77,8 +76,33 @@ export function isFolder(cm, nLine) {
     if (cm.lineInfo(nLine).gutterMarkers) {
         return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
     }
-    else {
-        return false;
+
+    return false;
+}
+
+//  Unfold all lines
+//
+export function unfoldAll(cm) {
+    const opts = cm.state.foldGutter.options;
+    for (let i = 0; i < cm.lineCount(); i++) {
+        cm.foldCode({ line: i }, opts.rangeFinder, 'unfold');
+    }
+}
+
+//  Fold all lines above a specific indentation level
+//
+export function foldByLevel(cm, level) {
+    unfoldAll(cm);
+    const opts = cm.state.foldGutter.options;
+
+    let actualLine = cm.getDoc().size - 1;
+    while (actualLine >= 0) {
+        if (isFolder(cm, actualLine)) {
+            if (getLineInd(cm, actualLine) >= level) {
+                cm.foldCode({ line: actualLine, ch: 0 }, opts.rangeFinder);
+            }
+        }
+        actualLine--;
     }
 }
 
@@ -105,8 +129,7 @@ export function foldAllBut(cm, From, To, queryLevel) {
 
         if (level < minLevel) {
             minLevel = level;
-        }
-        else if (onBlock) {
+        } else if (onBlock) {
             startOn = i;
             onBlock = false;
         }
@@ -138,31 +161,5 @@ export function foldAllBut(cm, From, To, queryLevel) {
         if (getLineInd(cm, i) >= queryLevel) {
             cm.foldCode({ line: i }, opts.rangeFinder, 'fold');
         }
-    }
-}
-
-//  Unfold all lines
-//
-export function unfoldAll(cm) {
-    const opts = cm.state.foldGutter.options;
-    for (let i = 0; i < cm.lineCount(); i++) {
-        cm.foldCode({ line: i }, opts.rangeFinder, 'unfold');
-    }
-}
-
-//  Fold all lines above a specific indentation level
-//
-export function foldByLevel(cm, level) {
-    unfoldAll(cm);
-    const opts = cm.state.foldGutter.options;
-
-    let actualLine = cm.getDoc().size - 1;
-    while (actualLine >= 0) {
-        if (isFolder(cm, actualLine)) {
-            if (getLineInd(cm, actualLine) >= level) {
-                cm.foldCode({ line: actualLine, ch: 0 }, opts.rangeFinder);
-            }
-        }
-        actualLine--;
     }
 }

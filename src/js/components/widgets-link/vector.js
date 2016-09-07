@@ -9,18 +9,16 @@ export default class Vector {
         if (typeof vec === 'number') {
             type = type || 'vec2';
             this.set([vec], type);
-        }
-        else if (typeof vec === 'string') {
+        } else if (typeof vec === 'string') {
             const parts = vec.replace(/(?:#|\)|\]|%)/g, '').split('(');
             const strValues = (parts[1] || parts[0].replace(/(\[)/g, '')).split(/,\s*/);
-            type = type || (parts[1] ? parts[0].substr(0, 4) : 'vec' + strValues.length);
+            type = type || (parts[1] ? parts[0].substr(0, 4) : `vec${strValues.length}`);
             const values = [];
-            for (const i in strValues) {
-                values.push(parseFloat(strValues[i]));
-            }
+            Object.keys(strValues).forEach(key => {
+                values.push(parseFloat(strValues[key]));
+            });
             this.set(values, type);
-        }
-        else if (vec) {
+        } else if (vec) {
             if (Array.isArray(vec)) {
                 this.value = [];
                 this.value.length = 0;
@@ -29,8 +27,7 @@ export default class Vector {
                 for (let i = 0; i < this.dim; i++) {
                     this.value.push(vec[i] || filler);
                 }
-            }
-            else if (vec.dim) {
+            } else if (vec.dim) {
                 this.value = vec.value;
                 this.dim = vec.dim;
             }
@@ -82,19 +79,18 @@ export default class Vector {
     }
 
     getString(type) {
-        type = type || 'vec' + this.dim;
+        type = type || `vec${this.dim}`;
 
         let len = this.dim;
         let str = '';
-        let head = type + '(';
+        let head = `${type}(`;
         let end = ')';
 
         if (type === 'array') {
             head = '[';
             end = ']';
             len = this.dim;
-        }
-        else {
+        } else {
             len = Number(type.substr(3, 4));
         }
 
@@ -116,8 +112,7 @@ export default class Vector {
             for (let i = 0; i < this.dim; i++) {
                 this.value[i] = this.value[i] + v;
             }
-        }
-        else {
+        } else {
             const A = new Vector(v);
             const lim = Math.min(this.dim, A.dim);
             for (let i = 0; i < lim; i++) {
@@ -131,8 +126,7 @@ export default class Vector {
             for (let i = 0; i < this.dim; i++) {
                 this.value[i] = this.value[i] - v;
             }
-        }
-        else {
+        } else {
             const A = new Vector(v);
             const lim = Math.min(this.dim, A.dim);
             for (let i = 0; i < lim; i++) {
@@ -147,8 +141,7 @@ export default class Vector {
             for (let i = 0; i < this.dim; i++) {
                 this.value[i] = this.value[i] * v;
             }
-        }
-        else {
+        } else {
             // Multiply two vectors
             const A = new Vector(v);
             const lim = Math.min(this.dim, A.dim);
@@ -164,8 +157,7 @@ export default class Vector {
             for (let i = 0; i < this.dim; i++) {
                 this.value[i] = this.value[i] / v;
             }
-        }
-        else {
+        } else {
             // Multiply two vectors
             const A = new Vector(v);
             const lim = Math.min(this.dim, A.dim);
@@ -206,11 +198,13 @@ export default class Vector {
 
     getLengthSq() {
         if (this.dim === 2) {
-            return (this.value[0] * this.value[0] + this.value[1] * this.value[1]);
+            return ((this.value[0] * this.value[0]) + (this.value[1] * this.value[1]));
         }
-        else {
-            return (this.value[0] * this.value[0] + this.value[1] * this.value[1] + this.value[2] * this.value[2]);
-        }
+
+        // Otherwise:
+        return ((this.value[0] * this.value[0]) +
+            (this.value[1] * this.value[1]) +
+            (this.value[2] * this.value[2]));
     }
 
     getLength() {

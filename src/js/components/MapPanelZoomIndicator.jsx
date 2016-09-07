@@ -1,12 +1,12 @@
 import React from 'react';
 
 export default class MapPanelZoomIndicator extends React.PureComponent {
-    formatZoom (zoom) {
+    formatZoom(zoom) {
         const fractionalNumber = Math.floor(zoom * 10) / 10;
         return Number.parseFloat(fractionalNumber).toFixed(1);
     }
 
-    render () {
+    render() {
         return (
             <div className="map-panel-zoom">
                 z{this.formatZoom(this.props.zoom)}
@@ -16,5 +16,5 @@ export default class MapPanelZoomIndicator extends React.PureComponent {
 }
 
 MapPanelZoomIndicator.propTypes = {
-    zoom: React.PropTypes.number
+    zoom: React.PropTypes.number,
 };

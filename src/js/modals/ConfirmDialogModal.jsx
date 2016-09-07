@@ -1,41 +1,42 @@
+import { noop } from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
+import Modal from './Modal';
 import Icon from '../components/Icon';
-import { noop } from 'lodash';
 
 export default class ConfirmDialogModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         // Focus on the confirm button if `prop.focusConfirm` is true, which it
         // is by default. Set `focusConfirm={false}` for potentially dangerous
         // actions when you want to make sure the user has confirmed the action.
         if (this.props.focusConfirm === true) {
-            ReactDOM.findDOMNode(this.confirmButton).focus(); // eslint-disable-line react/no-find-dom-node
-        }
-        else {
-            ReactDOM.findDOMNode(this.cancelButton).focus(); // eslint-disable-line react/no-find-dom-node
+            // eslint-disable-next-line react/no-find-dom-node
+            ReactDOM.findDOMNode(this.confirmButton).focus();
+        } else {
+            // eslint-disable-next-line react/no-find-dom-node
+            ReactDOM.findDOMNode(this.cancelButton).focus();
         }
     }
 
-    onClickCancel () {
+    onClickCancel() {
         this.component.unmount();
         this.props.cancelCallback();
     }
 
-    onClickConfirm () {
+    onClickConfirm() {
         this.component.unmount();
         this.props.confirmCallback();
     }
 
-    render () {
+    render() {
         return (
             <Modal
                 className="error-modal"
@@ -74,11 +75,11 @@ ConfirmDialogModal.propTypes = {
     message: React.PropTypes.string.isRequired,
     confirmCallback: React.PropTypes.func,
     cancelCallback: React.PropTypes.func,
-    focusConfirm: React.PropTypes.bool
+    focusConfirm: React.PropTypes.bool,
 };
 
 ConfirmDialogModal.defaultProps = {
     confirmCallback: noop,
     cancelCallback: noop,
-    focusConfirm: true
+    focusConfirm: true,
 };

@@ -1,20 +1,20 @@
 import React from 'react';
 
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 export default class SignInOverlay extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
-            visible: false
+            visible: false,
         };
 
         this.show = this.show.bind(this);
         this.hide = this.hide.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         EventEmitter.subscribe('sign_in:on', () => {
             this.show();
         });
@@ -24,17 +24,17 @@ export default class SignInOverlay extends React.Component {
         });
     }
 
-    show () {
+    show() {
         this.setState({ visible: true });
     }
 
-    hide () {
+    hide() {
         window.setTimeout(() => {
             this.setState({ visible: false });
         }, 1600);
     }
 
-    render () {
+    render() {
         const displayStyle = this.state.visible
             ? { display: 'flex' }
             : { display: 'none' };
@@ -48,10 +48,10 @@ export default class SignInOverlay extends React.Component {
 }
 
 // Externally called to turn this on.
-export function showSignInOverlay () {
+export function showSignInOverlay() {
     EventEmitter.dispatch('sign_in:on', {});
 }
 
-export function hideSignInOverlay () {
+export function hideSignInOverlay() {
     EventEmitter.dispatch('sign_in:off', {});
 }

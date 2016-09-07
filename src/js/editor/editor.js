@@ -3,9 +3,10 @@ import { initCodeMirror } from './codemirror';
 import { parseYamlString } from './codemirror/yaml-tangram';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
 
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 // Export an instantiated CodeMirror instance
+// eslint-disable-next-line import/no-mutable-exports
 export let editor;
 
 // Debug
@@ -84,8 +85,7 @@ export function getNodesOfLine(line) {
     // return an empty array.
     try {
         return lineHandle.stateAfter.nodes || [];
-    }
-    catch (e) {
+    } catch (e) {
         return [];
     }
 }
@@ -111,8 +111,7 @@ export function getNodesInRange(from, to) {
                 nodes.push(node);
             }
         }
-    }
-    else {
+    } else {
         // If the searched nodes are in a range of lines
         for (let i = from.line; i <= to.line; i++) {
             const inLineNodes = getNodesOfLine(i);
@@ -123,14 +122,12 @@ export function getNodesInRange(from, to) {
                     if (node.range.to.ch > from.ch) {
                         nodes.push(node);
                     }
-                }
-                else if (node.range.to.line === to.line) {
+                } else if (node.range.to.line === to.line) {
                     // is in the end line
                     if (node.range.from.ch < to.ch) {
                         nodes.push(node);
                     }
-                }
-                else {
+                } else {
                     // is in the sandwich lines
                     nodes.push(node);
                 }
@@ -182,10 +179,11 @@ export function getNodesForAddress(address) {
             lastState = state;
             // TODO:
             // We might want to have two different parsers, a simpler one without keys and just address for
-            // the higliting and another more roboust that keep tracks of: pairs (key/values), their ranges (from-to positions),
-            // address and a some functions like getValue, setValue which could be use by widgets or others addons to modify content
-        }
-        else {
+            // the higliting and another more roboust that keep tracks of:
+            // pairs (key/values), their ranges (from-to positions),
+            // address and a some functions like getValue, setValue which could
+            // be use by widgets or others addons to modify content
+        } else {
             // it the line HAVE BEEN parsed (use the stateAfter)
             // ======================================================
             lastState = lineHandle.stateAfter;
@@ -197,7 +195,15 @@ export function getNodesForAddress(address) {
             }
         }
     }
+
     console.log('Fail searching', address);
+    return null;
+}
+
+// If an inline node was changed, we'd like to reparse all the widgets in the line
+// This function sends an event to our widgets-manager.js
+function clearInlineNodes(fromPos) {
+    EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
 }
 
 /**
@@ -226,9 +232,8 @@ export function setCodeMirrorValue(bookmark, value) {
     // This will reduce all sorts of errors because most cases are one-widget lines.
     if (nodeArray.length === 1) {
         node = nodeArray[0];
-    }
-    // If inline nodes
-    else {
+    } else {
+        // If inline nodes
         for (const singleNode of nodeArray) {
             if (singleNode.range.from.ch === bookmark.widgetPos.from.ch) {
                 node = singleNode;
@@ -242,7 +247,7 @@ export function setCodeMirrorValue(bookmark, value) {
 
     // Force a space between the ':' and the value
     if (value === '') {
-        value = ' ' + value;
+        value = ` ${value}`;
     }
 
     // Calculate beginning character of the value
@@ -267,12 +272,6 @@ export function setCodeMirrorValue(bookmark, value) {
     }
 
     return bookmark;
-}
-
-// If an inline node was changed, we'd like to reparse all the widgets in the line
-// This function sends an event to our widgets-manager.js
-function clearInlineNodes(fromPos) {
-    EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
 }
 
 /* This section is for the shader widget links */

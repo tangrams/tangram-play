@@ -2,18 +2,18 @@ import React from 'react';
 
 // Required event dispatch and subscription for now while
 // parts of app are React components and others are not
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 export default class MapLoading extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
-            loading: false
+            loading: false,
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         // When a Modal component fires "on", shield turns itself on.
         EventEmitter.subscribe('maploading:on', () => {
             this.setState({ loading: true });
@@ -25,7 +25,7 @@ export default class MapLoading extends React.Component {
         });
     }
 
-    render () {
+    render() {
         let classNames = 'map-loading';
         if (this.state.loading) {
             classNames += ' map-loading-show';
@@ -40,7 +40,7 @@ export default class MapLoading extends React.Component {
  *
  * TODO: Deprecate / remove. Map loading should be set via application state.
  */
-export function showSceneLoadingIndicator () {
+export function showSceneLoadingIndicator() {
     EventEmitter.dispatch('maploading:on', {});
 }
 
@@ -49,6 +49,6 @@ export function showSceneLoadingIndicator () {
  *
  * TODO: Deprecate / remove. Map loading should be set via application state.
  */
-export function hideSceneLoadingIndicator () {
+export function hideSceneLoadingIndicator() {
     EventEmitter.dispatch('maploading:off', {});
 }

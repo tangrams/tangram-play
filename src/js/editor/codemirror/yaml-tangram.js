@@ -10,34 +10,6 @@ const ADDRESS_KEY_DELIMITER = ':';
 // =============================================================================
 
 /**
- * Returns the content given an address
- * If for any reason the content is not found, return an empty string
- *
- * @param {Object} tangramScene - Tangram's parsed object tree of scene content
- * @param {string} address - in the form of 'key1:key2:key3'
- * @return {mixed} content - Whatever is stored as a value for that key
- */
-export function getAddressSceneContent(tangramScene, address) {
-    try {
-        const keys = getKeysFromAddress(address);
-
-        // Looks up content in Tangram's scene.config property.
-        // It's a nested object, so to look up from an array of nested keys,
-        // we reduce this array down to a single reference.
-        // e.g. ['a', 'b', 'c'] looks up content in
-        // tangramScene.config['a']['b']['c']
-        const content = keys.reduce((obj, property) => {
-            return obj[property];
-        }, tangramScene.config);
-
-        return content;
-    }
-    catch (error) {
-        return '';
-    }
-}
-
-/**
  * Return a string address from an array of key names
  *
  * @param {Array} keys - an array of keys
@@ -70,6 +42,31 @@ export function getAddressForLevel(address, level) {
     const keys = getKeysFromAddress(address);
     const newKeys = keys.slice(0, level);
     return getAddressFromKeys(newKeys);
+}
+
+/**
+ * Returns the content given an address
+ * If for any reason the content is not found, return an empty string
+ *
+ * @param {Object} tangramScene - Tangram's parsed object tree of scene content
+ * @param {string} address - in the form of 'key1:key2:key3'
+ * @return {mixed} content - Whatever is stored as a value for that key
+ */
+export function getAddressSceneContent(tangramScene, address) {
+    try {
+        const keys = getKeysFromAddress(address);
+
+        // Looks up content in Tangram's scene.config property.
+        // It's a nested object, so to look up from an array of nested keys,
+        // we reduce this array down to a single reference.
+        // e.g. ['a', 'b', 'c'] looks up content in
+        // tangramScene.config['a']['b']['c']
+        const content = keys.reduce((obj, property) => obj[property], tangramScene.config);
+
+        return content;
+    } catch (error) {
+        return '';
+    }
 }
 
 //  CHECK
@@ -116,9 +113,8 @@ function isAfterKey(str, pos) {
     if (key === undefined) {
         return true;
     }
-    else {
-        return [0].length < pos;
-    }
+
+    return [0].length < pos;
 }
 
 //  Special Tangram YAML Parser
@@ -129,9 +125,8 @@ function getKeyAddressFromState(state) {
     if (state.nodes && state.nodes.length > 0) {
         return state.nodes[0].address;
     }
-    else {
-        return '';
-    }
+
+    return '';
 }
 
 function getAnchorFromValue(value) {
@@ -139,9 +134,8 @@ function getAnchorFromValue(value) {
         const link = /(^\s*(&\w+)\s+)/gm.exec(value);
         return link[1];
     }
-    else {
-        return '';
-    }
+
+    return '';
 }
 
 // Given a YAML string return an array of keys
@@ -158,13 +152,11 @@ function getInlineNodes(str, nLine) {
         if (curr === '{') {
             // Go one level up
             level++;
-        }
-        else if (curr === '}') {
+        } else if (curr === '}') {
             // Go one level down
             stack.pop();
             level--;
-        }
-        else {
+        } else {
             // check for keypair
             // This seems to check for inline nodes
             const isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
@@ -176,6 +168,7 @@ function getInlineNodes(str, nLine) {
                 const colon = isNode[2];
                 let value = isNode[3];
                 // This regex checks for vec arrays
+                // eslint-disable-next-line max-len
                 const isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?\]/gm);
                 if (isVector) {
                     value = isVector[0];
@@ -194,10 +187,12 @@ function getInlineNodes(str, nLine) {
                     range: {
                         from: {
                             line: nLine,
-                            ch: i + 1 - key.length },
+                            ch: (i + 1) - key.length,
+                        },
                         to: {
                             line: nLine,
-                            ch: i + colon.length + value.length + 1 },
+                            ch: i + colon.length + value.length + 1,
+                        },
                     },
                     index: rta.length + 1,
                 });
@@ -247,11 +242,9 @@ export function parseYamlString(string, state, tabSize) {
         // Update the node tree
         if (level > state.keyLevel) {
             state.keyStack.push(nodeKey);
-        }
-        else if (level === state.keyLevel) {
+        } else if (level === state.keyLevel) {
             state.keyStack[level] = nodeKey;
-        }
-        else if (level < state.keyLevel) {
+        } else if (level < state.keyLevel) {
             const diff = state.keyLevel - level;
             for (let i = 0; i < diff; i++) {
                 state.keyStack.pop();
@@ -282,8 +275,7 @@ export function parseYamlString(string, state, tabSize) {
                 subNodes[i].range.to.ch += spaces + nodeKey.length + nodeSeparator.length;
                 state.nodes.push(subNodes[i]);
             }
-        }
-        else {
+        } else {
             const anchor = getAnchorFromValue(nodeValue);
 
             nodeEntry.address = address;
@@ -295,9 +287,8 @@ export function parseYamlString(string, state, tabSize) {
 
             state.nodes = [nodeEntry];
         }
-    }
-    // Commented or empty lines
-    else {
+    } else {
+        // Commented or empty lines
         nodeEntry.address = getAddressFromKeys(state.keyStack);
         state.nodes = [nodeEntry];
     }
@@ -316,7 +307,7 @@ CodeMirror.extendMode('yaml', {
     lineComment: '#',
 });
 
-CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
+CodeMirror.defineMode('yaml-tangram', (config, parserConfig) => {
     // Import multiple modes used by Tangram YAML.
     const yamlMode = CodeMirror.getMode(config, 'yaml');
     const glslMode = CodeMirror.getMode(config, 'glsl');
@@ -418,8 +409,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 if (state.shouldChangeInnerMode && !state.innerMode && address !== undefined) {
                     if (isShader(address)) {
                         state.innerMode = glslMode;
-                    }
-                    else if (isContentJS(state.string)) {
+                    } else if (isContentJS(state.string)) {
                         state.innerMode = jsMode;
                     }
 
@@ -436,14 +426,12 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 // in the next stream, instead of right now.
                 if (value === '|') {
                     state.shouldChangeInnerMode = true;
-                }
-                // Otherwise, start inner modes immediately.
-                else if (isShader(address)) {
+                } else if (isShader(address)) {
+                    // Otherwise, start inner modes immediately.
                     state.innerMode = glslMode;
-                }
-                // This inner mode is assumed to be on one line only, so
-                // we need to make them active only for the current line.
-                else if (isContentJS(value)) {
+                } else if (isContentJS(value)) {
+                    // This inner mode is assumed to be on one line only, so
+                    // we need to make them active only for the current line.
                     state.innerMode = jsMode;
                     state.singleLineInnerMode = true;
                 }
@@ -456,8 +444,7 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 const innerMode = state.innerMode;
                 state.innerState = innerMode.startState();
                 token = innerMode.token(stream, state.innerState);
-            }
-            else {
+            } else {
                 token = yamlMode.token(stream, state);
             }
 
@@ -498,9 +485,8 @@ CodeMirror.defineMode('yaml-tangram', function (config, parserConfig) {
                 if (previousKey && (previousValue === '' || previousValue === '|')) {
                     return state.indentation + config.indentUnit;
                 }
-                else {
-                    return state.indentation;
-                }
+
+                return state.indentation;
             }
 
             // If not YAML, defer to inner mode's indent() method.

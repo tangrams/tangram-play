@@ -1,29 +1,29 @@
 import { reverse, sortBy } from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
-import Icon from '../components/Icon';
 
-import { load } from '../tangram-play';
+import Modal from './Modal';
+import Icon from '../components/Icon';
 import ErrorModal from './ErrorModal';
 import { fetchSceneList } from '../storage/mapzen';
+import { load } from '../tangram-play';
 
 export default class OpenFromCloudModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             loaded: false,
             scenes: [],
-            selected: null
+            selected: null,
         };
 
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
     }
 
-    componentWillMount () {
+    componentWillMount() {
         // Always load new set of saved scenes from the cloud each
         // time this modal is opened, in case it has changed
         fetchSceneList()
@@ -34,16 +34,16 @@ export default class OpenFromCloudModal extends React.Component {
 
                 this.setState({
                     loaded: true,
-                    scenes: scenes
+                    scenes,
                 });
             });
     }
 
-    onClickCancel () {
+    onClickCancel() {
         this.component.unmount();
     }
 
-    onClickConfirm () {
+    onClickConfirm() {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
             load({ url: this.state.selected });
@@ -54,23 +54,25 @@ export default class OpenFromCloudModal extends React.Component {
      * If opening a URL is not successful
      * TODO: figure out what happens here.
      */
-    handleError (error, value) {
+    handleError(error, value) {
         // Close the modal
         this.onClickCancel();
 
         // Show error modal
-        ReactDOM.render(<ErrorModal error={`Could not load the scene! ${error.message}`} />, document.getElementById('modal-container'));
+        ReactDOM.render(
+            <ErrorModal error={`Could not load the scene! ${error.message}`} />,
+            document.getElementById('modal-container')
+        );
     }
 
-    render () {
-        let scenes = this.state.scenes;
+    render() {
+        const scenes = this.state.scenes;
 
         let sceneList;
 
         if (this.state.loaded === true && scenes.length === 0) {
             sceneList = 'No scenes have been saved!';
-        }
-        else {
+        } else {
             sceneList = scenes.map((item, index) => {
                 // If the scene is selected, a special class is applied later to it
                 let classString = 'open-from-cloud-option';
@@ -96,7 +98,7 @@ export default class OpenFromCloudModal extends React.Component {
                         onDoubleClick={this.onClickConfirm}
                     >
                         <div className="open-from-cloud-option-thumbnail">
-                            <img src={item.files.thumbnail} />
+                            <img src={item.files.thumbnail} role="presentation" />
                         </div>
                         <div className="open-from-cloud-option-info">
                             <div className="open-from-cloud-option-name">

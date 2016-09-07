@@ -14,13 +14,13 @@ export default class WidgetToggle extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.bookmark = this.props.bookmark;
 
         this.state = {
-            value: this.props.value
+            value: this.props.value,
         };
 
         this.onChange = this.onChange.bind(this);
@@ -31,7 +31,7 @@ export default class WidgetToggle extends React.Component {
      * Invoked once immediately after the initial rendering occurs.
      * The input default to being 'false'. Have to set it to 'true' if the code value is 'true'
      */
-    componentDidMount () {
+    componentDidMount() {
         if (this.state.value === 'true') {
             this.input.checked = true;
         }
@@ -40,8 +40,8 @@ export default class WidgetToggle extends React.Component {
     /**
      * Called anytime user clicks on checkbox
      */
-    onChange (e) {
-        let newvalue = this.input.checked;
+    onChange(e) {
+        const newvalue = this.input.checked;
         this.setState({ value: newvalue });
 
         this.setEditorValue(newvalue.toString());
@@ -52,7 +52,7 @@ export default class WidgetToggle extends React.Component {
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    setEditorValue (string) {
+    setEditorValue(string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
@@ -62,7 +62,7 @@ export default class WidgetToggle extends React.Component {
      *
      * this.input refers to the <input> div on the checkbox
      */
-    render () {
+    render() {
         return (
             <Checkbox
                 className="widget widget-toggle"
@@ -78,5 +78,5 @@ export default class WidgetToggle extends React.Component {
  */
 WidgetToggle.propTypes = {
     bookmark: React.PropTypes.object,
-    value: React.PropTypes.string
+    value: React.PropTypes.string,
 };

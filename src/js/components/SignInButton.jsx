@@ -8,13 +8,13 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
 import ErrorModal from '../modals/ErrorModal';
 
-import { EventEmitter } from './event-emitter';
+import EventEmitter from './event-emitter';
 import { requestUserSignInState, requestUserSignOut } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
 import EditorIO from '../editor/io';
 
 export default class SignInButton extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -22,7 +22,7 @@ export default class SignInButton extends React.Component {
             isLoggedIn: false,
             nickname: null,
             avatar: null,
-            admin: false
+            admin: false,
         };
 
         this.onClickSignIn = this.onClickSignIn.bind(this);
@@ -30,13 +30,13 @@ export default class SignInButton extends React.Component {
         this.checkLoggedInState = this.checkLoggedInState.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.checkLoggedInState();
 
         EventEmitter.subscribe('mapzen:sign_in', this.checkLoggedInState);
     }
 
-    onClickSignIn (event) {
+    onClickSignIn(event) {
         openSignInWindow();
     }
 
@@ -44,7 +44,7 @@ export default class SignInButton extends React.Component {
      * Signs out of mapzen.com. Check state of editor first to make sure that
      * the user is ready to navigate away.
      */
-    onClickSignOut (event) {
+    onClickSignOut(event) {
         EditorIO.checkSaveStateThen(() => {
             requestUserSignOut().then((response) => {
                 if (response.ok) {
@@ -52,19 +52,20 @@ export default class SignInButton extends React.Component {
                         isLoggedIn: false,
                         nickname: null,
                         avatar: null,
-                        admin: false
+                        admin: false,
                     });
                     EventEmitter.dispatch('mapzen:sign_out', {});
-                }
-                else {
-                    ReactDOM.render(<ErrorModal error="Unable to sign you out." />, document.getElementById('modal-container'));
-                    console.log(response);
+                } else {
+                    ReactDOM.render(
+                        <ErrorModal error="Unable to sign you out." />,
+                        document.getElementById('modal-container')
+                    );
                 }
             });
         });
     }
 
-    checkLoggedInState () {
+    checkLoggedInState() {
         requestUserSignInState().then((data) => {
             // `data` is null if we are not hosted in the right place
             if (!data) {
@@ -73,7 +74,7 @@ export default class SignInButton extends React.Component {
 
             // This tells us we've contacted mapzen.com and the API is valid
             const newState = {
-                serverContacted: true
+                serverContacted: true,
             };
 
             // If a user is not logged in, data object is empty.
@@ -92,15 +93,21 @@ export default class SignInButton extends React.Component {
     //   >  You "sign in" or "sign off" when accessing an account.
     //   >  You "log on" or "log out" of a operating system session.
     // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
-    render () {
+    render() {
         if (this.state.isLoggedIn) {
             const ButtonContents = (
                 <span>
-                    <img src={this.state.avatar} className="sign-in-avatar" alt={this.state.nickname} /> {this.state.nickname}
+                    <img
+                        src={this.state.avatar}
+                        className="sign-in-avatar"
+                        alt={this.state.nickname}
+                    />
+                    {this.state.nickname}
                     {(() => {
                         if (this.state.admin === true) {
                             return (<span className="sign-in-admin-star">★</span>);
                         }
+                        return null;
                     })()}
                 </span>
             );
@@ -126,19 +133,17 @@ export default class SignInButton extends React.Component {
                     </NavDropdown>
                 </OverlayTrigger>
             );
-        }
-        // Logged out state. Only display if server is contacted and has confirmed
-        // no user is logged in. This is to prevent this button from having a
-        // "Sign in" momentarily flash before the sign-in-state API is contacted.
-        else if (this.state.serverContacted && !this.state.isLoggedIn) {
+        } else if (this.state.serverContacted && !this.state.isLoggedIn) {
+            // Logged out state. Only display if server is contacted and has confirmed
+            // no user is logged in. This is to prevent this button from having a
+            // "Sign in" momentarily flash before the sign-in-state API is contacted.
             return (
                 <NavItem onClick={this.onClickSignIn} href="#" className="menu-sign-in">
                     Sign in <Icon type="bt-sign-in" />
                 </NavItem>
             );
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
 }

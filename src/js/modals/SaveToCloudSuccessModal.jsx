@@ -3,34 +3,34 @@ import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import Clipboard from 'clipboard';
+
 import Modal from './Modal';
 import Icon from '../components/Icon';
 
-import Clipboard from 'clipboard';
-
 export default class SaveToCloudSuccessModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.onClickConfirm = this.onClickConfirm.bind(this);
         this.onClickViewUrl = this.onClickViewUrl.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setupClipboard();
         this.viewUrl.select();
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         // Clean up clipboard object
         this.clipboard.destroy();
     }
 
-    onClickConfirm (event) {
+    onClickConfirm(event) {
         this.component.unmount();
     }
 
-    onClickViewUrl () {
+    onClickViewUrl() {
         const newTab = window.open(this.viewUrl.value, 'tangram-viewer');
         if (newTab) {
             newTab.focus();
@@ -38,13 +38,14 @@ export default class SaveToCloudSuccessModal extends React.Component {
     }
 
     // Sets up clipboard.js functionality. Not a React component.
-    setupClipboard () {
-        const clipboardButtonEl = ReactDOM.findDOMNode(this.clipboardButton); // eslint-disable-line react/no-find-dom-node
+    setupClipboard() {
+        // eslint-disable-next-line react/no-find-dom-node
+        const clipboardButtonEl = ReactDOM.findDOMNode(this.clipboardButton);
 
         // Initiate clipboard button
         this.clipboard = new Clipboard(clipboardButtonEl);
 
-        this.clipboard.on('success', function (e) {
+        this.clipboard.on('success', (e) => {
             console.info('Action:', e.action);
             console.info('Text:', e.text);
             console.info('Trigger:', e.trigger);
@@ -52,13 +53,13 @@ export default class SaveToCloudSuccessModal extends React.Component {
             e.clearSelection();
         });
 
-        this.clipboard.on('error', function (e) {
+        this.clipboard.on('error', (e) => {
             console.error('Action:', e.action);
             console.error('Trigger:', e.trigger);
         });
     }
 
-    render () {
+    render() {
         return (
             <Modal
                 className="save-to-cloud-success-modal"
@@ -120,5 +121,5 @@ export default class SaveToCloudSuccessModal extends React.Component {
 }
 
 SaveToCloudSuccessModal.propTypes = {
-    urlValue: React.PropTypes.string
+    urlValue: React.PropTypes.string,
 };

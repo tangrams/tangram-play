@@ -2,7 +2,7 @@
 import React from 'react';
 
 export default class ColorPickerSaturation extends React.PureComponent {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         // TODO: don't harcode. These numbers are duplicated in CSS.
@@ -14,67 +14,69 @@ export default class ColorPickerSaturation extends React.PureComponent {
         this.onMouseUp = this.onMouseUp.bind(this);
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         this.unbindEventListeners();
     }
 
-    onChange (e, skip) {
+    onChange(e, skip) {
         if (!skip) {
             e.preventDefault();
         }
 
         const container = this.container;
         const boundingBox = container.getBoundingClientRect();
-        let x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX;
-        let y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY;
+        const x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX;
+        const y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY;
         let left = x - boundingBox.left;
         let top = y - boundingBox.top;
 
         if (left < 0) {
             left = 0;
-        }
-        else if (left > this.width) {
+        } else if (left > this.width) {
             left = this.width;
-        }
-        else if (top < 0) {
+        } else if (top < 0) {
             top = 0;
-        }
-        else if (top > this.height) {
+        } else if (top > this.height) {
             top = this.height;
         }
 
-        const saturation = left * 100 / this.width;
-        const bright = -(top * 100 / this.height) + 100;
+        const saturation = (left * 100) / this.width;
+        const bright = -((top * 100) / this.height) + 100;
 
         this.props.onChange({
             h: this.props.color.getHsv().h,
             s: saturation,
             v: bright,
-            a: this.props.color.getRgba().a
+            a: this.props.color.getRgba().a,
         });
     }
 
 
-    onMouseDown (e) {
+    onMouseDown(e) {
         this.onChange(e, true);
         window.addEventListener('mousemove', this.onChange);
         window.addEventListener('mouseup', this.onMouseUp);
     }
 
-    onMouseUp () {
+    onMouseUp() {
         this.unbindEventListeners();
     }
 
-    unbindEventListeners () {
+    unbindEventListeners() {
         window.removeEventListener('mousemove', this.onChange);
         window.removeEventListener('mouseup', this.onMouseUp);
     }
 
-    render () {
-        const style1 = { background: 'hsl(' + this.props.color.getHsl().h + ',100%, 50%)' };
-        const style2 = {
-            top: -(this.props.color.getHsv().v * 100) + 100 + '%',
-            left: this.props.color.getHsv().s * 100 + '%'
+    render() {
+        const containerStyle = {
+            background: `hsl(${this.props.color.getHsl().h}, 100%, 50%)`,
+        };
+
+        const topPosition = -(this.props.color.getHsv().v * 100) + 100;
+        const leftPosition = this.props.color.getHsv().s * 100;
+        const pointerStyle = {
+            top: `${topPosition}%`,
+            left: `${leftPosition}%`,
         };
 
         return (
@@ -84,11 +86,11 @@ export default class ColorPickerSaturation extends React.PureComponent {
                 onMouseDown={this.onMouseDown}
                 onTouchMove={this.onChange}
                 onTouchStart={this.onChange}
-                style={style1}
+                style={containerStyle}
             >
                 <div className="colorpicker-saturation-white">
                     <div className="colorpicker-saturation-black" />
-                    <div className="colorpicker-saturation-pointer" style={style2}>
+                    <div className="colorpicker-saturation-pointer" style={pointerStyle}>
                         <div className="colorpicker-saturation-circle" />
                     </div>
                 </div>
@@ -97,10 +99,7 @@ export default class ColorPickerSaturation extends React.PureComponent {
     }
 }
 
-/**
- * Prop validation required by React
- */
 ColorPickerSaturation.propTypes = {
     color: React.PropTypes.object,
-    onChange: React.PropTypes.func
+    onChange: React.PropTypes.func,
 };

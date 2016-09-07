@@ -5,7 +5,7 @@ import Icon from '../components/Icon';
 // be set in parent component's state and passed via the `on` prop.
 
 export default class LoadingSpinner extends React.Component {
-    render () {
+    render() {
         let className = 'modal-thinking';
         if (this.props.on) {
             className += ' modal-thinking-cap-on';
@@ -22,5 +22,5 @@ export default class LoadingSpinner extends React.Component {
 
 LoadingSpinner.propTypes = {
     on: React.PropTypes.bool,
-    msg: React.PropTypes.string
+    msg: React.PropTypes.string,
 };

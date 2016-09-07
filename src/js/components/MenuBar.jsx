@@ -1,3 +1,4 @@
+import localforage from 'localforage';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
@@ -8,9 +9,8 @@ import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
-import { EventEmitter } from './event-emitter';
+import EventEmitter from './event-emitter';
 
-import localforage from 'localforage';
 import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
@@ -28,56 +28,56 @@ import { requestUserSignInState } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
 
-const _clickNew = function () {
+function clickNew() {
     EditorIO.new();
-};
+}
 
-const _clickOpenFile = function () {
+function clickOpenFile() {
     openLocalFile();
-};
+}
 
-const _clickOpenGist = function () {
+function clickOpenGist() {
     EditorIO.checkSaveStateThen(() => {
         ReactDOM.render(<OpenGistModal />, document.getElementById('modal-container'));
     });
-};
+}
 
-const _clickOpenURL = function () {
+function clickOpenURL() {
     EditorIO.checkSaveStateThen(() => {
         ReactDOM.render(<OpenUrlModal />, document.getElementById('modal-container'));
     });
-};
+}
 
-const _clickOpenExample = function () {
+function clickOpenExample() {
     EditorIO.checkSaveStateThen(() => {
         ReactDOM.render(<ExamplesModal />, document.getElementById('modal-container'));
     });
-};
+}
 
-const _clickSaveFile = function () {
+function clickSaveFile() {
     EditorIO.export();
-};
+}
 
-const _clickSaveGist = function () {
+function clickSaveGist() {
     ReactDOM.render(<SaveGistModal />, document.getElementById('modal-container'));
-};
+}
 
-const unsubscribeSaveToCloud = function () {
-    EventEmitter.unsubscribe('mapzen:sign_in', _clickSaveToCloud);
-};
+function unsubscribeSaveToCloud() {
+    // eslint-disable-next-line no-use-before-define
+    EventEmitter.unsubscribe('mapzen:sign_in', clickSaveToCloud);
+}
 
-const showSaveToCloudModal = function () {
+function showSaveToCloudModal() {
     unsubscribeSaveToCloud();
     ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
-};
+}
 
-const _clickSaveToCloud = function () {
+function clickSaveToCloud() {
     requestUserSignInState()
         .then((data) => {
             if (data.id) {
                 showSaveToCloudModal();
-            }
-            else {
+            } else {
                 ReactDOM.render(
                     <ConfirmDialogModal
                         message="You are not signed in! Please sign in now."
@@ -86,29 +86,29 @@ const _clickSaveToCloud = function () {
                     />,
                     document.getElementById('modal-container')
                 );
-                EventEmitter.subscribe('mapzen:sign_in', _clickSaveToCloud);
+                EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
             }
         });
-};
+}
 
-const unsubscribeOpenFromCloud = function () {
-    EventEmitter.unsubscribe('mapzen:sign_in', _clickOpenFromCloud);
-};
+function unsubscribeOpenFromCloud() {
+    // eslint-disable-next-line no-use-before-define
+    EventEmitter.unsubscribe('mapzen:sign_in', clickOpenFromCloud);
+}
 
-const showOpenFromCloudModal = function () {
+function showOpenFromCloudModal() {
     unsubscribeOpenFromCloud();
     EditorIO.checkSaveStateThen(() => {
         ReactDOM.render(<OpenFromCloudModal />, document.getElementById('modal-container'));
     });
-};
+}
 
-const _clickOpenFromCloud = function () {
+function clickOpenFromCloud() {
     requestUserSignInState()
         .then((data) => {
             if (data.id) {
                 showOpenFromCloudModal();
-            }
-            else {
+            } else {
                 ReactDOM.render(
                     <ConfirmDialogModal
                         message="You are not signed in! Please sign in now."
@@ -117,18 +117,18 @@ const _clickOpenFromCloud = function () {
                     />,
                     document.getElementById('modal-container')
                 );
-                EventEmitter.subscribe('mapzen:sign_in', _clickOpenFromCloud);
+                EventEmitter.subscribe('mapzen:sign_in', clickOpenFromCloud);
             }
         });
-};
+}
 
-const _clickSaveCamera = function () {
+function clickSaveCamera() {
     takeScreenshot();
-};
+}
 
-const _clickAbout = function () {
+function clickAbout() {
     ReactDOM.render(<AboutModal />, document.getElementById('modal-container'));
-};
+}
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
 const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
@@ -138,20 +138,22 @@ const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
  * Represents the navbar for the application
  */
 export default class MenuBar extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             inspectActive: false, // Represents whether inspect mode is on / off
             fullscreenActive: false,
             legacyGistMenu: false,
-            mapzenAccount: false
+            mapzenAccount: false,
         };
 
         this.getUserData = this.getUserData.bind(this);
+        this.clickInspect = this.clickInspect.bind(this);
+        this.clickFullscreen = this.clickFullscreen.bind(this);
     }
 
     // Determine whether some menu items should display
-    componentWillMount () {
+    componentWillMount() {
         // Only display "Open a gist" if user has saved gists. This is a
         // legacy feature. It will be completely removed in the future.
         const STORAGE_SAVED_GISTS = 'gists';
@@ -159,7 +161,7 @@ export default class MenuBar extends React.Component {
             .then((gists) => {
                 if (Array.isArray(gists)) {
                     this.setState({
-                        legacyGistMenu: true
+                        legacyGistMenu: true,
                     });
                 }
             });
@@ -169,36 +171,35 @@ export default class MenuBar extends React.Component {
         this.getUserData();
     }
 
-    componentDidMount () {
+    componentDidMount() {
         EventEmitter.subscribe('mapzen:sign_in', this.getUserData);
         EventEmitter.subscribe('mapzen:sign_out', () => {
             this.setState({ mapzenAccount: false });
         });
     }
 
-    getUserData () {
+    getUserData() {
         requestUserSignInState().then((data) => {
             // Note: currently this is only enabled for admin accounts.
             if (data && data.admin === true) {
                 this.setState({
-                    mapzenAccount: true
+                    mapzenAccount: true,
                 });
             }
         });
     }
 
-    _clickFullscreen () {
+    clickFullscreen() {
         this.setState({ fullscreenActive: !this.state.fullscreenActive });
         toggleFullscreen();
     }
 
-    _clickInspect () {
+    clickInspect() {
         const isInspectActive = this.state.inspectActive;
         if (isInspectActive) {
             this.setState({ inspectActive: false });
             setGlobalIntrospection(false);
-        }
-        else {
+        } else {
             this.setState({ inspectActive: true });
             setGlobalIntrospection(true);
         }
@@ -208,7 +209,7 @@ export default class MenuBar extends React.Component {
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         return (
             <Navbar inverse className="menu-bar">
                 {/* The brand section */}
@@ -231,7 +232,7 @@ export default class MenuBar extends React.Component {
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">New scene</Tooltip>}
                         >
-                            <NavItem eventKey="new" onClick={_clickNew}>
+                            <NavItem eventKey="new" onClick={clickNew}>
                                 <Icon type="bt-file" />New
                             </NavItem>
                         </OverlayTrigger>
@@ -246,31 +247,33 @@ export default class MenuBar extends React.Component {
                                 title={<span><Icon type="bt-upload" />Open</span>}
                                 id="open-dropdown"
                             >
-                                <MenuItem onClick={_clickOpenFile}>
+                                <MenuItem onClick={clickOpenFile}>
                                     <Icon type="bt-folder" />Open a file
                                 </MenuItem>
                                 {(() => {
                                     if (this.state.mapzenAccount) {
                                         return (
-                                            <MenuItem onClick={_clickOpenFromCloud}>
+                                            <MenuItem onClick={clickOpenFromCloud}>
                                                 <Icon type="bt-cloud-download" />Open from your Mapzen account
                                             </MenuItem>
                                         );
                                     }
+                                    return null;
                                 })()}
                                 {(() => {
                                     if (this.state.legacyGistMenu) {
                                         return (
-                                            <MenuItem onClick={_clickOpenGist}>
+                                            <MenuItem onClick={clickOpenGist}>
                                                 <Icon type="bt-code" />Open a saved Gist
                                             </MenuItem>
                                         );
                                     }
+                                    return null;
                                 })()}
-                                <MenuItem onClick={_clickOpenURL}>
+                                <MenuItem onClick={clickOpenURL}>
                                     <Icon type="bt-link" />Open from URL
                                 </MenuItem>
-                                <MenuItem onClick={_clickOpenExample}>
+                                <MenuItem onClick={clickOpenExample}>
                                     <Icon type="bt-map" />Choose example
                                 </MenuItem>
                             </NavDropdown>
@@ -286,22 +289,23 @@ export default class MenuBar extends React.Component {
                                 title={<span><Icon type="bt-download" />Save</span>}
                                 id="save-dropdown"
                             >
-                                <MenuItem onClick={_clickSaveFile}>
+                                <MenuItem onClick={clickSaveFile}>
                                     <Icon type="bt-folder" />Save to your computer
                                 </MenuItem>
                                 {(() => {
                                     if (this.state.mapzenAccount) {
                                         return (
-                                            <MenuItem onClick={_clickSaveToCloud}>
+                                            <MenuItem onClick={clickSaveToCloud}>
                                                 <Icon type="bt-cloud-upload" />Save to your Mapzen account
                                             </MenuItem>
                                         );
                                     }
+                                    return null;
                                 })()}
-                                <MenuItem onClick={_clickSaveGist}>
+                                <MenuItem onClick={clickSaveGist}>
                                     <Icon type="bt-code" />Save to Gist
                                 </MenuItem>
-                                <MenuItem onClick={_clickSaveCamera}>
+                                <MenuItem onClick={clickSaveCamera}>
                                     <Icon type="bt-camera" />Take a screenshot
                                 </MenuItem>
                             </NavDropdown>
@@ -318,7 +322,7 @@ export default class MenuBar extends React.Component {
                         >
                             <NavItem
                                 eventKey="new"
-                                onClick={this._clickInspect.bind(this)}
+                                onClick={this.clickInspect}
                                 active={this.state.inspectActive}
                             >
                                 <Icon type="bt-magic" />Inspect
@@ -333,7 +337,7 @@ export default class MenuBar extends React.Component {
                         >
                             <NavItem
                                 eventKey="new"
-                                onClick={this._clickFullscreen.bind(this)}
+                                onClick={this.clickFullscreen}
                                 active={this.state.fullscreenActive}
                             >
                                 <Icon type="bt-maximize" />Fullscreen
@@ -350,16 +354,16 @@ export default class MenuBar extends React.Component {
                                 title={<span><Icon type="bt-question-circle" />Help</span>}
                                 id="help-dropdown"
                             >
-                                <MenuItem onClick={_clickAbout}>
+                                <MenuItem onClick={clickAbout}>
                                     <Icon type="bt-info-circle" />About
                                 </MenuItem>
-                                <MenuItem href={documentationLink} target="_blank">
+                                <MenuItem href={documentationLink} target="_blank" rel="noopener noreferrer">
                                     <Icon type="bt-book" />Documentation
                                 </MenuItem>
-                                <MenuItem href={tutorialLink} target="_blank">
+                                <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
                                     <Icon type="bt-notebook" />Tutorial
                                 </MenuItem>
-                                <MenuItem href={feedbackLink} target="_blank">
+                                <MenuItem href={feedbackLink} target="_blank" rel="noopener noreferrer">
                                     <Icon type="bt-comments" />Feedback
                                 </MenuItem>
                             </NavDropdown>

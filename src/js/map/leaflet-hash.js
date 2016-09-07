@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, func-names, no-param-reassign */
 /**
  * A port of mlevan's leaflet-hash to ES2015 JavaScript.
  * Original: https://github.com/mlevans/leaflet-hash
@@ -60,28 +61,27 @@ export default class LeafletHash {
             if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
                 return false;
             }
-            else {
-                return {
-                    center: new L.LatLng(lat, lon),
-                    zoom,
-                };
-            }
+
+            return {
+                center: new L.LatLng(lat, lon),
+                zoom,
+            };
         }
-        else {
-            return false;
-        }
+
+        return false;
     }
 
     formatHash(map) {
         const center = map.getCenter();
         const zoom = map.getZoom();
         const precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
-
-        return '#' + [
+        const hashString = [
             zoom.toFixed(4),
             center.lat.toFixed(precision),
             center.lng.toFixed(precision),
         ].join('/');
+
+        return `#${hashString}`;
     }
 
     removeFrom(map) {
@@ -100,7 +100,7 @@ export default class LeafletHash {
         // bail if we're moving the map (updating from a hash),
         // or if the map is not yet loaded
         if (this.movingMap || !this.map._loaded) {
-            return false;
+            return;
         }
 
         const hash = this.formatHash(this.map);
@@ -121,8 +121,7 @@ export default class LeafletHash {
             this.movingMap = true;
             this.map.setView(parsed.center, parsed.zoom);
             this.movingMap = false;
-        }
-        else {
+        } else {
             this.onMapMove(this.map);
         }
     }

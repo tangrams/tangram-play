@@ -1,46 +1,46 @@
 import React from 'react';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
+import Modal from './Modal';
 import Icon from '../components/Icon';
 
 import { load } from '../tangram-play';
 import EXAMPLES_DATA from './examples.json';
 
 export default class ExamplesModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
-            selected: null
+            selected: null,
         };
 
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
     }
 
-    onClickCancel () {
+    onClickCancel() {
         this.component.unmount();
     }
 
-    onClickConfirm () {
+    onClickConfirm() {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
             load({ url: this.state.selected });
         }
     }
 
-    render () {
+    render() {
         // Create a <section> per category
         const examples = EXAMPLES_DATA.map((category, categoryIndex) => {
             // Create elements for each scene
             const scenes = category.scenes.map((scene, sceneIndex) => {
                 // Unique index made by concatenating category and scene index
-                const index = String(categoryIndex) + '.' + String(sceneIndex);
+                const index = `${String(categoryIndex)}.${String(sceneIndex)}`;
 
                 // Inline style to display thumbnail image
                 const thumbnailStyle = {
                     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    backgroundImage: 'url(' + scene.thumb + ')'
+                    backgroundImage: `url(${scene.thumb})`,
                 };
 
                 // If the scene is selected, a special class is applied

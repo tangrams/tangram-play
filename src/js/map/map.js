@@ -1,10 +1,10 @@
-import L from 'leaflet';
-import LeafletHash from './leaflet-hash';
-import Tangram from 'tangram';
 import { throttle } from 'lodash';
-import { EventEmitter } from '../components/event-emitter';
-
 import localforage from 'localforage';
+import L from 'leaflet';
+import Tangram from 'tangram'; // eslint-disable-line import/no-extraneous-dependencies, import/no-unresolved
+import LeafletHash from './leaflet-hash';
+import EventEmitter from '../components/event-emitter';
+
 import { hideSceneLoadingIndicator } from './MapLoading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 
@@ -12,66 +12,14 @@ import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspec
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';
 
+/* eslint-disable import/no-mutable-exports */
+// ^ Not ideal, but this is what it is right now
 export let map;
 
 // Declare these exports now, but Tangram is set up later.
 // See initTangram() and loadScene().
 export let tangramLayer = null;
 export let tangramScene = null;
-
-// Initializes Leaflet-based map
-export function initMap() {
-    // Initalize Leaflet
-    map = L.map('map', {
-        zoomControl: false,
-        attributionControl: false,
-        maxZoom: 24,
-        keyboardZoomOffset: 0.05,
-        zoomSnap: 0, // Enables fractional zoom.
-    });
-
-    // Get map start position
-    getMapStartLocation()
-        .then((mapStartLocation) => {
-            // Create Leaflet map
-            map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
-
-            // Add leaflet-hash (forked version)
-            const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
-
-            // Report ready to other things that depend on map state.
-            // The problem is that the other map-based sub-components like MapPanel
-            // cannot assume that the map exists already when they're mounted,
-            // because the children of this component will be mounted before
-            // the parent's componentDidMount() is called. So, like all other
-            // inter-component communication outside of the React framework, we
-            // currently use an EventEmitter to report a ready state, which then
-            // populates the sub-components' state. I'd imagine this situation to
-            // improve when we look into a react-leaflet implementation.
-            EventEmitter.dispatch('map:init');
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-
-    // Force Leaflet to update itself.
-    // This resolves an issue where the map may sometimes not appear
-    // or only partially appear when this app is first loaded.
-    window.setTimeout(function () {
-        map.invalidateSize(false);
-    }, 0);
-
-    // Set up a listener to record current map view settings when user leaves
-    window.addEventListener('beforeunload', function (event) {
-        localforage.setItem('last-map-view', {
-            lat: map.getCenter().lat,
-            lng: map.getCenter().lng,
-            zoom: map.getZoom(),
-        });
-    });
-
-    setupEventListeners();
-}
 
 /**
  * Initializes Tangram
@@ -120,16 +68,15 @@ export function loadScene(pathToSceneFile, { reset = false, basePath = null } = 
     // We only initialize Tangram when Tangram Play
     // knows what scene to load, not before.
     if (!tangramLayer) {
-        initTangram(pathToSceneFile);
+        return initTangram(pathToSceneFile);
     }
-    else {
-        // If scene is already set, re-use the internal path
-        // If scene is not set, default to current path
-        // This is ignored if reset is true; see below)
-        const path = basePath || tangramLayer.scene.config_path;
-        // Preserve scene base path unless reset requested (e.g. reset on new file load)
-        return tangramLayer.scene.load(pathToSceneFile, !reset && path);
-    }
+
+    // If scene is already set, re-use the internal path
+    // If scene is not set, default to current path
+    // This is ignored if reset is true; see below)
+    const path = basePath || tangramLayer.scene.config_path;
+    // Preserve scene base path unless reset requested (e.g. reset on new file load)
+    return tangramLayer.scene.load(pathToSceneFile, !reset && path);
 }
 
 function getMapStartLocation() {
@@ -151,22 +98,20 @@ function getMapStartLocation() {
             zoom: urlHash[0],
         });
     }
+
     // If no valid URL hash is provided, check local storage to see if
     // lat & lng & zoom have been saved from a previous session
-    else {
-        return localforage.getItem('last-map-view')
-            .then((view) => {
-                if (view && view.lat && view.lng && view.zoom) {
-                    return {
-                        latlng: [view.lat, view.lng],
-                        zoom: view.zoom,
-                    };
-                }
-                else {
-                    return defaultStartLocation;
-                }
-            });
-    }
+    return localforage.getItem('last-map-view')
+        .then((view) => {
+            if (view && view.lat && view.lng && view.zoom) {
+                return {
+                    latlng: [view.lat, view.lng],
+                    zoom: view.zoom,
+                };
+            }
+
+            return defaultStartLocation;
+        });
 }
 
 /* New section to handle React components */
@@ -183,4 +128,58 @@ function setupEventListeners() {
     map.on('moveend', throttle((e) => {
         EventEmitter.dispatch('leaflet:moveend', {});
     }), 1000);
+}
+
+// Initializes Leaflet-based map
+export function initMap() {
+    // Initalize Leaflet
+    map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false,
+        maxZoom: 24,
+        keyboardZoomOffset: 0.05,
+        zoomSnap: 0, // Enables fractional zoom.
+    });
+
+    // Get map start position
+    getMapStartLocation()
+        .then((mapStartLocation) => {
+            // Create Leaflet map
+            map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
+
+            // Add leaflet-hash (forked version)
+            const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
+
+            // Report ready to other things that depend on map state.
+            // The problem is that the other map-based sub-components like MapPanel
+            // cannot assume that the map exists already when they're mounted,
+            // because the children of this component will be mounted before
+            // the parent's componentDidMount() is called. So, like all other
+            // inter-component communication outside of the React framework, we
+            // currently use an EventEmitter to report a ready state, which then
+            // populates the sub-components' state. I'd imagine this situation to
+            // improve when we look into a react-leaflet implementation.
+            EventEmitter.dispatch('map:init');
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+
+    // Force Leaflet to update itself.
+    // This resolves an issue where the map may sometimes not appear
+    // or only partially appear when this app is first loaded.
+    window.setTimeout(() => {
+        map.invalidateSize(false);
+    }, 0);
+
+    // Set up a listener to record current map view settings when user leaves
+    window.addEventListener('beforeunload', (event) => {
+        localforage.setItem('last-map-view', {
+            lat: map.getCenter().lat,
+            lng: map.getCenter().lng,
+            zoom: map.getZoom(),
+        });
+    });
+
+    setupEventListeners();
 }

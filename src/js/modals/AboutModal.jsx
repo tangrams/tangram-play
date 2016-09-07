@@ -1,22 +1,22 @@
+import L from 'leaflet';
+import CodeMirror from 'codemirror';
 import React from 'react';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
 
-import CodeMirror from 'codemirror';
-import L from 'leaflet';
+import Modal from './Modal';
 
 export default class AboutModal extends React.PureComponent {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.onClickClose = this.onClickClose.bind(this);
     }
 
-    onClickClose () {
+    onClickClose() {
         this.component.unmount();
     }
 
-    render () {
+    render() {
         return (
             <Modal
                 className="about-modal"
@@ -35,10 +35,10 @@ export default class AboutModal extends React.PureComponent {
                         <br />CodeMirror <span className="about-cm-version">{`v${CodeMirror.version}`}</span>
                     </p>
                     <p>
-                        This is a <a href="https://mapzen.com/" target="_blank">Mapzen</a> project.
+                        This is a <a href="https://mapzen.com/" target="_blank" rel="noopener noreferrer">Mapzen</a> project.
                     </p>
                     <p>
-                        <a href="https://github.com/tangrams/tangram-play" target="_blank">View source on GitHub</a>
+                        <a href="https://github.com/tangrams/tangram-play" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
                     </p>
                 </div>
 

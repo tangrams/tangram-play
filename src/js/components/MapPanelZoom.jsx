@@ -6,7 +6,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
 import MapPanelZoomIndicator from './MapPanelZoomIndicator';
 import { map } from '../map/map';
-import { EventEmitter } from './event-emitter';
+import EventEmitter from './event-emitter';
 
 export default class MapPanelZoom extends React.Component {
     /**
@@ -16,18 +16,18 @@ export default class MapPanelZoom extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
-            zoom: 0 // Current map zoom position to display
+            zoom: 0, // Current map zoom position to display
         };
 
         this.onClickZoomIn = this.onClickZoomIn.bind(this);
         this.onClickZoomOut = this.onClickZoomOut.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         EventEmitter.subscribe('map:init', () => {
             this.setState({ zoom: map.getZoom() });
         });
@@ -44,7 +44,7 @@ export default class MapPanelZoom extends React.Component {
     /**
      * Zoom into the map when user click ZoomIn button
      */
-    onClickZoomIn () {
+    onClickZoomIn() {
         map.zoomIn(1, { animate: true });
         this.setState({ zoom: map.getZoom() });
     }
@@ -52,12 +52,12 @@ export default class MapPanelZoom extends React.Component {
     /**
      * Zoom into the map when user click ZoomOut button
      */
-    onClickZoomOut () {
+    onClickZoomOut() {
         map.zoomOut(1, { animate: true });
         this.setState({ zoom: map.getZoom() });
     }
 
-    render () {
+    render() {
         return (
             <div className="map-panel-zoom-container">
                 <MapPanelZoomIndicator zoom={this.state.zoom} />

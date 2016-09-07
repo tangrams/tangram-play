@@ -10,10 +10,6 @@ import CodeMirror from 'codemirror';
 // Import CodeMirror modes
 import 'codemirror/mode/javascript/javascript';
 
-// Import Tangram custom modes
-import './codemirror/yaml-tangram';
-import './codemirror/hint-tangram';
-
 // Import CodeMirror addons
 import 'codemirror/addon/search/searchcursor';
 import 'codemirror/addon/search/search';
@@ -35,6 +31,10 @@ import 'codemirror/addon/selection/active-line';
 // Import Codemirror keymap
 import 'codemirror/keymap/sublime';
 
+// Import Tangram custom modes
+import './codemirror/yaml-tangram';
+import './codemirror/hint-tangram';
+
 // Import custom keymap with additional Tangram Play functionality
 import { getExtraKeyMap } from './keymap';
 
@@ -43,7 +43,31 @@ import { getExtraKeyMap } from './keymap';
 // available, use cm.getOption('indentUnit') to retrieve the current value.
 const INDENT_UNIT = 4;
 
-// Export CodeMirror instance
+/**
+ * Sets up a series of CodeMirror rulers. Depends on addon `display/rulers.js`.
+ * See documetation: https://codemirror.net/doc/manual.html#addon_rulers
+ *
+ * CodeMirror's `rulers` option expects an array of objects where the
+ * `column` property is the column at which to add a ruler. There does not
+ * appear to be a way to specify rulers only at CodeMirror's current `indentSize`
+ * property, so this function returns an array of ruler positions given an
+ * arbitrary indent spacing. If the editor's indent spacing changes, CodeMirror's
+ * `rulers` option should be set to the correct `indentSize` value.
+ *
+ * @protected
+ * @param {Number} indentSize - the number of spaces to add rulers at.
+ *              Defaults to INDENT_UNIT, defined above.
+ * @param {Number} amount - number of rulers to add, total. Defaults to 10.
+ * @returns {Object} a valid value for CodeMirror's `rulers` option.
+ */
+function createRulersOption(indentSize = INDENT_UNIT, amount = 10) {
+    const rulers = [];
+    for (let i = 1; i < amount; i++) {
+        rulers.push({ column: i * indentSize });
+    }
+    return rulers;
+}
+
 /**
  * Initializes CodeMirror.
  *
@@ -53,8 +77,9 @@ const INDENT_UNIT = 4;
 export function initCodeMirror(el) {
     let autofocus = true;
 
-    // If we're using an embedded version of play, we don't want the CodeMirror instance to focus by default
-    // since presumably we'll be embedding it within another page
+    // If we're using an embedded version of play, we don't want the CodeMirror
+    // instance to focus by default since presumably we'll be embedding it
+    // within another page
     if (window.isEmbedded) {
         autofocus = false;
     }
@@ -86,42 +111,20 @@ export function initCodeMirror(el) {
     // Modified slightly to provide an additional hanging indent that is based
     // off of the document's indentUnit setting. This mimics how wrapping behaves
     // in Sublime Text.
-    cm.on('renderLine', function (cm, line, el) {
+    // eslint-disable-next-line no-shadow
+    cm.on('renderLine', (cm, line, el) => {
         const indentUnit = cm.getOption('indentUnit');
         const charWidth = cm.defaultCharWidth();
         const columns = CodeMirror.countColumn(line.text, null, indentUnit);
         const offset = (columns + indentUnit) * charWidth;
         const basePadding = 4; // Magic number: it is CodeMirror's default value.
 
-        el.style.textIndent = '-' + offset + 'px';
-        el.style.paddingLeft = (basePadding + offset) + 'px';
+        /* eslint-disable no-param-reassign */
+        el.style.textIndent = `-${offset}px`;
+        el.style.paddingLeft = `${basePadding + offset}px`;
+        /* eslint-enable no-param-reassign */
     });
     cm.refresh();
 
     return cm;
-}
-
-/**
- * Sets up a series of CodeMirror rulers. Depends on addon `display/rulers.js`.
- * See documetation: https://codemirror.net/doc/manual.html#addon_rulers
- *
- * CodeMirror's `rulers` option expects an array of objects where the
- * `column` property is the column at which to add a ruler. There does not
- * appear to be a way to specify rulers only at CodeMirror's current `indentSize`
- * property, so this function returns an array of ruler positions given an
- * arbitrary indent spacing. If the editor's indent spacing changes, CodeMirror's
- * `rulers` option should be set to the correct `indentSize` value.
- *
- * @protected
- * @param {Number} indentSize - the number of spaces to add rulers at.
- *              Defaults to INDENT_UNIT, defined above.
- * @param {Number} amount - number of rulers to add, total. Defaults to 10.
- * @returns {Object} a valid value for CodeMirror's `rulers` option.
- */
-function createRulersOption(indentSize = INDENT_UNIT, amount = 10) {
-    const rulers = [];
-    for (let i = 1; i < amount; i++) {
-        rulers.push({ column: i * indentSize });
-    }
-    return rulers;
 }

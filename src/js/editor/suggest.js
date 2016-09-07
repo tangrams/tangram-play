@@ -1,19 +1,111 @@
+// Import CodeMirror
+import CodeMirror from 'codemirror';
+import 'codemirror/addon/hint/show-hint';
+
 import { editor, getNodesOfLine } from './editor';
 import TANGRAM_API from '../tangram-api.json';
 import { tangramLayer } from '../map/map';
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 // Load some common functions
 import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
 import { getAddressSceneContent, getAddressForLevel } from '../editor/codemirror/yaml-tangram';
 
-// Import CodeMirror
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
-
 //  private variables
 const keySuggestions = [];
 const valueSuggestions = [];
+
+class Suggestion {
+    constructor(datum) {
+        //  TODO: must be a better way to do this
+        if (datum.address) {
+            this.checkAgainst = 'address';
+        } else if (datum.key) {
+            this.checkAgainst = 'key';
+        } else if (datum.value) {
+            this.checkAgainst = 'value';
+        }
+
+        this.checkPatern = datum[this.checkAgainst];
+
+        if (datum.keyLevel) {
+            this.keyLevel = datum.keyLevel;
+        }
+
+        if (datum.options) {
+            this.options = datum.options;
+        }
+
+        if (datum.source) {
+            this.source = datum.source;
+        }
+
+        if (datum.defaultValue) {
+            this.defaultValue = datum.defaultValue;
+        }
+    }
+
+    check(node, forceLevel) {
+        if (node && this.checkAgainst) {
+            let rightLevel = true;
+            if (!forceLevel && this.level) {
+                rightLevel = getLineInd(editor, node.pos.line) === this.level;
+            }
+            return RegExp(this.checkPatern).test(node[this.checkAgainst]) && rightLevel;
+        }
+
+        return false;
+    }
+
+    getDefault() {
+        return this.defaultValue || '';
+    }
+
+    getList(node) {
+        const scene = tangramLayer.scene;
+        const list = [];
+        let presentNodes = [];
+
+        // Add options
+        if (this.options) {
+            Array.prototype.push.apply(list, this.options);
+        }
+
+        // Add sources
+        if (this.source) {
+            const obj = getAddressSceneContent(scene, this.source);
+            const keyFromSource = obj ? Object.keys(obj) : [];
+            Array.prototype.push.apply(list, keyFromSource);
+        }
+
+        // Take out present keys
+        const obj = getAddressSceneContent(scene, node.address);
+        presentNodes = obj ? Object.keys(obj) : [];
+        for (let j = list.length - 1; j >= 0; j--) {
+            if (presentNodes.indexOf(list[j]) > -1) {
+                list.splice(j, 1);
+            }
+        }
+
+        return list;
+    }
+}
+
+function getDefault(address, completion) {
+    const key = {
+        address: `${address}/${completion}`,
+        key: completion,
+        value: '',
+    };
+    let defaultValue = '';
+    for (const datum of valueSuggestions) {
+        if (datum.check(key, true)) {
+            defaultValue = datum.getDefault();
+            break;
+        }
+    }
+    return defaultValue;
+}
 
 export function initSuggestions() {
     // Initialize tokens
@@ -83,12 +175,12 @@ export function initSuggestions() {
     });
 }
 
-export function hint(editor, options) {
-    const cursor = { line: editor.getCursor().line, ch: editor.getCursor().ch };
-    cursor.ch = cursor.ch - 1;
+export function hint(cm, options) {
+    const cursor = { line: cm.getCursor().line, ch: cm.getCursor().ch };
+    cursor.ch -= 1;
     // console.log("Cursor", cursor);
 
-    const range = editor.findWordAt(cursor);
+    const range = cm.findWordAt(cursor);
     const from = range.anchor;
     const to = range.head;
     // console.log("RANGE",from,to);
@@ -109,23 +201,22 @@ export function hint(editor, options) {
             // If there is no key search for a KEY
             if (node.key === '') {
                 // Fallback the address to match
-                const actualLevel = getLineInd(editor, line);
+                const actualLevel = getLineInd(cm, line);
                 address = getAddressForLevel(node.address, actualLevel);
                 node.address = address;
                 // Suggest key
                 for (const datum of keySuggestions) {
                     if (datum.check(node)) {
-                        list.push.apply(list, datum.getList(node));
+                        list.push(...datum.getList(node));
                     }
                 }
                 wasKey = true;
-            }
-            // if it have a key search for the value
-            else {
+            } else {
+                // if it have a key search for the value
                 // Suggest value
                 for (const datum of valueSuggestions) {
                     if (datum.check(node)) {
-                        list.push.apply(list, datum.getList(node));
+                        list.push(...datum.getList(node));
                         break;
                     }
                 }
@@ -133,13 +224,13 @@ export function hint(editor, options) {
             // console.log("List",list);
 
             // What ever the list is suggest using it
-            let string = editor.getRange(from, to);
+            let string = cm.getRange(from, to);
             string = regexEscape(string);
 
             // If the word is already begin to type, filter outcome
             if (string !== '') {
                 const matchedList = [];
-                const match = RegExp('^' + string + '.*');
+                const match = RegExp(`^${string}.*`);
                 for (let i = 0; i < list.length; i++) {
                     if (list[i] !== string && match.test(list[i])) {
                         matchedList.push(list[i]);
@@ -156,7 +247,7 @@ export function hint(editor, options) {
         if (wasKey) {
             // console.log(address+'/'+completion);
             const defaultValue = getDefault(address, completion);
-            editor.replaceRange(': ' + defaultValue,
+            cm.replaceRange(`: ${defaultValue}`,
                 { line: result.to.line, ch: result.to.ch + completion.length },
                 { line: result.to.line, ch: result.to.ch + completion.length + 1 },
                 'complete');
@@ -164,99 +255,4 @@ export function hint(editor, options) {
     });
 
     return result;
-}
-
-function getDefault(address, completion) {
-    const key = {
-        address: address + '/' + completion,
-        key: completion,
-        value: '',
-    };
-    let defaultValue = '';
-    for (const datum of valueSuggestions) {
-        if (datum.check(key, true)) {
-            defaultValue = datum.getDefault();
-            break;
-        }
-    }
-    return defaultValue;
-}
-
-class Suggestion {
-    constructor(datum) {
-        //  TODO: must be a better way to do this
-        if (datum.address) {
-            this.checkAgainst = 'address';
-        }
-        else if (datum.key) {
-            this.checkAgainst = 'key';
-        }
-        else if (datum.value) {
-            this.checkAgainst = 'value';
-        }
-
-        this.checkPatern = datum[this.checkAgainst];
-
-        if (datum.keyLevel) {
-            this.keyLevel = datum.keyLevel;
-        }
-
-        if (datum.options) {
-            this.options = datum.options;
-        }
-
-        if (datum.source) {
-            this.source = datum.source;
-        }
-
-        if (datum.defaultValue) {
-            this.defaultValue = datum.defaultValue;
-        }
-    }
-
-    check(node, forceLevel) {
-        if (node && this.checkAgainst) {
-            let rightLevel = true;
-            if (!forceLevel && this.level) {
-                rightLevel = getLineInd(editor, node.pos.line) === this.level;
-            }
-            return RegExp(this.checkPatern).test(node[this.checkAgainst]) && rightLevel;
-        }
-        else {
-            return false;
-        }
-    }
-
-    getDefault() {
-        return this.defaultValue || '';
-    }
-
-    getList(node) {
-        const scene = tangramLayer.scene;
-        const list = [];
-        let presentNodes = [];
-
-        // Add options
-        if (this.options) {
-            Array.prototype.push.apply(list, this.options);
-        }
-
-        // Add sources
-        if (this.source) {
-            const obj = getAddressSceneContent(scene, this.source);
-            const keyFromSource = obj ? Object.keys(obj) : [];
-            Array.prototype.push.apply(list, keyFromSource);
-        }
-
-        // Take out present keys
-        const obj = getAddressSceneContent(scene, node.address);
-        presentNodes = obj ? Object.keys(obj) : [];
-        for (let j = list.length - 1; j >= 0; j--) {
-            if (presentNodes.indexOf(list[j]) > -1) {
-                list.splice(j, 1);
-            }
-        }
-
-        return list;
-    }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 /**
  * Creates a thumbnail from image source or image data.
  * Designed to work well with base64 input (e.g. a canvas.toDataURL() result
@@ -10,36 +11,43 @@
  * not do any other kind of image optimization (e.g. sharpening, compression)
  *
  * @param {Blob|string} image - blob or base64 representation of image data
- * @param {Number} targetWidth - desired thumbnail width in pixels
- * @param {Number} targetHeight - desired thumbnail height in pixels
+ * @param {Number} width - desired thumbnail width in pixels
+ * @param {Number} height - desired thumbnail height in pixels
  * @param {Boolean} retina - if true, the result thumbnail is 2x its target size
  * @param {Boolean} returnBlob - if true, the returned result is an image blob,
  *          otherwise, it's a dataURL string
  * @returns {Promise}
  */
-export function createThumbnail(imageData, targetWidth, targetHeight, retina = true, returnBlob = true) {
+export function createThumbnail(imageData, width, height, retina = true, returnBlob = true) {
     // Create an in-memory canvas to render the original image data to.
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
+
+    let targetWidth = width;
+    let targetHeight = height;
 
     // Set canvas width
     // Canvas should be set to 2x so that the result images are
     // appropriate for Retina screens
     if (retina) {
-        targetWidth = targetWidth * 2;
-        targetHeight = targetHeight * 2;
+        targetWidth *= 2;
+        targetHeight *= 2;
     }
     canvas.width = targetWidth;
     canvas.height = targetHeight;
 
     // Wrap image loading in a Promise object and returns it
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         const image = new Image();
 
-        image.onload = function () {
+        image.onload = function onload() {
             const aspectRatio = targetWidth / targetHeight;
             const origAspectRatio = image.width / image.height;
-            let diffRatio, sourceWidth, sourceHeight, sourceX, sourceY;
+            let diffRatio;
+            let sourceWidth;
+            let sourceHeight;
+            let sourceX;
+            let sourceY;
 
             // We need to do a bunch of math to figure out where on
             // the image to crop in order to fit the target dimensions.
@@ -58,8 +66,7 @@ export function createThumbnail(imageData, targetWidth, targetHeight, retina = t
                 sourceHeight = Math.round(targetHeight * diffRatio);
                 sourceX = 0;
                 sourceY = Math.round((image.height / 2) - (sourceHeight / 2));
-            }
-            else {
+            } else {
                 diffRatio = image.height / targetHeight;
                 sourceWidth = Math.round(targetWidth * diffRatio);
                 sourceHeight = image.height;
@@ -68,7 +75,8 @@ export function createThumbnail(imageData, targetWidth, targetHeight, retina = t
             }
 
             // Draw the source image to the canvas. This does the scaling and cropping.
-            context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight);
+            context.drawImage(image, sourceX, sourceY, sourceWidth,
+                sourceHeight, 0, 0, targetWidth, targetHeight);
 
             // Revoke the object URL for the blob; this prevents memory leakage
             URL.revokeObjectURL(image.src);
@@ -78,14 +86,13 @@ export function createThumbnail(imageData, targetWidth, targetHeight, retina = t
                 canvas.toBlob((blob) => {
                     resolve(blob);
                 }, 'image/png');
-            }
-            else {
+            } else {
                 // Returns the thumbnail's dataURL value as the resolve value of this Promise
                 resolve(canvas.toDataURL());
             }
         };
 
-        image.onerror = function () {
+        image.onerror = function onerror() {
             reject('Unable to create thumbnail.');
         };
 

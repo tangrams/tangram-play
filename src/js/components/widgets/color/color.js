@@ -7,11 +7,12 @@ const valueRanges = {
 export default class Color {
     constructor(color) {
         // Invalid colors (junk input or user is typing) are created as white by default
-        // We need a way to distinguish what inputs were junk, so invalid colors will be this.valid = false
+        // We need a way to distinguish what inputs were junk, so invalid colors
+        // will be this.valid = false
         this.valid = true;
 
-        const firstPass = this._processColor(color); // Catch a color written in vec format
-        const secondPass = this._processTinyColor(firstPass); // Creates a tinycolor color object
+        const firstPass = this.processColor(color); // Catch a color written in vec format
+        const secondPass = this.processTinyColor(firstPass); // Creates a tinycolor color object
 
         this.color = secondPass;
     }
@@ -20,16 +21,16 @@ export default class Color {
      * Process a color that could be taken from a valid YAML scene file.
      * As such, we need to check for array notation and for hex written as a string
      *
-     * @param color - color to parse
+     * @private
+     * @param {string} color - color to parse
      */
-    _processColor(color) {
+    processColor(color) {
         if (typeof color === 'string' || color instanceof String) {
             // If a hex color
             if (color.charAt(0) === '\'' && (color.charAt(color.length - 1) === '\'')) {
                 return color.replace(/'/g, '');
-            }
-            // If a vec color
-            else if ((color.charAt(0) === '[') && (color.charAt(color.length - 1) === ']')) {
+            } else if ((color.charAt(0) === '[') && (color.charAt(color.length - 1) === ']')) {
+                // If a vec color
                 let colorString = color;
                 colorString = colorString.replace('[', '');
                 colorString = colorString.replace(']', '');
@@ -37,8 +38,11 @@ export default class Color {
 
                 if (colorString.length >= 3) {
                     const vec = { v: colorString[0], e: colorString[1], c: colorString[2] };
-                    const rgb = this._vec2rgb(vec);
-                    rgb.a = 1.0; // We need to add an alpha by default so that the widget button can update css properly
+                    const rgb = this.vec2rgb(vec);
+
+                    // We need to add an alpha by default so that the widget
+                    // button can update css properly
+                    rgb.a = 1.0;
 
                     if (colorString.length === 4) {
                         rgb.a = parseFloat(colorString[3]);
@@ -55,8 +59,13 @@ export default class Color {
         return color;
     }
 
-    // Creates a tinycolor color object
-    _processTinyColor(color) {
+    /**
+     * Creates a tinycolor color object
+     *
+     * @private
+     * @param {string} color - color to parse
+     */
+    processTinyColor(color) {
         // Tangram.js's color parsing library (css-color-parser-js) allows
         // spaces in color strings, with the following rationale:
         //     "Remove all whitespace, not compliant, but should just be
@@ -81,8 +90,12 @@ export default class Color {
         return newColor;
     }
 
-    // Converts the internally stored color from vec to rgb
-    _vec2rgb(vec) {
+    /**
+     * Converts the internally stored color from vec to rgb
+     *
+     * @private
+     */
+    vec2rgb(vec) {
         return {
             r: vec.v * valueRanges.rgb.r[1],
             g: vec.e * valueRanges.rgb.g[1],
@@ -90,8 +103,12 @@ export default class Color {
         };
     }
 
-    // Converts the internally stored color from rgb to vec
-    _rgb2vec() {
+    /**
+     * Converts the internally stored color from rgb to vec
+     *
+     * @private
+     */
+    rgb2vec() {
         return {
             v: this.color.toRgb().r / valueRanges.rgb.r[1],
             e: this.color.toRgb().g / valueRanges.rgb.g[1],
@@ -111,25 +128,33 @@ export default class Color {
 
     // Returns vec string "[0.x, 0.x , 0.x, 0.x]"
     getVecString() {
-        const vecColor = this._rgb2vec();
-        const vecColorString = '[' + vecColor.v.toFixed(3) + ', ' + vecColor.e.toFixed(3) + ', ' + vecColor.c.toFixed(3) + ', ' + (this.color.getAlpha()).toFixed(2) + ']';
-        return vecColorString;
+        const vecColor = this.rgb2vec();
+        const v = vecColor.v.toFixed(3);
+        const e = vecColor.e.toFixed(3);
+        const c = vecColor.c.toFixed(3);
+        const a = this.color.getAlpha().toFixed(2);
+        return `[${v}, ${e}, ${c}, ${a}]`;
     }
 
     // For use within widget-links and shader blocks
     // Returns vec string "[0.x, 0.x , 0.x]" No alpha.
     getVec3String() {
-        const vecColor = this._rgb2vec();
-        const vecColorString = 'vec3(' + vecColor.v.toFixed(3) + ',' + vecColor.e.toFixed(3) + ',' + vecColor.c.toFixed(3) + ')';
-        return vecColorString;
+        const vecColor = this.rgb2vec();
+        const v = vecColor.v.toFixed(3);
+        const e = vecColor.e.toFixed(3);
+        const c = vecColor.c.toFixed(3);
+        return `vec3(${v}, ${e}, ${c})`;
     }
 
     // For use within widget-links and shader blocks
     // Returns vec string "[0.x, 0.x , 0.x]" No alpha.
     getVec4String() {
-        const vecColor = this._rgb2vec();
-        const vecColorString = 'vec4(' + vecColor.v.toFixed(3) + ',' + vecColor.e.toFixed(3) + ',' + vecColor.c.toFixed(3) + ', ' + (this.color.getAlpha()).toFixed(2) + ')';
-        return vecColorString;
+        const vecColor = this.rgb2vec();
+        const v = vecColor.v.toFixed(3);
+        const e = vecColor.e.toFixed(3);
+        const c = vecColor.c.toFixed(3);
+        const a = this.color.getAlpha().toFixed(2);
+        return `vec4(${v}, ${e}, ${c}, ${a})`;
     }
 
     // Returns hex string without '#'

@@ -22,54 +22,53 @@ export function getExtraKeyMap() {
             // the selection with a tab character.
             if (cm.somethingSelected()) {
                 cm.indentSelection('add');
-            }
-            // Maps the tab key to insert spaces instead of a tab character.
-            // https://codemirror.net/doc/manual.html#keymaps
-            else {
+            } else {
+                // Maps the tab key to insert spaces instead of a tab character.
+                // https://codemirror.net/doc/manual.html#keymaps
                 cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
             }
         },
-        'Alt-F': function (cm) {
+        'Alt-F': (cm) => {
             cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
         },
-        'Alt-P': function (cm) {
+        'Alt-P': (cm) => {
             takeScreenshot();
         },
-        'Ctrl-0': function (cm) {
+        'Ctrl-0': (cm) => {
             unfoldAll(cm);
         },
-        'Ctrl-1': function (cm) {
+        'Ctrl-1': (cm) => {
             foldByLevel(cm, 0);
         },
-        'Ctrl-2': function (cm) {
+        'Ctrl-2': (cm) => {
             foldByLevel(cm, 1);
         },
-        'Ctrl-3': function (cm) {
+        'Ctrl-3': (cm) => {
             foldByLevel(cm, 2);
         },
-        'Ctrl-4': function (cm) {
+        'Ctrl-4': (cm) => {
             foldByLevel(cm, 3);
         },
-        'Ctrl-5': function (cm) {
+        'Ctrl-5': (cm) => {
             foldByLevel(cm, 4);
         },
-        'Ctrl-6': function (cm) {
+        'Ctrl-6': (cm) => {
             foldByLevel(cm, 5);
         },
-        'Ctrl-7': function (cm) {
+        'Ctrl-7': (cm) => {
             foldByLevel(cm, 6);
         },
-        'Ctrl-8': function (cm) {
+        'Ctrl-8': (cm) => {
             foldByLevel(cm, 7);
         },
     };
 
     // Set Ctrl- or Cmd- buttons depending on Mac or Windows devices.
-    extraKeysSettings[ctrlKey + '-'] = function (cm) {
+    extraKeysSettings[`${ctrlKey}-`] = (cm) => {
         changeFontSize(cm, false);
     };
     // Equal (=) maps to the Plus (+)
-    extraKeysSettings[ctrlKey + '='] = function (cm) {
+    extraKeysSettings[`${ctrlKey}=`] = (cm) => {
         changeFontSize(cm, true);
     };
 

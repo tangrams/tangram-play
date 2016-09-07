@@ -1,18 +1,19 @@
-import { getEditorContent } from '../editor/editor';
-import { map } from '../map/map';
-import { getScreenshotData } from '../map/screenshot';
-// import { getLocationLabel } from '../map/search'; // TODO: implement now that move to react has changed this
-import { createThumbnail } from '../tools/thumbnail';
-
 import { find } from 'lodash';
 import L from 'leaflet';
 
+import { getEditorContent } from '../editor/editor';
+import { map } from '../map/map';
+import { getScreenshotData } from '../map/screenshot';
+// TODO: implement now that move to react has changed this
+// import { getLocationLabel } from '../map/search';
+import { createThumbnail } from '../tools/thumbnail';
+
 const APP_NAME = 'play';
 const METADATA_DIR = '.tangramplay/';
-const METADATA_FILEPATH = METADATA_DIR + 'metadata.json';
+const METADATA_FILEPATH = `${METADATA_DIR}metadata.json`;
 const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
-const THUMBNAIL_FILEPATH = METADATA_DIR + 'thumbnail.png';
+const THUMBNAIL_FILEPATH = `${METADATA_DIR}thumbnail.png`;
 const SCENELIST_FILEPATH = 'scenelist.json';
 
 // We don't allow this to be customized (yet) and in the future you might
@@ -41,29 +42,6 @@ const SCENE_FILENAME = 'scene.yaml';
     Eventually Tangram Play per-user settings may be stored in the root
 */
 
-export function saveToMapzenUserAccount(data, successCallback, errorCallback) {
-    // Add timestamp to `data`
-    data.timestamp = new Date().toJSON();
-
-    // Get a scene directory by slugifying the scene name, add a trailing slash.
-    const slug = slugify(data.name) + '/';
-
-    // These are Promises. Each creates its own contents and makes
-    // individual upload requests. We resolve this function when all Promises
-    // resolve.
-    const uploadThumbnail = makeAndUploadThumbnail(slug);
-    const uploadMetadata = makeAndUploadMetadata(data, slug);
-    const uploadScene = makeAndUploadScene(data, slug);
-
-    return Promise.all([uploadThumbnail, uploadMetadata, uploadScene])
-        .then((savedLocations) => {
-            // Should all be urls of the saved files.
-            // Returns some an object containing metadata for the success handler
-            // Errors should be handled upstream as well
-            return downloadAndUpdateSceneList(data, savedLocations);
-        });
-}
-
 // super quickly written slugify function. only replaces whitespace with dashes.
 // does not deal with funky characters. or condense spaces, all that stuff.
 // should also eventually enforce a maximum length. or handle errors.
@@ -86,9 +64,9 @@ function uploadFile(contents, filepath, type = 'plain/text') {
 
     return window.fetch(`/api/uploads/new?app=${APP_NAME}&path=${filepath}`, {
         credentials: 'same-origin',
-    }).then((response) => {
-        return response.json();
-    }).then((upload) => {
+    })
+    .then(response => response.json())
+    .then(upload => {
         const formData = new FormData();
         Object.keys(upload.fields).forEach(field => {
             formData.append(field, upload.fields[field]);
@@ -104,16 +82,16 @@ function uploadFile(contents, filepath, type = 'plain/text') {
             method: 'POST',
             body: formData,
         });
-    }).then((response) => {
+    })
+    .then(response => {
         // If uploaded, return the url of the uploaded file.
         if (response.ok) {
             return uploadedFileUrl;
         }
-        else {
-            // Caller should catch this error.
-            // For now it just passes the status code.
-            throw new Error(response.status);
-        }
+
+        // Caller should catch this error.
+        // For now it just passes the status code.
+        throw new Error(response.status);
     });
 }
 
@@ -127,16 +105,12 @@ function makeAndUploadThumbnail(slug) {
     // Grab a screenshot from the map and convert it to a thumbnail at a fixed
     // dimension. This makes file sizes and layout more predictable.
     return getScreenshotData()
-        .then((screenshot) => {
-            // At this size, thumbnail image should clock in at around ~90kb
-            // to ~120kb (unoptimized, but that's the limitations of our
-            // thumbnail function)
-            return createThumbnail(screenshot.blob, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
-        })
-        .then((thumbnail) => {
-            // Make upload request
-            return uploadFile(thumbnail, slug + THUMBNAIL_FILEPATH, 'image/png');
-        });
+        // At this size, thumbnail image should clock in at around ~90kb
+        // to ~120kb (unoptimized, but that's the limitations of our
+        // thumbnail function)
+        .then(screenshot => createThumbnail(screenshot.blob, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
+        // Make upload request
+        .then(thumbnail => uploadFile(thumbnail, slug + THUMBNAIL_FILEPATH, 'image/png'));
 }
 
 /**
@@ -184,6 +158,40 @@ function makeAndUploadScene(data, slug) {
 }
 
 /**
+ * Fetches `scenelist.json` from the user account. Returns a Promise, resolved
+ * with its contents in the form of an Array, or an empty Array if the file is
+ * not found.
+ *
+ * @returns {Promise} - resolved with an array of saved scene data (or empty
+ *          array if nothing is saved yet)
+ */
+export function fetchSceneList() {
+    const fetchOpts = { credentials: 'same-origin' };
+
+    // TODO: Don't hardcode this URL!!
+    const sceneListPath =
+        /https:\/\/mapzen-uploads.s3.amazonaws.com\/play\/[a-z0-9-]+\/scenelist.json/;
+
+    // Checks the uploads object at `/api/uploads?app=play` to see if we have an
+    // existing `scenelist.json`. This is so that we can make the check without
+    // causing a 404 if it doesn't exist.
+    return window.fetch(`/api/uploads?app=${APP_NAME}`, fetchOpts)
+        .then(response => response.json())
+        .then(uploadsObj => find(uploadsObj.uploads, url => url.match(sceneListPath))
+        .then((sceneListFile) => {
+            // `sceneListFile` is a url
+            if (sceneListFile) {
+                return window.fetch(sceneListFile, fetchOpts)
+                    .then(response => response.json());
+            }
+
+            // If not found, `sceneListFile` is null.
+            // Create a new one of these
+            return [];
+        }));
+}
+
+/**
  * Downloads the scene list (or creates a new one if not already present) and
  * appends saved scene data to it.
  *
@@ -226,49 +234,26 @@ function downloadAndUpdateSceneList(data, savedLocations) {
 
             return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
         })
-        .then((sceneListUrl) => {
-            return sceneData;
-        });
+        .then(() => sceneData);
 }
 
-/**
- * Fetches `scenelist.json` from the user account. Returns a Promise, resolved
- * with its contents in the form of an Array, or an empty Array if the file is
- * not found.
- *
- * @returns {Promise} - resolved with an array of saved scene data (or empty
- *          array if nothing is saved yet)
- */
-export function fetchSceneList() {
-    const fetchOpts = {
-        credentials: 'same-origin',
-    };
+export function saveToMapzenUserAccount(data) {
+    // Add timestamp to `data`
+    data.timestamp = new Date().toJSON();
 
-    // Checks the uploads object at `/api/uploads?app=play` to see if we have an
-    // existing `scenelist.json`. This is so that we can make the check without
-    // causing a 404 if it doesn't exist.
-    return window.fetch(`/api/uploads?app=${APP_NAME}`, fetchOpts)
-        .then((response) => {
-            return response.json();
-        })
-        .then((uploadsObj) => {
-            return find(uploadsObj.uploads, (url) => {
-                // TODO: Don't hardcode this URL!!
-                return url.match(/https:\/\/mapzen-uploads.s3.amazonaws.com\/play\/[a-z0-9-]+\/scenelist.json/);
-            });
-        })
-        .then((sceneListFile) => {
-            // `sceneListFile` is a url
-            if (sceneListFile) {
-                return window.fetch(sceneListFile, fetchOpts)
-                    .then((response) => {
-                        return response.json();
-                    });
-            }
-            // If not found, `sceneListFile` is null.
-            // Create a new one of these
-            else {
-                return [];
-            }
-        });
+    // Get a scene directory by slugifying the scene name, add a trailing slash.
+    const slug = `${slugify(data.name)}/`;
+
+    // These are Promises. Each creates its own contents and makes
+    // individual upload requests. We resolve this function when all Promises
+    // resolve.
+    const uploadThumbnail = makeAndUploadThumbnail(slug);
+    const uploadMetadata = makeAndUploadMetadata(data, slug);
+    const uploadScene = makeAndUploadScene(data, slug);
+
+    // Should all be urls of the saved files.
+    // Returns some an object containing metadata for the success handler
+    // Errors should be handled upstream as well
+    return Promise.all([uploadThumbnail, uploadMetadata, uploadScene])
+        .then(savedLocations => downloadAndUpdateSceneList(data, savedLocations));
 }

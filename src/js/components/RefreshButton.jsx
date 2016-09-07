@@ -9,10 +9,10 @@ import { reloadOriginalScene } from '../tangram-play';
  * For use within embedded Tangram Play
  */
 export default class RefreshButton extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
-            button: 'bt-sync'
+            button: 'bt-sync',
         };
 
         this.onClick = this.onClick.bind(this);
@@ -22,7 +22,7 @@ export default class RefreshButton extends React.Component {
     /**
      * On click, the button spins and calls function to refresh original scene
      */
-    onClick () {
+    onClick() {
         this.setState({ button: 'bt-sync bt-spin active' });
         reloadOriginalScene();
         window.setTimeout(this.resetButton, 1000);
@@ -31,7 +31,7 @@ export default class RefreshButton extends React.Component {
     /**
      * Reset the button so it stops spinning
      */
-    resetButton () {
+    resetButton() {
         this.setState({ button: 'bt-sync' });
     }
 
@@ -39,7 +39,7 @@ export default class RefreshButton extends React.Component {
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         return (
             <Button className="refresh-button" onClick={this.onClick}>
                 <Icon type={this.state.button} />

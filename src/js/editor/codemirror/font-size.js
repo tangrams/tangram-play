@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 /**
  * Change font size in editor. Increments or decrements by 1px.
  * Font size will never go below 8px.
@@ -12,6 +13,6 @@ export function changeFontSize(cm, increase) {
     const fontSize = window.getComputedStyle(el).getPropertyValue('font-size');
     const adjustment = increase ? 1 : -1;
     const newSize = Math.max(window.parseInt(fontSize, 10) + adjustment, MINIMUM_FONT_SIZE);
-    el.style.fontSize = newSize.toString() + 'px';
+    el.style.fontSize = `${newSize.toString()}px`;
     cm.refresh();
 }

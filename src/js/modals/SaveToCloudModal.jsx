@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
+import Modal from './Modal';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -17,13 +17,13 @@ const DEFAULT_SCENE_NAME = 'Tangram scene';
 const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
 export default class SaveToCloudModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
-        this._timeout = null;
+        this.timeout = null;
 
         this.state = {
-            thinking: false
+            thinking: false,
         };
 
         this.onClickConfirm = this.onClickConfirm.bind(this);
@@ -33,24 +33,24 @@ export default class SaveToCloudModal extends React.Component {
         this.handleSaveError = this.handleSaveError.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setReadyUI();
     }
 
-    componentWillReceiveProps (nextState, nextProps) {
+    componentWillReceiveProps(nextState, nextProps) {
         if (nextProps.visible === true) {
             this.setReadyUI();
         }
     }
 
-    componentWillUnmount () {
-        window.clearTimeout(this._timeout);
+    componentWillUnmount() {
+        window.clearTimeout(this.timeout);
     }
 
-    onClickConfirm () {
+    onClickConfirm() {
         // Waiting state
         this.setState({
-            thinking: true
+            thinking: true,
         });
 
         // Name of the scene
@@ -66,7 +66,7 @@ export default class SaveToCloudModal extends React.Component {
         const data = {
             name,
             description,
-            public: this.publicCheckbox.checked
+            public: this.publicCheckbox.checked,
         };
 
         saveToMapzenUserAccount(data)
@@ -76,18 +76,20 @@ export default class SaveToCloudModal extends React.Component {
         // Start save timeout
         // TODO: This does not cancel the request if it is in progress
         // TODO: Test this
-        this._timeout = window.setTimeout(() => {
-            this.handleSaveError({ message: 'The server haven’t responded in a while, so we’re going stop trying. Please try again later!' });
+        this.timeout = window.setTimeout(() => {
+            // eslint-disable-next-line max-len
+            const errorMsg = 'The server haven’t responded in a while, so we’re going stop trying. Please try again later!';
+            this.handleSaveError({ message: errorMsg });
         }, SAVE_TIMEOUT);
     }
 
-    onClickCancel (event) {
-        window.clearTimeout(this._timeout);
+    onClickCancel(event) {
+        window.clearTimeout(this.timeout);
         this.resetInputs();
         this.component.unmount();
     }
 
-    setReadyUI () {
+    setReadyUI() {
         // Put the cursor on 'Scene name'
         this.nameInput.focus();
         this.nameInput.select();
@@ -100,7 +102,7 @@ export default class SaveToCloudModal extends React.Component {
      * a user might want to have follow up saves where the same
      * settings might be used.
      */
-    resetInputs () {
+    resetInputs() {
         this.descriptionInput.value = '';
         this.descriptionInput.blur();
         this.nameInput.value = DEFAULT_SCENE_NAME;
@@ -115,7 +117,7 @@ export default class SaveToCloudModal extends React.Component {
     // and display a helpful message
     //
     // `data` is (currently) the object saved to `scenelist.json`
-    handleSaveSuccess (data) {
+    handleSaveSuccess(data) {
         // Close the modal
         this.component.unmount();
 
@@ -128,7 +130,10 @@ export default class SaveToCloudModal extends React.Component {
 
         // Show success modal
         // TODO
-        ReactDOM.render(<SaveToCloudSuccessModal urlValue={data.files.scene} />, document.getElementById('modal-container'));
+        ReactDOM.render(
+            <SaveToCloudSuccessModal urlValue={data.files.scene} />,
+            document.getElementById('modal-container')
+        );
     }
 
     /**
@@ -137,17 +142,22 @@ export default class SaveToCloudModal extends React.Component {
      *
      * @param {Error} Thrown by something else
      */
-    handleSaveError (error) {
+    handleSaveError(error) {
         // Close the modal, if present
         if (this.component) {
             this.component.unmount();
         }
 
+        const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
+
         // Show error modal
-        ReactDOM.render(<ErrorModal error={`Uh oh! We tried to save your scene but something went wrong. ${error.message}`} />, document.getElementById('modal-container'));
+        ReactDOM.render(
+            <ErrorModal error={errorMessage} />,
+            document.getElementById('modal-container')
+        );
     }
 
-    render () {
+    render() {
         return (
             /* Modal disableEsc is true if we are waiting for a response */
             <Modal
@@ -159,7 +169,8 @@ export default class SaveToCloudModal extends React.Component {
                 <div className="modal-text">
                     <h4>Save this scene to your Mapzen account</h4>
                     <p>
-                        This uploads your Tangram scene file to your Mapzen account, so you'll have a permanent link to share publicly.
+                        This uploads your Tangram scene file to your Mapzen
+                        account, so you'll have a permanent link to share publicly.
                     </p>
                 </div>
 

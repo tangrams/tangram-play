@@ -4,7 +4,7 @@ import React from 'react';
 import { EditableInput } from 'react-color/lib/components/common';
 
 export default class ColorPickerInputFields extends React.PureComponent {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
     }
@@ -15,13 +15,12 @@ export default class ColorPickerInputFields extends React.PureComponent {
      * prop as the property name. e.g. `label='r'` becomes `data.r`. Do not
      * change these labels! (Use CSS to style these elements if necessary.)
      */
-    onChange (data) {
-        let color = this.props.color.getRgba();
+    onChange(data) {
+        const color = this.props.color.getRgba();
 
         if (data.hex) {
             this.props.onChange(data.hex);
-        }
-        else if (data.r || data.g || data.b || data.a) {
+        } else if (data.r || data.g || data.b || data.a) {
             let a = parseFloat(data.a);
 
             // Clamp a between 0-1 range
@@ -32,21 +31,20 @@ export default class ColorPickerInputFields extends React.PureComponent {
                     r: data.r || color.r,
                     g: data.g || color.g,
                     b: data.b || color.b,
-                    a: 0.0
+                    a: 0.0,
                 });
-            }
-            else {
+            } else {
                 this.props.onChange({
                     r: data.r || color.r,
                     g: data.g || color.g,
                     b: data.b || color.b,
-                    a: a || color.a
+                    a: a || color.a,
                 });
             }
         }
     }
 
-    render () {
+    render() {
         const color = this.props.color.getRgba();
         const hex = this.props.color.getHexString();
 
@@ -72,10 +70,7 @@ export default class ColorPickerInputFields extends React.PureComponent {
     }
 }
 
-/**
- * Prop validation required by React
- */
 ColorPickerInputFields.propTypes = {
     color: React.PropTypes.object,
-    onChange: React.PropTypes.func
+    onChange: React.PropTypes.func,
 };

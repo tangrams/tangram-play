@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 /**
  * Creates an "open from filesystem" dialog box using the browser.
  *
@@ -11,25 +12,28 @@ import ReactDOM from 'react-dom';
 import ErrorModal from '../modals/ErrorModal';
 import EditorIO from '../editor/io';
 
+function constructInvisibleFileInputElement() {
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('accept', 'text/x-yaml');
+    fileSelector.style.display = 'none';
+    fileSelector.addEventListener('change', (event) => {
+        const files = event.target.files;
+        EditorIO.loadContentFromFile(files[0]).catch((error) => {
+            // Show error modal
+            ReactDOM.render(
+                <ErrorModal error={error.message || error} />,
+                document.getElementById('modal-container')
+            );
+        });
+    });
+    return fileSelector;
+}
+
 const el = constructInvisibleFileInputElement();
 
 export function openLocalFile() {
     EditorIO.checkSaveStateThen(() => {
         el.click();
     });
-}
-
-function constructInvisibleFileInputElement() {
-    const fileSelector = document.createElement('input');
-    fileSelector.setAttribute('type', 'file');
-    fileSelector.setAttribute('accept', 'text/x-yaml');
-    fileSelector.style.display = 'none';
-    fileSelector.addEventListener('change', function (event) {
-        const files = event.target.files;
-        EditorIO.loadContentFromFile(files[0]).catch((error) => {
-            // Show error modal
-            ReactDOM.render(<ErrorModal error={error.message || error} />, document.getElementById('modal-container'));
-        });
-    });
-    return fileSelector;
 }

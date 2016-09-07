@@ -24,23 +24,20 @@ let cachedSignInData;
  * @todo Handle errors related to fetching API.
  */
 export function requestUserSignInState() {
-    if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) && window.location.protocol === 'https:') {
+    if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
+        window.location.protocol === 'https:') {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
             .then((response) => {
                 const data = response.json();
                 cachedSignInData = data;
                 return data;
-            })
-            .catch((error) => {
-                console.log(error);
             });
     }
-    else {
-        // Returns a promise that resolves to `null` if Tangram Play is not
-        // hosted somewhere where the `/api/developer.json` endpoint is
-        // available.
-        return Promise.resolve(null);
-    }
+
+    // Returns a promise that resolves to `null` if Tangram Play is not
+    // hosted somewhere where the `/api/developer.json` endpoint is
+    // available.
+    return Promise.resolve(null);
 }
 
 export function getCachedUserSignInData() {

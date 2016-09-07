@@ -28,8 +28,7 @@ const EditorIO = {
     checkSaveStateThen(callback = noop) {
         if (editor.doc.isClean()) {
             callback();
-        }
-        else {
+        } else {
             ReactDOM.render(
                 <ConfirmDialogModal
                     message="Your scene has not been saved. Continue?"
@@ -43,7 +42,7 @@ const EditorIO = {
      * Wrap FileReader in a Promise and returns it.
      */
     loadContentFromFile(content) {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             // Rejects the Promise immediately if the `content` argument is not
             // a Blob object provided by a browser's file input control.
             if (!(content instanceof Blob)) {

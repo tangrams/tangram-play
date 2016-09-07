@@ -2,7 +2,7 @@ import React from 'react';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import { clone } from 'lodash';
-import { EventEmitter } from '../event-emitter';
+import EventEmitter from '../event-emitter';
 
 import { setCodeMirrorValue, setCursor } from '../../editor/editor';
 import { tangramLayer } from '../../map/map';
@@ -19,7 +19,7 @@ export default class WidgetDropdown extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.bookmark = this.props.bookmark;
@@ -31,9 +31,8 @@ export default class WidgetDropdown extends React.Component {
         // If the dropdown is NOT of type source
         if (this.key !== 'source') {
             options = this.props.options;
-        }
-        // If the dropdown is of type source
-        else {
+        } else {
+            // If the dropdown is of type source
             // Try to find the sources from the tangram scene
             // If the tangram scene has not yet loaded, set an empty options
             // state in order for React to render
@@ -44,7 +43,7 @@ export default class WidgetDropdown extends React.Component {
         }
 
         this.state = {
-            options: options
+            options,
         };
 
         this.onChange = this.onChange.bind(this);
@@ -55,28 +54,15 @@ export default class WidgetDropdown extends React.Component {
     /**
      * React lifecycle function. Gets called once when DIV is mounted
      */
-    componentDidMount () {
+    componentDidMount() {
         // Need to subscribe to when Tangram scene loads in order to populate the source widget
         EventEmitter.subscribe('tangram:sceneinit', this.setSource);
     }
 
     /**
-     * Function called once the Tangram scene has loaded in order to update the source dropdown
-     */
-    setSource () {
-        // If the dropdown is of type source then get sources from tangramLayer.scene
-        if (this.key === 'source') {
-            let obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
-            let keys = (obj) ? Object.keys(obj) : [];
-
-            this.setState({ options: keys });
-        }
-    }
-
-    /**
      * Called anytime there is a change in the dropdown form. I.e. when user opens or selects something
      */
-    onChange (e) {
+    onChange(e) {
         this.value = e.target.value;
 
         this.setEditorValue(this.value);
@@ -85,9 +71,22 @@ export default class WidgetDropdown extends React.Component {
     /**
      * Called each time dropdown button is clicked to move the cursor to the right line
      */
-    onClick () {
+    onClick() {
         // Set the editor cursor to the correct line. (When you click on the widget button it doesn't move the cursor)
         setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
+    }
+
+    /**
+     * Function called once the Tangram scene has loaded in order to update the source dropdown
+     */
+    setSource() {
+        // If the dropdown is of type source then get sources from tangramLayer.scene
+        if (this.key === 'source') {
+            const obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
+            const keys = (obj) ? Object.keys(obj) : [];
+
+            this.setState({ options: keys });
+        }
     }
 
     /* SHARED METHOD FOR ALL WIDGETS */
@@ -95,7 +94,7 @@ export default class WidgetDropdown extends React.Component {
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    setEditorValue (string) {
+    setEditorValue(string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
@@ -103,7 +102,7 @@ export default class WidgetDropdown extends React.Component {
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         // Clone a copy of the original options array.
         const options = clone(this.state.options);
         const initialValue = this.props.initialValue;
@@ -135,38 +134,33 @@ export default class WidgetDropdown extends React.Component {
                         onChange={this.onChange}
                         value={initialValue}
                     >
-                        {options.map((result, i) => {
-                            return (
-                                <option
-                                    key={i}
-                                    value={result}
-                                    disabled={result === '(select one)'}
-                                >
-                                    {result}
-                                </option>
-                            );
-                        })}
+                        {options.map((result, i) => (
+                            <option
+                                key={i}
+                                value={result}
+                                disabled={result === '(select one)'}
+                            >
+                                {result}
+                            </option>
+                        ))}
                     </FormControl>
                 </FormGroup>
             );
         }
-        else {
-            return null;
-        }
+
+        // No options, return no component
+        return null;
     }
 }
 
-/**
- * Prop validation required by React
- */
 WidgetDropdown.propTypes = {
     bookmark: React.PropTypes.object,
     keyType: React.PropTypes.string,
     options: React.PropTypes.array,
     source: React.PropTypes.string,
-    initialValue: React.PropTypes.string
+    initialValue: React.PropTypes.string,
 };
 
 WidgetDropdown.defaultProps = {
-    options: []
+    options: [],
 };

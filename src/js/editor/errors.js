@@ -1,27 +1,9 @@
 import { editor, getNodesForAddress } from './editor';
 import { tangramLayer } from '../map/map';
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 const lineWidgets = [];
 const blockErrors = new Set();
-
-export function initErrorsManager() {
-    editor.on('changes', (cm, changesObjs) => {
-        clearAllErrors();
-    });
-
-    // Subscribe to error events from Tangram
-    EventEmitter.subscribe('tangram:sceneinit', () => {
-        tangramLayer.scene.subscribe({
-            error: (args) => {
-                addError(args);
-            },
-            warning: (args) => {
-                addWarning(args);
-            },
-        });
-    });
-}
 
 function clearAllErrors() {
     for (let i = 0; i < lineWidgets.length; i++) {
@@ -45,21 +27,21 @@ function addError(args) {
 function addWarning(args) {
     if (args.type === 'styles') {
         // Only show first error, cascading errors can be confusing
-        const errors = args['shader_errors'].slice(0, 1);
+        const errors = args.shader_errors.slice(0, 1);
 
         for (let i = 0; i < errors.length; i++) {
             const style = errors[i].block.scope;
 
             // Skip generic errors not originating in style-sheet
             if (style === 'ShaderProgram') {
-                continue;
+                continue; // eslint-disable-line no-continue
             }
 
             const block = errors[i].block;
 
             // De-dupe errors per block
             if (blockErrors.has(JSON.stringify(block))) {
-                continue;
+                continue; // eslint-disable-line no-continue
             }
 
             const address = `styles:${style}:shaders:blocks:${block.name}`;
@@ -75,13 +57,11 @@ function addWarning(args) {
                 msg.className = 'warning';
                 lineWidgets.push(editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
                 blockErrors.add(JSON.stringify(block)); // track unique errors
-            }
-            else {
+            } else {
                 console.log('Node', address, 'was not found');
             }
         }
-    }
-    else if (args.type === 'duplicate') {
+    } else if (args.type === 'duplicate') {
         for (const node of args.nodes) {
             console.log(node);
             const nLine = node.widget.range.to.line + 1;
@@ -93,4 +73,22 @@ function addWarning(args) {
             lineWidgets.push(editor.addLineWidget(nLine, msg, { coverGutter: false, noHScroll: true }));
         }
     }
+}
+
+export function initErrorsManager() {
+    editor.on('changes', (cm, changesObjs) => {
+        clearAllErrors();
+    });
+
+    // Subscribe to error events from Tangram
+    EventEmitter.subscribe('tangram:sceneinit', () => {
+        tangramLayer.scene.subscribe({
+            error: (args) => {
+                addError(args);
+            },
+            warning: (args) => {
+                addWarning(args);
+            },
+        });
+    });
 }

@@ -1,5 +1,4 @@
 // Class essentially taken from 'react-color': https://github.com/casesandberg/react-color/blob/master/src/components/sketched/Sketch.js
-
 import React from 'react';
 import { Hue, Alpha, Checkboard } from 'react-color/lib/components/common';
 import ColorPickerSaturation from './ColorPickerSaturation';
@@ -7,39 +6,38 @@ import ColorPickerInputFields from './ColorPickerInputFields';
 import Color from './color';
 
 export default class ColorPicker extends React.PureComponent {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.onChangeSaturation = this.onChangeSaturation.bind(this);
         this.onChangeHueAlpha = this.onChangeHueAlpha.bind(this);
         this.onChangeInputs = this.onChangeInputs.bind(this);
     }
 
-    onChangeSaturation (data) {
-        let color = new Color({ h: data.h, s: data.s, v: data.v });
+    onChangeSaturation(data) {
+        const color = new Color({ h: data.h, s: data.s, v: data.v });
         color.setAlpha(data.a);
         this.props.onChange(color);
     }
 
-    onChangeHueAlpha (data) {
-        let color = new Color({ h: data.h, s: data.s, l: data.l });
+    onChangeHueAlpha(data) {
+        const color = new Color({ h: data.h, s: data.s, l: data.l });
         color.setAlpha(data.a);
         this.props.onChange(color);
     }
 
-    onChangeInputs (data) {
+    onChangeInputs(data) {
         // If data comes as RGBA object
-        if (data.hasOwnProperty('r')) {
+        if ({}.hasOwnProperty.call(data, 'r')) {
             const color = new Color({ r: data.r, g: data.g, b: data.b, a: data.a });
             this.props.onChange(color);
-        }
-        // Else if its a hex string
-        else {
+        } else {
+            // Else if its a hex string
             const color = new Color(data);
             this.props.onChange(color);
         }
     }
 
-    render () {
+    render() {
         return (
             <div className="colorpicker-container">
                 <ColorPickerSaturation
@@ -81,10 +79,7 @@ export default class ColorPicker extends React.PureComponent {
     }
 }
 
-/**
- * Prop validation required by React
- */
 ColorPicker.propTypes = {
     color: React.PropTypes.object,
-    onChange: React.PropTypes.func
+    onChange: React.PropTypes.func,
 };

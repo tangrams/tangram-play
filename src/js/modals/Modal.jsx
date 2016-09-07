@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { noop } from 'lodash';
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 export default class Modal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.storeRefs = this.storeRefs.bind(this);
         this.handleEscKey = this.handleEscKey.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         // Control visibility state of the Shield
         // TODO: Control this without using the EventEmitter
         EventEmitter.dispatch('modal:on', {});
@@ -20,7 +20,7 @@ export default class Modal extends React.Component {
         window.addEventListener('keydown', this.handleEscKey, false);
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         EventEmitter.dispatch('modal:off', {});
         window.removeEventListener('keydown', this.handleEscKey, false);
     }
@@ -30,7 +30,7 @@ export default class Modal extends React.Component {
      *
      * @public
      */
-    unmount () {
+    unmount() {
         ReactDOM.unmountComponentAtNode(this.el.parentNode);
     }
 
@@ -38,7 +38,7 @@ export default class Modal extends React.Component {
      * Stores reference to this modal's DOM node locally, and sends to parent
      * component if a callback function is provided.
      */
-    storeRefs (ref) {
+    storeRefs(ref) {
         this.el = ref;
         this.props.setRef(ref);
     }
@@ -48,21 +48,20 @@ export default class Modal extends React.Component {
      * Should be the same function as if you pressed the Cancel button.
      * Events are passed to the function as the first parameter.
      */
-    handleEscKey (event) {
+    handleEscKey(event) {
         const key = event.keyCode || event.which;
 
         if (key === 27 && !this.props.disableEsc) {
             if (this.props.cancelFunction !== noop) {
                 this.props.cancelFunction(event);
-            }
-            // Without a cancel function handler, just unmount
-            else {
+            } else {
+                // Without a cancel function handler, just unmount
                 this.unmount();
             }
         }
     }
 
-    render () {
+    render() {
         let classNames = 'modal';
 
         if (this.props.className) {
@@ -88,5 +87,5 @@ Modal.propTypes = {
 Modal.defaultProps = {
     disableEsc: false,
     cancelFunction: noop,
-    setRef: noop
+    setRef: noop,
 };
