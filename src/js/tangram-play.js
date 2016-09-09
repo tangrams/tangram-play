@@ -19,7 +19,6 @@ import ErrorModal from './modals/ErrorModal';
 import { prependProtocolToUrl } from './tools/helpers';
 import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
-import { createObjectURL } from './tools/common';
 import { initHighlight, highlightRanges } from './editor/highlight';
 import EventEmitter from './components/event-emitter';
 
@@ -67,7 +66,7 @@ function determineScene() {
 // If editor is updated, send it to the map.
 function updateContent() {
     const content = getEditorContent();
-    const url = createObjectURL(content);
+    const url = URL.createObjectURL(new Blob([content]));
     const isClean = editor.getDoc().isClean();
 
     // Send scene data to Tangram
@@ -123,7 +122,7 @@ function setSceneContentsInEditor(sceneData) {
 function doLoadProcess(scene) {
     initialScene = scene; // Store our intial scene for use within embedded Tangram Play
 
-    const url = scene.url || createObjectURL(scene.contents);
+    const url = scene.url || URL.createObjectURL(new Blob([scene.contents]));
 
     // Send url to map and contents to editor
     // TODO: get contents from Tangram instead of another xhr request.

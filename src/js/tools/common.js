@@ -12,9 +12,3 @@ export function getDevicePixelRatio(ctx) {
                             ctx.backingStorePixelRatio || 1;
     return devicePixelRatio / backingStoreRatio;
 }
-
-export function createObjectURL(string) {
-    const create = (window.URL && window.URL.createObjectURL) ||
-        (window.webkitURL && window.webkitURL.createObjectURL); // for Safari compatibliity
-    return create(new Blob([string]));
-}
