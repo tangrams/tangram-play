@@ -6,7 +6,7 @@ import Icon from '../../src/js/components/Icon';
 
 describe('<Icon />', () => {
     it('creates an <i> element', () => {
-        assert.isTrue(shallow(<Icon />).is('i'));
+        assert.isTrue(shallow(<Icon type="foo" />).is('i'));
     });
 
     it('passes through a class for the `type` prop', () => {
