@@ -101,6 +101,7 @@
     "babel-polyfill": "6.13.0",
     "clipboard": "1.5.12",
     "codemirror": "5.18.2",
+    "file-saver": "1.3.2",
     "leaflet": "1.0.0-rc.3",
     "localforage": "1.4.2",
     "lodash": "4.15.0",
