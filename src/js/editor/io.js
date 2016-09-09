@@ -1,10 +1,11 @@
 import noop from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { saveAs } from 'file-saver';
+
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import { load } from '../tangram-play';
 import { editor, getEditorContent } from './editor';
-import { saveAs } from '../vendor/FileSaver.min.js';
 
 const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
 
@@ -22,7 +23,10 @@ const EditorIO = {
     export() {
         const typedArray = getEditorContent();
         const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, 'scene.yaml');
+
+        // Use FileSaver implementation, pass `true` as third parameter
+        // to prevent auto-prepending a Byte-Order Mark (BOM)
+        saveAs(blob, 'scene.yaml', true);
         editor.doc.markClean();
     },
     checkSaveStateThen(callback = noop) {

@@ -1,4 +1,4 @@
-import { saveAs } from '../vendor/FileSaver.min.js';
+import { saveAs } from 'file-saver';
 import { map, tangramScene } from './map';
 
 /**
