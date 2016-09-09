@@ -23,7 +23,7 @@
 
 /* + Menu */
 @import '_filedrop';
-@import '_tooltip.react';
+@import '_tooltip';
 @import '_modals';
 @import '_modals.examples';
 @import '_modals.open-from-cloud';
@@ -42,16 +42,16 @@
 @import '_map-loading';
 @import '_map-inspection';
 
-/* + React */
-@import '_menu-bar.react';
-@import '_map-panel.react';
-@import '_map-panel-search-bookmarks.react';
-@import '_color-palette.react';
-@import '_docs-panel.react';
+/* + React Components */
+@import '_menu-bar';
+@import '_map-panel';
+@import '_map-panel-search-bookmarks';
+@import '_color-palette';
+@import '_docs-panel';
 
 /* + Bookmarks, Pickers, Widgets */
-@import '_widgets-modal.react';
-@import '_widgets.react';
+@import '_widgets-modal';
+@import '_widgets';
 @import '_color';
 
 /* Etc */
