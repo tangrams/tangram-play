@@ -9,7 +9,7 @@ import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 
 import { getLocationBookmarks, clearLocationBookmarks, deleteLocationBookmark } from '../map/bookmarks';
 import { map } from '../map/map';
-import { EventEmitter } from './event-emitter';
+import EventEmitter from './event-emitter';
 
 /**
  * Represents the search bar and bookmarks button on the map panel
@@ -22,7 +22,7 @@ export default class MapPanelBookmarks extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         // Most of the time we don't want to override the bookmark button toggle function
@@ -30,7 +30,7 @@ export default class MapPanelBookmarks extends React.Component {
 
         this.state = {
             bookmarks: null, // We will fill this in during `componentWillMount`,
-            open: false // Controls whether bookmark should be open or closed
+            open: false, // Controls whether bookmark should be open or closed
         };
 
         this.onClickDeleteBookmarks = this.onClickDeleteBookmarks.bind(this);
@@ -39,12 +39,12 @@ export default class MapPanelBookmarks extends React.Component {
         this.shouldDropdownToggle = this.shouldDropdownToggle.bind(this);
     }
 
-    componentWillMount () {
+    componentWillMount() {
         // Get bookmarks from localstorage.
         getLocationBookmarks().then(this.updateBookmarks);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         // Listen for changes to bookmarks from other components
         EventEmitter.subscribe('bookmarks:updated', this.updateBookmarks);
     }
@@ -55,7 +55,7 @@ export default class MapPanelBookmarks extends React.Component {
      * Using a ref to the DOM element overlay tooltip on top of the dropdown button
      * to make sure its closed after user clicks on a bookmark
      */
-    componentDidUpdate (prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState) {
         this.culpritOverlay.hide();
         this.overrideBookmarkClose = false;
     }
@@ -67,7 +67,7 @@ export default class MapPanelBookmarks extends React.Component {
      * @param key - each bookmark in the bookmark list identified by a unique
      *      key
      */
-    onClickGoToBookmark (key) {
+    onClickGoToBookmark(key) {
         const bookmark = this.state.bookmarks[key];
 
         const coordinates = { lat: bookmark.lat, lng: bookmark.lng };
@@ -90,7 +90,7 @@ export default class MapPanelBookmarks extends React.Component {
      *
      * @param uid - the unique ID of the bookmark to delete
      */
-    onClickDeleteSingleBookmark (uid) {
+    onClickDeleteSingleBookmark(uid) {
         this.overrideBookmarkClose = true; // We want to keep the dropdown open
 
         deleteLocationBookmark(uid)
@@ -104,7 +104,7 @@ export default class MapPanelBookmarks extends React.Component {
     /**
      * Clears all current bookmarks.
      */
-    onClickConfirmClearAllBookmarks () {
+    onClickConfirmClearAllBookmarks() {
         clearLocationBookmarks()
             .then(this.updateBookmarks)
             .then(() => {
@@ -114,23 +114,9 @@ export default class MapPanelBookmarks extends React.Component {
     }
 
     /**
-     * Callback called when dropdown button wants to change state from open to closed
-     *
-     * @param isOpen - state that dropdown wants to render to. Either true or false
-     */
-    shouldDropdownToggle (isOpen) {
-        if (this.overrideBookmarkClose) {
-            this.setState({ open: true });
-        }
-        else {
-            this.setState({ open: isOpen });
-        }
-    }
-
-    /**
      * Delete all bookmarks
      */
-    onClickDeleteBookmarks () {
+    onClickDeleteBookmarks() {
         ReactDOM.render(
             <ConfirmDialogModal
                 message="Are you sure you want to clear your bookmarks? This cannot be undone."
@@ -141,34 +127,47 @@ export default class MapPanelBookmarks extends React.Component {
     }
 
     /**
+     * Callback called when dropdown button wants to change state from open to closed
+     *
+     * @param isOpen - state that dropdown wants to render to. Either true or false
+     */
+    shouldDropdownToggle(isOpen) {
+        if (this.overrideBookmarkClose) {
+            this.setState({ open: true });
+        } else {
+            this.setState({ open: isOpen });
+        }
+    }
+
+    /**
      * Given new bookmarks object from store, convert to state object and
      * trigger a re-render of bookmarks list.
      */
-    updateBookmarks (bookmarks) {
+    updateBookmarks(bookmarks) {
         const newBookmarks = [];
 
         for (let i = 0; i < bookmarks.length; i++) {
             const bookmark = bookmarks[i];
-            let fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
+            const fractionalZoom = Math.floor(bookmark.zoom * 10) / 10;
 
             newBookmarks.push({
                 id: i,
-                _date: bookmark._date,
+                date: bookmark.date,
                 label: bookmark.label,
                 lat: bookmark.lat.toFixed(4),
                 lng: bookmark.lng.toFixed(4),
                 zoom: fractionalZoom.toFixed(1),
                 onClick: this.onClickGoToBookmark.bind(this),
-                active: ''
+                active: '',
             });
         }
 
         this.setState({
-            bookmarks: newBookmarks
+            bookmarks: newBookmarks,
         });
     }
 
-    render () {
+    render() {
         return (
             <OverlayTrigger
                 rootClose
@@ -206,37 +205,34 @@ export default class MapPanelBookmarks extends React.Component {
                                     No locations bookmarked!
                                 </MenuItem>
                             );
-                        }
-                        // If there are bookmarks
-                        else {
+                        } else {
+                            // If there are bookmarks
                             // Create the bookmarks list
-                            const list = this.state.bookmarks.map((result, i) => {
-                                return (
-                                    <MenuItem key={i}>
-                                        <div
-                                            className="bookmark-dropdown-info"
-                                            onClick={() => this.onClickGoToBookmark(i)}
-                                        >
-                                            <div className="bookmark-dropdown-icon">
-                                                <Icon type="bt-map-marker" />
-                                            </div>
-                                            <div>
-                                                {result.label}
-                                                <br />
-                                                <span className="bookmark-dropdown-text">
-                                                    {result.lat}, {result.lng}, z{result.zoom}
-                                                </span>
-                                            </div>
+                            const list = this.state.bookmarks.map((result, i) => (
+                                <MenuItem key={i}>
+                                    <div
+                                        className="bookmark-dropdown-info"
+                                        onClick={() => this.onClickGoToBookmark(i)}
+                                    >
+                                        <div className="bookmark-dropdown-icon">
+                                            <Icon type="bt-map-marker" />
                                         </div>
-                                        <div
-                                            className="bookmark-dropdown-delete"
-                                            onClick={() => this.onClickDeleteSingleBookmark(result._date)}
-                                        >
-                                            <Icon type="bt-times" />
+                                        <div>
+                                            {result.label}
+                                            <br />
+                                            <span className="bookmark-dropdown-text">
+                                                {result.lat}, {result.lng}, z{result.zoom}
+                                            </span>
                                         </div>
-                                    </MenuItem>
-                                );
-                            });
+                                    </div>
+                                    <div
+                                        className="bookmark-dropdown-delete"
+                                        onClick={() => this.onClickDeleteSingleBookmark(result.date)}
+                                    >
+                                        <Icon type="bt-times" />
+                                    </div>
+                                </MenuItem>
+                            ));
 
                             // Add a delete button at the end
                             const deletebutton = (

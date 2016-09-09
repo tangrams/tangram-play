@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, func-names, no-param-reassign */
 /**
  * A port of mlevan's leaflet-hash to ES2015 JavaScript.
  * Original: https://github.com/mlevans/leaflet-hash
@@ -13,7 +14,7 @@
 import L from 'leaflet';
 
 export default class LeafletHash {
-    constructor (map, opts = {}) {
+    constructor(map, opts = {}) {
         this.map = null;
         this.lastHash = null;
         this.movingMap = false;
@@ -33,7 +34,7 @@ export default class LeafletHash {
         this.onHashChange = this.onHashChange.bind(this);
     }
 
-    init (map) {
+    init(map) {
         this.map = map;
 
         // reset the hash
@@ -45,7 +46,7 @@ export default class LeafletHash {
         }
     }
 
-    parseHash (hash) {
+    parseHash(hash) {
         if (hash.indexOf('#') === 0) {
             hash = hash.substr(1);
         }
@@ -60,31 +61,30 @@ export default class LeafletHash {
             if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
                 return false;
             }
-            else {
-                return {
-                    center: new L.LatLng(lat, lon),
-                    zoom: zoom
-                };
-            }
+
+            return {
+                center: new L.LatLng(lat, lon),
+                zoom,
+            };
         }
-        else {
-            return false;
-        }
+
+        return false;
     }
 
-    formatHash (map) {
+    formatHash(map) {
         const center = map.getCenter();
         const zoom = map.getZoom();
         const precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
-
-        return '#' + [
+        const hashString = [
             zoom.toFixed(4),
             center.lat.toFixed(precision),
-            center.lng.toFixed(precision)
+            center.lng.toFixed(precision),
         ].join('/');
+
+        return `#${hashString}`;
     }
 
-    removeFrom (map) {
+    removeFrom(map) {
         if (this.changeTimeout) {
             clearTimeout(this.changeTimeout);
         }
@@ -96,11 +96,11 @@ export default class LeafletHash {
         this.map = null;
     }
 
-    onMapMove () {
+    onMapMove() {
         // bail if we're moving the map (updating from a hash),
         // or if the map is not yet loaded
         if (this.movingMap || !this.map._loaded) {
-            return false;
+            return;
         }
 
         const hash = this.formatHash(this.map);
@@ -110,7 +110,7 @@ export default class LeafletHash {
         }
     }
 
-    update () {
+    update() {
         const hash = location.hash;
         if (hash === this.lastHash) {
             return;
@@ -121,13 +121,12 @@ export default class LeafletHash {
             this.movingMap = true;
             this.map.setView(parsed.center, parsed.zoom);
             this.movingMap = false;
-        }
-        else {
+        } else {
             this.onMapMove(this.map);
         }
     }
 
-    onHashChange () {
+    onHashChange() {
         // throttle calls to update() so that they only happen every
         // `changeDefer` ms
         if (!this.changeTimeout) {
@@ -138,7 +137,7 @@ export default class LeafletHash {
         }
     }
 
-    startListening () {
+    startListening() {
         this.map.on('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
 
         L.DomEvent.addListener(window, 'hashchange', this.onHashChange, this);
@@ -146,7 +145,7 @@ export default class LeafletHash {
         this.isListening = true;
     }
 
-    stopListening () {
+    stopListening() {
         this.map.off('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
 
         L.DomEvent.removeListener(window, 'hashchange', this.onHashChange, this);

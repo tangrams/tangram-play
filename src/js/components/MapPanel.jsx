@@ -1,3 +1,4 @@
+import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
@@ -10,7 +11,6 @@ import MapPanelZoom from './MapPanelZoom';
 import MapPanelLocationBar from './MapPanelLocationBar';
 import MapPanelBookmarks from './MapPanelBookmarks';
 
-import L from 'leaflet';
 import { map } from '../map/map';
 import ErrorModal from '../modals/ErrorModal';
 
@@ -26,57 +26,29 @@ export default class MapPanel extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             open: true, // Whether panel should be open or not
             geolocatorButton: 'bt-map-arrow', // Icon to display for the geolocator button
             geolocateActive: {
-                active: 'false'
-            } // Whether the geolocate function has been activated
+                active: 'false',
+            }, // Whether the geolocate function has been activated
         };
 
-        this._toggleMapPanel = this._toggleMapPanel.bind(this);
-        this._clickGeolocator = this._clickGeolocator.bind(this);
-        this._onGeolocateSuccess = this._onGeolocateSuccess.bind(this);
-    }
-
-    /**
-     * Toggle the panel so it is visible or not visible
-     */
-    _toggleMapPanel () {
-        this.setState({ open: !this.state.open });
+        this.toggleMapPanel = this.toggleMapPanel.bind(this);
+        this.clickGeolocator = this.clickGeolocator.bind(this);
+        this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
     }
 
     /** Geolocator functionality **/
-
-    /**
-     * Fired when user clicks on geolocator button
-     */
-    _clickGeolocator () {
-        const geolocator = window.navigator.geolocation;
-        const options = {
-            enableHighAccuracy: true,
-            maximumAge: 10000,
-        };
-
-        // Fixes an infinite loop bug with Safari
-        // https://stackoverflow.com/questions/27150465/geolocation-api-in-safari-8-and-7-1-keeps-asking-permission/28436277#28436277
-        window.setTimeout(() => {
-            geolocator.getCurrentPosition(this._onGeolocateSuccess, this._onGeolocateError, options);
-        }, 0);
-
-        // Sets a new state for the geolocator button in order to change the
-        // type of icon displayed. Sets icon to spin.
-        this.setState({ geolocatorButton: 'bt-sync bt-spin active' });
-    }
 
     /**
      * If the geolocator finds a user position succesfully, re-render the map
      * and panel to reflect new position
      * @param position - the new position to which map has moved
      */
-    _onGeolocateSuccess (position) {
+    onGeolocateSuccess(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const accuracy = position.coords.accuracy || 0;
@@ -90,37 +62,36 @@ export default class MapPanel extends React.Component {
         this.setState({
             geolocateActive: {
                 active: 'true',
-                latlng: {lat: latitude, lng: longitude}
-            }
+                latlng: { lat: latitude, lng: longitude },
+            },
         });
         this.setState({
             geolocateActive: {
-                active: 'false'
-            }
+                active: 'false',
+            },
         });
 
-        let originalZoom = map.getZoom();
+        const originalZoom = map.getZoom();
         let desiredZoom = originalZoom;
 
         // Only zoom to a radius if the accuracy is actually a number or present
         if (accuracy) {
             // The circle needs to be added to the map in order for .getBounds() to work
-            let circle = L.circle([latitude, longitude], accuracy).addTo(map);
-            let bounds = circle.getBounds();
+            const circle = L.circle([latitude, longitude], accuracy).addTo(map);
+            const bounds = circle.getBounds();
 
             // Fit view to the accuracy diameter
             map.fitBounds(bounds);
 
             // If the new zoom level is within a +/- 1 range of the original
             // zoom level, keep it the same
-            let newZoom = map.getZoom();
+            const newZoom = map.getZoom();
             desiredZoom = (newZoom >= originalZoom - 1 && newZoom <= originalZoom + 1)
                 ? originalZoom : newZoom;
 
             // Clean up
             circle.remove();
-        }
-        else {
+        } else {
             // Zoom in a bit only if user's view is very zoomed out
             desiredZoom = (originalZoom < 16) ? 16 : originalZoom;
         }
@@ -138,7 +109,7 @@ export default class MapPanel extends React.Component {
      *      and a user-agent defined message. See also:
      *      see https://developer.mozilla.org/en-US/docs/Web/API/PositionError
      */
-    _onGeolocateError (err) {
+    onGeolocateError(err) {
         let message = 'Your current position is unavailable, and we could not determine why.';
 
         // On Chrome 50, a specific error message (with code 1) indicates that
@@ -152,11 +123,12 @@ export default class MapPanel extends React.Component {
         // non-secure content issue is to look for the string “Only secure
         // origins are allowed”."
         if (err.message.indexOf('Only secure origins are allowed') === 0) {
+            // eslint-disable-next-line max-len
             message = 'Your current position is unavailable in this browser because Tangram Play wasn’t loaded over a secure URL.';
-        }
-        else {
+        } else {
             switch (err.code) {
                 case 1: // PERMISSION_DENIED
+                    // eslint-disable-next-line max-len
                     message = 'Your current position is unavailable because the browser denied our request for it. It may be disabled in your browser settings.';
                     break;
                 case 2: // POSITION_UNAVAILABLE
@@ -174,10 +146,38 @@ export default class MapPanel extends React.Component {
     }
 
     /**
+     * Fired when user clicks on geolocator button
+     */
+    clickGeolocator() {
+        const geolocator = window.navigator.geolocation;
+        const options = {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+        };
+
+        // Fixes an infinite loop bug with Safari
+        // https://stackoverflow.com/questions/27150465/geolocation-api-in-safari-8-and-7-1-keeps-asking-permission/28436277#28436277
+        window.setTimeout(() => {
+            geolocator.getCurrentPosition(this.onGeolocateSuccess, this.onGeolocateError, options);
+        }, 0);
+
+        // Sets a new state for the geolocator button in order to change the
+        // type of icon displayed. Sets icon to spin.
+        this.setState({ geolocatorButton: 'bt-sync bt-spin active' });
+    }
+
+    /**
+     * Toggle the panel so it is visible or not visible
+     */
+    toggleMapPanel() {
+        this.setState({ open: !this.state.open });
+    }
+
+    /**
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         return (
             <div className="map-panel">
                 {/* Toggle map panel to show it*/}
@@ -186,7 +186,7 @@ export default class MapPanel extends React.Component {
                     placement="bottom"
                     overlay={<Tooltip id="tooltip">Toogle map toolbar</Tooltip>}
                 >
-                    <Button onClick={this._toggleMapPanel} className="map-panel-button-show">
+                    <Button onClick={this.toggleMapPanel} className="map-panel-button-show">
                         <Icon type="bt-caret-down" />
                     </Button>
                 </OverlayTrigger>
@@ -209,7 +209,7 @@ export default class MapPanel extends React.Component {
                                 placement="bottom"
                                 overlay={<Tooltip id="tooltip">Locate me</Tooltip>}
                             >
-                                <Button onClick={this._clickGeolocator}>
+                                <Button onClick={this.clickGeolocator}>
                                     <Icon type={this.state.geolocatorButton} />
                                 </Button>
                             </OverlayTrigger>
@@ -222,7 +222,7 @@ export default class MapPanel extends React.Component {
                                 placement="bottom"
                                 overlay={<Tooltip id="tooltip">Toggle map toolbar</Tooltip>}
                             >
-                                <Button onClick={this._toggleMapPanel}>
+                                <Button onClick={this.toggleMapPanel}>
                                     <Icon type="bt-caret-up" />
                                 </Button>
                             </OverlayTrigger>

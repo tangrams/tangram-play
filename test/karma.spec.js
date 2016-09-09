@@ -7,8 +7,8 @@ import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
 
-describe('Karma test with Chai', function () {
-    it('exposes the Chai assert method', function () {
+describe('Karma test with Chai', () => {
+    it('exposes the Chai assert method', () => {
         assert.isOk('everything', 'everything is ok');
     });
 
@@ -16,7 +16,7 @@ describe('Karma test with Chai', function () {
         assert.ok(true, 'this is ok');
     });
 
-    it('extends assert with support for Promises', function () {
+    it('extends assert with support for Promises', () => {
         return assert.eventually.equal(Promise.resolve(2 + 2), 4, 'This had better be true, eventually');
     });
 });

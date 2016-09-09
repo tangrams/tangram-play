@@ -1,16 +1,16 @@
 import React from 'react';
+import Draggable from 'react-draggable';
 import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Icon from './Icon';
 import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
+import Icon from './Icon';
 
 import { editor } from '../editor/editor';
-import Draggable from 'react-draggable';
 
 import TANGRAM from '../tangram-docs.json';
 
@@ -26,7 +26,7 @@ export default class DocsPanel extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         const INITIAL_HEIGHT = 400;
@@ -35,59 +35,18 @@ export default class DocsPanel extends React.Component {
         this.state = {
             open: true, // Whether panel should be open or not
             display: '{}',
-            height: INITIAL_HEIGHT
+            height: INITIAL_HEIGHT,
         };
 
         this.lastSavedHeight = INITIAL_HEIGHT;
 
-        this.openPanel = this.openPanel.bind(this);
         this.onDrag = this.onDrag.bind(this);
+        this.onClickChild = this.onClickChild.bind(this);
+        this.openPanel = this.openPanel.bind(this);
         this.closePanel = this.closePanel.bind(this);
     }
 
-    /**
-     * This needs to be called by the parent component after it has
-     * mounted, since it relies on the editor being present and ready
-     */
-    init () {
-        const wrapper = editor.getWrapperElement();
-
-        wrapper.addEventListener('mouseup', (event) => {
-            // bail out if we were doing a selection and not a click
-            if (editor.somethingSelected()) {
-                return;
-            }
-
-            let cursor = editor.getCursor(true);
-
-            let line = editor.lineInfo(cursor.line);
-            let nodes = line.handle.stateAfter.nodes;
-            let address;
-
-            if (nodes.length === 1) {
-                address = nodes[0].address;
-                this.setState({ display: this.findMatch(address, true) });
-            }
-            else {
-                console.log('line has more than one node');
-            }
-        });
-    }
-
-    /**
-     * Toggle the panel so it is visible or not visible
-     */
-    openPanel () {
-        this.setState({ height: this.lastSavedHeight });
-    }
-
-    closePanel () {
-        this.lastSavedHeight = this.state.height;
-
-        this.setState({ height: 0 });
-    }
-
-    onDrag (e, ui) {
+    onDrag(e, ui) {
         let delta = this.state.height - (ui.y);
 
         if (delta < this.MIN_HEIGHT) {
@@ -97,10 +56,55 @@ export default class DocsPanel extends React.Component {
         this.setState({ height: delta });
     }
 
-    findMatch (address, optionalBool) {
+    onClickChild(address) {
+        this.setState({ display: this.findMatch(address, false) });
+    }
+
+    /**
+     * This needs to be called by the parent component after it has
+     * mounted, since it relies on the editor being present and ready
+     */
+    init() {
+        const wrapper = editor.getWrapperElement();
+
+        wrapper.addEventListener('mouseup', (event) => {
+            // bail out if we were doing a selection and not a click
+            if (editor.somethingSelected()) {
+                return;
+            }
+
+            const cursor = editor.getCursor(true);
+
+            const line = editor.lineInfo(cursor.line);
+            const nodes = line.handle.stateAfter.nodes;
+            let address;
+
+            if (nodes.length === 1) {
+                address = nodes[0].address;
+                this.setState({ display: this.findMatch(address, true) });
+            } else {
+                console.log('line has more than one node');
+            }
+        });
+    }
+
+    /**
+     * Toggle the panel so it is visible or not visible
+     */
+    openPanel() {
+        this.setState({ height: this.lastSavedHeight });
+    }
+
+    closePanel() {
+        this.lastSavedHeight = this.state.height;
+
+        this.setState({ height: 0 });
+    }
+
+    findMatch(address, optionalBool) {
         let currentTree = TANGRAM.keys; // Initializes to the tree at level 0
         // console.log(address);
-        let split = address.split(':');
+        const split = address.split(':');
 
         let partialAddress;
         let currentNode;
@@ -113,14 +117,13 @@ export default class DocsPanel extends React.Component {
             // Construct a partial address for each child in the tree
             if (i === 0) {
                 partialAddress = split[0];
-            }
-            else {
-                partialAddress = partialAddress + ':' + split[i];
+            } else {
+                partialAddress = `${partialAddress}:${split[i]}`;
             }
 
             // Find a match of that address within our docs JSON
-            for (let node of currentTree) {
-                let found = partialAddress.match(node.address);
+            for (const node of currentTree) {
+                const found = partialAddress.match(node.address);
 
                 if (found !== null) {
                     currentNode = node;
@@ -132,7 +135,11 @@ export default class DocsPanel extends React.Component {
 
         // Adding parent node
         if (currentParent !== undefined) {
-            currentNode.parent = { name: currentParent.name, description: currentParent.description, example: currentParent.example };
+            currentNode.parent = {
+                name: currentParent.name,
+                description: currentParent.description,
+                example: currentParent.example,
+            };
         }
 
         // Adding original address searched (not the regex)
@@ -143,44 +150,49 @@ export default class DocsPanel extends React.Component {
         return JSON.stringify(currentNode);
     }
 
-    onClickChild (address) {
-        this.setState({ display: this.findMatch(address, false) });
-    }
-
-    renderChildren (node) {
+    renderChildren(node) {
         let list;
 
         if (node.children !== undefined) {
-            list = node.children.map((value, i) => {
-                return (
-                    <Row key={i} className="child-row">
-                        <Row>
-                            <Col sm={2} className="capitalize">name:</Col>
-                            <Col sm={10} onClick={this.onClickChild.bind(this, value.example)} className="docs-link"><code>{value.name}</code></Col>
-                        </Row>
-                        <Row>
-                            <Col sm={2} className="capitalize">description:</Col>
-                            <Col sm={10}><code>{value.description}</code></Col>
-                        </Row>
+            list = node.children.map((value, i) => (
+                <Row key={i} className="child-row">
+                    <Row>
+                        <Col sm={2} className="capitalize">name:</Col>
+                        <Col
+                            sm={10}
+                            onClick={() => { this.onClickChild(value.example); }}
+                            className="docs-link"
+                        >
+                            <code>{value.name}</code>
+                        </Col>
                     </Row>
-                );
-            });
-        }
-        else {
+                    <Row>
+                        <Col sm={2} className="capitalize">description:</Col>
+                        <Col sm={10}><code>{value.description}</code></Col>
+                    </Row>
+                </Row>
+            ));
+        } else {
             list = null;
         }
 
         return list;
     }
 
-    renderParent (node) {
+    renderParent(node) {
         const parent = node.parent;
 
         const list = (
             <Row className="child-row">
                 <Row>
                     <Col sm={2} className="capitalize">name:</Col>
-                    <Col sm={10} onClick={this.onClickChild.bind(this, parent.example)} className="docs-link"><code>{parent.name}</code></Col>
+                    <Col
+                        sm={10}
+                        onClick={() => { this.onClickChild(parent.example); }}
+                        className="docs-link"
+                    >
+                        <code>{parent.name}</code>
+                    </Col>
                 </Row>
                 <Row>
                     <Col sm={2} className="capitalize">description:</Col>
@@ -196,12 +208,12 @@ export default class DocsPanel extends React.Component {
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
-        var divStyle = {
-            height: this.state.height + 'px'
+    render() {
+        const divStyle = {
+            height: `${this.state.height}px`,
         };
 
-        let result = JSON.parse(this.state.display);
+        const result = JSON.parse(this.state.display);
 
         return (
             <div className="docs-panel">
@@ -215,7 +227,7 @@ export default class DocsPanel extends React.Component {
                 {/* Docs panel */}
                 <Draggable axis="y" onDrag={this.onDrag} handle=".docs-divider">
                     <Panel className="docs-panel-collapsible" style={divStyle}>
-                        <div className="docs-divider"><span className="docs-divider-affordance"></span></div>
+                        <div className="docs-divider"><span className="docs-divider-affordance" /></div>
 
                         <div className="docs-panel-toolbar" >
                             {/* Text within the docs panel */}
@@ -230,8 +242,7 @@ export default class DocsPanel extends React.Component {
                                                         <Col sm={10}>{this.renderChildren(result)}</Col>
                                                     </Row>
                                                 );
-                                            }
-                                            else if (value === 'parent') {
+                                            } else if (value === 'parent') {
                                                 return (
                                                     <Row key={i} className="toolbar-content-row">
                                                         <Col sm={2} className="capitalize">{value}:</Col>
@@ -239,14 +250,13 @@ export default class DocsPanel extends React.Component {
                                                     </Row>
                                                 );
                                             }
-                                            else {
-                                                return (
-                                                    <Row key={i} className="toolbar-content-row">
-                                                        <Col sm={2} className="capitalize">{value}:</Col>
-                                                        <Col sm={10}><code>{result[value]}</code></Col>
-                                                    </Row>
-                                                );
-                                            }
+
+                                            return (
+                                                <Row key={i} className="toolbar-content-row">
+                                                    <Col sm={2} className="capitalize">{value}:</Col>
+                                                    <Col sm={10}><code>{result[value]}</code></Col>
+                                                </Row>
+                                            );
                                         });
 
                                         return list;

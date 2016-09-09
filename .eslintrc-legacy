@@ -1,0 +1,14 @@
+// Configuration for non-module JS
+{
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "extends": ["airbnb-base/legacy"],
+  "rules": {
+    "no-param-reassign": "warn",
+
+    // Allow requires() to exist only in gulp tasks that need them.
+    "global-require": "off"
+  }
+}

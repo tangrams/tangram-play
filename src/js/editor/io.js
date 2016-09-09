@@ -9,27 +9,26 @@ import { saveAs } from '../vendor/FileSaver.min.js';
 const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
 
 const EditorIO = {
-    open (file) {
+    open(file) {
         this.checkSaveStateThen(() => {
             this.loadContentFromFile(file);
         });
     },
-    new () {
+    new() {
         this.checkSaveStateThen(() => {
             load({ url: NEW_SCENE_PATH });
         });
     },
-    export () {
+    export() {
         const typedArray = getEditorContent();
         const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'scene.yaml');
         editor.doc.markClean();
     },
-    checkSaveStateThen (callback = noop) {
+    checkSaveStateThen(callback = noop) {
         if (editor.doc.isClean()) {
             callback();
-        }
-        else {
+        } else {
             ReactDOM.render(
                 <ConfirmDialogModal
                     message="Your scene has not been saved. Continue?"
@@ -42,11 +41,11 @@ const EditorIO = {
     /**
      * Wrap FileReader in a Promise and returns it.
      */
-    loadContentFromFile (content) {
-        return new Promise(function (resolve, reject) {
+    loadContentFromFile(content) {
+        return new Promise((resolve, reject) => {
             // Rejects the Promise immediately if the `content` argument is not
             // a Blob object provided by a browser's file input control.
-            if (!content instanceof Blob) {
+            if (!(content instanceof Blob)) {
                 reject('Unable to load your file: it is not a valid file type.');
             }
 
@@ -69,7 +68,7 @@ const EditorIO = {
 
             reader.readAsText(content);
         });
-    }
+    },
 };
 
 export default EditorIO;

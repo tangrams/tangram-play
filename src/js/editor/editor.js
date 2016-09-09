@@ -1,11 +1,12 @@
-import { config } from '../config';
+import config from '../config';
 import { initCodeMirror } from './codemirror';
 import { parseYamlString } from './codemirror/yaml-tangram';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
 
-import { EventEmitter } from '../components/event-emitter';
+import EventEmitter from '../components/event-emitter';
 
 // Export an instantiated CodeMirror instance
+// eslint-disable-next-line import/no-mutable-exports
 export let editor;
 
 // Debug
@@ -19,7 +20,7 @@ window.editor = editor;
  *
  * @param {Node} el - reference to the editor's container DOM node.
  */
-export function initEditor (el) {
+export function initEditor(el) {
     editor = initCodeMirror(el);
 }
 
@@ -32,7 +33,7 @@ export function initEditor (el) {
  * @public
  * @return {string} content
  */
-export function getEditorContent () {
+export function getEditorContent() {
     let content = editor.getDoc().getValue();
     //  If API keys are missing, inject one
     content = injectAPIKey(content, config.TILES.API_KEYS.DEFAULT);
@@ -52,7 +53,7 @@ export function getEditorContent () {
  * @param {Boolean} shouldMarkClean - if true, mark contents of editor
  *          as clean. If false, do not mark as clean. Defaults to true.
  */
-export function setEditorContent (content, shouldMarkClean = true) {
+export function setEditorContent(content, shouldMarkClean = true) {
     const doc = editor.getDoc();
 
     // Remove any instances of Tangram Play's default API key
@@ -77,15 +78,14 @@ export function setEditorContent (content, shouldMarkClean = true) {
  * @param {Number} line - the number of the line to check, 0-index.
  * @return {Array} nodes
  */
-export function getNodesOfLine (line) {
+export function getNodesOfLine(line) {
     const lineHandle = editor.getLineHandle(line);
 
     // Return the nodes. If any property in the chain is not defined,
     // return an empty array.
     try {
         return lineHandle.stateAfter.nodes || [];
-    }
-    catch (e) {
+    } catch (e) {
         return [];
     }
 }
@@ -98,39 +98,36 @@ export function getNodesOfLine (line) {
  * @param {Number} line - the number of the line to check, 0-index.
  * @return {Array} nodes
  */
-export function getNodesInRange (from, to) {
-    let nodes = [];
+export function getNodesInRange(from, to) {
+    const nodes = [];
 
     if (from.line === to.line) {
         // If the searched nodes are in a same line
-        let line = from.line;
-        let inLineNodes = getNodesOfLine(line);
+        const line = from.line;
+        const inLineNodes = getNodesOfLine(line);
 
-        for (let node of inLineNodes) {
+        for (const node of inLineNodes) {
             if (node.range.to.ch > from.ch || node.range.from.ch < to.ch) {
                 nodes.push(node);
             }
         }
-    }
-    else {
+    } else {
         // If the searched nodes are in a range of lines
         for (let i = from.line; i <= to.line; i++) {
-            let inLineNodes = getNodesOfLine(i);
+            const inLineNodes = getNodesOfLine(i);
 
-            for (let node of inLineNodes) {
+            for (const node of inLineNodes) {
                 if (node.range.from.line === from.line) {
                     // Is in the beginning line
                     if (node.range.to.ch > from.ch) {
                         nodes.push(node);
                     }
-                }
-                else if (node.range.to.line === to.line) {
+                } else if (node.range.to.line === to.line) {
                     // is in the end line
                     if (node.range.from.ch < to.ch) {
                         nodes.push(node);
                     }
-                }
-                else {
+                } else {
                     // is in the sandwich lines
                     nodes.push(node);
                 }
@@ -147,7 +144,7 @@ export function getNodesInRange (from, to) {
  * @param {string} address
  * @returns {Array} nodes
  */
-export function getNodesForAddress (address) {
+export function getNodesForAddress(address) {
     // NOTE:
     // This is an expensive process because it needs to iterate through every
     // line until it finds the right address. Could be optimized if we store
@@ -166,14 +163,14 @@ export function getNodesForAddress (address) {
             // This means outside the Line Handle
             //
             // Copy the last parsed state
-            var state = JSON.parse(JSON.stringify(lastState));
+            let state = JSON.parse(JSON.stringify(lastState));
             state.line = line;
 
             // Parse the current state
             state = parseYamlString(lineHandle.text, state, 4);
 
             // Iterate through keys in this line
-            for (let key of state.nodes) {
+            for (const key of state.nodes) {
                 if (key.address === address) {
                     return key;
                 }
@@ -182,22 +179,31 @@ export function getNodesForAddress (address) {
             lastState = state;
             // TODO:
             // We might want to have two different parsers, a simpler one without keys and just address for
-            // the higliting and another more roboust that keep tracks of: pairs (key/values), their ranges (from-to positions),
-            // address and a some functions like getValue, setValue which could be use by widgets or others addons to modify content
-        }
-        else {
+            // the higliting and another more roboust that keep tracks of:
+            // pairs (key/values), their ranges (from-to positions),
+            // address and a some functions like getValue, setValue which could
+            // be use by widgets or others addons to modify content
+        } else {
             // it the line HAVE BEEN parsed (use the stateAfter)
             // ======================================================
             lastState = lineHandle.stateAfter;
-            let keys = getNodesOfLine(line);
-            for (let key of keys) {
+            const keys = getNodesOfLine(line);
+            for (const key of keys) {
                 if (key.address === address) {
                     return key;
                 }
             }
         }
     }
+
     console.log('Fail searching', address);
+    return null;
+}
+
+// If an inline node was changed, we'd like to reparse all the widgets in the line
+// This function sends an event to our widgets-manager.js
+function clearInlineNodes(fromPos) {
+    EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
 }
 
 /**
@@ -208,7 +214,7 @@ export function getNodesForAddress (address) {
  * @param {Object} bookmark - An object representing the bookmark whose value changes
  * @param {string} value - The new value to set to
  */
-export function setCodeMirrorValue (bookmark, value) {
+export function setCodeMirrorValue(bookmark, value) {
     let foundInlineNodes = null; // If an inline node is changed, we need to reparse all the other nodes in that line.
 
     const origin = '+value_change';
@@ -226,10 +232,9 @@ export function setCodeMirrorValue (bookmark, value) {
     // This will reduce all sorts of errors because most cases are one-widget lines.
     if (nodeArray.length === 1) {
         node = nodeArray[0];
-    }
-    // If inline nodes
-    else {
-        for (let singleNode of nodeArray) {
+    } else {
+        // If inline nodes
+        for (const singleNode of nodeArray) {
             if (singleNode.range.from.ch === bookmark.widgetPos.from.ch) {
                 node = singleNode;
                 foundInlineNodes = node.range.from; // We found an inline node, log where it's at
@@ -242,7 +247,7 @@ export function setCodeMirrorValue (bookmark, value) {
 
     // Force a space between the ':' and the value
     if (value === '') {
-        value = ' ' + value;
+        value = ` ${value}`;
     }
 
     // Calculate beginning character of the value
@@ -255,7 +260,7 @@ export function setCodeMirrorValue (bookmark, value) {
     const fromPos = {
         line: node.range.from.line,
         // Magic number: 2 refers to the colon + space between key and value
-        ch: node.range.from.ch + node.key.length + 2 + node.anchor.length
+        ch: node.range.from.ch + node.key.length + 2 + node.anchor.length,
     };
     const toPos = node.range.to;
 
@@ -269,12 +274,6 @@ export function setCodeMirrorValue (bookmark, value) {
     return bookmark;
 }
 
-// If an inline node was changed, we'd like to reparse all the widgets in the line
-// This function sends an event to our widgets-manager.js
-function clearInlineNodes (fromPos) {
-    EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
-}
-
 /* This section is for the shader widget links */
 
 /**
@@ -285,7 +284,7 @@ function clearInlineNodes (fromPos) {
  * @param {Object} start - Start { line, ch }
  * @param {Object} end - End { line, ch }
  */
-export function setCodeMirrorShaderValue (value, start, end) {
+export function setCodeMirrorShaderValue(value, start, end) {
     editor.replaceRange(value, start, end);
 }
 
@@ -294,7 +293,7 @@ export function setCodeMirrorShaderValue (value, start, end) {
  *
  * @param {Object} linePos - position { line, ch } to lookup coordinates for
  */
-export function getCoordinates (linePos) {
+export function getCoordinates(linePos) {
     return editor.charCoords(linePos);
 }
 
@@ -304,7 +303,7 @@ export function getCoordinates (linePos) {
  * @param {Number} line - line on which to set cursor
  * @param {Number} ch - ch on which to set cursor
  */
-export function setCursor (line, ch) {
+export function setCursor(line, ch) {
     const doc = editor.getDoc();
-    doc.setCursor({line: line, ch: ch});
+    doc.setCursor({ line, ch });
 }

@@ -1,32 +1,46 @@
 import { reverse, reject } from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
-import Icon from '../components/Icon';
-
-import { load } from '../tangram-play';
-import ErrorModal from './ErrorModal';
 import localforage from 'localforage';
+
+import Modal from './Modal';
+import Icon from '../components/Icon';
+import ErrorModal from './ErrorModal';
+import { load } from '../tangram-play';
 import { getSceneURLFromGistAPI } from '../tools/gist-url';
 
 const STORAGE_SAVED_GISTS = 'gists';
 
+/**
+ * Utility function for removing gists that match a url string.
+ *
+ * @param {string} url - the Gist to remove
+ */
+function removeNonexistentGistFromLocalStorage(url) {
+    localforage.getItem(STORAGE_SAVED_GISTS)
+        .then((gists) => {
+            // Filter the unfound gist URL from the gist list
+            const data = reject(gists, (item) => url === item.url);
+            localforage.setItem(STORAGE_SAVED_GISTS, data);
+        });
+}
+
 export default class OpenGistModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             loaded: false,
             gists: [],
-            selected: null
+            selected: null,
         };
 
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
     }
 
-    componentWillMount () {
+    componentWillMount() {
         // Always load new set of saved Gists from memory each
         // time this modal is opened, in case it has changed
         // during use
@@ -37,32 +51,29 @@ export default class OpenGistModal extends React.Component {
                     // NOTE:
                     // string-only gists urls are migrated anyway;
                     // we'll skip these for now, filter them out
-                    gists = reject(gists, function (item) {
-                        return typeof item === 'string';
-                    });
+                    const data = reject(gists, (item) => typeof item === 'string');
 
                     // Reverse-sort the gists; most recent will display up top
                     // Note this mutates the original array.
-                    reverse(gists);
+                    reverse(data);
 
                     this.setState({
                         loaded: true,
-                        gists: gists
+                        gists: data,
                     });
-                }
-                else {
+                } else {
                     this.setState({
-                        loaded: true
+                        loaded: true,
                     });
                 }
             });
     }
 
-    onClickCancel () {
+    onClickCancel() {
         this.component.unmount();
     }
 
-    onClickConfirm () {
+    onClickConfirm() {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
             load({ url: this.state.selected });
@@ -86,7 +97,7 @@ export default class OpenGistModal extends React.Component {
      *    there must be a better way of doing this
      * @param {string} url - the Gist URL that was attempted
      */
-    handleError (error, value) {
+    handleError(error, value) {
         // Close the modal
         this.onClickCancel();
 
@@ -94,31 +105,31 @@ export default class OpenGistModal extends React.Component {
 
         if (error.message === '404') {
             message = 'This Gist could not be found.';
-        }
-        else if (error.message === '403') {
+        } else if (error.message === '403') {
             message = 'We exceeded the rate limit for GitHub’s non-authenticated request API.';
-        }
-        else if (Number.isInteger(window.parseInt(error.message, 10))) {
+        } else if (Number.isInteger(window.parseInt(error.message, 10))) {
             message = `The Gist server gave us an error code of ${error.message}`;
         }
 
         // Show error modal
-        ReactDOM.render(<ErrorModal error={`Could not load the Gist! ${message}`} />, document.getElementById('modal-container'));
+        ReactDOM.render(
+            <ErrorModal error={`Could not load the Gist! ${message}`} />,
+            document.getElementById('modal-container')
+        );
 
         if (error.message === '404') {
             removeNonexistentGistFromLocalStorage(value);
         }
     }
 
-    render () {
-        let gists = this.state.gists;
+    render() {
+        const gists = this.state.gists;
 
         let gistList;
 
         if (this.state.loaded === true && gists.length === 0) {
             gistList = 'No gists have been saved!';
-        }
-        else {
+        } else {
             gistList = gists.map((item, index) => {
                 // If the scene is selected, a special class is applied later to it
                 let classString = 'open-from-cloud-option';
@@ -147,7 +158,7 @@ export default class OpenGistModal extends React.Component {
                         onDoubleClick={this.onClickConfirm}
                     >
                         <div className="open-from-cloud-option-thumbnail">
-                            <img src={item.thumbnail} />
+                            <img src={item.thumbnail} role="presentation" />
                         </div>
                         <div className="open-from-cloud-option-info">
                             <div className="open-from-cloud-option-name">
@@ -160,7 +171,7 @@ export default class OpenGistModal extends React.Component {
                                 {/* Show the date this was saved.
                                     TODO: better formatting;
                                     maybe use moment.js */}
-                                Saved on {new Date(item['created_at']).toLocaleString()}
+                                Saved on {new Date(item.created_at).toLocaleString()}
                             </div>
                         </div>
                     </div>
@@ -196,21 +207,4 @@ export default class OpenGistModal extends React.Component {
             </Modal>
         );
     }
-}
-
-/**
- * Utility function for removing gists that match a url string.
- *
- * @param {string} url - the Gist to remove
- */
-function removeNonexistentGistFromLocalStorage (url) {
-    localforage.getItem(STORAGE_SAVED_GISTS)
-        .then((gists) => {
-            // Filter the unfound gist URL from the gist list
-            gists = reject(gists, (item) => {
-                return url === item.url;
-            });
-
-            localforage.setItem(STORAGE_SAVED_GISTS, gists);
-        });
 }

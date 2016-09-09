@@ -9,7 +9,7 @@ export default class Icon extends React.PureComponent {
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         let className = `btm ${this.props.type}`;
 
         if (this.props.active) {
@@ -17,7 +17,7 @@ export default class Icon extends React.PureComponent {
         }
 
         return (
-            <i className={className}></i>
+            <i className={className} />
         );
     }
 }
@@ -27,5 +27,5 @@ export default class Icon extends React.PureComponent {
  */
 Icon.propTypes = {
     type: React.PropTypes.string.isRequired,
-    active: React.PropTypes.bool
+    active: React.PropTypes.bool,
 };

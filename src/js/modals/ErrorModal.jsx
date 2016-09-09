@@ -1,18 +1,18 @@
+import { noop } from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
+import Modal from './Modal';
 import Icon from '../components/Icon';
-import { noop } from 'lodash';
 
 export default class ErrorModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.onClickClose = this.onClickClose.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         // Focus on the continue button when it is shown.
         // This is not currently the default action for modals, but may be in
         // the future.
@@ -21,15 +21,15 @@ export default class ErrorModal extends React.Component {
 
     // Always execute the confirm function after unmounting (clicking the
     // "Confirm" button unmounts)
-    componentWillUnmount () {
+    componentWillUnmount() {
         this.props.confirmFunction();
     }
 
-    onClickClose () {
+    onClickClose() {
         this.component.unmount();
     }
 
-    render () {
+    render() {
         return (
             <Modal
                 className="error-modal"
@@ -59,11 +59,11 @@ ErrorModal.propTypes = {
     // Error message might be an Error object or a string
     error: React.PropTypes.oneOfType([
         React.PropTypes.string,
-        React.PropTypes.instanceOf(Error)
+        React.PropTypes.instanceOf(Error),
     ]).isRequired,
-    confirmFunction: React.PropTypes.func
+    confirmFunction: React.PropTypes.func,
 };
 
 ErrorModal.defaultProps = {
-    confirmFunction: noop
+    confirmFunction: noop,
 };

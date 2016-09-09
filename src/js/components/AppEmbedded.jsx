@@ -9,20 +9,19 @@ import { initTangramPlay } from '../tangram-play';
  * This class is identical to normal Tangram Play but represents an embedded version of the app
  */
 export default class AppEmbedded extends React.Component {
-    componentDidMount () {
+    componentDidMount() {
         initTangramPlay();
     }
 
-    shouldComponentUpdate () {
+    shouldComponentUpdate() {
         return false;
     }
 
-    render () {
+    render() {
         return (
             <div className="workspace-container">
                 <div id="draggable-container">
-                    <div id="draggable-container-child">
-                    </div>
+                    <div id="draggable-container-child" />
                 </div>
 
                 <div>

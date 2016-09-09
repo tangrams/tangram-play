@@ -17,10 +17,10 @@ export default class WidgetLinkNumber extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
-            displayPicker: this.props.display
+            displayPicker: this.props.display,
         };
 
         this.cursor = this.props.cursor;
@@ -65,10 +65,10 @@ export default class WidgetLinkNumber extends React.Component {
     /**
      * React lifecycle method called once DIV is mounted
      */
-    componentDidMount () {
+    componentDidMount() {
         // Set canvas for high-pixel-density (e.g. Retina screens)
-        this.canvas.style.width = this.width + 'px';
-        this.canvas.style.height = this.height + 'px';
+        this.canvas.style.width = `${this.width}px`;
+        this.canvas.style.height = `${this.height}px`;
 
         this.ctx = this.canvas.getContext('2d');
         this.ratio = getDevicePixelRatio(this.ctx);
@@ -79,18 +79,132 @@ export default class WidgetLinkNumber extends React.Component {
         this.drawCanvas();
     }
 
+    /* Mouse, scroll and click commands */
+    /* These event callbacks are provided by React */
+
+    /**
+     * Widget links are handled slightly differently. For now they are simply unmounted from the DOM and recreated again
+     * Meaning, onHide will only be called once to unmount the widget
+     */
+    onHide() {
+        this.setState({ displayPicker: false });
+
+        const widgetlink = document.getElementById('widget-links');
+        ReactDOM.unmountComponentAtNode(widgetlink);
+    }
+
+    /**
+     * Start of a drag event
+     */
+    onMouseDown(e) {
+        this.drag = true; // START of a drag event
+        this.overPoint = true; // Change the look of the point within the canvas
+
+        const mousePos = this.getMousePos(this.canvas, e);
+        this.prevOffset = mousePos.x;
+        this.drawCanvas();
+    }
+
+    /**
+     * While user is dragging
+     */
+    onMouseMove(e) {
+        if (this.drag === true) { // If user is dragging mouse
+            const mousePos = this.getMousePos(this.canvas, e);
+            const x = mousePos.x;
+            const vel = x - this.prevOffset;
+            const offset = this.offsetX - vel;
+
+            this.setValue(offset / this.center);
+            this.prevOffset = x;
+
+            this.drawCanvas();
+            this.setEditorShaderValue(this.value.toFixed(3));
+        }
+    }
+
+    /**
+     * When user stops dragging
+     */
+    onMouseUp() {
+        this.drag = false; // STOP a drag event
+        this.overPoint = false; // Change the look of the point within the canvas
+        this.drawCanvas(); // Draw the new point
+    }
+
+
+    /**
+     * onMouseLeave accounts for the case where the user is still dragging but
+     * outside of the widget. The drag event should end.
+     */
+    onMouseLeave() {
+        this.drag = false;
+        this.overPoint = false; // Change the look of the point within the canvas
+        this.drawCanvas(); // Draw the new point
+    }
+
+    /**
+     * When user scrolls wheel
+     * TODO: fine tune this scroll function
+     */
+    onWheel(e) {
+        // Prevent swipe nagivation on Chrome/Mac
+        e.preventDefault();
+
+        const x = e.deltaY;
+        const offset = this.offsetX - x;
+
+        this.setValue(offset / this.center);
+
+        this.drawCanvas();
+        this.setEditorShaderValue(this.value.toFixed(3));
+    }
+
+    /**
+     * Set the value of the number
+     *
+     * @param value - new value to set our number to
+     */
+    setValue(value) {
+        this.value = value;
+        this.offsetX = this.value * this.center;
+    }
+
+    /**
+     * Update CodeMirror
+     *
+     * @param string - the new number to write out to CodeMirror
+     */
+    setEditorShaderValue(string) {
+        const start = { line: this.cursor.line, ch: this.match.start };
+        const end = { line: this.cursor.line, ch: this.match.end };
+        this.match.end = this.match.start + string.length;
+        setCodeMirrorShaderValue(string, start, end);
+    }
+
+    /**
+     * Function to get a mouse position within the canvas element
+     */
+    getMousePos(canvas, evt) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top,
+        };
+    }
+
     /**
      * Draws the canvas
      */
-    drawCanvas () {
+    drawCanvas() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         // horizontal line
         this.ctx.strokeStyle = this.dimColor;
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
-        this.ctx.moveTo(0, 0.5 + this.height * 0.5);
-        this.ctx.lineTo(0 + this.width, 0.5 + this.height * 0.5);
+        this.ctx.moveTo(0, 0.5 + (this.height * 0.5));
+        this.ctx.lineTo(0 + this.width, 0.5 + (this.height * 0.5));
         this.ctx.closePath();
         this.ctx.stroke();
 
@@ -119,16 +233,18 @@ export default class WidgetLinkNumber extends React.Component {
 
         let offsetX = this.offsetX;
 
-        if (Math.abs(this.offsetX - this.width * 0.5) > this.width * 0.5) {
-            offsetX = (this.offsetX - this.width * 0.5) % (this.width * 0.5) + this.width;
+        if (Math.abs(this.offsetX - (this.width * 0.5)) > this.width * 0.5) {
+            offsetX = ((this.offsetX - (this.width * 0.5)) % (this.width * 0.5)) + this.width;
         }
 
         this.ctx.strokeStyle = this.dimColor;
         this.ctx.beginPath();
         for (let i = 0; i < sections; i++) {
+            // TODO: refactor
+            // eslint-disable-next-line max-len, no-nested-ternary
             const l = (i % (unit / 2) === 0) ? this.height * 0.35 : (i % (unit / 4) === 0) ? this.height * 0.2 : this.height * 0.1;
-            this.ctx.moveTo(i * step - offsetX, this.height * 0.5 - l);
-            this.ctx.lineTo(i * step - offsetX, this.height * 0.5 + l);
+            this.ctx.moveTo((i * step) - offsetX, (this.height * 0.5) - l);
+            this.ctx.lineTo((i * step) - offsetX, (this.height * 0.5) + l);
         }
         this.ctx.stroke();
 
@@ -138,8 +254,8 @@ export default class WidgetLinkNumber extends React.Component {
         this.ctx.strokeStyle = this.overPoint ? this.selColor : this.fnColor;
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
-        let middle = this.width / 2;
-        let xPos = (-(val - middle)) + middle;
+        const middle = this.width / 2;
+        const xPos = (-(val - middle)) + middle;
         this.ctx.moveTo(xPos, this.height * 0.5);
         this.ctx.lineTo(xPos, this.height);
         this.ctx.closePath();
@@ -154,123 +270,10 @@ export default class WidgetLinkNumber extends React.Component {
     }
 
     /**
-     * Set the value of the number
-     *
-     * @param value - new value to set our number to
-     */
-    setValue (value) {
-        this.value = value;
-        this.offsetX = this.value * this.center;
-    }
-
-    /**
-     * Update CodeMirror
-     *
-     * @param string - the new number to write out to CodeMirror
-     */
-    setEditorShaderValue (string) {
-        const start = { line: this.cursor.line, ch: this.match.start };
-        const end = { line: this.cursor.line, ch: this.match.end };
-        this.match.end = this.match.start + string.length;
-        setCodeMirrorShaderValue(string, start, end);
-    }
-
-    /* Mouse, scroll and click commands */
-    /* These event callbacks are provided by React */
-
-    /**
-     * Widget links are handled slightly differently. For now they are simply unmounted from the DOM and recreated again
-     * Meaning, onHide will only be called once to unmount the widget
-     */
-    onHide () {
-        this.setState({ displayPicker: false });
-
-        const widgetlink = document.getElementById('widget-links');
-        ReactDOM.unmountComponentAtNode(widgetlink);
-    }
-
-    /**
-     * Start of a drag event
-     */
-    onMouseDown (e) {
-        this.drag = true; // START of a drag event
-        this.overPoint = true; // Change the look of the point within the canvas
-
-        const mousePos = this.getMousePos(this.canvas, e);
-        this.prevOffset = mousePos.x;
-        this.drawCanvas();
-    }
-
-    /**
-     * While user is dragging
-     */
-    onMouseMove (e) {
-        if (this.drag === true) { // If user is dragging mouse
-            const mousePos = this.getMousePos(this.canvas, e);
-            const x = mousePos.x;
-            const vel = x - this.prevOffset;
-            const offset = this.offsetX - vel;
-
-            this.setValue(offset / this.center);
-            this.prevOffset = x;
-
-            this.drawCanvas();
-            this.setEditorShaderValue(this.value.toFixed(3));
-        }
-    }
-
-    /**
-     * When user stops dragging
-     */
-    onMouseUp () {
-        this.drag = false; // STOP a drag event
-        this.overPoint = false; // Change the look of the point within the canvas
-        this.drawCanvas(); // Draw the new point
-    }
-
-
-    /**
-     * onMouseLeave accounts for the case where the user is still dragging but outside of the widget. The drag event should end.
-     */
-    onMouseLeave () {
-        this.drag = false;
-        this.overPoint = false; // Change the look of the point within the canvas
-        this.drawCanvas(); // Draw the new point
-    }
-
-    /**
-     * Function to get a mouse position within the canvas element
-     */
-    getMousePos (canvas, evt) {
-        const rect = canvas.getBoundingClientRect();
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
-    }
-
-    /**
-     * When user scrolls wheel
-     * TODO: fine tune this scroll function
-     */
-    onWheel (e) {
-        // Prevent swipe nagivation on Chrome/Mac
-        e.preventDefault();
-
-        const x = e.deltaY;
-        const offset = this.offsetX - x;
-
-        this.setValue(offset / this.center);
-
-        this.drawCanvas();
-        this.setEditorShaderValue(this.value.toFixed(3));
-    }
-
-    /**
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         return (
             <FloatingPanel
                 x={this.x}
@@ -303,6 +306,6 @@ WidgetLinkNumber.propTypes = {
     match: React.PropTypes.object,
     value: React.PropTypes.oneOfType([
         React.PropTypes.string,
-        React.PropTypes.number
-    ])
+        React.PropTypes.number,
+    ]),
 };

@@ -10,23 +10,22 @@ import SignInOverlay from './SignInOverlay';
 import { initTangramPlay } from '../tangram-play';
 
 export default class App extends React.Component {
-    componentDidMount () {
+    componentDidMount() {
         initTangramPlay();
     }
 
-    shouldComponentUpdate () {
+    shouldComponentUpdate() {
         return false;
     }
 
-    render () {
+    render() {
         return (
             <div>
                 <MenuBar />
 
                 <div className="workspace-container">
                     <div id="draggable-container">
-                        <div id="draggable-container-child">
-                        </div>
+                        <div id="draggable-container-child" />
                     </div>
 
                     <div>

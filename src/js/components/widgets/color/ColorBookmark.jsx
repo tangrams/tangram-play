@@ -8,10 +8,10 @@ import {
     setCodeMirrorValue,
     setCodeMirrorShaderValue,
     getCoordinates,
-    setCursor
+    setCursor,
 } from '../../../editor/editor';
 import Color from './color';
-// import { EventEmitter } from '../../event-emitter';
+// import EventEmitter from '../../event-emitter';
 
 /**
  * Represents a color picker widget
@@ -24,11 +24,14 @@ export default class ColorBookmark extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
-            displayColorPicker: this.props.shader, // If it's a shader widget, defaults to TRUE, open. If it's not a shader widget, it's FALSE. we need to wait until user clicks button to open widget
+            // If it's a shader widget, defaults to TRUE, open. If it's not a
+            // shader widget, it's FALSE. we need to wait until user clicks
+            // button to open widget
+            displayColorPicker: this.props.shader,
             color: new Color(this.props.value),
         };
         this.bookmark = this.props.bookmark;
@@ -36,7 +39,8 @@ export default class ColorBookmark extends React.Component {
         this.x = 0;
         this.y = 0;
 
-        // Need to know width in case a widget is about to get rendered outside of the normal screen size
+        // Need to know width in case a widget is about to get rendered outside
+        // of the normal screen size
         // TODO: Don't hardcode this.
         this.height = 300;
         this.width = 250;
@@ -61,20 +65,22 @@ export default class ColorBookmark extends React.Component {
     /**
      * React lifecycle function. Gets called once when DIV is mounted
      */
-    componentDidMount () {
+    componentDidMount() {
         // Colorpalette section
         /*
-        // Only pass on colors that are valid. i.e. as the user types the color widget is white by default but
+        // Only pass on colors that are valid. i.e. as the user types the color
+        // widget is white by default but
         // the widget does not representa  fully valid color
         if (this.state.color.valid) {
             EventEmitter.dispatch('widgets:color', this.state.color);
         }
 
-        EventEmitter.subscribe('color-palette:color-change', data => { this.onPaletteChange(data); });
+        EventEmitter.subscribe('color-palette:color-change',
+            data => { this.onPaletteChange(data); });
         */
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         this.mounted = false;
 
         // Colorpalette section
@@ -82,15 +88,16 @@ export default class ColorBookmark extends React.Component {
         EventEmitter.dispatch('widgets:color-unmount', this.state.color);
 
         // Do nothing on color palette changes if the React component has been unmounted.
-        // This is to prevent following error: 'Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component.'
+        // This is to prevent following error: 'Can only update a mounted or
+        // mounting component. This usually means you called setState() on an unmounted component.'
         EventEmitter.subscribe('color-palette:color-change', data => {});
         */
     }
 
     /**
-     * Open or close the color picker widget
+     * Open or close the color picker
      */
-    onClick (e) {
+    onClick() {
         // Set the editor cursor to the correct line. (When you click on the
         // widget button it doesn't move the cursor)
         setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
@@ -105,11 +112,11 @@ export default class ColorBookmark extends React.Component {
         this.setState({ displayColorPicker: true });
     }
 
-    onClickExit () {
+    onClickExit() {
         this.setState({ displayColorPicker: false });
 
         if (this.props.shader) {
-            let widgetlink = document.getElementById('widget-links');
+            const widgetlink = document.getElementById('widget-links');
             ReactDOM.unmountComponentAtNode(widgetlink);
         }
     }
@@ -120,18 +127,16 @@ export default class ColorBookmark extends React.Component {
      *
      * @param newColor - color that user has chosen in the color picker widget. Object of type Color
      */
-    onChange (newColor) {
+    onChange(newColor) {
         if (this.mounted) {
             // const oldColor = this.state.color; // For use within color palette
             this.setState({ color: newColor });
 
             if (this.props.shader && this.props.vec === 'vec3') {
                 this.setEditorShaderValue(newColor.getVec3String());
-            }
-            else if (this.props.shader && this.props.vec === 'vec4') {
+            } else if (this.props.shader && this.props.vec === 'vec4') {
                 this.setEditorShaderValue(newColor.getVec4String());
-            }
-            else {
+            } else {
                 this.setEditorValue(newColor.getVecString());
             }
 
@@ -161,7 +166,7 @@ export default class ColorBookmark extends React.Component {
      *  Use this method within a widget to communicate a value
      *  back to the Tangram Play editor.
      */
-    setEditorValue (string) {
+    setEditorValue(string) {
         this.bookmark = setCodeMirrorValue(this.bookmark, string);
     }
 
@@ -170,7 +175,7 @@ export default class ColorBookmark extends React.Component {
      *
      * @param color - the color to update within a shader block
      */
-    setEditorShaderValue (color) {
+    setEditorShaderValue(color) {
         const start = { line: this.cursor.line, ch: this.match.start };
         const end = { line: this.cursor.line, ch: this.match.end };
         this.match.end = this.match.start + color.length;
@@ -181,7 +186,7 @@ export default class ColorBookmark extends React.Component {
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         if (this.mounted) {
             const colorStyle = { backgroundColor: this.state.color.getRgbaString() };
 
@@ -192,18 +197,17 @@ export default class ColorBookmark extends React.Component {
                         if (this.props.shader) {
                             return null;
                         }
-                        else {
-                            return (
-                                <div
-                                    className="widget bookmark-color"
-                                    ref={(ref) => { this.colorPickerBookmark = ref; }}
-                                    onClick={this.onClick}
-                                >
-                                    <Checkboard size="3" />
-                                    <div className="bookmark-color-swatch" style={colorStyle} />
-                                </div>
-                            );
-                        }
+
+                        return (
+                            <div
+                                className="widget bookmark-color"
+                                ref={(ref) => { this.colorPickerBookmark = ref; }}
+                                onClick={this.onClick}
+                            >
+                                <Checkboard size="3" />
+                                <div className="bookmark-color-swatch" style={colorStyle} />
+                            </div>
+                        );
                     })()}
 
                     {/* Floating panel */}
@@ -215,11 +219,13 @@ export default class ColorBookmark extends React.Component {
                         show={this.state.displayColorPicker}
                         onHide={this.onClickExit}
                     >
-                        <ColorPicker color={ this.state.color } onChange={ this.onChange }/>
+                        <ColorPicker color={this.state.color} onChange={this.onChange} />
                     </FloatingPanel>
                 </div>
             );
         }
+
+        return null;
     }
 }
 
@@ -234,5 +240,5 @@ ColorBookmark.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
     match: React.PropTypes.object,
-    vec: React.PropTypes.string
+    vec: React.PropTypes.string,
 };

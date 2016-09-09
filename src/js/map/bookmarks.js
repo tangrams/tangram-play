@@ -9,16 +9,11 @@ const STORAGE_BOOKMARKS_KEY = 'bookmarks';
  *
  * @returns {Promise} - resolved value is current bookmarks content
  */
-export function getLocationBookmarks () {
+export function getLocationBookmarks() {
     return localforage.getItem(STORAGE_BOOKMARKS_KEY)
-        .then((bookmarks) => {
-            // If not set previously, then this value is null, so return an
-            // empty array.
-            return bookmarks || [];
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+        // If not set previously, then this value is null, so return an
+        // empty array.
+        .then((bookmarks) => bookmarks || []);
 }
 
 /**
@@ -35,7 +30,7 @@ export function getLocationBookmarks () {
         }
  * @returns {Promise} - resolved value is current bookmarks content after save
  */
-export function saveLocationBookmark (newBookmark) {
+export function saveLocationBookmark(newBookmark) {
     return getLocationBookmarks()
         .then((bookmarks) => {
             bookmarks.push(newBookmark);
@@ -44,21 +39,20 @@ export function saveLocationBookmark (newBookmark) {
             // dedupe this array by performing a equality comparison between
             // the properities `label`, `lat`, `lng` and `zoom` of each object.
             // (Don't compare by unique id like `_date` which defeats the purpose)
-            const comparator = function (objectValue, otherValue) {
+            function eqWithCustomizer(objectValue, otherValue) {
                 return (objectValue.label === otherValue.label &&
                     objectValue.lat === otherValue.lat &&
                     objectValue.lng === otherValue.lng &&
                     objectValue.zoom === otherValue.zoom);
-            };
+            }
 
-            bookmarks = uniqWith(bookmarks, (objectValue, otherValue) => {
-                return isEqualWith(objectValue, otherValue, comparator);
-            });
+            function uniqWithComparator(objectValue, otherValue) {
+                return isEqualWith(objectValue, otherValue, eqWithCustomizer);
+            }
 
-            return localforage.setItem(STORAGE_BOOKMARKS_KEY, bookmarks);
-        })
-        .catch((error) => {
-            console.error(error);
+            const uniqueBookmarks = uniqWith(bookmarks, uniqWithComparator);
+
+            return localforage.setItem(STORAGE_BOOKMARKS_KEY, uniqueBookmarks);
         });
 }
 
@@ -70,16 +64,13 @@ export function saveLocationBookmark (newBookmark) {
  * @param {string} uid - unique identifier for bookmark.
  * @returns {Promise} - resolved value is current bookmarks content after delete
  */
-export function deleteLocationBookmark (uid) {
+export function deleteLocationBookmark(uid) {
     return getLocationBookmarks()
         .then((bookmarks) => {
             // Reject the bookmark with this given uid
-            bookmarks = reject(bookmarks, { _date: uid });
+            const updatedBookmarks = reject(bookmarks, { _date: uid });
 
-            return localforage.setItem(STORAGE_BOOKMARKS_KEY, bookmarks);
-        })
-        .catch((error) => {
-            console.error(error);
+            return localforage.setItem(STORAGE_BOOKMARKS_KEY, updatedBookmarks);
         });
 }
 
@@ -88,9 +79,6 @@ export function deleteLocationBookmark (uid) {
  *
  * @returns {Promise} - resolved value is empty array
  */
-export function clearLocationBookmarks () {
-    return localforage.setItem(STORAGE_BOOKMARKS_KEY, [])
-        .catch((error) => {
-            console.error(error);
-        });
+export function clearLocationBookmarks() {
+    return localforage.setItem(STORAGE_BOOKMARKS_KEY, []);
 }

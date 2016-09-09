@@ -3,54 +3,53 @@
 import { isEmptyString } from '../../tools/helpers';
 
 //  Get the spaces of a string
-export function getSpaces (str) {
-    let regex = /^(\s+)/gm;
-    let space = regex.exec(str);
+export function getSpaces(str) {
+    const regex = /^(\s+)/gm;
+    const space = regex.exec(str);
     if (space) {
         return (space[1].match(/\s/g) || []).length;
     }
-    else {
-        return 0;
-    }
+
+    return 0;
 }
 
 //  Get the indentation level of a line
-export function getInd (string) {
+export function getInd(string) {
     return getSpaces(string) / 4;
 }
-export function getLineInd (cm, nLine) {
+export function getLineInd(cm, nLine) {
     return getSpaces(cm.lineInfo(nLine).text) / cm.getOption('tabSize');
 }
 
 //  Check if a line is empty
-export function isEmpty (cm, nLine) {
+export function isEmpty(cm, nLine) {
     return isEmptyString(cm.lineInfo(nLine).text);
 }
 
 //  Check if the line is commented YAML style
-export function isStrCommented (str) {
-    let regex = /^\s*[#||\/\/]/gm;
+export function isStrCommented(str) {
+    const regex = /^\s*[#||\/\/]/gm;
     return (regex.exec(str) || []).length > 0;
 }
-export function isCommented (cm, nLine) {
+export function isCommented(cm, nLine) {
     return isStrCommented(cm.lineInfo(nLine).text);
 }
 
 // Get the text of a line and ignore the previus spaces
-export function getText (cm, nLine) {
-    let value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);
+export function getText(cm, nLine) {
+    const value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);
     return value ? value[1] : '';
 }
 
 //  Get value of a key pair
-export function getValue (cm, nLine) {
-    let value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec(cm.lineInfo(nLine).text);
+export function getValue(cm, nLine) {
+    const value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec(cm.lineInfo(nLine).text);
     return value ? value[1] : '';
 }
 
 // Escape regex special characters
 // via http://stackoverflow.com/a/9310752
-export function regexEscape (text) {
+export function regexEscape(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
@@ -58,13 +57,13 @@ export function regexEscape (text) {
 //  ===============================================================================
 
 //  Jump to a specific line
-export function jumpToLine (cm, nLine) {
+export function jumpToLine(cm, nLine) {
     cm.scrollTo(null, cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top);
 }
 
 //  Jump to a specific line
-export function jumpToLineAt (cm, nLine, offset) {
-    let t = cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top;
+export function jumpToLineAt(cm, nLine) {
+    const t = cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top;
     cm.scrollTo(null, t);
 }
 
@@ -73,18 +72,43 @@ export function jumpToLineAt (cm, nLine, offset) {
 
 //  Is posible to fold
 //
-export function isFolder (cm, nLine) {
+export function isFolder(cm, nLine) {
     if (cm.lineInfo(nLine).gutterMarkers) {
         return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
     }
-    else {
-        return false;
+
+    return false;
+}
+
+//  Unfold all lines
+//
+export function unfoldAll(cm) {
+    const opts = cm.state.foldGutter.options;
+    for (let i = 0; i < cm.lineCount(); i++) {
+        cm.foldCode({ line: i }, opts.rangeFinder, 'unfold');
+    }
+}
+
+//  Fold all lines above a specific indentation level
+//
+export function foldByLevel(cm, level) {
+    unfoldAll(cm);
+    const opts = cm.state.foldGutter.options;
+
+    let actualLine = cm.getDoc().size - 1;
+    while (actualLine >= 0) {
+        if (isFolder(cm, actualLine)) {
+            if (getLineInd(cm, actualLine) >= level) {
+                cm.foldCode({ line: actualLine, ch: 0 }, opts.rangeFinder);
+            }
+        }
+        actualLine--;
     }
 }
 
 //  Select everything except for a range of lines
 //
-export function foldAllBut (cm, From, To, queryLevel) {
+export function foldAllBut(cm, From, To, queryLevel) {
     // default level is 0
     queryLevel = typeof queryLevel !== 'undefined' ? queryLevel : 0;
 
@@ -97,7 +121,7 @@ export function foldAllBut (cm, From, To, queryLevel) {
     let onBlock = true;
 
     for (let i = From - 1; i >= 0; i--) {
-        let level = getLineInd(cm, i);
+        const level = getLineInd(cm, i);
 
         if (level === 0) {
             break;
@@ -105,8 +129,7 @@ export function foldAllBut (cm, From, To, queryLevel) {
 
         if (level < minLevel) {
             minLevel = level;
-        }
-        else if (onBlock) {
+        } else if (onBlock) {
             startOn = i;
             onBlock = false;
         }
@@ -114,16 +137,16 @@ export function foldAllBut (cm, From, To, queryLevel) {
 
     minLevel = 10;
     for (let i = To; i >= From; i--) {
-        let level = getLineInd(cm, i);
-        let chars = cm.lineInfo(i).text.length;
+        const level = getLineInd(cm, i);
+        const chars = cm.lineInfo(i).text.length;
         if (level < minLevel && chars > 0) {
             minLevel = level;
         }
     }
-    let opts = cm.state.foldGutter.options;
+    const opts = cm.state.foldGutter.options;
 
     for (let i = startOn; i >= 0; i--) {
-        let level = getLineInd(cm, i);
+        const level = getLineInd(cm, i);
 
         if (level === 0 && cm.lineInfo(i).text.length) {
             break;
@@ -138,31 +161,5 @@ export function foldAllBut (cm, From, To, queryLevel) {
         if (getLineInd(cm, i) >= queryLevel) {
             cm.foldCode({ line: i }, opts.rangeFinder, 'fold');
         }
-    }
-}
-
-//  Unfold all lines
-//
-export function unfoldAll (cm) {
-    let opts = cm.state.foldGutter.options;
-    for (let i = 0; i < cm.lineCount(); i++) {
-        cm.foldCode({ line: i }, opts.rangeFinder, 'unfold');
-    }
-}
-
-//  Fold all lines above a specific indentation level
-//
-export function foldByLevel (cm, level) {
-    unfoldAll(cm);
-    let opts = cm.state.foldGutter.options;
-
-    let actualLine = cm.getDoc().size - 1;
-    while (actualLine >= 0) {
-        if (isFolder(cm, actualLine)) {
-            if (getLineInd(cm, actualLine) >= level) {
-                cm.foldCode({ line: actualLine, ch: 0 }, opts.rangeFinder);
-            }
-        }
-        actualLine--;
     }
 }

@@ -3,11 +3,11 @@ import Icon from '../components/Icon';
 import EditorIO from '../editor/io';
 
 export default class FileDrop extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
-            visible: false
+            visible: false,
         };
 
         this.onDragEnter = this.onDragEnter.bind(this);
@@ -17,7 +17,7 @@ export default class FileDrop extends React.Component {
     }
 
     // Set up drag/drop file event listeners to the window`
-    componentWillMount () {
+    componentWillMount() {
         // Capturing events here prevents them from getting delivered to CodeMirror
         // or resulting in a file navigation
         window.addEventListener('dragenter', this.onDragEnter, true);
@@ -26,22 +26,26 @@ export default class FileDrop extends React.Component {
     }
 
     // This handler is added to the window during the componentWillMount step
-    onDragEnter (event) {
+    onDragEnter(event) {
         // Check to make sure that dropped items are files.
         // This prevents other drags (e.g. text in editor)
         // from turning on the file drop area.
         // See here: http://stackoverflow.com/questions/6848043/how-do-i-detect-a-file-is-being-dragged-rather-than-a-draggable-element-on-my-pa
         // Tested in Chrome, Firefox, Safari 8
         const types = event.dataTransfer.types;
-        if (types !== null && ((types.indexOf) ? (types.indexOf('Files') !== -1) : types.contains('application/x-moz-file'))) {
+        if (types !== null &&
+            types.indexOf ? (types.indexOf('Files') !== -1) : types.contains('application/x-moz-file')
+        ) {
             event.preventDefault();
+            // This absolutely needs to overwrite a parameter on the original event
+            // eslint-disable-next-line no-param-reassign
             event.dataTransfer.dropEffect = 'copy';
             this.setState({ visible: true });
         }
     }
 
     // This handler is added to the drop area when it is rendered
-    onDragOver (event) {
+    onDragOver(event) {
         // Required to prevent browser from navigating to a file
         // instead of receiving a data transfer
         event.preventDefault();
@@ -58,15 +62,17 @@ export default class FileDrop extends React.Component {
         if (effect !== 'none' || effectAllowed === 'none') {
             return;
         }
+        // This absolutely needs to overwrite a parameter on the original event
+        // eslint-disable-next-line no-param-reassign
         event.dataTransfer.dropEffect = 'copy';
     }
 
-    onDragLeave (event) {
+    onDragLeave(event) {
         event.preventDefault();
         this.setState({ visible: false });
     }
 
-    onDrop (event) {
+    onDrop(event) {
         event.preventDefault();
         this.setState({ visible: false });
         this.handleFiles(event.dataTransfer.files);
@@ -74,18 +80,18 @@ export default class FileDrop extends React.Component {
 
     // Required to prevent browser from navigating to a file
     // instead of receiving a data transfer
-    handleDropOnWindow (event) {
+    handleDropOnWindow(event) {
         event.preventDefault();
     }
 
-    handleFiles (files) {
+    handleFiles(files) {
         if (files.length > 0) {
             const file = files[0];
             EditorIO.open(file);
         }
     }
 
-    render () {
+    render() {
         const displayStyle = this.state.visible
             ? { display: 'block' }
             : { display: 'none' };

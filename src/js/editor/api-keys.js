@@ -22,9 +22,10 @@ const URL_PATTERN = /((https?:)?\/\/vector.mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}
  * @param {string} apiKey - the API key to inject
  * @returns {string} content - Tangram YAML with API keys injected, if needed
 */
-export function injectAPIKey (content, apiKey) {
-    const pattern = new RegExp('(^\\s+url:\\s+' + URL_PATTERN.source + '$)', 'gm');
-    // Do not use a template string here, seems incompatible with the $1 from the regex pattern
+export function injectAPIKey(content, apiKey) {
+    const pattern = new RegExp(`(^\\s+url:\\s+${URL_PATTERN.source}$)`, 'gm');
+    // Do not use a template string here, it's incompatible with the $1 from the regex pattern
+    // eslint-disable-next-line prefer-template
     const result = '$1?api_key=' + apiKey;
     return content.replace(pattern, result);
 }
@@ -44,12 +45,10 @@ export function injectAPIKey (content, apiKey) {
  * @param {Array} suppressedKeys - an array of keys to mask
  * @returns {string} content - Tangram YAML with API keys suppressed, if needed
 */
-export function suppressAPIKeys (content, suppressedKeys) {
+export function suppressAPIKeys(content, suppressedKeys) {
     // Creates a string for the regex, e.g.
     // "vector\-tiles\-P6dkVl4|vector\-tiles\-HqUVidw|vector\-tiles\-JUsa0Gc"
-    const escapedKeys = suppressedKeys.map(function (key) {
-        return key.replace(/\-/g, '\\-');
-    }).join('|');
-    const re = new RegExp(URL_PATTERN.source + `\\?api_key\\=(${escapedKeys})`, 'gm');
+    const escapedKeys = suppressedKeys.map((key) => key.replace(/\-/g, '\\-')).join('|');
+    const re = new RegExp(`${URL_PATTERN.source}\\?api_key\\=(${escapedKeys})`, 'gm');
     return content.replace(re, '$1');
 }

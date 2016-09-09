@@ -1,16 +1,16 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/clike/clike.js';
 
-function words (str) {
-    let obj = {};
-    let keys = str.split(' ');
+function wordsToObj(str) {
+    const obj = {};
+    const keys = str.split(' ');
     for (let i = 0; i < keys.length; ++i) {
         obj[keys[i]] = true;
     }
     return obj;
 }
 
-function cppHook (stream, state) {
+function cppHook(stream, state) {
     if (!state.startOfLine) {
         return false;
     }
@@ -21,8 +21,7 @@ function cppHook (stream, state) {
                 state.tokenize = cppHook;
                 break;
             }
-        }
-        else {
+        } else {
             stream.skipToEnd();
             state.tokenize = null;
             break;
@@ -31,18 +30,18 @@ function cppHook (stream, state) {
     return 'meta';
 }
 
-function def (mimes, mode) {
+function def(mimes, mode) {
     if (typeof mimes === 'string') {
         mimes = [mimes];
     }
-    let words = [];
-    function add (obj) {
+    const words = [];
+    function add(obj) {
         if (obj) {
-            for (var prop in obj) {
-                if (obj.hasOwnProperty(prop)) {
-                    words.push(prop);
+            Object.keys(obj).forEach((key) => {
+                if ({}.hasOwnProperty.call(obj, key)) {
+                    words.push(key);
                 }
-            }
+            });
         }
     }
     add(mode.keywords);
@@ -60,7 +59,7 @@ function def (mimes, mode) {
 
 def(['glsl', 'x-shader/x-vertex', 'x-shader/x-fragment'], {
     name: 'clike',
-    keywords: words('float int bool void ' +
+    keywords: wordsToObj('float int bool void ' +
                     'vec2 vec3 vec4 ivec2 ivec3 ivec4 bvec2 bvec3 bvec4 ' +
                     'mat2 mat3 mat4 ' +
                     'sampler2D samplerCube ' +
@@ -68,8 +67,8 @@ def(['glsl', 'x-shader/x-vertex', 'x-shader/x-fragment'], {
                     'break continue discard return ' +
                     'for while do if else struct ' +
                     'in out inout'),
-    blockKeywords: words('for while do if else struct'),
-    builtin: words('radians degrees sin cos tan asin acos atan ' +
+    blockKeywords: wordsToObj('for while do if else struct'),
+    builtin: wordsToObj('radians degrees sin cos tan asin acos atan ' +
                     'pow exp log exp2 sqrt inversesqrt ' +
                     'abs sign floor ceil fract mod min max clamp mix step smoothstep ' +
                     'length distance dot cross normalize faceforward ' +
@@ -77,14 +76,15 @@ def(['glsl', 'x-shader/x-vertex', 'x-shader/x-fragment'], {
                     'lessThan lessThanEqual greaterThan greaterThanEqual ' +
                     'equal notEqual any all not ' +
                     'texture2D textureCube'),
-    atoms: words('true false ' +
-                 'u_time u_meters_per_pixel u_device_pixel_ratio u_map_position u_tile_origin u_resolution ' +
+    atoms: wordsToObj('true false ' +
+                 'u_time u_meters_per_pixel u_device_pixel_ratio u_map_position ' +
+                 'u_tile_origin u_resolution ' +
                  'v_world_position v_texcoord ' +
                  'v_position position width v_color color v_normal normal material ' +
                  'light_accumulator_ambient light_accumulator_diffuse light_accumulator_specular ' +
                  'gl_FragColor gl_Position gl_PointSize gl_FragCoord '),
     hooks: { '#': cppHook },
     modeProps: {
-        fold: ['brace', 'include']
-    }
+        fold: ['brace', 'include'],
+    },
 });

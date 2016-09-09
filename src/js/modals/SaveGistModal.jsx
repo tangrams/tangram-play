@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
+import localforage from 'localforage';
+
+import Modal from './Modal';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
-
-import localforage from 'localforage';
 import ErrorModal from './ErrorModal';
 import SaveGistSuccessModal from './SaveGistSuccessModal';
 import { saveToGist } from '../storage/gist';
@@ -21,13 +21,13 @@ const STORAGE_SAVED_GISTS = 'gists';
 const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
 export default class SaveGistModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
-        this._timeout = null;
+        this.timeout = null;
 
         this.state = {
-            thinking: false
+            thinking: false,
         };
 
         this.onClickConfirm = this.onClickConfirm.bind(this);
@@ -37,24 +37,24 @@ export default class SaveGistModal extends React.Component {
         this.handleSaveError = this.handleSaveError.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setReadyUI();
     }
 
-    componentWillReceiveProps (nextState, nextProps) {
+    componentWillReceiveProps(nextState, nextProps) {
         if (nextProps.visible === true) {
             this.setReadyUI();
         }
     }
 
-    componentWillUnmount () {
-        window.clearTimeout(this._timeout);
+    componentWillUnmount() {
+        window.clearTimeout(this.timeout);
     }
 
-    onClickConfirm () {
+    onClickConfirm() {
         // Waiting state
         this.setState({
-            thinking: true
+            thinking: true,
         });
 
         // Name of the scene
@@ -66,40 +66,42 @@ export default class SaveGistModal extends React.Component {
         // Filename
         // Currently, set it to default value.
         // We will re-address filenames in multi-tab scenario.
-        let filename = DEFAULT_GIST_SCENE_FILENAME;
+        const filename = DEFAULT_GIST_SCENE_FILENAME;
 
         // Description is either set to default (if blank)
         // or appended to the user-produced value
         let description;
-        if (this.descriptionInput.value.length === 0 || this.descriptionInput.value.trim() === DEFAULT_GIST_DESCRIPTION) {
+        if (this.descriptionInput.value.length === 0 ||
+            this.descriptionInput.value.trim() === DEFAULT_GIST_DESCRIPTION) {
             description = `[${DEFAULT_GIST_DESCRIPTION}]`;
-        }
-        else {
+        } else {
             // Newlines are not accepted on gist descriptions, apparently.
-            description = this.descriptionInput.value + ` [${DEFAULT_GIST_DESCRIPTION}]`;
+            description = `${this.descriptionInput.value} [${DEFAULT_GIST_DESCRIPTION}]`;
         }
 
         saveToGist({
             sceneName,
             filename,
             description,
-            isPublic: this.publicCheckbox.checked
+            isPublic: this.publicCheckbox.checked,
         }, this.handleSaveSuccess, this.handleSaveError);
 
         // Start save timeout
         // TODO: This does not cancel the request if it is in progress
-        this._timeout = window.setTimeout(() => {
-            this.handleSaveError({ message: 'GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!' });
+        this.timeout = window.setTimeout(() => {
+            // eslint-disable-next-line max-len
+            const errorMessage = 'GitHub’s servers haven’t responded in a while, so we’re going stop waiting for them. You might want to try again later!';
+            this.handleSaveError({ message: errorMessage });
         }, SAVE_TIMEOUT);
     }
 
-    onClickCancel (event) {
-        window.clearTimeout(this._timeout);
+    onClickCancel(event) {
+        window.clearTimeout(this.timeout);
         this.resetInputs();
         this.component.unmount();
     }
 
-    setReadyUI () {
+    setReadyUI() {
         // Put the cursor on 'Scene name'
         this.nameInput.focus();
         this.nameInput.select();
@@ -112,7 +114,7 @@ export default class SaveGistModal extends React.Component {
      * a user might want to have follow up saves where the same
      * settings might be used.
      */
-    resetInputs () {
+    resetInputs() {
         this.descriptionInput.value = DEFAULT_GIST_DESCRIPTION;
         this.descriptionInput.blur();
         this.nameInput.value = DEFAULT_GIST_SCENE_NAME;
@@ -125,7 +127,7 @@ export default class SaveGistModal extends React.Component {
     // mark as clean state in the editor,
     // remember the success response,
     // and display a helpful message
-    handleSaveSuccess (data) {
+    handleSaveSuccess(data) {
         const gist = data.gist;
 
         // Create storage object
@@ -140,7 +142,7 @@ export default class SaveGistModal extends React.Component {
             created_at: data.gist.created_at,
             updated_at: data.gist.updated_at,
             /* eslint-enable camelcase */
-            thumbnail: data.thumbnail
+            thumbnail: data.thumbnail,
         };
 
         // Store response in localstorage
@@ -149,8 +151,7 @@ export default class SaveGistModal extends React.Component {
             .then((gists) => {
                 if (Array.isArray(gists)) {
                     gists.push(saveData);
-                }
-                else {
+                } else {
                     gists = [];
                 }
                 localforage.setItem(STORAGE_SAVED_GISTS, gists);
@@ -177,15 +178,20 @@ export default class SaveGistModal extends React.Component {
      *
      * @param {Error} Thrown by something else
      */
-    handleSaveError (error) {
+    handleSaveError(error) {
         // Close the modal
         this.component.unmount();
 
+        const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
+
         // Show error modal
-        ReactDOM.render(<ErrorModal error={`Uh oh! We tried to save your scene but something went wrong. ${error.message}`} />, document.getElementById('modal-container'));
+        ReactDOM.render(
+            <ErrorModal error={errorMessage} />,
+            document.getElementById('modal-container')
+        );
     }
 
-    render () {
+    render() {
         return (
             /* Modal disableEsc is true if we are waiting for a response */
             <Modal
@@ -197,7 +203,7 @@ export default class SaveGistModal extends React.Component {
                 <div className="modal-text">
                     <h4>Save this scene to gist</h4>
                     <p>
-                        This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href="https://help.github.com/articles/about-gists/" target="_blank">Learn more about anonymous gists</a>.
+                        This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href="https://help.github.com/articles/about-gists/" target="_blank" rel="noopener noreferrer">Learn more about anonymous gists</a>.
                     </p>
                 </div>
 

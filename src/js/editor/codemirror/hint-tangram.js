@@ -1,6 +1,4 @@
-import { hint } from '../suggest';
 import CodeMirror from 'codemirror';
+import { hint } from '../suggest';
 
-CodeMirror.registerHelper('hint', 'yaml', function (editor, options) {
-    return hint(editor, options);
-});
+CodeMirror.registerHelper('hint', 'yaml', (editor, options) => hint(editor, options));

@@ -19,16 +19,18 @@ export default class WidgetLinkVec2 extends React.Component {
      *
      * @param props - parameters passed from the parent
      */
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
-            displayPicker: this.props.display
+            displayPicker: this.props.display,
         };
 
         this.cursor = this.props.cursor;
         this.match = this.props.match;
 
-        const linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
+        // Position where user cliked on a line
+        const linePos = { line: this.cursor.line, ch: this.match.start };
+
         this.x = getCoordinates(linePos).left;
         this.y = getCoordinates(linePos).bottom;
 
@@ -62,10 +64,10 @@ export default class WidgetLinkVec2 extends React.Component {
     /**
      * React lifecycle method called once DIV is mounted
      */
-    componentDidMount () {
+    componentDidMount() {
         // Set canvas for high-pixel-density (e.g. Retina screens)
-        this.canvas.style.width = this.width + 'px';
-        this.canvas.style.height = this.height + 'px';
+        this.canvas.style.width = `${this.width}px`;
+        this.canvas.style.height = `${this.height}px`;
 
         this.ctx = this.canvas.getContext('2d');
         this.ratio = getDevicePixelRatio(this.ctx);
@@ -77,10 +79,105 @@ export default class WidgetLinkVec2 extends React.Component {
         this.drawCanvas();
     }
 
+    /* Mouse, scroll and click commands */
+    /* These event callbacks are provided by React */
+
+    /**
+     * Widget links are handled slightly differently. For now they are simply
+     * unmounted from the DOM and recreated again
+     * Meaning, onHide will only be called once to unmount the widget
+     */
+    onHide() {
+        this.setState({ displayPicker: false });
+
+        const widgetlink = document.getElementById('widget-links');
+        ReactDOM.unmountComponentAtNode(widgetlink);
+    }
+
+    /**
+     * We also want to update the canvas on MouseDown in case the user only
+     * clicks on the 2d axis and not drags inside of it
+     */
+    onMouseDown(event) {
+        this.drag = true; // START a drag event
+        this.overPoint = true; // Change the look of the point within the canvas
+
+        const mousePos = this.getMousePos(this.canvas, event);
+        const x = mousePos.x;
+        const y = mousePos.y;
+
+        this.value.x = ((this.range / this.width) * x) - (this.range - this.max);
+        this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
+
+        this.drawCanvas();
+        this.setEditorShaderValue(this.value);
+    }
+
+    /**
+     * While user is dragging
+     */
+    onMouseMove(event) {
+        if (this.drag === true) { // If DRAG event is true
+            const mousePos = this.getMousePos(this.canvas, event);
+            const x = mousePos.x;
+            const y = mousePos.y;
+
+            this.value.x = ((this.range / this.width) * x) - (this.range - this.max);
+            this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
+
+            // this.overPoint = true;
+
+            this.drawCanvas();
+            this.setEditorShaderValue(this.value);
+        }
+    }
+
+    /**
+     * When user stops dragging
+     */
+    onMouseUp() {
+        this.drag = false; // STOP a drag event
+        this.overPoint = false; // Change the look of the point within the canvas
+        this.drawCanvas(); // Draw the new point
+    }
+
+    /**
+     * Function to get a mouse position within the canvas element
+     */
+    getMousePos(canvas, event) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top,
+        };
+    }
+
+    /**
+     * Set the value of the point
+     *
+     * @param pos - takes in a position from which to create a vector
+     */
+    setValue(pos) {
+        this.value = new Vector(pos);
+    }
+
+    /**
+     * Update CodeMirror
+     *
+     * @param pos - the new position to write out to CodeMirror
+     */
+    setEditorShaderValue(pos) {
+        const newpos = pos.getString();
+        const start = { line: this.cursor.line, ch: this.match.start };
+        const end = { line: this.cursor.line, ch: this.match.end };
+        this.match.end = this.match.start + newpos.length;
+        setCodeMirrorShaderValue(newpos, start, end);
+    }
+
     /**
      * Draws the canvas
      */
-    drawCanvas () {
+    drawCanvas() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         // frame
@@ -104,20 +201,20 @@ export default class WidgetLinkVec2 extends React.Component {
         this.ctx.strokeStyle = this.dimColor;
         this.ctx.lineWidth = 1.0;
         this.ctx.beginPath();
-        this.ctx.moveTo(0, 0.5 + this.height * 0.5);
-        this.ctx.lineTo(this.width, 0.5 + this.height * 0.5);
+        this.ctx.moveTo(0, 0.5 + (this.height * 0.5));
+        this.ctx.lineTo(this.width, 0.5 + (this.height * 0.5));
         this.ctx.closePath();
         this.ctx.stroke();
 
         // vertical line
         this.ctx.beginPath();
-        this.ctx.moveTo(0.5 + this.width * 0.5, 0);
-        this.ctx.lineTo(0.5 + this.width * 0.5, this.height);
+        this.ctx.moveTo(0.5 + (this.width * 0.5), 0);
+        this.ctx.lineTo(0.5 + (this.width * 0.5), this.height);
         this.ctx.closePath();
         this.ctx.stroke();
 
         let x = Math.round(((this.value.x - this.min) / this.range) * this.width);
-        let y = Math.round(((1 - (this.value.y - this.min) / this.range)) * this.height);
+        let y = Math.round((1 - ((this.value.y - this.min) / this.range)) * this.height);
 
         const half = this.size / 2;
 
@@ -145,103 +242,10 @@ export default class WidgetLinkVec2 extends React.Component {
     }
 
     /**
-     * Set the value of the point
-     *
-     * @param pos - takes in a position from which to create a vector
-     */
-    setValue (pos) {
-        this.value = new Vector(pos);
-    }
-
-    /**
-     * Update CodeMirror
-     *
-     * @param pos - the new position to write out to CodeMirror
-     */
-    setEditorShaderValue (pos) {
-        const newpos = pos.getString();
-        const start = { line: this.cursor.line, ch: this.match.start };
-        const end = { line: this.cursor.line, ch: this.match.end };
-        this.match.end = this.match.start + newpos.length;
-        setCodeMirrorShaderValue(newpos, start, end);
-    }
-
-    /* Mouse, scroll and click commands */
-    /* These event callbacks are provided by React */
-
-    /**
-     * Widget links are handled slightly differently. For now they are simply unmounted from the DOM and recreated again
-     * Meaning, onHide will only be called once to unmount the widget
-     */
-    onHide () {
-        this.setState({ displayPicker: false });
-
-        const widgetlink = document.getElementById('widget-links');
-        ReactDOM.unmountComponentAtNode(widgetlink);
-    }
-
-    /**
-     * We also want to update the canvas on MouseDown in case the user only clicks on the 2d axis and not drags inside of it
-     */
-    onMouseDown (e) {
-        this.drag = true; // START a drag event
-        this.overPoint = true; // Change the look of the point within the canvas
-
-        const mousePos = this.getMousePos(this.canvas, e);
-        const x = mousePos.x;
-        const y = mousePos.y;
-
-        this.value.x = ((this.range / this.width) * x) - (this.range - this.max);
-        this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
-
-        this.drawCanvas();
-        this.setEditorShaderValue(this.value);
-    }
-
-    /**
-     * While user is dragging
-     */
-    onMouseMove (e) {
-        if (this.drag === true) { // If DRAG event is true
-            const mousePos = this.getMousePos(this.canvas, e);
-            const x = mousePos.x;
-            const y = mousePos.y;
-
-            this.value.x = ((this.range / this.width) * x) - (this.range - this.max);
-            this.value.y = (((this.range / this.height) * y) - (this.range - this.max)) * -1;
-
-            // this.overPoint = true;
-
-            this.drawCanvas();
-            this.setEditorShaderValue(this.value);
-        }
-    }
-
-    /**
-     * When user stops dragging
-     */
-    onMouseUp () {
-        this.drag = false; // STOP a drag event
-        this.overPoint = false; // Change the look of the point within the canvas
-        this.drawCanvas(); // Draw the new point
-    }
-
-    /**
-     * Function to get a mouse position within the canvas element
-     */
-    getMousePos (canvas, evt) {
-        const rect = canvas.getBoundingClientRect();
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
-    }
-
-    /**
      * Official React lifecycle method
      * Called every time state or props are changed
      */
-    render () {
+    render() {
         return (
             <FloatingPanel
                 x={this.x}
@@ -270,5 +274,5 @@ WidgetLinkVec2.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
     match: React.PropTypes.object,
-    value: React.PropTypes.string
+    value: React.PropTypes.string,
 };

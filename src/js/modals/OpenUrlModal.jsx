@@ -1,18 +1,18 @@
 import React from 'react';
-import Modal from './Modal';
 import Button from 'react-bootstrap/lib/Button';
+import Modal from './Modal';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
 import { load } from '../tangram-play';
 
 export default class OpenUrlModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             thinking: false,
-            validInput: false
+            validInput: false,
         };
 
         this.onClickConfirm = this.onClickConfirm.bind(this);
@@ -20,14 +20,14 @@ export default class OpenUrlModal extends React.Component {
         this.onKeyUpInput = this.onKeyUpInput.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.input.focus();
     }
 
-    onClickConfirm () {
+    onClickConfirm() {
         // Waiting state
         this.setState({
-            thinking: true
+            thinking: true,
         });
 
         const url = this.input.value.trim();
@@ -37,11 +37,11 @@ export default class OpenUrlModal extends React.Component {
             });
     }
 
-    onClickCancel (event) {
+    onClickCancel(event) {
         this.component.unmount();
     }
 
-    onKeyUpInput (event) {
+    onKeyUpInput(event) {
         // We no longer check for valid URL signatures.
         // It is easier to attempt to fetch an input URL and see what happens.
         if (this.input.value) {
@@ -51,13 +51,12 @@ export default class OpenUrlModal extends React.Component {
             if (key === 13) {
                 this.onClickConfirm();
             }
-        }
-        else {
+        } else {
             this.setState({ validInput: false });
         }
     }
 
-    render () {
+    render() {
         return (
             <Modal
                 className="modal-alt open-url-modal"

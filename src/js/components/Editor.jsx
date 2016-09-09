@@ -4,7 +4,7 @@ import { initEditor } from '../editor/editor';
 import Divider from './Divider';
 
 export default class Editor extends React.Component {
-    componentDidMount () {
+    componentDidMount() {
         // instantiate CodeMirror with the editor container element's
         // DOM node reference
         initEditor(this.editorEl);
@@ -13,7 +13,7 @@ export default class Editor extends React.Component {
         // this.docsPanel.init();
     }
 
-    render () {
+    render() {
         return (
             /* id='content' is used only as a hook for Divider right now */
             <div className="editor-container" id="content">
