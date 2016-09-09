@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import FloatingPanel from '../FloatingPanel';
 
-import { getDevicePixelRatio } from '../../tools/common';
+import { getDevicePixelRatio } from '../../tools/helpers';
 import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
 
 /**

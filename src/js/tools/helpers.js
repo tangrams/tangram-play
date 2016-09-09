@@ -43,3 +43,19 @@ export function prependProtocolToUrl(url) {
     // If the string does already start with a protocol (scheme), return it as is.
     return url;
 }
+
+/**
+ * Determines current device pixel ratio (e.g. Retina screens have a ratio of 2).
+ *
+ * @param {Context} ctx - canvas context to check
+ * @return {Number} ratio
+ */
+export function getDevicePixelRatio(ctx) {
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                            ctx.mozBackingStorePixelRatio ||
+                            ctx.msBackingStorePixelRatio ||
+                            ctx.oBackingStorePixelRatio ||
+                            ctx.backingStorePixelRatio || 1;
+    return devicePixelRatio / backingStoreRatio;
+}

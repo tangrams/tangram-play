@@ -4,7 +4,7 @@ import FloatingPanel from '../FloatingPanel';
 
 import Vector from './vector';
 
-import { getDevicePixelRatio } from '../../tools/common';
+import { getDevicePixelRatio } from '../../tools/helpers';
 import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
 
 /**
