@@ -136,7 +136,7 @@ export default class Color {
         return `[${v}, ${e}, ${c}, ${a}]`;
     }
 
-    // For use within widget-links and shader blocks
+    // For use within GLSL pickers and shader blocks
     // Returns vec string "[0.x, 0.x , 0.x]" No alpha.
     getVec3String() {
         const vecColor = this.rgb2vec();
@@ -146,7 +146,7 @@ export default class Color {
         return `vec3(${v}, ${e}, ${c})`;
     }
 
-    // For use within widget-links and shader blocks
+    // For use within GLSL pickers and shader blocks
     // Returns vec string "[0.x, 0.x , 0.x]" No alpha.
     getVec4String() {
         const vecColor = this.rgb2vec();

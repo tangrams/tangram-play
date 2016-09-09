@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { clone } from 'lodash';
 import { editor } from '../../editor/editor';
-import WidgetLinkVec2 from './WidgetLinkVec2';
-import WidgetLinkNumber from './WidgetLinkNumber';
+import Vec2Picker from './Vec2Picker';
+import NumberPicker from './NumberPicker';
 import ColorBookmark from '../widgets/color/ColorBookmark';
 
 /**
@@ -117,7 +117,7 @@ function getMatch(cursor) {
     return undefined;
 }
 
-export function initGlslWidgetsLink() {
+export function initGlslPickers() {
     const wrapper = editor.getWrapperElement();
 
     wrapper.addEventListener('mouseup', (event) => {
@@ -131,7 +131,8 @@ export function initGlslWidgetsLink() {
         const cursor = editor.getCursor(true);
 
         // If the user clicks somewhere that is not where the cursor is
-        // This checks for cases where a user clicks on a normal widget (not glsl) but the cursor is over a shader block
+        // This checks for cases where a user clicks on a normal picker trigger
+        // (not glsl) but the cursor is over a shader block
         if (cursorAndClickDontMatch(cursor, event)) {
             return;
         }
@@ -139,20 +140,20 @@ export function initGlslWidgetsLink() {
         // Exit early if the cursor is not at a token
         const token = editor.getTokenAt(cursor);
 
-        // Assume that we should trigger a widget-link
-        let shouldTriggerWidget = false;
+        // Assume that we should trigger a picker
+        let shouldTriggerPicker = false;
 
-        // If it is not a glsl widget, then for now set our boolean to FALSE
+        // If it is not a glsl picker, then for now set our boolean to FALSE
         if (token.state.innerMode !== null && token.state.innerMode.helperType === 'glsl') {
-            shouldTriggerWidget = true;
+            shouldTriggerPicker = true;
         }
         // But if it is within a defines, then set to TRUE again
         if (token.state.nodes[0] !== null && token.state.nodes[0].address.indexOf('shaders:defines') !== -1) {
-            shouldTriggerWidget = true;
+            shouldTriggerPicker = true;
         }
 
-        // If FALSE then return, we do not need to render a widget-link
-        if (!shouldTriggerWidget) {
+        // If FALSE then return, we do not need to render a picker
+        if (!shouldTriggerPicker) {
             return;
         }
 
@@ -160,7 +161,7 @@ export function initGlslWidgetsLink() {
         const match = getMatch(cursor);
 
         if (match) {
-            const widgetlink = document.getElementById('widget-links');
+            const glslPickerMountPoint = document.getElementById('glsl-pickers');
 
             switch (match.type) {
                 case 'vec4':
@@ -180,7 +181,7 @@ export function initGlslWidgetsLink() {
                                 shader
                                 vec="vec4"
                             />,
-                            widgetlink
+                            glslPickerMountPoint
                         );
                     } else {
                         ReactDOM.render(
@@ -192,31 +193,31 @@ export function initGlslWidgetsLink() {
                                 shader
                                 vec="vec3"
                             />,
-                            widgetlink
+                            glslPickerMountPoint
                         );
                     }
                     break;
                 }
                 case 'vec2':
                     ReactDOM.render(
-                        <WidgetLinkVec2
+                        <Vec2Picker
                             display
                             cursor={cursor}
                             match={match}
                             value={match.string}
                         />,
-                        widgetlink
+                        glslPickerMountPoint
                     );
                     break;
                 case 'number':
                     ReactDOM.render(
-                        <WidgetLinkNumber
+                        <NumberPicker
                             display
                             cursor={cursor}
                             match={match}
                             value={match.string}
                         />,
-                        widgetlink
+                        glslPickerMountPoint
                     );
                     break;
                 default:

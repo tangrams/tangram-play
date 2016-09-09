@@ -12,7 +12,7 @@ import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapL
 import { initWidgetMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
-import { initGlslWidgetsLink } from './components/widgets-link/glsl-widgets-link';
+import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import ErrorModal from './modals/ErrorModal';
 
 // Import Utils
@@ -280,7 +280,7 @@ export function initTangramPlay() {
                 initErrorsManager();
 
                 initSuggestions();
-                initGlslWidgetsLink();
+                initGlslPickers();
             }
 
             // Need to send a signal to the dropdown widgets of type source to populate

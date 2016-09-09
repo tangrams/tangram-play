@@ -11,7 +11,7 @@ import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
  * Represents a widget link for a vec2
  * Gets created on click, as opposed to normal widgets that get created on editor parse
  */
-export default class WidgetLinkVec2 extends React.Component {
+export default class Vec2Picker extends React.Component {
     /**
      * Used to setup the state of the component. Regular ES6 classes do not
      * automatically bind 'this' to the instance, therefore this is the best
@@ -83,15 +83,13 @@ export default class WidgetLinkVec2 extends React.Component {
     /* These event callbacks are provided by React */
 
     /**
-     * Widget links are handled slightly differently. For now they are simply
+     * GLSL pickers are handled slightly differently. For now they are simply
      * unmounted from the DOM and recreated again
      * Meaning, onHide will only be called once to unmount the widget
      */
     onHide() {
         this.setState({ displayPicker: false });
-
-        const widgetlink = document.getElementById('widget-links');
-        ReactDOM.unmountComponentAtNode(widgetlink);
+        ReactDOM.unmountComponentAtNode(document.getElementById('glsl-pickers'));
     }
 
     /**
@@ -270,7 +268,7 @@ export default class WidgetLinkVec2 extends React.Component {
 /**
  * Prop validation required by React
  */
-WidgetLinkVec2.propTypes = {
+Vec2Picker.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
     match: React.PropTypes.object,

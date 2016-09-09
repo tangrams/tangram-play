@@ -50,7 +50,7 @@ export default class ColorBookmark extends React.Component {
         this.onChange = this.onChange.bind(this);
         // this.onPaletteChange = this.onPaletteChange.bind(this);
 
-        /* This section is for the shader widget-links */
+        /* This section is for the GLSL pickers */
         if (this.props.shader) {
             this.cursor = this.props.cursor;
             this.match = this.props.match;
@@ -116,8 +116,7 @@ export default class ColorBookmark extends React.Component {
         this.setState({ displayColorPicker: false });
 
         if (this.props.shader) {
-            const widgetlink = document.getElementById('widget-links');
-            ReactDOM.unmountComponentAtNode(widgetlink);
+            ReactDOM.unmountComponentAtNode(document.getElementById('glsl-pickers'));
         }
     }
 
@@ -125,7 +124,7 @@ export default class ColorBookmark extends React.Component {
      * Function gets called any time the user changes a color in the color picker
      * widget
      *
-     * @param newColor - color that user has chosen in the color picker widget. Object of type Color
+     * @param newColor - color that user has chosen in the color picker. Object of type Color
      */
     onChange(newColor) {
         if (this.mounted) {
@@ -145,7 +144,7 @@ export default class ColorBookmark extends React.Component {
     }
 
     /**
-     * Every time a user changes a color on the color palette, all color widgets
+     * Every time a user changes a color on the color palette, all color pickers
      * need to check whether that change applies to their own internal color
      *
      * @param data - the new color the user has chosen
@@ -161,9 +160,9 @@ export default class ColorBookmark extends React.Component {
     }
     */
 
-    /* SHARED METHOD FOR ALL WIDGETS */
+    /* SHARED METHOD FOR ALL PICKERS */
     /**
-     *  Use this method within a widget to communicate a value
+     *  Use this method within a picker to communicate a value
      *  back to the Tangram Play editor.
      */
     setEditorValue(string) {
@@ -171,7 +170,7 @@ export default class ColorBookmark extends React.Component {
     }
 
     /**
-     * Update CodeMirror. Keeping the function same name as we used in the other widget-links
+     * Update CodeMirror. Keeping the function same name as we used in the other GLSL pickers
      *
      * @param color - the color to update within a shader block
      */
@@ -192,7 +191,7 @@ export default class ColorBookmark extends React.Component {
 
             return (
                 <div>
-                    {/* The widget button user clicks to open color picker */}
+                    {/* The button user clicks to open color picker */}
                     {(() => {
                         if (this.props.shader) {
                             return null;
@@ -235,7 +234,7 @@ export default class ColorBookmark extends React.Component {
 ColorBookmark.propTypes = {
     bookmark: React.PropTypes.object,
     value: React.PropTypes.string,
-    // These props are only used for the widget-links within the shader blocks
+    // These props are only used for GLSL pickers within the shader blocks
     shader: React.PropTypes.bool,
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,
