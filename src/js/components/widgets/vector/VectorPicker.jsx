@@ -11,16 +11,9 @@ let camera;
 let controls;
 
 /**
- * Represents a dropdown widget
+ * Represents a vector picker and editor bookmark to trigger this
  */
-export default class WidgetVector extends React.Component {
-    /**
-     * Used to setup the state of the component. Regular ES6 classes do not
-     * automatically bind 'this' to the instance, therefore this is the best
-     * place to bind event handlers
-     *
-     * @param props - parameters passed from the parent
-     */
+export default class VectorPicker extends React.Component {
     constructor(props) {
         super(props);
 
@@ -76,9 +69,9 @@ export default class WidgetVector extends React.Component {
         }
     }
 
-    /* SHARED METHOD FOR ALL WIDGETS? */
+    /* SHARED METHOD FOR ALL PICKERS? */
     /**
-     *  Use this method within a widget to communicate a value
+     *  Use this method within a picker to communicate a value
      *  back to the Tangram Play editor.
      */
     setEditorValue(string) {
@@ -151,7 +144,7 @@ export default class WidgetVector extends React.Component {
     }
 
     /**
-     * Open or close the color picker widget
+     * Open or close the vector picker
      */
     handleClick() {
         this.setState({ displayPicker: !this.state.displayPicker });
@@ -160,7 +153,7 @@ export default class WidgetVector extends React.Component {
     render() {
         return (
             <div>
-                {/* The widget button user clicks to open color picker */}
+                {/* The button user clicks to open the vector picker */}
                 <div className="widget widget-vectorpicker" onClick={this.handleClick} />
 
                 {/* Floating panel */}
@@ -182,6 +175,6 @@ export default class WidgetVector extends React.Component {
 /**
  * Prop validation required by React
  */
-WidgetVector.propTypes = {
+VectorPicker.propTypes = {
     bookmark: React.PropTypes.object,
 };
