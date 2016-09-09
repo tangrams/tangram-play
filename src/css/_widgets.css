@@ -37,9 +37,9 @@
 /* INDIVIDUAL WIDGETS */
 /* ******************** */
 
-/* React: GLSL pickers */
+/* GLSL pickers */
 
-.widget-link-canvas {
+.glsl-picker-canvas {
     background-color: var(--ui-element-color);
 }
 
@@ -130,11 +130,11 @@ select {
     background-position: left center;
 }
 
-/* React: Widget Vector */
+/* Vector picker */
 
 /* Should probably simplify this for color picker too.
    just refers to button being clicked to open modal */
-.widget-vectorpicker {
+.vectorpicker-bookmark {
     box-sizing: border-box;
     border: 1px solid rgba(255, 255, 255, 0.15);
     max-width: 14px;

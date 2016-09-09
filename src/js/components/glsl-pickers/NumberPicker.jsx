@@ -283,7 +283,7 @@ export default class NumberPicker extends React.Component {
                 onHide={this.onHide}
             >
                 <canvas
-                    className="widget-link-canvas"
+                    className="glsl-picker-canvas"
                     ref={(ref) => { this.canvas = ref; }}
                     onMouseDown={this.onMouseDown}
                     onMouseMove={this.onMouseMove}
