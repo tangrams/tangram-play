@@ -19,7 +19,7 @@ module.exports = function (config) {
     exclude: [],
     preprocessors: {
       // 'src/js/**/*.js': ['browserify'],
-      'test/**/*.js': ['browserify']
+      'test/**/*.{js,jsx}': ['browserify']
     },
 
     browserify: {
