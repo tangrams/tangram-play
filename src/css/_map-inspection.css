@@ -155,10 +155,7 @@
 }
 
 .map-inspection-layer-item {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 3px 6px;
     cursor: pointer;
     white-space: nowrap;
     max-width: 280px;

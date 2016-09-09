@@ -38,10 +38,7 @@
     background-color: var(--ui-component-color);
 
     .panel-body {
-        padding-top: 6px;
-        padding-bottom: 6px;
-        padding-left: 8px;
-        padding-right: 8px;
+        padding: 6px 8px;
     }
 
     .map-panel-toolbar {

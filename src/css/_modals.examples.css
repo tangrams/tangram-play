@@ -44,10 +44,7 @@
     }
 
     hr {
-        margin-left: var(--example-modal-option-padding);
-        margin-right: var(--example-modal-option-padding);
-        margin-top: 10px;
-        margin-bottom: 8px;
+        margin: 10px var(--example-modal-option-padding) 8px;
     }
 }
 
@@ -83,7 +80,6 @@
 .example-thumbnail {
     width: 100%;
     height: 60px;
-    background-size: 100%;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
