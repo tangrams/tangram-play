@@ -150,11 +150,10 @@
     padding: 0;
 
     a {
-        display: inline-flex;
-        outline: none;
-        width: 100%;
         display: flex;
+        width: 100%;
         justify-content: space-between;
+        outline: none;
     }
 
     .bookmark-dropdown-center a {
@@ -177,10 +176,7 @@
 .bookmark-dropdown-info {
     display: inline-flex;
     flex-grow: 1;
-    padding-left: 16px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-right: 8px;
+    padding: 8px 8px 8px 16px;
 }
 
 .bookmark-dropdown-info:hover {
@@ -199,11 +195,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 8px;
     border-left: 1px solid #36383c;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 8px;
-    padding-bottom: 8px;
     text-align: center;
 
     &:hover {

@@ -33,7 +33,7 @@ export default class App extends React.Component {
                         <Editor />
                     </div>
 
-                    <div id="widget-links" />
+                    <div id="glsl-pickers" />
                     {/* <ColorPalette /> */}
                 </div>
 

@@ -11,39 +11,35 @@
 .widget {
     display: inline-block;
     position: relative;
+    margin: 0 6px;
     user-select: none;
-    margin-left: 6px;
-    margin-right: 6px;
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
 .widget-parent {
-    display: inline-flex;
-    background-color: none;
     display: inline-block;
     position: relative;
     box-sizing: border-box;
+    background-color: none;
     user-select: none;
 }
 
 .widget-modal {
-    z-index: var(--z09-pickers);
+    display: inline-flex !important;
+    width: auto;
+    padding: 0;
     outline: none;
     box-shadow: var(--modal-shadow);
-    width: auto;
-    display: inline-flex !important;
-    padding: 0;
     background-color: var(--ui-component-color);
+    z-index: var(--z09-pickers);
 }
 
 /* ******************** */
 /* INDIVIDUAL WIDGETS */
 /* ******************** */
 
-/* React: Widget links (glsl) */
+/* GLSL pickers */
 
-.widget-link-canvas {
+.glsl-picker-canvas {
     background-color: var(--ui-element-color);
 }
 
@@ -95,7 +91,6 @@
     margin-left: 10px;
     margin-right: 10px;
     outline: none;
-    border-radius: 0;
     border-radius: 6px;
 }
 
@@ -135,11 +130,11 @@ select {
     background-position: left center;
 }
 
-/* React: Widget Vector */
+/* Vector picker */
 
 /* Should probably simplify this for color picker too.
    just refers to button being clicked to open modal */
-.widget-vectorpicker {
+.vectorpicker-bookmark {
     box-sizing: border-box;
     border: 1px solid rgba(255, 255, 255, 0.15);
     max-width: 14px;

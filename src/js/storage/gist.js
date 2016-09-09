@@ -12,7 +12,7 @@ const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
 
 export function saveToGist(data, successCallback, errorCallback) {
-    const { sceneName, description, isPublic } = data.sceneName;
+    const { sceneName, description, isPublic } = data;
     let { filename } = data;
 
     // Append ".yaml" to the end of a filename if it does not

@@ -137,8 +137,10 @@ export default class OpenGistModal extends React.Component {
                 // TODO: Do not hardcode.
                 const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
 
-                item.description = item.description.replace(descPlaceholder, '');
-                if (item.description.length === 0) {
+                if (item.description) {
+                    item.description = item.description.replace(descPlaceholder, '');
+                }
+                if (!item.description || item.description.length === 0) {
                     item.description = 'No description provided.';
                 }
 

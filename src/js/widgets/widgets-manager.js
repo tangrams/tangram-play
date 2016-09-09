@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ColorBookmark from '../components/widgets/color/ColorBookmark';
 import WidgetDropdown from '../components/widgets/WidgetDropdown';
-// import WidgetVector from '../components/widgets/widget-vector/WidgetVector';
+// import VectorPicker from '../components/widgets/vector/VectorPicker';
 import WidgetToggle from '../components/widgets/WidgetToggle';
 import EventEmitter from '../components/event-emitter';
 import { editor } from '../editor/editor';
@@ -136,7 +136,7 @@ function insertMarks(fromLine, toLine) {
                     }
                     // Disabling vector for now
                     // else if (mytype === 'vector') {
-                    //     ReactDOM.render(<WidgetVector bookmark={mybookmark}/>, myel);
+                    //     ReactDOM.render(<VectorPicker bookmark={mybookmark}/>, myel);
                     // }
                 }
             }

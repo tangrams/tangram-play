@@ -140,18 +140,14 @@
 }
 
 .docs-panel-toolbar-content .container {
-    overflow-y: auto;
-    overflow-x: hidden;
     position: relative;
     height: 100%;
-    padding-top: 20px;
-    padding-left: 28px;
-    padding-right: 28px;
-    padding-bottom: 20px;
+    padding: 20px 28px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .docs-panel-toolbar-content .container::-webkit-scrollbar {
-    background-color: blue;
     background-color: #2e3033;
     width: 12px;
 }
