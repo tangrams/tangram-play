@@ -5,17 +5,22 @@
   background-color: var(--ui-component-color);
   height: 20px;
   justify-content: flex-end;
+  user-select: none;
 }
 
 .floating-panel-drag {
+  display: flex;
   flex-grow: 1;
+  padding-left: 1em;
+  font-size: 0.8em;
+  text-align: left;
+  align-items: center;
   cursor: move;
 }
 
 .floating-panel-close {
   height: 100%;
   width: 20px;
-  margin-top: -1px;
   flex-basis: 20px;
   flex-shrink: 0;
   display: flex;

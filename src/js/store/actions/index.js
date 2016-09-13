@@ -44,6 +44,9 @@ export const MARK_FILE_CLEAN = 'MARK_FILE_CLEAN';
 export const MARK_FILE_DIRTY = 'MARK_FILE_DIRTY';
 export const STASH_DOCUMENT = 'STASH_DOCUMENT';
 
+export const ADD_ERROR = 'ADD_ERROR';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+
 // Legacy assistance
 // If shield is only controlled by modal visibility, it should be be turned
 // on based on number of modals in a stack (todo)

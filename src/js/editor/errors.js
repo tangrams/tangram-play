@@ -2,6 +2,10 @@ import { editor, getNodesForAddress } from './editor';
 import { tangramLayer } from '../map/map';
 import EventEmitter from '../components/event-emitter';
 
+// Redux
+import store from '../store';
+import { ADD_ERROR, CLEAR_ERRORS } from '../store/actions';
+
 const lineWidgets = [];
 const blockErrors = new Set();
 
@@ -19,6 +23,11 @@ function createErrorLineElement(type, message) {
         iconTypeClass = 'btm bt-exclamation-circle warning-icon';
     }
 
+    let displayText = message;
+    if (!displayText || displayText.length === 0) {
+        displayText = `Unspecified ${type}.`;
+    }
+
     const node = document.createElement('div');
     node.className = type;
 
@@ -26,7 +35,7 @@ function createErrorLineElement(type, message) {
     icon.className = iconTypeClass;
 
     node.appendChild(icon);
-    node.appendChild(document.createTextNode(message));
+    node.appendChild(document.createTextNode(displayText));
 
     return node;
 }
@@ -54,6 +63,10 @@ function clearAllErrors() {
     }
     lineWidgets.length = 0;
     blockErrors.clear();
+
+    store.dispatch({
+        type: CLEAR_ERRORS,
+    });
 }
 
 /**
@@ -63,11 +76,21 @@ function clearAllErrors() {
  *          vary depending on the `errorObj.type` property.
  */
 function addError(errorObj) {
+    let error;
+
     switch (errorObj.type) {
         case 'yaml': {
             const line = errorObj.error.mark.line;
             const message = errorObj.error.reason;
             createLineWidget('error', line, message);
+
+            error = {
+                type: 'error',
+                line,
+                message,
+                originalError: errorObj,
+            };
+
             break;
         }
         // case 'scene':
@@ -75,16 +98,32 @@ function addError(errorObj) {
             // errorObj contains these properties:
             //      `message` - handy error from Tangram
             //      `url` - the url that could not be loaded
-            // Unfortunately we do not have a line number on which the error exists
-            console.log(errorObj.message, errorObj.url);
+            // we do not have a line number on which the error exists
+            // import values are returned as fully qualified urls, so we cannot
+            // check the value itself
+            error = {
+                type: 'error',
+                message: errorObj.message,
+                originalError: errorObj,
+            };
+
             break;
         // Default case handles unknown error types or undefined types, which
         // can happen if Tangram Play itself (and not Tangram) throws an error
         // when Tangram is executing a Promise and catches a Tangram Play error.
         default:
-            console.log('unknown error', errorObj);
+            error = {
+                type: 'error',
+                message: errorObj.message,
+                originalError: errorObj,
+            };
             break;
     }
+
+    store.dispatch({
+        type: ADD_ERROR,
+        error,
+    });
 }
 
 function addWarning(errorObj) {
@@ -110,15 +149,23 @@ function addWarning(errorObj) {
 
                 const address = `styles:${style}:shaders:blocks:${block.name}`;
                 const node = getNodesForAddress(address);
+                const message = errors[i].message;
+
+                const warning = {
+                    type: 'warning',
+                    message,
+                    originalError: errorObj,
+                };
+
+                store.dispatch({
+                    type: ADD_ERROR,
+                    error: warning,
+                });
 
                 if (node) {
                     const line = node.range.from.line + 1 + block.line;
-                    const message = errors[i].message;
                     createLineWidget('warning', line, message);
                     blockErrors.add(JSON.stringify(block)); // track unique errors
-                } else {
-                    // TODO: Report a general level error
-                    console.log('Node', address, 'was not found');
                 }
             }
 
@@ -126,6 +173,15 @@ function addWarning(errorObj) {
         }
         // Handle unknown warning types.
         default:
+            store.dispatch({
+                type: ADD_ERROR,
+                error: {
+                    type: 'warning',
+                    message: errorObj.message,
+                    originalError: errorObj,
+                },
+            });
+
             break;
     }
 }
