@@ -177,7 +177,9 @@ export function fetchSceneList() {
     // causing a 404 if it doesn't exist.
     return window.fetch(`/api/uploads?app=${APP_NAME}`, fetchOpts)
         .then(response => response.json())
-        .then(uploadsObj => find(uploadsObj.uploads, url => url.match(sceneListPath))
+        .then(uploadsObj =>
+            find(uploadsObj.uploads, url =>
+                url.match(sceneListPath)))
         .then((sceneListFile) => {
             // `sceneListFile` is a url
             if (sceneListFile) {
@@ -188,7 +190,7 @@ export function fetchSceneList() {
             // If not found, `sceneListFile` is null.
             // Create a new one of these
             return [];
-        }));
+        });
 }
 
 /**
