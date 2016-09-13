@@ -45,8 +45,8 @@ export default class ColorBookmark extends React.Component {
         this.height = 300;
         this.width = 250;
 
-        this.onClick = this.onClick.bind(this);
-        this.onClickExit = this.onClickExit.bind(this);
+        this.onClickBookmark = this.onClickBookmark.bind(this);
+        this.onClickClose = this.onClickClose.bind(this);
         this.onChange = this.onChange.bind(this);
         // this.onPaletteChange = this.onPaletteChange.bind(this);
 
@@ -97,7 +97,7 @@ export default class ColorBookmark extends React.Component {
     /**
      * Open or close the color picker
      */
-    onClick() {
+    onClickBookmark() {
         // Set the editor cursor to the correct line. (When you click on the
         // widget button it doesn't move the cursor)
         setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
@@ -112,7 +112,7 @@ export default class ColorBookmark extends React.Component {
         this.setState({ displayColorPicker: true });
     }
 
-    onClickExit() {
+    onClickClose() {
         this.setState({ displayColorPicker: false });
 
         if (this.props.shader) {
@@ -201,7 +201,7 @@ export default class ColorBookmark extends React.Component {
                             <div
                                 className="widget bookmark-color"
                                 ref={(ref) => { this.colorPickerBookmark = ref; }}
-                                onClick={this.onClick}
+                                onClick={this.onClickBookmark}
                             >
                                 <Checkboard size="3" />
                                 <div className="bookmark-color-swatch" style={colorStyle} />
@@ -216,7 +216,7 @@ export default class ColorBookmark extends React.Component {
                         width={this.width}
                         height={this.height}
                         show={this.state.displayColorPicker}
-                        onHide={this.onClickExit}
+                        onClickClose={this.onClickClose}
                     >
                         <ColorPicker color={this.state.color} onChange={this.onChange} />
                     </FloatingPanel>

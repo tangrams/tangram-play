@@ -50,7 +50,7 @@ export default class Vec2Picker extends React.Component {
 
         this.drag = false;
 
-        this.onHide = this.onHide.bind(this);
+        this.onClickClose = this.onClickClose.bind(this);
         this.setValue = this.setValue.bind(this);
         this.drawCanvas = this.drawCanvas.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -85,9 +85,9 @@ export default class Vec2Picker extends React.Component {
     /**
      * GLSL pickers are handled slightly differently. For now they are simply
      * unmounted from the DOM and recreated again
-     * Meaning, onHide will only be called once to unmount the widget
+     * Meaning, onClickClose will only be called once to unmount the widget
      */
-    onHide() {
+    onClickClose() {
         this.setState({ displayPicker: false });
         ReactDOM.unmountComponentAtNode(document.getElementById('glsl-pickers'));
     }
@@ -239,10 +239,6 @@ export default class Vec2Picker extends React.Component {
         this.ctx.restore();
     }
 
-    /**
-     * Official React lifecycle method
-     * Called every time state or props are changed
-     */
     render() {
         return (
             <FloatingPanel
@@ -251,7 +247,7 @@ export default class Vec2Picker extends React.Component {
                 width={this.width}
                 height={this.height}
                 show={this.state.displayPicker}
-                onHide={this.onHide}
+                onClickClose={this.onClickClose}
             >
                 <canvas
                     className="glsl-picker-canvas"
@@ -265,9 +261,6 @@ export default class Vec2Picker extends React.Component {
     }
 }
 
-/**
- * Prop validation required by React
- */
 Vec2Picker.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,

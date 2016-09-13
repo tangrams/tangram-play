@@ -25,8 +25,8 @@ export default class ColorPalette extends React.Component {
             y: 0,
         };
 
-        this.onClick = this.onClick.bind(this);
-        this.onHide = this.onHide.bind(this);
+        this.onClickColor = this.onClickColor.bind(this);
+        this.onClickClose = this.onClickClose.bind(this);
         this.onChange = this.onChange.bind(this);
         this.addNewColor = this.addNewColor.bind(this);
         this.changeColor = this.changeColor.bind(this);
@@ -53,7 +53,7 @@ export default class ColorPalette extends React.Component {
      * @param i - the position of the current color within the color array
      * @param e - the click event
      */
-    onClick(color, i, e) {
+    onClickColor(color, i, e) {
         // Set the x and y of the modal that will contain the widget
         const workspaceEl = document.getElementsByClassName('workspace-container')[0];
         const screenHeight = workspaceEl.clientHeight;
@@ -83,7 +83,7 @@ export default class ColorPalette extends React.Component {
     /**
      * Called to close the color picker from the color palette
      */
-    onHide() {
+    onClickClose() {
         this.setState({ displayPicker: !this.state.displayPicker });
     }
 
@@ -197,10 +197,6 @@ export default class ColorPalette extends React.Component {
         }
     }
 
-    /**
-     * Official React lifecycle method
-     * Called every time state or props are changed
-     */
     render() {
         const colors = [];
         if (this.state.colors) {
@@ -213,7 +209,7 @@ export default class ColorPalette extends React.Component {
                     <div
                         key={i}
                         className="colorpalette-color"
-                        onClick={() => { this.onClick(color, i); }}
+                        onClick={() => { this.onClickColor(color, i); }}
                     >
                         <div className="colorpalette-square" style={widgetStyle} />
                     </div>
@@ -233,7 +229,7 @@ export default class ColorPalette extends React.Component {
                     width={this.width}
                     height={this.height}
                     show={this.state.displayPicker}
-                    onHide={this.onHide}
+                    onClickClose={this.onClickClose}
                 >
                     <ColorPicker
                         className="colorpicker"

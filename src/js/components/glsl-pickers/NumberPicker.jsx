@@ -10,13 +10,6 @@ import { setCodeMirrorShaderValue, getCoordinates } from '../../editor/editor';
  * Gets created on click, as opposed to normal widgets that get created on editor parse
  */
 export default class NumberPicker extends React.Component {
-    /**
-     * Used to setup the state of the component. Regular ES6 classes do not
-     * automatically bind 'this' to the instance, therefore this is the best
-     * place to bind event handlers
-     *
-     * @param props - parameters passed from the parent
-     */
     constructor(props) {
         super(props);
         this.state = {
@@ -52,7 +45,7 @@ export default class NumberPicker extends React.Component {
 
         this.drag = false;
 
-        this.onHide = this.onHide.bind(this);
+        this.onClickClose = this.onClickClose.bind(this);
         this.setValue = this.setValue.bind(this);
         this.drawCanvas = this.drawCanvas.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -62,9 +55,6 @@ export default class NumberPicker extends React.Component {
         this.onWheel = this.onWheel.bind(this);
     }
 
-    /**
-     * React lifecycle method called once DIV is mounted
-     */
     componentDidMount() {
         // Set canvas for high-pixel-density (e.g. Retina screens)
         this.canvas.style.width = `${this.width}px`;
@@ -85,9 +75,9 @@ export default class NumberPicker extends React.Component {
     /**
      * GLSL pickers are handled slightly differently. For now they are simply
      * unmounted from the DOM and recreated again
-     * Meaning, onHide will only be called once to unmount the widget
+     * Meaning, onClickClose will only be called once to unmount the widget
      */
-    onHide() {
+    onClickClose() {
         this.setState({ displayPicker: false });
         ReactDOM.unmountComponentAtNode(document.getElementById('glsl-pickers'));
     }
@@ -130,7 +120,6 @@ export default class NumberPicker extends React.Component {
         this.overPoint = false; // Change the look of the point within the canvas
         this.drawCanvas(); // Draw the new point
     }
-
 
     /**
      * onMouseLeave accounts for the case where the user is still dragging but
@@ -268,10 +257,6 @@ export default class NumberPicker extends React.Component {
         this.overPoint = false;
     }
 
-    /**
-     * Official React lifecycle method
-     * Called every time state or props are changed
-     */
     render() {
         return (
             <FloatingPanel
@@ -280,7 +265,7 @@ export default class NumberPicker extends React.Component {
                 width={this.width}
                 height={this.height}
                 show={this.state.displayPicker}
-                onHide={this.onHide}
+                onClickClose={this.onClickClose}
             >
                 <canvas
                     className="glsl-picker-canvas"
@@ -296,9 +281,6 @@ export default class NumberPicker extends React.Component {
     }
 }
 
-/**
- * Prop validation required by React
- */
 NumberPicker.propTypes = {
     display: React.PropTypes.bool,
     cursor: React.PropTypes.object,

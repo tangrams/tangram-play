@@ -81,13 +81,13 @@ export default class FloatingPanel extends React.Component {
                 className="widget-modal"
                 enforceFocus={false}
                 show={this.props.show}
-                onHide={this.props.onHide}
+                onHide={this.props.onClickClose}
                 x={this.state.x}
                 y={this.state.y}
             >
                 <div className="floating-panel-topbar">
                     <div className="floating-panel-drag" />
-                    <div className="floating-panel-close" onClick={this.props.onHide}>×</div>
+                    <div className="floating-panel-close" onClick={this.props.onClickClose}>×</div>
                 </div>
                 {this.props.children}
             </Modal>
@@ -101,6 +101,6 @@ FloatingPanel.propTypes = {
     height: React.PropTypes.number,
     width: React.PropTypes.number,
     show: React.PropTypes.bool,
-    onHide: React.PropTypes.func,
+    onClickClose: React.PropTypes.func,
     children: React.PropTypes.node,
 };

@@ -23,7 +23,7 @@ export default class VectorPicker extends React.Component {
 
         this.bookmark = this.props.bookmark;
 
-        this.handleClick = this.handleClick.bind(this);
+        this.onClickBookmark = this.onClickBookmark.bind(this);
         this.animate = this.animate.bind(this);
     }
 
@@ -146,7 +146,7 @@ export default class VectorPicker extends React.Component {
     /**
      * Open or close the vector picker
      */
-    handleClick() {
+    onClickBookmark() {
         this.setState({ displayPicker: !this.state.displayPicker });
     }
 
@@ -154,7 +154,7 @@ export default class VectorPicker extends React.Component {
         return (
             <div>
                 {/* The button user clicks to open the vector picker */}
-                <div className="widget vectorpicker-bookmark" onClick={this.handleClick} />
+                <div className="widget vectorpicker-bookmark" onClick={this.onClickBookmark} />
 
                 {/* Floating panel */}
                 <FloatingPanel
@@ -163,7 +163,7 @@ export default class VectorPicker extends React.Component {
                     width={this.width}
                     height={this.height}
                     show={this.state.displayPicker}
-                    onHide={this.handleClick}
+                    onClickClose={this.onClickBookmark}
                 >
                     <div ref={(ref) => { this.vectorPicker = ref; }} />
                 </FloatingPanel>
