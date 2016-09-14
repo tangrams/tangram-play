@@ -34,7 +34,7 @@ function requestFullscreen(element) {
  * `document.documentElement`, but checking the `fullscreenElement` API returns
  * null if we are not currently in fullscreen mode, so it is useful to check.
  */
-function getFullscreenElement() {
+export function getFullscreenElement() {
     return document.webkitFullscreenElement ||
         document.mozFullScreenElement ||
         document.msFullscreenElement;
