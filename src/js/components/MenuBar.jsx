@@ -13,6 +13,7 @@ import EventEmitter from './event-emitter';
 
 import EditorIO from '../editor/io';
 import { openLocalFile } from '../file/open-local';
+import MenuFullscreen from './MenuFullscreen';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
@@ -21,7 +22,6 @@ import SaveToCloudModal from '../modals/SaveToCloudModal';
 import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
-import { toggleFullscreen } from '../ui/fullscreen';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
@@ -142,14 +142,12 @@ export default class MenuBar extends React.Component {
         super(props);
         this.state = {
             inspectActive: false, // Represents whether inspect mode is on / off
-            fullscreenActive: false,
             legacyGistMenu: false,
             mapzenAccount: false,
         };
 
         this.getUserData = this.getUserData.bind(this);
         this.clickInspect = this.clickInspect.bind(this);
-        this.clickFullscreen = this.clickFullscreen.bind(this);
     }
 
     // Determine whether some menu items should display
@@ -189,11 +187,6 @@ export default class MenuBar extends React.Component {
         });
     }
 
-    clickFullscreen() {
-        this.setState({ fullscreenActive: !this.state.fullscreenActive });
-        toggleFullscreen();
-    }
-
     clickInspect() {
         const isInspectActive = this.state.inspectActive;
         if (isInspectActive) {
@@ -205,10 +198,6 @@ export default class MenuBar extends React.Component {
         }
     }
 
-    /**
-     * Official React lifecycle method
-     * Called every time state or props are changed
-     */
     render() {
         return (
             <Navbar inverse className="menu-bar">
@@ -330,19 +319,7 @@ export default class MenuBar extends React.Component {
                         </OverlayTrigger>
 
                         {/* Fullscreen button */}
-                        <OverlayTrigger
-                            rootClose
-                            placement="bottom"
-                            overlay={<Tooltip id="tooltip">View fullscreen</Tooltip>}
-                        >
-                            <NavItem
-                                eventKey="new"
-                                onClick={this.clickFullscreen}
-                                active={this.state.fullscreenActive}
-                            >
-                                <Icon type="bt-maximize" />Fullscreen
-                            </NavItem>
-                        </OverlayTrigger>
+                        <MenuFullscreen />
 
                         {/* Help dropdown */}
                         <OverlayTrigger
