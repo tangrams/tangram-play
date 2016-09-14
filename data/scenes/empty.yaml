@@ -3,20 +3,16 @@ sources:
         type: TopoJSON
         url: https://vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson
 
-cameras:
-    perspective:
-        type: flat
-
 layers:
     earth:
         data: { source: mapzen }
         draw:
             polygons:
                 order: 0
-                color: '#555'
+                color: grey
     water:
         data: { source: mapzen }
         draw:
             polygons:
                 order: 1
-                color: '#ddd'
+                color: lightblue
