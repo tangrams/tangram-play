@@ -26,7 +26,7 @@ export default class MenuFullscreen extends React.Component {
         document.addEventListener('fullscreenchange', this.checkFullscreenState, false);
         document.addEventListener('mozfullscreenchange', this.checkFullscreenState, false);
         document.addEventListener('webkitfullscreenchange', this.checkFullscreenState, false);
-        document.addEventListener('msfullscreenchange', this.checkFullscreenState, false);
+        document.addEventListener('MSFullscreenChange', this.checkFullscreenState, false);
     }
 
     onClickFullscreen(event) {

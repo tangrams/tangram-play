@@ -73,4 +73,4 @@ function logFullscreenError(error) {
 document.addEventListener('fullscreenerror', logFullscreenError, false);
 document.addEventListener('mozfullscreenerror', logFullscreenError, false);
 document.addEventListener('webkitfullscreenerror', logFullscreenError, false);
-document.addEventListener('msfullscreenerror', logFullscreenError, false);
+document.addEventListener('MSFullscreenError', logFullscreenError, false);
