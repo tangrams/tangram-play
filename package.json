@@ -11,7 +11,7 @@
     "lint-js": "eslint src/ test/ --ext .js,.jsx --quiet; eslint *.js --config .eslintrc-legacy --no-eslintrc --quiet",
     "lint-css": "stylelint src/css/*.css",
     "karma": "./node_modules/karma/bin/karma start",
-    "postinstall": "modernizr -c modernizr-config.json -d build/js; gulp build",
+    "postinstall": "gulp build",
     "examples": "npm run examples:scenes && npm run examples:thumbnails",
     "examples:scenes": "node meta/example-scenes/cache-scenes.js",
     "examples:thumbnails": "node meta/example-scenes/cache-thumbnails.js"
@@ -83,7 +83,6 @@
     "karma-sinon": "1.0.5",
     "loose-envify": "1.2.0",
     "mocha": "3.0.2",
-    "modernizr": "3.3.1",
     "phantomjs-prebuilt": "2.1.12",
     "postcss-color-hex-alpha": "2.0.0",
     "postcss-custom-properties": "5.0.1",

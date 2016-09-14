@@ -9,7 +9,6 @@ module.exports = function (config) {
       // 'src/js/**/*.js',
       // // Application
       // 'build/css/main.css',
-      // 'build/js/modernizr.js',
       // 'index.html',
       // Test suites
       'test/**/*.js',
