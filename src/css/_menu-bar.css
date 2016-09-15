@@ -1,13 +1,5 @@
 /* React MenuBar */
 
-/* Have to implement this */
-/* Hides the fullscreen button if feature is not present in browser */
-/*
-html.mdnzr-no-fullscreen .menu-button-fullscreen {
-    display: none;
-}
-*/
-
 nav {
     border: 0;
     user-select: none;

@@ -4,7 +4,11 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 
-import { getFullscreenElement, toggleFullscreen } from '../ui/fullscreen';
+import {
+    isFullscreenEnabled,
+    getFullscreenElement,
+    toggleFullscreen,
+} from '../ui/fullscreen';
 
 export default class MenuFullscreen extends React.Component {
     constructor(props) {
@@ -43,6 +47,9 @@ export default class MenuFullscreen extends React.Component {
     }
 
     render() {
+        // This does not render if fullscreen is not enabled on browser.
+        if (!isFullscreenEnabled()) return null;
+
         return (
             <OverlayTrigger
                 rootClose

@@ -5,6 +5,10 @@ const fullscreenEnabled = document.fullscreenEnabled || // Spec - future
     document.mozFullScreenEnabled || // (Gecko) Firefox
     document.msFullscreenEnabled; // IE11
 
+export function isFullscreenEnabled() {
+    return fullscreenEnabled;
+}
+
 function exitFullscreen() {
     // This cannot be reassigned to a common function or errors may appear, so each
     // vendor-prefixed API is checked individually and run if present.
