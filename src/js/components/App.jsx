@@ -2,7 +2,7 @@ import React from 'react';
 import Map from './Map';
 import Editor from './Editor';
 import MenuBar from './MenuBar';
-import Shield from '../ui/Shield';
+import ShieldContainer from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
 import SignInOverlay from './SignInOverlay';
 // import ColorPalette from './ColorPalette';
@@ -38,7 +38,7 @@ export default class App extends React.Component {
                 </div>
 
                 <div className="overlay-container">
-                    <Shield />
+                    <ShieldContainer />
                     <FileDrop />
                     <SignInOverlay />
                     <div id="modal-container" className="modal-container" />

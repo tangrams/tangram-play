@@ -5,12 +5,16 @@ import 'whatwg-fetch';
 // React
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 // Libraries
 import Raven from 'raven-js';
 
 // Components
 import AppEmbedded from './components/AppEmbedded';
+
+// Redux
+import store from './store';
 
 // Error tracking
 // Load this before all other modules. Only load when run in production.
@@ -23,4 +27,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Mount React components
-ReactDOM.render(<AppEmbedded />, document.getElementById('tangram-play-app'));
+ReactDOM.render(
+    <Provider store={store}>
+        <AppEmbedded />
+    </Provider>,
+    document.getElementById('tangram-play-app')
+);
