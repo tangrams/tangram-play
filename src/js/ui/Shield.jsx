@@ -13,18 +13,18 @@ class Shield extends React.PureComponent {
 
 Shield.propTypes = {
     visible: React.PropTypes.bool,
-}
+};
 
 Shield.defaultProps = {
     visible: false,
-}
+};
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
     return {
         visible: state.shield.visible,
-    }
+    };
 }
 
-const ShieldContainer = connect(mapStateToProps)(Shield)
+const ShieldContainer = connect(mapStateToProps)(Shield);
 
-export default ShieldContainer
+export default ShieldContainer;

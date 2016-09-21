@@ -69,6 +69,13 @@ export default class VectorPicker extends React.Component {
         }
     }
 
+    /**
+     * Open or close the vector picker
+     */
+    onClickBookmark() {
+        this.setState({ displayPicker: !this.state.displayPicker });
+    }
+
     /* SHARED METHOD FOR ALL PICKERS? */
     /**
      *  Use this method within a picker to communicate a value
@@ -141,13 +148,6 @@ export default class VectorPicker extends React.Component {
         const axis = new THREE.Line(geom, mat);
 
         return axis;
-    }
-
-    /**
-     * Open or close the vector picker
-     */
-    onClickBookmark() {
-        this.setState({ displayPicker: !this.state.displayPicker });
     }
 
     render() {

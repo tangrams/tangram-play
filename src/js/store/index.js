@@ -6,7 +6,7 @@ import { createStore } from 'redux';
 // Import the root reducer
 import reducers from './reducers';
 
-const initialState = {}
+const initialState = {};
 
 const store = createStore(reducers, initialState);
 

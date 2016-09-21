@@ -8,7 +8,7 @@ const shield = (state = initialState, action) => {
     switch (action.type) {
         case SET_SHIELD_VISIBILITY:
             return {
-                visible: action.visible
+                visible: action.visible,
             };
         default:
             return state;
