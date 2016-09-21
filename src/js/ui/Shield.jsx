@@ -1,32 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-// Required event dispatch and subscription for now while
-// parts of app are React components and others are not
-import EventEmitter from '../components/event-emitter';
-
-export default class Shield extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            visible: false,
-        };
-    }
-
-    componentDidMount() {
-        // When a Modal component fires "on", shield turns itself on.
-        EventEmitter.subscribe('modal:on', () => {
-            this.setState({ visible: true });
-        });
-
-        // When a Modal component fires "off", shield turns itself off.
-        EventEmitter.subscribe('modal:off', () => {
-            this.setState({ visible: false });
-        });
-    }
-
+class Shield extends React.PureComponent {
     render() {
-        const displayStyle = this.state.visible
+        const displayStyle = this.props.visible
             ? { display: 'block' }
             : { display: 'none' };
 
@@ -34,12 +11,20 @@ export default class Shield extends React.Component {
     }
 }
 
-// Legacy shield functions.
-
-export function showShield() {
-    EventEmitter.dispatch('modal:on', {});
+Shield.propTypes = {
+    visible: React.PropTypes.bool,
 }
 
-export function hideShield() {
-    EventEmitter.dispatch('modal:off', {});
+Shield.defaultProps = {
+    visible: false,
 }
+
+function mapStateToProps (state) {
+    return {
+        visible: state.shield.visible,
+    }
+}
+
+const ShieldContainer = connect(mapStateToProps)(Shield)
+
+export default ShieldContainer

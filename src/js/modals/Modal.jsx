@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { noop } from 'lodash';
-import EventEmitter from '../components/event-emitter';
+import store from '../store';
+import { SET_SHIELD_VISIBILITY } from '../store/actions';
 
 export default class Modal extends React.Component {
     constructor(props) {
@@ -13,15 +14,21 @@ export default class Modal extends React.Component {
 
     componentDidMount() {
         // Control visibility state of the Shield
-        // TODO: Control this without using the EventEmitter
-        EventEmitter.dispatch('modal:on', {});
+        store.dispatch({
+            type: SET_SHIELD_VISIBILITY,
+            visible: true,
+        });
 
         // Add the listener for the escape key
         window.addEventListener('keydown', this.handleEscKey, false);
     }
 
     componentWillUnmount() {
-        EventEmitter.dispatch('modal:off', {});
+        store.dispatch({
+            type: SET_SHIELD_VISIBILITY,
+            visible: false,
+        });
+
         window.removeEventListener('keydown', this.handleEscKey, false);
     }
 
