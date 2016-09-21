@@ -2,6 +2,9 @@
  * SignIn to mapzen.com
  *
  */
+import { store } from '../store/index';
+import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
+
 let cachedSignInData;
 
 /**
@@ -27,8 +30,14 @@ export function requestUserSignInState() {
     if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
         window.location.protocol === 'https:') {
         return window.fetch('/api/developer.json', { credentials: 'same-origin' })
-            .then((response) => {
-                const data = response.json();
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.status);
+                }
+
+                return response.json();
+            })
+            .then(data => {
                 cachedSignInData = data;
                 return data;
             });
@@ -52,5 +61,9 @@ export function requestUserSignOut() {
     return window.fetch('/api/developer/sign_out', {
         method: 'POST',
         credentials: 'same-origin',
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
     });
 }

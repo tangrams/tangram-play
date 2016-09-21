@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
@@ -13,16 +14,15 @@ import { requestUserSignInState, requestUserSignOut } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
 import EditorIO from '../editor/io';
 
-export default class SignInButton extends React.Component {
+import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
+// This is not exported. It will be connected to a Redux container component
+// which _is_ exported.
+class SignInButton extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             serverContacted: false,
-            isLoggedIn: false,
-            nickname: null,
-            avatar: null,
-            admin: false,
         };
 
         this.onClickSignIn = this.onClickSignIn.bind(this);
@@ -46,46 +46,35 @@ export default class SignInButton extends React.Component {
      */
     onClickSignOut(event) {
         EditorIO.checkSaveStateThen(() => {
-            requestUserSignOut().then((response) => {
-                if (response.ok) {
-                    this.setState({
-                        isLoggedIn: false,
-                        nickname: null,
-                        avatar: null,
-                        admin: false,
-                    });
-                    EventEmitter.dispatch('mapzen:sign_out', {});
-                } else {
+            requestUserSignOut()
+                .then(() => {
+                    this.props.dispatch({ type: USER_SIGNED_OUT });
+                })
+                .catch(error => {
                     ReactDOM.render(
                         <ErrorModal error="Unable to sign you out." />,
                         document.getElementById('modal-container')
                     );
-                }
-            });
+                });
         });
     }
 
     checkLoggedInState() {
-        requestUserSignInState().then((data) => {
-            // `data` is null if we are not hosted in the right place
-            if (!data) {
-                return;
-            }
-
+        requestUserSignInState().then(data => {
             // This tells us we've contacted mapzen.com and the API is valid
-            const newState = {
-                serverContacted: true,
-            };
+            // `data` is null if we are not hosted in the right place
+            if (data) {
 
-            // If a user is not logged in, data object is empty.
-            if (data.id) {
-                newState.isLoggedIn = true;
-                newState.nickname = data.nickname || null;
-                newState.avatar = data.avatar || null;
-                newState.admin = data.admin || false;
+                this.props.dispatch({
+                    type: USER_SIGNED_IN,
+                    nickname: data.nickname,
+                    email: data.email,
+                    avatar: data.avatar,
+                    admin: data.admin,
+                });
+
+                this.setState({ serverContacted: true });
             }
-
-            this.setState(newState);
         });
     }
 
@@ -94,17 +83,17 @@ export default class SignInButton extends React.Component {
     //   >  You "log on" or "log out" of a operating system session.
     // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
     render() {
-        if (this.state.isLoggedIn) {
+        if (this.props.nickname) {
             const ButtonContents = (
                 <span>
                     <img
-                        src={this.state.avatar}
+                        src={this.props.avatar}
                         className="sign-in-avatar"
-                        alt={this.state.nickname}
+                        alt={this.props.nickname}
                     />
-                    {this.state.nickname}
+                    {this.props.nickname}
                     {(() => {
-                        if (this.state.admin === true) {
+                        if (this.props.admin === true) {
                             return (<span className="sign-in-admin-star">★</span>);
                         }
                         return null;
@@ -113,7 +102,7 @@ export default class SignInButton extends React.Component {
             );
 
             let tooltipContents = 'This is you!';
-            if (this.state.admin === true) {
+            if (this.props.admin === true) {
                 tooltipContents = 'You are a Mapzen admin.';
             }
 
@@ -133,7 +122,7 @@ export default class SignInButton extends React.Component {
                     </NavDropdown>
                 </OverlayTrigger>
             );
-        } else if (this.state.serverContacted && !this.state.isLoggedIn) {
+        } else if (this.state.serverContacted && !this.props.nickname) {
             // Logged out state. Only display if server is contacted and has confirmed
             // no user is logged in. This is to prevent this button from having a
             // "Sign in" momentarily flash before the sign-in-state API is contacted.
@@ -147,3 +136,27 @@ export default class SignInButton extends React.Component {
         return null;
     }
 }
+
+SignInButton.propTypes = {
+    nickname: React.PropTypes.string,
+    avatar: React.PropTypes.string,
+    admin: React.PropTypes.bool,
+};
+
+SignInButton.defaultProps = {
+    nickname: '',
+    avatar: '',
+    admin: false,
+};
+
+function mapStateToProps(state) {
+    return {
+        nickname: state.user.nickname,
+        avatar: state.user.avatar,
+        admin: state.user.admin,
+    };
+}
+
+const SignInButtonContainer = connect(mapStateToProps)(SignInButton);
+
+export default SignInButtonContainer;

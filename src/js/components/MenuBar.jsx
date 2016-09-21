@@ -26,7 +26,7 @@ import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
-import SignInButton from './SignInButton';
+import SignInButtonContainer from './SignInButton';
 
 function clickNew() {
     EditorIO.new();
@@ -347,7 +347,7 @@ export default class MenuBar extends React.Component {
                         </OverlayTrigger>
 
                         {/* Sign in */}
-                        <SignInButton />
+                        <SignInButtonContainer />
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
