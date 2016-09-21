@@ -5,8 +5,8 @@ const config = {
     TILES: {
         API_KEYS: {
             SUPPRESSED: [
-                'mapzen-D8mmijp',
-                'vector-tiles-P6dkVl4', // Tangram Play, should match API_KEY.DEFAULT
+                'mapzen-D8mmijp',       // Matches MAPZEN_API_KEY
+                'vector-tiles-P6dkVl4', // Legacy key for Tangram Play vector tiles
                 'vector-tiles-HqUVidw', // Tangram & "house styles"
                 'vector-tiles-JUsa0Gc', // Patricio's sandbox
             ],
