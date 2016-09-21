@@ -36,7 +36,7 @@ export function initEditor(el) {
 export function getEditorContent() {
     let content = editor.getDoc().getValue();
     //  If API keys are missing, inject one
-    content = injectAPIKey(content, config.TILES.API_KEYS.DEFAULT);
+    content = injectAPIKey(content, config.MAPZEN_API_KEY);
     return content;
 }
 

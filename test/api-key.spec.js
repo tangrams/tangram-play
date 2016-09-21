@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import { injectAPIKey, suppressAPIKeys } from '../src/js/editor/api-keys';
 
-const TEST_API_KEY = 'vector-tiles-123456';
-const TEST_SUPPRESSED_KEYS = [TEST_API_KEY, 'vector-tiles-abcdef', 'vector-tiles-123abc'];
+const TEST_API_KEY = 'mapzen-123456';
+const TEST_SUPPRESSED_KEYS = [TEST_API_KEY, 'mapzen-abcdef', 'mapzen-123abc'];
 
 describe('API keys for Mapzen vector tiles', () => {
     describe('injects a missing API key', () => {
