@@ -102,6 +102,7 @@ class SignInButton extends React.Component {
                     <NavDropdown
                         title={ButtonContents}
                         className="menu-sign-in"
+                        id="sign-in"
                     >
                         <MenuItem onClick={this.onClickSignOut}>
                             <Icon type="bt-sign-out" /> Sign out
