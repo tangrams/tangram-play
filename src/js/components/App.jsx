@@ -1,7 +1,7 @@
 import React from 'react';
 import Map from './Map';
 import Editor from './Editor';
-import MenuBarContainer from './MenuBar';
+import MenuBar from './MenuBar';
 import ShieldContainer from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
 import SignInOverlay from './SignInOverlay';
@@ -21,7 +21,7 @@ export default class App extends React.Component {
     render() {
         return (
             <div>
-                <MenuBarContainer />
+                <MenuBar />
 
                 <div className="workspace-container">
                     <div id="draggable-container">

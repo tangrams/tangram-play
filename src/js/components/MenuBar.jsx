@@ -27,7 +27,7 @@ import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
-import SignInButtonContainer from './SignInButton';
+import SignInButton from './SignInButton';
 
 function clickNew() {
     EditorIO.new();
@@ -324,7 +324,7 @@ class MenuBar extends React.Component {
                         </OverlayTrigger>
 
                         {/* Sign in */}
-                        <SignInButtonContainer />
+                        <SignInButton />
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
@@ -346,6 +346,4 @@ function mapStateToProps(state) {
     };
 }
 
-const MenuBarContainer = connect(mapStateToProps)(MenuBar);
-
-export default MenuBarContainer;
+export default connect(mapStateToProps)(MenuBar);

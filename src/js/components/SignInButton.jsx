@@ -145,6 +145,4 @@ function mapStateToProps(state) {
     };
 }
 
-const SignInButtonContainer = connect(mapStateToProps)(SignInButton);
-
-export default SignInButtonContainer;
+export default connect(mapStateToProps)(SignInButton);
