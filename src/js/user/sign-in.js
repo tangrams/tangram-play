@@ -5,6 +5,24 @@
 import { store } from '../store/index';
 import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
 
+const SIGN_IN_STATE_API_ENDPOINT = '/api/developer.json';
+const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
+
+// Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
+// Or if it is a localhost server (for local testing)
+// It is disabled on http and any other host.
+const signInEnabled = (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
+    window.location.protocol === 'https:') ||
+    // TODO: do not allow unless a flag turns it on.
+    window.location.hostname === 'localhost';
+
+// Set credentials option for window.fetch depending on host.
+// Cookies are sent for each request only if the origin matches on mapzen.com,
+// but are always included for local environments (this allows back-ends to
+// run on different ports than Tangram Play.
+const signInCredentials = window.location.hostname === 'localhost' ? 'include' : 'same-origin';
+const signInHost = window.location.hostname === 'localhost' ? 'http://localhost' : '';
+
 let cachedSignInData;
 
 /**
@@ -15,11 +33,14 @@ let cachedSignInData;
  *
  * If logged in, the response looks like this:
  *
- * {"logged_in":true,"id":7,"email":"name@domain.com","nickname":"name","admin":true}
+ * {"logged_in":true,"id":7,"email":"name@domain.com","nickname":"name","admin":null}
  *
  * If not logged in, the response is an empty object, like this:
  *
  * {}
+ *
+ * If the user is an admin, the "admin" field is boolean `true`. Note that
+ * non-admins are `null` not `false`.
  *
  * @returns {Promise} - resolved value is contents of `/api/developer.json`
  *          or `null` if Tangrma Play is not hosted on a domain where this
@@ -27,9 +48,8 @@ let cachedSignInData;
  * @todo Handle errors related to fetching API.
  */
 export function requestUserSignInState() {
-    if (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
-        window.location.protocol === 'https:') {
-        return window.fetch('/api/developer.json', { credentials: 'same-origin' })
+    if (signInEnabled) {
+        return window.fetch(signInHost + SIGN_IN_STATE_API_ENDPOINT, { credentials: signInCredentials })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(response.status);
@@ -58,9 +78,9 @@ export function getCachedUserSignInData() {
  * is performed.
  */
 export function requestUserSignOut() {
-    return window.fetch('/api/developer/sign_out', {
+    return window.fetch(signInHost + SIGN_OUT_API_ENDPOINT, {
         method: 'POST',
-        credentials: 'same-origin',
+        credentials: signInCredentials,
     }).then(response => {
         if (!response.ok) {
             throw new Error(response.status);

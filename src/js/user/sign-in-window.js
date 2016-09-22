@@ -9,6 +9,8 @@ import EventEmitter from '../components/event-emitter';
  * Due to web security restrictions, this must be tested on mapzen.com and
  * should not be loaded in other contexts (e.g. localhost)
  */
+const SIGN_IN_API_ENDPOINT = '/developers/sign_in';
+const SIGN_IN_HOSTNAME = window.location.hostname === 'localhost' ? 'http://localhost' : '';
 
 let signInWindow;
 let pollWindowStateIntervalId;
@@ -173,7 +175,9 @@ export function openSignInWindow() {
     // Only open if not open already; or was closed from a previous attempt.
     // If it's already open, focus on that instead.
     if (!signInWindow || signInWindow.closed === true) {
-        signInWindow = popupCenter('/developers/sign_in', 'Sign in to Mapzen Developer Portal', 650, 650);
+        const url = SIGN_IN_HOSTNAME + SIGN_IN_API_ENDPOINT;
+
+        signInWindow = popupCenter(url, 'Sign in to Mapzen Developer Portal', 650, 650);
         signInWindow.addEventListener('close', cleanup);
         window.addEventListener('unload', closeSignInWindow);
 
