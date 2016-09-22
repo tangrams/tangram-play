@@ -32,6 +32,9 @@
  * > have to write them!
  */
 
+export const USER_SIGNED_IN = 'USER_SIGNED_IN';
+export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
+
 // Legacy assistance
 // If shield is only controlled by modal visibility, it should be be turned
 // on based on number of modals in a stack (todo)

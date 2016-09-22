@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Navbar from 'react-bootstrap/lib/Navbar';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
@@ -137,16 +138,14 @@ const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
 /**
  * Represents the navbar for the application
  */
-export default class MenuBar extends React.Component {
+class MenuBar extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             inspectActive: false, // Represents whether inspect mode is on / off
             legacyGistMenu: false,
-            mapzenAccount: false,
         };
-
-        this.getUserData = this.getUserData.bind(this);
         this.clickInspect = this.clickInspect.bind(this);
     }
 
@@ -163,28 +162,6 @@ export default class MenuBar extends React.Component {
                     });
                 }
             });
-
-        // Only display items related to Mapzen account if Tangram Play is
-        // loaded from a domain with Mapzen account capabilities.
-        this.getUserData();
-    }
-
-    componentDidMount() {
-        EventEmitter.subscribe('mapzen:sign_in', this.getUserData);
-        EventEmitter.subscribe('mapzen:sign_out', () => {
-            this.setState({ mapzenAccount: false });
-        });
-    }
-
-    getUserData() {
-        requestUserSignInState().then((data) => {
-            // Note: currently this is only enabled for admin accounts.
-            if (data && data.admin === true) {
-                this.setState({
-                    mapzenAccount: true,
-                });
-            }
-        });
     }
 
     clickInspect() {
@@ -240,7 +217,7 @@ export default class MenuBar extends React.Component {
                                     <Icon type="bt-folder" />Open a file
                                 </MenuItem>
                                 {(() => {
-                                    if (this.state.mapzenAccount) {
+                                    if (this.props.mapzenAccount) {
                                         return (
                                             <MenuItem onClick={clickOpenFromCloud}>
                                                 <Icon type="bt-cloud-download" />Open from your Mapzen account
@@ -282,7 +259,7 @@ export default class MenuBar extends React.Component {
                                     <Icon type="bt-folder" />Save to your computer
                                 </MenuItem>
                                 {(() => {
-                                    if (this.state.mapzenAccount) {
+                                    if (this.props.mapzenAccount) {
                                         return (
                                             <MenuItem onClick={clickSaveToCloud}>
                                                 <Icon type="bt-cloud-upload" />Save to your Mapzen account
@@ -354,3 +331,19 @@ export default class MenuBar extends React.Component {
         );
     }
 }
+
+MenuBar.propTypes = {
+    mapzenAccount: React.PropTypes.bool,
+};
+
+MenuBar.defaultProps = {
+    mapzenAccount: false,
+};
+
+function mapStateToProps(state) {
+    return {
+        mapzenAccount: state.user.admin || false,
+    };
+}
+
+export default connect(mapStateToProps)(MenuBar);

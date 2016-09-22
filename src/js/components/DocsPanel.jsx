@@ -42,8 +42,14 @@ export default class DocsPanel extends React.Component {
 
         this.onDrag = this.onDrag.bind(this);
         this.onClickChild = this.onClickChild.bind(this);
+        this.onMouseUpEditor = this.onMouseUpEditor.bind(this);
         this.openPanel = this.openPanel.bind(this);
         this.closePanel = this.closePanel.bind(this);
+    }
+
+    componentWillUnmount() {
+        const wrapper = editor.getWrapperElement();
+        wrapper.removeEventListener('mouseup', this.onMouseUpEditor);
     }
 
     onDrag(e, ui) {
@@ -60,32 +66,33 @@ export default class DocsPanel extends React.Component {
         this.setState({ display: this.findMatch(address, false) });
     }
 
+    onMouseUpEditor(event) {
+        // bail out if we were doing a selection and not a click
+        if (editor.somethingSelected()) {
+            return;
+        }
+
+        const cursor = editor.getCursor(true);
+        const line = editor.lineInfo(cursor.line);
+        const nodes = line.handle.stateAfter.nodes;
+
+        let address;
+
+        if (nodes.length === 1) {
+            address = nodes[0].address;
+            this.setState({ display: this.findMatch(address, true) });
+        } else {
+            console.log('line has more than one node');
+        }
+    }
+
     /**
      * This needs to be called by the parent component after it has
      * mounted, since it relies on the editor being present and ready
      */
     init() {
         const wrapper = editor.getWrapperElement();
-
-        wrapper.addEventListener('mouseup', (event) => {
-            // bail out if we were doing a selection and not a click
-            if (editor.somethingSelected()) {
-                return;
-            }
-
-            const cursor = editor.getCursor(true);
-
-            const line = editor.lineInfo(cursor.line);
-            const nodes = line.handle.stateAfter.nodes;
-            let address;
-
-            if (nodes.length === 1) {
-                address = nodes[0].address;
-                this.setState({ display: this.findMatch(address, true) });
-            } else {
-                console.log('line has more than one node');
-            }
-        });
+        wrapper.addEventListener('mouseup', this.onMouseUpEditor);
     }
 
     /**
