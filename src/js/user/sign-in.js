@@ -2,7 +2,7 @@
  * SignIn to mapzen.com
  *
  */
-import { store } from '../store/index';
+import store from '../store';
 import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
 
 const SIGN_IN_STATE_API_ENDPOINT = '/api/developer.json';
@@ -59,6 +59,15 @@ export function requestUserSignInState() {
             })
             .then(data => {
                 cachedSignInData = data;
+
+                store.dispatch({
+                    type: USER_SIGNED_IN,
+                    nickname: data.nickname,
+                    email: data.email,
+                    avatar: data.avatar,
+                    admin: data.admin,
+                });
+
                 return data;
             });
     }
@@ -85,5 +94,7 @@ export function requestUserSignOut() {
         if (!response.ok) {
             throw new Error(response.status);
         }
+
+        store.dispatch({ type: USER_SIGNED_OUT });
     });
 }

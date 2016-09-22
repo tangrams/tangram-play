@@ -14,7 +14,6 @@ import { requestUserSignInState, requestUserSignOut } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
 import EditorIO from '../editor/io';
 
-import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
 // This is not exported. It will be connected to a Redux container component
 // which _is_ exported.
 class SignInButton extends React.Component {
@@ -47,9 +46,6 @@ class SignInButton extends React.Component {
     onClickSignOut(event) {
         EditorIO.checkSaveStateThen(() => {
             requestUserSignOut()
-                .then(() => {
-                    this.props.dispatch({ type: USER_SIGNED_OUT });
-                })
                 .catch(error => {
                     ReactDOM.render(
                         <ErrorModal error="Unable to sign you out." />,
@@ -64,15 +60,6 @@ class SignInButton extends React.Component {
             // This tells us we've contacted mapzen.com and the API is valid
             // `data` is null if we are not hosted in the right place
             if (data) {
-
-                this.props.dispatch({
-                    type: USER_SIGNED_IN,
-                    nickname: data.nickname,
-                    email: data.email,
-                    avatar: data.avatar,
-                    admin: data.admin,
-                });
-
                 this.setState({ serverContacted: true });
             }
         });
