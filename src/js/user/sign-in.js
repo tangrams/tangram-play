@@ -1,20 +1,19 @@
 /**
  * SignIn to mapzen.com
- *
  */
 import store from '../store';
 import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
+import { getQueryStringObject } from '../tools/url-state';
 
 const SIGN_IN_STATE_API_ENDPOINT = '/api/developer.json';
 const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
 
 // Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
-// Or if it is a localhost server (for local testing)
+// Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
 // It is disabled on http and any other host.
 const signInEnabled = (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
     window.location.protocol === 'https:') ||
-    // TODO: do not allow unless a flag turns it on.
-    window.location.hostname === 'localhost';
+    (getQueryStringObject().forceSignIn === 'true' && window.location.hostname === 'localhost');
 
 // Set credentials option for window.fetch depending on host.
 // Cookies are sent for each request only if the origin matches on mapzen.com,
@@ -78,6 +77,7 @@ export function requestUserSignInState() {
     return Promise.resolve(null);
 }
 
+// Note: deprecated (only used for Gist)
 export function getCachedUserSignInData() {
     return cachedSignInData;
 }
