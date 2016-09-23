@@ -33,9 +33,8 @@ export default class DocsPanel extends React.Component {
         this.MIN_HEIGHT = 50;
 
         this.state = {
-            open: true, // Whether panel should be open or not
             display: '{}',
-            height: INITIAL_HEIGHT,
+            height: 0, // Start closed to be unobtrusive
         };
 
         this.lastSavedHeight = INITIAL_HEIGHT;
