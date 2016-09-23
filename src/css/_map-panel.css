@@ -40,8 +40,8 @@
     background-color: var(--ui-base-color);
 
     .panel-body {
-        padding: 5px;
-        padding-top: 6px; /* hack */
+        padding: 4px;
+        padding-top: 6px;
     }
 
     .map-panel-toolbar {
@@ -69,17 +69,14 @@
 }
 
 .map-panel .btn-group {
-    margin-right: 2px;
     margin-left: 2px;
     border: 1px solid #1a1c1f;
     border-radius: 3px;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
-    /* don't overflow:hidden here because it hides search dropdown */
+    overflow: hidden;
 }
 
 .map-panel .btn {
     border: none;
-    border-radius: 3px;
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
     cursor: pointer;
     user-select: none;

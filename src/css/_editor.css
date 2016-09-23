@@ -1,7 +1,7 @@
 /* EDITOR */
 
 :root {
-    --editor-tab-height: 36px;
+    --editor-tab-height: 38px;
 }
 
 .editor-container {
@@ -21,10 +21,10 @@
     padding-left: 15px;
     padding-top: 5px;
     user-select: none;
-    border-bottom: 1px solid #1a1c1f;
-    border-top: 1px solid #1a1c1f;
+    border-bottom: 1px solid var(--ui-border-color);
+    border-top: 1px solid var(--ui-border-color);
     height: var(--editor-tab-height);
-    background-color: var(--ui-base-color);
+    background-color: var(--ui-editor-background-color);
 }
 
 .editor-tab {
@@ -33,11 +33,11 @@
     color: var(--ui-component-text-color);
     font-size: 12px;
     cursor: pointer;
-    border: 1px solid #1a1c1f;
+    border: 1px solid var(--ui-border-color);
     border-bottom: 0;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    background-color: var(--ui-component-color);
+    background-color: var(--ui-base-color);
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
 }
 
@@ -128,7 +128,7 @@
 
 .cm-s-tangram.CodeMirror {
     color: #e1e1e1;
-    background-color: var(--ui-editor-background-color);
+    background-color: var(--ui-base-color);
 }
 
 .cm-s-tangram .CodeMirror-selected {
@@ -137,8 +137,8 @@
 
 .cm-s-tangram .CodeMirror-gutters {
     color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
-    border-right: 0;
+    background-color: #232529; /* subtly darker than base */
+    border-right: 1px solid #34363a;
 }
 
 .cm-s-tangram .CodeMirror-linenumber {
@@ -146,7 +146,7 @@
     margin-left: 1em;
     padding: 0 0.2em 0 0.4em;
     min-width: 1.2em;
-    color: var(--ui-border-color);
+    color: var(--ui-unnamed-light-color);
     font-weight: 200;
 }
 
@@ -208,15 +208,14 @@
 }
 
 .cm-s-tangram .CodeMirror-activeline-background {
-    background: var(--ui-base-color);
+    background: var(--ui-component-color);
 }
 
 .CodeMirror-activeline-gutter.CodeMirror-gutter-background {
-    background: var(--ui-active-color);
+    background: var(--ui-component-color);
 }
 
-.CodeMirror-activeline-gutter .CodeMirror-linenumber,
-.editor-highlight .CodeMirror-activeline-gutter .CodeMirror-linenumber {
+.CodeMirror-activeline-gutter .CodeMirror-linenumber {
     color: var(--ui-highlight-color);
 }
 
@@ -255,24 +254,23 @@
     &.CodeMirror-linebackground:not(.CodeMirror-activeline-background) {
         /* A background color with alpha=1 overlaps the selection highlight
            This makes the selection visible through the highlighted line */
-        background-color: rgba(54, 56, 60, 0.5); /* var(--ui-active-color); */
+        background-color: rgba(255, 255, 255, 0.05); /* var(--ui-active-color); */
     }
+    /*
+    &.CodeMirror-linebackground.CodeMirror-activeline-background {
+    }
+    */
 
     &.CodeMirror-gutter-background:not(.CodeMirror-activeline-gutter) {
-        background-color: var(--ui-highlight-color);
-    }
-
-    &.CodeMirror-gutter-background.CodeMirror-activeline-gutter {
-        background-color: var(--ui-highlight-color-2);
+        background-color: var(--ui-element-color);
     }
 
     .CodeMirror-linenumber {
-        color: black;
-        font-weight: 600;
+        color: white;
+    }
 
-        &:hover {
-            color: black;
-        }
+    &.CodeMirror-activeline-gutter .CodeMirror-linenumber {
+        color: var(--ui-highlight-color);
     }
 }
 

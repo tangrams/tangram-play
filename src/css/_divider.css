@@ -7,7 +7,7 @@
     width: 10px;
     height: 100%;
     opacity: 1;
-    background-color: var(--ui-base-color);
+    background-color: var(--ui-component-color);
     z-index: var(--z01-divider);
     cursor: col-resize;
     user-select: none;

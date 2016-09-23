@@ -15,6 +15,8 @@
     z-index: var(--z01-modal);
     user-select: none;
     pointer-events: auto;
+    border: 1px solid var(--ui-border-color);
+    border-radius: 3px;
 
     h4 {
         margin-top: 0;
@@ -87,20 +89,22 @@
 
 .modal-buttons {
     width: 100%;
-    margin-top: 30px;
+    margin-top: 24px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
 
     button {
-        padding: 16px;
-        background-color: transparent;
+        padding: 10px;
+        background-color: var(--ui-component-color);
         color: var(--ui-component-text-color);
         border: 1px solid var(--ui-border-color);
+        border-radius: 3px;
         margin: 0 5px;
         font-family: var(--font-family);
         font-weight: 200;
         font-size: 14px;
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
         cursor: pointer;
     }
 
@@ -113,6 +117,7 @@
     }
 
     button:hover {
+        border: 1px solid var(--ui-border-color);
         background-color: var(--ui-active-color);
         color: var(--ui-highlight-color);
     }
@@ -146,6 +151,7 @@
     button:disabled:hover {
         color: gray;
         background-color: rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--ui-border-color);
     }
 
     button:disabled > i {
@@ -155,7 +161,7 @@
 
 .modal-thinking {
     margin-right: 30px;
-    line-height: 54px;
+    line-height: 40px;
     color: var(--ui-subtext-color);
     opacity: 0;
     visibility: hidden;

@@ -68,15 +68,16 @@
     --editor-font-family: 'Source Code Pro', monospace;
     --ui-editor-background-color: #1f2225;
     --ui-base-color: #26282c;
-    --ui-component-color: #2e3033;
-    --ui-element-color: #3a3c40;
+    --ui-component-color: #303235;
+    --ui-element-color: #3b3d42;
     --ui-active-color: #36383c;
     --ui-highlight-color: yellow;
     --ui-highlight-color-2: rgb(221, 221, 0);
     --ui-component-text-color: #eefafa;
     --ui-link-text-color: #e1eeee;
     --ui-subtext-color: #c0c6c6;
-    --ui-border-color: #999ca0;
+    --ui-unnamed-light-color: #999ca0;
+    --ui-border-color: #1a1c1f;
     --modal-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.25);
 
     /* LAYOUT */

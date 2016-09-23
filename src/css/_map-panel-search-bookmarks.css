@@ -13,7 +13,12 @@
 .map-search {
     display: inline-flex;
     flex-grow: 1;
-    background-color: var(--ui-component-color);
+    background-color: var(--ui-element-color);
+}
+
+.map-search.btn-group {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
+    overflow: visible; /* shows search dropdown */
 }
 
 .map-search-latlng {
@@ -22,22 +27,17 @@
     height: 30px;
     font-size: 10px;
     font-weight: 200;
-    color: var(--ui-border-color);
+    color: var(--ui-unnamed-light-color);
     white-space: nowrap;
     padding-left: 6px;
     margin-top: 1px; /* Align with input text */
     margin-bottom: -1px; /* Recover margin from top */
 }
 
-.map-panel-search-button {
-    margin-right: 4px;
-    min-width: 32px;
-}
-
-.map-panel-save-button {
-    margin-left: 4px;
+.map-search button {
     min-width: 32px;
     background-color: transparent !important; /* hack */
+    box-shadow: none !important; /* hack to prevent doubling of box shadow */
 }
 
 /* Autosuggestion list */
@@ -50,6 +50,7 @@
     input {
         width: 100%;
         height: 18px;
+        font-family: var(--font-family); /* input does not inherit font-family */
         font-size: 12px;
         font-weight: 200;
         background-color: transparent;
@@ -57,7 +58,7 @@
         outline: none;
         border: 0;
         color: var(--ui-component-text-color);
-        margin-top: 8px;
+        margin-top: 9px;
         padding-bottom: 5px;
     }
 }
@@ -81,6 +82,9 @@
         margin: 0;
         border: 1px solid #1a1c1f;
         border-top: 0;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        overflow: hidden;
     }
 
     li {
@@ -126,7 +130,7 @@
     & > i.btm {
         padding: 0;
         width: 32px;
-        margin-right: 5px; /* Align text with input */
+        margin-right: 1px; /* Align text with input */
         text-align: center;
     }
 }
@@ -179,7 +183,7 @@
 }
 
 .bookmark-dropdown-text {
-    color: var(--ui-border-color);
+    color: var(--ui-unnamed-light-color);
 }
 
 .bookmark-dropdown-clear:hover {
