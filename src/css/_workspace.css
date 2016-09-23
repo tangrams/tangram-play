@@ -2,7 +2,7 @@
 
 .workspace-container {
     position: absolute;
-    top: 44px;
+    top: var(--menu-bar-height);
     left: 0;
     /* Setting absolute right position instead of width: 100% improves resizing
        performance when dragging the left edge of window */

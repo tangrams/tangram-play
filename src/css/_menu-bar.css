@@ -6,7 +6,7 @@ nav {
 }
 
 .navbar {
-    height: 44px;
+    height: var(--menu-bar-height);
 }
 
 .menu-bar {
@@ -28,8 +28,8 @@ nav {
 
 .brand {
     position: relative;
-    padding: 10px 12px 14px 15px;
-    font-size: 16px;
+    padding: 8px 12px 12px 15px;
+    font-size: 14px;
     font-weight: 300;
     color: var(--ui-component-text-color);
     z-index: 1; /* This just needs to be any number to be properly sorted in its stacking context */
@@ -38,7 +38,7 @@ nav {
 .brand-tag {
     position: absolute;
     left: 15px;
-    top: 22px;
+    top: 20px;
     font-size: 9px;
     color: var(--ui-highlight-color);
 }
@@ -49,12 +49,15 @@ nav {
 }
 
 .menu-bar a {
+    position: relative;
+    display: block;
     color: var(--ui-component-text-color);
     font-weight: 200;
-    font-size: 14px;
+    font-size: 13px;
     outline: none;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    line-height: var(--menu-bar-height);
+    height: var(--menu-bar-height);
+    padding: 0 15px;
 
     &:hover {
         color: yellow;
@@ -88,7 +91,7 @@ nav {
 
 .menu-bar .dropdown-menu a {
     padding: 3px 14px;
-    line-height: 44px;
+    line-height: 36px;
 }
 
 .dropdown-menu {
