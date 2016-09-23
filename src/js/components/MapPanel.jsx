@@ -180,17 +180,6 @@ export default class MapPanel extends React.Component {
     render() {
         return (
             <div className="map-panel">
-                {/* Toggle map panel to show it*/}
-                <OverlayTrigger
-                    rootClose
-                    placement="bottom"
-                    overlay={<Tooltip id="tooltip">Toogle map toolbar</Tooltip>}
-                >
-                    <Button onClick={this.toggleMapPanel} className="map-panel-button-show">
-                        <Icon type="bt-caret-down" />
-                    </Button>
-                </OverlayTrigger>
-
                 {/* Map panel*/}
                 <Panel collapsible expanded={this.state.open} className="map-panel-collapsible">
                     <div className="map-panel-toolbar">
@@ -229,6 +218,24 @@ export default class MapPanel extends React.Component {
                         </ButtonGroup>
                     </div>
                 </Panel>
+
+                {/* Toggle map panel to show it*/}
+                {(() => {
+                    if (!this.state.open) {
+                        return (
+                            <OverlayTrigger
+                                rootClose
+                                placement="bottom"
+                                overlay={<Tooltip id="tooltip">Toogle map toolbar</Tooltip>}
+                            >
+                                <Button onClick={this.toggleMapPanel} className="map-panel-button-show">
+                                    <Icon type="bt-caret-down" />
+                                </Button>
+                            </OverlayTrigger>
+                        );
+                    }
+                    return null;
+                })()}
             </div>
         );
     }

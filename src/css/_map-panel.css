@@ -9,11 +9,15 @@
 .map-panel .map-panel-button-show {
     color: var(--ui-component-text-color);
     background-color: var(--ui-component-color);
-    border: none;
+    border: 0 !important; /* temp hacks while style is figured out */
     outline: none;
     position: absolute;
     left: auto;
     right: 0;
+
+    /* temp hacks while style is figured out */
+    box-shadow: none !important;
+    border-radius: 0 !important;
 
     &:hover {
         color: var(--ui-highlight-color);
@@ -27,18 +31,17 @@
 
 /* Style for map panel */
 .map-panel .panel {
-    border: none;
-    margin: 0;
+    border-bottom: 1px solid #1a1c1f;
     z-index: var(--z07-menu);
-    opacity: 0.99; /* For panel to play nice with absolute positioned toggle button on the side */
 }
 
 .map-panel-collapsible {
     color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
+    background-color: var(--ui-base-color);
 
     .panel-body {
-        padding: 6px 8px;
+        padding: 5px;
+        padding-top: 6px; /* hack */
     }
 
     .map-panel-toolbar {
@@ -50,9 +53,9 @@
 /* Style for all map panel buttons */
 .map-panel button {
     padding: 0;
-    height: 38px;
-    width: 38px;
-    background-color: var(--ui-element-color);
+    height: 30px;
+    width: 30px;
+    background-color: var(--ui-component-color);
     color: var(--ui-component-text-color);
     outline: none;
 
@@ -65,8 +68,21 @@
     color: var(--ui-highlight-color);
 }
 
+.map-panel .btn-group {
+    margin-right: 2px;
+    margin-left: 2px;
+    border: 1px solid #1a1c1f;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+    /* don't overflow:hidden here because it hides search dropdown */
+}
+
 .map-panel .btn {
     border: none;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    user-select: none;
 }
 
 .map-panel-toolbar i.btm {
@@ -77,28 +93,24 @@
     color: var(--ui-component-text-color);
 }
 
-.map-panel .btn-group {
-    margin-right: 2px;
-    margin-left: 2px;
-}
-
 /* Style for button groups */
 .map-panel-zoom-container {
     display: flex;
 }
 
 .map-panel-zoom {
-    width: 38px;
+    width: 36px;
     margin-right: 4px;
     font-size: 12px;
     text-align: center;
-    line-height: 38px;
+    line-height: 30px;
     flex: 0 0 auto;
 }
 
 .buttons-plusminus {
     display: flex;
     flex: 0 0 auto;
+    font-size: 10px; /* slightly smaller */
 
     .map-panel-zoomin {
         margin-right: 2px;

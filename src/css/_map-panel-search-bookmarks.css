@@ -13,13 +13,13 @@
 .map-search {
     display: inline-flex;
     flex-grow: 1;
-    background-color: var(--ui-element-color);
+    background-color: var(--ui-component-color);
 }
 
 .map-search-latlng {
     display: flex;
     align-items: center;
-    height: 38px;
+    height: 30px;
     font-size: 10px;
     font-weight: 200;
     color: var(--ui-border-color);
@@ -31,67 +31,62 @@
 
 .map-panel-search-button {
     margin-right: 4px;
-    min-width: 38px;
+    min-width: 32px;
 }
 
 .map-panel-save-button {
     margin-left: 4px;
-    min-width: 38px;
+    min-width: 32px;
+    background-color: transparent !important; /* hack */
 }
 
 /* Autosuggestion list */
 .react-autosuggest__container {
     flex-grow: 1;
     border-bottom: 1px solid transparent;
-    height: 38px;
+    height: 30px;
     min-width: 150px;
 
     input {
         width: 100%;
-        height: 24px;
+        height: 18px;
         font-size: 12px;
         font-weight: 200;
         background-color: transparent;
         appearance: none;
         outline: none;
         border: 0;
-        /* When focused, input has a 1px dotted bottom border. When not
-           focused, this border should be made transparent to prevent
-           layout off-by-one-pixel issues. */
-        border-bottom: 1px solid transparent;
         color: var(--ui-component-text-color);
-        margin-top: 7px;
-        padding-bottom: 0;
-
-        &:focus {
-            border-bottom: 1px dotted var(--ui-border-color);
-        }
+        margin-top: 8px;
+        padding-bottom: 5px;
     }
 }
 
 .react-autosuggest__suggestions-container {
     position: absolute; /* Allow list to float separately from input element */
     left: 0;
-    width: 100%;
+    width: calc(100% + 2px); /* hack */
     font-size: 12px;
     font-weight: 200;
     background-color: var(--ui-component-color);
     margin: 0;
-    margin-top: 8px;
+    margin-top: 3px;
     white-space: nowrap;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    overflow: hidden;
+    margin-left: -1px; /* position hack */
 
     ul {
         margin: 0;
+        border: 1px solid #1a1c1f;
+        border-top: 0;
     }
 
     li {
         border-top: 1px solid var(--ui-active-color);
         cursor: pointer;
         line-height: 1.4;
-
-        &:first-child {
-            border-top: 0;
-        }
     }
 
     li:hover {
@@ -121,7 +116,7 @@
 }
 
 .map-search-suggestion-item {
-    padding: 10px;
+    padding: 9px;
     padding-left: 0; /* Space for icon */
 
     /* Prevent super-long labels from breaking layout */
@@ -130,7 +125,7 @@
 
     & > i.btm {
         padding: 0;
-        width: 38px;
+        width: 32px;
         margin-right: 5px; /* Align text with input */
         text-align: center;
     }
