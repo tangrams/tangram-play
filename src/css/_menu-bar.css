@@ -23,6 +23,7 @@ nav {
     padding-right: 0;
     width: 100%;
     background-color: var(--ui-base-color);
+    border-bottom: 1px solid #1a1c1f;
 }
 
 .brand {

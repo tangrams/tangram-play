@@ -1,5 +1,9 @@
 /* EDITOR */
 
+:root {
+    --editor-tab-height: 36px;
+}
+
 .editor-container {
     position: absolute;
     right: 0;
@@ -9,8 +13,63 @@
 }
 
 .editor {
-    height: 100%;
+    height: calc(100% - var(--editor-tab-height));
     position: relative;
+}
+
+.editor-tabs {
+    padding-left: 15px;
+    padding-top: 5px;
+    user-select: none;
+    border-bottom: 1px solid #1a1c1f;
+    border-top: 1px solid #1a1c1f;
+    height: var(--editor-tab-height);
+    background-color: var(--ui-base-color);
+}
+
+.editor-tab {
+    display: inline-block;
+    position: relative;
+    color: var(--ui-component-text-color);
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid #1a1c1f;
+    border-bottom: 0;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color: var(--ui-component-color);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+
+.editor-tab-close,
+.editor-tab-label {
+    display: inline-block;
+}
+
+.editor-tab-label {
+    overflow: hidden;
+    padding: 8px 24px 8px 10px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.editor-tab-close {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20px;
+    text-align: center;
+    line-height: 30px;
+}
+
+.editor-tab:hover .editor-tab-close {
+    opacity: 1;
+}
+
+.editor-tab-close:hover {
+    color: var(--ui-highlight-color);
 }
 
 .CodeMirror {
