@@ -37,7 +37,7 @@
     border-bottom: 0;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    background-color: var(--ui-base-color);
+    background-color: var(--ui-component-color);
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
 }
 
@@ -112,7 +112,7 @@
     }
 
     &::-webkit-scrollbar-track {
-        background-color: var(--ui-component-color);
+        background-color: var(--ui-element-color);
     }
 
     &::-webkit-scrollbar-thumb {
@@ -121,7 +121,7 @@
 }
 
 .CodeMirror-scrollbar-filler {
-    background-color: var(--ui-component-color);
+    background-color: var(--ui-element-color);
     width: 12px;
     height: 12px;
 }

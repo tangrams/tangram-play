@@ -18,10 +18,13 @@
 @import '_editor';
 @import '_divider';
 @import '_map';
+
+/* Application UI */
 @import '_overlay';
+@import '_buttons';
 @import '_icon';
 
-/* + Menu */
+/* Menu */
 @import '_filedrop';
 @import '_tooltip';
 @import '_modals';
@@ -30,26 +33,26 @@
 @import '_shield';
 @import '_inputs';
 
-/* + GLSL Sandbox */
+/* GLSL Sandbox */
 @import '_sandbox';
 
-/* + Errors Manager */
+/* Errors Manager */
 @import '_errors';
 
-/* + Map UI */
+/* Map UI */
 @import '_ui';
 @import '_leaflet-overrides';
 @import '_map-loading';
 @import '_map-inspection';
 
-/* + React Components */
+/* React Components */
 @import '_menu-bar';
 @import '_map-panel';
 @import '_map-panel-search-bookmarks';
 @import '_color-palette';
 @import '_docs-panel';
 
-/* + Bookmarks, Pickers, Widgets */
+/* Bookmarks, Pickers, Widgets */
 @import '_widgets-modal';
 @import '_widgets';
 @import '_color';
@@ -65,12 +68,13 @@
 :root {
     /* Uses Roboto if available, and falls back to system fonts otherwise */
     --font-family: 'Roboto', sans-serif;
+    --root-font-size: 14px;
     --editor-font-family: 'Source Code Pro', monospace;
     --ui-editor-background-color: #1f2225;
     --ui-base-color: #26282c;
     --ui-component-color: #303235;
-    --ui-element-color: #3b3d42;
-    --ui-active-color: #36383c;
+    --ui-element-color: #36383c;
+    --ui-active-color: #3d3f44;
     --ui-highlight-color: yellow;
     --ui-highlight-color-2: rgb(221, 221, 0);
     --ui-component-text-color: #eefafa;
@@ -78,7 +82,11 @@
     --ui-subtext-color: #c0c6c6;
     --ui-unnamed-light-color: #999ca0;
     --ui-border-color: #1a1c1f;
-    --modal-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+    --ui-border: 1px solid var(--ui-border-color);
+    --ui-border-radius: 3px;
+    --ui-well-color: #404248;
+    --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
+    --modal-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.25);
 
     /* LAYOUT */
     --menu-bar-height: 40px;

@@ -3,6 +3,7 @@
 .map-panel {
     position: relative;
     z-index: var(--z04-map-toolbar);
+    font-size: 1rem;
 }
 
 /* Style for map panel button to show it */
@@ -55,13 +56,8 @@
     padding: 0;
     height: 30px;
     width: 30px;
-    background-color: var(--ui-component-color);
-    color: var(--ui-component-text-color);
     outline: none;
-
-    &:hover {
-        background-color: var(--ui-active-color);
-    }
+    margin: 0;
 }
 
 .map-panel-toolbar button:hover i {
@@ -84,6 +80,7 @@
 
 .map-panel-toolbar i.btm {
     padding-right: 0;
+    margin: 0;
     font-size: 12px;
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto;
@@ -98,16 +95,19 @@
 .map-panel-zoom {
     width: 36px;
     margin-right: 4px;
-    font-size: 12px;
+    font-size: 0.75em;
     text-align: center;
-    line-height: 30px;
+    line-height: 32px;
     flex: 0 0 auto;
 }
 
 .buttons-plusminus {
     display: flex;
     flex: 0 0 auto;
-    font-size: 10px; /* slightly smaller */
+
+    i.btm {
+        font-size: 10px; /* slightly smaller */
+    }
 
     .map-panel-zoomin {
         margin-right: 2px;

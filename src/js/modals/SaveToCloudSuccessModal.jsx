@@ -111,7 +111,7 @@ export default class SaveToCloudSuccessModal extends React.Component {
                 </div>
 
                 <div className="modal-buttons">
-                    <Button className="modal-confirm" onClick={this.onClickConfirm}>
+                    <Button className="button-confirm" onClick={this.onClickConfirm}>
                         Got it
                     </Button>
                 </div>

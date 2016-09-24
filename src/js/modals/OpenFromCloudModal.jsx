@@ -133,12 +133,12 @@ export default class OpenFromCloudModal extends React.Component {
                 </div>
 
                 <div className="modal-buttons">
-                    <Button onClick={this.onClickCancel} className="modal-cancel">
+                    <Button onClick={this.onClickCancel} className="button-cancel">
                         <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
                         onClick={this.onClickConfirm}
-                        className="modal-confirm"
+                        className="button-confirm"
                         disabled={this.state.selected === null}
                     >
                         <Icon type="bt-check" /> Open

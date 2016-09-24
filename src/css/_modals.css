@@ -7,7 +7,7 @@
     padding: 30px;
     font-family: var(--font-family);
     font-weight: 200;
-    font-size: 16px;
+    font-size: 1rem;
     text-align: center;
     color: var(--ui-component-text-color);
     background-color: var(--ui-base-color);
@@ -22,19 +22,22 @@
         margin-top: 0;
         margin-bottom: 1em;
         font-weight: 400;
+        font-size: 1.25em;
     }
 
     input[type=text],
     input[type=url] {
-        background-color: var(--ui-element-color);
+        background-color: var(--ui-well-color);
         appearance: none;
         outline: none;
-        border: 0;
+        border: var(--ui-border);
+        border-radius: var(--ui-border-radius);
+        box-shadow: var(--ui-well-shadow);
         color: var(--ui-component-text-color);
         font-size: 12px;
         font-family: var(--font-family);
         font-weight: 200;
-        line-height: 28px;
+        line-height: 24px;
         padding: 4px 8px;
         width: 100%;
         box-sizing: border-box;
@@ -85,6 +88,9 @@
 
 .modal-content {
     margin-top: 20px;
+    border: var(--ui-border);
+    border-radius: var(--ui-border-radius);
+    box-shadow: var(--ui-well-shadow);
 }
 
 .modal-buttons {
@@ -93,70 +99,6 @@
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
-
-    button {
-        padding: 10px;
-        background-color: var(--ui-component-color);
-        color: var(--ui-component-text-color);
-        border: 1px solid var(--ui-border-color);
-        border-radius: 3px;
-        margin: 0 5px;
-        font-family: var(--font-family);
-        font-weight: 200;
-        font-size: 14px;
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
-        cursor: pointer;
-    }
-
-    button:last-of-type {
-        margin-right: 0;
-    }
-
-    button:first-of-type {
-        margin-left: 0;
-    }
-
-    button:hover {
-        border: 1px solid var(--ui-border-color);
-        background-color: var(--ui-active-color);
-        color: var(--ui-highlight-color);
-    }
-
-    button:focus {
-        outline: none;
-        border: 1px solid var(--ui-highlight-color);
-        background-color: var(--ui-active-color);
-    }
-
-    button > i {
-        margin-right: 0.5em;
-    }
-
-    /* Any icon of confirm button is green */
-    .modal-confirm > i.btm {
-        color: green;
-    }
-
-    /* Any icon of cancel button is red */
-    .modal-cancel > i.btm {
-        color: red;
-    }
-
-    button:disabled {
-        color: gray;
-        background-color: rgba(0, 0, 0, 0.1);
-        cursor: default;
-    }
-
-    button:disabled:hover {
-        color: gray;
-        background-color: rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--ui-border-color);
-    }
-
-    button:disabled > i {
-        color: gray !important;
-    }
 }
 
 .modal-thinking {

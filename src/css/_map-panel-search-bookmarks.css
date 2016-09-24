@@ -6,18 +6,22 @@
     flex: 1 0 auto;
 }
 
-.map-panel i.btm.active {
+.map-panel .btm {
+    font-weight: 400;
+}
+
+.map-panel .btm.active {
     color: yellow;
 }
 
 .map-search {
     display: inline-flex;
     flex-grow: 1;
-    background-color: var(--ui-element-color);
+    background-color: var(--ui-well-color);
 }
 
 .map-search.btn-group {
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--ui-well-shadow);
     overflow: visible; /* shows search dropdown */
 }
 

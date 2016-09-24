@@ -80,14 +80,14 @@ export default class OpenUrlModal extends React.Component {
                 <div className="modal-buttons">
                     <LoadingSpinner on={this.state.thinking} />
                     <Button
-                        className="modal-cancel"
+                        className="button-cancel"
                         disabled={this.state.thinking}
                         onClick={this.onClickCancel}
                     >
                         <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
-                        className="modal-confirm"
+                        className="button-confirm"
                         disabled={!this.state.validInput || this.state.thinking}
                         onClick={this.onClickConfirm}
                     >
