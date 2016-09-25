@@ -70,11 +70,11 @@
   --font-family: 'Roboto', sans-serif;
   --root-font-size: 14px;
   --editor-font-family: 'Source Code Pro', monospace;
-  --ui-editor-background-color: #1f2225;
-  --ui-base-color: #26282c;
-  --ui-component-color: #303235;
-  --ui-element-color: #36383c;
-  --ui-active-color: #3d3f44;
+  --ui-editor-background-color: #1c1f24;
+  --ui-base-color: #26282e;
+  --ui-component-color: #303237;
+  --ui-element-color: #36383e;
+  --ui-active-color: #3d3f46;
   --ui-highlight-color: yellow;
   --ui-highlight-color-2: rgb(221, 221, 0);
   --ui-component-text-color: #eefafa;
@@ -86,7 +86,8 @@
   --ui-border-radius: 3px;
   --ui-well-color: #404248;
   --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
-  --modal-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.25);
+  --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  --ui-modal-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.25);
 
   /* LAYOUT */
   --menu-bar-height: 40px;

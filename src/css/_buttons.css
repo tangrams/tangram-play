@@ -8,7 +8,7 @@ button {
   font-family: var(--font-family);
   font-weight: 200;
   font-size: 0.9rem;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  box-shadow: var(--ui-emboss-shadow);
   cursor: pointer;
 }
 

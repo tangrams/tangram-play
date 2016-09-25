@@ -11,12 +11,12 @@
   text-align: center;
   color: var(--ui-component-text-color);
   background-color: var(--ui-base-color);
-  box-shadow: var(--modal-shadow);
+  box-shadow: var(--ui-modal-shadow), var(--ui-emboss-shadow);
   z-index: var(--z01-modal);
   user-select: none;
   pointer-events: auto;
   border: 1px solid var(--ui-border-color);
-  border-radius: 3px;
+  border-radius: 2px;
 
   h4 {
     margin-top: 0;
@@ -92,7 +92,6 @@
 
 .modal-well {
   border: var(--ui-border);
-  border-radius: var(--ui-border-radius);
   box-shadow: var(--ui-well-shadow);
 }
 

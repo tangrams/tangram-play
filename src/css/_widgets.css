@@ -28,7 +28,7 @@
   width: auto;
   padding: 0;
   outline: none;
-  box-shadow: var(--modal-shadow);
+  box-shadow: var(--ui-modal-shadow);
   background-color: var(--ui-component-color);
   z-index: var(--z09-pickers);
 }

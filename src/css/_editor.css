@@ -37,8 +37,8 @@
   border-bottom: 0;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  background-color: var(--ui-component-color);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  background-color: var(--ui-base-color);
+  box-shadow: var(--ui-emboss-shadow);
 }
 
 .editor-tab-close,
@@ -137,7 +137,7 @@
 
 .cm-s-tangram .CodeMirror-gutters {
   color: var(--ui-component-text-color);
-  background-color: #232529; /* subtly darker than base */
+  background-color: #24262a; /* subtly darker than base */
   border-right: 1px solid #34363a;
 }
 

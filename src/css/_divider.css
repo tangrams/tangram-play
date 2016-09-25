@@ -14,7 +14,7 @@
   transform: translate(0, 0) !important; /* Override react-draggable transform */
   border-right: 1px solid #1a1c1f;
   border-left: 1px solid var(--ui-editor-background-color); /* slightly lighter for 3dness */
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  box-shadow: var(--ui-emboss-shadow);
 }
 
 .divider:hover {

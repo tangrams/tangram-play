@@ -6,7 +6,7 @@
 .open-from-cloud-list {
   /* Ensure this fits within a variable-height modal.
      TODO: Don't use a magic number */
-  height: calc(100% - 120px);
+  height: calc(100% - 94px);
   padding: 10px;
   box-sizing: border-box;
   overflow-x: hidden;
