@@ -128,7 +128,7 @@ export default class OpenFromCloudModal extends React.Component {
             >
                 <h4>Open a saved scene from your Mapzen account</h4>
 
-                <div className="modal-content open-from-cloud-list">
+                <div className="modal-content modal-well open-from-cloud-list">
                     {sceneList}
                 </div>
 

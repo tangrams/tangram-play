@@ -88,6 +88,9 @@
 
 .modal-content {
     margin-top: 20px;
+}
+
+.modal-well {
     border: var(--ui-border);
     border-radius: var(--ui-border-radius);
     box-shadow: var(--ui-well-shadow);

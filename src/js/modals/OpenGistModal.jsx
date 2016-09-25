@@ -190,7 +190,7 @@ export default class OpenGistModal extends React.Component {
             >
                 <h4>Open a previously saved Gist</h4>
 
-                <div className="modal-content open-from-cloud-list">
+                <div className="modal-content modal-well open-from-cloud-list">
                     {gistList}
                 </div>
 
