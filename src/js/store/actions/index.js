@@ -34,6 +34,10 @@
 
 export const USER_SIGNED_IN = 'USER_SIGNED_IN';
 export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
+export const OPEN_SCENE = 'OPEN_SCENE';
+export const ADD_FILE = 'ADD_FILE';
+export const REMOVE_FILE = 'REMOVE_FILE';
+export const CLEAR_FILES = 'CLEAR_FILES';
 
 // Legacy assistance
 // If shield is only controlled by modal visibility, it should be be turned

@@ -30,7 +30,9 @@ class Editor extends React.PureComponent {
                 <Divider />
                 <div className="editor-tabs">
                     <div className="editor-tab">
-                        <div className="editor-tab-label">scene.yaml</div>
+                        {this.props.files.map((item, i) =>
+                            <div className="editor-tab-label" key={i}>{item}</div>
+                        )}
                         <div className="editor-tab-close">×</div>
                     </div>
                 </div>
@@ -50,15 +52,18 @@ class Editor extends React.PureComponent {
 
 Editor.propTypes = {
     admin: React.PropTypes.bool,
+    files: React.PropTypes.array,
 };
 
 Editor.defaultProps = {
     admin: false,
+    files: [],
 };
 
 function mapStateToProps(state) {
     return {
         admin: state.user.admin || false,
+        files: state.files.files,
     };
 }
 

@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
-import user from './user';
+import files from './files';
 import shield from './shield';
+import user from './user';
 
 const reducers = combineReducers({
-    user,
+    files,
     shield,
+    user,
 });
 
 export default reducers;

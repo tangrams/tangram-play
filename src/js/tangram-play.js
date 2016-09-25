@@ -22,6 +22,10 @@ import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { initHighlight, highlightRanges } from './editor/highlight';
 import EventEmitter from './components/event-emitter';
 
+// Redux
+import store from './store';
+import { ADD_FILE, CLEAR_FILES } from './store/actions';
+
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
@@ -97,7 +101,17 @@ function setSceneContentsInEditor(sceneData) {
     const shouldMarkClean = (typeof sceneData.is_clean === 'undefined' ||
         sceneData.is_clean === 'true');
 
+    // Update Redux state of files
+    store.dispatch({
+        type: CLEAR_FILES,
+    });
+
     setEditorContent(sceneData.contents, shouldMarkClean);
+
+    store.dispatch({
+        type: ADD_FILE,
+        file: sceneData.filename || 'untitled',
+    });
 
     if (window.isEmbedded === undefined) {
         // Restore cursor position, if provided.
@@ -204,6 +218,10 @@ export function load(scene) {
         // Provide protocol if it appears to be protocol-less URL
         sceneUrl = prependProtocolToUrl(sceneUrl);
 
+        // Get a filename
+        const filenameParts = sceneUrl.split('/');
+        const filename = filenameParts[filenameParts.length - 1];
+
         // If it appears to be a Gist URL:
         if (isGistURL(sceneUrl) === true) {
             fetchPromise = getSceneURLFromGistAPI(sceneUrl)
@@ -230,7 +248,7 @@ export function load(scene) {
 
             return response.text();
         })
-        .then(contents => doLoadProcess({ url: sceneUrl, contents }))
+        .then(contents => doLoadProcess({ url: sceneUrl, contents, filename }))
         .catch(error => {
             onLoadError(error);
         });
