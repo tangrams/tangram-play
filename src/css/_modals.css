@@ -1,168 +1,168 @@
 /* MODALS */
 
 .modal {
-    display: block; /* Default display mode */
-    box-sizing: border-box;
-    width: 400px;
-    padding: 30px;
-    font-family: var(--font-family);
-    font-weight: 200;
-    font-size: 1rem;
-    text-align: center;
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-base-color);
-    box-shadow: var(--modal-shadow);
-    z-index: var(--z01-modal);
-    user-select: none;
-    pointer-events: auto;
-    border: 1px solid var(--ui-border-color);
-    border-radius: 3px;
+  display: block; /* Default display mode */
+  box-sizing: border-box;
+  width: 400px;
+  padding: 30px;
+  font-family: var(--font-family);
+  font-weight: 200;
+  font-size: 1rem;
+  text-align: center;
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-base-color);
+  box-shadow: var(--modal-shadow);
+  z-index: var(--z01-modal);
+  user-select: none;
+  pointer-events: auto;
+  border: 1px solid var(--ui-border-color);
+  border-radius: 3px;
 
-    h4 {
-        margin-top: 0;
-        margin-bottom: 1em;
-        font-weight: 400;
-        font-size: 1.25em;
-    }
+  h4 {
+    margin-top: 0;
+    margin-bottom: 1em;
+    font-weight: 400;
+    font-size: 1.25em;
+  }
 
-    input[type=text],
-    input[type=url] {
-        background-color: var(--ui-well-color);
-        appearance: none;
-        outline: none;
-        border: var(--ui-border);
-        border-radius: var(--ui-border-radius);
-        box-shadow: var(--ui-well-shadow);
-        color: var(--ui-component-text-color);
-        font-size: 12px;
-        font-family: var(--font-family);
-        font-weight: 200;
-        line-height: 24px;
-        padding: 4px 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    input:focus {
-        box-shadow: 0 0 0 1px var(--ui-highlight-color-2) inset;
-    }
-
-    input:invalid {
-        box-shadow: 0 0 0 1px red inset;
-    }
-
-    input::selection {
-        background-color: var(--ui-component-color);
-    }
-
-    label + input {
-        margin-top: 6px;
-    }
-
-    label {
-        font-size: 13px;
-        font-weight: 400;
-        color: var(--ui-subtext-color);
-    }
-}
-
-.modal-alt {
-    text-align: left;
-
-    .modal-buttons {
-        justify-content: flex-end;
-    }
-}
-
-.modal-text {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    line-height: 1.4;
-    user-select: none;
-
-    a {
-        text-decoration: underline;
-    }
-}
-
-.modal-content {
-    margin-top: 20px;
-}
-
-.modal-well {
+  input[type=text],
+  input[type=url] {
+    background-color: var(--ui-well-color);
+    appearance: none;
+    outline: none;
     border: var(--ui-border);
     border-radius: var(--ui-border-radius);
     box-shadow: var(--ui-well-shadow);
+    color: var(--ui-component-text-color);
+    font-size: 12px;
+    font-family: var(--font-family);
+    font-weight: 200;
+    line-height: 24px;
+    padding: 4px 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  input:focus {
+    box-shadow: 0 0 0 1px var(--ui-highlight-color-2) inset;
+  }
+
+  input:invalid {
+    box-shadow: 0 0 0 1px red inset;
+  }
+
+  input::selection {
+    background-color: var(--ui-component-color);
+  }
+
+  label + input {
+    margin-top: 6px;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ui-subtext-color);
+  }
+}
+
+.modal-alt {
+  text-align: left;
+
+  .modal-buttons {
+    justify-content: flex-end;
+  }
+}
+
+.modal-text {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
+  user-select: none;
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.modal-content {
+  margin-top: 20px;
+}
+
+.modal-well {
+  border: var(--ui-border);
+  border-radius: var(--ui-border-radius);
+  box-shadow: var(--ui-well-shadow);
 }
 
 .modal-buttons {
-    width: 100%;
-    margin-top: 24px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
+  width: 100%;
+  margin-top: 24px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
 }
 
 .modal-thinking {
-    margin-right: 30px;
-    line-height: 40px;
-    color: var(--ui-subtext-color);
-    opacity: 0;
-    visibility: hidden;
+  margin-right: 30px;
+  line-height: 40px;
+  color: var(--ui-subtext-color);
+  opacity: 0;
+  visibility: hidden;
 
-    &.modal-thinking-cap-on {
-        opacity: 1;
-        visibility: visible;
-    }
+  &.modal-thinking-cap-on {
+    opacity: 1;
+    visibility: visible;
+  }
 
-    .bt-spinner {
-        margin-right: 0.25em;
-    }
+  .bt-spinner {
+    margin-right: 0.25em;
+  }
 }
 
 .open-url-modal {
-    width: 600px;
+  width: 600px;
 }
 
 .modal-about-text {
-    margin-left: 40px;
-    margin-right: 40px;
+  margin-left: 40px;
+  margin-right: 40px;
 
-    p {
-        font-size: 12px;
-        margin-top: 16px;
-        margin-bottom: 0;
-        user-select: auto;
-    }
+  p {
+    font-size: 12px;
+    margin-top: 16px;
+    margin-bottom: 0;
+    user-select: auto;
+  }
 }
 
 .save-to-cloud-modal {
-    width: 600px;
+  width: 600px;
 }
 
 .save-to-cloud-success-modal {
-    /* Overrides for this modal.
-        TODO: Consider refactoring modal so we don't need any of this */
-    .modal-text {
-        display: none;
-    }
+  /* Overrides for this modal.
+     TODO: Consider refactoring modal so we don't need any of this */
+  .modal-text {
+    display: none;
+  }
 
-    .modal-content {
-        margin-top: 0;
-    }
+  .modal-content {
+    margin-top: 0;
+  }
 
-    /* Inputs */
-    .saved-scene-copy-btn {
-        margin-left: 2px;
-        width: 44px;
+  /* Inputs */
+  .saved-scene-copy-btn {
+    margin-left: 2px;
+    width: 44px;
 
-        &:focus {
-            box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
-        }
+    &:focus {
+      box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
     }
+  }
 }
 
 .modal {
-    position: relative;
+  position: relative;
 }

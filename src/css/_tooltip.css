@@ -1,12 +1,12 @@
 /* TOOLTIP REACT */
 
 .tooltip-arrow {
-    border-width: 0 8px 8px;
+  border-width: 0 8px 8px;
 }
 
 .tooltip-inner {
-    padding: 0.75em 1em;
-    border-radius: 3px;
-    font-weight: 200;
-    color: var(--ui-highlight-color);
+  padding: 0.75em 1em;
+  border-radius: 3px;
+  font-weight: 200;
+  color: var(--ui-highlight-color);
 }

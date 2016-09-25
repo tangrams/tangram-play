@@ -1,123 +1,123 @@
 /* React MapPanel */
 
 .map-panel {
-    position: relative;
-    z-index: var(--z04-map-toolbar);
-    font-size: 1rem;
+  position: relative;
+  z-index: var(--z04-map-toolbar);
+  font-size: 1rem;
 }
 
 /* Style for map panel button to show it */
 .map-panel .map-panel-button-show {
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
-    border: 0 !important; /* temp hacks while style is figured out */
-    outline: none;
-    position: absolute;
-    left: auto;
-    right: 0;
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-component-color);
+  border: 0 !important; /* temp hacks while style is figured out */
+  outline: none;
+  position: absolute;
+  left: auto;
+  right: 0;
 
-    /* temp hacks while style is figured out */
-    box-shadow: none !important;
-    border-radius: 0 !important;
+  /* temp hacks while style is figured out */
+  box-shadow: none !important;
+  border-radius: 0 !important;
 
-    &:hover {
-        color: var(--ui-highlight-color);
-        background-color: var(--ui-active-color);
-    }
+  &:hover {
+    color: var(--ui-highlight-color);
+    background-color: var(--ui-active-color);
+  }
 }
 
 .map-panel-button-show > i.btm {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 /* Style for map panel */
 .map-panel .panel {
-    border-bottom: 1px solid #1a1c1f;
-    z-index: var(--z07-menu);
+  border-bottom: 1px solid #1a1c1f;
+  z-index: var(--z07-menu);
 }
 
 .map-panel-collapsible {
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-base-color);
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-base-color);
 
-    .panel-body {
-        padding: 4px;
-        padding-top: 6px;
-    }
+  .panel-body {
+    padding: 4px;
+    padding-top: 6px;
+  }
 
-    .map-panel-toolbar {
-        display: flex;
-        align-items: center;
-    }
+  .map-panel-toolbar {
+    display: flex;
+    align-items: center;
+  }
 }
 
 /* Style for all map panel buttons */
 .map-panel button {
-    padding: 0;
-    height: 30px;
-    width: 30px;
-    outline: none;
-    margin: 0;
+  padding: 0;
+  height: 30px;
+  width: 30px;
+  outline: none;
+  margin: 0;
 }
 
 .map-panel-toolbar button:hover i {
-    color: var(--ui-highlight-color);
+  color: var(--ui-highlight-color);
 }
 
 .map-panel .btn-group {
-    margin-left: 2px;
-    border: 1px solid #1a1c1f;
-    border-radius: 3px;
-    overflow: hidden;
+  margin-left: 2px;
+  border: 1px solid #1a1c1f;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .map-panel .btn {
-    border: none;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
-    cursor: pointer;
-    user-select: none;
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  user-select: none;
 }
 
 .map-panel-toolbar i.btm {
-    padding-right: 0;
-    margin: 0;
-    font-size: 12px;
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
-    color: var(--ui-component-text-color);
+  padding-right: 0;
+  margin: 0;
+  font-size: 12px;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  color: var(--ui-component-text-color);
 }
 
 /* Style for button groups */
 .map-panel-zoom-container {
-    display: flex;
+  display: flex;
 }
 
 .map-panel-zoom {
-    width: 36px;
-    margin-right: 4px;
-    font-size: 0.75em;
-    text-align: center;
-    line-height: 32px;
-    flex: 0 0 auto;
+  width: 36px;
+  margin-right: 4px;
+  font-size: 0.75em;
+  text-align: center;
+  line-height: 32px;
+  flex: 0 0 auto;
 }
 
 .buttons-plusminus {
-    display: flex;
-    flex: 0 0 auto;
+  display: flex;
+  flex: 0 0 auto;
 
-    i.btm {
-        font-size: 10px; /* slightly smaller */
-    }
+  i.btm {
+    font-size: 10px; /* slightly smaller */
+  }
 
-    .map-panel-zoomin {
-        margin-right: 2px;
-    }
+  .map-panel-zoomin {
+    margin-right: 2px;
+  }
 }
 
 .buttons-locate {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 .buttons-toggle {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }

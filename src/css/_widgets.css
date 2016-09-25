@@ -1,36 +1,36 @@
 /* Editor Widgets */
 
 .CodeMirror-widget {
-    /* Resets this property for wrapped lines. The hanging indent adds
-       its own text-indent and we do not want widgets to inherit it. */
-    text-indent: initial;
+  /* Resets this property for wrapped lines. The hanging indent adds
+     its own text-indent and we do not want widgets to inherit it. */
+  text-indent: initial;
 }
 
 /* React Widgets */
 
 .widget {
-    display: inline-block;
-    position: relative;
-    margin: 0 6px;
-    user-select: none;
+  display: inline-block;
+  position: relative;
+  margin: 0 6px;
+  user-select: none;
 }
 
 .widget-parent {
-    display: inline-block;
-    position: relative;
-    box-sizing: border-box;
-    background-color: none;
-    user-select: none;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  background-color: none;
+  user-select: none;
 }
 
 .widget-modal {
-    display: inline-flex !important;
-    width: auto;
-    padding: 0;
-    outline: none;
-    box-shadow: var(--modal-shadow);
-    background-color: var(--ui-component-color);
-    z-index: var(--z09-pickers);
+  display: inline-flex !important;
+  width: auto;
+  padding: 0;
+  outline: none;
+  box-shadow: var(--modal-shadow);
+  background-color: var(--ui-component-color);
+  z-index: var(--z09-pickers);
 }
 
 /* ******************** */
@@ -40,94 +40,94 @@
 /* GLSL pickers */
 
 .glsl-picker-canvas {
-    background-color: var(--ui-element-color);
+  background-color: var(--ui-element-color);
 }
 
 /* React: Widget Toggle */
 
 .widget-toggle {
-    box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    max-width: 14px;
-    max-height: 14px;
-    width: 1em;
-    height: 1em;
-    cursor: pointer;
-    margin-top: -0.15em;
-    display: flex;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 14px;
+  max-height: 14px;
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  margin-top: -0.15em;
+  display: flex;
 }
 
 .widget-toggle label {
-    display: flex;
+  display: flex;
 }
 
 .widget-toggle input[type=checkbox] {
-    position: relative;
-    outline: none;
-    margin-top: -0.15em;
+  position: relative;
+  outline: none;
+  margin-top: -0.15em;
 }
 
 .widget-toggle input[type=checkbox]::after {
-    content: '\FF58';
-    color: white;
-    visibility: visible;
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    background-color: var(--ui-element-color);
+  content: '\FF58';
+  color: white;
+  visibility: visible;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  background-color: var(--ui-element-color);
 }
 
 .widget-toggle input[type=checkbox]:checked::after {
-    content: '\2713';
-    color: white;
+  content: '\2713';
+  color: white;
 }
 
 /* React: Widget Dropdown */
 
 .widget-dropdown {
-    display: inline-flex;
-    position: relative;
-    font-weight: 400;
-    margin-left: 10px;
-    margin-right: 10px;
-    outline: none;
-    border-radius: 6px;
+  display: inline-flex;
+  position: relative;
+  font-weight: 400;
+  margin-left: 10px;
+  margin-right: 10px;
+  outline: none;
+  border-radius: 6px;
 }
 
 .widget-dropdown select {
-    font-family: var(--font-family);
-    font-size: 100%;
-    font-weight: 400;
-    outline: none;
-    background-color: #5e6064;
-    color: white;
-    border: 0;
-    height: 20px;
-    width: 16px; /* Remove width to get full dropdown to appear */
-    border-radius: 4px;
-    padding-left: 16px;
+  font-family: var(--font-family);
+  font-size: 100%;
+  font-weight: 400;
+  outline: none;
+  background-color: #5e6064;
+  color: white;
+  border: 0;
+  height: 20px;
+  width: 16px; /* Remove width to get full dropdown to appear */
+  border-radius: 4px;
+  padding-left: 16px;
 }
 
 .widget-dropdown option {
-    outline: none;
-    margin-left: 20px;
+  outline: none;
+  margin-left: 20px;
 }
 
 .form-control:focus {
-    border-color: transparent;
-    box-shadow: none;
-    border-radius: 6px;
-    outline: none;
+  border-color: transparent;
+  box-shadow: none;
+  border-radius: 6px;
+  outline: none;
 }
 
 select {
-    appearance: none;
-    outline: none;
-    border: 0;
-    width: 100%;
-    background: #fff url('../../data/imgs/arrow_down.png') no-repeat;
-    background-size: 16px;
-    background-position: left center;
+  appearance: none;
+  outline: none;
+  border: 0;
+  width: 100%;
+  background: #fff url('../../data/imgs/arrow_down.png') no-repeat;
+  background-size: 16px;
+  background-position: left center;
 }
 
 /* Vector picker */
@@ -135,13 +135,13 @@ select {
 /* Should probably simplify this for color picker too.
    just refers to button being clicked to open modal */
 .vectorpicker-bookmark {
-    box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    max-width: 14px;
-    max-height: 14px;
-    width: 1em;
-    height: 1em;
-    cursor: pointer;
-    vertical-align: middle;
-    margin-top: -0.15em;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 14px;
+  max-height: 14px;
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-top: -0.15em;
 }

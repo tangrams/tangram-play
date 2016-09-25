@@ -1,214 +1,214 @@
 /* React MapPanel: search bar and bookmarks tool */
 
 .map-panel-search-bookmarks {
-    display: flex;
-    flex-grow: 1;
-    flex: 1 0 auto;
+  display: flex;
+  flex-grow: 1;
+  flex: 1 0 auto;
 }
 
 .map-panel .btm {
-    font-weight: 400;
+  font-weight: 400;
 }
 
 .map-panel .btm.active {
-    color: yellow;
+  color: yellow;
 }
 
 .map-search {
-    display: inline-flex;
-    flex-grow: 1;
-    background-color: var(--ui-well-color);
+  display: inline-flex;
+  flex-grow: 1;
+  background-color: var(--ui-well-color);
 }
 
 .map-search.btn-group {
-    box-shadow: var(--ui-well-shadow);
-    overflow: visible; /* shows search dropdown */
+  box-shadow: var(--ui-well-shadow);
+  overflow: visible; /* shows search dropdown */
 }
 
 .map-search-latlng {
-    display: flex;
-    align-items: center;
-    height: 30px;
-    font-size: 10px;
-    font-weight: 200;
-    color: var(--ui-unnamed-light-color);
-    white-space: nowrap;
-    padding-left: 6px;
-    margin-top: 1px; /* Align with input text */
-    margin-bottom: -1px; /* Recover margin from top */
+  display: flex;
+  align-items: center;
+  height: 30px;
+  font-size: 10px;
+  font-weight: 200;
+  color: var(--ui-unnamed-light-color);
+  white-space: nowrap;
+  padding-left: 6px;
+  margin-top: 1px; /* Align with input text */
+  margin-bottom: -1px; /* Recover margin from top */
 }
 
 .map-search button {
-    min-width: 32px;
-    background-color: transparent !important; /* hack */
-    box-shadow: none !important; /* hack to prevent doubling of box shadow */
+  min-width: 32px;
+  background-color: transparent !important; /* hack */
+  box-shadow: none !important; /* hack to prevent doubling of box shadow */
 }
 
 /* Autosuggestion list */
 .react-autosuggest__container {
-    flex-grow: 1;
-    border-bottom: 1px solid transparent;
-    height: 30px;
-    min-width: 150px;
+  flex-grow: 1;
+  border-bottom: 1px solid transparent;
+  height: 30px;
+  min-width: 150px;
 
-    input {
-        width: 100%;
-        height: 18px;
-        font-family: var(--font-family); /* input does not inherit font-family */
-        font-size: 12px;
-        font-weight: 200;
-        background-color: transparent;
-        appearance: none;
-        outline: none;
-        border: 0;
-        color: var(--ui-component-text-color);
-        margin-top: 9px;
-        padding-bottom: 5px;
-    }
+  input {
+    width: 100%;
+    height: 18px;
+    font-family: var(--font-family); /* input does not inherit font-family */
+    font-size: 12px;
+    font-weight: 200;
+    background-color: transparent;
+    appearance: none;
+    outline: none;
+    border: 0;
+    color: var(--ui-component-text-color);
+    margin-top: 9px;
+    padding-bottom: 5px;
+  }
 }
 
 .react-autosuggest__suggestions-container {
-    position: absolute; /* Allow list to float separately from input element */
-    left: 0;
-    width: calc(100% + 2px); /* hack */
-    font-size: 12px;
-    font-weight: 200;
-    background-color: var(--ui-component-color);
+  position: absolute; /* Allow list to float separately from input element */
+  left: 0;
+  width: calc(100% + 2px); /* hack */
+  font-size: 12px;
+  font-weight: 200;
+  background-color: var(--ui-component-color);
+  margin: 0;
+  margin-top: 3px;
+  white-space: nowrap;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  overflow: hidden;
+  margin-left: -1px; /* position hack */
+
+  ul {
     margin: 0;
-    margin-top: 3px;
-    white-space: nowrap;
+    border: 1px solid #1a1c1f;
+    border-top: 0;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
     overflow: hidden;
-    margin-left: -1px; /* position hack */
+  }
 
-    ul {
-        margin: 0;
-        border: 1px solid #1a1c1f;
-        border-top: 0;
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
-        overflow: hidden;
-    }
+  li {
+    border-top: 1px solid var(--ui-active-color);
+    cursor: pointer;
+    line-height: 1.4;
+  }
 
-    li {
-        border-top: 1px solid var(--ui-active-color);
-        cursor: pointer;
-        line-height: 1.4;
-    }
-
-    li:hover {
-        background-color: var(--ui-active-color);
-    }
+  li:hover {
+    background-color: var(--ui-active-color);
+  }
 }
 
 .react-autosuggest__suggestions-list {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .react-autosuggest__suggestion--focused {
-    background-color: var(--ui-active-color);
+  background-color: var(--ui-active-color);
 }
 
 .react-autosuggest__suggestions-container strong {
-    color: yellow;
-    font-weight: 200;
+  color: yellow;
+  font-weight: 200;
 }
 
 .react-autosuggest__suggestions-container i.btm,
 .bookmark-dropdown-icon i.btm {
-    font-size: 10px;
-    padding-right: 10px;
-    font-weight: 900;
+  font-size: 10px;
+  padding-right: 10px;
+  font-weight: 900;
 }
 
 .map-search-suggestion-item {
-    padding: 9px;
-    padding-left: 0; /* Space for icon */
+  padding: 9px;
+  padding-left: 0; /* Space for icon */
 
-    /* Prevent super-long labels from breaking layout */
-    text-overflow: ellipsis;
-    overflow: hidden;
+  /* Prevent super-long labels from breaking layout */
+  text-overflow: ellipsis;
+  overflow: hidden;
 
-    & > i.btm {
-        padding: 0;
-        width: 32px;
-        margin-right: 1px; /* Align text with input */
-        text-align: center;
-    }
+  & > i.btm {
+    padding: 0;
+    width: 32px;
+    margin-right: 1px; /* Align text with input */
+    text-align: center;
+  }
 }
 
 /* Bookmark list dropdown */
 .dropdown {
-    transition: all 0.8s ease-out;
-    transition-delay: 2s;
+  transition: all 0.8s ease-out;
+  transition-delay: 2s;
 }
 
 .dropdown-menu.dropdown-menu-right {
-    background-color: var(--ui-component-color);
-    font-size: 12px;
-    margin: 0;
-    border: 0;
-    padding: 0;
+  background-color: var(--ui-component-color);
+  font-size: 12px;
+  margin: 0;
+  border: 0;
+  padding: 0;
 
-    a {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        outline: none;
-    }
+  a {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    outline: none;
+  }
 
-    .bookmark-dropdown-center a {
-        justify-content: center; /* Override previous style */
-        text-align: center;
-        padding: 8px;
-    }
+  .bookmark-dropdown-center a {
+    justify-content: center; /* Override previous style */
+    text-align: center;
+    padding: 8px;
+  }
 
-    li {
-        border-top: 1px solid var(--ui-active-color);
-        transition: all 0.4s ease-out;
-    }
+  li {
+    border-top: 1px solid var(--ui-active-color);
+    transition: all 0.4s ease-out;
+  }
 }
 
 .bookmark-dropdown-icon {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .bookmark-dropdown-info {
-    display: inline-flex;
-    flex-grow: 1;
-    padding: 8px 8px 8px 16px;
+  display: inline-flex;
+  flex-grow: 1;
+  padding: 8px 8px 8px 16px;
 }
 
 .bookmark-dropdown-info:hover {
-    background-color: var(--ui-active-color);
+  background-color: var(--ui-active-color);
 }
 
 .bookmark-dropdown-text {
-    color: var(--ui-unnamed-light-color);
+  color: var(--ui-unnamed-light-color);
 }
 
 .bookmark-dropdown-clear:hover {
-    background-color: var(--ui-active-color);
+  background-color: var(--ui-active-color);
 }
 
 .bookmark-dropdown-delete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border-left: 1px solid #36383c;
-    text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-left: 1px solid #36383c;
+  text-align: center;
 
-    &:hover {
-        background-color: var(--ui-active-color);
-    }
+  &:hover {
+    background-color: var(--ui-active-color);
+  }
 
-    i.btm {
-        font-size: 6px;
-        font-weight: 900;
-        margin: 0;
-    }
+  i.btm {
+    font-size: 6px;
+    font-weight: 900;
+    margin: 0;
+  }
 }

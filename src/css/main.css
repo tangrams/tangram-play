@@ -66,78 +66,78 @@
 /* VARIABLES */
 
 :root {
-    /* Uses Roboto if available, and falls back to system fonts otherwise */
-    --font-family: 'Roboto', sans-serif;
-    --root-font-size: 14px;
-    --editor-font-family: 'Source Code Pro', monospace;
-    --ui-editor-background-color: #1f2225;
-    --ui-base-color: #26282c;
-    --ui-component-color: #303235;
-    --ui-element-color: #36383c;
-    --ui-active-color: #3d3f44;
-    --ui-highlight-color: yellow;
-    --ui-highlight-color-2: rgb(221, 221, 0);
-    --ui-component-text-color: #eefafa;
-    --ui-link-text-color: #e1eeee;
-    --ui-subtext-color: #c0c6c6;
-    --ui-unnamed-light-color: #999ca0;
-    --ui-border-color: #1a1c1f;
-    --ui-border: 1px solid var(--ui-border-color);
-    --ui-border-radius: 3px;
-    --ui-well-color: #404248;
-    --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
-    --modal-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.25);
+  /* Uses Roboto if available, and falls back to system fonts otherwise */
+  --font-family: 'Roboto', sans-serif;
+  --root-font-size: 14px;
+  --editor-font-family: 'Source Code Pro', monospace;
+  --ui-editor-background-color: #1f2225;
+  --ui-base-color: #26282c;
+  --ui-component-color: #303235;
+  --ui-element-color: #36383c;
+  --ui-active-color: #3d3f44;
+  --ui-highlight-color: yellow;
+  --ui-highlight-color-2: rgb(221, 221, 0);
+  --ui-component-text-color: #eefafa;
+  --ui-link-text-color: #e1eeee;
+  --ui-subtext-color: #c0c6c6;
+  --ui-unnamed-light-color: #999ca0;
+  --ui-border-color: #1a1c1f;
+  --ui-border: 1px solid var(--ui-border-color);
+  --ui-border-radius: 3px;
+  --ui-well-color: #404248;
+  --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
+  --modal-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.25);
 
-    /* LAYOUT */
-    --menu-bar-height: 40px;
+  /* LAYOUT */
+  --menu-bar-height: 40px;
 
-    /* Z-INDEX SCALE */
-    --z01: 100;
-    --z02: 200;
-    --z03: 300;
-    --z04: 410; /* Leaflet overlays are at 400. Our z-level of 4 has higher priority than the map. */
-    --z05: 500;
-    --z06: 600;
-    --z07: 800; /* Leaflet markers at 600, popups at 700. */
-    --z08: 1000;
-    --z09: 1100;
-    --z10: 1200;
+  /* Z-INDEX SCALE */
+  --z01: 100;
+  --z02: 200;
+  --z03: 300;
+  --z04: 410; /* Leaflet overlays are at 400. Our z-level of 4 has higher priority than the map. */
+  --z05: 500;
+  --z06: 600;
+  --z07: 800; /* Leaflet markers at 600, popups at 700. */
+  --z08: 1000;
+  --z09: 1100;
+  --z10: 1200;
 
-    /**
-     *  Z-INDEX COMPONENTS
-     *  Variables are assigned to scale, above.
-     *  These are kept here so you can quickly ascertain
-     *  the hierarchy of elements.
-     *  They are also named with the scale position so that
-     *  when they are referenced in other CSS files, their
-     *  z-scale position is also obvious at a glance.
-     *  Please note, the z-index scale does not defeat limitations
-     *  imposed by stacking contexts.
-     */
-    /* 01: Anything that needs to be on a z-index > 0 || auto */
-    /* Sometimes an element only needs z01 within its own stacking context */
-    --z01-colorpalette: var(--z01);
-    --z01-filedrop: var(--z01);
-    --z01-modal: var(--z01);
-    --z01-sandbox: var(--z01);
-    --z01-divider: var(--z01);
+  /**
+   *  Z-INDEX COMPONENTS
+   *  Variables are assigned to scale, above.
+   *  These are kept here so you can quickly ascertain
+   *  the hierarchy of elements.
+   *  They are also named with the scale position so that
+   *  when they are referenced in other CSS files, their
+   *  z-scale position is also obvious at a glance.
+   *  Please note, the z-index scale does not defeat limitations
+   *  imposed by stacking contexts.
+   */
+  /* 01: Anything that needs to be on a z-index > 0 || auto */
+  /* Sometimes an element only needs z01 within its own stacking context */
+  --z01-colorpalette: var(--z01);
+  --z01-filedrop: var(--z01);
+  --z01-modal: var(--z01);
+  --z01-sandbox: var(--z01);
+  --z01-divider: var(--z01);
 
-    /* 04: Anything that should display on top of Leaflet overlays */
-    --z04-map-toolbar: var(--z04);
-    --z04-map-inspection: var(--z04);
-    --z04-map-loading: var(--z04);
+  /* 04: Anything that should display on top of Leaflet overlays */
+  --z04-map-toolbar: var(--z04);
+  --z04-map-inspection: var(--z04);
+  --z04-map-loading: var(--z04);
 
-    /* 05: Above all map UI, below all other UI */
+  /* 05: Above all map UI, below all other UI */
 
-    /* 07: Anything that should display on top of all Leaflet elements */
-    --z07-menu: var(--z07);
+  /* 07: Anything that should display on top of all Leaflet elements */
+  --z07-menu: var(--z07);
 
-    /* 08: Overlays */
-    --z08-overlay: var(--z08);
+  /* 08: Overlays */
+  --z08-overlay: var(--z08);
 
-    /* 09-10: Anything that demands absolutely the highest priority */
-    --z09-pickers: var(--z09);
-    --z09-tooltip: var(--z09);
-    --z10-dropdown-button: var(--z10);
-    --z10-mobile-message: var(--z10);
+  /* 09-10: Anything that demands absolutely the highest priority */
+  --z09-pickers: var(--z09);
+  --z09-tooltip: var(--z09);
+  --z10-dropdown-button: var(--z10);
+  --z10-mobile-message: var(--z10);
 }

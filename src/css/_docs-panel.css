@@ -1,194 +1,194 @@
 /* React DocsPanel */
 
 .docs-panel {
-    position: absolute;
-    z-index: var(--z04-map-toolbar);
-    bottom: 0;
-    right: 0;
-    /* TODO: don't hardcode magic number */
-    width: calc(100% - 62px);
-    padding-left: 2px;
+  position: absolute;
+  z-index: var(--z04-map-toolbar);
+  bottom: 0;
+  right: 0;
+  /* TODO: don't hardcode magic number */
+  width: calc(100% - 62px);
+  padding-left: 2px;
 }
 
 /* Style for map panel button to show it */
 .docs-panel .docs-panel-button-show {
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
-    border: none;
-    outline: none;
-    position: absolute;
-    right: 0;
-    bottom: 0;
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-component-color);
+  border: none;
+  outline: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
 
-    &:hover {
-        color: var(--ui-highlight-color);
-        background-color: var(--ui-active-color);
-    }
+  &:hover {
+    color: var(--ui-highlight-color);
+    background-color: var(--ui-active-color);
+  }
 }
 
 .docs-panel-button-show > i.btm {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 /* Docs divider */
 
 .docs-divider {
-    height: 8px;
-    cursor: row-resize;
-    background-color: var(--ui-base-color);
-    display: flex;
-    text-align: center;
-    justify-content: center;
+  height: 8px;
+  cursor: row-resize;
+  background-color: var(--ui-base-color);
+  display: flex;
+  text-align: center;
+  justify-content: center;
 }
 
 .docs-divider:hover {
-    background-color: var(--ui-active-color);
+  background-color: var(--ui-active-color);
 }
 
 .docs-divider-affordance,
 .docs-divider-affordance::after,
 .docs-divider-affordance::before {
-    display: flex;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: var(--ui-component-text-color);
-    margin: auto;
+  display: flex;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--ui-component-text-color);
+  margin: auto;
 }
 
 .docs-divider-affordance::after,
 .docs-divider-affordance::before {
-    content: '';
-    position: absolute;
+  content: '';
+  position: absolute;
 }
 
 .docs-divider-affordance::after {
-    transform: translateX(10px);
+  transform: translateX(10px);
 }
 
 .docs-divider-affordance::before {
-    transform: translateX(-10px);
+  transform: translateX(-10px);
 }
 
 /* Style for map panel */
 .docs-panel .panel {
-    border: none;
-    margin: 0;
-    z-index: var(--z07-menu);
+  border: none;
+  margin: 0;
+  z-index: var(--z07-menu);
 }
 
 .docs-panel-collapsible {
-    color: var(--ui-component-text-color);
-    /* background-color: var(--ui-component-color); */
-    background-color: #2e3033;
-    transform: translate(0, 0) !important; /* This is to prevent React Draggable from changing panel position */
+  color: var(--ui-component-text-color);
+  /* background-color: var(--ui-component-color); */
+  background-color: #2e3033;
+  transform: translate(0, 0) !important; /* This is to prevent React Draggable from changing panel position */
 
-    /* Ease in and out of doc panel */
-    /* transition-timing-function: ease-in-out;
+  /* Ease in and out of doc panel */
+  /* transition-timing-function: ease-in-out;
     transition: 0.1s; */
 
-    .panel-body {
-        padding: 0;
-        height: 100%;
-    }
+  .panel-body {
+    padding: 0;
+    height: 100%;
+  }
 
-    .docs-panel-toolbar {
-        display: flex;
-        /* padding-top: 6px; */
-        padding-bottom: 6px;
-        flex-direction: row;
-        height: 100%;
-    }
+  .docs-panel-toolbar {
+    display: flex;
+    /* padding-top: 6px; */
+    padding-bottom: 6px;
+    flex-direction: row;
+    height: 100%;
+  }
 }
 
 /* Style for all map panel buttons */
 .docs-panel * button {
-    padding: 0;
-    height: 38px;
-    width: 38px;
-    background-color: var(--ui-element-color);
-    color: var(--ui-component-text-color);
-    outline: none;
+  padding: 0;
+  height: 38px;
+  width: 38px;
+  background-color: var(--ui-element-color);
+  color: var(--ui-component-text-color);
+  outline: none;
 
-    &:hover {
-        background-color: var(--ui-active-color);
-    }
+  &:hover {
+    background-color: var(--ui-active-color);
+  }
 }
 
 .docs-panel-toolbar button:hover i {
-    color: var(--ui-highlight-color);
+  color: var(--ui-highlight-color);
 }
 
 .docs-panel .btn {
-    border: none;
+  border: none;
 }
 
 .docs-panel-toolbar i.btm {
-    padding-right: 0;
-    font-size: 12px;
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
-    color: var(--ui-component-text-color);
+  padding-right: 0;
+  font-size: 12px;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  color: var(--ui-component-text-color);
 }
 
 .docs-panel .btn-group {
-    /* margin-right: 2px; */
+  /* margin-right: 2px; */
 }
 
 .docs-panel-toolbar-content {
-    width: 100%;
+  width: 100%;
 }
 
 .docs-panel-toolbar-content .container {
-    position: relative;
-    height: 100%;
-    padding: 20px 28px;
-    overflow-y: auto;
-    overflow-x: hidden;
+  position: relative;
+  height: 100%;
+  padding: 20px 28px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .docs-panel-toolbar-content .container::-webkit-scrollbar {
-    background-color: #2e3033;
-    width: 12px;
+  background-color: #2e3033;
+  width: 12px;
 }
 
 .docs-panel-toolbar-content .container::-webkit-scrollbar-thumb {
-    background-color: #b9b9bd;
+  background-color: #b9b9bd;
 }
 
 /* Toolbar buttons */
 
 .docs-panel-toolbar-toggle {
-    position: absolute;
-    right: 0;
+  position: absolute;
+  right: 0;
 }
 
 /* Content formatting */
 
 .capitalize {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 .child-row {
-    padding-left: 15px;
-    padding-bottom: 10px;
+  padding-left: 15px;
+  padding-bottom: 10px;
 }
 
 .toolbar-content-row {
-    padding-bottom: 10px;
-    font-size: 14px;
+  padding-bottom: 10px;
+  font-size: 14px;
 }
 
 code {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .docs-link code {
-    color: #bf4d6a;
-    cursor: pointer;
-    text-decoration: underline;
+  color: #bf4d6a;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .docs-link code:hover {
-    text-shadow: 0 0 1px #c34646;
+  text-shadow: 0 0 1px #c34646;
 }

@@ -2,25 +2,25 @@
 
 /* Container for map and map-related UI */
 .map-container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 50%; /* Starting position; this is overridden by scripts */
-    overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 50%; /* Starting position; this is overridden by scripts */
+  overflow: hidden;
 }
 
 /* Container for Leaflet/Tangram */
 .map-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 
-    &.map-view-not-loaded {
-        background-image: url('../../data/imgs/question.gif');
-        background-repeat: no-repeat;
-        background-position: center center;
-    }
+  &.map-view-not-loaded {
+    background-image: url('../../data/imgs/question.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
 }

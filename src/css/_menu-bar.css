@@ -1,160 +1,160 @@
 /* React MenuBar */
 
 nav {
-    border: 0;
-    user-select: none;
+  border: 0;
+  user-select: none;
 }
 
 .navbar {
-    height: var(--menu-bar-height);
+  height: var(--menu-bar-height);
 }
 
 .menu-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: var(--z07-menu);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: var(--z07-menu);
 }
 
 .menu-bar .container {
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-    width: 100%;
-    background-color: var(--ui-base-color);
-    border-bottom: 1px solid #1a1c1f;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  background-color: var(--ui-base-color);
+  border-bottom: 1px solid #1a1c1f;
 }
 
 .brand {
-    position: relative;
-    padding: 8px 12px 12px 15px;
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--ui-component-text-color);
-    z-index: 1; /* This just needs to be any number to be properly sorted in its stacking context */
+  position: relative;
+  padding: 8px 12px 12px 15px;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ui-component-text-color);
+  z-index: 1; /* This just needs to be any number to be properly sorted in its stacking context */
 }
 
 .brand-tag {
-    position: absolute;
-    left: 15px;
-    top: 20px;
-    font-size: 9px;
-    color: var(--ui-highlight-color);
+  position: absolute;
+  left: 15px;
+  top: 20px;
+  font-size: 9px;
+  color: var(--ui-highlight-color);
 }
 
 .menu-bar .btm {
-    padding-right: 8px;
-    font-size: 15px;
+  padding-right: 8px;
+  font-size: 15px;
 }
 
 .menu-bar a {
-    position: relative;
-    display: block;
-    color: var(--ui-component-text-color);
-    font-weight: 200;
-    font-size: 13px;
-    outline: none;
-    line-height: var(--menu-bar-height);
-    height: var(--menu-bar-height);
-    padding: 0 15px;
+  position: relative;
+  display: block;
+  color: var(--ui-component-text-color);
+  font-weight: 200;
+  font-size: 13px;
+  outline: none;
+  line-height: var(--menu-bar-height);
+  height: var(--menu-bar-height);
+  padding: 0 15px;
 
-    &:hover {
-        color: yellow;
-        background-color: var(--ui-active-color);
-    }
+  &:hover {
+    color: yellow;
+    background-color: var(--ui-active-color);
+  }
 }
 
 .menu-bar li.active a {
-    color: var(--ui-highlight-color);
-    font-weight: 600;
+  color: var(--ui-highlight-color);
+  font-weight: 600;
 }
 
 .menu-bar li.active i {
-    font-weight: 900;
+  font-weight: 900;
 }
 
 .menu-bar .dropdown-menu li {
-    border-top: 1px solid var(--ui-active-color);
+  border-top: 1px solid var(--ui-active-color);
 
-    &:hover {
-        background-color: var(--ui-active-color);
-    }
+  &:hover {
+    background-color: var(--ui-active-color);
+  }
 }
 
 .menu-bar .dropdown-menu {
-    border-top: 0;
-    padding: 0;
-    min-width: 200px;
-    background-color: var(--ui-component-color);
+  border-top: 0;
+  padding: 0;
+  min-width: 200px;
+  background-color: var(--ui-component-color);
 }
 
 .menu-bar .dropdown-menu a {
-    padding: 3px 14px;
-    line-height: 36px;
+  padding: 3px 14px;
+  line-height: 36px;
 }
 
 .dropdown-menu {
-    /* Ensure fixed-width alignment of Black Tie icons */
-    i {
-        width: 17px;
-        margin-right: 6px;
-    }
+  /* Ensure fixed-width alignment of Black Tie icons */
+  i {
+    width: 17px;
+    margin-right: 6px;
+  }
 }
 
 .menu-bar li.open.dropdown {
-    z-index: var(--z10-dropdown-button);
+  z-index: var(--z10-dropdown-button);
 }
 
 /* Small screens */
 .navbar-toggle {
-    outline: none;
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-right: 12px;
+  outline: none;
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-component-color);
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 12px;
 
-    span {
-        background-color: white;
-    }
+  span {
+    background-color: white;
+  }
 }
 
 .navbar-collapse {
-    position: relative;
-    background-color: var(--ui-base-color);
+  position: relative;
+  background-color: var(--ui-base-color);
 }
 
 /* Sign in buttons */
 .menu-sign-in {
-    background-color: #7a0000;
-    color: #f1f1f1;
+  background-color: #7a0000;
+  color: #f1f1f1;
 
-    /* hover style override */
-    a:hover {
-        background-color: #8d0000;
-        color: white;
-    }
+  /* hover style override */
+  a:hover {
+    background-color: #8d0000;
+    color: white;
+  }
 
-    /* icon style override */
-    .btm {
-        padding-right: 0;
-        padding-left: 0.5em;
-    }
+  /* icon style override */
+  .btm {
+    padding-right: 0;
+    padding-left: 0.5em;
+  }
 }
 
 .sign-in-avatar {
-    display: inline-block;
-    margin-right: 0.5em;
-    margin-top: -3px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    vertical-align: middle;
+  display: inline-block;
+  margin-right: 0.5em;
+  margin-top: -3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  vertical-align: middle;
 }
 
 .sign-in-admin-star {
-    color: lightgoldenrodyellow;
-    text-shadow: -1px 1px 0 #e69f00, -2px 2px 0 #cc8401, -3px 3px 0 #bd7100;
-    margin-left: 0.25em;
+  color: lightgoldenrodyellow;
+  text-shadow: -1px 1px 0 #e69f00, -2px 2px 0 #cc8401, -3px 3px 0 #bd7100;
+  margin-left: 0.25em;
 }
