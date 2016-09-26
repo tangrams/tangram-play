@@ -24,7 +24,7 @@ import EventEmitter from './components/event-emitter';
 
 // Redux
 import store from './store';
-import { ADD_FILE, CLEAR_FILES } from './store/actions';
+import { ADD_FILE, CLEAR_FILES, MARK_FILE_DIRTY, MARK_FILE_CLEAN } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
@@ -80,9 +80,21 @@ function updateContent() {
     // and the the editor state is not clean), we erase the ?scene= state
     // from the URL string. This prevents a situation where reloading (or
     // copy-pasting the URL) loads the scene file from an earlier state.
-    if (!isClean) {
+    if (isClean === false) {
         replaceHistoryState({
             scene: null,
+        });
+
+        // Also use this area to mark the state of the file in Redux store
+        // TODO: These checks do not have to be debounced for Tangram.
+        store.dispatch({
+            type: MARK_FILE_DIRTY,
+            fileIndex: 0,
+        });
+    } else {
+        store.dispatch({
+            type: MARK_FILE_CLEAN,
+            fileIndex: 0,
         });
     }
 }

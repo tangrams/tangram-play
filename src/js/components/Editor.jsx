@@ -29,12 +29,20 @@ class Editor extends React.PureComponent {
             <div className="editor-container" id="content">
                 <Divider />
                 <div className="editor-tabs">
-                    <div className="editor-tab">
-                        {this.props.files.map((item, i) =>
-                            <div className="editor-tab-label" key={i}>{item.filename || 'untitled'}</div>
-                        )}
-                        <div className="editor-tab-close">×</div>
-                    </div>
+                    {this.props.files.map((item, i) => {
+                        let classes = 'editor-tab';
+                        if (item.is_clean === false) {
+                            classes += ' editor-tab-is-dirty';
+                        }
+
+                        return (
+                            <div className={classes} key={i}>
+                                <div className="editor-tab-label">{item.filename || 'untitled'}</div>
+                                <div className="editor-tab-dirty">○</div>
+                                <div className="editor-tab-close">×</div>
+                            </div>
+                        );
+                    })}
                 </div>
                 <div className="editor" id="editor" ref={(ref) => { this.editorEl = ref; }} />
                 {(() => {
