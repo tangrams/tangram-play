@@ -71,7 +71,7 @@ gulp.task('js', function () {
     debug: true,
     extensions: ['.jsx'],
     transform: [
-      babelify.configure({ presets: ['es2015', 'react'] }),
+      babelify,
       shim,
       envify
     ],

@@ -110,7 +110,10 @@ function setSceneContentsInEditor(sceneData) {
 
     store.dispatch({
         type: ADD_FILE,
-        file: sceneData.filename || 'untitled',
+        file: {
+            ...sceneData,
+            filename: sceneData.filename,
+        },
     });
 
     if (window.isEmbedded === undefined) {

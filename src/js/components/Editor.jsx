@@ -31,7 +31,7 @@ class Editor extends React.PureComponent {
                 <div className="editor-tabs">
                     <div className="editor-tab">
                         {this.props.files.map((item, i) =>
-                            <div className="editor-tab-label" key={i}>{item}</div>
+                            <div className="editor-tab-label" key={i}>{item.filename || 'untitled'}</div>
                         )}
                         <div className="editor-tab-close">×</div>
                     </div>
