@@ -68,13 +68,21 @@ function determineScene() {
 }
 
 // If editor is updated, send it to the map.
-function updateContent() {
-    const content = getEditorContent();
+function updateContent(content) {
     const url = URL.createObjectURL(new Blob([content]));
+    loadScene(url);
+}
+
+// Update widgets & content after a batch of changes
+// Wrap updateContent() in a debounce function
+const debouncedUpdateContent = debounce(updateContent, 500);
+
+function watchEditorForChanges() {
+    const content = getEditorContent();
     const isClean = editor.getDoc().isClean();
 
     // Send scene data to Tangram
-    loadScene(url);
+    debouncedUpdateContent(content);
 
     // Update the page URL. When editor contents changes by user input
     // and the the editor state is not clean), we erase the ?scene= state
@@ -98,10 +106,6 @@ function updateContent() {
         });
     }
 }
-
-// Update widgets & content after a batch of changes
-// Wrap updateContent() in a debounce function
-const watchEditorForChanges = debounce(updateContent, 500);
 
 function setSceneContentsInEditor(sceneData) {
     // Mark as "clean" if the contents are freshly loaded
