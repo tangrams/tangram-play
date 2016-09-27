@@ -22,7 +22,7 @@
      be passed in via props so we select it in this way, dependent on its
      position in DOM. */
   & > div:first-child {
-    border-radius: 50%;
+    border-radius: var(--ui-border-radius);
     margin: 1px;
   }
 }
@@ -33,8 +33,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--ui-border-radius);
+  border: 1px solid var(--ui-border-color);
 }
 
 /* ColorPicker.jsx */
@@ -109,10 +109,12 @@
 
 .colorpicker-input-fields input {
   width: 100%;
-  padding: 4px;
-  border: none;
+  padding: 4px 2px;
+  border: var(--ui-border);
+  border-radius: var(--ui-border-radius);
+  box-shadow: var(--ui-well-shadow);
   outline: none;
-  background-color: #55575a;
+  background-color: var(--ui-well-color);
   text-align: center;
   color: var(--ui-component-text-color);
 }

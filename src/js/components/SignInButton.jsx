@@ -90,7 +90,7 @@ class SignInButton extends React.Component {
 
             let tooltipContents = 'This is you!';
             if (this.props.admin === true) {
-                tooltipContents = 'You are a Mapzen admin.';
+                tooltipContents = '★ You are an admin.';
             }
 
             return (
@@ -98,6 +98,7 @@ class SignInButton extends React.Component {
                     rootClose
                     placement="bottom"
                     overlay={<Tooltip id="tooltip">{tooltipContents}</Tooltip>}
+                    delayShow={200}
                 >
                     <NavDropdown
                         title={ButtonContents}

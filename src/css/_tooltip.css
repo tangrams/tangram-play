@@ -2,11 +2,17 @@
 
 .tooltip-arrow {
   border-width: 0 8px 8px;
+  transform: translateX(-3px);
 }
 
 .tooltip-inner {
-  padding: 0.75em 1em;
-  border-radius: 3px;
+  /* Margins create room between edge of a tooltip and edge of the screen.
+     Note that this also creates a gap between side arrow so do not use them. */
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  padding: 0.5em 0.75em;
+  border-radius: var(--ui-border-radius);
+  font-size: 0.75rem;
   font-weight: 200;
   color: var(--ui-highlight-color);
 }

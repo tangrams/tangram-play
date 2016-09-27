@@ -68,6 +68,7 @@ export default class MapPanelZoom extends React.Component {
                         rootClose
                         placement="bottom"
                         overlay={<Tooltip id="tooltip">Zoom in</Tooltip>}
+                        delayShow={200}
                     >
                         <Button onClick={this.onClickZoomIn} className="map-panel-zoomin">
                             <Icon type="bt-plus" />
@@ -78,6 +79,7 @@ export default class MapPanelZoom extends React.Component {
                         rootClose
                         placement="bottom"
                         overlay={<Tooltip id="tooltip">Zoom out</Tooltip>}
+                        delayShow={200}
                     >
                         <Button onClick={this.onClickZoomOut}>
                             <Icon type="bt-minus" />

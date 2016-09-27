@@ -197,6 +197,7 @@ export default class MapPanel extends React.Component {
                                 rootClose
                                 placement="bottom"
                                 overlay={<Tooltip id="tooltip">Locate me</Tooltip>}
+                                delayShow={200}
                             >
                                 <Button onClick={this.clickGeolocator}>
                                     <Icon type={this.state.geolocatorButton} />
@@ -210,6 +211,7 @@ export default class MapPanel extends React.Component {
                                 rootClose
                                 placement="bottom"
                                 overlay={<Tooltip id="tooltip">Toggle map toolbar</Tooltip>}
+                                delayShow={200}
                             >
                                 <Button onClick={this.toggleMapPanel}>
                                     <Icon type="bt-caret-up" />
@@ -227,6 +229,7 @@ export default class MapPanel extends React.Component {
                                 rootClose
                                 placement="bottom"
                                 overlay={<Tooltip id="tooltip">Toogle map toolbar</Tooltip>}
+                                delayShow={200}
                             >
                                 <Button onClick={this.toggleMapPanel} className="map-panel-button-show">
                                     <Icon type="bt-caret-down" />

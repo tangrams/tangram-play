@@ -461,6 +461,7 @@ export default class MapPanelLocationBar extends React.Component {
                     rootClose
                     placement="bottom"
                     overlay={<Tooltip id="tooltip">Search for a location</Tooltip>}
+                    delayShow={200}
                 >
                     <Button className="map-panel-search-button">
                         <Icon type="bt-search" />
@@ -488,6 +489,7 @@ export default class MapPanelLocationBar extends React.Component {
                     rootClose
                     placement="bottom"
                     overlay={<Tooltip id="tooltip">Bookmark location</Tooltip>}
+                    delayShow={200}
                 >
                     <Button className="map-panel-save-button" onClick={this.onClickSaveBookmark}>
                         <Icon type="bt-star" active={this.state.bookmarkActive} />

@@ -6,28 +6,15 @@
   bottom: 0;
   right: 0;
   /* TODO: don't hardcode magic number */
-  width: calc(100% - 62px);
+  width: calc(100% - 54px);
   padding-left: 2px;
 }
 
 /* Style for map panel button to show it */
 .docs-panel .docs-panel-button-show {
-  color: var(--ui-component-text-color);
-  background-color: var(--ui-component-color);
-  border: none;
-  outline: none;
   position: absolute;
   right: 0;
   bottom: 0;
-
-  &:hover {
-    color: var(--ui-highlight-color);
-    background-color: var(--ui-active-color);
-  }
-}
-
-.docs-panel-button-show > i.btm {
-  padding-right: 0;
 }
 
 /* Docs divider */
@@ -35,10 +22,14 @@
 .docs-divider {
   height: 8px;
   cursor: row-resize;
-  background-color: var(--ui-base-color);
   display: flex;
   text-align: center;
   justify-content: center;
+  user-select: none;
+  background-color: var(--ui-component-color);
+  border-bottom: var(--ui-border);
+  border-top: 1px solid var(--ui-editor-background-color); /* slightly lighter for 3dness */
+  box-shadow: var(--ui-emboss-shadow);
 }
 
 .docs-divider:hover {
@@ -101,38 +92,15 @@
   }
 }
 
-/* Style for all map panel buttons */
-.docs-panel * button {
-  padding: 0;
-  height: 38px;
-  width: 38px;
-  background-color: var(--ui-element-color);
-  color: var(--ui-component-text-color);
-  outline: none;
-
-  &:hover {
-    background-color: var(--ui-active-color);
-  }
+.docs-panel button {
+  margin: 4px;
+  height: 30px;
+  width: 30px;
+  line-height: 5px; /* vertical centering of caret icon */
 }
 
-.docs-panel-toolbar button:hover i {
-  color: var(--ui-highlight-color);
-}
-
-.docs-panel .btn {
-  border: none;
-}
-
-.docs-panel-toolbar i.btm {
+.docs-panel button .btm {
   padding-right: 0;
-  font-size: 12px;
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
-  color: var(--ui-component-text-color);
-}
-
-.docs-panel .btn-group {
-  /* margin-right: 2px; */
 }
 
 .docs-panel-toolbar-content {
@@ -142,7 +110,7 @@
 .docs-panel-toolbar-content .container {
   position: relative;
   height: 100%;
-  padding: 20px 28px;
+  padding: 20px 16px 20px 20px;
   overflow-y: auto;
   overflow-x: hidden;
 }

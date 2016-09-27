@@ -55,6 +55,7 @@ export default class MenuFullscreen extends React.Component {
                 rootClose
                 placement="bottom"
                 overlay={<Tooltip id="tooltip">View fullscreen</Tooltip>}
+                delayShow={200}
             >
                 <NavItem
                     eventKey="new"

@@ -35,7 +35,3 @@
 .modal-content {
   margin-top: 0;
 }
-
-.modal input:focus {
-  box-shadow: none;
-}

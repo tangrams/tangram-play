@@ -174,6 +174,7 @@ export default class MapPanelBookmarks extends React.Component {
                 placement="bottom"
                 ref={(ref) => { this.culpritOverlay = ref; }}
                 overlay={<Tooltip id="tooltip-bookmark">Locations</Tooltip>}
+                delayShow={200}
             >
                 <DropdownButton
                     title={<Icon type="bt-bookmark" />}

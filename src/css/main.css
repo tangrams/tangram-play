@@ -84,7 +84,7 @@
   --ui-border-color: #1a1c1f;
   --ui-border: 1px solid var(--ui-border-color);
   --ui-border-radius: 3px;
-  --ui-well-color: #404248;
+  --ui-well-color: #4d515a;
   --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
   --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
   --ui-modal-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.25);

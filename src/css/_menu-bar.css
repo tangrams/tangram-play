@@ -127,11 +127,20 @@ nav {
 
 /* Sign in buttons */
 .menu-sign-in {
-  background-color: #7a0000;
-  color: #f1f1f1;
+  a[role='button'] {
+    margin: 4px;
+    border-radius: 3px;
+    border: 1px solid #540101;
+    padding: 0 0.75em; /* Override */
+    background-color: #7a0000;
+    color: #f1f1f1;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    height: 32px; /* Override */
+    line-height: 32px; /* Override */
+  }
 
   /* hover style override */
-  a:hover {
+  a[role='button']:hover {
     background-color: #8d0000;
     color: white;
   }
@@ -139,7 +148,11 @@ nav {
   /* icon style override */
   .btm {
     padding-right: 0;
-    padding-left: 0.5em;
+    padding-left: 0.25em;
+  }
+
+  .caret {
+    display: none;
   }
 }
 
@@ -154,7 +167,10 @@ nav {
 }
 
 .sign-in-admin-star {
+  position: relative;
+  margin-left: 0.15em;
   color: lightgoldenrodyellow;
-  text-shadow: -1px 1px 0 #e69f00, -2px 2px 0 #cc8401, -3px 3px 0 #bd7100;
-  margin-left: 0.25em;
+  text-shadow: 0 0 1px #e69f00;
+  font-size: 0.7em;
+  top: -0.5em;
 }

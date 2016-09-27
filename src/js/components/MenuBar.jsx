@@ -197,6 +197,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">New scene</Tooltip>}
+                            delayShow={200}
                         >
                             <NavItem eventKey="new" onClick={clickNew}>
                                 <Icon type="bt-file" />New
@@ -208,6 +209,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Open scene</Tooltip>}
+                            delayShow={200}
                         >
                             <NavDropdown
                                 title={<span><Icon type="bt-upload" />Open</span>}
@@ -250,6 +252,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Save scene</Tooltip>}
+                            delayShow={200}
                         >
                             <NavDropdown
                                 title={<span><Icon type="bt-download" />Save</span>}
@@ -285,6 +288,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Toggle inspect mode</Tooltip>}
+                            delayShow={200}
                         >
                             <NavItem
                                 eventKey="new"
@@ -303,6 +307,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Documentation and help</Tooltip>}
+                            delayShow={200}
                         >
                             <NavDropdown
                                 title={<span><Icon type="bt-question-circle" />Help</span>}

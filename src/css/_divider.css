@@ -12,7 +12,7 @@
   cursor: col-resize;
   user-select: none;
   transform: translate(0, 0) !important; /* Override react-draggable transform */
-  border-right: 1px solid #1a1c1f;
+  border-right: var(--ui-border);
   border-left: 1px solid var(--ui-editor-background-color); /* slightly lighter for 3dness */
   box-shadow: var(--ui-emboss-shadow);
 }
