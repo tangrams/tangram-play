@@ -32,13 +32,13 @@
 
 /* Style for map panel */
 .map-panel .panel {
-  border-bottom: 1px solid #1a1c1f;
+  border-bottom: var(--ui-border);
   z-index: var(--z07-menu);
 }
 
 .map-panel-collapsible {
   color: var(--ui-component-text-color);
-  background-color: var(--ui-base-color);
+  background-color: var(--ui-editor-background-color);
 
   .panel-body {
     padding: 4px;
