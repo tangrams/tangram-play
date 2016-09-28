@@ -53,15 +53,8 @@
 
 /* Style for all map panel buttons */
 .map-panel button {
-  padding: 0;
   height: 30px;
   width: 30px;
-  outline: none;
-  margin: 0;
-}
-
-.map-panel-toolbar button:hover i {
-  color: var(--ui-highlight-color);
 }
 
 .map-panel .btn-group {
@@ -73,18 +66,6 @@
 
 .map-panel .btn {
   border: none;
-  box-shadow: var(--ui-emboss-shadow);
-  cursor: pointer;
-  user-select: none;
-}
-
-.map-panel-toolbar i.btm {
-  padding-right: 0;
-  margin: 0;
-  font-size: 12px;
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
-  color: var(--ui-component-text-color);
 }
 
 /* Style for button groups */
@@ -105,8 +86,8 @@
   display: flex;
   flex: 0 0 auto;
 
-  i.btm {
-    font-size: 10px; /* slightly smaller */
+  .btm {
+    font-size: 0.8em; /* slightly smaller */
   }
 
   .map-panel-zoomin {

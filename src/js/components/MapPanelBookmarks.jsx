@@ -181,7 +181,7 @@ export default class MapPanelBookmarks extends React.Component {
                     bsStyle="default"
                     noCaret
                     pullRight
-                    className="map-panel-bookmark-button"
+                    className="button-icon map-panel-bookmark-button"
                     // The prop 'id' is required to make 'Dropdown' accessible
                     // for users using assistive technologies such as screen readers
                     id="map-panel-bookmark-button"

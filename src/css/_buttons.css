@@ -10,6 +10,29 @@ button {
   background-color: var(--ui-element-color);
   box-shadow: var(--ui-emboss-shadow);
   cursor: pointer;
+  user-select: none;
+}
+
+/* Buttons that are only icons */
+.button-icon {
+  text-align: center;
+  padding: 0;
+  margin: 0;
+
+  /* Override focus style */
+  &:focus {
+    border: var(--ui-border);
+    outline: none;
+  }
+
+  .btm {
+    padding-right: 0;
+    margin: 0;
+    font-size: 0.9em;
+    font-weight: 200;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
 }
 
 button:last-of-type {
