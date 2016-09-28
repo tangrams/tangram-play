@@ -18,7 +18,7 @@
 }
 
 .editor-tabs {
-  padding-left: 15px;
+  padding-left: 13px;
   padding-top: 5px;
   user-select: none;
   border-bottom: 1px solid var(--ui-border-color);
@@ -30,13 +30,19 @@
 .editor-tab {
   display: inline-block;
   position: relative;
+  margin-left: 2px;
   color: var(--ui-component-text-color);
   font-size: 12px;
   cursor: pointer;
-  border: 1px solid var(--ui-border-color);
   border-bottom: 0;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
+  background-color: var(--ui-editor-background-color);
+  box-shadow: inset 0 0 0 1px var(--ui-component-color);
+}
+
+.editor-tab-is-active {
+  border: 1px solid var(--ui-border-color);
   background-color: var(--ui-base-color);
   box-shadow: var(--ui-emboss-shadow);
 }

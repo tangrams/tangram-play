@@ -34,6 +34,10 @@ class Editor extends React.PureComponent {
                 <div className="editor-tabs">
                     {this.props.files.map((item, i) => {
                         let classes = 'editor-tab';
+                        // Hard-code active tab as the first one
+                        if (i === 0) {
+                            classes += ' editor-tab-is-active';
+                        }
                         if (item.is_clean === false) {
                             classes += ' editor-tab-is-dirty';
                         }
