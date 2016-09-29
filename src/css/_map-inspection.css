@@ -1,14 +1,16 @@
 /* TANGRAM INSPECTION EVENTS */
 
 .map-inspection {
-  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: var(--ui-border-radius);
+  background-color: rgba(0, 2, 6, 0.85);
   font-family: var(--font-family);
   font-weight: 200;
-  font-size: 0.75rem; /* TODO: create & associate with global font scale */
+  font-size: 0.8rem;
   color: var(--ui-component-text-color);
   z-index: var(--z04-map-inspection);
   min-width: 85px;
   line-height: 1; /* Overrides leaflet */
+  overflow: hidden;
 
   /* Pointer tip */
   &::after {
