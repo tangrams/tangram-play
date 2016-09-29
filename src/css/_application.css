@@ -9,8 +9,16 @@
   box-sizing: border-box;
 }
 
+/* Elements are fixed in position to prevent layout bugs from accidentally
+   scrolling content to weird positions. There is also a theory that this
+   improves performance (since it never needs to move and position is never
+   recalculated) */
 html,
-body {
+body,
+#tangram-play-app {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;

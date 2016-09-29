@@ -1,7 +1,7 @@
 /* Editor workspace */
 
 .workspace-container {
-  position: absolute;
+  position: fixed;
   top: var(--menu-bar-height);
   left: 0;
   /* Setting absolute right position instead of width: 100% improves resizing

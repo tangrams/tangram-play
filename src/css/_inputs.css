@@ -58,7 +58,6 @@ input[type=text],
 input[type=url] {
   background-color: var(--ui-well-color);
   appearance: none;
-  outline: none;
   border: var(--ui-border);
   border-radius: var(--ui-border-radius);
   box-shadow: var(--ui-well-shadow);
@@ -70,6 +69,10 @@ input[type=url] {
   padding: 4px 8px;
   width: 100%;
   box-sizing: border-box;
+}
+
+input {
+  outline: none;
 }
 
 input:focus {

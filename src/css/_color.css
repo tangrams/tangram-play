@@ -117,6 +117,10 @@
   background-color: var(--ui-well-color);
   text-align: center;
   color: var(--ui-component-text-color);
+
+  &:focus {
+    border: 1px solid var(--ui-highlight-color);
+  }
 }
 
 .colorpicker-input-fields span {

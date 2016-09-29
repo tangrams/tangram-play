@@ -1622,14 +1622,6 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   list-style: none;
 }
 
-
-.navbar {
-  position: relative;
-}
-@media (min-width: 768px) {
-  .navbar {
-  }
-}
 @media (min-width: 768px) {
   .navbar-header {
     float: left;
