@@ -67,7 +67,6 @@ nav {
 
 .menu-bar li.active a {
   color: var(--ui-highlight-color);
-  font-weight: 600;
 }
 
 .menu-bar li.active i {

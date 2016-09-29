@@ -21,6 +21,7 @@
 }
 
 .map-search.btn-group {
+  border: var(--ui-border);
   box-shadow: var(--ui-well-shadow);
   overflow: visible; /* shows search dropdown */
 }
@@ -40,8 +41,16 @@
 
 .map-search button {
   min-width: 32px;
-  background-color: transparent !important; /* hack */
+  height: 30px;
+  /* Buttons in this box need to override the styling */
+  border: none;
+  background-color: transparent !important;
   box-shadow: none !important; /* hack to prevent doubling of box shadow */
+
+  &:focus,
+  &:active {
+    border: none;
+  }
 }
 
 /* Autosuggestion list */

@@ -57,7 +57,7 @@ class Editor extends React.PureComponent {
                         delayShow={200}
                     >
                         <button className="button-icon editor-collapse-button">
-                            <Icon type="bt-angles-right" />
+                            <Icon type="bt-caret-right" />
                         </button>
                     </OverlayTrigger>
                 </div>
