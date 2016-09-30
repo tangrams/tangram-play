@@ -10,7 +10,6 @@
   z-index: var(--z04-map-inspection);
   min-width: 85px;
   line-height: 1; /* Overrides leaflet */
-  overflow: hidden;
 
   /* Pointer tip */
   &::after {
