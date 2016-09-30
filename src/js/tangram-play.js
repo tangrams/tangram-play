@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 
 // Core elements
 import { tangramLayer, loadScene } from './map/map';
-import { editor, getEditorContent, setEditorContent } from './editor/editor';
+import { editor, getEditorContent } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
@@ -17,14 +17,14 @@ import ErrorModal from './modals/ErrorModal';
 
 // Import Utils
 import { prependProtocolToUrl } from './tools/helpers';
-import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './tools/url-state';
+import { getQueryStringObject, pushHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import { initHighlight, highlightRanges } from './editor/highlight';
 import EventEmitter from './components/event-emitter';
 
 // Redux
 import store from './store';
-import { ADD_FILE, CLEAR_FILES, MARK_FILE_DIRTY, MARK_FILE_CLEAN } from './store/actions';
+import { ADD_FILE, CLEAR_FILES } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
@@ -75,54 +75,13 @@ function updateContent(content) {
 
 // Update widgets & content after a batch of changes
 // Wrap updateContent() in a debounce function
-const debouncedUpdateContent = debounce(updateContent, 500);
-
-function watchEditorForChanges() {
-    const content = getEditorContent();
-    const isClean = editor.getDoc().isClean();
-
-    // Send scene data to Tangram
-    debouncedUpdateContent(content);
-
-    // Update the page URL. When editor contents changes by user input
-    // and the the editor state is not clean), we erase the ?scene= state
-    // from the URL string. This prevents a situation where reloading (or
-    // copy-pasting the URL) loads the scene file from an earlier state.
-    if (isClean === false) {
-        replaceHistoryState({
-            scene: null,
-        });
-
-        // Also use this area to mark the state of the file in Redux store
-        // TODO: These checks do not have to be debounced for Tangram.
-        store.dispatch({
-            type: MARK_FILE_DIRTY,
-            fileIndex: 0,
-        });
-    } else {
-        store.dispatch({
-            type: MARK_FILE_CLEAN,
-            fileIndex: 0,
-        });
-    }
-}
+export const debouncedUpdateContent = debounce(updateContent, 500);
 
 function setSceneContentsInEditor(sceneData) {
-    // Mark as "clean" if the contents are freshly loaded
-    // (there is no is_clean property defined) or if contents
-    // have been restored with the is_clean property set to "true"
-    // This is converted from JSON so the value is a string, not
-    // a Boolean. Otherwise, the document has not been previously
-    // saved and it is left in the "dirty" state.
-    const shouldMarkClean = (typeof sceneData.is_clean === 'undefined' ||
-        sceneData.is_clean === 'true');
-
     // Update Redux state of files
     store.dispatch({
         type: CLEAR_FILES,
     });
-
-    setEditorContent(sceneData.contents, shouldMarkClean);
 
     store.dispatch({
         type: ADD_FILE,
@@ -132,25 +91,6 @@ function setSceneContentsInEditor(sceneData) {
             filename: sceneData.filename,
         },
     });
-
-    if (window.isEmbedded === undefined) {
-        // Restore cursor position, if provided.
-        if (sceneData.cursor) {
-            editor.doc.setCursor(sceneData.cursor, {
-                scroll: false,
-            });
-        }
-    }
-
-    // Restores the part of the document that was scrolled to, if provided.
-    if (sceneData.scrollInfo) {
-        const left = sceneData.scrollInfo.left || 0;
-        const top = sceneData.scrollInfo.top || 0;
-        editor.scrollTo(left, top);
-    }
-
-    // Turn change watching back on.
-    editor.on('changes', watchEditorForChanges);
 }
 
 function doLoadProcess(scene) {
@@ -225,9 +165,6 @@ export function load(scene) {
     // Turn on loading indicator. This is turned off later
     // when Tangram reports that it's done.
     showSceneLoadingIndicator();
-
-    // Turn off watching for changes in editor.
-    editor.off('changes', watchEditorForChanges);
 
     let sceneUrl = scene.url;
 

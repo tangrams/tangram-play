@@ -5,6 +5,7 @@ import {
     CLEAR_FILES,
     MARK_FILE_CLEAN,
     MARK_FILE_DIRTY,
+    STASH_DOCUMENT,
 } from '../actions';
 
 const initialState = {
@@ -84,6 +85,18 @@ const files = (state = initialState, action) => {
                         is_clean: false,
                     },
                     ...state.files.slice(action.fileIndex + 1),
+                ],
+            };
+        case STASH_DOCUMENT:
+            return {
+                ...state,
+                files: [
+                    ...state.files.slice(0, action.index),
+                    {
+                        ...state.files[action.index],
+                        buffer: action.buffer,
+                    },
+                    ...state.files.slice(action.index + 1),
                 ],
             };
         default:

@@ -76,7 +76,6 @@ export default class OpenGistModal extends React.Component {
     onClickConfirm() {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
-            load({ url: this.state.selected });
 
             getSceneURLFromGistAPI(this.state.selected)
                 .then((url) => {

@@ -41,6 +41,7 @@ export const REMOVE_FILE = 'REMOVE_FILE';
 export const CLEAR_FILES = 'CLEAR_FILES';
 export const MARK_FILE_CLEAN = 'MARK_FILE_CLEAN';
 export const MARK_FILE_DIRTY = 'MARK_FILE_DIRTY';
+export const STASH_DOCUMENT = 'STASH_DOCUMENT';
 
 // Legacy assistance
 // If shield is only controlled by modal visibility, it should be be turned

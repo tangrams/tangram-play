@@ -1,14 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { SET_ACTIVE_FILE, REMOVE_FILE } from '../store/actions';
+import { SET_ACTIVE_FILE, REMOVE_FILE, STASH_DOCUMENT } from '../store/actions';
+import { editor } from '../editor/editor';
 
 class EditorTabs extends React.PureComponent {
     setActiveTab(index, event) {
+        // Only switch tabs if the clicked tab is not the current tab.
+        // If the tab is already active, don't do anything.
         if (this.props.activeTab !== index) {
-            console.log('setting active tab', index);
+            // Stash the current doc in store
+            const currentIndex = this.props.activeTab;
+            const currentDoc = editor.getDoc();
+            this.props.stashDoc(currentIndex, currentDoc);
+
+            // Sets the next active tab
             this.props.setActiveFile(index);
-        } else {
-            console.log('already active', index);
         }
     }
 
@@ -57,6 +63,7 @@ EditorTabs.propTypes = {
     // Injected by `mapDispatchToProps`
     setActiveFile: React.PropTypes.func,
     removeFile: React.PropTypes.func,
+    stashDoc: React.PropTypes.func,
 };
 
 EditorTabs.defaultProps = {
@@ -82,6 +89,13 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type: REMOVE_FILE,
                 index,
+            });
+        },
+        stashDoc: (index, buffer) => {
+            dispatch({
+                type: STASH_DOCUMENT,
+                index,
+                buffer,
             });
         },
     };
