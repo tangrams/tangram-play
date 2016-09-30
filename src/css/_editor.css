@@ -20,6 +20,7 @@
 .editor-tabs {
   padding-left: 13px;
   padding-top: 5px;
+  padding-right: 36px; /* Space for collapse button */
   user-select: none;
   border-bottom: 1px solid var(--ui-border-color);
   border-top: 1px solid var(--ui-border-color);
@@ -30,10 +31,10 @@
 .editor-tab {
   display: inline-block;
   position: relative;
-  margin-left: 2px;
   color: var(--ui-component-text-color);
   font-size: 12px;
   cursor: pointer;
+  border: 1px solid var(--ui-border-color);
   border-bottom: 0;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
@@ -42,7 +43,6 @@
 }
 
 .editor-tab-is-active {
-  border: 1px solid var(--ui-border-color);
   background-color: var(--ui-base-color);
   box-shadow: var(--ui-emboss-shadow);
 }
@@ -99,6 +99,7 @@
 
 .editor-collapse-button {
   position: absolute;
+  top: 5px;
   right: 4px;
   width: 28px;
   height: 28px;

@@ -17,25 +17,48 @@ const files = (state = initialState, action) => {
         case SET_ACTIVE_FILE:
             return {
                 ...state,
-                activeFileIndex: action.active,
+                activeFileIndex: action.index,
             };
-        case ADD_FILE:
+        case ADD_FILE: {
+            // Append the added file to the current list of files.
+            const fileList = [...state.files, action.file];
+
+            // If the added file should become the new active file, set the
+            // active file index to the the newly added file.
+            const activeFileIndex = action.activate ? fileList.length - 1 : state.activeFileIndex;
+
             return {
                 ...state,
-                files: [...state.files, action.file],
+                files: fileList,
+                activeFileIndex,
             };
-        case REMOVE_FILE:
+        }
+        case REMOVE_FILE: {
+            // Remove a file at fileIndex.
+            // Creates a new array of files without mutating the original state
+            const fileList = [
+                ...state.files.slice(0, action.index),
+                ...state.files.slice(action.index + 1),
+            ];
+
+            // If the active file index is now out of bounds, it must be set
+            // to one that is in bounds
+            let activeFileIndex = state.activeFileIndex;
+            if (activeFileIndex >= fileList.length - 1) {
+                activeFileIndex = fileList.length - 1;
+            }
+
             return {
                 ...state,
-                files: [
-                    ...state.files.slice(0, action.fileIndex),
-                    ...state.files.slice(action.fileIndex + 1),
-                ],
+                files: fileList,
+                activeFileIndex,
             };
+        }
         case CLEAR_FILES:
             return {
                 ...state,
                 files: [],
+                activeFileIndex: null,
             };
         case MARK_FILE_CLEAN:
             // TODO: return new array of files with file object at fileIndex

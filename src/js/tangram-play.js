@@ -126,6 +126,7 @@ function setSceneContentsInEditor(sceneData) {
 
     store.dispatch({
         type: ADD_FILE,
+        activate: true,
         file: {
             ...sceneData,
             filename: sceneData.filename,
