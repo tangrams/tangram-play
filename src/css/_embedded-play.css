@@ -6,24 +6,8 @@
 .embedded .refresh-button {
   position: absolute;
   z-index: var(--z09);
-  outline: none;
   top: 4px;
   right: 4px;
-  background-color: #36383c;
-  color: white;
-  border: none;
-}
-
-.embedded .refresh-button button:focus {
-  outline: none;
-  color: white;
-}
-
-.embedded .refresh-button button:hover {
-  color: yellow;
-  border: none;
-}
-
-.embedded .refresh-button button:active {
-  outline: none;
+  width: 30px;
+  height: 30px;
 }
