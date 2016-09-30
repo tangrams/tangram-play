@@ -43,10 +43,29 @@ localforage.config({
 // TODO: Remove when migration is deemed unnecessary
 migrateLocalStorageToForage();
 
-// Mount React components
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('tangram-play-app')
-);
+// Settings that are stored are populated in state before we mount the
+// application, so that they are available to components immediately.
+// This is asynchronous, so
+localforage.getItem('settings')
+    .then(settings => {
+        store.dispatch({
+            type: 'SET_SETTINGS',
+            ...settings,
+        });
+    })
+    .catch(() => {
+        // Catch errors here so that they don't fall through elsewhere
+        // and cause other problems
+        console.log('failure retrieving settings');
+    })
+    // Always do this regardless of whether localforage retrieval
+    // or Redux state setting was successful.
+    .then(() => {
+        // Mount React components
+        ReactDOM.render(
+            <Provider store={store}>
+                <App />
+            </Provider>,
+            document.getElementById('tangram-play-app')
+        );
+    });

@@ -32,6 +32,7 @@
  * > have to write them!
  */
 
+export const SET_SETTINGS = 'SET_SETTINGS';
 export const USER_SIGNED_IN = 'USER_SIGNED_IN';
 export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
 export const OPEN_SCENE = 'OPEN_SCENE';
