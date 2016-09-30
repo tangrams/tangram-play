@@ -2,10 +2,8 @@
 import { throttle } from 'lodash';
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
-import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
+import IconButton from './IconButton';
 import Icon from './Icon';
 
 import EventEmitter from './event-emitter';
@@ -457,16 +455,11 @@ export default class MapPanelLocationBar extends React.Component {
         return (
             <ButtonGroup className="map-search" >
                 {/* Search button */}
-                <OverlayTrigger
-                    rootClose
-                    placement="bottom"
-                    overlay={<Tooltip id="tooltip">Search for a location</Tooltip>}
-                    delayShow={200}
-                >
-                    <Button className="button-icon map-panel-search-button">
-                        <Icon type="bt-search" />
-                    </Button>
-                </OverlayTrigger>
+                <IconButton
+                    icon="bt-search"
+                    tooltip="Search for a location"
+                    className="map-panel-search-button"
+                />
 
                 {/* Autosuggest bar */}
                 <Autosuggest
@@ -485,16 +478,13 @@ export default class MapPanelLocationBar extends React.Component {
                 <div className="map-search-latlng">{latlng.lat}, {latlng.lng}</div>
 
                 {/* Bookmark save button */}
-                <OverlayTrigger
-                    rootClose
-                    placement="bottom"
-                    overlay={<Tooltip id="tooltip">Bookmark location</Tooltip>}
-                    delayShow={200}
-                >
-                    <Button className="button-icon map-panel-save-button" onClick={this.onClickSaveBookmark}>
-                        <Icon type="bt-star" active={this.state.bookmarkActive} />
-                    </Button>
-                </OverlayTrigger>
+                <IconButton
+                    icon="bt-star"
+                    active={this.state.bookmarkActive}
+                    tooltip="Bookmark location"
+                    className="map-panel-save-button"
+                    onClick={this.onClickSaveBookmark}
+                />
             </ButtonGroup>
         );
     }

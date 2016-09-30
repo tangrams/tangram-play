@@ -1,12 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
 import EditorTabs from './EditorTabs';
+import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
 import { initEditor } from '../editor/editor';
 import Divider from './Divider';
-import Icon from './Icon';
 
 let docsHasInitAlready = false;
 
@@ -33,16 +31,12 @@ class Editor extends React.PureComponent {
             <div className="editor-container" id="content">
                 <Divider />
                 <EditorTabs />
-                <OverlayTrigger
-                    rootClose
-                    placement="bottom"
-                    overlay={<Tooltip id="tooltip">Hide editor</Tooltip>}
-                    delayShow={200}
-                >
-                    <button className="button-icon editor-collapse-button">
-                        <Icon type="bt-caret-right" />
-                    </button>
-                </OverlayTrigger>
+                <IconButton
+                    className="editor-collapse-button"
+                    icon="bt-caret-right"
+                    tooltip="Hide editor"
+                />
+
                 <div className="editor" id="editor" ref={(ref) => { this.editorEl = ref; }} />
                 {(() => {
                     if (this.props.admin) {

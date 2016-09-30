@@ -96,11 +96,6 @@
   margin: 4px;
   height: 30px;
   width: 30px;
-  line-height: 5px; /* vertical centering of caret icon */
-}
-
-.docs-panel button .btm {
-  padding-right: 0;
 }
 
 .docs-panel-toolbar-content {

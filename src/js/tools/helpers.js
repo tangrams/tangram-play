@@ -1,5 +1,24 @@
 export function returnTrue() {}
 
+// Cache previously generated unique integer, used by `uniqueInteger()`
+let previousUniqueInteger = 0;
+
+/**
+ * Returns a locally-unique integer. These are not random (the easiest way
+ * to guarantee uniqueness is just to increment the previous integer). These
+ * should only be used when a unique integer is required for a single use in
+ * one instance of Tangram Play and should never be used as an identifier that
+ * persists across sessions. That would be bad! This function also assumes
+ * that no instance of Tangram Play will ever run long enough to run out of
+ * integers, although it's possible that @burritojustice might be the first to
+ * do so.
+
+ * @returns {Number}
+ */
+export function uniqueInteger() {
+    return previousUniqueInteger++;
+}
+
 /**
  * Checks is a string is empty.
  * Returns true if:

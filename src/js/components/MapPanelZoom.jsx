@@ -1,9 +1,6 @@
 import React from 'react';
-import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Icon from './Icon';
+import IconButton from './IconButton';
 import MapPanelZoomIndicator from './MapPanelZoomIndicator';
 import { map } from '../map/map';
 import EventEmitter from './event-emitter';
@@ -64,27 +61,18 @@ export default class MapPanelZoom extends React.Component {
 
                 {/* Zoom buttons */}
                 <ButtonGroup className="buttons-plusminus">
-                    <OverlayTrigger
-                        rootClose
-                        placement="bottom"
-                        overlay={<Tooltip id="tooltip">Zoom in</Tooltip>}
-                        delayShow={200}
-                    >
-                        <Button className="button-icon map-panel-zoomin" onClick={this.onClickZoomIn}>
-                            <Icon type="bt-plus" />
-                        </Button>
-                    </OverlayTrigger>
-
-                    <OverlayTrigger
-                        rootClose
-                        placement="bottom"
-                        overlay={<Tooltip id="tooltip">Zoom out</Tooltip>}
-                        delayShow={200}
-                    >
-                        <Button className="button-icon" onClick={this.onClickZoomOut}>
-                            <Icon type="bt-minus" />
-                        </Button>
-                    </OverlayTrigger>
+                    <IconButton
+                        icon="bt-plus"
+                        tooltip="Zoom in"
+                        className="map-panel-zoomin"
+                        onClick={this.onClickZoomIn}
+                    />
+                    <IconButton
+                        icon="bt-minus"
+                        tooltip="Zoom out"
+                        className="map-panel-zoomout"
+                        onClick={this.onClickZoomOut}
+                    />
                 </ButtonGroup>
             </div>
         );

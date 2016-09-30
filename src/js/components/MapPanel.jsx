@@ -1,12 +1,9 @@
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Icon from './Icon';
+import IconButton from './IconButton';
 import MapPanelZoom from './MapPanelZoom';
 import MapPanelLocationBar from './MapPanelLocationBar';
 import MapPanelBookmarks from './MapPanelBookmarks';
@@ -193,30 +190,20 @@ export default class MapPanel extends React.Component {
 
                         {/* Locate me button*/}
                         <ButtonGroup className="buttons-locate">
-                            <OverlayTrigger
-                                rootClose
-                                placement="bottom"
-                                overlay={<Tooltip id="tooltip">Locate me</Tooltip>}
-                                delayShow={200}
-                            >
-                                <Button className="button-icon" onClick={this.clickGeolocator}>
-                                    <Icon type={this.state.geolocatorButton} />
-                                </Button>
-                            </OverlayTrigger>
+                            <IconButton
+                                icon={this.state.geolocatorButton}
+                                tooltip="Locate me"
+                                onClick={this.clickGeolocator}
+                            />
                         </ButtonGroup>
 
                         {/* Toggle map panel to show it*/}
                         <ButtonGroup className="buttons-toggle">
-                            <OverlayTrigger
-                                rootClose
-                                placement="bottom"
-                                overlay={<Tooltip id="tooltip">Toggle map toolbar</Tooltip>}
-                                delayShow={200}
-                            >
-                                <Button className="button-icon" onClick={this.toggleMapPanel}>
-                                    <Icon type="bt-caret-up" />
-                                </Button>
-                            </OverlayTrigger>
+                            <IconButton
+                                icon="bt-caret-up"
+                                tooltip="Toggle map toolbar"
+                                onClick={this.toggleMapPanel}
+                            />
                         </ButtonGroup>
                     </div>
                 </Panel>
@@ -225,16 +212,12 @@ export default class MapPanel extends React.Component {
                 {(() => {
                     if (!this.state.open) {
                         return (
-                            <OverlayTrigger
-                                rootClose
-                                placement="bottom"
-                                overlay={<Tooltip id="tooltip">Toogle map toolbar</Tooltip>}
-                                delayShow={200}
-                            >
-                                <Button className="button-icon map-panel-button-show" onClick={this.toggleMapPanel}>
-                                    <Icon type="bt-caret-down" />
-                                </Button>
-                            </OverlayTrigger>
+                            <IconButton
+                                icon="bt-caret-down"
+                                tooltip="Toggle map toolbar"
+                                className="map-panel-button-show"
+                                onClick={this.toggleMapPanel}
+                            />
                         );
                     }
                     return null;

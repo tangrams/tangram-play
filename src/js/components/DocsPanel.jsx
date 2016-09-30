@@ -1,14 +1,11 @@
 import React from 'react';
 import Draggable from 'react-draggable';
-import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
-import Icon from './Icon';
+import IconButton from './IconButton';
 
 import { editor } from '../editor/editor';
 
@@ -224,11 +221,13 @@ export default class DocsPanel extends React.Component {
         return (
             <div className="docs-panel">
                 {/* Toggle docs panel to show it*/}
-                <OverlayTrigger rootClose placement="top" overlay={<Tooltip id="tooltip">Open docs toolbar</Tooltip>}>
-                    <Button onClick={this.openPanel} className="docs-panel-button-show">
-                        <Icon type="bt-caret-up" />
-                    </Button>
-                </OverlayTrigger>
+                <IconButton
+                    className="docs-panel-button-show"
+                    icon="bt-caret-up"
+                    tooltip="Open docs toolbar"
+                    tooltipPlacement="top"
+                    onClick={this.openPanel}
+                />
 
                 {/* Docs panel */}
                 <Draggable axis="y" onDrag={this.onDrag} handle=".docs-divider">
@@ -272,15 +271,11 @@ export default class DocsPanel extends React.Component {
 
                             {/* Toggle docs panel to hide it*/}
                             <ButtonGroup className="docs-panel-toolbar-toggle">
-                                <OverlayTrigger
-                                    rootClose
-                                    placement="top"
-                                    overlay={<Tooltip id="tooltip">Close docs toolbar</Tooltip>}
-                                >
-                                    <Button onClick={this.closePanel}>
-                                        <Icon type="bt-caret-down" />
-                                    </Button>
-                                </OverlayTrigger>
+                                <IconButton
+                                    icon="bt-caret-down"
+                                    tooltip="Close docs toolbar"
+                                    onClick={this.closePanel}
+                                />
                             </ButtonGroup>
 
                         </div>
