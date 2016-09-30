@@ -155,6 +155,12 @@ nav {
     color: white;
   }
 
+  /* open dropdowwn style override */
+  &.open.dropdown > a {
+    background-color: #8d0000 !important;
+    color: white !important;
+  }
+
   /* icon style override */
   .btm {
     padding-right: 0;
