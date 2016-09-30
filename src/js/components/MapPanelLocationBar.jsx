@@ -74,6 +74,7 @@ export default class MapPanelLocationBar extends React.Component {
         this.relocatingMap = false;
         this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
 
+        this.focusInput = this.focusInput.bind(this);
         this.onChangeAutosuggest = this.onChangeAutosuggest.bind(this);
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
@@ -317,6 +318,9 @@ export default class MapPanelLocationBar extends React.Component {
             });
     }
 
+    focusInput() {
+        this.autosuggestBar.input.focus();
+    }
 
     /**
      * Makes an autocomplete request to API based on what user has typed
@@ -459,6 +463,7 @@ export default class MapPanelLocationBar extends React.Component {
                     icon="bt-search"
                     tooltip="Search for a location"
                     className="map-panel-search-button"
+                    onClick={this.focusInput}
                 />
 
                 {/* Autosuggest bar */}
