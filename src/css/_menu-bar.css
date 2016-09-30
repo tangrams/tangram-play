@@ -61,7 +61,7 @@ nav {
 
   &:hover {
     color: yellow;
-    background-color: var(--ui-active-color);
+    background-color: var(--ui-element-color);
   }
 }
 
@@ -74,7 +74,7 @@ nav {
 }
 
 .menu-bar .dropdown-menu li {
-  border-top: 1px solid var(--ui-active-color);
+  border-top: 1px solid var(--ui-element-color);
 
   &:hover {
     background-color: var(--ui-active-color);
@@ -82,10 +82,16 @@ nav {
 }
 
 .menu-bar .dropdown-menu {
-  border-top: 0;
   padding: 0;
   min-width: 200px;
   background-color: var(--ui-component-color);
+  margin-top: 0;
+  margin-left: -1px;
+  border-bottom-left-radius: var(--ui-border-radius);
+  border-bottom-right-radius: var(--ui-border-radius);
+  border: var(--ui-border);
+  border-top: 0;
+  overflow: hidden;
 }
 
 .menu-bar .dropdown-menu a {
@@ -103,6 +109,11 @@ nav {
 
 .menu-bar li.open.dropdown {
   z-index: var(--z10-dropdown-button);
+
+  > a {
+    color: yellow;
+    background-color: var(--ui-active-color);
+  }
 }
 
 /* Small screens */

@@ -1,3 +1,5 @@
+/* eslint-disable */
+// Eslint is not set up to deal with non-module files right now.
 'use strict';
 
 var gulp = require('gulp');
@@ -13,7 +15,6 @@ var paths = {
 };
 
 function handleErrors() {
-  /* jshint validthis: true */
   var args = Array.prototype.slice.call(arguments);
   notify.onError({
     title: 'Tangram Play · Compile Error',
@@ -53,7 +54,11 @@ gulp.task('css', function () {
     .pipe(postcss(plugins))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./build/css'))
-    .pipe(browserSync.stream());
+    // Since we generate sourcemaps, this causes browserSync.reload() to do
+    // a full page reload because `.map` files are not found in the DOM. So we
+    // pass the `match` option to only stream `.css` files to prevent injection
+    // from also causing a full page reload.
+    .pipe(browserSync.stream({ match: '**/*.css' }));
 });
 
 // Build Javascripts
