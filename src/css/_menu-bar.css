@@ -81,7 +81,7 @@ nav {
   }
 }
 
-.menu-bar .dropdown-menu {
+.dropdown-menu {
   padding: 0;
   min-width: 200px;
   background-color: var(--ui-component-color);

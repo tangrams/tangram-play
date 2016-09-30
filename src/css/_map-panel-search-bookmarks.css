@@ -22,8 +22,8 @@
 
 .map-search.btn-group {
   border: var(--ui-border);
+  border-radius: 3px;
   box-shadow: var(--ui-well-shadow);
-  overflow: visible; /* shows search dropdown */
 }
 
 .map-search-latlng {
@@ -163,7 +163,6 @@
   background-color: var(--ui-component-color);
   font-size: 12px;
   margin: 0;
-  border: 0;
   padding: 0;
 
   a {
