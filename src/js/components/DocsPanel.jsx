@@ -9,6 +9,10 @@ import IconButton from './IconButton';
 
 import { editor } from '../editor/editor';
 
+// Redux
+import store from '../store';
+import { SET_SETTINGS } from '../store/actions';
+
 import TANGRAM from '../tangram-docs.json';
 
 /**
@@ -26,12 +30,13 @@ export default class DocsPanel extends React.Component {
     constructor(props) {
         super(props);
 
-        const INITIAL_HEIGHT = 400;
+        const settings = store.getState().settings;
+        const INITIAL_HEIGHT = 200;
         this.MIN_HEIGHT = 50;
 
         this.state = {
             display: '{}',
-            height: 0, // Start closed to be unobtrusive
+            height: (settings && 'docsPanelHeight' in settings) ? settings.docsPanelHeight : INITIAL_HEIGHT,
         };
 
         this.lastSavedHeight = INITIAL_HEIGHT;
@@ -56,6 +61,11 @@ export default class DocsPanel extends React.Component {
         }
 
         this.setState({ height: delta });
+
+        store.dispatch({
+            type: SET_SETTINGS,
+            docsPanelHeight: delta,
+        });
     }
 
     onClickChild(address) {
@@ -96,12 +106,20 @@ export default class DocsPanel extends React.Component {
      */
     openPanel() {
         this.setState({ height: this.lastSavedHeight });
+        store.dispatch({
+            type: SET_SETTINGS,
+            docsPanelHeight: this.lastSavedHeight,
+        });
     }
 
     closePanel() {
         this.lastSavedHeight = this.state.height;
 
         this.setState({ height: 0 });
+        store.dispatch({
+            type: SET_SETTINGS,
+            docsPanelHeight: 0,
+        });
     }
 
     findMatch(address, optionalBool) {
