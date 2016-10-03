@@ -1,17 +1,21 @@
-// Class essentially taken from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
+// Component borrowed & modified from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
 import React from 'react';
 
 export default class ColorPickerSaturation extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        // TODO: don't harcode. These numbers are duplicated in CSS.
-        this.width = 230;
-        this.height = 165;
-
         this.onChange = this.onChange.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+    }
+
+    componentDidMount() {
+        // Record height and width of the saturation area for calculations.
+        // This is initially set in CSS. It should not change.
+        const boundingBox = this.container.getBoundingClientRect();
+        this.width = boundingBox.width;
+        this.height = boundingBox.height;
     }
 
     componentWillUnmount() {
@@ -23,8 +27,9 @@ export default class ColorPickerSaturation extends React.PureComponent {
             e.preventDefault();
         }
 
-        const container = this.container;
-        const boundingBox = container.getBoundingClientRect();
+        // left and top position can change as user moves colorpicker
+        // around, so always get new values for this.
+        const boundingBox = this.container.getBoundingClientRect();
         const x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX;
         const y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY;
         let left = x - boundingBox.left;
@@ -43,14 +48,16 @@ export default class ColorPickerSaturation extends React.PureComponent {
         const saturation = (left * 100) / this.width;
         const bright = -((top * 100) / this.height) + 100;
 
+        // This component only changes saturation and value,
+        // so only report this back to the onChange handler. Do not
+        // obtain hue and alpha and report it back here, since these
+        // values do not live on this component and trying to get them
+        // just to report them is error-prone.
         this.props.onChange({
-            h: this.props.color.getHsv().h,
             s: saturation,
             v: bright,
-            a: this.props.color.getRgba().a,
         });
     }
-
 
     onMouseDown(e) {
         this.onChange(e, true);
@@ -68,12 +75,15 @@ export default class ColorPickerSaturation extends React.PureComponent {
     }
 
     render() {
+        // Do not use the hue value from props.color, because tinycolor2
+        // resets hue to 0 if either s=0 or v=0. We must set this explicitly.
         const containerStyle = {
-            background: `hsl(${this.props.color.getHsl().h}, 100%, 50%)`,
+            background: `hsl(${this.props.hue}, 100%, 50%)`,
         };
 
-        const topPosition = -(this.props.color.getHsv().v * 100) + 100;
-        const leftPosition = this.props.color.getHsv().s * 100;
+        const color = this.props.color.getHsv();
+        const topPosition = -(color.v * 100) + 100;
+        const leftPosition = color.s * 100;
         const pointerStyle = {
             top: `${topPosition}%`,
             left: `${leftPosition}%`,
@@ -100,6 +110,7 @@ export default class ColorPickerSaturation extends React.PureComponent {
 }
 
 ColorPickerSaturation.propTypes = {
+    hue: React.PropTypes.number,
     color: React.PropTypes.object,
     onChange: React.PropTypes.func,
 };
