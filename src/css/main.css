@@ -53,7 +53,7 @@
 @import '_docs-panel';
 
 /* Bookmarks, Pickers, Widgets */
-@import '_widgets-modal';
+@import '_floating-panel';
 @import '_widgets';
 @import '_color';
 
