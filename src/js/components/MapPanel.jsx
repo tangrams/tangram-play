@@ -11,6 +11,10 @@ import MapPanelBookmarks from './MapPanelBookmarks';
 import { map } from '../map/map';
 import ErrorModal from '../modals/ErrorModal';
 
+// Redux
+import store from '../store';
+import { SET_SETTINGS } from '../store/actions';
+
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
  * map.
@@ -25,8 +29,12 @@ export default class MapPanel extends React.Component {
      */
     constructor(props) {
         super(props);
+
+        const settings = store.getState().settings;
+
         this.state = {
-            open: true, // Whether panel should be open or not
+            // Whether panel should be open or not
+            open: (settings && 'mapToolbarDisplay' in settings) ? settings.mapToolbarDisplay : true,
             geolocatorButton: 'bt-map-arrow', // Icon to display for the geolocator button
             geolocateActive: {
                 active: 'false',
@@ -167,7 +175,14 @@ export default class MapPanel extends React.Component {
      * Toggle the panel so it is visible or not visible
      */
     toggleMapPanel() {
-        this.setState({ open: !this.state.open });
+        const value = !this.state.open;
+        this.setState({ open: value });
+
+        // Save the position in Redux
+        store.dispatch({
+            type: SET_SETTINGS,
+            mapToolbarDisplay: value,
+        });
     }
 
     /**
