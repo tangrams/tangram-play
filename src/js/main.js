@@ -16,6 +16,7 @@ import App from './components/App';
 
 // Redux
 import store from './store';
+import { SET_SETTINGS } from './store/actions';
 
 // Miscellaneous
 import { migrateLocalStorageToForage } from './storage/migrate';
@@ -43,13 +44,15 @@ localforage.config({
 // TODO: Remove when migration is deemed unnecessary
 migrateLocalStorageToForage();
 
+const STORAGE_SETTINGS = 'settings';
+
 // Settings that are stored are populated in state before we mount the
 // application, so that they are available to components immediately.
 // This is asynchronous, so
-localforage.getItem('settings')
+localforage.getItem(STORAGE_SETTINGS)
     .then(settings => {
         store.dispatch({
-            type: 'SET_SETTINGS',
+            type: SET_SETTINGS,
             ...settings,
         });
     })
@@ -69,3 +72,12 @@ localforage.getItem('settings')
             document.getElementById('tangram-play-app')
         );
     });
+
+// On unload, stash settings into local storage.
+window.addEventListener('beforeunload', () => {
+    const settings = store.getState().settings;
+
+    if (settings) {
+        localforage.setItem(STORAGE_SETTINGS, settings);
+    }
+});

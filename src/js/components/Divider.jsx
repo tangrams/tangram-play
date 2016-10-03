@@ -2,14 +2,16 @@ import React from 'react';
 import Draggable from 'react-draggable';
 
 import { throttle } from 'lodash';
-import localforage from 'localforage';
 import { map } from '../map/map';
 import { editor } from '../editor/editor';
 import EventEmitter from './event-emitter';
 
+// Redux
+import store from '../store';
+import { SET_SETTINGS } from '../store/actions';
+
 const EDITOR_MINIMUM_WIDTH = 160; // integer, in pixels
 const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
-const STORAGE_POSITION_KEY = 'divider-position-x';
 
 /**
  * Clamps the position to a value to make sure that the map and editor are
@@ -36,22 +38,20 @@ function clampPosition(x) {
  * @returns {Number} x - the position to place the divider.
  */
 function getStartingPosition() {
-    return localforage.getItem(STORAGE_POSITION_KEY)
-        .then((storedPosition) => {
-            if (storedPosition) {
-                // Number is stored as string, cast it to number, then clamp
-                // the number to the permitted range, because viewport sizes
-                // may differ between sessions
-                return clampPosition(storedPosition);
-            }
+    const settings = store.getState().settings;
 
-            if (window.innerWidth > 1024) {
-                return Math.floor(window.innerWidth * 0.6);
-            }
+    if (settings && settings.dividerPositionX) {
+        // Clamp the number to the permitted range, because viewport sizes
+        // may differ between sessions
+        return clampPosition(settings.dividerPositionX);
+    }
 
-            // If window.innerWidth <= 1024
-            return Math.floor(window.innerWidth / 2);
-        });
+    if (window.innerWidth > 1024) {
+        return Math.floor(window.innerWidth * 0.6);
+    }
+
+    // If window.innerWidth <= 1024
+    return Math.floor(window.innerWidth / 2);
 }
 
 export default class Divider extends React.Component {
@@ -59,7 +59,7 @@ export default class Divider extends React.Component {
         super(props);
 
         this.state = {
-            startPosX: 0, // Fill this in later
+            startPosX: getStartingPosition(),
             position: { // We need this to sync position state manually
                 x: 0,
                 y: 0,
@@ -88,14 +88,7 @@ export default class Divider extends React.Component {
         window.addEventListener('resize', this.onResizeWindow);
 
         // Set up initial positioning
-        getStartingPosition()
-            .then((posX) => {
-                this.setState({
-                    startPosX: posX,
-                });
-
-                this.changeMapAndEditorSize(posX);
-            });
+        this.changeMapAndEditorSize(this.state.startPosX);
     }
 
     onDrag(event, position) {
@@ -122,8 +115,11 @@ export default class Divider extends React.Component {
             },
         });
 
-        // Save the position in local memory
-        localforage.setItem(STORAGE_POSITION_KEY, posX);
+        // Save the position in Redux
+        store.dispatch({
+            type: SET_SETTINGS,
+            dividerPositionX: posX,
+        });
 
         EventEmitter.dispatch('divider:dragend');
     }
@@ -153,7 +149,9 @@ export default class Divider extends React.Component {
      * throttled and aliased as `this.throttledRefresh()`.
      */
     refreshMapAndEditor() {
-        editor.refresh();
+        if (editor) {
+            editor.refresh();
+        }
 
         // Also refresh the map
         map.invalidateSize({
