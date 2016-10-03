@@ -1,9 +1,18 @@
 // Component borrowed & modified from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
 import React from 'react';
 
-export default class ColorPickerSaturation extends React.PureComponent {
+export default class ColorPickerSaturation extends React.Component {
     constructor(props) {
         super(props);
+
+        const color = this.props.color.getHsv();
+
+        // Record this for pointer position
+        // Values are retrieved between 0-1 so scale them up to 0-100
+        this.state = {
+            saturation: color.s * 100,
+            brightness: color.v * 100,
+        };
 
         this.onChange = this.onChange.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -45,8 +54,12 @@ export default class ColorPickerSaturation extends React.PureComponent {
             top = this.height;
         }
 
+        // Color parser in parent component (tinycolor2) expects values 0-100
         const saturation = (left * 100) / this.width;
-        const bright = -((top * 100) / this.height) + 100;
+        const brightness = -((top * 100) / this.height) + 100;
+
+        // Record this for pointer position
+        this.setState({ saturation, brightness });
 
         // This component only changes saturation and value,
         // so only report this back to the onChange handler. Do not
@@ -55,7 +68,7 @@ export default class ColorPickerSaturation extends React.PureComponent {
         // just to report them is error-prone.
         this.props.onChange({
             s: saturation,
-            v: bright,
+            v: brightness,
         });
     }
 
@@ -81,12 +94,15 @@ export default class ColorPickerSaturation extends React.PureComponent {
             background: `hsl(${this.props.hue}, 100%, 50%)`,
         };
 
-        const color = this.props.color.getHsv();
-        const topPosition = -(color.v * 100) + 100;
-        const leftPosition = color.s * 100;
+        // Convert saturation and brightness to a position. These are recorded
+        // on a scale of 0-100 so it's really easy to use percentage values.
+        // Values are clamped to ensure it never goes below 0 or above 100.
+        // We use the internal state rather than the color reported by tinycolor2
+        // because the way color math works can cause distortions in where
+        // the pointer is positioned.
         const pointerStyle = {
-            top: `${topPosition}%`,
-            left: `${leftPosition}%`,
+            top: `${Math.max(0, Math.min(100, 100 - this.state.brightness))}%`,
+            left: `${Math.max(0, Math.min(100, this.state.saturation))}%`,
         };
 
         return (
