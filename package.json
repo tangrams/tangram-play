@@ -117,7 +117,8 @@
     "redux": "3.6.0",
     "three": "0.80.1",
     "tinycolor2": "1.4.1",
-    "whatwg-fetch": "1.0.0"
+    "whatwg-fetch": "1.0.0",
+    "yaml-ast-parser": "0.0.29"
   },
   "browserify-shim": {
     "tangram": "global:Tangram"
