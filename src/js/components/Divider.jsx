@@ -1,5 +1,6 @@
 import React from 'react';
 import Draggable from 'react-draggable';
+import { connect } from 'react-redux';
 
 import { throttle } from 'lodash';
 import { map } from '../map/map';
@@ -10,7 +11,10 @@ import EventEmitter from './event-emitter';
 import store from '../store';
 import { SET_SETTINGS } from '../store/actions';
 
-const EDITOR_MINIMUM_WIDTH = 160; // integer, in pixels
+// Constraints
+// A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
+// space for the divider to still exist.
+const EDITOR_MINIMUM_WIDTH = 10; // integer, in pixels
 const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
 
 /**
@@ -38,14 +42,6 @@ function clampPosition(x) {
  * @returns {Number} x - the position to place the divider.
  */
 function getStartingPosition() {
-    const settings = store.getState().settings;
-
-    if (settings && settings.dividerPositionX) {
-        // Clamp the number to the permitted range, because viewport sizes
-        // may differ between sessions
-        return clampPosition(settings.dividerPositionX);
-    }
-
     if (window.innerWidth > 1024) {
         return Math.floor(window.innerWidth * 0.6);
     }
@@ -54,16 +50,13 @@ function getStartingPosition() {
     return Math.floor(window.innerWidth / 2);
 }
 
-export default class Divider extends React.Component {
+class Divider extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            startPosX: getStartingPosition(),
-            position: { // We need this to sync position state manually
-                x: 0,
-                y: 0,
-            },
+            // We need this to sync position state manually
+            position: { x: 0, y: 0 },
         };
 
         this.throttledRefresh = throttle(this.refreshMapAndEditor, 20);
@@ -88,7 +81,12 @@ export default class Divider extends React.Component {
         window.addEventListener('resize', this.onResizeWindow);
 
         // Set up initial positioning
-        this.changeMapAndEditorSize(this.state.startPosX);
+        this.changeMapAndEditorSize(this.props.posX);
+    }
+
+    // Called when something updates props (e.g. new divider position.)
+    componentWillUpdate(nextProps) {
+        this.changeMapAndEditorSize(nextProps.posX);
     }
 
     onDrag(event, position) {
@@ -109,10 +107,7 @@ export default class Divider extends React.Component {
         // divider back to its bounded location before any interaction is
         // possible.
         this.setState({
-            position: {
-                x: 0,
-                y: 0,
-            },
+            position: { x: 0, y: 0 },
         });
 
         // Save the position in Redux
@@ -155,12 +150,8 @@ export default class Divider extends React.Component {
 
         // Also refresh the map
         map.invalidateSize({
-            pan: {
-                animate: false,
-            },
-            zoom: {
-                animate: false,
-            },
+            pan: { animate: false },
+            zoom: { animate: false },
             debounceMoveend: true,
         });
     }
@@ -184,3 +175,20 @@ export default class Divider extends React.Component {
         );
     }
 }
+
+Divider.propTypes = {
+    posX: React.PropTypes.number,
+};
+
+Divider.defaultProps = {
+    posX: getStartingPosition(),
+};
+
+function mapStateToProps(state) {
+    return {
+        // Make sure position is clamped before feeding into props
+        posX: clampPosition(state.settings.dividerPositionX),
+    };
+}
+
+export default connect(mapStateToProps)(Divider);

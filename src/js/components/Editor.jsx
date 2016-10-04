@@ -9,7 +9,7 @@ import { debouncedUpdateContent } from '../tangram-play';
 import { replaceHistoryState } from '../tools/url-state';
 
 import store from '../store';
-import { MARK_FILE_DIRTY, MARK_FILE_CLEAN } from '../store/actions';
+import { MARK_FILE_DIRTY, MARK_FILE_CLEAN, SET_SETTINGS } from '../store/actions';
 
 let docsHasInitAlready = false;
 
@@ -116,6 +116,19 @@ class Editor extends React.PureComponent {
         }
     }
 
+    /**
+     * Hides the editor pane.
+     * This does so really simply; it updates the position of the divider to the
+     * current window width (to make it go as far to the right as possible).
+     * The Divider component will take care of the rest.
+     */
+    onClickHideEditor(event) {
+        store.dispatch({
+            type: SET_SETTINGS,
+            dividerPositionX: window.innerWidth,
+        });
+    }
+
     render() {
         return (
             /* id='content' is used only as a hook for Divider right now */
@@ -126,6 +139,7 @@ class Editor extends React.PureComponent {
                     className="editor-collapse-button"
                     icon="bt-caret-right"
                     tooltip="Hide editor"
+                    onClick={this.onClickHideEditor}
                 />
 
                 <div className="editor" id="editor" ref={(ref) => { this.editorEl = ref; }} />
