@@ -1,7 +1,7 @@
 import CodeMirror from 'codemirror';
 import { unfoldAll, foldByLevel } from './codemirror/tools';
-import { changeFontSize } from './codemirror/font-size';
 import { takeScreenshot } from '../map/screenshot';
+import { increaseEditorFontSize, decreaseEditorFontSize } from '../store/actions/settings';
 
 /**
  * Creates and exports additional keybinding functionality to CodeMirror.
@@ -63,13 +63,22 @@ export function getExtraKeyMap() {
         },
     };
 
+    // TODO: We might need to get around some commenting bugs by hijacking
+    // the comment key and directing it to use different characters using
+    // brute-force analysis of the line itself.
+    extraKeysSettings[`${ctrlKey}/`] = (cm) => {
+        cm.toggleComment({ indent: true });
+    };
+
     // Set Ctrl- or Cmd- buttons depending on Mac or Windows devices.
     extraKeysSettings[`${ctrlKey}-`] = (cm) => {
-        changeFontSize(cm, false);
+        decreaseEditorFontSize();
+        cm.refresh();
     };
     // Equal (=) maps to the Plus (+)
     extraKeysSettings[`${ctrlKey}=`] = (cm) => {
-        changeFontSize(cm, true);
+        increaseEditorFontSize();
+        cm.refresh();
     };
 
     return extraKeysSettings;

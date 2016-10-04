@@ -132,6 +132,11 @@ class Editor extends React.PureComponent {
     }
 
     render() {
+        const customStyles = {};
+        if (this.props.fontSize) {
+            customStyles.fontSize = `${this.props.fontSize.toString()}px`;
+        }
+
         return (
             /* id='content' is used only as a hook for Divider right now */
             <div className="editor-container" id="content">
@@ -156,7 +161,13 @@ class Editor extends React.PureComponent {
                     onClick={this.onClickHideEditor}
                 />
 
-                <div className="editor" id="editor" ref={(ref) => { this.editorEl = ref; }} />
+                <div
+                    className="editor"
+                    id="editor"
+                    ref={(ref) => { this.editorEl = ref; }}
+                    style={customStyles}
+                />
+
                 {(() => {
                     if (this.props.admin) {
                         return (
@@ -175,6 +186,7 @@ Editor.propTypes = {
     activeFile: React.PropTypes.number,
     files: React.PropTypes.array,
     appInitialized: React.PropTypes.bool,
+    fontSize: React.PropTypes.number,
 };
 
 Editor.defaultProps = {
@@ -189,6 +201,7 @@ function mapStateToProps(state) {
         activeFile: state.files.activeFileIndex,
         files: state.files.files,
         appInitialized: state.app.initialized,
+        fontSize: state.settings.editorFontSize,
     };
 }
 

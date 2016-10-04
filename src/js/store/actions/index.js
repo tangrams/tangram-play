@@ -58,6 +58,9 @@ export const STASH_DOCUMENT = 'STASH_DOCUMENT';
 export const ADD_ERROR = 'ADD_ERROR';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 
+export const EDITOR_INCREASE_FONT_SIZE = 'EDITOR_INCREASE_FONT_SIZE';
+export const EDITOR_DECREASE_FONT_SIZE = 'EDITOR_DECREASE_FONT_SIZE';
+
 // Legacy assistance
 // If shield is only controlled by modal visibility, it should be be turned
 // on based on number of modals in a stack (todo)

@@ -30,6 +30,9 @@
 .editor {
   height: calc(100% - var(--editor-tab-height));
   position: relative;
+  /* Easier to adjust font size from this element */
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .editor-tabs {
@@ -123,8 +126,6 @@
 
 .CodeMirror {
   font-family: var(--editor-font-family);
-  font-size: 14px;
-  line-height: 1.4;
   height: 100%;
 }
 
