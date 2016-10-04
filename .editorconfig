@@ -9,7 +9,10 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.css,*.html,circle.yml]
+[*.{css,html}]
+indent_size = 2
+
+[{circle.yml,.eslintrc,.eslintrc-legacy,.stylelintrc,gulpfile.js,karma.conf.js,package.json}]
 indent_size = 2
 
 [*.md]
