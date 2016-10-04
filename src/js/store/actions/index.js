@@ -32,6 +32,17 @@
  * > have to write them!
  */
 
+/* app */
+
+// Dispatch this action when Tangram Play has fully initialized - when it is
+// first ready to accept user input. A scene does not have to be loaded to be
+// considered initialized - Tangram Play is initialized if it is ready and
+// waiting for the user to load a scene.
+export const APP_INITIALIZED = 'APP_INITIALIZED';
+
+// Generic action for setting app state.
+export const SET_APP_STATE = 'SET_APP_STATE';
+
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const USER_SIGNED_IN = 'USER_SIGNED_IN';
 export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';

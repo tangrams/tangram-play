@@ -24,12 +24,11 @@ import EventEmitter from './components/event-emitter';
 
 // Redux
 import store from './store';
-import { ADD_FILE, CLEAR_FILES } from './store/actions';
+import { APP_INITIALIZED, ADD_FILE, CLEAR_FILES } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
-let initialLoad = true;
 let initialScene = ''; // Stores initial scene file for embedded play.
 
 function showUnloadedState() {
@@ -111,14 +110,14 @@ function doLoadProcess(scene) {
     // Update history
     // Don't push a new history state if we are loading a scene from the
     // initial load of Tangram Play.
-    if (initialLoad === false) {
+    if (store.getState().app.initialized === true) {
         pushHistoryState({
             scene: (scene.url) ? scene.url : null,
         });
     }
 
-    // This should only be true once
-    initialLoad = false;
+    // Okay, we are initialized now.
+    store.dispatch({ type: APP_INITIALIZED });
 
     // Trigger Events
     // Event object is empty right now.
@@ -136,7 +135,7 @@ function onLoadError(error) {
     hideSceneLoadingIndicator();
 
     // TODO: editor should not be attached to this
-    if (initialLoad === true) {
+    if (!store.getState().app.initialized) {
         showUnloadedState(editor);
         editor.doc.markClean();
     }

@@ -136,6 +136,10 @@ class Editor extends React.PureComponent {
             <div className="editor-container" id="content">
                 <Divider />
                 {(() => {
+                    // Don't flash this when Tangram Play is initializing;
+                    // files are still zero, but we won't prompt until after
+                    if (!this.props.appInitialized) return null;
+
                     if (this.props.files.length === 0) {
                         return (
                             <div className="editor-no-content">
@@ -171,6 +175,7 @@ Editor.propTypes = {
     admin: React.PropTypes.bool,
     activeFile: React.PropTypes.number,
     files: React.PropTypes.array,
+    appInitialized: React.PropTypes.bool,
 };
 
 Editor.defaultProps = {
@@ -184,6 +189,7 @@ function mapStateToProps(state) {
         admin: state.user.admin || false,
         activeFile: state.files.activeFileIndex,
         files: state.files.files,
+        appInitialized: state.app.initialized,
     };
 }
 

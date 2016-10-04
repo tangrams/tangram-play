@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { SET_ACTIVE_FILE, REMOVE_FILE, STASH_DOCUMENT } from '../store/actions';
 import { editor } from '../editor/editor';
+import EditorIO from '../editor/io';
 
 class EditorTabs extends React.PureComponent {
     setActiveTab(index, event) {
@@ -22,8 +23,10 @@ class EditorTabs extends React.PureComponent {
         // Prevent bubbling of event to clicking on tab
         event.stopPropagation();
 
-        // Dispatches remove event to store
-        this.props.removeFile(index);
+        // Dispatches remove event to store - after checking doc dirty state
+        EditorIO.checkSaveStateThen(() => {
+            this.props.removeFile(index);
+        });
     }
 
     render() {
