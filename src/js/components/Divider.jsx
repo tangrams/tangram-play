@@ -84,6 +84,12 @@ class Divider extends React.Component {
         this.changeMapAndEditorSize(this.props.posX);
     }
 
+    // Only update if the position changes - this prevents layout flashing
+    // occurring when props.posX differs from the dragged position.
+    shouldComponentUpdate(nextProps) {
+        return this.props.posX !== nextProps.posX;
+    }
+
     // Called when something updates props (e.g. new divider position.)
     componentWillUpdate(nextProps) {
         this.changeMapAndEditorSize(nextProps.posX);
