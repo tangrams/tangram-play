@@ -79,6 +79,14 @@ export function loadScene(pathToSceneFile, { reset = false, basePath = null } = 
     return tangramLayer.scene.load(pathToSceneFile, !reset && path);
 }
 
+export function destroyScene() {
+    if (tangramLayer) {
+        // Removing the layer from Leaflet calls scene.destroy() internally,
+        // freeing up the canvas and GL resources
+        tangramLayer.remove();
+    }
+}
+
 function getMapStartLocation() {
     // Set default location
     const defaultStartLocation = {

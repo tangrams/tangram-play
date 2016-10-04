@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import EditorTabs from './EditorTabs';
+import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
 import { initEditor, editor, getEditorContent, setEditorContent } from '../editor/editor';
@@ -142,9 +143,7 @@ class Editor extends React.PureComponent {
 
                     if (this.props.files.length === 0) {
                         return (
-                            <div className="editor-no-content">
-                                nothing in editor right now
-                            </div>
+                            <EditorCallToAction />
                         );
                     }
                     return null;

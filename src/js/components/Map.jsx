@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MapPanel from './MapPanel';
 import MapLoading from '../map/MapLoading';
-import { initMap } from '../map/map';
+import { initMap, destroyScene } from '../map/map';
 
 class Map extends React.Component {
     componentDidMount() {
@@ -10,6 +10,12 @@ class Map extends React.Component {
         // into a map container, which expects the DOM element for it to
         // exist already. So we can only call it during this lifecycle method.
         initMap();
+    }
+
+    componentWillUpdate(nextProps) {
+        if (this.props.app.initialized && (nextProps.files.length === 0 || this.props.app.mapNotLoaded === true)) {
+            destroyScene();
+        }
     }
 
     render() {

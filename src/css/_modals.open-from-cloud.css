@@ -8,7 +8,6 @@
      TODO: Don't use a magic number */
   height: calc(100% - 94px);
   padding: 10px;
-  box-sizing: border-box;
   overflow-x: hidden;
   overflow-y: auto;
   background-color: var(--ui-component-color);

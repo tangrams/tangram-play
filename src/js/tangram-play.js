@@ -105,12 +105,14 @@ function doLoadProcess(scene) {
         pushHistoryState({
             scene: (scene.url) ? scene.url : null,
         });
+    } else {
+        // Okay, we are initialized now.
+        store.dispatch({ type: APP_INITIALIZED });
     }
 
-    // Okay, we are initialized now.
+    // Reset map-not-loaded state
     store.dispatch({
         type: SET_APP_STATE,
-        initialized: true,
         mapNotLoaded: false,
     });
 
