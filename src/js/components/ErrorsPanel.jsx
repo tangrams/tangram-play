@@ -30,53 +30,47 @@ class ErrorsPanel extends React.Component {
     }
 
     render() {
-        const errorStyles = {
-            position: 'relative',
-            width: '100%',
-            height: 'calc(100% - 20px)',
-            overflow: 'auto',
-            padding: '10px',
-        };
+        const displayStyle = { display: 'none' };
 
         if (this.state.show) {
-            return (
-                <Draggable
-                    bounds="#draggable-container"
-                    handle=".floating-panel-drag"
-                >
-                    <div className="errors-panel">
-                        <div className="floating-panel-topbar">
-                            <div className="floating-panel-drag">Scene errors</div>
-                            <div className="floating-panel-close" onClick={this.onClickClose}>×</div>
-                        </div>
-                        <div style={errorStyles}>
-                            {this.props.errors.map((error, index) => {
-                                let iconTypeClass;
-                                if (error.type === 'error') {
-                                    iconTypeClass = 'btm bt-exclamation-triangle';
-                                } else if (error.type === 'warning') {
-                                    iconTypeClass = 'btm bt-exclamation-circle';
-                                }
-
-                                let displayText = error.message;
-                                if (!displayText || displayText.length === 0) {
-                                    displayText = `Unspecified ${error.type}.`;
-                                }
-
-                                return (
-                                    <p key={index}>
-                                        <span className={iconTypeClass} />
-                                        {displayText}
-                                    </p>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </Draggable>
-            );
+            displayStyle.display = 'block';
         }
 
-        return null;
+        return (
+            <Draggable
+                bounds="#draggable-container"
+                handle=".floating-panel-drag"
+            >
+                <div className="errors-panel modal" style={displayStyle}>
+                    <div className="floating-panel-topbar">
+                        <div className="floating-panel-drag">Scene errors</div>
+                        <div className="floating-panel-close" onClick={this.onClickClose}>×</div>
+                    </div>
+                    <div className="errors-panel-content">
+                        {this.props.errors.map((error, index) => {
+                            let iconTypeClass;
+                            if (error.type === 'error') {
+                                iconTypeClass = 'btm bt-exclamation-triangle';
+                            } else if (error.type === 'warning') {
+                                iconTypeClass = 'btm bt-exclamation-circle';
+                            }
+
+                            let displayText = error.message;
+                            if (!displayText || displayText.length === 0) {
+                                displayText = `Unspecified ${error.type}.`;
+                            }
+
+                            return (
+                                <p key={index}>
+                                    <span className={iconTypeClass} />
+                                    {displayText}
+                                </p>
+                            );
+                        })}
+                    </div>
+                </div>
+            </Draggable>
+        );
     }
 }
 

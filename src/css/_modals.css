@@ -2,7 +2,6 @@
 
 .modal {
   display: block; /* Default display mode */
-  box-sizing: border-box;
   width: 400px;
   padding: 30px;
   font-family: var(--font-family);

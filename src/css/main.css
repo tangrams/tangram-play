@@ -89,6 +89,9 @@
   --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
   --ui-modal-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.25);
 
+  --ui-error-color: #be1a20;
+  --ui-warning-color: #fc0;
+
   /* LAYOUT */
   --menu-bar-height: 40px;
 
