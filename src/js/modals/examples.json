@@ -1,94 +1,122 @@
-[{
+[
+  {
     "category": "Basic scenes",
-    "scenes": [{
+    "scenes": [
+      {
         "name": "Default",
         "thumb": "./data/scenes/thumbnails/default.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/default.yaml"
-    }, {
+      },
+      {
         "name": "Grain",
         "thumb": "./data/scenes/thumbnails/grain.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain.yaml"
-    }, {
+      },
+      {
         "name": "Grain Roads",
         "thumb": "./data/scenes/thumbnails/grain-roads.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain-roads.yaml"
-    }, {
+      },
+      {
         "name": "Grain Area",
         "thumb": "./data/scenes/thumbnails/grain-area.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain-area.yaml"
-    }]
-}, {
+      }
+    ]
+  },
+  {
     "category": "Mapzen house styles",
-    "scenes": [{
+    "scenes": [
+      {
         "name": "Refill",
         "thumb": "./data/scenes/thumbnails/refill.png",
         "url": "https://mapzen.com/carto/refill-style/2.0/refill-style.yaml"
-    }, {
+      },
+      {
         "name": "Cinnabar",
         "thumb": "./data/scenes/thumbnails/cinnabar.png",
         "url": "https://mapzen.com/carto/cinnabar-style/2.0/cinnabar-style.yaml"
-    }, {
+      },
+      {
         "name": "Zinc",
         "thumb": "./data/scenes/thumbnails/zinc.png",
         "url": "https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml"
-    }, {
+      },
+      {
         "name": "Bubble Wrap",
         "thumb": "./data/scenes/thumbnails/bubble-wrap.png",
         "url": "https://mapzen.com/carto/bubble-wrap-style/bubble-wrap.yaml"
-    }, {
+      },
+      {
         "name": "Walkabout",
         "thumb": "./data/scenes/thumbnails/walkabout.png",
         "url": "https://mapzen.com/carto/walkabout-style/walkabout-style.yaml"
-    }]
-}, {
+      }
+    ]
+  },
+  {
     "category": "Patricio’s greatest hits",
-    "scenes": [{
+    "scenes": [
+      {
         "name": "Gotham",
         "thumb": "./data/scenes/thumbnails/gotham.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/gotham.yaml"
-    }, {
+      },
+      {
         "name": "Blueprint",
         "thumb": "./data/scenes/thumbnails/blueprint.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/blueprint.yaml"
-    }, {
+      },
+      {
         "name": "TRON",
         "thumb": "./data/scenes/thumbnails/tron.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.yaml"
-    }, {
+      },
+      {
         "name": "Matrix",
         "thumb": "./data/scenes/thumbnails/matrix.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/matrix.yaml"
-    }, {
+      },
+      {
         "name": "Ikeda",
         "thumb": "./data/scenes/thumbnails/ikeda.gif",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/ikeda.yaml"
-    }, {
+      },
+      {
         "name": "9845C",
         "thumb": "./data/scenes/thumbnails/9845c.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/9845C.yaml"
-    }, {
+      },
+      {
         "name": "Press",
         "thumb": "./data/scenes/thumbnails/press.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/press.yaml"
-    }, {
+      },
+      {
         "name": "Radar",
         "thumb": "./data/scenes/thumbnails/radar.gif",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/radar.yaml"
-    }, {
+      },
+      {
         "name": "Crosshatch",
         "thumb": "./data/scenes/thumbnails/crosshatch.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/crosshatch.yaml"
-    }, {
+      },
+      {
         "name": "Pericoli",
         "thumb": "./data/scenes/thumbnails/pericoli.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/pericoli.yaml"
-    }, {
+      },
+      {
         "name": "Patterns",
         "thumb": "./data/scenes/thumbnails/patterns.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/patterns.yaml"
-    }, {
+      },
+      {
         "name": "LEGO",
         "thumb": "./data/scenes/thumbnails/lego.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/lego.yaml"
-    }]
-}]
+      }
+    ]
+  }
+]
