@@ -31,61 +31,61 @@ const RETINA_MULTIPLIER = 2;
 const WRITE_PATH = '../../data/scenes/thumbnails';
 
 for (let name in IMAGE_SOURCES) {
-    const url = IMAGE_SOURCES[name].image;
-    const forcePNG = IMAGE_SOURCES[name].forcePNG || false;
-    const destination = path.resolve(__dirname, WRITE_PATH);
+  const url = IMAGE_SOURCES[name].image;
+  const forcePNG = IMAGE_SOURCES[name].forcePNG || false;
+  const destination = path.resolve(__dirname, WRITE_PATH);
 
-    // If we want to force an animated GIF to be a one-frame PNG, we fetch the
-    // url with a `[0]`
-    const fetchURL = forcePNG ? url + '[0]' : url;
+  // If we want to force an animated GIF to be a one-frame PNG, we fetch the
+  // url with a `[0]`
+  const fetchURL = forcePNG ? url + '[0]' : url;
 
-    gm(fetchURL)
-        .format(function (err, value) {
-            if (err) {
-                console.log(`Error: unable to determine format for ${url}: ${err}`);
-                return;
+  gm(fetchURL)
+    .format(function (err, value) {
+      if (err) {
+        console.log(`Error: unable to determine format for ${url}: ${err}`);
+        return;
+      }
+
+      let ext = value.toLowerCase();
+      if (forcePNG === true) {
+        ext = 'png';
+      }
+
+      const filename = path.resolve(destination, name + '.' + ext);
+      const width = THUMBNAIL_WIDTH * RETINA_MULTIPLIER;
+      const height = THUMBNAIL_HEIGHT * RETINA_MULTIPLIER;
+
+      this.coalesce() // This is required to fix resizing problems with animated GIFs
+        .resize(width, height, '^')
+        .gravity('Center')
+        .extent(width, height)
+        .interlace('Line')
+        .write(filename, function (err) {
+          if (err) {
+            console.log(`Error writing ${filename}:\n ${err}`);
+          }
+          else {
+            // Success, optimize now
+            // Save as PNG or animated GIF, depending on source.
+            if (ext === 'png') {
+              imagemin([filename], destination, {
+                plugins: [
+                  imageminPngquant({ quality: '65-80' })
+                ]
+              }).then(files => {
+                console.log(`${filename} - done.`);
+              });
             }
-
-            let ext = value.toLowerCase();
-            if (forcePNG === true) {
-                ext = 'png';
+            else if (ext === 'gif') {
+              imagemin([filename], destination, {
+                use: [
+                  imageminGifsicle({ optimizationLevel: 3 })
+                ]
+              }).then(() => {
+                console.log(`${filename} - done.`);
+              });
             }
-
-            const filename = path.resolve(destination, name + '.' + ext);
-            const width = THUMBNAIL_WIDTH * RETINA_MULTIPLIER;
-            const height = THUMBNAIL_HEIGHT * RETINA_MULTIPLIER;
-
-            this.coalesce() // This is required to fix resizing problems with animated GIFs
-                .resize(width, height, '^')
-                .gravity('Center')
-                .extent(width, height)
-                .interlace('Line')
-                .write(filename, function (err) {
-                    if (err) {
-                        console.log(`Error writing ${filename}:\n ${err}`);
-                    }
-                    else {
-                        // Success, optimize now
-                        // Save as PNG or animated GIF, depending on source.
-                        if (ext === 'png') {
-                            imagemin([filename], destination, {
-                                plugins: [
-                                    imageminPngquant({ quality: '65-80' })
-                                ]
-                            }).then(files => {
-                                console.log(`${filename} - done.`);
-                            });
-                        }
-                        else if (ext === 'gif') {
-                            imagemin([filename], destination, {
-                                use: [
-                                    imageminGifsicle({ optimizationLevel: 3 })
-                                ]
-                            }).then(() => {
-                                console.log(`${filename} - done.`);
-                            });
-                        }
-                    }
-                });
+          }
         });
+    });
 }

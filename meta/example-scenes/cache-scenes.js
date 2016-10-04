@@ -14,33 +14,33 @@ const IMAGE_SOURCES = require('./sources');
 const WRITE_PATH = '../../data/scenes';
 
 for (let name in IMAGE_SOURCES) {
-    const url = IMAGE_SOURCES[name].scene;
+  const url = IMAGE_SOURCES[name].scene;
 
-    // Not all scenes have urls to cache; move on to the next if that's the case
-    if (!url) {
-        continue;
-    }
+  // Not all scenes have urls to cache; move on to the next if that's the case
+  if (!url) {
+    continue;
+  }
 
-    const destination = path.resolve(__dirname, WRITE_PATH, name + '.yaml');
+  const destination = path.resolve(__dirname, WRITE_PATH, name + '.yaml');
 
-    // Depending on the URL's protocol, Node either needs the `http` or `https`
-    // module.
-    const protocol = url.startsWith('https') ? https : http;
+  // Depending on the URL's protocol, Node either needs the `http` or `https`
+  // module.
+  const protocol = url.startsWith('https') ? https : http;
 
-    protocol.get(url, (response) => {
-        // Continuously update stream with data
-        let body = '';
-        response.on('data', function (data) {
-            body += data;
-        });
-        response.on('end', function () {
-            // Data reception is done, save it to destination
-            fs.writeFile(destination, body, (err) => {
-                if (err) {
-                    throw err;
-                }
-                console.log(`${destination} - done.`);
-            });
-        });
+  protocol.get(url, (response) => {
+    // Continuously update stream with data
+    let body = '';
+    response.on('data', function (data) {
+      body += data;
     });
+    response.on('end', function () {
+      // Data reception is done, save it to destination
+      fs.writeFile(destination, body, (err) => {
+        if (err) {
+          throw err;
+        }
+        console.log(`${destination} - done.`);
+      });
+    });
+  });
 }
