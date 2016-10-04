@@ -24,20 +24,13 @@ import EventEmitter from './components/event-emitter';
 
 // Redux
 import store from './store';
-import { APP_INITIALIZED, ADD_FILE, CLEAR_FILES } from './store/actions';
+import { APP_INITIALIZED, SET_APP_STATE, ADD_FILE, CLEAR_FILES } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
 
 let initialScene = ''; // Stores initial scene file for embedded play.
 
-function showUnloadedState() {
-    document.querySelector('.map-view').classList.add('map-view-not-loaded');
-}
-
-function hideUnloadedState() {
-    document.querySelector('.map-view').classList.remove('map-view-not-loaded');
-}
 /**
  * Determine what is the scene url and content to load during start-up
  * Reading local memory is asynchronous, so this returns a Promise
@@ -105,8 +98,6 @@ function doLoadProcess(scene) {
     });
     setSceneContentsInEditor(scene);
 
-    hideUnloadedState();
-
     // Update history
     // Don't push a new history state if we are loading a scene from the
     // initial load of Tangram Play.
@@ -117,7 +108,11 @@ function doLoadProcess(scene) {
     }
 
     // Okay, we are initialized now.
-    store.dispatch({ type: APP_INITIALIZED });
+    store.dispatch({
+        type: SET_APP_STATE,
+        initialized: true,
+        mapNotLoaded: false,
+    });
 
     // Trigger Events
     // Event object is empty right now.
@@ -136,7 +131,10 @@ function onLoadError(error) {
 
     // TODO: editor should not be attached to this
     if (!store.getState().app.initialized) {
-        showUnloadedState(editor);
+        store.dispatch({
+            type: SET_APP_STATE,
+            mapNotLoaded: true,
+        });
         editor.doc.markClean();
     }
 }

@@ -131,6 +131,7 @@
   --z04-map-loading: var(--z04);
 
   /* 05: Above all map UI, below all other UI */
+  --z05-map-not-loaded: var(--z05);
 
   /* 07: Anything that should display on top of all Leaflet elements */
   --z07-menu: var(--z07);
