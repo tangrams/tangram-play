@@ -58,6 +58,7 @@ class Editor extends React.PureComponent {
         // When incoming props for file content changes we want to set the state
         // of the editor directly and prevent React from re-rendering its DOM
         // entirely, so we return `false` from `shouldComponentUpdate` here.
+        // TODO ^ is that necessary
         if (nextProps.activeFile >= 0 && nextProps.activeFile !== this.props.activeFile) {
             // Turn off watching for changes in editor.
             editor.off('changes', watchEditorForChanges);
@@ -100,7 +101,7 @@ class Editor extends React.PureComponent {
             // Turn change watching back on.
             editor.on('changes', watchEditorForChanges);
 
-            return false;
+            // return false;
         }
 
         return true;
@@ -134,6 +135,16 @@ class Editor extends React.PureComponent {
             /* id='content' is used only as a hook for Divider right now */
             <div className="editor-container" id="content">
                 <Divider />
+                {(() => {
+                    if (this.props.files.length === 0) {
+                        return (
+                            <div className="editor-no-content">
+                                nothing in editor right now
+                            </div>
+                        );
+                    }
+                    return null;
+                })()}
                 <EditorTabs />
                 <IconButton
                     className="editor-collapse-button"
