@@ -22,9 +22,20 @@ export let tangramLayer = null;
 export let tangramScene = null;
 
 /**
- * Adds Tangram layer to the map and sets event listeners.
+ * Initializes Tangram
+ * Tangram must be initialized with a scene file. Only initialize Tangram when
+ * Tangram Play knows what scene to load, not before. See loadScene().
  */
-function addTangramLayerAndSubscriptions() {
+function initTangram(pathToSceneFile) {
+    // Add Tangram Layer
+    tangramLayer = Tangram.leafletLayer({
+        scene: pathToSceneFile,
+        events: {
+            hover: handleInspectionHoverEvent,
+            click: handleInspectionClickEvent,
+        },
+    });
+
     tangramLayer.addTo(map);
 
     tangramLayer.scene.subscribe({
@@ -51,44 +62,15 @@ function addTangramLayerAndSubscriptions() {
     window.scene = tangramLayer.scene;
 }
 
-/**
- * Initializes Tangram
- * Tangram must be initialized with a scene file. Only initialize Tangram when
- * Tangram Play knows what scene to load, not before. See loadScene().
- */
-function initTangram(pathToSceneFile) {
-    // Add Tangram Layer
-    tangramLayer = Tangram.leafletLayer({
-        scene: pathToSceneFile,
-        events: {
-            hover: handleInspectionHoverEvent,
-            click: handleInspectionClickEvent,
-        },
-    });
-
-    addTangramLayerAndSubscriptions();
-}
-
 // Sends a scene path and base path to Tangram.
 export function loadScene(pathToSceneFile, { reset = false, basePath = null } = {}) {
-    // Initialize Tangram if the layer does not exist.
-    // Tangram must be initialized with a scene file.
-    // We only initialize Tangram when Tangram Play
+    // Initialize Tangram if the layer does not exist, or if the layer
+    // exists but had been previously removed from the map.
+    // Tangrm cannot be initialized at app start-up because it needs to
+    // know what scene file to use. So only initialize Tangram when Tangram Play
     // knows what scene to load, not before.
-    if (!tangramLayer) {
+    if (!tangramLayer || tangramLayer.getContainer() === null) {
         return initTangram(pathToSceneFile);
-    }
-
-    // If the layer exists but had been previously removed from the map, add it back
-    if (tangramLayer.getContainer() === null) {
-        addTangramLayerAndSubscriptions();
-
-        // If Tangram layer is removed and then re-added to the map, the
-        // `initialized` property is `false`. Here we make sure that the
-        // `initializing` Promise is fulfilled before loading a new scene.
-        return tangramLayer.scene.initializing.then(() => {
-            tangramLayer.scene.load(pathToSceneFile, true);
-        });
     }
 
     // If `reset` is `false`, we are updating content from an already open scene.
