@@ -2,6 +2,7 @@ import {
     SET_ACTIVE_FILE,
     ADD_FILE,
     REMOVE_FILE,
+    REPLACE_FILES,
     CLEAR_FILES,
     MARK_FILE_CLEAN,
     MARK_FILE_DIRTY,
@@ -9,7 +10,11 @@ import {
 } from '../actions';
 
 const initialState = {
+    // The counter increments each time there is a new set of files
+    counter: 0,
+    // Indicates which of the files are currently active
     activeFileIndex: null,
+    // An array of object that describe the files that are "opened"
     files: [],
 };
 
@@ -55,9 +60,18 @@ const files = (state = initialState, action) => {
                 activeFileIndex,
             };
         }
+        case REPLACE_FILES:
+            return {
+                ...state,
+                counter: state.counter + 1,
+                files: [...action.files],
+                // Set the active file to the first one in the index
+                activeFileIndex: 0,
+            };
         case CLEAR_FILES:
             return {
                 ...state,
+                counter: state.counter + 1,
                 files: [],
                 activeFileIndex: null,
             };

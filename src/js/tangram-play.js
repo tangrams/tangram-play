@@ -24,7 +24,7 @@ import EventEmitter from './components/event-emitter';
 
 // Redux
 import store from './store';
-import { APP_INITIALIZED, SET_APP_STATE, ADD_FILE, CLEAR_FILES } from './store/actions';
+import { APP_INITIALIZED, SET_APP_STATE, REPLACE_FILES } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
 const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
@@ -71,17 +71,14 @@ export const debouncedUpdateContent = debounce(updateContent, 500);
 
 function setSceneContentsInEditor(sceneData) {
     // Update Redux state of files
+    // Replacing avoids having to do a CLEAR_FILES then ADD_FILE - which creates
+    // multiple state updates
     store.dispatch({
-        type: CLEAR_FILES,
-    });
-
-    store.dispatch({
-        type: ADD_FILE,
-        activate: true,
-        file: {
+        type: REPLACE_FILES,
+        files: [{
             ...sceneData,
             filename: sceneData.filename,
-        },
+        }],
     });
 }
 

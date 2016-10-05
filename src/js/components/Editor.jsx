@@ -54,17 +54,17 @@ class Editor extends React.PureComponent {
         editor.on('changes', watchEditorForChanges);
     }
 
-    shouldComponentUpdate(nextProps) {
-        // Set content of editor based on active file.
-        // When incoming props for file content changes we want to set the state
-        // of the editor directly and prevent React from re-rendering its DOM
-        // entirely, so we return `false` from `shouldComponentUpdate` here.
-        // TODO ^ is that necessary
-        if (nextProps.activeFile >= 0 && nextProps.activeFile !== this.props.activeFile) {
+    componentDidUpdate(prevProps, prevState) {
+        // Set content of editor based on currently active file.
+        // When incoming props for file content changes we set the state
+        // of the editor directly. This only runs if the scene has changed, or
+        // if the active tab has changed.
+        if ((this.props.sceneCounter > prevProps.sceneCounter) ||
+            (this.props.activeFile >= 0 && this.props.activeFile !== prevProps.activeFile)) {
             // Turn off watching for changes in editor.
             editor.off('changes', watchEditorForChanges);
 
-            const activeFile = nextProps.files[nextProps.activeFile];
+            const activeFile = this.props.files[this.props.activeFile];
 
             // If there is an active CodeMirror document buffer, we swap out the document.
             if (activeFile && activeFile.buffer) {
@@ -101,14 +101,8 @@ class Editor extends React.PureComponent {
 
             // Turn change watching back on.
             editor.on('changes', watchEditorForChanges);
-
-            // return false;
         }
 
-        return true;
-    }
-
-    componentDidUpdate() {
         // DocsPanel is only available behind an admin flag.
         // Update after props have determined sign-in, and init docsPanel.
         // Only do this once.
@@ -183,6 +177,7 @@ class Editor extends React.PureComponent {
 
 Editor.propTypes = {
     admin: React.PropTypes.bool,
+    sceneCounter: React.PropTypes.number,
     activeFile: React.PropTypes.number,
     files: React.PropTypes.array,
     appInitialized: React.PropTypes.bool,
@@ -198,6 +193,7 @@ Editor.defaultProps = {
 function mapStateToProps(state) {
     return {
         admin: state.user.admin || false,
+        sceneCounter: state.files.counter,
         activeFile: state.files.activeFileIndex,
         files: state.files.files,
         appInitialized: state.app.initialized,
