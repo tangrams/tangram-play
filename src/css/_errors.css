@@ -39,6 +39,7 @@
   left: 20px;
   bottom: 20px;
   width: 400px;
+  max-height: 400px; /* Prevent it from getting out of hand if something generated tons of errors */
   pointer-events: auto;
 
   .btm {
