@@ -60,42 +60,47 @@ class Editor extends React.PureComponent {
         // of the editor directly. This only runs if the scene has changed, or
         // if the active tab has changed.
         if ((this.props.sceneCounter > prevProps.sceneCounter) ||
-            (this.props.activeFile >= 0 && this.props.activeFile !== prevProps.activeFile)) {
+            (this.props.activeFile !== prevProps.activeFile)) {
             // Turn off watching for changes in editor.
             editor.off('changes', watchEditorForChanges);
 
-            const activeFile = this.props.files[this.props.activeFile];
+            // If no active file, clear editor buffer.
+            if (this.props.activeFile < 0) {
+                setEditorContent('', true);
+            } else {
+                const activeFile = this.props.files[this.props.activeFile];
 
-            // If there is an active CodeMirror document buffer, we swap out the document.
-            if (activeFile && activeFile.buffer) {
-                editor.swapDoc(activeFile.buffer);
-            } else if (activeFile && activeFile.contents) {
-                // Mark as "clean" if the contents are freshly loaded
-                // (there is no is_clean property defined) or if contents
-                // have been restored with the is_clean property set to "true"
-                // This is converted from JSON so the value is a string, not
-                // a Boolean. Otherwise, the document has not been previously
-                // saved and it is left in the "dirty" state.
-                const shouldMarkClean = (typeof activeFile.is_clean === 'undefined' ||
-                    activeFile.is_clean === 'true');
+                // If there is an active CodeMirror document buffer, we swap out the document.
+                if (activeFile && activeFile.buffer) {
+                    editor.swapDoc(activeFile.buffer);
+                } else if (activeFile && activeFile.contents) {
+                    // Mark as "clean" if the contents are freshly loaded
+                    // (there is no is_clean property defined) or if contents
+                    // have been restored with the is_clean property set to "true"
+                    // This is converted from JSON so the value is a string, not
+                    // a Boolean. Otherwise, the document has not been previously
+                    // saved and it is left in the "dirty" state.
+                    const shouldMarkClean = (typeof activeFile.is_clean === 'undefined' ||
+                        activeFile.is_clean === 'true');
 
-                // Use the text content and (TODO: reparse)
-                setEditorContent(activeFile.contents, shouldMarkClean);
-            }
+                    // Use the text content and (TODO: reparse)
+                    setEditorContent(activeFile.contents, shouldMarkClean);
+                }
 
-            // Restores the part of the document that was scrolled to, if provided.
-            if (activeFile && activeFile.scrollInfo) {
-                const left = activeFile.scrollInfo.left || 0;
-                const top = activeFile.scrollInfo.top || 0;
-                editor.scrollTo(left, top);
-            }
+                // Restores the part of the document that was scrolled to, if provided.
+                if (activeFile && activeFile.scrollInfo) {
+                    const left = activeFile.scrollInfo.left || 0;
+                    const top = activeFile.scrollInfo.top || 0;
+                    editor.scrollTo(left, top);
+                }
 
-            if (window.isEmbedded === undefined) {
-                // Restore cursor position, if provided.
-                if (activeFile && activeFile.cursor) {
-                    editor.getDoc().setCursor(activeFile.cursor, {
-                        scroll: false,
-                    });
+                if (window.isEmbedded === undefined) {
+                    // Restore cursor position, if provided.
+                    if (activeFile && activeFile.cursor) {
+                        editor.getDoc().setCursor(activeFile.cursor, {
+                            scroll: false,
+                        });
+                    }
                 }
             }
 
