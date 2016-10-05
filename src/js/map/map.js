@@ -42,6 +42,13 @@ function addTangramLayerAndSubscriptions() {
         },
         /* eslint-enable camelcase */
     });
+
+    // Attach scene to export
+    tangramScene = tangramLayer.scene;
+
+    // Export to window for debugging.
+    window.layer = tangramLayer;
+    window.scene = tangramLayer.scene;
 }
 
 /**
@@ -60,13 +67,6 @@ function initTangram(pathToSceneFile) {
     });
 
     addTangramLayerAndSubscriptions();
-
-    // Attach scene to export
-    tangramScene = tangramLayer.scene;
-
-    // Export to window for debugging.
-    window.layer = tangramLayer;
-    window.scene = tangramLayer.scene;
 }
 
 // Sends a scene path and base path to Tangram.
@@ -91,7 +91,12 @@ export function loadScene(pathToSceneFile, { reset = false, basePath = null } = 
     // If the original scene already has this `config_path` set, we re-use it.
     const path = basePath || tangramLayer.scene.config_path;
 
-    return tangramLayer.scene.load(pathToSceneFile, !reset && path);
+    // If Tangram layer is removed and then re-added to the map, the
+    // `initialized` property is `false`. Here we make sure that the
+    // `initializing` Promise is fulfilled before loading a new scene.
+    return tangramLayer.scene.initializing.then(() => {
+        tangramLayer.scene.load(pathToSceneFile, !reset && path);
+    });
 }
 
 export function destroyScene() {
