@@ -82,6 +82,13 @@ export function loadScene(pathToSceneFile, { reset = false, basePath = null } = 
     // If the layer exists but had been previously removed from the map, add it back
     if (tangramLayer.getContainer() === null) {
         addTangramLayerAndSubscriptions();
+
+        // If Tangram layer is removed and then re-added to the map, the
+        // `initialized` property is `false`. Here we make sure that the
+        // `initializing` Promise is fulfilled before loading a new scene.
+        return tangramLayer.scene.initializing.then(() => {
+            tangramLayer.scene.load(pathToSceneFile, true);
+        });
     }
 
     // If `reset` is `false`, we are updating content from an already open scene.
@@ -91,12 +98,7 @@ export function loadScene(pathToSceneFile, { reset = false, basePath = null } = 
     // If the original scene already has this `config_path` set, we re-use it.
     const path = basePath || tangramLayer.scene.config_path;
 
-    // If Tangram layer is removed and then re-added to the map, the
-    // `initialized` property is `false`. Here we make sure that the
-    // `initializing` Promise is fulfilled before loading a new scene.
-    return tangramLayer.scene.initializing.then(() => {
-        tangramLayer.scene.load(pathToSceneFile, !reset && path);
-    });
+    return tangramLayer.scene.load(pathToSceneFile, !reset && path);
 }
 
 export function destroyScene() {
