@@ -380,3 +380,20 @@
     color: white;
   }
 }
+
+/* CodeMirror search dialog */
+.CodeMirror-dialog {
+  padding-left: 24px;
+  padding-top: 0.9em;
+  padding-bottom: 0.9em;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--ui-element-color);
+
+  input {
+    height: 2.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    font-size: 1em;
+  }
+}
