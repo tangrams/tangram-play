@@ -4,8 +4,6 @@
 
 .bookmark-color {
   box-sizing: border-box;
-  max-width: 14px;
-  max-height: 14px;
   width: 1em;
   height: 1em;
   cursor: pointer;
