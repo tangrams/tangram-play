@@ -198,9 +198,9 @@ Editor.defaultProps = {
 function mapStateToProps(state) {
     return {
         admin: state.user.admin || false,
-        sceneCounter: state.files.counter,
-        activeFile: state.files.activeFileIndex,
-        files: state.files.files,
+        sceneCounter: state.scene.counter,
+        activeFile: state.scene.activeFileIndex,
+        files: state.scene.files,
         appInitialized: state.app.initialized,
         fontSize: state.settings.editorFontSize,
     };

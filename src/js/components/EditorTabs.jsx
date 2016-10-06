@@ -75,8 +75,8 @@ EditorTabs.defaultProps = {
 
 function mapStateToProps(state) {
     return {
-        activeTab: state.files.activeFileIndex,
-        files: state.files.files,
+        activeTab: state.scene.activeFileIndex,
+        files: state.scene.files,
     };
 }
 

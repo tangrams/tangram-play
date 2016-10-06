@@ -43,9 +43,11 @@ export const APP_INITIALIZED = 'APP_INITIALIZED';
 // Generic action for setting app state.
 export const SET_APP_STATE = 'SET_APP_STATE';
 
-export const SET_SETTINGS = 'SET_SETTINGS';
-export const USER_SIGNED_IN = 'USER_SIGNED_IN';
-export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
+/* errors */
+export const ADD_ERROR = 'ADD_ERROR';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+
+/* scene */
 export const OPEN_SCENE = 'OPEN_SCENE';
 export const SET_ACTIVE_FILE = 'SET_ACTIVE_FILE';
 export const ADD_FILE = 'ADD_FILE';
@@ -56,11 +58,14 @@ export const MARK_FILE_CLEAN = 'MARK_FILE_CLEAN';
 export const MARK_FILE_DIRTY = 'MARK_FILE_DIRTY';
 export const STASH_DOCUMENT = 'STASH_DOCUMENT';
 
-export const ADD_ERROR = 'ADD_ERROR';
-export const CLEAR_ERRORS = 'CLEAR_ERRORS';
-
+/* settings */
+export const SET_SETTINGS = 'SET_SETTINGS';
 export const EDITOR_INCREASE_FONT_SIZE = 'EDITOR_INCREASE_FONT_SIZE';
 export const EDITOR_DECREASE_FONT_SIZE = 'EDITOR_DECREASE_FONT_SIZE';
+
+/* user */
+export const USER_SIGNED_IN = 'USER_SIGNED_IN';
+export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
 
 // Legacy assistance
 // If shield is only controlled by modal visibility, it should be be turned

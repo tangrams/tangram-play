@@ -60,7 +60,7 @@ Map.defaultProps = {
 function mapStateToProps(state) {
     return {
         app: state.app,
-        files: state.files.files,
+        files: state.scene.files,
     };
 }
 
