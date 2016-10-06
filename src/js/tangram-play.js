@@ -219,14 +219,12 @@ export function load(scene) {
             return response.text();
         })
         .then(contents => doLoadProcess({ url: sceneUrl, contents, filename }))
-        .catch(error => {
-            onLoadError(error);
-        });
+        .catch(onLoadError);
     } else if (scene.contents) {
         // If scene contents are provided, no asynchronous work is
         // performed here, but wrap this response in a Promise anyway
         // so that the return object is always a thenable.
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             doLoadProcess(scene);
             resolve();
         });
@@ -272,7 +270,8 @@ export function initTangramPlay() {
 
             // Need to send a signal to the dropdown widgets of type source to populate
             EventEmitter.dispatch('tangram:sceneinit', {});
-        });
+        })
+        .catch(onLoadError);
 
     // If the user bails for whatever reason, hastily shove the contents of
     // the editor into some kind of storage. This overwrites whatever was
