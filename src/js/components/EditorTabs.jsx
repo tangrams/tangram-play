@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { SET_ACTIVE_FILE, REMOVE_FILE, STASH_DOCUMENT } from '../store/actions';
+import { SET_ACTIVE_FILE, REMOVE_FILE, CLOSE_SCENE, STASH_DOCUMENT } from '../store/actions';
 import { editor } from '../editor/editor';
 import EditorIO from '../editor/io';
 
@@ -25,7 +25,12 @@ class EditorTabs extends React.PureComponent {
 
         // Dispatches remove event to store - after checking doc dirty state
         EditorIO.checkSaveStateThen(() => {
-            this.props.removeFile(index);
+            // If index = 0, it's the main file, so we close the scene.
+            if (index === 0) {
+                this.props.closeScene();
+            } else {
+                this.props.removeFile(index);
+            }
         });
     }
 
@@ -66,6 +71,7 @@ EditorTabs.propTypes = {
     // Injected by `mapDispatchToProps`
     setActiveFile: React.PropTypes.func,
     removeFile: React.PropTypes.func,
+    closeScene: React.PropTypes.func,
     stashDoc: React.PropTypes.func,
 };
 
@@ -93,6 +99,9 @@ function mapDispatchToProps(dispatch) {
                 type: REMOVE_FILE,
                 index,
             });
+        },
+        closeScene: (index) => {
+            dispatch({ type: CLOSE_SCENE });
         },
         stashDoc: (index, buffer) => {
             dispatch({
