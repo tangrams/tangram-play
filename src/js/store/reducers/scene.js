@@ -1,16 +1,16 @@
 import {
+    OPEN_SCENE,
+    CLOSE_SCENE,
     SET_ACTIVE_FILE,
     ADD_FILE,
     REMOVE_FILE,
-    REPLACE_FILES,
-    CLEAR_FILES,
     MARK_FILE_CLEAN,
     MARK_FILE_DIRTY,
     STASH_DOCUMENT,
 } from '../actions';
 
 const initialState = {
-    // The counter increments each time there is a new set of files
+    // The counter increments each time a scene is open or closed
     counter: 0,
     // Indicates which of the files are currently active
     activeFileIndex: null,
@@ -18,8 +18,23 @@ const initialState = {
     files: [],
 };
 
-const files = (state = initialState, action) => {
+const scene = (state = initialState, action) => {
     switch (action.type) {
+        case OPEN_SCENE:
+            return {
+                ...state,
+                counter: state.counter + 1,
+                files: [...action.files],
+                // Set the active file to the first one in the index
+                activeFileIndex: 0,
+            };
+        case CLOSE_SCENE:
+            return {
+                ...state,
+                counter: state.counter + 1,
+                files: [],
+                activeFileIndex: null,
+            };
         case SET_ACTIVE_FILE:
             return {
                 ...state,
@@ -48,7 +63,10 @@ const files = (state = initialState, action) => {
             ];
 
             // If the active file index is now out of bounds, it must be set
-            // to one that is in bounds
+            // to one that is in bounds. If the file removed is the last one,
+            // activeFileIndex is set to -1.
+            // TODO: Should this be allowed? Can the last file ever be removed
+            // or should that be a CLOSE_SCENE situation?
             let activeFileIndex = state.activeFileIndex;
             if (activeFileIndex >= fileList.length - 1) {
                 activeFileIndex = fileList.length - 1;
@@ -60,21 +78,6 @@ const files = (state = initialState, action) => {
                 activeFileIndex,
             };
         }
-        case REPLACE_FILES:
-            return {
-                ...state,
-                counter: state.counter + 1,
-                files: [...action.files],
-                // Set the active file to the first one in the index
-                activeFileIndex: 0,
-            };
-        case CLEAR_FILES:
-            return {
-                ...state,
-                counter: state.counter + 1,
-                files: [],
-                activeFileIndex: null,
-            };
         case MARK_FILE_CLEAN:
             // TODO: return new array of files with file object at fileIndex
             // toggled dirty property
@@ -118,4 +121,4 @@ const files = (state = initialState, action) => {
     }
 };
 
-export default files;
+export default scene;
