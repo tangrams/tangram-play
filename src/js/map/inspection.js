@@ -9,6 +9,17 @@ import { getNodesForAddress } from '../editor/editor';
 import { highlightBlock } from '../editor/highlight';
 import EventEmitter from '../components/event-emitter';
 
+// Magic numbers
+// TODO: don't hardcode
+// Vertical offset (positive direction moves tooltip upwards) of tooltip from mouse cursor
+const TOOLTIP_OFFSET_Y = 24;
+
+// If the map pans to fit the popup in the viewport, add this much margin around it
+const POPUP_MARGIN = 12;
+
+// Additional Y margin above the popup to account for the map panel height
+const POPUP_OFFSET_Y = 44;
+
 let mountNode;
 
 let isPopupOpen = false;
@@ -116,11 +127,8 @@ class TangramInspectionHover extends React.Component {
         const pixelX = this.props.selection.pixel.x;
         const pixelY = this.props.selection.pixel.y;
 
-        // TODO: don't hardcode magic number
-        const offsetY = 24;
-
         this.el.style.left = `${pixelX - (width / 2)}px`;
-        this.el.style.top = `${pixelY - height - offsetY}px`;
+        this.el.style.top = `${pixelY - height - TOOLTIP_OFFSET_Y}px`;
     }
 
     render() {
@@ -327,7 +335,7 @@ function showPopup(selection) {
     const popup = L.popup({
         closeButton: false,
         closeOnClick: false,
-        autoPanPadding: [20, 70], // 20 + map toolbar height; TODO: Don't hardcode this.
+        autoPanPadding: [POPUP_MARGIN, POPUP_MARGIN + POPUP_OFFSET_Y],
         offset: [0, -6],
         className: 'map-inspection-popup',
     });
