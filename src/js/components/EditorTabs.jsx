@@ -43,7 +43,7 @@ class EditorTabs extends React.PureComponent {
                     if (i === this.props.activeTab) {
                         classes += ' editor-tab-is-active';
                     }
-                    if (item.is_clean === false) {
+                    if (item.isClean === false) {
                         classes += ' editor-tab-is-dirty';
                     }
 

@@ -27,7 +27,8 @@ import store from './store';
 import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/default.yaml';
-const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
+const STORAGE_LAST_EDITOR_CONTENT = 'last-content'; // deprecated
+const STORAGE_LAST_EDITOR_STATE = 'last-scene'; // new
 
 let initialScene = ''; // Stores initial scene file for embedded play.
 
@@ -46,17 +47,34 @@ function determineScene() {
         });
     }
 
-    // Else if there is something saved in memory (localforage), return that
-    // Check that contents exist and that it is not empty.
-    return localforage.getItem(STORAGE_LAST_EDITOR_CONTENT)
-        .then((sceneData) => {
-            if (sceneData && sceneData.contents && sceneData.contents.trim().length > 0) {
-                return sceneData;
+    // Else if there is something saved in memory (localforage), return that.
+    // To be valid, it must contain at least one file.
+    return localforage.getItem(STORAGE_LAST_EDITOR_STATE)
+        .then(scene => {
+            if (scene && scene.files && scene.files.length > 0) {
+                store.dispatch({
+                    type: OPEN_SCENE,
+                    ...scene,
+                });
+
+                return scene;
             }
 
             // Else load the default scene file.
             return { url: DEFAULT_SCENE };
         });
+
+    // Else if there is something saved in memory (localforage), return that
+    // Check that contents exist and that it is not empty.
+    // return localforage.getItem(STORAGE_LAST_EDITOR_CONTENT)
+    //     .then((sceneData) => {
+    //         if (sceneData && sceneData.contents && sceneData.contents.trim().length > 0) {
+    //             return sceneData;
+    //         }
+    //
+    //         // Else load the default scene file.
+    //         return { url: DEFAULT_SCENE };
+    //     });
 }
 
 // If editor is updated, send it to the map.
@@ -69,14 +87,15 @@ function updateContent(content) {
 // Wrap updateContent() in a debounce function
 export const debouncedUpdateContent = debounce(updateContent, 500);
 
-function setSceneContentsInEditor(sceneData) {
+function setSceneContentsInEditor(scene) {
+    const { url, originalBasePath, ...file } = scene;
+
     // Set new scene information in Redux store
     store.dispatch({
         type: OPEN_SCENE,
-        files: [{
-            ...sceneData,
-            filename: sceneData.filename,
-        }],
+        originalUrl: url,
+        originalBasePath,
+        files: [{ ...file }],
     });
 }
 
@@ -89,7 +108,7 @@ function doLoadProcess(scene) {
     // TODO: get contents from Tangram instead of another xhr request.
     loadScene(url, {
         reset: true,
-        basePath: scene.original_base_path,
+        basePath: scene.originalBasePath,
     });
     setSceneContentsInEditor(scene);
 
@@ -266,30 +285,33 @@ export function initTangramPlay() {
         // Tangram (it may be wrong). Instead, remember this
         // in a "session" variable
         /* eslint-disable camelcase */
-        const doc = editor.getDoc();
-        const sceneData = {
-            original_url: tangramLayer.scene.config_source,
-            original_base_path: tangramLayer.scene.config_path,
-            contents: getEditorContent(),
-            is_clean: doc.isClean(),
-            scrollInfo: editor.getScrollInfo(),
-            cursor: doc.getCursor(),
-        };
+        // const doc = editor.getDoc();
+        // TODO
+        // const file = {
+        //     original_url: tangramLayer.scene.config_source,
+        //     original_base_path: tangramLayer.scene.config_path,
+        //     contents: getEditorContent(),
+        //     isClean: doc.isClean(),
+        //     scrollInfo: editor.getScrollInfo(),
+        //     cursor: doc.getCursor(),
+        // };
         /* eslint-enable camelcase */
+
+        const scene = store.getState().scene;
 
         // Expects an object of format:
         // {
         //     original_url: 'http://valid.url/path/scene.yaml',
         //     original_base_path: 'http://valid.url/path/',
         //     contents: 'Contents of scene.yaml',
-        //     is_clean: boolean value; false indicates original contents
+        //     isClean: boolean value; false indicates original contents
         //               were modified without saving
         //     scrollInfo: editor's scroll position
         //     cursor: where the cursor was positioned in the document.
         // }
 
         if (window.isEmbedded === undefined) {
-            localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
+            localforage.setItem(STORAGE_LAST_EDITOR_STATE, scene);
         }
     });
 }

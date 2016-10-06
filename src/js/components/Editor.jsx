@@ -75,13 +75,13 @@ class Editor extends React.PureComponent {
                     editor.swapDoc(activeFile.buffer);
                 } else if (activeFile && activeFile.contents) {
                     // Mark as "clean" if the contents are freshly loaded
-                    // (there is no is_clean property defined) or if contents
-                    // have been restored with the is_clean property set to "true"
+                    // (there is no isClean property defined) or if contents
+                    // have been restored with the isClean property set to "true"
                     // This is converted from JSON so the value is a string, not
                     // a Boolean. Otherwise, the document has not been previously
                     // saved and it is left in the "dirty" state.
-                    const shouldMarkClean = (typeof activeFile.is_clean === 'undefined' ||
-                        activeFile.is_clean === 'true');
+                    const shouldMarkClean = (typeof activeFile.isClean === 'undefined' ||
+                        activeFile.isClean === 'true');
 
                     // Use the text content and (TODO: reparse)
                     setEditorContent(activeFile.contents, shouldMarkClean);
