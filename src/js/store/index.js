@@ -8,6 +8,11 @@ import reducers from './reducers';
 
 const initialState = {};
 
-const store = createStore(reducers, initialState);
+/* eslint-disable no-underscore-dangle */
+const store = createStore(reducers, initialState,
+    // For Redux devtools extension.
+    // https://github.com/zalmoxisus/redux-devtools-extension
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 export default store;
