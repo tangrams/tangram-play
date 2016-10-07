@@ -223,7 +223,14 @@ export function load(scene) {
         // performed here, but wrap this response in a Promise anyway
         // so that the return object is always a thenable.
         return new Promise(resolve => {
-            doLoadProcess(scene);
+            // Make a scene object from the contents
+            // TODO: add more data to this.
+            const sceneState = {
+                files: [{
+                    contents: scene.contents,
+                }],
+            };
+            doLoadProcess(sceneState);
             resolve();
         })
         .catch(onLoadError);
