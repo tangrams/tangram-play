@@ -4,7 +4,7 @@ import localforage from 'localforage';
 
 // Core elements
 import { tangramLayer } from './map/map';
-import { editor, getEditorContent } from './editor/editor';
+import { editor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
@@ -185,7 +185,7 @@ function determineScene() {
         return makeSceneStateObjectFromUrl(query.scene)
             .then(sceneState => {
                 sceneState.files[0].highlightedLines = query.lines; // eslint-disable-line no-param-reassign
-                doLoadProcess(sceneState);
+                return doLoadProcess(sceneState);
             });
     }
 
@@ -194,7 +194,7 @@ function determineScene() {
     return localforage.getItem(STORAGE_LAST_EDITOR_STATE)
         .then(sceneState => {
             if (sceneState && sceneState.files && sceneState.files.length > 0) {
-                doLoadProcess(sceneState);
+                return doLoadProcess(sceneState);
             }
 
             // Else load the default scene file.
@@ -255,6 +255,8 @@ export function initTangramPlay() {
         }
     };
 
+    showSceneLoadingIndicator();
+
     // LOAD SCENE FILE
     determineScene()
         // Things we do after Tangram is finished initializing
@@ -275,47 +277,6 @@ export function initTangramPlay() {
             EventEmitter.dispatch('tangram:sceneinit', {});
         })
         .catch(onLoadError);
-
-    // If the user bails for whatever reason, hastily shove the contents of
-    // the editor into some kind of storage. This overwrites whatever was
-    // there before. Note that there is not really a way of handling unload
-    // with our own UI and logic, since this allows for widespread abuse
-    // of normal browser functionality.
-    window.addEventListener('beforeunload', () => {
-        // TODO:
-        // Don't take original url or original base path from
-        // Tangram (it may be wrong). Instead, remember this
-        // in a "session" variable
-        /* eslint-disable camelcase */
-        const doc = editor.getDoc();
-        // TODO
-        const file = {
-            original_url: tangramLayer.scene.config_source,
-            original_base_path: tangramLayer.scene.config_path,
-            contents: getEditorContent(),
-            isClean: doc.isClean(),
-            scrollInfo: editor.getScrollInfo(),
-            cursor: doc.getCursor(),
-        };
-        /* eslint-enable camelcase */
-
-        const scene = store.getState().scene;
-
-        // Expects an object of format:
-        // {
-        //     original_url: 'http://valid.url/path/scene.yaml',
-        //     original_base_path: 'http://valid.url/path/',
-        //     contents: 'Contents of scene.yaml',
-        //     isClean: boolean value; false indicates original contents
-        //               were modified without saving
-        //     scrollInfo: editor's scroll position
-        //     cursor: where the cursor was positioned in the document.
-        // }
-
-        if (window.isEmbedded === undefined) {
-            localforage.setItem(STORAGE_LAST_EDITOR_STATE, scene);
-        }
-    });
 }
 
 // This function is only used by the embedded version of Tangram Play.

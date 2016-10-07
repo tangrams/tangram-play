@@ -13,14 +13,23 @@ class Map extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
+        // If we don't have any scene files, kill the map so it doesn't take memory
         if (this.props.app.initialized &&
             (nextProps.scene.files.length === 0 || this.props.app.mapNotLoaded === true)) {
             destroyScene();
+
+            // Bail from `componentWillUpdate`, we're done here
+            return;
         }
 
+        // If the scene has changed, load the scene file from the root scene
+        // contents, which should already be fetched by now. Don't load the
+        // originalUrl, because contents may differ from the originalUrl due
+        // to user edits.
         if (nextProps.scene.counter > this.props.scene.counter) {
             const { scene } = nextProps;
-            const url = scene.originalUrl || URL.createObjectURL(new Blob([scene.files[0].contents]));
+            const rootFile = scene.rootFileIndex;
+            const url = URL.createObjectURL(new Blob([scene.files[rootFile].contents]));
 
             loadScene(url, {
                 reset: true,

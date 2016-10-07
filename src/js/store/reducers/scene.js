@@ -92,19 +92,23 @@ What is a file object? A file object can contain the following properties:
 
 const scene = (state = initialState, action) => {
     switch (action.type) {
-        case OPEN_SCENE:
+        case OPEN_SCENE: {
             // Copy initial state, add in any new props from action, then
             // increment the counter and set default values for active and
             // root file index if not provided.
+            const mutatedAction = { ...action };
+            delete mutatedAction.type; // Prevent saving of `type` in store
+
             return {
                 ...initialState,
-                ...action,
+                ...mutatedAction,
                 counter: state.counter + 1,
                 // Set the active file and root file to the first one in the
                 // array unless otherwise specified. (e.g. if restoring state)
                 activeFileIndex: action.activeFileIndex || 0,
                 rootFileIndex: action.rootFileIndex || 0,
             };
+        }
         case CLOSE_SCENE:
             // Increase counter, but reset state to initial (blank) state
             return {
