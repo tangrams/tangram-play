@@ -4,6 +4,13 @@ import localforage from 'localforage';
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 let FORCE_MIGRATE = false;
 
+/*
+    TODO: (when ready)
+
+    remove from localstorage / localforage:
+    // const STORAGE_LAST_EDITOR_CONTENT = 'last-content'; // deprecated
+*/
+
 function convertMapViewToObject() {
     const lat = window.localStorage.getItem(`${LOCAL_STORAGE_PREFIX}latitude`);
     const lng = window.localStorage.getItem(`${LOCAL_STORAGE_PREFIX}longitude`);

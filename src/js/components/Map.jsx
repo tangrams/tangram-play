@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MapPanel from './MapPanel';
 import MapLoading from '../map/MapLoading';
-import { initMap, destroyScene } from '../map/map';
+import { initMap, loadScene, destroyScene } from '../map/map';
 
 class Map extends React.Component {
     componentDidMount() {
@@ -13,8 +13,19 @@ class Map extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
-        if (this.props.app.initialized && (nextProps.files.length === 0 || this.props.app.mapNotLoaded === true)) {
+        if (this.props.app.initialized &&
+            (nextProps.scene.files.length === 0 || this.props.app.mapNotLoaded === true)) {
             destroyScene();
+        }
+
+        if (nextProps.scene.counter > this.props.scene.counter) {
+            const { scene } = nextProps;
+            const url = scene.originalUrl || URL.createObjectURL(new Blob([scene.files[0].contents]));
+
+            loadScene(url, {
+                reset: true,
+                basePath: scene.originalBasePath,
+            });
         }
     }
 
@@ -26,7 +37,7 @@ class Map extends React.Component {
                     // files are still zero, but we won't prompt until after
                     if (!this.props.app.initialized) return null;
 
-                    if (this.props.files.length === 0 || this.props.app.mapNotLoaded === true) {
+                    if (this.props.scene.files.length === 0 || this.props.app.mapNotLoaded === true) {
                         return (
                             <div className="map-view-not-loaded" />
                         );
@@ -50,7 +61,7 @@ class Map extends React.Component {
 Map.propTypes = {
     panel: React.PropTypes.bool,
     app: React.PropTypes.object,
-    files: React.PropTypes.array,
+    scene: React.PropTypes.object,
 };
 
 Map.defaultProps = {
@@ -60,7 +71,7 @@ Map.defaultProps = {
 function mapStateToProps(state) {
     return {
         app: state.app,
-        files: state.scene.files,
+        scene: state.scene,
     };
 }
 

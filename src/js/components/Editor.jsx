@@ -1,18 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { debounce } from 'lodash';
 import EditorTabs from './EditorTabs';
 import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
 import { initEditor, editor, getEditorContent, setEditorContent } from '../editor/editor';
+import { highlightRanges } from '../editor/highlight';
 import Divider from './Divider';
-import { debouncedUpdateContent } from '../tangram-play';
 import { replaceHistoryState } from '../tools/url-state';
+import { loadScene } from '../map/map';
 
 import store from '../store';
 import { MARK_FILE_DIRTY, MARK_FILE_CLEAN, SET_SETTINGS } from '../store/actions';
 
 let docsHasInitAlready = false;
+
+// If editor is updated, send it to the map.
+function updateContent(content) {
+    const url = URL.createObjectURL(new Blob([content]));
+    loadScene(url);
+}
+
+// Wrap updateContent() in a debounce function to prevent rapid series of
+// changes from continuously updating the map.
+const debouncedUpdateContent = debounce(updateContent, 500);
 
 function watchEditorForChanges() {
     const content = getEditorContent();
@@ -85,6 +97,11 @@ class Editor extends React.PureComponent {
 
                     // Use the text content and (TODO: reparse)
                     setEditorContent(activeFile.contents, shouldMarkClean);
+                }
+
+                // Highlights lines, if provided.
+                if (activeFile.highlightedLines) {
+                    highlightRanges(activeFile.highlightedLines);
                 }
 
                 // Restores the part of the document that was scrolled to, if provided.

@@ -79,7 +79,7 @@ What is a file object? A file object can contain the following properties:
         an Object of signature `{left, top, width, height, clientWidth,
         clientHeight}` returned from `CodeMirror.getScrollInfo()`. This is
         obtained when a file is stashed and used to restore the original view.
-    - highlightLines (string)
+    - highlightedLines (string)
         a string of all highlighted line ranges returned from
         `getAllHighlightedLines()`
     - buffer (CodeMirror.Doc object)
