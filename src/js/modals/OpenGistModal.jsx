@@ -97,8 +97,10 @@ export default class OpenGistModal extends React.Component {
      * @param {string} url - the Gist URL that was attempted
      */
     handleError(error, value) {
-        // Close the modal
-        this.onClickCancel();
+        // Close the modal, if still present
+        if (this.component) {
+            this.onClickCancel();
+        }
 
         let message = '';
 
