@@ -8,6 +8,7 @@ import {
     MARK_FILE_DIRTY,
     STASH_DOCUMENT,
 } from '../actions';
+import { getBasePathFromUrl } from '../../tools/helpers';
 
 const initialState = {
     // The counter increments each time a scene is open or closed
@@ -98,6 +99,11 @@ const scene = (state = initialState, action) => {
             // root file index if not provided.
             const mutatedAction = { ...action };
             delete mutatedAction.type; // Prevent saving of `type` in store
+
+            // Calculate originalBasePath if originalUrl is present
+            if (mutatedAction.originalUrl && !mutatedAction.originalBasePath) {
+                mutatedAction.originalBasePath = getBasePathFromUrl(mutatedAction.originalUrl);
+            }
 
             return {
                 ...initialState,

@@ -39,8 +39,6 @@ function updateLocalMemory(content, doc, isClean) {
     const scene = store.getState().scene;
     const activeFile = scene.activeFileIndex;
 
-    // TODO: Calculate our own config_path and do it much earlier than this
-    scene.originalBasePath = tangramLayer.scene.config_path;
     scene.files[activeFile].contents = content;
     scene.files[activeFile].isClean = isClean;
     scene.files[activeFile].scrollInfo = editor.getScrollInfo();
@@ -51,8 +49,8 @@ function updateLocalMemory(content, doc, isClean) {
     localforage.setItem(STORAGE_LAST_EDITOR_STATE, scene);
 }
 
-// Wrap updateLocalMemory() in a debounce function. It is possible this
-// incurs significant processing overhead on every edit so we keep it from
+// Wrap updateLocalMemory() in a debounce function. This actually does incur
+// an extra significant processing overhead on every edit so we keep it from
 // executing all the time.
 const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
 

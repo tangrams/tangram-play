@@ -15,7 +15,7 @@ import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import ErrorModal from './modals/ErrorModal';
 
 // Import Utils
-import { prependProtocolToUrl } from './tools/helpers';
+import { prependProtocolToUrl, getFilenameFromUrl } from './tools/helpers';
 import { getQueryStringObject, pushHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
 import EventEmitter from './components/event-emitter';
@@ -115,20 +115,6 @@ function processUrl(url) {
     return new Promise(resolve => {
         resolve(sceneUrl);
     });
-}
-
-/**
- * Interprets a file name from a URL.
- * Given a url like http://somewhere.com/dir/scene.yaml, returns what looks
- * like the filename, e.g. `scene.yaml`.
- *
- * @param {string} url - the input url string
- * @returns {string} filename - a best guess.
- */
-function getFilenameFromUrl(url) {
-    const filenameParts = url.split('/');
-    const filename = filenameParts[filenameParts.length - 1];
-    return filename;
 }
 
 /**

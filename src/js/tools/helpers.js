@@ -64,6 +64,44 @@ export function prependProtocolToUrl(url) {
 }
 
 /**
+ * Interprets a file name from a URL.
+ * Given a url like http://somewhere.com/dir/scene.yaml, returns what looks
+ * like the filename, e.g. `scene.yaml`.
+ *
+ * @param {string} url - the input url string
+ * @returns {string} filename - a best guess.
+ */
+export function getFilenameFromUrl(url) {
+    const filenameParts = url.split('/');
+    const filename = filenameParts[filenameParts.length - 1];
+    return filename;
+}
+
+/**
+ * Gets a base path from a URL.
+ * Borrowed from Tangram Utils - https://github.com/tangrams/tangram/blob/31b01b305968230c037fea0c7e05669eea3f9fb6/src/utils/utils.js#L57
+ *
+ * @param {string} url - the input url string
+ * @returns {string} path string
+ */
+export function getBasePathFromUrl(url) {
+    if (typeof url === 'string' && url.search(/^(data|blob):/) === -1) {
+        const qs = url.indexOf('?');
+        if (qs > -1) {
+            url = url.substr(0, qs);
+        }
+
+        const hash = url.indexOf('#');
+        if (hash > -1) {
+            url = url.substr(0, hash);
+        }
+
+        return url.substr(0, url.lastIndexOf('/') + 1) || '';
+    }
+    return '';
+}
+
+/**
  * Determines current device pixel ratio (e.g. Retina screens have a ratio of 2).
  *
  * @param {Context} ctx - canvas context to check

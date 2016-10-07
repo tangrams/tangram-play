@@ -80,7 +80,7 @@ export function loadScene(pathToSceneFile, { reset = false, basePath = null } = 
     // If the original scene already has this `config_path` set, we re-use it.
     const path = basePath || tangramLayer.scene.config_path;
 
-    return tangramLayer.scene.load(pathToSceneFile, !reset && path);
+    return tangramLayer.scene.load(pathToSceneFile, path);
 }
 
 export function destroyScene() {
