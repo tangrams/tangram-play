@@ -19,7 +19,7 @@ import ErrorModal from './modals/ErrorModal';
 import { prependProtocolToUrl } from './tools/helpers';
 import { getQueryStringObject, pushHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
-import { initHighlight, highlightRanges } from './editor/highlight';
+import { highlightRanges } from './editor/highlight';
 import EventEmitter from './components/event-emitter';
 
 // Redux
@@ -179,10 +179,9 @@ export function load(scene) {
     // when Tangram reports that it's done.
     showSceneLoadingIndicator();
 
-    let sceneUrl = scene.url;
-
     // Either we are passed a url path, or scene file contents
     if (scene.url) {
+        let sceneUrl = scene.url;
         let fetchPromise;
 
         // Provide protocol if it appears to be protocol-less URL
@@ -195,11 +194,11 @@ export function load(scene) {
         // If it appears to be a Gist URL:
         if (isGistURL(sceneUrl) === true) {
             fetchPromise = getSceneURLFromGistAPI(sceneUrl)
-                .then(url => {
+                .then(rawGistUrl => {
                     // Update the scene URL property with the correct URL
                     // to the raw YAML to ensure safe loading
-                    sceneUrl = url;
-                    return window.fetch(url);
+                    sceneUrl = rawGistUrl;
+                    return window.fetch(sceneUrl);
                 });
         } else {
             // Fetch the contents of a YAML file directly. This step
@@ -218,7 +217,7 @@ export function load(scene) {
 
             return response.text();
         })
-        .then(contents => doLoadProcess({ url: sceneUrl, contents, filename }))
+        .then(contents => doLoadProcess({ url: sceneUrl, contents, filename, ...scene }))
         .catch(onLoadError);
     } else if (scene.contents) {
         // If scene contents are provided, no asynchronous work is
@@ -252,9 +251,6 @@ export function initTangramPlay() {
             if (query.lines) {
                 highlightRanges(query.lines);
             }
-
-            // Turn on highlighting module
-            initHighlight();
 
             // Initialize addons after Tangram is done, because
             // some addons depend on Tangram scene config being present

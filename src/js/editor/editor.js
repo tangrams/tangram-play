@@ -2,6 +2,7 @@ import config from '../config';
 import { initCodeMirror } from './codemirror';
 import { parseYamlString } from './codemirror/yaml-tangram';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
+import { addHighlightEventListeners } from './highlight';
 
 import EventEmitter from '../components/event-emitter';
 
@@ -22,6 +23,9 @@ window.editor = editor;
  */
 export function initEditor(el) {
     editor = initCodeMirror(el);
+
+    // Turn on highlighting module
+    addHighlightEventListeners();
 }
 
 // Sets or gets scene contents in the editor.
