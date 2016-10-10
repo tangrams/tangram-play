@@ -1,13 +1,14 @@
 /**
  * Record various properties related to app state.
  */
-import { APP_INITIALIZED, SET_APP_STATE } from '../actions';
+import { APP_INITIALIZED, SET_APP_STATE, ADD_RECENT_SCENE } from '../actions';
 
 const initialState = {
     // Set to true after Tangram Play has initialized - ready and waiting to
     // accept user input. The absence of the `initialized` prop in the `app`
     // state shall be treated the same as a `false` value.
     initialized: false,
+    recentScenes: [],
 };
 
 const app = (state = initialState, action) => {
@@ -27,6 +28,12 @@ const app = (state = initialState, action) => {
             delete settingsObj.type;
 
             return { ...settingsObj };
+        }
+        case ADD_RECENT_SCENE: {
+            return {
+                ...state,
+                recentScenes: [...state.recentScenes, action.scene],
+            };
         }
         default:
             return state;

@@ -43,6 +43,9 @@ export const APP_INITIALIZED = 'APP_INITIALIZED';
 // Generic action for setting app state.
 export const SET_APP_STATE = 'SET_APP_STATE';
 
+// Add a scene to a list of recently opened scenes.
+export const ADD_RECENT_SCENE = 'ADD_RECENT_SCENE';
+
 /* errors */
 export const ADD_ERROR = 'ADD_ERROR';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
