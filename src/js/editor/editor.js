@@ -19,6 +19,9 @@ const STORAGE_LAST_EDITOR_STATE = 'last-scene';
 // eslint-disable-next-line import/no-mutable-exports
 export let editor;
 
+// Timeout for saving things in memory
+let localMemorySaveTimer;
+
 // Debug
 window.editor = editor;
 
@@ -124,7 +127,9 @@ export function watchEditorForChanges() {
     // window.beforeunload event; there is no guarantee the transaction is
     // completed before the page tears down. See here:
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#Warning_About_Browser_Shutdown
-    debouncedUpdateLocalMemory(content, doc, isClean);
+    window.clearTimeout(localMemorySaveTimer);
+    localMemorySaveTimer = window.setTimeout(debouncedUpdateLocalMemory,
+        250, content, doc, isClean);
 
     // Send scene data to Tangram
     debouncedUpdateContent(content);
