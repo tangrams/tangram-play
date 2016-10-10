@@ -91,9 +91,10 @@ function onLoadError(error) {
  * Process a url path.
  * We need to be able to read a single YAML file as the root scene file.
  * User input can be all over the place, so this function takes input and
- * does processing to return a URL that is (hopefully) valid. Users may also
- * pass in a Gist URL string that looks like anything, but is not the root YAML
- * file. This contacts the Gist API to figure this out, so returns asynchronously.
+ * does processing to return a URL that is (hopefully) valid. For instance:
+ * users may pass in a Gist URL string that looks like anything, but is not the
+ * root YAML file. This contacts the Gist API to figure this out, so it must
+ * return a Promise.
  *
  * @param {string} url - the input url string
  * @returns {Promise} A promise which resolves to the final URL value.

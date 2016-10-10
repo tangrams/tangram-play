@@ -1,96 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { debounce } from 'lodash';
-import localforage from 'localforage';
 import EditorTabs from './EditorTabs';
 import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
-import { initEditor, editor, getEditorContent, setEditorContent } from '../editor/editor';
-import { highlightRanges, getAllHighlightedLines } from '../editor/highlight';
 import Divider from './Divider';
-import { replaceHistoryState } from '../tools/url-state';
-import { loadScene, tangramLayer } from '../map/map';
 
+// Import Redux
 import store from '../store';
-import { MARK_FILE_DIRTY, MARK_FILE_CLEAN, SET_SETTINGS } from '../store/actions';
+import { SET_SETTINGS } from '../store/actions';
 
-const STORAGE_LAST_EDITOR_STATE = 'last-scene';
-
+// Import editor logic
+import {
+    initEditor,
+    editor,
+    setEditorContent,
+    watchEditorForChanges }
+from '../editor/editor';
+import { highlightRanges } from '../editor/highlight';
 
 let docsHasInitAlready = false;
-
-// If editor is updated, send it to the map.
-function updateContent(content) {
-    const url = URL.createObjectURL(new Blob([content]));
-    loadScene(url);
-}
-
-// Wrap updateContent() in a debounce function to prevent rapid series of
-// changes from continuously updating the map.
-const debouncedUpdateContent = debounce(updateContent, 500);
-
-function updateLocalMemory(content, doc, isClean) {
-    // Bail if embedded
-    if (window.isEmbedded) {
-        return;
-    }
-
-    const scene = store.getState().scene;
-    const activeFile = scene.activeFileIndex;
-
-    scene.files[activeFile].contents = content;
-    scene.files[activeFile].isClean = isClean;
-    scene.files[activeFile].scrollInfo = editor.getScrollInfo();
-    scene.files[activeFile].cursor = doc.getCursor();
-    scene.files[activeFile].highlightedLines = getAllHighlightedLines();
-
-    // Store in local memory
-    localforage.setItem(STORAGE_LAST_EDITOR_STATE, scene);
-}
-
-// Wrap updateLocalMemory() in a debounce function. This actually does incur
-// an extra significant processing overhead on every edit so we keep it from
-// executing all the time.
-const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
-
-function watchEditorForChanges() {
-    const content = getEditorContent();
-    const doc = editor.getDoc();
-    const isClean = doc.isClean();
-
-    // Update all the properties of the active file in local memory.
-    // Localforage is async so it cannot be relied on to do this on the
-    // window.beforeunload event; there is no guarantee the transaction is
-    // completed before the page tears down. See here:
-    // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#Warning_About_Browser_Shutdown
-    debouncedUpdateLocalMemory(content, doc, isClean);
-
-    // Send scene data to Tangram
-    debouncedUpdateContent(content);
-
-    // Update the page URL. When editor contents changes by user input
-    // and the the editor state is not clean), we erase the ?scene= state
-    // from the URL string. This prevents a situation where reloading (or
-    // copy-pasting the URL) loads the scene file from an earlier state.
-    if (isClean === false) {
-        replaceHistoryState({
-            scene: null,
-        });
-
-        // Also use this area to mark the state of the file in Redux store
-        // TODO: These checks do not have to be debounced for Tangram.
-        store.dispatch({
-            type: MARK_FILE_DIRTY,
-            fileIndex: 0,
-        });
-    } else {
-        store.dispatch({
-            type: MARK_FILE_CLEAN,
-            fileIndex: 0,
-        });
-    }
-}
 
 class Editor extends React.PureComponent {
     componentDidMount() {
