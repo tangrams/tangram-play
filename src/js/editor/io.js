@@ -10,6 +10,7 @@ import ErrorModal from '../modals/ErrorModal';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import { load } from '../tangram-play';
 import { editor, getEditorContent } from './editor';
+import store from '../store';
 
 const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
 
@@ -122,8 +123,12 @@ export function exportSceneFile() {
     const typedArray = getEditorContent();
     const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
 
+    // Get the filename from state (or use scene.yaml fallback)
+    const scene = store.getState().scene;
+    const filename = scene.files[scene.rootFileIndex].filename || 'scene.yaml';
+
     // Use FileSaver implementation, pass `true` as third parameter
     // to prevent auto-prepending a Byte-Order Mark (BOM)
-    saveAs(blob, 'scene.yaml', true);
+    saveAs(blob, filename, true);
     editor.doc.markClean();
 }
