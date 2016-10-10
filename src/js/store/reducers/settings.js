@@ -1,7 +1,10 @@
 import { SET_SETTINGS, EDITOR_DECREASE_FONT_SIZE, EDITOR_INCREASE_FONT_SIZE } from '../actions';
 
-const initialState = {};
 const MINIMUM_FONT_SIZE = 8;
+
+const initialState = {
+    editorFontSize: 14,
+};
 
 const settings = (state = initialState, action) => {
     // The settings is an object with an arbitrary set of properties.
