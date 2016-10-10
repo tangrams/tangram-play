@@ -12,7 +12,7 @@ import ErrorModal from '../modals/ErrorModal';
 import EventEmitter from './event-emitter';
 import { requestUserSignInState, requestUserSignOut } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
-import EditorIO from '../editor/io';
+import { checkSaveStateThen } from '../editor/io';
 
 // This is not exported. It will be connected to a Redux container component
 // which _is_ exported.
@@ -44,7 +44,7 @@ class SignInButton extends React.Component {
      * the user is ready to navigate away.
      */
     onClickSignOut(event) {
-        EditorIO.checkSaveStateThen(() => {
+        checkSaveStateThen(() => {
             requestUserSignOut()
                 .catch(error => {
                     ReactDOM.render(

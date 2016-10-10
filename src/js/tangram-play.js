@@ -228,6 +228,7 @@ export function load(scene) {
             // TODO: add more data to this.
             const sceneState = {
                 files: [{
+                    filename: scene.filename,
                     contents: scene.contents,
                 }],
             };

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { SET_ACTIVE_FILE, REMOVE_FILE, CLOSE_SCENE, STASH_DOCUMENT } from '../store/actions';
 import { editor } from '../editor/editor';
-import EditorIO from '../editor/io';
+import { checkSaveStateThen } from '../editor/io';
 
 class EditorTabs extends React.PureComponent {
     setActiveTab(index, event) {
@@ -24,7 +24,7 @@ class EditorTabs extends React.PureComponent {
         event.stopPropagation();
 
         // Dispatches remove event to store - after checking doc dirty state
-        EditorIO.checkSaveStateThen(() => {
+        checkSaveStateThen(() => {
             // If index = 0, it's the main file, so we close the scene.
             if (index === 0) {
                 this.props.closeScene();

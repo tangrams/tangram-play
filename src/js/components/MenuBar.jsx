@@ -12,8 +12,7 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 import EventEmitter from './event-emitter';
 
-import EditorIO from '../editor/io';
-import { openLocalFile } from '../file/open-local';
+import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import ExamplesModal from '../modals/ExamplesModal';
@@ -30,7 +29,7 @@ import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
 
 function clickNew() {
-    EditorIO.new();
+    newScene();
 }
 
 function clickOpenFile() {
@@ -38,25 +37,25 @@ function clickOpenFile() {
 }
 
 function clickOpenGist() {
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<OpenGistModal />, document.getElementById('modal-container'));
     });
 }
 
 function clickOpenURL() {
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<OpenUrlModal />, document.getElementById('modal-container'));
     });
 }
 
 function clickOpenExample() {
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<ExamplesModal />, document.getElementById('modal-container'));
     });
 }
 
 function clickSaveFile() {
-    EditorIO.export();
+    exportSceneFile();
 }
 
 function clickSaveGist() {
@@ -99,7 +98,7 @@ function unsubscribeOpenFromCloud() {
 
 function showOpenFromCloudModal() {
     unsubscribeOpenFromCloud();
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<OpenFromCloudModal />, document.getElementById('modal-container'));
     });
 }
