@@ -17,28 +17,46 @@
   </script>
 </head>
 <body>
-  <div id="tangram-play-app"></div>
+  <div id="tangram-play-app" class="application-container">
+    <div id="js-loader" class="loader-container">
+      <div class="loader">Loading...</div>
+    </div>
+  </div>
   <div id="mobile-message" class="mobile-message">
     <div id="dismiss-mobile-message" class="mobile-message-close">&#215;</div>
     <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
   </div>
 
   <script src="https://mapzen.com/tangram/0.10/tangram.min.js"></script>
-  <script src="build/js/main.js"></script>
+  <script id="js-app"></script>
   <script>
+    // Tangram Play is a huge app. For devices that cannot run it, we won't
+    // bother downloading it.
     if (isMobile() === true) {
       document.getElementById('mobile-message').style.display = 'block';
       document.getElementById('dismiss-mobile-message').addEventListener('click', function (e) {
         document.getElementById('mobile-message').style.display = 'none';
+        showLoader();
+        loadApp();
       });
+    } else {
+      loadApp();
     }
 
-    function isMobile () {
+    function isMobile() {
       if (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(navigator.userAgent.toLowerCase()))
         return true;
       else
         return false;
     };
+
+    function showLoader() {
+      document.getElementById('js-loader').style.visibility = 'visible';
+    }
+
+    function loadApp() {
+      document.getElementById('js-app').src = 'build/js/main.js';
+    }
   </script>
 </body>
 </html>
