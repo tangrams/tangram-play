@@ -1,60 +1,63 @@
 /* DRAGGABLE LINE */
 
 .divider {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 8px;
-    height: 100%;
-    opacity: 1;
-    background-color: var(--ui-base-color);
-    z-index: var(--z01-divider);
-    cursor: col-resize;
-    user-select: none;
-    transform: translate(0, 0) !important; /* Override react-draggable transform */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  opacity: 1;
+  background-color: var(--ui-component-color);
+  z-index: var(--z01-divider);
+  cursor: col-resize;
+  user-select: none;
+  transform: translate(0, 0) !important; /* Override react-draggable transform */
+  border-right: var(--ui-border);
+  border-left: 1px solid var(--ui-editor-background-color); /* slightly lighter for 3dness */
+  box-shadow: var(--ui-emboss-shadow);
 }
 
 .divider:hover {
-    background-color: var(--ui-active-color);
+  background-color: var(--ui-active-color);
 }
 
 .divider.divider-is-dragging {
-    background-color: var(--ui-active-color);
+  background-color: var(--ui-active-color);
 
-    .divider-affordance,
-    .divider-affordance::after,
-    .divider-affordance::before {
-        background-color: var(--ui-highlight-color);
-    }
+  .divider-affordance,
+  .divider-affordance::after,
+  .divider-affordance::before {
+    background-color: var(--ui-highlight-color);
+  }
 }
 
 .divider-affordance,
 .divider-affordance::after,
 .divider-affordance::before {
-    display: inline-block;
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    top: 50%;
-    background-color: var(--ui-component-text-color);
+  display: inline-block;
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  top: 50%;
+  background-color: var(--ui-component-text-color);
 }
 
 .divider-affordance {
-    left: 2px;
+  left: 2px;
 }
 
 .divider-affordance::after,
 .divider-affordance::before {
-    content: '';
-    position: absolute;
-    top: 0; /* Reset position */
+  content: '';
+  position: absolute;
+  top: 0; /* Reset position */
 }
 
 .divider-affordance::after {
-    transform: translateY(10px);
+  transform: translateY(10px);
 }
 
 .divider-affordance::before {
-    transform: translateY(-10px);
+  transform: translateY(-10px);
 }

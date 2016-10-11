@@ -104,6 +104,10 @@ To run tests:
 [chai]: http://chaijs.com/
 [sinon]: http://sinonjs.org/
 
+## Editor settings
+
+We use [EditorConfig](http://editorconfig.org/) to automatically set editor settings for this project. For your text editor you may need to [download a plugin](http://editorconfig.org/#download) to enable this.
+
 ## Code style and linting
 
 Tangram Play uses [ESLint][eslint] to lint JavaScript for both syntax errors and code style. Rules were inherited from Tangram's [JSHint][jshint] rules, with gaps filled in by [JavaScript Standard Style][standard]. Generally, please refer to the [Airbnb Javascript style guide][airbnb] for Javascript / ES6 best practices, although we did not necessarily adopt their rules directly. We may document rationales for certain rules as comments within `.eslintrc`.

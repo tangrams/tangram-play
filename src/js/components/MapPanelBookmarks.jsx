@@ -152,7 +152,7 @@ export default class MapPanelBookmarks extends React.Component {
 
             newBookmarks.push({
                 id: i,
-                date: bookmark.date,
+                timestamp: bookmark.timestamp,
                 label: bookmark.label,
                 lat: bookmark.lat.toFixed(4),
                 lng: bookmark.lng.toFixed(4),
@@ -174,13 +174,14 @@ export default class MapPanelBookmarks extends React.Component {
                 placement="bottom"
                 ref={(ref) => { this.culpritOverlay = ref; }}
                 overlay={<Tooltip id="tooltip-bookmark">Locations</Tooltip>}
+                delayShow={200}
             >
                 <DropdownButton
                     title={<Icon type="bt-bookmark" />}
                     bsStyle="default"
                     noCaret
                     pullRight
-                    className="map-panel-bookmark-button"
+                    className="button-icon map-panel-bookmark-button"
                     // The prop 'id' is required to make 'Dropdown' accessible
                     // for users using assistive technologies such as screen readers
                     id="map-panel-bookmark-button"
@@ -227,7 +228,7 @@ export default class MapPanelBookmarks extends React.Component {
                                     </div>
                                     <div
                                         className="bookmark-dropdown-delete"
-                                        onClick={() => this.onClickDeleteSingleBookmark(result.date)}
+                                        onClick={() => this.onClickDeleteSingleBookmark(result.timestamp)}
                                     >
                                         <Icon type="bt-times" />
                                     </div>

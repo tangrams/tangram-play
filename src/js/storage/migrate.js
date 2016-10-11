@@ -4,6 +4,13 @@ import localforage from 'localforage';
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 let FORCE_MIGRATE = false;
 
+/*
+    TODO: (when ready)
+
+    remove from localstorage / localforage:
+    // const STORAGE_LAST_EDITOR_CONTENT = 'last-content'; // deprecated
+*/
+
 function convertMapViewToObject() {
     const lat = window.localStorage.getItem(`${LOCAL_STORAGE_PREFIX}latitude`);
     const lng = window.localStorage.getItem(`${LOCAL_STORAGE_PREFIX}longitude`);
@@ -51,6 +58,11 @@ function moveEverything() {
                 return;
             }
 
+            // skip values that are now reset and stored differently (in Redux)
+            if (newKeyName === 'divider-position-x' || newKeyName === 'map-toolbar-display') {
+                return;
+            }
+
             // Check if the value is already in the store; if so, don't overwrite
             localforage.getItem(newKeyName)
                 .then((value) => { // eslint-disable-line no-loop-func
@@ -83,12 +95,6 @@ function moveEverything() {
                                 break;
                             case 'last-content':
                                 newValue = JSON.parse(oldValue) || {};
-                                break;
-                            case 'divider-position-x':
-                                newValue = Number(oldValue);
-                                break;
-                            case 'map-toolbar-display':
-                                newValue = Boolean(oldValue);
                                 break;
                             default:
                                 break;

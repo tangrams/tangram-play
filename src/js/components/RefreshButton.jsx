@@ -1,6 +1,5 @@
 import React from 'react';
-import Button from 'react-bootstrap/lib/Button';
-import Icon from './Icon';
+import IconButton from './IconButton';
 
 import { reloadOriginalScene } from '../tangram-play';
 
@@ -11,6 +10,7 @@ import { reloadOriginalScene } from '../tangram-play';
 export default class RefreshButton extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             button: 'bt-sync',
         };
@@ -35,15 +35,14 @@ export default class RefreshButton extends React.Component {
         this.setState({ button: 'bt-sync' });
     }
 
-    /**
-     * Official React lifecycle method
-     * Called every time state or props are changed
-     */
     render() {
         return (
-            <Button className="refresh-button" onClick={this.onClick}>
-                <Icon type={this.state.button} />
-            </Button>
+            <IconButton
+                className="refresh-button"
+                onClick={this.onClick}
+                icon={this.state.button}
+                tooltip="Refresh editor content"
+            />
         );
     }
 }

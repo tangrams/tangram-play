@@ -180,7 +180,9 @@ export default class SaveGistModal extends React.Component {
      */
     handleSaveError(error) {
         // Close the modal
-        this.component.unmount();
+        if (this.component) {
+            this.component.unmount();
+        }
 
         const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 
@@ -243,14 +245,14 @@ export default class SaveGistModal extends React.Component {
                 <div className="modal-buttons">
                     <LoadingSpinner on={this.state.thinking} />
                     <Button
-                        className="modal-cancel"
+                        className="button-cancel"
                         disabled={this.state.thinking}
                         onClick={this.onClickCancel}
                     >
                         <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
-                        className="modal-confirm"
+                        className="button-confirm"
                         disabled={this.state.thinking}
                         onClick={this.onClickConfirm}
                     >

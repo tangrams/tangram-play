@@ -42,7 +42,7 @@ export default class ErrorModal extends React.Component {
 
                 <div className="modal-buttons">
                     <Button
-                        className="modal-confirm"
+                        className="button-confirm"
                         onClick={this.onClickClose}
                         ref={(ref) => { this.continueButton = ref; }}
                     >

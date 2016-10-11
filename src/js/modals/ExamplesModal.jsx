@@ -85,17 +85,17 @@ export default class ExamplesModal extends React.Component {
             >
                 <h4>Choose an example to open</h4>
 
-                <div className="modal-content example-list">
+                <div className="modal-content modal-well example-list">
                     {examples}
                 </div>
 
                 <div className="modal-buttons">
-                    <Button onClick={this.onClickCancel} className="modal-cancel">
+                    <Button onClick={this.onClickCancel} className="button-cancel">
                         <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
                         onClick={this.onClickConfirm}
-                        className="modal-confirm"
+                        className="button-confirm"
                         disabled={this.state.selected === null}
                     >
                         <Icon type="bt-check" /> Open

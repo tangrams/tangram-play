@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import localforage from 'localforage';
-import { debounce } from 'lodash';
 
 // Core elements
-import { tangramLayer, loadScene } from './map/map';
-import { editor, getEditorContent, setEditorContent } from './editor/editor';
+import { tangramLayer } from './map/map';
+import { editor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
@@ -16,135 +15,61 @@ import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import ErrorModal from './modals/ErrorModal';
 
 // Import Utils
-import { prependProtocolToUrl } from './tools/helpers';
-import { getQueryStringObject, pushHistoryState, replaceHistoryState } from './tools/url-state';
+import { prependProtocolToUrl, getFilenameFromUrl } from './tools/helpers';
+import { getQueryStringObject, pushHistoryState } from './tools/url-state';
 import { isGistURL, getSceneURLFromGistAPI } from './tools/gist-url';
-import { initHighlight, highlightRanges } from './editor/highlight';
 import EventEmitter from './components/event-emitter';
 
-const DEFAULT_SCENE = 'data/scenes/default.yaml';
-const STORAGE_LAST_EDITOR_CONTENT = 'last-content';
+// Redux
+import store from './store';
+import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE, ADD_RECENT_SCENE } from './store/actions';
 
-let initialLoad = true;
+const DEFAULT_SCENE = 'data/scenes/default.yaml';
+const STORAGE_LAST_EDITOR_STATE = 'last-scene';
+
 let initialScene = ''; // Stores initial scene file for embedded play.
 
-function showUnloadedState() {
-    document.querySelector('.map-view').classList.add('map-view-not-loaded');
-}
-
-function hideUnloadedState() {
-    document.querySelector('.map-view').classList.remove('map-view-not-loaded');
-}
-/**
- * Determine what is the scene url and content to load during start-up
- * Reading local memory is asynchronous, so this returns a Promise
- *
- * @returns {Promise} - resolves to an object of scene data.
- */
-function determineScene() {
-    // If there is a query, return it
-    const query = getQueryStringObject();
-    if (query.scene) {
-        return new Promise((resolve) => {
-            resolve({ url: query.scene });
-        });
-    }
-
-    // Else if there is something saved in memory (localforage), return that
-    // Check that contents exist and that it is not empty.
-    return localforage.getItem(STORAGE_LAST_EDITOR_CONTENT)
-        .then((sceneData) => {
-            if (sceneData && sceneData.contents && sceneData.contents.trim().length > 0) {
-                return sceneData;
-            }
-
-            // Else load the default scene file.
-            return { url: DEFAULT_SCENE };
-        });
-}
-
-// If editor is updated, send it to the map.
-function updateContent() {
-    const content = getEditorContent();
-    const url = URL.createObjectURL(new Blob([content]));
-    const isClean = editor.getDoc().isClean();
-
-    // Send scene data to Tangram
-    loadScene(url);
-
-    // Update the page URL. When editor contents changes by user input
-    // and the the editor state is not clean), we erase the ?scene= state
-    // from the URL string. This prevents a situation where reloading (or
-    // copy-pasting the URL) loads the scene file from an earlier state.
-    if (!isClean) {
-        replaceHistoryState({
-            scene: null,
-        });
-    }
-}
-
-// Update widgets & content after a batch of changes
-// Wrap updateContent() in a debounce function
-const watchEditorForChanges = debounce(updateContent, 500);
-
-function setSceneContentsInEditor(sceneData) {
-    // Mark as "clean" if the contents are freshly loaded
-    // (there is no is_clean property defined) or if contents
-    // have been restored with the is_clean property set to "true"
-    // This is converted from JSON so the value is a string, not
-    // a Boolean. Otherwise, the document has not been previously
-    // saved and it is left in the "dirty" state.
-    const shouldMarkClean = (typeof sceneData.is_clean === 'undefined' ||
-        sceneData.is_clean === 'true');
-
-    setEditorContent(sceneData.contents, shouldMarkClean);
-
-    if (window.isEmbedded === undefined) {
-        // Restore cursor position, if provided.
-        if (sceneData.cursor) {
-            editor.doc.setCursor(sceneData.cursor, {
-                scroll: false,
-            });
-        }
-    }
-
-    // Restores the part of the document that was scrolled to, if provided.
-    if (sceneData.scrollInfo) {
-        const left = sceneData.scrollInfo.left || 0;
-        const top = sceneData.scrollInfo.top || 0;
-        editor.scrollTo(left, top);
-    }
-
-    // Turn change watching back on.
-    editor.on('changes', watchEditorForChanges);
-}
-
-function doLoadProcess(scene) {
-    initialScene = scene; // Store our intial scene for use within embedded Tangram Play
-
-    const url = scene.url || URL.createObjectURL(new Blob([scene.contents]));
-
-    // Send url to map and contents to editor
-    // TODO: get contents from Tangram instead of another xhr request.
-    loadScene(url, {
-        reset: true,
-        basePath: scene.original_base_path,
+function setSceneContentsInEditor(scene) {
+    // Set new scene information in Redux store
+    store.dispatch({
+        type: OPEN_SCENE,
+        ...scene,
     });
-    setSceneContentsInEditor(scene);
 
-    hideUnloadedState();
+    // Also remember the scene in list of recently opened scenes
+    // This sends the entire scene object - TODO: clean it up a bit
+    // TODO: Only store if the url is reachable?
+    // TODO: Persist across sessions
+    store.dispatch({
+        type: ADD_RECENT_SCENE,
+        scene,
+    });
+}
+
+// `scene` is the state object matching the Redux state signature.
+function doLoadProcess(scene) {
+    // Store our intial scene for use within embedded Tangram Play
+    initialScene = scene;
+
+    setSceneContentsInEditor(scene);
 
     // Update history
     // Don't push a new history state if we are loading a scene from the
     // initial load of Tangram Play.
-    if (initialLoad === false) {
+    if (store.getState().app.initialized === true) {
         pushHistoryState({
-            scene: (scene.url) ? scene.url : null,
+            scene: (scene.originalUrl) ? scene.originalUrl : null,
         });
+    } else {
+        // Okay, we are initialized now.
+        store.dispatch({ type: APP_INITIALIZED });
     }
 
-    // This should only be true once
-    initialLoad = false;
+    // Reset map-not-loaded state
+    store.dispatch({
+        type: SET_APP_STATE,
+        mapNotLoaded: false,
+    });
 
     // Trigger Events
     // Event object is empty right now.
@@ -162,10 +87,116 @@ function onLoadError(error) {
     hideSceneLoadingIndicator();
 
     // TODO: editor should not be attached to this
-    if (initialLoad === true) {
-        showUnloadedState(editor);
+    if (!store.getState().app.initialized) {
+        store.dispatch({
+            type: SET_APP_STATE,
+            mapNotLoaded: true,
+        });
         editor.doc.markClean();
     }
+}
+
+/**
+ * Process a url path.
+ * We need to be able to read a single YAML file as the root scene file.
+ * User input can be all over the place, so this function takes input and
+ * does processing to return a URL that is (hopefully) valid. For instance:
+ * users may pass in a Gist URL string that looks like anything, but is not the
+ * root YAML file. This contacts the Gist API to figure this out, so it must
+ * return a Promise.
+ *
+ * @param {string} url - the input url string
+ * @returns {Promise} A promise which resolves to the final URL value.
+ */
+function processUrl(url) {
+    let sceneUrl = url;
+
+    // Provide protocol if it appears to be protocol-less URL
+    sceneUrl = prependProtocolToUrl(sceneUrl);
+
+    // Detect if URL is a Gist URL and obtain the root YAML scene file
+    // This is an asynchronous response that returns Promises.
+    if (isGistURL(sceneUrl) === true) {
+        return getSceneURLFromGistAPI(sceneUrl);
+    }
+
+    // If not a Gist URL, wrap the return value in a Promise for consistent
+    // return values.
+    return new Promise(resolve => {
+        resolve(sceneUrl);
+    });
+}
+
+/**
+ * Given an input URL, processes it, fetches its content, and constructs a
+ * valid scene state object that is loaded into the editor.
+ *
+ * @param {string} url - the input url string
+ * @returns {Promise} a Promise resolved with the scene state object.
+ */
+function makeSceneStateObjectFromUrl(url) {
+    const sceneState = {};
+
+    return processUrl(url)
+        .then(sceneUrl => {
+            sceneState.originalUrl = sceneUrl;
+            sceneState.files = [{
+                filename: getFilenameFromUrl(sceneUrl),
+            }];
+            return window.fetch(sceneUrl);
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('The scene you requested could not be found.');
+                } else {
+                    throw new Error('Something went wrong loading the scene!');
+                }
+            }
+
+            return response.text();
+        })
+        .then(contents => {
+            sceneState.files[0].contents = contents;
+            return sceneState;
+        });
+}
+
+/**
+ * Determine what is the scene url and content to load during start-up.
+ * It does it in this order:
+ *  1) Is there something specified in the query string?
+ *  2) Is there something in local memory? (via localforage)
+ *  3) If neither of above, load the default scene file.
+ *
+ * Reading a remote URL or local memory is asynchronous, so this returns a Promise.
+ *
+ * @returns {Promise} - resolves to an object of scene data.
+ */
+function determineScene() {
+    // If there is a query, use it
+    const query = getQueryStringObject();
+
+    if (query.scene) {
+        return makeSceneStateObjectFromUrl(query.scene)
+            .then(sceneState => {
+                sceneState.files[0].highlightedLines = query.lines; // eslint-disable-line no-param-reassign
+                return doLoadProcess(sceneState);
+            });
+    }
+
+    // Else if there is something saved in memory (localforage), return that.
+    // To be valid, it must contain at least one file.
+    return localforage.getItem(STORAGE_LAST_EDITOR_STATE)
+        .then(sceneState => {
+            if (sceneState && sceneState.files && sceneState.files.length > 0) {
+                return doLoadProcess(sceneState);
+            }
+
+            // Else load the default scene file.
+            return makeSceneStateObjectFromUrl(DEFAULT_SCENE)
+                .then(doLoadProcess);
+        });
 }
 
 /**
@@ -192,56 +223,28 @@ export function load(scene) {
     // when Tangram reports that it's done.
     showSceneLoadingIndicator();
 
-    // Turn off watching for changes in editor.
-    editor.off('changes', watchEditorForChanges);
-
-    let sceneUrl = scene.url;
-
     // Either we are passed a url path, or scene file contents
     if (scene.url) {
-        let fetchPromise;
-
-        // Provide protocol if it appears to be protocol-less URL
-        sceneUrl = prependProtocolToUrl(sceneUrl);
-
-        // If it appears to be a Gist URL:
-        if (isGistURL(sceneUrl) === true) {
-            fetchPromise = getSceneURLFromGistAPI(sceneUrl)
-                .then(url => {
-                    // Update the scene URL property with the correct URL
-                    // to the raw YAML to ensure safe loading
-                    sceneUrl = url;
-                    return window.fetch(url);
-                });
-        } else {
-            // Fetch the contents of a YAML file directly. This step
-            // allows us to verify contents (TODO) or error status.
-            fetchPromise = window.fetch(sceneUrl);
-        }
-
-        return fetchPromise.then(response => {
-            if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error('The scene you requested could not be found.');
-                } else {
-                    throw new Error('Something went wrong loading the scene!');
-                }
-            }
-
-            return response.text();
-        })
-        .then(contents => doLoadProcess({ url: sceneUrl, contents }))
-        .catch(error => {
-            onLoadError(error);
-        });
+        return makeSceneStateObjectFromUrl(scene.url)
+            .then(doLoadProcess)
+            .catch(onLoadError);
     } else if (scene.contents) {
         // If scene contents are provided, no asynchronous work is
         // performed here, but wrap this response in a Promise anyway
         // so that the return object is always a thenable.
-        return new Promise((resolve) => {
-            doLoadProcess(scene);
+        return new Promise(resolve => {
+            // Make a scene object from the contents
+            // TODO: add more data to this.
+            const sceneState = {
+                files: [{
+                    filename: scene.filename,
+                    contents: scene.contents,
+                }],
+            };
+            doLoadProcess(sceneState);
             resolve();
-        });
+        })
+        .catch(onLoadError);
     }
 
     // if neither `scene.url` or `scene.contents` is provided, throw an error
@@ -256,26 +259,20 @@ export function initTangramPlay() {
         }
     };
 
+    showSceneLoadingIndicator();
+
     // LOAD SCENE FILE
     determineScene()
-        .then(load)
         // Things we do after Tangram is finished initializing
         .then(() => {
-            // Highlight lines if requested by the query string.
-            const query = getQueryStringObject();
-            if (query.lines) {
-                highlightRanges(query.lines);
-            }
-
-            // Turn on highlighting module
-            initHighlight();
-
             // Initialize addons after Tangram is done, because
             // some addons depend on Tangram scene config being present
             // TODO: Verify if this is still true?
             if (window.isEmbedded === undefined) {
                 // Add widgets marks and errors manager.
                 initWidgetMarks();
+
+                // This for sure depends on Tangram
                 initErrorsManager();
 
                 initSuggestions();
@@ -284,45 +281,8 @@ export function initTangramPlay() {
 
             // Need to send a signal to the dropdown widgets of type source to populate
             EventEmitter.dispatch('tangram:sceneinit', {});
-        });
-
-    // If the user bails for whatever reason, hastily shove the contents of
-    // the editor into some kind of storage. This overwrites whatever was
-    // there before. Note that there is not really a way of handling unload
-    // with our own UI and logic, since this allows for widespread abuse
-    // of normal browser functionality.
-    window.addEventListener('beforeunload', () => {
-        // TODO:
-        // Don't take original url or original base path from
-        // Tangram (it may be wrong). Instead, remember this
-        // in a "session" variable
-        /* eslint-disable camelcase */
-        const doc = editor.getDoc();
-        const sceneData = {
-            original_url: tangramLayer.scene.config_source,
-            original_base_path: tangramLayer.scene.config_path,
-            contents: getEditorContent(),
-            is_clean: doc.isClean(),
-            scrollInfo: editor.getScrollInfo(),
-            cursor: doc.getCursor(),
-        };
-        /* eslint-enable camelcase */
-
-        // Expects an object of format:
-        // {
-        //     original_url: 'http://valid.url/path/scene.yaml',
-        //     original_base_path: 'http://valid.url/path/',
-        //     contents: 'Contents of scene.yaml',
-        //     is_clean: boolean value; false indicates original contents
-        //               were modified without saving
-        //     scrollInfo: editor's scroll position
-        //     cursor: where the cursor was positioned in the document.
-        // }
-
-        if (window.isEmbedded === undefined) {
-            localforage.setItem(STORAGE_LAST_EDITOR_CONTENT, sceneData);
-        }
-    });
+        })
+        .catch(onLoadError);
 }
 
 // This function is only used by the embedded version of Tangram Play.

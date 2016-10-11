@@ -6,6 +6,7 @@ import ShieldContainer from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
 import SignInOverlay from './SignInOverlay';
 // import ColorPalette from './ColorPalette';
+import ErrorsPanel from './ErrorsPanel';
 
 import { initTangramPlay } from '../tangram-play';
 
@@ -42,6 +43,8 @@ export default class App extends React.Component {
                     <FileDrop />
                     <SignInOverlay />
                     <div id="modal-container" className="modal-container" />
+
+                    <ErrorsPanel />
                 </div>
             </div>
         );

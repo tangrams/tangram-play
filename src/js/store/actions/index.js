@@ -32,6 +32,40 @@
  * > have to write them!
  */
 
+/* app */
+
+// Dispatch this action when Tangram Play has fully initialized - when it is
+// first ready to accept user input. A scene does not have to be loaded to be
+// considered initialized - Tangram Play is initialized if it is ready and
+// waiting for the user to load a scene.
+export const APP_INITIALIZED = 'APP_INITIALIZED';
+
+// Generic action for setting app state.
+export const SET_APP_STATE = 'SET_APP_STATE';
+
+// Add a scene to a list of recently opened scenes.
+export const ADD_RECENT_SCENE = 'ADD_RECENT_SCENE';
+
+/* errors */
+export const ADD_ERROR = 'ADD_ERROR';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+
+/* scene */
+export const OPEN_SCENE = 'OPEN_SCENE';
+export const CLOSE_SCENE = 'CLOSE_SCENE';
+export const SET_ACTIVE_FILE = 'SET_ACTIVE_FILE';
+export const ADD_FILE = 'ADD_FILE';
+export const REMOVE_FILE = 'REMOVE_FILE';
+export const MARK_FILE_CLEAN = 'MARK_FILE_CLEAN';
+export const MARK_FILE_DIRTY = 'MARK_FILE_DIRTY';
+export const STASH_DOCUMENT = 'STASH_DOCUMENT';
+
+/* settings */
+export const SET_SETTINGS = 'SET_SETTINGS';
+export const EDITOR_INCREASE_FONT_SIZE = 'EDITOR_INCREASE_FONT_SIZE';
+export const EDITOR_DECREASE_FONT_SIZE = 'EDITOR_DECREASE_FONT_SIZE';
+
+/* user */
 export const USER_SIGNED_IN = 'USER_SIGNED_IN';
 export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
 

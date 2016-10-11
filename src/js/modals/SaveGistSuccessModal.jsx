@@ -77,11 +77,11 @@ export default class SaveGistSuccessModal extends React.Component {
                         />
                         <OverlayTrigger
                             rootClose
-                            placement="right"
+                            placement="bottom"
                             overlay={<Tooltip id="tooltip">Copy to clipboard</Tooltip>}
                         >
                             <Button
-                                className="saved-scene-copy-btn"
+                                className="saved-scene-copy-btn button-icon"
                                 data-clipboard-target="#gist-saved-url"
                                 ref={(ref) => { this.clipboardButton = ref; }}
                             >
@@ -91,7 +91,7 @@ export default class SaveGistSuccessModal extends React.Component {
                     </div>
                 </div>
                 <div className="modal-buttons">
-                    <Button className="modal-confirm" onClick={this.onClickConfirm}>
+                    <Button className="button-confirm" onClick={this.onClickConfirm}>
                         Got it
                     </Button>
                 </div>

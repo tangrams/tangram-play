@@ -1,18 +1,19 @@
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Icon from './Icon';
+import IconButton from './IconButton';
 import MapPanelZoom from './MapPanelZoom';
 import MapPanelLocationBar from './MapPanelLocationBar';
 import MapPanelBookmarks from './MapPanelBookmarks';
 
 import { map } from '../map/map';
 import ErrorModal from '../modals/ErrorModal';
+
+// Redux
+import store from '../store';
+import { SET_SETTINGS } from '../store/actions';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
@@ -28,8 +29,12 @@ export default class MapPanel extends React.Component {
      */
     constructor(props) {
         super(props);
+
+        const settings = store.getState().settings;
+
         this.state = {
-            open: true, // Whether panel should be open or not
+            // Whether panel should be open or not
+            open: (settings && 'mapToolbarDisplay' in settings) ? settings.mapToolbarDisplay : true,
             geolocatorButton: 'bt-map-arrow', // Icon to display for the geolocator button
             geolocateActive: {
                 active: 'false',
@@ -170,7 +175,14 @@ export default class MapPanel extends React.Component {
      * Toggle the panel so it is visible or not visible
      */
     toggleMapPanel() {
-        this.setState({ open: !this.state.open });
+        const value = !this.state.open;
+        this.setState({ open: value });
+
+        // Save the position in Redux
+        store.dispatch({
+            type: SET_SETTINGS,
+            mapToolbarDisplay: value,
+        });
     }
 
     /**
@@ -180,17 +192,6 @@ export default class MapPanel extends React.Component {
     render() {
         return (
             <div className="map-panel">
-                {/* Toggle map panel to show it*/}
-                <OverlayTrigger
-                    rootClose
-                    placement="bottom"
-                    overlay={<Tooltip id="tooltip">Toogle map toolbar</Tooltip>}
-                >
-                    <Button onClick={this.toggleMapPanel} className="map-panel-button-show">
-                        <Icon type="bt-caret-down" />
-                    </Button>
-                </OverlayTrigger>
-
                 {/* Map panel*/}
                 <Panel collapsible expanded={this.state.open} className="map-panel-collapsible">
                     <div className="map-panel-toolbar">
@@ -204,31 +205,38 @@ export default class MapPanel extends React.Component {
 
                         {/* Locate me button*/}
                         <ButtonGroup className="buttons-locate">
-                            <OverlayTrigger
-                                rootClose
-                                placement="bottom"
-                                overlay={<Tooltip id="tooltip">Locate me</Tooltip>}
-                            >
-                                <Button onClick={this.clickGeolocator}>
-                                    <Icon type={this.state.geolocatorButton} />
-                                </Button>
-                            </OverlayTrigger>
+                            <IconButton
+                                icon={this.state.geolocatorButton}
+                                tooltip="Locate me"
+                                onClick={this.clickGeolocator}
+                            />
                         </ButtonGroup>
 
                         {/* Toggle map panel to show it*/}
                         <ButtonGroup className="buttons-toggle">
-                            <OverlayTrigger
-                                rootClose
-                                placement="bottom"
-                                overlay={<Tooltip id="tooltip">Toggle map toolbar</Tooltip>}
-                            >
-                                <Button onClick={this.toggleMapPanel}>
-                                    <Icon type="bt-caret-up" />
-                                </Button>
-                            </OverlayTrigger>
+                            <IconButton
+                                icon="bt-caret-up"
+                                tooltip="Toggle map toolbar"
+                                onClick={this.toggleMapPanel}
+                            />
                         </ButtonGroup>
                     </div>
                 </Panel>
+
+                {/* Toggle map panel to show it*/}
+                {(() => {
+                    if (!this.state.open) {
+                        return (
+                            <IconButton
+                                icon="bt-caret-down"
+                                tooltip="Toggle map toolbar"
+                                className="map-panel-button-show"
+                                onClick={this.toggleMapPanel}
+                            />
+                        );
+                    }
+                    return null;
+                })()}
             </div>
         );
     }

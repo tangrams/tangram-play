@@ -1,114 +1,76 @@
 /* React MapPanel */
 
 .map-panel {
-    position: relative;
-    z-index: var(--z04-map-toolbar);
+  position: relative;
+  z-index: var(--z04-map-toolbar);
+  font-size: 1rem;
 }
 
 /* Style for map panel button to show it */
-.map-panel .map-panel-button-show {
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
-    border: none;
-    outline: none;
-    position: absolute;
-    left: auto;
-    right: 0;
-
-    &:hover {
-        color: var(--ui-highlight-color);
-        background-color: var(--ui-active-color);
-    }
-}
-
-.map-panel-button-show > i.btm {
-    padding-right: 0;
+.map-panel-button-show {
+  position: absolute;
+  top: 6px;
+  right: 4px;
 }
 
 /* Style for map panel */
 .map-panel .panel {
-    border: none;
-    margin: 0;
-    z-index: var(--z07-menu);
-    opacity: 0.99; /* For panel to play nice with absolute positioned toggle button on the side */
+  border-bottom: var(--ui-border);
+  z-index: var(--z07-menu);
 }
 
 .map-panel-collapsible {
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-editor-background-color);
 
-    .panel-body {
-        padding: 6px 8px;
-    }
+  .panel-body {
+    padding: 4px;
+    padding-top: 6px;
+  }
 
-    .map-panel-toolbar {
-        display: flex;
-        align-items: center;
-    }
+  .map-panel-toolbar {
+    display: flex;
+    align-items: center;
+  }
 }
 
 /* Style for all map panel buttons */
 .map-panel button {
-    padding: 0;
-    height: 38px;
-    width: 38px;
-    background-color: var(--ui-element-color);
-    color: var(--ui-component-text-color);
-    outline: none;
-
-    &:hover {
-        background-color: var(--ui-active-color);
-    }
-}
-
-.map-panel-toolbar button:hover i {
-    color: var(--ui-highlight-color);
-}
-
-.map-panel .btn {
-    border: none;
-}
-
-.map-panel-toolbar i.btm {
-    padding-right: 0;
-    font-size: 12px;
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
-    color: var(--ui-component-text-color);
+  height: 32px;
+  width: 32px;
 }
 
 .map-panel .btn-group {
-    margin-right: 2px;
-    margin-left: 2px;
+  margin-left: 2px;
 }
 
 /* Style for button groups */
 .map-panel-zoom-container {
-    display: flex;
+  display: flex;
 }
 
 .map-panel-zoom {
-    width: 38px;
-    margin-right: 4px;
-    font-size: 12px;
-    text-align: center;
-    line-height: 38px;
-    flex: 0 0 auto;
+  width: 36px;
+  margin-right: 4px;
+  font-size: 0.75em;
+  text-align: center;
+  line-height: 32px;
+  flex: 0 0 auto;
 }
 
 .buttons-plusminus {
-    display: flex;
-    flex: 0 0 auto;
+  display: flex;
+  flex: 0 0 auto;
 
-    .map-panel-zoomin {
-        margin-right: 2px;
-    }
+  .btm {
+    font-size: 0.8em; /* slightly smaller */
+  }
 }
 
 .buttons-locate {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 .buttons-toggle {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }

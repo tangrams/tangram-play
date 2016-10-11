@@ -1,0 +1,22 @@
+.call-to-action {
+  text-align: center;
+  padding: 3em;
+  overflow-y: auto;
+  background-color: #26282e;
+  border-radius: 3px;
+  font-size: 1rem;
+  min-width: 350px;
+
+  h2 {
+    margin-top: 0;
+    font-size: 1.8em;
+    font-weight: 200;
+  }
+
+  button {
+    margin-top: 2em;
+    width: 100%;
+    padding: 1.5em;
+    font-size: 1.1em;
+  }
+}

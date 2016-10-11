@@ -3,161 +3,165 @@
 /* ColorBookmark.jsx */
 
 .bookmark-color {
-    box-sizing: border-box;
-    max-width: 14px;
-    max-height: 14px;
-    width: 1em;
-    height: 1em;
-    cursor: pointer;
-    vertical-align: middle;
-    margin-top: -0.15em;
-    overflow: hidden;
-    background-color: transparent;
+  box-sizing: border-box;
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-top: -0.15em;
+  overflow: hidden;
+  background-color: transparent;
 
-    /* This is for the Checkboard component. There are anti-aliasing quirks
-       if the parent element has `border-radius: 50%`, so we set the radius
-       individually on each child. The Checkboard div should have a 1px margin
-       so it correctly underlays the swatch element. Unfortunately the
-       Checkboard element cannot be selected by class, nor can custom styles
-       be passed in via props so we select it in this way, dependent on its
-       position in DOM. */
-    & > div:first-child {
-        border-radius: 50%;
-        margin: 1px;
-    }
+  /* This is for the Checkboard component. There are anti-aliasing quirks
+     if the parent element has `border-radius: 50%`, so we set the radius
+     individually on each child. The Checkboard div should have a 1px margin
+     so it correctly underlays the swatch element. Unfortunately the
+     Checkboard element cannot be selected by class, nor can custom styles
+     be passed in via props so we select it in this way, dependent on its
+     position in DOM. */
+  & > div:first-child {
+    border-radius: var(--ui-border-radius);
+    margin: 1px;
+  }
 }
 
 .bookmark-color-swatch {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--ui-border-radius);
+  border: 1px solid var(--ui-border-color);
 }
 
 /* ColorPicker.jsx */
 
 .colorpicker-container {
-    width: 230px;
-    box-sizing: initial;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
-    background-color: var(--ui-element-color);
+  width: 230px;
+  box-sizing: initial;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  background-color: var(--ui-element-color);
 }
 
 .colorpicker-controls {
-    display: flex;
-    padding: 6px 10px;
+  display: flex;
+  padding: 6px 10px;
 }
 
 .colorpicker-sliders {
-    padding: 4px 0;
-    flex: 1;
+  padding: 4px 0;
+  flex: 1;
 }
 
 .colorpicker-slider-hue {
-    position: relative;
-    height: 10px;
-    overflow: hidden;
+  position: relative;
+  height: 10px;
+  overflow: hidden;
 }
 
 .colorpicker-slider-alpha {
-    position: relative;
-    height: 10px;
-    margin-top: 4px;
-    overflow: hidden;
+  position: relative;
+  height: 10px;
+  margin-top: 4px;
+  overflow: hidden;
 }
 
 .colorpicker-active-color {
-    width: 24px;
-    height: 24px;
-    position: relative;
-    margin-top: 4px;
-    margin-left: 4px;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  margin-top: 4px;
+  margin-left: 4px;
 }
 
 .colorpicker-active-color-swatch {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 /* ColorPickerInputFields.jsx */
 
 .colorpicker-input-fields {
-    display: flex;
-    padding: 0 10px 6px;
+  display: flex;
+  padding: 0 10px 6px;
 }
 
 .colorpicker-input-single {
-    flex: 1;
-    padding-left: 3px;
+  flex: 1;
+  padding-left: 3px;
 }
 
 .colorpicker-input-double {
-    flex: 2;
-    padding-right: 3px;
+  flex: 2;
+  padding-right: 3px;
 }
 
 .colorpicker-input-alpha {
-    flex: 1;
-    padding-left: 6px;
+  flex: 1;
+  padding-left: 6px;
 }
 
 .colorpicker-input-fields input {
-    width: 100%;
-    padding: 4px;
-    border: none;
-    outline: none;
-    background-color: #55575a;
-    text-align: center;
-    color: var(--ui-component-text-color);
+  width: 100%;
+  padding: 4px 2px;
+  border: var(--ui-border);
+  border-radius: var(--ui-border-radius);
+  box-shadow: var(--ui-well-shadow);
+  outline: none;
+  background-color: var(--ui-well-color);
+  text-align: center;
+  color: var(--ui-component-text-color);
+
+  &:focus {
+    border: 1px solid var(--ui-highlight-color);
+  }
 }
 
 .colorpicker-input-fields span {
-    display: block;
-    margin-top: 4px;
-    font-size: 11px;
-    text-transform: uppercase;
-    color: var(--ui-subtext-color);
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--ui-subtext-color);
 }
 
 /* ColorPickerSaturation.jsx  */
 
 .colorpicker-saturation {
-    position: relative;
-    width: 100%;
-    height: 165px;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 165px;
+  overflow: hidden;
 }
 
 .colorpicker-saturation-white {
-    position: absolute;
-    background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+  width: 100%;
+  height: 100%;
 }
 
 .colorpicker-saturation-black {
-    position: absolute;
-    background: linear-gradient(to top, #000, rgba(0, 0, 0, 0));
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  background: linear-gradient(to top, #000, rgba(0, 0, 0, 0));
+  width: 100%;
+  height: 100%;
 }
 
 .colorpicker-saturation-pointer {
-    position: absolute;
-    cursor: default;
+  position: absolute;
+  cursor: default;
 }
 
 .colorpicker-saturation-circle {
-    width: 4px;
-    height: 4px;
-    box-shadow: 0 0 0 1.5px #fff, inset 0 0 1px 1px rgba(0, 0, 0, 0.3), 0 0 1px 2px rgba(0, 0, 0, 0.4);
-    border-radius: 50%;
-    cursor: hand;
-    transform: translate(-2px, -2px);
+  width: 4px;
+  height: 4px;
+  box-shadow: 0 0 0 1.5px #fff, inset 0 0 1px 1px rgba(0, 0, 0, 0.3), 0 0 1px 2px rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  cursor: hand;
+  transform: translate(-2px, -2px);
 }

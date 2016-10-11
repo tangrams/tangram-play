@@ -2,7 +2,7 @@
 
 /* Generic active class */
 .active {
-    color: var(--ui-highlight-color);
+  color: var(--ui-highlight-color);
 }
 
 /* Links ? */
@@ -10,11 +10,11 @@ a,
 a:visited,
 a:hover,
 a:active {
-    color: var(--ui-link-text-color);
+  color: var(--ui-link-text-color);
 }
 
 hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 1px solid var(--ui-element-color);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--ui-element-color);
 }

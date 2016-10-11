@@ -49,7 +49,7 @@ export default class ConfirmDialogModal extends React.Component {
 
                 <div className="modal-buttons">
                     <Button
-                        className="modal-cancel"
+                        className="button-cancel"
                         onClick={this.onClickCancel}
                         ref={(ref) => { this.cancelButton = ref; }}
                     >
@@ -57,7 +57,7 @@ export default class ConfirmDialogModal extends React.Component {
                         Cancel
                     </Button>
                     <Button
-                        className="modal-confirm"
+                        className="button-confirm"
                         onClick={this.onClickConfirm}
                         ref={(ref) => { this.confirmButton = ref; }}
                     >

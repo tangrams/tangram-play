@@ -12,8 +12,7 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 import EventEmitter from './event-emitter';
 
-import EditorIO from '../editor/io';
-import { openLocalFile } from '../file/open-local';
+import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import ExamplesModal from '../modals/ExamplesModal';
@@ -30,7 +29,7 @@ import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
 
 function clickNew() {
-    EditorIO.new();
+    newScene();
 }
 
 function clickOpenFile() {
@@ -38,25 +37,25 @@ function clickOpenFile() {
 }
 
 function clickOpenGist() {
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<OpenGistModal />, document.getElementById('modal-container'));
     });
 }
 
 function clickOpenURL() {
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<OpenUrlModal />, document.getElementById('modal-container'));
     });
 }
 
 function clickOpenExample() {
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<ExamplesModal />, document.getElementById('modal-container'));
     });
 }
 
 function clickSaveFile() {
-    EditorIO.export();
+    exportSceneFile();
 }
 
 function clickSaveGist() {
@@ -99,7 +98,7 @@ function unsubscribeOpenFromCloud() {
 
 function showOpenFromCloudModal() {
     unsubscribeOpenFromCloud();
-    EditorIO.checkSaveStateThen(() => {
+    checkSaveStateThen(() => {
         ReactDOM.render(<OpenFromCloudModal />, document.getElementById('modal-container'));
     });
 }
@@ -197,6 +196,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">New scene</Tooltip>}
+                            delayShow={200}
                         >
                             <NavItem eventKey="new" onClick={clickNew}>
                                 <Icon type="bt-file" />New
@@ -208,6 +208,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Open scene</Tooltip>}
+                            delayShow={200}
                         >
                             <NavDropdown
                                 title={<span><Icon type="bt-upload" />Open</span>}
@@ -250,6 +251,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Save scene</Tooltip>}
+                            delayShow={200}
                         >
                             <NavDropdown
                                 title={<span><Icon type="bt-download" />Save</span>}
@@ -285,6 +287,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Toggle inspect mode</Tooltip>}
+                            delayShow={200}
                         >
                             <NavItem
                                 eventKey="new"
@@ -303,6 +306,7 @@ class MenuBar extends React.Component {
                             rootClose
                             placement="bottom"
                             overlay={<Tooltip id="tooltip">Documentation and help</Tooltip>}
+                            delayShow={200}
                         >
                             <NavDropdown
                                 title={<span><Icon type="bt-question-circle" />Help</span>}

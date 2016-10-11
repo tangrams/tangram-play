@@ -1,5 +1,24 @@
 export function returnTrue() {}
 
+// Cache previously generated unique integer, used by `uniqueInteger()`
+let previousUniqueInteger = 0;
+
+/**
+ * Returns a locally-unique integer. These are not random (the easiest way
+ * to guarantee uniqueness is just to increment the previous integer). These
+ * should only be used when a unique integer is required for a single use in
+ * one instance of Tangram Play and should never be used as an identifier that
+ * persists across sessions. That would be bad! This function also assumes
+ * that no instance of Tangram Play will ever run long enough to run out of
+ * integers, although it's possible that @burritojustice might be the first to
+ * do so.
+
+ * @returns {Number}
+ */
+export function uniqueInteger() {
+    return previousUniqueInteger++;
+}
+
 /**
  * Checks is a string is empty.
  * Returns true if:
@@ -42,6 +61,44 @@ export function prependProtocolToUrl(url) {
 
     // If the string does already start with a protocol (scheme), return it as is.
     return url;
+}
+
+/**
+ * Interprets a file name from a URL.
+ * Given a url like http://somewhere.com/dir/scene.yaml, returns what looks
+ * like the filename, e.g. `scene.yaml`.
+ *
+ * @param {string} url - the input url string
+ * @returns {string} filename - a best guess.
+ */
+export function getFilenameFromUrl(url) {
+    const filenameParts = url.split('/');
+    const filename = filenameParts[filenameParts.length - 1];
+    return filename;
+}
+
+/**
+ * Gets a base path from a URL.
+ * Borrowed from Tangram Utils - https://github.com/tangrams/tangram/blob/31b01b305968230c037fea0c7e05669eea3f9fb6/src/utils/utils.js#L57
+ *
+ * @param {string} url - the input url string
+ * @returns {string} path string
+ */
+export function getBasePathFromUrl(url) {
+    if (typeof url === 'string' && url.search(/^(data|blob):/) === -1) {
+        const qs = url.indexOf('?');
+        if (qs > -1) {
+            url = url.substr(0, qs);
+        }
+
+        const hash = url.indexOf('#');
+        if (hash > -1) {
+            url = url.substr(0, hash);
+        }
+
+        return url.substr(0, url.lastIndexOf('/') + 1) || '';
+    }
+    return '';
 }
 
 /**

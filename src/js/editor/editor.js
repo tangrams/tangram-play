@@ -1,13 +1,26 @@
+import { debounce } from 'lodash';
+import localforage from 'localforage';
+
 import config from '../config';
 import { initCodeMirror } from './codemirror';
 import { parseYamlString } from './codemirror/yaml-tangram';
 import { injectAPIKey, suppressAPIKeys } from './api-keys';
-
+import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
+import { replaceHistoryState } from '../tools/url-state';
+import { loadScene } from '../map/map';
 import EventEmitter from '../components/event-emitter';
+
+import store from '../store';
+import { MARK_FILE_DIRTY, MARK_FILE_CLEAN } from '../store/actions';
+
+const STORAGE_LAST_EDITOR_STATE = 'last-scene';
 
 // Export an instantiated CodeMirror instance
 // eslint-disable-next-line import/no-mutable-exports
 export let editor;
+
+// Timeout for saving things in memory
+let localMemorySaveTimer;
 
 // Debug
 window.editor = editor;
@@ -22,6 +35,9 @@ window.editor = editor;
  */
 export function initEditor(el) {
     editor = initCodeMirror(el);
+
+    // Turn on highlighting module
+    addHighlightEventListeners();
 }
 
 // Sets or gets scene contents in the editor.
@@ -64,6 +80,80 @@ export function setEditorContent(content, shouldMarkClean = true) {
     doc.clearHistory();
     if (shouldMarkClean === true) {
         doc.markClean();
+    }
+}
+
+// If editor is updated, send it to the map.
+function updateContent(content) {
+    const url = URL.createObjectURL(new Blob([content]));
+    loadScene(url);
+}
+
+// Wrap updateContent() in a debounce function to prevent rapid series of
+// changes from continuously updating the map.
+const debouncedUpdateContent = debounce(updateContent, 500);
+
+function updateLocalMemory(content, doc, isClean) {
+    // Bail if embedded
+    if (window.isEmbedded) {
+        return;
+    }
+
+    const scene = store.getState().scene;
+    const activeFile = scene.activeFileIndex;
+
+    scene.files[activeFile].contents = content;
+    scene.files[activeFile].isClean = isClean;
+    scene.files[activeFile].scrollInfo = editor.getScrollInfo();
+    scene.files[activeFile].cursor = doc.getCursor();
+    scene.files[activeFile].highlightedLines = getAllHighlightedLines();
+
+    // Store in local memory
+    localforage.setItem(STORAGE_LAST_EDITOR_STATE, scene);
+}
+
+// Wrap updateLocalMemory() in a debounce function. This actually does incur
+// an extra significant processing overhead on every edit so we keep it from
+// executing all the time.
+const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
+
+export function watchEditorForChanges() {
+    const content = getEditorContent();
+    const doc = editor.getDoc();
+    const isClean = doc.isClean();
+
+    // Update all the properties of the active file in local memory.
+    // Localforage is async so it cannot be relied on to do this on the
+    // window.beforeunload event; there is no guarantee the transaction is
+    // completed before the page tears down. See here:
+    // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#Warning_About_Browser_Shutdown
+    window.clearTimeout(localMemorySaveTimer);
+    localMemorySaveTimer = window.setTimeout(debouncedUpdateLocalMemory,
+        250, content, doc, isClean);
+
+    // Send scene data to Tangram
+    debouncedUpdateContent(content);
+
+    // Update the page URL. When editor contents changes by user input
+    // and the the editor state is not clean), we erase the ?scene= state
+    // from the URL string. This prevents a situation where reloading (or
+    // copy-pasting the URL) loads the scene file from an earlier state.
+    if (isClean === false) {
+        replaceHistoryState({
+            scene: null,
+        });
+
+        // Also use this area to mark the state of the file in Redux store
+        // TODO: These checks do not have to be debounced for Tangram.
+        store.dispatch({
+            type: MARK_FILE_DIRTY,
+            fileIndex: 0,
+        });
+    } else {
+        store.dispatch({
+            type: MARK_FILE_CLEAN,
+            fileIndex: 0,
+        });
     }
 }
 

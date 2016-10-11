@@ -25,16 +25,22 @@ export let tangramScene = null;
  * Initializes Tangram
  * Tangram must be initialized with a scene file. Only initialize Tangram when
  * Tangram Play knows what scene to load, not before. See loadScene().
+ *
+ * @param {string} pathToSceneFile - url of scene file to load. Can be a BlobURL.
+ * @param {string} sceneBasePath - scene base path, if different from a base path
+ *          parsed from `pathToSceneFile`. Requires Tangram v0.10.5+.
  */
-function initTangram(pathToSceneFile) {
+function initTangram(pathToSceneFile, sceneBasePath) {
     // Add Tangram Layer
     tangramLayer = Tangram.leafletLayer({
         scene: pathToSceneFile,
+        sceneBasePath,
         events: {
             hover: handleInspectionHoverEvent,
             click: handleInspectionClickEvent,
         },
     });
+
     tangramLayer.addTo(map);
 
     tangramLayer.scene.subscribe({
@@ -63,20 +69,31 @@ function initTangram(pathToSceneFile) {
 
 // Sends a scene path and base path to Tangram.
 export function loadScene(pathToSceneFile, { reset = false, basePath = null } = {}) {
-    // Initialize Tangram if it's not already set.
-    // Tangram must be initialized with a scene file.
-    // We only initialize Tangram when Tangram Play
+    // Initialize Tangram if the layer does not exist, or if the layer
+    // exists but had been previously removed from the map.
+    // Tangrm cannot be initialized at app start-up because it needs to
+    // know what scene file to use. So only initialize Tangram when Tangram Play
     // knows what scene to load, not before.
-    if (!tangramLayer) {
-        return initTangram(pathToSceneFile);
+    if (!tangramLayer || tangramLayer.getContainer() === null) {
+        return initTangram(pathToSceneFile, basePath);
     }
 
-    // If scene is already set, re-use the internal path
-    // If scene is not set, default to current path
-    // This is ignored if reset is true; see below)
+    // If `reset` is `false`, we are updating content from an already open scene.
+    // (`reset` is `true` if a new scene is loaded.) We need to preserve the
+    // scene base path, which allows Tangram to continue accessing resources
+    // relative to it, even though the updated scene exists only in memory.
+    // If the original scene already has this `config_path` set, we re-use it.
     const path = basePath || tangramLayer.scene.config_path;
-    // Preserve scene base path unless reset requested (e.g. reset on new file load)
-    return tangramLayer.scene.load(pathToSceneFile, !reset && path);
+
+    return tangramLayer.scene.load(pathToSceneFile, path);
+}
+
+export function destroyScene() {
+    if (tangramLayer) {
+        // Removing the layer from Leaflet calls scene.destroy() internally,
+        // freeing up the canvas and GL resources
+        tangramLayer.remove();
+    }
 }
 
 function getMapStartLocation() {

@@ -1,18 +1,18 @@
 /* Editor workspace */
 
 .workspace-container {
-    position: absolute;
-    top: 44px;
-    left: 0;
-    /* Setting absolute right position instead of width: 100% improves resizing
-       performance when dragging the left edge of window */
-    right: 0;
-    bottom: 0;
-    background-color: var(--ui-editor-background-color); /* Background color during loading */
+  position: fixed;
+  top: var(--menu-bar-height);
+  left: 0;
+  /* Setting absolute right position instead of width: 100% improves resizing
+     performance when dragging the left edge of window */
+  right: 0;
+  bottom: 0;
+  background-color: var(--ui-editor-background-color); /* Background color during loading */
 }
 
 #draggable-container {
-    position: fixed;
-    width: 100%;
-    height: 100%;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }

@@ -1,0 +1,42 @@
+/* Draggable floating modal for pickers and other display panels */
+
+.floating-panel-topbar {
+  display: flex;
+  background-color: var(--ui-component-color);
+  height: 20px;
+  justify-content: flex-end;
+  user-select: none;
+}
+
+.floating-panel-drag {
+  display: flex;
+  flex-grow: 1;
+  padding-left: 1em;
+  font-size: 0.8em;
+  text-align: left;
+  align-items: center;
+  cursor: move;
+}
+
+.floating-panel-close {
+  height: 100%;
+  width: 20px;
+  flex-basis: 20px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ui-component-text-color);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--ui-highlight-color);
+    background-color: var(--ui-active-color);
+  }
+}
+
+.modal-content {
+  margin-top: 0;
+}

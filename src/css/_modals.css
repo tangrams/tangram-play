@@ -1,217 +1,114 @@
 /* MODALS */
 
 .modal {
-    display: block; /* Default display mode */
-    box-sizing: border-box;
-    width: 400px;
-    padding: 30px;
-    font-family: var(--font-family);
-    font-weight: 200;
-    font-size: 16px;
-    text-align: center;
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-base-color);
-    box-shadow: var(--modal-shadow);
-    z-index: var(--z01-modal);
-    user-select: none;
-    pointer-events: auto;
+  display: block; /* Default display mode */
+  width: 400px;
+  padding: 30px;
+  font-family: var(--font-family);
+  font-weight: 200;
+  font-size: 1rem;
+  text-align: center;
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-base-color);
+  box-shadow: var(--ui-modal-shadow), var(--ui-emboss-shadow);
+  z-index: var(--z01-modal);
+  user-select: none;
+  pointer-events: auto;
+  border: 1px solid var(--ui-border-color);
+  border-radius: 2px;
 
-    h4 {
-        margin-top: 0;
-        margin-bottom: 1em;
-        font-weight: 400;
-    }
-
-    input[type=text],
-    input[type=url] {
-        background-color: var(--ui-element-color);
-        appearance: none;
-        outline: none;
-        border: 0;
-        color: var(--ui-component-text-color);
-        font-size: 12px;
-        font-family: var(--font-family);
-        font-weight: 200;
-        line-height: 28px;
-        padding: 4px 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    input:focus {
-        box-shadow: 0 0 0 1px var(--ui-highlight-color-2) inset;
-    }
-
-    input:invalid {
-        box-shadow: 0 0 0 1px red inset;
-    }
-
-    input::selection {
-        background-color: var(--ui-component-color);
-    }
-
-    label + input {
-        margin-top: 6px;
-    }
-
-    label {
-        font-size: 13px;
-        font-weight: 400;
-        color: var(--ui-subtext-color);
-    }
+  h4 {
+    margin-top: 0;
+    margin-bottom: 1em;
+    font-weight: 400;
+    font-size: 1.25em;
+  }
 }
 
 .modal-alt {
-    text-align: left;
+  text-align: left;
 
-    .modal-buttons {
-        justify-content: flex-end;
-    }
+  .modal-buttons {
+    justify-content: flex-end;
+  }
 }
 
 .modal-text {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    line-height: 1.4;
-    user-select: none;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
+  user-select: none;
 
-    a {
-        text-decoration: underline;
-    }
+  a {
+    text-decoration: underline;
+  }
 }
 
 .modal-content {
-    margin-top: 20px;
+  margin-top: 20px;
+}
+
+.modal-well {
+  border: var(--ui-border);
+  box-shadow: var(--ui-well-shadow);
 }
 
 .modal-buttons {
-    width: 100%;
-    margin-top: 30px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-
-    button {
-        padding: 16px;
-        background-color: transparent;
-        color: var(--ui-component-text-color);
-        border: 1px solid var(--ui-border-color);
-        margin: 0 5px;
-        font-family: var(--font-family);
-        font-weight: 200;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    button:last-of-type {
-        margin-right: 0;
-    }
-
-    button:first-of-type {
-        margin-left: 0;
-    }
-
-    button:hover {
-        background-color: var(--ui-active-color);
-        color: var(--ui-highlight-color);
-    }
-
-    button:focus {
-        outline: none;
-        border: 1px solid var(--ui-highlight-color);
-        background-color: var(--ui-active-color);
-    }
-
-    button > i {
-        margin-right: 0.5em;
-    }
-
-    /* Any icon of confirm button is green */
-    .modal-confirm > i.btm {
-        color: green;
-    }
-
-    /* Any icon of cancel button is red */
-    .modal-cancel > i.btm {
-        color: red;
-    }
-
-    button:disabled {
-        color: gray;
-        background-color: rgba(0, 0, 0, 0.1);
-        cursor: default;
-    }
-
-    button:disabled:hover {
-        color: gray;
-        background-color: rgba(0, 0, 0, 0.1);
-    }
-
-    button:disabled > i {
-        color: gray !important;
-    }
+  width: 100%;
+  margin-top: 24px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
 }
 
 .modal-thinking {
-    margin-right: 30px;
-    line-height: 54px;
-    color: var(--ui-subtext-color);
-    opacity: 0;
-    visibility: hidden;
+  margin-right: 30px;
+  line-height: 40px;
+  color: var(--ui-subtext-color);
+  opacity: 0;
+  visibility: hidden;
 
-    &.modal-thinking-cap-on {
-        opacity: 1;
-        visibility: visible;
-    }
+  &.modal-thinking-cap-on {
+    opacity: 1;
+    visibility: visible;
+  }
 
-    .bt-spinner {
-        margin-right: 0.25em;
-    }
+  .bt-spinner {
+    margin-right: 0.25em;
+  }
 }
 
 .open-url-modal {
-    width: 600px;
+  width: 600px;
 }
 
 .modal-about-text {
-    margin-left: 40px;
-    margin-right: 40px;
+  margin-left: 40px;
+  margin-right: 40px;
 
-    p {
-        font-size: 12px;
-        margin-top: 16px;
-        margin-bottom: 0;
-        user-select: auto;
-    }
+  p {
+    font-size: 12px;
+    margin-top: 16px;
+    margin-bottom: 0;
+    user-select: auto;
+  }
 }
 
 .save-to-cloud-modal {
-    width: 600px;
+  width: 600px;
 }
 
 .save-to-cloud-success-modal {
-    /* Overrides for this modal.
-        TODO: Consider refactoring modal so we don't need any of this */
-    .modal-text {
-        display: none;
-    }
-
-    .modal-content {
-        margin-top: 0;
-    }
-
-    /* Inputs */
-    .saved-scene-copy-btn {
-        margin-left: 2px;
-        width: 44px;
-
-        &:focus {
-            box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
-        }
-    }
+  /* Overrides for this modal.
+     TODO: Consider refactoring modal so we don't need any of this */
+  /* Inputs */
+  .saved-scene-copy-btn {
+    margin-left: 2px;
+    width: 40px;
+  }
 }
 
 .modal {
-    position: relative;
+  position: relative;
 }

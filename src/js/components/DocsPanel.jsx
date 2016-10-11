@@ -1,16 +1,17 @@
 import React from 'react';
 import Draggable from 'react-draggable';
-import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
-import Icon from './Icon';
+import IconButton from './IconButton';
 
 import { editor } from '../editor/editor';
+
+// Redux
+import store from '../store';
+import { SET_SETTINGS } from '../store/actions';
 
 import TANGRAM from '../tangram-docs.json';
 
@@ -29,12 +30,13 @@ export default class DocsPanel extends React.Component {
     constructor(props) {
         super(props);
 
-        const INITIAL_HEIGHT = 400;
+        const settings = store.getState().settings;
+        const INITIAL_HEIGHT = 200;
         this.MIN_HEIGHT = 50;
 
         this.state = {
             display: '{}',
-            height: 0, // Start closed to be unobtrusive
+            height: (settings && 'docsPanelHeight' in settings) ? settings.docsPanelHeight : INITIAL_HEIGHT,
         };
 
         this.lastSavedHeight = INITIAL_HEIGHT;
@@ -59,6 +61,11 @@ export default class DocsPanel extends React.Component {
         }
 
         this.setState({ height: delta });
+
+        store.dispatch({
+            type: SET_SETTINGS,
+            docsPanelHeight: delta,
+        });
     }
 
     onClickChild(address) {
@@ -99,12 +106,20 @@ export default class DocsPanel extends React.Component {
      */
     openPanel() {
         this.setState({ height: this.lastSavedHeight });
+        store.dispatch({
+            type: SET_SETTINGS,
+            docsPanelHeight: this.lastSavedHeight,
+        });
     }
 
     closePanel() {
         this.lastSavedHeight = this.state.height;
 
         this.setState({ height: 0 });
+        store.dispatch({
+            type: SET_SETTINGS,
+            docsPanelHeight: 0,
+        });
     }
 
     findMatch(address, optionalBool) {
@@ -224,11 +239,13 @@ export default class DocsPanel extends React.Component {
         return (
             <div className="docs-panel">
                 {/* Toggle docs panel to show it*/}
-                <OverlayTrigger rootClose placement="top" overlay={<Tooltip id="tooltip">Open docs toolbar</Tooltip>}>
-                    <Button onClick={this.openPanel} className="docs-panel-button-show">
-                        <Icon type="bt-caret-up" />
-                    </Button>
-                </OverlayTrigger>
+                <IconButton
+                    className="docs-panel-button-show"
+                    icon="bt-caret-up"
+                    tooltip="Open docs toolbar"
+                    tooltipPlacement="top"
+                    onClick={this.openPanel}
+                />
 
                 {/* Docs panel */}
                 <Draggable axis="y" onDrag={this.onDrag} handle=".docs-divider">
@@ -272,15 +289,11 @@ export default class DocsPanel extends React.Component {
 
                             {/* Toggle docs panel to hide it*/}
                             <ButtonGroup className="docs-panel-toolbar-toggle">
-                                <OverlayTrigger
-                                    rootClose
-                                    placement="top"
-                                    overlay={<Tooltip id="tooltip">Close docs toolbar</Tooltip>}
-                                >
-                                    <Button onClick={this.closePanel}>
-                                        <Icon type="bt-caret-down" />
-                                    </Button>
-                                </OverlayTrigger>
+                                <IconButton
+                                    icon="bt-caret-down"
+                                    tooltip="Close docs toolbar"
+                                    onClick={this.closePanel}
+                                />
                             </ButtonGroup>
 
                         </div>

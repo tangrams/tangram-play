@@ -5,7 +5,6 @@
     "comment-empty-line-before": null,
     "font-family-name-quotes": "always-where-recommended",
     "function-url-quotes": "always",
-    "indentation": 4,
     "max-nesting-depth": 2,
     "media-feature-name-no-vendor-prefix": true,
     "no-browser-hacks": true,

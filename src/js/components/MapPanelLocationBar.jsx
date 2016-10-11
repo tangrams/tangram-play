@@ -2,10 +2,8 @@
 import { throttle } from 'lodash';
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
-import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
+import IconButton from './IconButton';
 import Icon from './Icon';
 
 import EventEmitter from './event-emitter';
@@ -76,6 +74,7 @@ export default class MapPanelLocationBar extends React.Component {
         this.relocatingMap = false;
         this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
 
+        this.focusInput = this.focusInput.bind(this);
         this.onChangeAutosuggest = this.onChangeAutosuggest.bind(this);
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
@@ -242,7 +241,7 @@ export default class MapPanelLocationBar extends React.Component {
             lat: center.lat,
             lng: center.lng,
             zoom: map.getZoom(),
-            _date: new Date().toJSON(),
+            timestamp: new Date().toJSON(),
         };
     }
 
@@ -292,7 +291,7 @@ export default class MapPanelLocationBar extends React.Component {
         const lat = latlng.lat;
         const lng = latlng.lng;
         // eslint-disable-next-line max-len
-        const endpoint = `//${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
+        const endpoint = `https://${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
 
         return window.fetch(endpoint)
             .then((response) => response.json())
@@ -319,6 +318,9 @@ export default class MapPanelLocationBar extends React.Component {
             });
     }
 
+    focusInput() {
+        this.autosuggestBar.input.focus();
+    }
 
     /**
      * Makes an autocomplete request to API based on what user has typed
@@ -327,7 +329,7 @@ export default class MapPanelLocationBar extends React.Component {
     autocomplete(query) {
         const center = map.getCenter();
         // eslint-disable-next-line max-len
-        const endpoint = `//${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
+        const endpoint = `https://${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
 
         this.makeRequest(endpoint);
     }
@@ -339,7 +341,7 @@ export default class MapPanelLocationBar extends React.Component {
     search(query) {
         const center = map.getCenter();
         // eslint-disable-next-line max-len
-        const endpoint = `//${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
+        const endpoint = `https://${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
 
         this.makeRequest(endpoint);
     }
@@ -457,15 +459,12 @@ export default class MapPanelLocationBar extends React.Component {
         return (
             <ButtonGroup className="map-search" >
                 {/* Search button */}
-                <OverlayTrigger
-                    rootClose
-                    placement="bottom"
-                    overlay={<Tooltip id="tooltip">Search for a location</Tooltip>}
-                >
-                    <Button className="map-panel-search-button">
-                        <Icon type="bt-search" />
-                    </Button>
-                </OverlayTrigger>
+                <IconButton
+                    icon="bt-search"
+                    tooltip="Search for a location"
+                    className="map-panel-search-button"
+                    onClick={this.focusInput}
+                />
 
                 {/* Autosuggest bar */}
                 <Autosuggest
@@ -484,15 +483,13 @@ export default class MapPanelLocationBar extends React.Component {
                 <div className="map-search-latlng">{latlng.lat}, {latlng.lng}</div>
 
                 {/* Bookmark save button */}
-                <OverlayTrigger
-                    rootClose
-                    placement="bottom"
-                    overlay={<Tooltip id="tooltip">Bookmark location</Tooltip>}
-                >
-                    <Button className="map-panel-save-button" onClick={this.onClickSaveBookmark}>
-                        <Icon type="bt-star" active={this.state.bookmarkActive} />
-                    </Button>
-                </OverlayTrigger>
+                <IconButton
+                    icon="bt-star"
+                    active={this.state.bookmarkActive}
+                    tooltip="Bookmark location"
+                    className="map-panel-save-button"
+                    onClick={this.onClickSaveBookmark}
+                />
             </ButtonGroup>
         );
     }

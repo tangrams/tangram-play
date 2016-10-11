@@ -1,15 +1,21 @@
 import React from 'react';
 import Draggable from 'react-draggable';
+import { connect } from 'react-redux';
 
 import { throttle } from 'lodash';
-import localforage from 'localforage';
 import { map } from '../map/map';
 import { editor } from '../editor/editor';
 import EventEmitter from './event-emitter';
 
-const EDITOR_MINIMUM_WIDTH = 160; // integer, in pixels
+// Redux
+import store from '../store';
+import { SET_SETTINGS } from '../store/actions';
+
+// Constraints
+// A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
+// space for the divider to still exist.
+const EDITOR_MINIMUM_WIDTH = 10; // integer, in pixels
 const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
-const STORAGE_POSITION_KEY = 'divider-position-x';
 
 /**
  * Clamps the position to a value to make sure that the map and editor are
@@ -36,34 +42,21 @@ function clampPosition(x) {
  * @returns {Number} x - the position to place the divider.
  */
 function getStartingPosition() {
-    return localforage.getItem(STORAGE_POSITION_KEY)
-        .then((storedPosition) => {
-            if (storedPosition) {
-                // Number is stored as string, cast it to number, then clamp
-                // the number to the permitted range, because viewport sizes
-                // may differ between sessions
-                return clampPosition(storedPosition);
-            }
+    if (window.innerWidth > 1024) {
+        return Math.floor(window.innerWidth * 0.6);
+    }
 
-            if (window.innerWidth > 1024) {
-                return Math.floor(window.innerWidth * 0.6);
-            }
-
-            // If window.innerWidth <= 1024
-            return Math.floor(window.innerWidth / 2);
-        });
+    // If window.innerWidth <= 1024
+    return Math.floor(window.innerWidth / 2);
 }
 
-export default class Divider extends React.Component {
+class Divider extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            startPosX: 0, // Fill this in later
-            position: { // We need this to sync position state manually
-                x: 0,
-                y: 0,
-            },
+            // We need this to sync position state manually
+            position: { x: 0, y: 0 },
         };
 
         this.throttledRefresh = throttle(this.refreshMapAndEditor, 20);
@@ -88,14 +81,18 @@ export default class Divider extends React.Component {
         window.addEventListener('resize', this.onResizeWindow);
 
         // Set up initial positioning
-        getStartingPosition()
-            .then((posX) => {
-                this.setState({
-                    startPosX: posX,
-                });
+        this.changeMapAndEditorSize(this.props.posX);
+    }
 
-                this.changeMapAndEditorSize(posX);
-            });
+    // Only update if the position changes - this prevents layout flashing
+    // occurring when props.posX differs from the dragged position.
+    shouldComponentUpdate(nextProps) {
+        return this.props.posX !== nextProps.posX;
+    }
+
+    // Called when something updates props (e.g. new divider position.)
+    componentWillUpdate(nextProps) {
+        this.changeMapAndEditorSize(nextProps.posX);
     }
 
     onDrag(event, position) {
@@ -116,14 +113,14 @@ export default class Divider extends React.Component {
         // divider back to its bounded location before any interaction is
         // possible.
         this.setState({
-            position: {
-                x: 0,
-                y: 0,
-            },
+            position: { x: 0, y: 0 },
         });
 
-        // Save the position in local memory
-        localforage.setItem(STORAGE_POSITION_KEY, posX);
+        // Save the position in Redux
+        store.dispatch({
+            type: SET_SETTINGS,
+            dividerPositionX: posX,
+        });
 
         EventEmitter.dispatch('divider:dragend');
     }
@@ -153,16 +150,14 @@ export default class Divider extends React.Component {
      * throttled and aliased as `this.throttledRefresh()`.
      */
     refreshMapAndEditor() {
-        editor.refresh();
+        if (editor) {
+            editor.refresh();
+        }
 
         // Also refresh the map
         map.invalidateSize({
-            pan: {
-                animate: false,
-            },
-            zoom: {
-                animate: false,
-            },
+            pan: { animate: false },
+            zoom: { animate: false },
             debounceMoveend: true,
         });
     }
@@ -186,3 +181,20 @@ export default class Divider extends React.Component {
         );
     }
 }
+
+Divider.propTypes = {
+    posX: React.PropTypes.number,
+};
+
+Divider.defaultProps = {
+    posX: getStartingPosition(),
+};
+
+function mapStateToProps(state) {
+    return {
+        // Make sure position is clamped before feeding into props
+        posX: clampPosition(state.settings.dividerPositionX),
+    };
+}
+
+export default connect(mapStateToProps)(Divider);

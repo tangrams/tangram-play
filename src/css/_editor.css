@@ -1,227 +1,399 @@
 /* EDITOR */
 
+:root {
+  --editor-tab-height: 38px;
+}
+
 .editor-container {
-    position: absolute;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    min-width: 160px;
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.editor-no-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  padding: 30px;
+  width: 100%;
+  height: calc(100% - var(--editor-tab-height));
+  background-color: var(--ui-editor-background-color);
+  color: var(--ui-component-text-color);
+  z-index: 10;
+  user-select: none;
 }
 
 .editor {
-    height: 100%;
-    position: relative;
+  height: calc(100% - var(--editor-tab-height));
+  position: relative;
+  /* Easier to adjust font size from this element */
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.editor-tabs {
+  padding-left: 13px;
+  padding-top: 5px;
+  padding-right: 36px; /* Space for collapse button */
+  user-select: none;
+  border-bottom: 1px solid var(--ui-border-color);
+  border-top: 1px solid var(--ui-border-color);
+  height: var(--editor-tab-height);
+  background-color: var(--ui-editor-background-color);
+}
+
+.editor-tab {
+  display: inline-block;
+  position: relative;
+  color: var(--ui-component-text-color);
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid var(--ui-border-color);
+  border-bottom: 0;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  background-color: var(--ui-editor-background-color);
+  box-shadow: inset 0 0 0 1px var(--ui-component-color);
+}
+
+.editor-tab-is-active {
+  background-color: var(--ui-base-color);
+  box-shadow: var(--ui-emboss-shadow);
+}
+
+.editor-tab-close,
+.editor-tab-label {
+  display: inline-block;
+}
+
+.editor-tab-label {
+  overflow: hidden;
+  padding: 8px 24px 8px 10px;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.editor-tab-is-dirty {
+  .editor-tab-dirty {
+    opacity: 1;
+  }
+
+  .editor-tab-close {
+    color: var(--ui-highlight-color);
+  }
+}
+
+.editor-tab-dirty {
+  color: var(--ui-highlight-color);
+}
+
+.editor-tab-dirty,
+.editor-tab-close {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  text-align: center;
+  line-height: 30px;
+}
+
+.editor-tab:not(.editor-tab-is-main):hover .editor-tab-close {
+  opacity: 1;
+}
+
+.editor-tab:not(.editor-tab-is-main):hover .editor-tab-dirty {
+  opacity: 0;
+}
+
+.editor-tab-close:hover {
+  color: var(--ui-highlight-color);
+}
+
+.editor-collapse-button {
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  width: 28px;
+  height: 28px;
+  font-size: 0.75em; /* slightly smaller */
 }
 
 .CodeMirror {
-    font-family: var(--editor-font-family);
-    font-size: 14px;
-    line-height: 1.4;
-    height: 100%;
+  font-family: var(--editor-font-family);
+  height: 100%;
 }
 
 .CodeMirror-linenumbers {
-    padding: 0 8px;
+  padding: 0 8px;
 }
 
 .CodeMirror-ruler {
-    border-left: 1px dotted rgba(227, 227, 227, 0.08);
+  border-left: 1px dotted rgba(227, 227, 227, 0.08);
 }
 
 /* Slightly more padding around the text content */
 .CodeMirror pre {
-    padding: 0 8px;
+  padding: 0 8px;
 }
 
 /* With hanging indents on wrapped text, this fixes tab characters from
    disappearing. See https://codemirror.net/demo/indentwrap.html */
 .CodeMirror pre > * {
-    text-indent: 0;
+  text-indent: 0;
 }
 
 /* Stylized scroll bars, webkit only */
 .CodeMirror-vscrollbar,
 .CodeMirror-hscrollbar {
-    /* Sometimes, CodeMirror sets these scrollbars
-       to pointer-events: none, making them unselectable.
-       See discussion in issue #313 */
-    pointer-events: auto !important;
+  /* Sometimes, CodeMirror sets these scrollbars
+     to pointer-events: none, making them unselectable.
+     See discussion in issue #313 */
+  pointer-events: auto !important;
 
-    &::-webkit-scrollbar {
-        width: 12px;
-        height: 12px;
-    }
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
 
-    &::-webkit-scrollbar-track {
-        background-color: var(--ui-component-color);
-    }
+  &::-webkit-scrollbar-track {
+    background-color: var(--ui-element-color);
+  }
 
-    &::-webkit-scrollbar-thumb {
-        background-color: #b9b9bd;
-    }
+  &::-webkit-scrollbar-thumb {
+    background-color: #b9b9bd;
+  }
 }
 
 .CodeMirror-scrollbar-filler {
-    background-color: var(--ui-component-color);
-    width: 12px;
-    height: 12px;
+  background-color: var(--ui-element-color);
+  width: 12px;
+  height: 12px;
 }
 
 .cm-s-tangram.CodeMirror {
-    color: #e1e1e1;
-    background-color: var(--ui-editor-background-color);
+  color: #e1e1e1;
+  background-color: var(--ui-base-color);
 }
 
 .cm-s-tangram .CodeMirror-selected {
-    background: #61616140;
+  background: #61616140;
 }
 
 .cm-s-tangram .CodeMirror-gutters {
-    color: var(--ui-component-text-color);
-    background-color: var(--ui-component-color);
-    border-right: 0;
+  color: var(--ui-component-text-color);
+  background-color: #24262a; /* subtly darker than base */
+  border-right: 1px solid #34363a;
 }
 
 .cm-s-tangram .CodeMirror-linenumber {
-    /* Relative units allow for proportional gutter sizing when font-size changes */
-    margin-left: 1em;
-    padding: 0 0.2em 0 0.4em;
-    min-width: 1.2em;
-    color: var(--ui-border-color);
-    font-weight: 200;
+  /* Relative units allow for proportional gutter sizing when font-size changes */
+  margin-left: 1em;
+  padding: 0 0.2em 0 0.4em;
+  min-width: 1.2em;
+  color: var(--ui-unnamed-light-color);
+  font-weight: 200;
 }
 
-.cm-s-tangram .CodeMirror-cursor { border-left: 1px solid white; }
+.cm-s-tangram .CodeMirror-cursor {
+  border-left: 1px solid white;
+}
 
-.cm-s-tangram .cm-keyword { color: #c792ea; }
-.cm-s-tangram .cm-builtin { color: #80cbc4; }
-.cm-s-tangram .cm-atom { color: #ff5370; }
-.cm-s-tangram .cm-number { color: #f77669; }
-.cm-s-tangram .cm-def { color: #8da6ce; }
-.cm-s-tangram .cm-variable { color: #80b0ff; }
-.cm-s-tangram .cm-property { color: #ff5370; }
-.cm-s-tangram .cm-qualifier { color: #690; }
-.cm-s-tangram .cm-operator { color: #c0c1cc; }
+.cm-s-tangram .cm-keyword {
+  color: #c792ea;
+}
+
+.cm-s-tangram .cm-builtin {
+  color: #80cbc4;
+}
+
+.cm-s-tangram .cm-atom {
+  color: #ff5370;
+}
+
+.cm-s-tangram .cm-number {
+  color: #f77669;
+}
+
+.cm-s-tangram .cm-def {
+  color: #8da6ce;
+}
+
+.cm-s-tangram .cm-variable {
+  color: #80b0ff;
+}
+
+.cm-s-tangram .cm-property {
+  color: #ff5370;
+}
+
+.cm-s-tangram .cm-qualifier {
+  color: #690;
+}
+
+.cm-s-tangram .cm-operator {
+  color: #c0c1cc;
+}
 
 .cm-s-tangram .cm-comment {
-    color: #616161;
-    font-weight: normal;
+  color: #616161;
+  font-weight: normal;
 }
-.cm-s-tangram .cm-meta { color: #999; }
-.cm-s-tangram .cm-string { color: #c3e88d; }
-.cm-s-tangram .cm-string-2 { color: #ffcb6b; }
+
+.cm-s-tangram .cm-meta {
+  color: #999;
+}
+
+.cm-s-tangram .cm-string {
+  color: #c3e88d;
+}
+
+.cm-s-tangram .cm-string-2 {
+  color: #ffcb6b;
+}
 
 .cm-s-tangram .cm-tab {
-    background-color: #e05252; /* color copied from an Atom theme */
+  background-color: #e05252; /* color copied from an Atom theme */
 }
 
-.cm-s-tangram .cm-tag { color: #997643; }
-.cm-s-tangram .cm-attribute { color: #d6bb6d; }
-.cm-s-tangram .cm-header { color: #ff6400; }
-.cm-s-tangram .cm-hr { color: #aeaeae; }
+.cm-s-tangram .cm-tag {
+  color: #997643;
+}
+
+.cm-s-tangram .cm-attribute {
+  color: #d6bb6d;
+}
+
+.cm-s-tangram .cm-header {
+  color: #ff6400;
+}
+
+.cm-s-tangram .cm-hr {
+  color: #aeaeae;
+}
 
 .cm-s-tangram .cm-link {
-    color: #ad9361;
-    font-style: italic;
-    text-decoration: none;
+  color: #ad9361;
+  font-style: italic;
+  text-decoration: none;
 }
 
 .cm-s-tangram .cm-variable-2,
 .cm-s-tangram .cm-tag {
-    color: #690;
+  color: #690;
 }
 
 .cm-s-tangram .cm-variable-3,
 .cm-s-tangram .cm-def {
-    color: #c792ea;
+  color: #c792ea;
 }
 
 .cm-s-tangram .cm-error {
-    border-bottom: 1px solid red;
+  border-bottom: 1px solid red;
 }
 
 /* Adds a red squiggly line to trailing spaces.
    See: https://codemirror.net/demo/trailingspace.html */
 .cm-trailingspace {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==');
-    background-position: bottom left;
-    background-repeat: repeat-x;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==');
+  background-position: bottom left;
+  background-repeat: repeat-x;
 }
 
 .cm-s-tangram .CodeMirror-activeline-background {
-    background: var(--ui-base-color);
+  background: var(--ui-component-color);
 }
 
 .CodeMirror-activeline-gutter.CodeMirror-gutter-background {
-    background: var(--ui-active-color);
+  background: var(--ui-component-color);
 }
 
-.CodeMirror-activeline-gutter .CodeMirror-linenumber,
-.editor-highlight .CodeMirror-activeline-gutter .CodeMirror-linenumber {
-    color: var(--ui-highlight-color);
+.CodeMirror-activeline-gutter .CodeMirror-linenumber {
+  color: var(--ui-highlight-color);
 }
 
 .cm-s-tangram .CodeMirror-matchingbracket {
-    outline: 1px solid #a8abaa;
-    color: #fcd812;
+  outline: 1px solid #a8abaa;
+  color: #fcd812;
 }
 
 .CodeMirror-foldmarker {
-    font-family: var(--editor-font-family);
-    color: yellow;
-    margin-left: 0.5em;
-    text-shadow: none;
-    font-size: 1em;
+  font-family: var(--editor-font-family);
+  color: yellow;
+  margin-left: 0.5em;
+  text-shadow: none;
+  font-size: 1em;
 }
 
 .CodeMirror-foldgutter {
-    width: 0.9em;
+  width: 0.9em;
 }
 
 .CodeMirror-foldgutter-open,
 .CodeMirror-foldgutter-folded {
-    color: #777;
+  color: #777;
 }
 
 .CodeMirror-foldgutter-open::after {
-    content: '\25BE';
+  content: '\25BE';
 }
 
 .CodeMirror-foldgutter-folded::after {
-    content: '\25B8';
+  content: '\25B8';
 }
 
 /* Highlighting lines, e.g. after map introspection */
 .editor-highlight {
-    &.CodeMirror-linebackground:not(.CodeMirror-activeline-background) {
-        /* A background color with alpha=1 overlaps the selection highlight
-           This makes the selection visible through the highlighted line */
-        background-color: rgba(54, 56, 60, 0.5); /* var(--ui-active-color); */
-    }
+  &.CodeMirror-linebackground:not(.CodeMirror-activeline-background) {
+    /* A background color with alpha=1 overlaps the selection highlight
+       This makes the selection visible through the highlighted line */
+    background-color: rgba(255, 255, 255, 0.05); /* var(--ui-active-color); */
+  }
+  /*
+  &.CodeMirror-linebackground.CodeMirror-activeline-background {
+  }
+  */
 
-    &.CodeMirror-gutter-background:not(.CodeMirror-activeline-gutter) {
-        background-color: var(--ui-highlight-color);
-    }
+  &.CodeMirror-gutter-background:not(.CodeMirror-activeline-gutter) {
+    background-color: var(--ui-element-color);
+  }
 
-    &.CodeMirror-gutter-background.CodeMirror-activeline-gutter {
-        background-color: var(--ui-highlight-color-2);
-    }
+  .CodeMirror-linenumber {
+    color: white;
+  }
 
-    .CodeMirror-linenumber {
-        color: black;
-        font-weight: 600;
-
-        &:hover {
-            color: black;
-        }
-    }
+  &.CodeMirror-activeline-gutter .CodeMirror-linenumber {
+    color: var(--ui-highlight-color);
+  }
 }
 
 /* Line numbers are clickable for highlighting */
 .CodeMirror-linenumber {
-    cursor: pointer;
+  cursor: pointer;
 
-    &:hover {
-        color: white;
-    }
+  &:hover {
+    color: white;
+  }
+}
+
+/* CodeMirror search dialog */
+.CodeMirror-dialog {
+  padding-left: 24px;
+  padding-top: 0.9em;
+  padding-bottom: 0.9em;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--ui-element-color);
+
+  input {
+    height: 2.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    font-size: 1em;
+  }
 }

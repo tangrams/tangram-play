@@ -1,0 +1,88 @@
+button {
+  margin: 0 0.4em;
+  border: var(--ui-border);
+  border-radius: var(--ui-border-radius);
+  padding: 0.8em 0.75em;
+  font-family: var(--font-family);
+  font-weight: 200;
+  font-size: 0.9rem;
+  color: var(--ui-component-text-color);
+  background-color: var(--ui-element-color);
+  box-shadow: var(--ui-emboss-shadow);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Buttons that are only icons */
+.button-icon {
+  text-align: center;
+  padding: 0;
+  margin: 0;
+
+  /* Override focus style */
+  &:focus {
+    border: var(--ui-border);
+    outline: none;
+  }
+
+  .btm {
+    padding-right: 0;
+    margin: 0;
+    font-size: 0.9em;
+    font-weight: 200;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
+}
+
+button:last-of-type {
+  margin-right: 0;
+}
+
+button:first-of-type {
+  margin-left: 0;
+}
+
+button:hover {
+  background-color: var(--ui-active-color);
+  color: var(--ui-highlight-color);
+}
+
+button:focus {
+  outline: none;
+  border: 1px solid var(--ui-highlight-color);
+  background-color: var(--ui-active-color);
+}
+
+button:disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: gray;
+  cursor: default;
+}
+
+button:disabled:hover {
+  border: var(--ui-border);
+  background-color: rgba(0, 0, 0, 0.1);
+  color: gray;
+}
+
+/* Icons on buttons */
+button > .btm {
+  margin-right: 0.75em;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+button:disabled > .btm {
+  color: gray !important;
+}
+
+/* Any icon of confirm button is green */
+.button-confirm > .btm {
+  color: green;
+}
+
+/* Any icon of cancel button is red */
+.button-cancel > .btm {
+  color: red;
+}

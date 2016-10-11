@@ -7,7 +7,6 @@ const HIGHLIGHT_CLASS = 'editor-highlight';
 
 let anchorLine;
 let targetLine;
-let hasInitiated = false;
 
 /**
  * Highlights a given line in the document.
@@ -219,7 +218,7 @@ function getLineNumberString(array) {
  * @returns {String} linenumbers - in the format of '2-5,10,18-20', as
  *          returned by getLineNumberString() function
  */
-function getAllHighlightedLines() {
+export function getAllHighlightedLines() {
     const lineNumbers = [];
 
     for (let i = 0, j = editor.getDoc().lineCount(); i < j; i++) {
@@ -370,10 +369,7 @@ function onEditorChanges(cm, changes) {
 }
 
 // Add handlers for these events to the editor.
-export function initHighlight() {
-    if (hasInitiated === false) {
-        editor.on('gutterClick', onEditorGutterClick);
-        editor.on('changes', onEditorChanges);
-        hasInitiated = true;
-    }
+export function addHighlightEventListeners() {
+    editor.on('gutterClick', onEditorGutterClick);
+    editor.on('changes', onEditorChanges);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '../components/Icon';
-import EditorIO from '../editor/io';
+import { checkSaveStateThen, handleFileList } from '../editor/io';
 
 export default class FileDrop extends React.Component {
     constructor(props) {
@@ -75,20 +75,19 @@ export default class FileDrop extends React.Component {
     onDrop(event) {
         event.preventDefault();
         this.setState({ visible: false });
-        this.handleFiles(event.dataTransfer.files);
+
+        // React reuses synthetic events, so we capture the fileList
+        // to a variable for use in the callback.
+        const fileList = event.dataTransfer.files;
+        checkSaveStateThen(() => {
+            handleFileList(fileList);
+        });
     }
 
     // Required to prevent browser from navigating to a file
     // instead of receiving a data transfer
     handleDropOnWindow(event) {
         event.preventDefault();
-    }
-
-    handleFiles(files) {
-        if (files.length > 0) {
-            const file = files[0];
-            EditorIO.open(file);
-        }
     }
 
     render() {

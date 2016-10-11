@@ -76,7 +76,6 @@ export default class OpenGistModal extends React.Component {
     onClickConfirm() {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
-            load({ url: this.state.selected });
 
             getSceneURLFromGistAPI(this.state.selected)
                 .then((url) => {
@@ -98,8 +97,10 @@ export default class OpenGistModal extends React.Component {
      * @param {string} url - the Gist URL that was attempted
      */
     handleError(error, value) {
-        // Close the modal
-        this.onClickCancel();
+        // Close the modal, if still present
+        if (this.component) {
+            this.onClickCancel();
+        }
 
         let message = '';
 
@@ -190,17 +191,17 @@ export default class OpenGistModal extends React.Component {
             >
                 <h4>Open a previously saved Gist</h4>
 
-                <div className="modal-content open-from-cloud-list">
+                <div className="modal-content modal-well open-from-cloud-list">
                     {gistList}
                 </div>
 
                 <div className="modal-buttons">
-                    <Button onClick={this.onClickCancel} className="modal-cancel">
+                    <Button onClick={this.onClickCancel} className="button-cancel">
                         <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
                         onClick={this.onClickConfirm}
-                        className="modal-confirm"
+                        className="button-confirm"
                         disabled={this.state.selected === null}
                     >
                         <Icon type="bt-check" /> Open

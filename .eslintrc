@@ -3,7 +3,8 @@
   "parserOptions": {
     "ecmaVersion": 6,
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": true,
+      "experimentalObjectRestSpread": true
     },
     "sourceType": "module"
   },
@@ -27,9 +28,9 @@
     // we match a regex assignment via `ignorePattern` - see here:
     // https://github.com/eslint/eslint/issues/3229
     "max-len": ["error", 120, 4, {
-        "ignoreUrls": true,
-        "ignoreComments": false,
-        "ignorePattern": "^\\s*(const|let|var)\\s+\\w+\\s+\\=\\s+\\/.*\\/(|i|g|m|ig|im|gm|igm);?$",
+      "ignoreUrls": true,
+      "ignoreComments": false,
+      "ignorePattern": "^\\s*(const|let|var)\\s+\\w+\\s+\\=\\s+\\/.*\\/(|i|g|m|ig|im|gm|igm);?$",
     }],
     // --End override airbnb indentation
 

@@ -128,17 +128,17 @@ export default class OpenFromCloudModal extends React.Component {
             >
                 <h4>Open a saved scene from your Mapzen account</h4>
 
-                <div className="modal-content open-from-cloud-list">
+                <div className="modal-content modal-well open-from-cloud-list">
                     {sceneList}
                 </div>
 
                 <div className="modal-buttons">
-                    <Button onClick={this.onClickCancel} className="modal-cancel">
+                    <Button onClick={this.onClickCancel} className="button-cancel">
                         <Icon type="bt-times" /> Cancel
                     </Button>
                     <Button
                         onClick={this.onClickConfirm}
-                        className="modal-confirm"
+                        className="button-confirm"
                         disabled={this.state.selected === null}
                     >
                         <Icon type="bt-check" /> Open
