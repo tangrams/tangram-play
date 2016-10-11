@@ -47,16 +47,23 @@ class EditorTabs extends React.PureComponent {
                         classes += ' editor-tab-is-dirty';
                     }
 
-                    /* eslint-disable react/jsx-no-bind */
-                    // We need it to pass the index to handler functions.
+                    // The main tab (root scene file) is not closeable
+                    let closeButtonEl;
+                    if (i !== this.props.mainTab) {
+                        closeButtonEl = (
+                            <div className="editor-tab-close" onClick={(e) => { this.closeTab(i, e); }}>×</div>
+                        );
+                    } else {
+                        classes += ' editor-tab-is-main';
+                    }
+
                     return (
-                        <div className={classes} key={i} onClick={this.setActiveTab.bind(this, i)}>
+                        <div className={classes} key={i} onClick={(e) => { this.setActiveTab(i, e); }}>
                             <div className="editor-tab-label">{item.filename || 'untitled'}</div>
                             <div className="editor-tab-dirty">○</div>
-                            <div className="editor-tab-close" onClick={this.closeTab.bind(this, i)}>×</div>
+                            {closeButtonEl}
                         </div>
                     );
-                    /* eslint-enable react/jsx-no-bind */
                 })}
             </div>
         );
@@ -66,6 +73,7 @@ class EditorTabs extends React.PureComponent {
 EditorTabs.propTypes = {
     // Injected by `mapStateToProps`
     activeTab: React.PropTypes.number,
+    mainTab: React.PropTypes.number,
     files: React.PropTypes.array,
 
     // Injected by `mapDispatchToProps`
@@ -82,6 +90,7 @@ EditorTabs.defaultProps = {
 function mapStateToProps(state) {
     return {
         activeTab: state.scene.activeFileIndex,
+        mainTab: state.scene.rootFileIndex,
         files: state.scene.files,
     };
 }

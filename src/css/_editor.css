@@ -103,11 +103,11 @@
   line-height: 30px;
 }
 
-.editor-tab:hover .editor-tab-close {
+.editor-tab:not(.editor-tab-is-main):hover .editor-tab-close {
   opacity: 1;
 }
 
-.editor-tab:hover .editor-tab-dirty {
+.editor-tab:not(.editor-tab-is-main):hover .editor-tab-dirty {
   opacity: 0;
 }
 
