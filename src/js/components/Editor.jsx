@@ -48,40 +48,44 @@ class Editor extends React.PureComponent {
                 const activeFile = this.props.files[this.props.activeFile];
 
                 // If there is an active CodeMirror document buffer, we swap out the document.
-                if (activeFile && activeFile.buffer) {
-                    editor.swapDoc(activeFile.buffer);
-                } else if (activeFile && activeFile.contents) {
-                    // Mark as "clean" if the contents are freshly loaded
-                    // (there is no isClean property defined) or if contents
-                    // have been restored with the isClean property set to "true"
-                    // This is converted from JSON so the value is a string, not
-                    // a Boolean. Otherwise, the document has not been previously
-                    // saved and it is left in the "dirty" state.
-                    const shouldMarkClean = (typeof activeFile.isClean === 'undefined' ||
-                        activeFile.isClean === 'true');
+                if (activeFile) {
+                    if (activeFile.buffer) {
+                        editor.swapDoc(activeFile.buffer);
+                    // Otherwise we use its text-value `contents` property and
+                    // other state properties, if present.
+                    } else if (activeFile.contents) {
+                        // Mark as "clean" if the contents are freshly loaded
+                        // (there is no isClean property defined) or if contents
+                        // have been restored with the isClean property set to "true"
+                        // This is converted from JSON so the value is a string, not
+                        // a Boolean. Otherwise, the document has not been previously
+                        // saved and it is left in the "dirty" state.
+                        const shouldMarkClean = (typeof activeFile.isClean === 'undefined' ||
+                            activeFile.isClean === 'true');
 
-                    // Use the text content and (TODO: reparse)
-                    setEditorContent(activeFile.contents, shouldMarkClean);
-                }
+                        // Use the text content and (TODO: reparse)
+                        setEditorContent(activeFile.contents, shouldMarkClean);
+                    }
 
-                // Highlights lines, if provided.
-                if (activeFile.highlightedLines) {
-                    highlightRanges(activeFile.highlightedLines);
-                }
+                    // Highlights lines, if provided.
+                    if (activeFile.highlightedLines) {
+                        highlightRanges(activeFile.highlightedLines);
+                    }
 
-                // Restores the part of the document that was scrolled to, if provided.
-                if (activeFile && activeFile.scrollInfo) {
-                    const left = activeFile.scrollInfo.left || 0;
-                    const top = activeFile.scrollInfo.top || 0;
-                    editor.scrollTo(left, top);
-                }
+                    // Restores the part of the document that was scrolled to, if provided.
+                    if (activeFile.scrollInfo) {
+                        const left = activeFile.scrollInfo.left || 0;
+                        const top = activeFile.scrollInfo.top || 0;
+                        editor.scrollTo(left, top);
+                    }
 
-                if (window.isEmbedded === undefined) {
-                    // Restore cursor position, if provided.
-                    if (activeFile && activeFile.cursor) {
-                        editor.getDoc().setCursor(activeFile.cursor, {
-                            scroll: false,
-                        });
+                    if (window.isEmbedded === undefined) {
+                        // Restore cursor position, if provided.
+                        if (activeFile.cursor) {
+                            editor.getDoc().setCursor(activeFile.cursor, {
+                                scroll: false,
+                            });
+                        }
                     }
                 }
             }
