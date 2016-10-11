@@ -152,7 +152,7 @@ export default class MapPanelBookmarks extends React.Component {
 
             newBookmarks.push({
                 id: i,
-                date: bookmark.date,
+                timestamp: bookmark.timestamp,
                 label: bookmark.label,
                 lat: bookmark.lat.toFixed(4),
                 lng: bookmark.lng.toFixed(4),
@@ -228,7 +228,7 @@ export default class MapPanelBookmarks extends React.Component {
                                     </div>
                                     <div
                                         className="bookmark-dropdown-delete"
-                                        onClick={() => this.onClickDeleteSingleBookmark(result.date)}
+                                        onClick={() => this.onClickDeleteSingleBookmark(result.timestamp)}
                                     >
                                         <Icon type="bt-times" />
                                     </div>

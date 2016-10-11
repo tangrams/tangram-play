@@ -241,7 +241,7 @@ export default class MapPanelLocationBar extends React.Component {
             lat: center.lat,
             lng: center.lng,
             zoom: map.getZoom(),
-            _date: new Date().toJSON(),
+            timestamp: new Date().toJSON(),
         };
     }
 

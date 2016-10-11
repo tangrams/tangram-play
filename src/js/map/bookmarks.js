@@ -26,7 +26,7 @@ export function getLocationBookmarks() {
             lat,   // Number - latitude
             lng,   // Number - longitude
             zoom,  // Number - zoom level
-            _date, // String - date string
+            timestamp, // String - date string
         }
  * @returns {Promise} - resolved value is current bookmarks content after save
  */
@@ -38,7 +38,7 @@ export function saveLocationBookmark(newBookmark) {
             // In case we try to add a bookmark that already exists, we
             // dedupe this array by performing a equality comparison between
             // the properities `label`, `lat`, `lng` and `zoom` of each object.
-            // (Don't compare by unique id like `_date` which defeats the purpose)
+            // (Don't compare by unique id like `timestamp` which defeats the purpose)
             function eqWithCustomizer(objectValue, otherValue) {
                 return (objectValue.label === otherValue.label &&
                     objectValue.lat === otherValue.lat &&
@@ -68,7 +68,7 @@ export function deleteLocationBookmark(uid) {
     return getLocationBookmarks()
         .then((bookmarks) => {
             // Reject the bookmark with this given uid
-            const updatedBookmarks = reject(bookmarks, { _date: uid });
+            const updatedBookmarks = reject(bookmarks, { timestamp: uid });
 
             return localforage.setItem(STORAGE_BOOKMARKS_KEY, updatedBookmarks);
         });
