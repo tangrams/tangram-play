@@ -30,7 +30,7 @@ button {
     margin: 0;
     font-size: 0.9em;
     font-weight: 200;
-    -webkit-font-smoothing: auto;
+    -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: auto;
   }
 }

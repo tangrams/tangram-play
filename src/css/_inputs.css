@@ -19,7 +19,7 @@
 
   /* Much dislike Black Tie's pick of font smoothing */
   .btm {
-    -webkit-font-smoothing: auto;
+    -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: auto;
   }
 

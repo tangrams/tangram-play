@@ -27,6 +27,9 @@ body,
 html {
   font-family: var(--font-family);
   font-size: var(--root-font-size);
+
+  /* fix Safari font weight being too light sometimes */
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 body {
