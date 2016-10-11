@@ -180,7 +180,9 @@ export default class SaveGistModal extends React.Component {
      */
     handleSaveError(error) {
         // Close the modal
-        this.component.unmount();
+        if (this.component) {
+            this.component.unmount();
+        }
 
         const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 

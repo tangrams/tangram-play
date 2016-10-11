@@ -102,22 +102,10 @@
 .save-to-cloud-success-modal {
   /* Overrides for this modal.
      TODO: Consider refactoring modal so we don't need any of this */
-  .modal-text {
-    display: none;
-  }
-
-  .modal-content {
-    margin-top: 0;
-  }
-
   /* Inputs */
   .saved-scene-copy-btn {
     margin-left: 2px;
-    width: 44px;
-
-    &:focus {
-      box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
-    }
+    width: 40px;
   }
 }
 

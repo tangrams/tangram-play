@@ -84,11 +84,11 @@ export default class SaveToCloudSuccessModal extends React.Component {
                         />
                         <OverlayTrigger
                             rootClose
-                            placement="right"
+                            placement="bottom"
                             overlay={<Tooltip id="tooltip">Copy to clipboard</Tooltip>}
                         >
                             <Button
-                                className="saved-scene-copy-btn"
+                                className="saved-scene-copy-btn button-icon"
                                 data-clipboard-target="#saved-scene-url"
                                 ref={(ref) => { this.clipboardButton = ref; }}
                             >
@@ -97,11 +97,11 @@ export default class SaveToCloudSuccessModal extends React.Component {
                         </OverlayTrigger>
                         <OverlayTrigger
                             rootClose
-                            placement="right"
+                            placement="bottom"
                             overlay={<Tooltip id="tooltip">View in new tab</Tooltip>}
                         >
                             <Button
-                                className="saved-scene-copy-btn"
+                                className="saved-scene-copy-btn button-icon"
                                 onClick={this.onClickViewUrl}
                             >
                                 <Icon type="bt-external-link" />

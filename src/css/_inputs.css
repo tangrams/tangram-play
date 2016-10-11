@@ -1,7 +1,6 @@
 /* Inputs */
 
-.map-toolbar,
-.input-bar {
+.map-toolbar {
   ::-webkit-input-placeholder {
     color: #909195;
   }
