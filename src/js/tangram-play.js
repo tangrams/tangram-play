@@ -271,6 +271,8 @@ export function initTangramPlay() {
             if (window.isEmbedded === undefined) {
                 // Add widgets marks and errors manager.
                 initWidgetMarks();
+
+                // This for sure depends on Tangram
                 initErrorsManager();
 
                 initSuggestions();

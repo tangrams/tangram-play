@@ -1,6 +1,5 @@
 import { editor, getNodesForAddress } from './editor';
 import { tangramLayer } from '../map/map';
-import EventEmitter from '../components/event-emitter';
 
 // Redux
 import store from '../store';
@@ -186,6 +185,9 @@ function addWarning(errorObj) {
     }
 }
 
+/**
+ * Depends on CodeMirror editor and Tangram layer being present.
+ */
 export function initErrorsManager() {
     editor.on('changes', (cm, changesObjs) => {
         clearAllErrors();
@@ -193,14 +195,12 @@ export function initErrorsManager() {
 
     // Subscribe to error events from Tangram
     // See documentation: https://mapzen.com/documentation/tangram/Javascript-API/#error-and-warning
-    EventEmitter.subscribe('tangram:sceneinit', () => {
-        tangramLayer.scene.subscribe({
-            error: (event) => {
-                addError(event);
-            },
-            warning: (event) => {
-                addWarning(event);
-            },
-        });
+    tangramLayer.scene.subscribe({
+        error: (event) => {
+            addError(event);
+        },
+        warning: (event) => {
+            addWarning(event);
+        },
     });
 }

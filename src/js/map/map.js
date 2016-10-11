@@ -25,11 +25,16 @@ export let tangramScene = null;
  * Initializes Tangram
  * Tangram must be initialized with a scene file. Only initialize Tangram when
  * Tangram Play knows what scene to load, not before. See loadScene().
+ *
+ * @param {string} pathToSceneFile - url of scene file to load. Can be a BlobURL.
+ * @param {string} sceneBasePath - scene base path, if different from a base path
+ *          parsed from `pathToSceneFile`. Requires Tangram v0.10.5+.
  */
-function initTangram(pathToSceneFile) {
+function initTangram(pathToSceneFile, sceneBasePath) {
     // Add Tangram Layer
     tangramLayer = Tangram.leafletLayer({
         scene: pathToSceneFile,
+        sceneBasePath,
         events: {
             hover: handleInspectionHoverEvent,
             click: handleInspectionClickEvent,
@@ -70,7 +75,7 @@ export function loadScene(pathToSceneFile, { reset = false, basePath = null } = 
     // know what scene file to use. So only initialize Tangram when Tangram Play
     // knows what scene to load, not before.
     if (!tangramLayer || tangramLayer.getContainer() === null) {
-        return initTangram(pathToSceneFile);
+        return initTangram(pathToSceneFile, basePath);
     }
 
     // If `reset` is `false`, we are updating content from an already open scene.
