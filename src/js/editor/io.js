@@ -2,11 +2,9 @@
  * Handles input/output from user's file system and various other related tasks.
  */
 import noop from 'lodash';
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { saveAs } from 'file-saver';
 
-import ConfirmDialogModal from '../modals/ConfirmDialogModal';
+import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { showErrorModal } from '../modals/ErrorModal';
 import { load } from '../tangram-play';
 import { editor, getEditorContent } from './editor';
@@ -19,13 +17,7 @@ export function checkSaveStateThen(callback = noop) {
     if (editor.doc.isClean()) {
         callback();
     } else {
-        ReactDOM.render(
-            <ConfirmDialogModal
-                message="Your scene has not been saved. Continue?"
-                confirmCallback={callback}
-            />,
-            document.getElementById('modal-container')
-        );
+        showConfirmDialogModal('Your scene has not been saved. Continue?', callback);
     }
 }
 

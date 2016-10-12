@@ -83,3 +83,34 @@ ConfirmDialogModal.defaultProps = {
     cancelCallback: noop,
     focusConfirm: true,
 };
+
+// For cached reference to element
+let modalContainerEl;
+
+/**
+ * A convenience function for displaying the ConfirmDialogModal. Right now this is
+ * rendered into `modal-container` on each request. TODO: is there a better
+ * way to do this?
+ *
+ * @param {string} message - the message to display in the modal
+ * @param {Function} confirmCallback - callback function to execute when the
+ *          user selects the "Confirm" button. This is passed in as
+ *          ConfirmDialogModal's `confirmCallback` prop.
+ * @param {Function} cancelCallback - callback function to execute when the
+ *          modal is canceled. This is passed in as ConfirmDialogModal's
+ *          `cancelCallback` prop.
+ */
+export function showConfirmDialogModal(message, confirmCallback, cancelCallback) {
+    if (!modalContainerEl || !modalContainerEl.nodeName) {
+        modalContainerEl = document.getElementById('modal-container');
+    }
+
+    ReactDOM.render(
+        <ConfirmDialogModal
+            message={message}
+            confirmCallback={confirmCallback}
+            cancelCallback={cancelCallback}
+        />,
+        modalContainerEl
+    );
+}

@@ -14,7 +14,6 @@ import EventEmitter from './event-emitter';
 
 import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
-import ConfirmDialogModal from '../modals/ConfirmDialogModal';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
 import SaveGistModal from '../modals/SaveGistModal'; // LEGACY.
@@ -22,6 +21,7 @@ import SaveToCloudModal from '../modals/SaveToCloudModal';
 import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
+import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
@@ -78,14 +78,8 @@ function clickSaveToCloud() {
             if (data.id) {
                 showSaveToCloudModal();
             } else {
-                ReactDOM.render(
-                    <ConfirmDialogModal
-                        message="You are not signed in! Please sign in now."
-                        confirmCallback={openSignInWindow}
-                        cancelCallback={unsubscribeSaveToCloud}
-                    />,
-                    document.getElementById('modal-container')
-                );
+                const message = 'You are not signed in! Please sign in now.';
+                showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
                 EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
             }
         });
@@ -109,14 +103,8 @@ function clickOpenFromCloud() {
             if (data.id) {
                 showOpenFromCloudModal();
             } else {
-                ReactDOM.render(
-                    <ConfirmDialogModal
-                        message="You are not signed in! Please sign in now."
-                        confirmCallback={openSignInWindow}
-                        cancelCallback={unsubscribeOpenFromCloud}
-                    />,
-                    document.getElementById('modal-container')
-                );
+                const message = 'You are not signed in! Please sign in now.';
+                showConfirmDialogModal(message, openSignInWindow, unsubscribeOpenFromCloud);
                 EventEmitter.subscribe('mapzen:sign_in', clickOpenFromCloud);
             }
         });

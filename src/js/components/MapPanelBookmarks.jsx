@@ -1,11 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Icon from './Icon';
-import ConfirmDialogModal from '../modals/ConfirmDialogModal';
+import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 
 import { getLocationBookmarks, clearLocationBookmarks, deleteLocationBookmark } from '../map/bookmarks';
 import { map } from '../map/map';
@@ -117,13 +116,8 @@ export default class MapPanelBookmarks extends React.Component {
      * Delete all bookmarks
      */
     onClickDeleteBookmarks() {
-        ReactDOM.render(
-            <ConfirmDialogModal
-                message="Are you sure you want to clear your bookmarks? This cannot be undone."
-                confirmCallback={this.onClickConfirmClearAllBookmarks}
-            />,
-            document.getElementById('modal-container')
-        );
+        const message = 'Are you sure you want to clear your bookmarks? This cannot be undone.';
+        showConfirmDialogModal(message, this.onClickConfirmClearAllBookmarks);
     }
 
     /**
