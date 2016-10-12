@@ -4,7 +4,7 @@ import { clone } from 'lodash';
 import { editor } from '../../editor/editor';
 import Vec2Picker from './Vec2Picker';
 import NumberPicker from './NumberPicker';
-import ColorBookmark from '../widgets/color/ColorBookmark';
+import ColorBookmark from '../pickers/color/ColorBookmark';
 
 /**
  * Find whether the current CodeMirror cursor and a given click event match up in the

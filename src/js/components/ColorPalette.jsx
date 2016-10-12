@@ -1,9 +1,9 @@
 import React from 'react';
 import FloatingPanel from './FloatingPanel';
-import ColorPicker from './widgets/color/ColorPicker';
+import ColorPicker from './pickers/color/ColorPicker';
 
 import EventEmitter from './event-emitter';
-import Color from './widgets/color/color';
+import Color from './pickers/color/color';
 
 /**
  * Represents the color palette will all current colors in the Tangram yaml

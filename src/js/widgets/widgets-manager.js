@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ColorBookmark from '../components/widgets/color/ColorBookmark';
+import ColorBookmark from '../components/pickers/color/ColorBookmark';
 import WidgetDropdown from '../components/widgets/WidgetDropdown';
-// import VectorPicker from '../components/widgets/vector/VectorPicker';
+// import VectorPicker from '../components/pickers/vector/VectorPicker';
 import WidgetToggle from '../components/widgets/WidgetToggle';
 import EventEmitter from '../components/event-emitter';
 import { editor } from '../editor/editor';
