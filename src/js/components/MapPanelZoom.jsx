@@ -39,18 +39,34 @@ export default class MapPanelZoom extends React.Component {
     /** Zoom functionality **/
 
     /**
-     * Zoom into the map when user click ZoomIn button
+     * Zoom into the map when user clicks ZoomIn button
      */
-    onClickZoomIn() {
-        map.zoomIn(1, { animate: true });
+    onClickZoomIn(event) {
+        // Not a documented feature, but shift-clicking will zoom in and
+        // round that zoom to the nearest integer.
+        if (event.shiftKey) {
+            const currentZoom = map.getZoom();
+            map.setZoom(Math.floor(currentZoom + 1), { animate: true });
+        } else {
+            map.zoomIn(1, { animate: true });
+        }
+
         this.setState({ zoom: map.getZoom() });
     }
 
     /**
-     * Zoom into the map when user click ZoomOut button
+     * Zoom into the map when user clicks ZoomOut button
      */
-    onClickZoomOut() {
-        map.zoomOut(1, { animate: true });
+    onClickZoomOut(event) {
+        // Not a documented feature, but shift-clicking will zoom out and
+        // round that zoom to the nearest integer.
+        if (event.shiftKey) {
+            const currentZoom = map.getZoom();
+            map.setZoom(Math.ceil(currentZoom - 1), { animate: true });
+        } else {
+            map.zoomOut(1, { animate: true });
+        }
+
         this.setState({ zoom: map.getZoom() });
     }
 

@@ -76,7 +76,7 @@ export default class LeafletHash {
         const zoom = map.getZoom();
         const precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
         const hashString = [
-            zoom.toFixed(4),
+            zoom.toFixed(precision),
             center.lat.toFixed(precision),
             center.lng.toFixed(precision),
         ].join('/');
