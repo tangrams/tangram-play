@@ -6,21 +6,25 @@ import LoadingSpinner from './LoadingSpinner';
 
 import { load } from '../tangram-play';
 
+let lastAttemptedUrlInput;
+
 export default class OpenUrlModal extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             thinking: false,
-            validInput: false,
+            hasInput: Boolean(lastAttemptedUrlInput),
         };
 
         this.onClickConfirm = this.onClickConfirm.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
-        this.onKeyUpInput = this.onKeyUpInput.bind(this);
+        this.onKeyPressInput = this.onKeyPressInput.bind(this);
+        this.unmountSelf = this.unmountSelf.bind(this);
     }
 
     componentDidMount() {
+        this.input.select();
         this.input.focus();
     }
 
@@ -30,29 +34,36 @@ export default class OpenUrlModal extends React.Component {
             thinking: true,
         });
 
+        // Cache this
+        lastAttemptedUrlInput = this.input.value;
+
         const url = this.input.value.trim();
         load({ url })
-            .then(() => {
-                this.component.unmount();
-            });
+            .then(this.unmountSelf);
     }
 
     onClickCancel(event) {
-        this.component.unmount();
+        this.unmountSelf();
     }
 
-    onKeyUpInput(event) {
+    onKeyPressInput(event) {
         // We no longer check for valid URL signatures.
         // It is easier to attempt to fetch an input URL and see what happens.
         if (this.input.value) {
-            this.setState({ validInput: true });
+            this.setState({ hasInput: true });
 
             const key = event.keyCode || event.which;
             if (key === 13) {
                 this.onClickConfirm();
             }
         } else {
-            this.setState({ validInput: false });
+            this.setState({ hasInput: false });
+        }
+    }
+
+    unmountSelf() {
+        if (this.component) {
+            this.component.unmount();
         }
     }
 
@@ -73,7 +84,8 @@ export default class OpenUrlModal extends React.Component {
                         placeholder="https://"
                         spellCheck="false"
                         ref={(ref) => { this.input = ref; }}
-                        onKeyUp={this.onKeyUpInput}
+                        onKeyPress={this.onKeyPressInput}
+                        defaultValue={lastAttemptedUrlInput}
                     />
                 </div>
 
@@ -88,7 +100,7 @@ export default class OpenUrlModal extends React.Component {
                     </Button>
                     <Button
                         className="button-confirm"
-                        disabled={!this.state.validInput || this.state.thinking}
+                        disabled={!this.state.hasInput || this.state.thinking}
                         onClick={this.onClickConfirm}
                     >
                         <Icon type="bt-check" /> Open
