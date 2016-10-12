@@ -27,6 +27,8 @@ export default class ErrorModal extends React.Component {
 
     onClickClose() {
         this.component.unmount();
+        // After unmounting, `componentWillUnmount()` is called and the
+        // `confirmFunction()` will be executed.
     }
 
     render() {
@@ -67,3 +69,24 @@ ErrorModal.propTypes = {
 ErrorModal.defaultProps = {
     confirmFunction: noop,
 };
+
+// For cached reference to element
+let modalContainerEl;
+
+/**
+ * A convenience function for displaying the ErrorModal. Right now this is
+ * rendered into `modal-container` on each request. TODO: is there a better
+ * way to do this?
+ *
+ * @param {string} message - the message to display in the modal
+ * @param {Function} callback - callback function to execute when the error
+ *          modal is unmounted. This is passed in to ErrorModal's props as
+ *          `confirmFunction`
+ */
+export function showErrorModal(message, callback = noop) {
+    if (!modalContainerEl || !modalContainerEl.nodeName) {
+        modalContainerEl = document.getElementById('modal-container');
+    }
+
+    ReactDOM.render(<ErrorModal error={message} confirmFunction={callback} />, modalContainerEl);
+}

@@ -1,6 +1,5 @@
 import L from 'leaflet';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import IconButton from './IconButton';
@@ -9,7 +8,7 @@ import MapPanelLocationBar from './MapPanelLocationBar';
 import MapPanelBookmarks from './MapPanelBookmarks';
 
 import { map } from '../map/map';
-import ErrorModal from '../modals/ErrorModal';
+import { showErrorModal } from '../modals/ErrorModal';
 
 // Redux
 import store from '../store';
@@ -20,13 +19,6 @@ import { SET_SETTINGS } from '../store/actions';
  * map.
  */
 export default class MapPanel extends React.Component {
-    /**
-     * Used to setup the state of the component. Regular ES6 classes do not
-     * automatically bind 'this' to the instance, therefore this is the best
-     * place to bind event handlers
-     *
-     * @param props - parameters passed from the parent
-     */
     constructor(props) {
         super(props);
 
@@ -147,7 +139,7 @@ export default class MapPanel extends React.Component {
             }
         }
 
-        ReactDOM.render(<ErrorModal error={message} />, document.getElementById('modal-container'));
+        showErrorModal(message);
     }
 
     /**
@@ -185,10 +177,6 @@ export default class MapPanel extends React.Component {
         });
     }
 
-    /**
-     * Official React lifecycle method
-     * Called every time state or props are changed
-     */
     render() {
         return (
             <div className="map-panel">

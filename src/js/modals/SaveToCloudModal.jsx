@@ -5,8 +5,8 @@ import Modal from './Modal';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
 
-import ErrorModal from './ErrorModal';
 import SaveToCloudSuccessModal from './SaveToCloudSuccessModal';
+import { showErrorModal } from './ErrorModal';
 import { saveToMapzenUserAccount } from '../storage/mapzen';
 import { editor } from '../editor/editor';
 import { replaceHistoryState } from '../tools/url-state';
@@ -150,11 +150,7 @@ export default class SaveToCloudModal extends React.Component {
 
         const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 
-        // Show error modal
-        ReactDOM.render(
-            <ErrorModal error={errorMessage} />,
-            document.getElementById('modal-container')
-        );
+        showErrorModal(errorMessage);
     }
 
     render() {

@@ -1,5 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import localforage from 'localforage';
 
 // Core elements
@@ -12,7 +10,7 @@ import { initWidgetMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
 import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
-import ErrorModal from './modals/ErrorModal';
+import { showErrorModal } from './modals/ErrorModal';
 
 // Import Utils
 import { prependProtocolToUrl, getFilenameFromUrl } from './tools/helpers';
@@ -80,10 +78,7 @@ function doLoadProcess(scene) {
 }
 
 function onLoadError(error) {
-    ReactDOM.render(
-        <ErrorModal error={error.message} />,
-        document.getElementById('modal-container')
-    );
+    showErrorModal(error.message);
     hideSceneLoadingIndicator();
 
     // TODO: editor should not be attached to this

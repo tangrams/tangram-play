@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
@@ -7,9 +6,9 @@ import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
-import ErrorModal from '../modals/ErrorModal';
 
 import EventEmitter from './event-emitter';
+import { showErrorModal } from '../modals/ErrorModal';
 import { requestUserSignInState, requestUserSignOut } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
 import { checkSaveStateThen } from '../editor/io';
@@ -47,10 +46,7 @@ class SignInButton extends React.Component {
         checkSaveStateThen(() => {
             requestUserSignOut()
                 .catch(error => {
-                    ReactDOM.render(
-                        <ErrorModal error="Unable to sign you out." />,
-                        document.getElementById('modal-container')
-                    );
+                    showErrorModal('Unable to sign you out.');
                 });
         });
     }

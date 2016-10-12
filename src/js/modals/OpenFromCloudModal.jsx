@@ -1,11 +1,10 @@
 import { reverse, sortBy } from 'lodash';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
 
 import Modal from './Modal';
 import Icon from '../components/Icon';
-import ErrorModal from './ErrorModal';
+import { showErrorModal } from './ErrorModal';
 import { fetchSceneList } from '../storage/mapzen';
 import { load } from '../tangram-play';
 
@@ -58,11 +57,7 @@ export default class OpenFromCloudModal extends React.Component {
         // Close the modal
         this.onClickCancel();
 
-        // Show error modal
-        ReactDOM.render(
-            <ErrorModal error={`Could not load the scene! ${error.message}`} />,
-            document.getElementById('modal-container')
-        );
+        showErrorModal(`Could not load the scene! ${error.message}`);
     }
 
     render() {

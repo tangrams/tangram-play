@@ -1,12 +1,11 @@
 import { reverse, reject } from 'lodash';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
 import localforage from 'localforage';
 
 import Modal from './Modal';
 import Icon from '../components/Icon';
-import ErrorModal from './ErrorModal';
+import { showErrorModal } from './ErrorModal';
 import { load } from '../tangram-play';
 import { getSceneURLFromGistAPI } from '../tools/gist-url';
 
@@ -112,11 +111,7 @@ export default class OpenGistModal extends React.Component {
             message = `The Gist server gave us an error code of ${error.message}`;
         }
 
-        // Show error modal
-        ReactDOM.render(
-            <ErrorModal error={`Could not load the Gist! ${message}`} />,
-            document.getElementById('modal-container')
-        );
+        showErrorModal(`Could not load the Gist! ${message}`);
 
         if (error.message === '404') {
             removeNonexistentGistFromLocalStorage(value);

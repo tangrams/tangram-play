@@ -6,8 +6,8 @@ import localforage from 'localforage';
 import Modal from './Modal';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
-import ErrorModal from './ErrorModal';
 import SaveGistSuccessModal from './SaveGistSuccessModal';
+import { showErrorModal } from './ErrorModal';
 import { saveToGist } from '../storage/gist';
 import { editor } from '../editor/editor';
 import { replaceHistoryState } from '../tools/url-state';
@@ -186,11 +186,7 @@ export default class SaveGistModal extends React.Component {
 
         const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 
-        // Show error modal
-        ReactDOM.render(
-            <ErrorModal error={errorMessage} />,
-            document.getElementById('modal-container')
-        );
+        showErrorModal(errorMessage);
     }
 
     render() {

@@ -6,8 +6,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { saveAs } from 'file-saver';
 
-import ErrorModal from '../modals/ErrorModal';
 import ConfirmDialogModal from '../modals/ConfirmDialogModal';
+import { showErrorModal } from '../modals/ErrorModal';
 import { load } from '../tangram-play';
 import { editor, getEditorContent } from './editor';
 import store from '../store';
@@ -79,11 +79,7 @@ export function handleFileList(fileList) {
 
     // Assume one file or first file is main file
     loadContentFromFile(fileList[0]).catch(error => {
-        // Show error modal
-        ReactDOM.render(
-            <ErrorModal error={error.message || error} />,
-            document.getElementById('modal-container')
-        );
+        showErrorModal(error.message || error);
     });
 }
 
