@@ -10,7 +10,7 @@ var browserSync = require('browser-sync');
 
 var paths = {
   styles: 'src/css/**/*.css',
-  scripts: 'src/js/**/*.{js,jsx}',
+  scripts: 'src/js/**/*.{js,jsx,json}',
   app: 'index.html'
 };
 
