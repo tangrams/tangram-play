@@ -51,6 +51,11 @@
         "name": "Walkabout",
         "thumb": "./data/scenes/thumbnails/walkabout.png",
         "url": "https://mapzen.com/carto/walkabout-style/walkabout-style.yaml"
+      },
+      {
+        "name": "Tron",
+        "thumb": "./data/scenes/thumbnails/tron2.png",
+        "url": "https://tangrams.github.io/tron-style/tron-style.yaml"
       }
     ]
   },
