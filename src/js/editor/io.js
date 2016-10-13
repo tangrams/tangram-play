@@ -30,6 +30,12 @@ function loadContentFromFile(file) {
         // a Blob object provided by a browser's file input control.
         if (!(file instanceof Blob)) {
             reject('Unable to load your file: it is not a valid file type.');
+            return;
+        }
+
+        if (file.type.startsWith('application/zip')) {
+            reject('Tangram Play does not support zipped scene bundles right now.');
+            return;
         }
 
         const reader = new FileReader();

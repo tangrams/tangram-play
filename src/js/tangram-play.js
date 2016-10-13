@@ -149,9 +149,24 @@ function makeSceneStateObjectFromUrl(url) {
                 }
             }
 
+            // Check content-type header to see how to handle it
+            const contentType = response.headers.get('Content-Type');
+
+            // If it is a binary file of type application/zip, return
+            // an array buffer, which is what JSZip reads
+            if (contentType.startsWith('application/zip')) {
+                return response.arrayBuffer();
+            }
+
+            // Otherwise, assume a text file, e.g. "text/yaml" or "text/plain",
+            // which are valid content-types for text-based YAML scenes.
             return response.text();
         })
         .then(contents => {
+            if (contents instanceof ArrayBuffer) {
+                throw new Error('Tangram Play does not support zipped scene bundles right now.');
+            }
+
             sceneState.files[0].contents = contents;
             return sceneState;
         });
