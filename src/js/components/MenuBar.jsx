@@ -22,7 +22,6 @@ import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
-import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
@@ -112,10 +111,6 @@ function clickOpenFromCloud() {
                 EventEmitter.subscribe('mapzen:sign_in', clickOpenFromCloud);
             }
         });
-}
-
-function clickSaveCamera() {
-    takeScreenshot();
 }
 
 function clickAbout() {
@@ -274,9 +269,6 @@ class MenuBar extends React.Component {
                                 })()}
                                 <MenuItem onClick={clickSaveGist}>
                                     <Icon type="bt-code" />Save to Gist
-                                </MenuItem>
-                                <MenuItem onClick={clickSaveCamera}>
-                                    <Icon type="bt-camera" />Take a screenshot
                                 </MenuItem>
                             </NavDropdown>
                         </OverlayTrigger>

@@ -34,10 +34,3 @@
     -webkit-text-stroke-color: white;
   }
 }
-
-.camera-label {
-  display: none;
-  color: var(--ui-component-text-color);
-  text-align: center;
-  margin: 10px;
-}

@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import IconButton from './IconButton';
 import { takeScreenshot } from '../map/screenshot';
+import { startVideoCapture } from '../map/video';
 
 // Redux
 import store from '../store';
@@ -23,6 +24,7 @@ class Camera extends React.Component {
     this.setState({
       recording: !this.state.recording,
     });
+    startVideoCapture();
   }
 
   onClickClose() {
@@ -34,9 +36,27 @@ class Camera extends React.Component {
 
   render() {
     if (this.props.isVisible) {
-      let recordIcon = 'bt-circle';
-      if (this.state.recording) {
-        recordIcon = 'bt-pause';
+      // Do not display the video button on environments that cannot support it
+      // http://caniuse.com/#search=MediaRecorder
+      // Currently: only Chrome, Firefox, Safari
+      let recordVideoButton;
+      if (typeof window.MediaRecorder === 'function') {
+        let recordIcon = 'bt-circle';
+        let recordTooltip = 'Capture video clip';
+
+        if (this.state.recording) {
+          recordIcon = 'bt-pause';
+          recordTooltip = 'Stop capturing video and save';
+        }
+
+        recordVideoButton = (
+          <IconButton
+            className="camera-record-button"
+            onClick={this.onClickRecord}
+            icon={recordIcon}
+            tooltip={recordTooltip}
+          />
+        );
       }
 
       return (
@@ -49,15 +69,7 @@ class Camera extends React.Component {
               tooltip="Take a screenshot"
               disabled={this.state.recording === true}
             />
-            <IconButton
-              className="camera-record-button"
-              onClick={this.onClickRecord}
-              icon={recordIcon}
-              tooltip="Record animation"
-            />
-
-            <div className="camera-label">Camera</div>
-
+            { recordVideoButton }
             <IconButton
               className="camera-close-button"
               onClick={this.onClickClose}
