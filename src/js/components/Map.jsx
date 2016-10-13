@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import MapPanel from './MapPanel';
+import Camera from './Camera';
 import MapLoading from '../map/MapLoading';
 import { initMap, loadScene, destroyScene } from '../map/map';
 
@@ -54,6 +55,7 @@ class Map extends React.Component {
                     return null;
                 })()}
                 <div className="map-view" id="map" />
+                <Camera />
                 <MapLoading />
                 {(() => {
                     if (this.props.panel) {

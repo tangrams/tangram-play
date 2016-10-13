@@ -1,0 +1,43 @@
+.camera-component {
+  position: absolute;
+  width: 100%;
+  bottom: 3em;
+  background: transparent;
+  pointer-events: none;
+  user-select: none;
+  z-index: var(--z04-camera);
+  text-align: center;
+}
+
+.camera-controls {
+  display: inline-block;
+  padding: 1.5em;
+  width: auto;
+}
+
+.camera-close-button,
+.camera-screenshot-button,
+.camera-record-button {
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+}
+
+.camera-record-button {
+  width: 40px;
+  height: 40px;
+
+  .btm {
+    font-weight: 800;
+    color: var(--ui-error-color); /* Not an error, but use the same red */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: white;
+  }
+}
+
+.camera-label {
+  display: none;
+  color: var(--ui-component-text-color);
+  text-align: center;
+  margin: 10px;
+}
