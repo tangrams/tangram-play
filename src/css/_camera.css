@@ -58,15 +58,19 @@
 }
 
 .camera-animate-enter {
-  animation-duration: 120ms;
-  animation-fill-mode: both;
-  animation-name: fade-in, slide-in-up;
+  .camera-controls {
+    animation-duration: 120ms;
+    animation-fill-mode: both;
+    animation-name: fade-in, slide-in-up;
+  }
 }
 
 .camera-animate-leave {
-  animation-duration: 180ms;
-  animation-fill-mode: both;
-  animation-name: fade-out, slide-out-down;
+  .camera-controls {
+    animation-duration: 180ms;
+    animation-fill-mode: both;
+    animation-name: fade-out, slide-out-down;
+  }
 }
 
 @keyframes fade-in {
