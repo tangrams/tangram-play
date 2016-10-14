@@ -51,10 +51,11 @@ const IMAGE_SOURCES = {
     image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/blueprint.png',
     scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/blueprint.yaml',
   },
-  'tron': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.yaml',
-  },
+  // Deprecated for Tron v2 house style
+  // 'tron': {
+  //   image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.png',
+  //   scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.yaml',
+  // },
   'matrix': {
     image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/matrix.png',
     scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/matrix.yaml',

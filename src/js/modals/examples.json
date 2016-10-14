@@ -51,6 +51,11 @@
         "name": "Walkabout",
         "thumb": "./data/scenes/thumbnails/walkabout.png",
         "url": "https://mapzen.com/carto/walkabout-style/walkabout-style.yaml"
+      },
+      {
+        "name": "Tron",
+        "thumb": "./data/scenes/thumbnails/tron.png",
+        "url": "https://tangrams.github.io/tron-style/tron-style.yaml"
       }
     ]
   },
@@ -66,11 +71,6 @@
         "name": "Blueprint",
         "thumb": "./data/scenes/thumbnails/blueprint.png",
         "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/blueprint.yaml"
-      },
-      {
-        "name": "TRON",
-        "thumb": "./data/scenes/thumbnails/tron.png",
-        "url": "https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.yaml"
       },
       {
         "name": "Matrix",
