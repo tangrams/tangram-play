@@ -35,7 +35,7 @@ export default function IconButton(props) {
             delayShow={200}
         >
             {/* <button> inherits all other props, such as event handlers,
-                e.g. `onClick` etc., via `...rest` */}
+                e.g. `onClick` etc., or state, e.g. `disabled`, via `...rest` */}
             <button className={classes} aria-describedby={tooltipId} {...rest}>
                 <Icon type={icon} active={active} />
             </button>

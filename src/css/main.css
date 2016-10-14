@@ -41,6 +41,7 @@
 
 /* Map UI */
 @import '_ui';
+@import '_camera';
 @import '_leaflet-overrides';
 @import '_map-loading';
 @import '_map-inspection';
@@ -130,6 +131,7 @@
   --z04-map-toolbar: var(--z04);
   --z04-map-inspection: var(--z04);
   --z04-map-loading: var(--z04);
+  --z04-camera: var(--z04);
 
   /* 05: Above all map UI, below all other UI */
   --z05-map-not-loaded: var(--z05);

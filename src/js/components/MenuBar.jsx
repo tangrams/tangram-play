@@ -22,11 +22,14 @@ import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
-import { takeScreenshot } from '../map/screenshot';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
+
+// Redux
+import store from '../store';
+import { SET_APP_STATE } from '../store/actions';
 
 function clickNew() {
     newScene();
@@ -110,10 +113,6 @@ function clickOpenFromCloud() {
         });
 }
 
-function clickSaveCamera() {
-    takeScreenshot();
-}
-
 function clickAbout() {
     ReactDOM.render(<AboutModal />, document.getElementById('modal-container'));
 }
@@ -133,7 +132,9 @@ class MenuBar extends React.Component {
             inspectActive: false, // Represents whether inspect mode is on / off
             legacyGistMenu: false,
         };
-        this.clickInspect = this.clickInspect.bind(this);
+
+        this.onClickCamera = this.onClickCamera.bind(this);
+        this.onClickInspect = this.onClickInspect.bind(this);
     }
 
     // Determine whether some menu items should display
@@ -151,7 +152,15 @@ class MenuBar extends React.Component {
             });
     }
 
-    clickInspect() {
+    onClickCamera() {
+        // Toggle camera state
+        store.dispatch({
+            type: SET_APP_STATE,
+            cameraToolsVisible: !this.props.cameraToolsVisible,
+        });
+    }
+
+    onClickInspect() {
         const isInspectActive = this.state.inspectActive;
         if (isInspectActive) {
             this.setState({ inspectActive: false });
@@ -261,10 +270,23 @@ class MenuBar extends React.Component {
                                 <MenuItem onClick={clickSaveGist}>
                                     <Icon type="bt-code" />Save to Gist
                                 </MenuItem>
-                                <MenuItem onClick={clickSaveCamera}>
-                                    <Icon type="bt-camera" />Take a screenshot
-                                </MenuItem>
                             </NavDropdown>
+                        </OverlayTrigger>
+
+                        {/* Introspection button */}
+                        <OverlayTrigger
+                            rootClose
+                            placement="bottom"
+                            overlay={<Tooltip id="tooltip">Show camera tools</Tooltip>}
+                            delayShow={200}
+                        >
+                            <NavItem
+                                eventKey="camera"
+                                onClick={this.onClickCamera}
+                                active={this.props.cameraToolsVisible}
+                            >
+                                <Icon type="bt-camera" />Camera
+                            </NavItem>
                         </OverlayTrigger>
                     </Nav>
 
@@ -278,8 +300,8 @@ class MenuBar extends React.Component {
                             delayShow={200}
                         >
                             <NavItem
-                                eventKey="new"
-                                onClick={this.clickInspect}
+                                eventKey="inspect"
+                                onClick={this.onClickInspect}
                                 active={this.state.inspectActive}
                             >
                                 <Icon type="bt-magic" />Inspect
@@ -326,15 +348,18 @@ class MenuBar extends React.Component {
 
 MenuBar.propTypes = {
     mapzenAccount: React.PropTypes.bool,
+    cameraToolsVisible: React.PropTypes.bool,
 };
 
 MenuBar.defaultProps = {
     mapzenAccount: false,
+    cameraToolsVisible: false,
 };
 
 function mapStateToProps(state) {
     return {
         mapzenAccount: state.user.admin || false,
+        cameraToolsVisible: state.app.cameraToolsVisible,
     };
 }
 

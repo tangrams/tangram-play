@@ -1,0 +1,125 @@
+.camera-component {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  pointer-events: none;
+  user-select: none;
+  z-index: var(--z04-camera);
+  text-align: center;
+  color: var(--ui-component-text-color);
+}
+
+.camera-controls {
+  display: inline-block;
+  padding: 1.25em;
+  width: auto;
+  bottom: 3em;
+  align-self: flex-end;
+}
+
+.camera-close-button,
+.camera-screenshot-button,
+.camera-record-button {
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+}
+
+.camera-record-button {
+  width: 40px;
+  height: 40px;
+
+  .btm {
+    font-weight: 800;
+    color: var(--ui-error-color); /* Not an error, but use the same red */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: white;
+  }
+}
+
+.camera-info {
+  margin-top: 1em;
+  font-size: 0.8em;
+}
+
+/* Animation to indicate that recording is currently happening */
+.camera-is-recording {
+  .camera-record-button {
+    animation-name: pulse;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+}
+
+.camera-animate-enter {
+  .camera-controls {
+    animation-duration: 120ms;
+    animation-fill-mode: both;
+    animation-name: fade-in, slide-in-up;
+  }
+}
+
+.camera-animate-leave {
+  .camera-controls {
+    animation-duration: 180ms;
+    animation-fill-mode: both;
+    animation-name: fade-out, slide-out-down;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes slide-in-up {
+  from { transform: translate3d(0, 80%, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes slide-out-down {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, 80%, 0); }
+}
+
+@keyframes pulse {
+  0% {
+    border-color: var(--ui-highlight-color);
+    box-shadow: 0 0 9px #333;
+  }
+
+  50% {
+    border-color: var(--ui-highlight-color-2);
+    box-shadow: 0 0 12px #ffb515;
+  }
+
+  100% {
+    border-color: var(--ui-highlight-color);
+    box-shadow: 0 0 9px #333;
+  }
+}

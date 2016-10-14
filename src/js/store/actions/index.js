@@ -46,6 +46,9 @@ export const SET_APP_STATE = 'SET_APP_STATE';
 // Add a scene to a list of recently opened scenes.
 export const ADD_RECENT_SCENE = 'ADD_RECENT_SCENE';
 
+// Toggle camera tools
+export const TOGGLE_CAMERA_TOOLS = 'TOGGLE_CAMERA_TOOLS';
+
 /* errors */
 export const ADD_ERROR = 'ADD_ERROR';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
