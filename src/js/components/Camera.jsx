@@ -27,7 +27,7 @@ class Camera extends React.Component {
     // Internally we keep track of "first mount" state so that no animation
     // classes will be applied until after the controls are requested for the
     // first time.
-    if (this.props.isVisible === false && nextProps.isVisible === true) {
+    if (this.props.isVisible !== nextProps.isVisible) {
       this.preventTransition = false;
     }
   }
@@ -51,7 +51,7 @@ class Camera extends React.Component {
     let classNames = 'camera-component';
 
     // Add animation classes depending on state
-    if (this.firstMount === false) {
+    if (this.preventTransition === false) {
         if (this.props.isVisible) {
           classNames += ' camera-animate-enter';
         } else {
