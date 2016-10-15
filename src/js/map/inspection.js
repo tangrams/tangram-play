@@ -42,7 +42,9 @@ class TangramInspectionHeader extends React.Component {
     determineKindValue(properties) {
         // Kind is usually present on properties in Mapzen vector tile service.
         // (For more info: https://mapzen.com/documentation/vector-tiles/layers/)
-        if (properties.kind) {
+        if (properties.kind_detail) {
+            return properties.kind_detail;
+        } else if (properties.kind) {
             return properties.kind;
         } else if (properties.land) {
             // Sometimes there's no kind value but a key-value of "land: 'base'" (are there other values?)
