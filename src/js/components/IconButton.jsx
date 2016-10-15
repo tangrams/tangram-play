@@ -9,7 +9,7 @@ import { uniqueInteger } from '../tools/helpers';
 export default function IconButton(props) {
     // Break off unexpected props from `props`. This prevents it from being sent
     // to the <button> element improperly.
-    const { icon, active, tooltip, tooltipPlacement, className, ...rest } = props;
+    const { icon, active, tooltip, tooltipPlacement, className, buttonRef, ...rest } = props;
 
     // `.btn` is Bootstrap's class
     let classes = 'btn button-icon';
@@ -36,7 +36,7 @@ export default function IconButton(props) {
         >
             {/* <button> inherits all other props, such as event handlers,
                 e.g. `onClick` etc., or state, e.g. `disabled`, via `...rest` */}
-            <button className={classes} aria-describedby={tooltipId} {...rest}>
+            <button className={classes} aria-describedby={tooltipId} ref={buttonRef} {...rest}>
                 <Icon type={icon} active={active} />
             </button>
         </OverlayTrigger>
@@ -49,8 +49,10 @@ IconButton.propTypes = {
     active: React.PropTypes.bool,
     tooltip: React.PropTypes.string,
     tooltipPlacement: React.PropTypes.string,
+    buttonRef: React.PropTypes.func,
 };
 
 IconButton.defaultProps = {
     tooltipPlacement: 'bottom',
+    buttonRef: function noop() {},
 };

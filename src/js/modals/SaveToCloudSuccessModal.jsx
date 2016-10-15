@@ -1,12 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Clipboard from 'clipboard';
 
+import IconButton from '../components/IconButton';
 import Modal from './Modal';
-import Icon from '../components/Icon';
 
 export default class SaveToCloudSuccessModal extends React.Component {
     constructor(props) {
@@ -82,31 +80,19 @@ export default class SaveToCloudSuccessModal extends React.Component {
                             ref={(ref) => { this.viewUrl = ref; }}
                             defaultValue={`https://dev.mapzen.com/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
                         />
-                        <OverlayTrigger
-                            rootClose
-                            placement="bottom"
-                            overlay={<Tooltip id="tooltip">Copy to clipboard</Tooltip>}
-                        >
-                            <Button
-                                className="saved-scene-copy-btn button-icon"
-                                data-clipboard-target="#saved-scene-url"
-                                ref={(ref) => { this.clipboardButton = ref; }}
-                            >
-                                <Icon type="bt-copy" />
-                            </Button>
-                        </OverlayTrigger>
-                        <OverlayTrigger
-                            rootClose
-                            placement="bottom"
-                            overlay={<Tooltip id="tooltip">View in new tab</Tooltip>}
-                        >
-                            <Button
-                                className="saved-scene-copy-btn button-icon"
-                                onClick={this.onClickViewUrl}
-                            >
-                                <Icon type="bt-external-link" />
-                            </Button>
-                        </OverlayTrigger>
+                        <IconButton
+                            icon="bt-copy"
+                            tooltip="Copy to clipboard"
+                            className="saved-scene-copy-btn"
+                            data-clipboard-target="#saved-scene-url"
+                            buttonRef={(ref) => { this.clipboardButton = ref; }}
+                        />
+                        <IconButton
+                            icon="bt-external-link"
+                            tooltip="View in new tab"
+                            className="saved-scene-copy-btn"
+                            onClick={this.onClickViewUrl}
+                        />
                     </div>
                 </div>
 
