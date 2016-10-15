@@ -19,6 +19,10 @@ button {
   padding: 0;
   margin: 0;
 
+  /* Default size. Can be overridden by other classes to fit UI. */
+  width: 30px;
+  height: 30px;
+
   /* Override focus style */
   &:focus {
     border: var(--ui-border);

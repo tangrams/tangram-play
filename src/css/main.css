@@ -11,56 +11,55 @@
 @import 'codemirror/addon/fold/foldgutter.css';
 @import 'codemirror/addon/hint/show-hint.css';
 
-/* CORE */
+/* APPLICATION */
+/* Import in order of general to specific */
+
+/* Layout, generic elements */
 @import '_application';
 @import '_typography';
+@import '_ui';
 @import '_workspace';
+@import '_overlay';
+@import '_shield';
+
+/* UI components */
+@import '_buttons';
+@import '_icon';
+@import '_tooltip';
+@import '_modals';
+@import '_inputs';
+
+/* Core components */
 @import '_editor';
 @import '_divider';
 @import '_map';
 
-/* Application UI */
-@import '_overlay';
-@import '_buttons';
-@import '_icon';
-
-/* Menu */
-@import '_filedrop';
-@import '_tooltip';
-@import '_modals';
-@import '_modals.examples';
-@import '_modals.open-from-cloud';
-@import '_shield';
-@import '_inputs';
-
-/* GLSL Sandbox */
-@import '_sandbox';
-
-/* Errors Manager */
-@import '_errors';
-
-/* Map UI */
-@import '_ui';
-@import '_camera';
+/* Map components */
 @import '_leaflet-overrides';
 @import '_map-loading';
 @import '_map-inspection';
-
-/* React Components */
-@import '_menu-bar';
 @import '_map-panel';
 @import '_map-panel-search-bookmarks';
+@import '_camera';
+
+/* Menus and modals */
+@import '_menu-bar';
+@import '_modals.examples';
+@import '_modals.open-from-cloud';
+
+/* Other features */
 @import '_color-palette';
 @import '_docs-panel';
+@import '_filedrop';
+@import '_errors';
+@import '_sandbox';
+@import '_sign-in-overlay';
+@import '_call-to-action';
 
-/* Bookmarks, Pickers, Widgets */
+/* Bookmarks and pickers */
 @import '_floating-panel';
 @import '_widgets';
 @import '_color';
-
-/* Etc */
-@import '_sign-in-overlay';
-@import '_call-to-action';
 
 /* Embedded Tangram Play */
 @import '_embedded-play';
