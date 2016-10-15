@@ -96,7 +96,6 @@ export default class MapPanel extends React.Component {
         map.setZoom(desiredZoom);
     }
 
-
     /**
      * Handles geolocation error. Reports a user friendly error message
      * if PositionError has provided the reason why it did not work.

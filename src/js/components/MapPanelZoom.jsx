@@ -1,9 +1,13 @@
 import React from 'react';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import IconButton from './IconButton';
-import MapPanelZoomIndicator from './MapPanelZoomIndicator';
 import { map } from '../map/map';
 import EventEmitter from './event-emitter';
+
+function formatZoom(zoom) {
+    const fractionalNumber = Math.floor(zoom * 10) / 10;
+    return Number.parseFloat(fractionalNumber).toFixed(1);
+}
 
 export default class MapPanelZoom extends React.Component {
     /**
@@ -73,7 +77,9 @@ export default class MapPanelZoom extends React.Component {
     render() {
         return (
             <div className="map-panel-zoom-container">
-                <MapPanelZoomIndicator zoom={this.state.zoom} />
+                <div className="map-panel-zoom">
+                    z{formatZoom(this.state.zoom)}
+                </div>
 
                 {/* Zoom buttons */}
                 <ButtonGroup className="buttons-plusminus">
