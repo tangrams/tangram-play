@@ -21,6 +21,10 @@
   width: auto;
   bottom: 3em;
   align-self: flex-end;
+
+  /* Initially not visible */
+  opacity: 0;
+  visibility: hidden;
 }
 
 .camera-close-button,

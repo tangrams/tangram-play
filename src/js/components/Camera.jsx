@@ -13,11 +13,23 @@ class Camera extends React.Component {
   constructor(props) {
     super(props);
 
+    this.preventTransition = true;
     this.state = {
       recording: false,
     };
 
     this.onClickRecord = this.onClickRecord.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // On first mount, `isVisible` is false, but we do not want to animate
+    // the transition, which causes the controls to appear briefly on the screen.
+    // Internally we keep track of "first mount" state so that no animation
+    // classes will be applied until after the controls are requested for the
+    // first time.
+    if (this.props.isVisible === false && nextProps.isVisible === true) {
+      this.preventTransition = false;
+    }
   }
 
   onClickRecord() {
@@ -39,10 +51,12 @@ class Camera extends React.Component {
     let classNames = 'camera-component';
 
     // Add animation classes depending on state
-    if (this.props.isVisible) {
-      classNames += ' camera-animate-enter';
-    } else {
-      classNames += ' camera-animate-leave';
+    if (this.firstMount === false) {
+        if (this.props.isVisible) {
+          classNames += ' camera-animate-enter';
+        } else {
+          classNames += ' camera-animate-leave';
+        }
     }
 
     // Add classes when recording
