@@ -121,8 +121,6 @@ export function initGlslPickers() {
     const wrapper = editor.getWrapperElement();
 
     wrapper.addEventListener('mouseup', (event) => {
-        editor.clearGutter('var-in');
-
         // bail out if we were doing a selection and not a click
         if (editor.somethingSelected()) {
             return;
