@@ -1,4 +1,5 @@
 import { debounce } from 'lodash';
+import CodeMirror from 'codemirror';
 import localforage from 'localforage';
 
 import config from '../config';
@@ -66,21 +67,26 @@ export function getEditorContent() {
  *
  * @public
  * @param {string} content - to display in editor
+ * TODO: remove this if not needed.
  * @param {Boolean} shouldMarkClean - if true, mark contents of editor
  *          as clean. If false, do not mark as clean. Defaults to true.
  */
 export function setEditorContent(content, shouldMarkClean = true) {
-    const doc = editor.getDoc();
-
     // Remove any instances of Tangram Play's default API key
-    content = suppressAPIKeys(content, config.TILES.API_KEYS.SUPPRESSED);
+    const revisedContent = suppressAPIKeys(content, config.TILES.API_KEYS.SUPPRESSED);
 
-    // Set content in CodeMirror document.
-    doc.setValue(content);
-    doc.clearHistory();
-    if (shouldMarkClean === true) {
-        doc.markClean();
-    }
+    // Set content in CodeMirror document. Rather than replace the value in
+    // the document, we create a new Doc instance so that multiple tabs can
+    // swap in and out easily.
+    const newDoc = new CodeMirror.Doc(revisedContent, 'yaml-tangram');
+    editor.swapDoc(newDoc);
+
+    // This is manually adjusting state when everything was one document
+    // make sure we don't need it anymore
+    // doc.clearHistory();
+    // if (shouldMarkClean === true) {
+    //     doc.markClean();
+    // }
 }
 
 // If editor is updated, send it to the map.
