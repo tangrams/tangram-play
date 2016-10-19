@@ -9,20 +9,20 @@
 /* eslint-disable quote-props */
 const IMAGE_SOURCES = {
   'default': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/default.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/default.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/default.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/default.yaml',
   },
   'grain': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain.yaml',
   },
   'grain-roads': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain-roads.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain-roads.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain-roads.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain-roads.yaml',
   },
   'grain-area': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain-area.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/grain-area.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain-area.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain-area.yaml',
   },
   // For the Mapzen house styles, we will obtain the YAML scene files from
   // Mapzen's carto CDN. Do not store these locally.
@@ -44,57 +44,57 @@ const IMAGE_SOURCES = {
   },
   // End house styles
   'gotham': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/gotham.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/gotham.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/gotham.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/gotham.yaml',
   },
   'blueprint': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/blueprint.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/blueprint.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/blueprint.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/blueprint.yaml',
   },
   // Deprecated for Tron v2 house style
   // 'tron': {
-  //   image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.png',
-  //   scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/tron.yaml',
+  //   image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/tron.png',
+  //   scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/tron.yaml',
   // },
   'matrix': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/matrix.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/matrix.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/matrix.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/matrix.yaml',
   },
   'ikeda': {
     // Note that the original source is actually an animated GIF, despite the PNG extension
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/ikeda.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/ikeda.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/ikeda.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/ikeda.yaml',
   },
   '9845c': {
     // Note that the original source is actually an animated GIF, despite the PNG extension
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/9845C.png',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/9845C.png',
     forcePNG: true, // Special case: force this to be a 1-frame png
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/9845C.yaml',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/9845C.yaml',
   },
   'press': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/press.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/press.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/press.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/press.yaml',
   },
   'radar': {
     // Note that the original source is actually an animated GIF, despite the PNG extension
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/radar.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/radar.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/radar.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/radar.yaml',
   },
   'crosshatch': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/crosshatch.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/crosshatch.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/crosshatch.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/crosshatch.yaml',
   },
   'pericoli': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/pericoli.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/pericoli.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/pericoli.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/pericoli.yaml',
   },
   'patterns': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/patterns.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/patterns.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/patterns.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/patterns.yaml',
   },
   'lego': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/lego.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/c6dbf580b691f52f491e3270723b67f879097216/styles/lego.yaml',
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/lego.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/lego.yaml',
   },
 };
 /* eslint-enable quote-props */
