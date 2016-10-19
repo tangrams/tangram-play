@@ -30,17 +30,17 @@
       {
         "name": "Refill",
         "thumb": "./data/scenes/thumbnails/refill.png",
-        "url": "https://mapzen.com/carto/refill-style/2.0/refill-style.yaml"
+        "url": "https://mapzen.com/carto/refill-style/refill-style.yaml"
       },
       {
         "name": "Cinnabar",
         "thumb": "./data/scenes/thumbnails/cinnabar.png",
-        "url": "https://mapzen.com/carto/cinnabar-style/2.0/cinnabar-style.yaml"
+        "url": "https://mapzen.com/carto/cinnabar-style/cinnabar-style.yaml"
       },
       {
         "name": "Zinc",
         "thumb": "./data/scenes/thumbnails/zinc.png",
-        "url": "https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml"
+        "url": "https://mapzen.com/carto/zinc-style/zinc-style.yaml"
       },
       {
         "name": "Bubble Wrap",
