@@ -7,6 +7,22 @@ import { showErrorModal } from '../modals/ErrorModal';
 import store from '../store';
 import { ADD_FILE } from '../store/actions';
 
+// TODO: this does not know what to do if imports are all on one line, e.g. flow notation
+function normalizeImportValue(string) {
+    // Truncate anything beyond what looks like a comment (the `#` mark)
+    // Note this will truncate URL strings with hash fragments, but why are
+    // importing those anyway?
+    let urlString = string.split('#')[0];
+
+    // Replace what strings start with (the collection marker `-` or the
+    // `import:` key), remove whitespace
+    urlString = urlString.replace(/^\s*(-|import:)\s*/, '').trim();
+
+    // Remove quotation marks around the value, if present
+    urlString = urlString.replace(/^('|")?/, '').replace(/('|")?$/, '').trim();
+
+    return urlString;
+}
 
 // Let's work on finding scene imports.
 // TODO: This is not a final API; this is just for testing purposes.
@@ -35,7 +51,7 @@ export function initSceneImportDetector() {
       // Note that `nodes` array will not always contain a URL for its `value`
       // property because `import` may be a YAML collections and we cannot parse
       // YAML collections yet.
-      let urlString = token.state.string.replace(/^\s*(-|import:)\s*/, '').trim();
+      let urlString = normalizeImportValue(token.state.string);
 
       // If the url string is blank at this point (which can happen on a line
       // whose value is just "import:") then bail
