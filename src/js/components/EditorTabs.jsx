@@ -57,9 +57,19 @@ class EditorTabs extends React.PureComponent {
                         classes += ' editor-tab-is-main';
                     }
 
+                    let fileIcon;
+                    if (item.readOnly === true) {
+                        // TEMPORARY: emoji lock
+                        // TODO: consider a replacement; and remove line-height override for this
+                        fileIcon = '🔒 ';
+                    }
+
                     return (
                         <div className={classes} key={i} onClick={(e) => { this.setActiveTab(i, e); }}>
-                            <div className="editor-tab-label">{item.filename || 'untitled'}</div>
+                            <div className="editor-tab-label" style={{ lineHeight: '16px' }}>
+                                {fileIcon}
+                                {item.filename || 'untitled'}
+                            </div>
                             <div className="editor-tab-dirty">○</div>
                             {closeButtonEl}
                         </div>

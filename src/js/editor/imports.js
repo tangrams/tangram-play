@@ -1,7 +1,12 @@
 /* eslint-disable indent */
 import { editor } from './editor';
-import { isAbsoluteUrl } from '../tools/helpers';
+import { isAbsoluteUrl, getFilenameFromUrl } from '../tools/helpers';
+import { showErrorModal } from '../modals/ErrorModal';
+
+// Redux
 import store from '../store';
+import { ADD_FILE } from '../store/actions';
+
 
 // Let's work on finding scene imports.
 // TODO: This is not a final API; this is just for testing purposes.
@@ -46,11 +51,36 @@ export function initSceneImportDetector() {
         urlString = `${basePath}${urlString}`;
       }
 
-      // This is the URL string as the import value!
-      // console.log(urlString);
+      // TODO: determine a file name
 
       // Next: fetch contents of this file
-      // If successful, add it to the files array in state.
+      window.fetch(urlString)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('did not work');
+          }
+
+          // Assume text content of file; don't use this to open other
+          // zips, or images etc
+          return response.text();
+        })
+        .then(contents => {
+          // If successful, add it to the files array in state.
+          // TODO: set contents
+          const filename = getFilenameFromUrl(urlString);
+          const file = {
+            filename,
+            contents,
+            readOnly: true,
+          };
+          store.dispatch({
+            type: ADD_FILE,
+            file,
+        });
+        })
+        .catch(error => {
+          showErrorModal(error.message);
+        });
     }
   });
 }

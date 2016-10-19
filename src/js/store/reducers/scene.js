@@ -59,6 +59,9 @@ What is a file object? A file object can contain the following properties:
         so that UI can reflect this condition at all times. This should sync
         with CodeMirror state; however, when recovering application state this
         property sets CodeMirror's state via `doc.markClean()`.
+    - readOnly (boolean)
+        if true, this file is opened "read-only". The UI will indicate this
+        and the editor will not allow editing of this file.
 
     Editor state properties
     These properties are NOT guaranteed to sync with editor state, as that
