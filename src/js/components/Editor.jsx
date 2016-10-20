@@ -51,20 +51,20 @@ class Editor extends React.PureComponent {
                 if (activeFile) {
                     if (activeFile.buffer) {
                         editor.swapDoc(activeFile.buffer);
+
+                        // Restore cursor state
+                        if (activeFile.cursor) {
+                            console.log(activeFile.cursor);
+                            editor.getDoc().setCursor(activeFile.cursor);
+                        }
+
+                        // TODO: Restore selected areas, if any (supercedes cursor).
+                        // TODO: Restore highlighted lines, if any.
                     // Otherwise we use its text-value `contents` property and
                     // other state properties, if present.
                     } else if (activeFile.contents) {
-                        // Mark as "clean" if the contents are freshly loaded
-                        // (there is no isClean property defined) or if contents
-                        // have been restored with the isClean property set to "true"
-                        // This is converted from JSON so the value is a string, not
-                        // a Boolean. Otherwise, the document has not been previously
-                        // saved and it is left in the "dirty" state.
-                        const shouldMarkClean = (typeof activeFile.isClean === 'undefined' ||
-                            activeFile.isClean === 'true');
-
                         // Use the text content and (TODO: reparse)
-                        setEditorContent(activeFile.contents, shouldMarkClean);
+                        setEditorContent(activeFile.contents);
                     }
 
                     // Highlights lines, if provided.

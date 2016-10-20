@@ -23,9 +23,6 @@ export let editor;
 // Timeout for saving things in memory
 let localMemorySaveTimer;
 
-// Debug
-window.editor = editor;
-
 /**
  * Imported by the <Editor> React component, to be called when it mounts.
  * It is here (instead of importing `initCodeMirror()` directly) so that this
@@ -36,6 +33,9 @@ window.editor = editor;
  */
 export function initEditor(el) {
     editor = initCodeMirror(el);
+
+    // Debug
+    window.editor = editor;
 
     // Turn on highlighting module
     addHighlightEventListeners();
@@ -58,20 +58,18 @@ export function getEditorContent() {
 }
 
 /**
- * Sets content of the editor, scrubbing API keys. This is meant to replace
- * the contents of the entire editor, so history is also cleared. Normally,
- * this means also marking contents of the editor as clean, but since it's
- * possible to restore old editor content that has not been saved (from local)
- * memory, the `shouldMarkClean` argument allows content to be replaced but
- * not be marked as clean.
+ * Creates a new CodeMirror document instance with new editor content, after
+ * scrubbing API keys. This function is sometimes used to restore old editor
+ * content that has not been saved (e.g. from local memory). Although it is
+ * a new document instance, there are conditions from the old document that
+ * must also be restored. (Note: we remember if a document in memory is "not
+ * clean", but we cannot set this in CodeMirror -- it is always a clean
+ * document when it is first created.)
  *
  * @public
  * @param {string} content - to display in editor
- * TODO: remove this if not needed.
- * @param {Boolean} shouldMarkClean - if true, mark contents of editor
- *          as clean. If false, do not mark as clean. Defaults to true.
  */
-export function setEditorContent(content, shouldMarkClean = true) {
+export function setEditorContent(content) {
     // Remove any instances of Tangram Play's default API key
     const revisedContent = suppressAPIKeys(content, config.TILES.API_KEYS.SUPPRESSED);
 
@@ -80,13 +78,6 @@ export function setEditorContent(content, shouldMarkClean = true) {
     // swap in and out easily.
     const newDoc = new CodeMirror.Doc(revisedContent, 'yaml-tangram');
     editor.swapDoc(newDoc);
-
-    // This is manually adjusting state when everything was one document
-    // make sure we don't need it anymore
-    // doc.clearHistory();
-    // if (shouldMarkClean === true) {
-    //     doc.markClean();
-    // }
 }
 
 // If editor is updated, send it to the map.
