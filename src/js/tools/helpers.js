@@ -90,9 +90,29 @@ export function prependProtocolToUrl(url) {
  * @returns {string} filename - a best guess.
  */
 export function getFilenameFromUrl(url) {
-    const filenameParts = url.split('/');
+    const filenameParts = url.split('#')[0].split('?')[0].split('/');
     const filename = filenameParts[filenameParts.length - 1];
     return filename;
+}
+
+/**
+ * Interprets a file name and base path for a URL.
+ * Given a url like http://somewhere.com/dir/scene.yaml, returns an array
+ * containing what like the filename, e.g. `scene.yaml` in index 1, and the
+ * remainder of the url string in index 0, preserving protocol, hostname, and
+ * port, but removing query strings and hash fragments.
+ *
+ * @param {string} url - the input url string
+ * @returns {Array} url parts - a best guess.
+ */
+export function splitUrlIntoFilenameAndBasePath(url) {
+    const filenameParts = url.split('#')[0].split('?')[0].split('/');
+    const filename = filenameParts.pop();
+
+    // Rejoin base path parts and make sure it contains a trailing slash
+    filenameParts.push('');
+    const basePath = filenameParts.join('/');
+    return [basePath, filename];
 }
 
 /**

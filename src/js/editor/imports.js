@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { editor } from './editor';
-import { isAbsoluteUrl, getFilenameFromUrl } from '../tools/helpers';
+import { isAbsoluteUrl, splitUrlIntoFilenameAndBasePath } from '../tools/helpers';
 import { showErrorModal } from '../modals/ErrorModal';
 
 // Redux
@@ -73,12 +73,20 @@ export function initSceneImportDetector() {
 
       // TODO: url strings that are passed in as globals
 
-      // Attach the scene base path if it looks like a relative URL!
+      // Attach the file's base path if it looks like a relative URL!
+      // TODO: handle relative files using ./ or ../ notation
+      // TODO: relative paths must be resolved in relationship to current FILE,
+      // not the current SCENE. Imagine a scene that imports an external file,
+      // which then imports a file relative to it; attaching the scene's base
+      // path will break it.
       if (isAbsoluteUrl(urlString) === false) {
-        // Get the scene's base path
+        // Get the files's base path if present
         const scene = store.getState().scene;
-        const basePath = scene.originalBasePath;
-        urlString = `${basePath}${urlString}`;
+
+        const activeFile = scene.files[scene.activeFileIndex];
+        const basePath = activeFile.basePath || scene.originalBasePath;
+        const intermediaryUrlResolver = new window.URL(urlString, basePath);
+        urlString = intermediaryUrlResolver.href;
       }
 
       // if the urlString is already opened, don't open it again
@@ -97,10 +105,11 @@ export function initSceneImportDetector() {
         })
         .then(contents => {
           // If successful, add it to the files array in state.
-          const filename = getFilenameFromUrl(urlString);
+          const urlParts = splitUrlIntoFilenameAndBasePath(urlString);
           const file = {
             key: urlString,
-            filename,
+            basePath: urlParts[0],
+            filename: urlParts[1],
             contents,
             readOnly: true,
           };
