@@ -57,11 +57,17 @@ What is a file object? A file object can contain the following properties:
         whether the file is "dirty" (not saved) or "clean" (has been saved).
         Unlike other editor state properties (see below), this is always updated
         so that UI can reflect this condition at all times. This should sync
-        with CodeMirror state; however, when recovering application state this
-        property sets CodeMirror's state via `doc.markClean()`.
+        with CodeMirror state; however, when recovering application state it is
+        possible to restore a dirty document, despite being initially marked
+        "clean" by a new instance of CodeMirror.
     - readOnly (boolean)
         if true, this file is opened "read-only". The UI will indicate this
         and the editor will not allow editing of this file.
+    - key (string)
+        an identifier to determine whether two opened files are referring to
+        the same file. For external resources, use a fully-qualified URL.
+        For local resources, use an absolute file path. For "in-memory" resources,
+        we still need to figure out something.
 
     Editor state properties
     These properties are NOT guaranteed to sync with editor state, as that

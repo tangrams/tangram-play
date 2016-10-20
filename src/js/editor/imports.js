@@ -24,6 +24,20 @@ function normalizeImportValue(string) {
     return urlString;
 }
 
+// Check the files array to see if a file of "key" property is open already
+function isAlreadyOpened(key) {
+    const files = store.getState().scene.files;
+    let found = false;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.key && file.key === key) {
+            found = true;
+            break;
+        }
+    }
+    return found;
+}
+
 // Let's work on finding scene imports.
 // TODO: This is not a final API; this is just for testing purposes.
 export function initSceneImportDetector() {
@@ -67,7 +81,8 @@ export function initSceneImportDetector() {
         urlString = `${basePath}${urlString}`;
       }
 
-      // TODO: determine a file name
+      // if the urlString is already opened, don't open it again
+      if (isAlreadyOpened(urlString) === true) return;
 
       // Next: fetch contents of this file
       window.fetch(urlString)
@@ -82,9 +97,9 @@ export function initSceneImportDetector() {
         })
         .then(contents => {
           // If successful, add it to the files array in state.
-          // TODO: set contents
           const filename = getFilenameFromUrl(urlString);
           const file = {
+            key: urlString,
             filename,
             contents,
             readOnly: true,
