@@ -1724,29 +1724,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-brand > img {
   display: block;
 }
-.navbar-toggle {
-  position: relative;
-  float: right;
-  padding: 9px 10px;
-  margin-right: 15px;
-  background-image: none;
-  border: 1px solid transparent;
-}
-.navbar-toggle:focus {
-}
-.navbar-toggle .icon-bar {
-  display: block;
-  width: 18px;
-  height: 2px;
-}
-.navbar-toggle .icon-bar + .icon-bar {
-  margin-top: 4px;
-}
-@media (min-width: 768px) {
-  .navbar-toggle {
-    display: none;
-  }
-}
+
 .navbar-nav {
   margin: 7.5px -15px;
 }
