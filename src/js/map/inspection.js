@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 // TODO: Separate out; make JSX files
-import { capitalize } from 'lodash';
+import { upperFirst } from 'lodash';
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -43,7 +43,7 @@ class TangramInspectionHeader extends React.Component {
         // Kind is usually present on properties in Mapzen vector tile service.
         // (For more info: https://mapzen.com/documentation/vector-tiles/layers/)
         if (properties.kind_detail) {
-            return properties.kind_detail;
+            return `${properties.kind} (${upperFirst(properties.kind_detail)})`;
         } else if (properties.kind) {
             return properties.kind;
         } else if (properties.land) {
@@ -59,7 +59,7 @@ class TangramInspectionHeader extends React.Component {
 
         if (typeof text === 'string') {
             formattedText = text.replace(/_/g, ' ');
-            formattedText = capitalize(formattedText);
+            formattedText = upperFirst(formattedText);
         } else {
             formattedText = '';
         }
@@ -270,7 +270,11 @@ class TangramInspectionPopup extends React.Component {
                             <tbody>
                                 {sortedProperties.map((item) => {
                                     const key = item[0];
-                                    const value = item[1];
+                                    // Cast value to a string, especially for
+                                    // true/false values, which are stored as Booleans
+                                    // and will be mistakenly evaluated as an expression
+                                    // rather than displayed as a string.
+                                    const value = String(item[1]);
 
                                     return (
                                         <tr key={key}>
