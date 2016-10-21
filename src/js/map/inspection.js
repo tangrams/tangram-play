@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 // TODO: Separate out; make JSX files
-import { capitalize } from 'lodash';
+import { capitalize, upperFirst } from 'lodash';
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -43,7 +43,7 @@ class TangramInspectionHeader extends React.Component {
         // Kind is usually present on properties in Mapzen vector tile service.
         // (For more info: https://mapzen.com/documentation/vector-tiles/layers/)
         if (properties.kind_detail) {
-            return properties.kind_detail;
+            return `${properties.kind} (${upperFirst(properties.kind_detail)})`;
         } else if (properties.kind) {
             return properties.kind;
         } else if (properties.land) {
