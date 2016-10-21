@@ -153,7 +153,7 @@ export function initMap() {
     map = L.map('map', {
         zoomControl: false,
         attributionControl: false,
-        maxZoom: 24,
+        maxZoom: 20,
         keyboardZoomOffset: 0.05,
         zoomSnap: 0, // Enables fractional zoom.
     });
