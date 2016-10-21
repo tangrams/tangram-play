@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 // TODO: Separate out; make JSX files
-import { capitalize, upperFirst } from 'lodash';
+import { upperFirst } from 'lodash';
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -59,7 +59,7 @@ class TangramInspectionHeader extends React.Component {
 
         if (typeof text === 'string') {
             formattedText = text.replace(/_/g, ' ');
-            formattedText = capitalize(formattedText);
+            formattedText = upperFirst(formattedText);
         } else {
             formattedText = '';
         }
