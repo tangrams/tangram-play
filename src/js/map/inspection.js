@@ -259,6 +259,10 @@ class TangramInspectionPopup extends React.Component {
                                     }
                                     return null;
                                 })()}
+                                <tr>
+                                    <td className="map-inspection-source-item-label">Tile</td>
+                                    <td>{this.props.selection.feature.tile.coords.key}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -405,7 +409,7 @@ export function handleInspectionHoverEvent(selection) {
 }
 
 export function handleInspectionClickEvent(selection) {
-    // Experiment: only show popups when global introspection is on.
+    // Only show popups when global introspection mode is on.
     if (globalIntrospectionState === false) {
         return;
     }
