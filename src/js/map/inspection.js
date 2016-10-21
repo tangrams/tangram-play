@@ -270,7 +270,11 @@ class TangramInspectionPopup extends React.Component {
                             <tbody>
                                 {sortedProperties.map((item) => {
                                     const key = item[0];
-                                    const value = item[1];
+                                    // Cast value to a string, especially for
+                                    // true/false values, which are stored as Booleans
+                                    // and will be mistakenly evaluated as an expression
+                                    // rather than displayed as a string.
+                                    const value = String(item[1]);
 
                                     return (
                                         <tr key={key}>
