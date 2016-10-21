@@ -117,16 +117,29 @@ nav {
 }
 
 /* Small screens */
+/* Bootstrap hamburger */
 .navbar-toggle {
-  outline: none;
-  color: var(--ui-component-text-color);
-  background-color: var(--ui-component-color);
+  position: relative;
+  float: right;
   margin-top: 5px;
   margin-bottom: 5px;
-  margin-right: 12px;
+  margin-right: 5px !important;
+  padding: 7px 4px;
+}
 
-  span {
-    background-color: white;
+.navbar-toggle .icon-bar {
+  display: block;
+  width: 16px;
+  height: 1px;
+}
+
+.navbar-toggle .icon-bar + .icon-bar {
+  margin-top: 4px;
+}
+
+@media (min-width: 768px) {
+  .navbar-toggle {
+    display: none;
   }
 }
 
