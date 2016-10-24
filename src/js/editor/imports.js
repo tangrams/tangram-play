@@ -44,6 +44,12 @@ export function initSceneImportDetector() {
   const wrapper = editor.getWrapperElement();
 
   wrapper.addEventListener('mouseup', (event) => {
+    // Currently scoped to admin-users only or local development environment.
+    // Bail if neither is true
+    if (window.location.hostname !== 'localhost' && store.getState().user.admin === false) {
+      return;
+    }
+
     // bail out if we were doing a selection and not a click
     if (editor.somethingSelected()) {
       return;
