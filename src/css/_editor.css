@@ -119,6 +119,17 @@
   color: var(--ui-highlight-color);
 }
 
+.editor-tab-read-only {
+  margin-right: 0.5em;
+  /* override normal icon weight */
+  font-weight: 600;
+  /* position tweak */
+  top: -1px;
+  position: relative;
+  /* temp: use misc color because white is pretty bright */
+  color: var(--ui-unnamed-light-color);
+}
+
 .editor-collapse-button {
   position: absolute;
   top: 5px;

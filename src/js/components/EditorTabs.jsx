@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Icon from './Icon';
 import { SET_ACTIVE_FILE, REMOVE_FILE, CLOSE_SCENE, STASH_DOCUMENT } from '../store/actions';
 import { editor } from '../editor/editor';
 import { checkSaveStateThen } from '../editor/io';
@@ -64,7 +65,7 @@ class EditorTabs extends React.PureComponent {
                     if (item.readOnly === true) {
                         // TEMPORARY: emoji lock
                         // TODO: consider a replacement; and remove line-height override for this
-                        fileIcon = '🔒 ';
+                        fileIcon = <Icon type="bt-lock" className="editor-tab-read-only" />;
                     }
 
                     return (
