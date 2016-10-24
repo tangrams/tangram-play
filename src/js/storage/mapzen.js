@@ -13,27 +13,6 @@ import config from '../config';
 const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
 
-/*
-    Store files like this:
-        ./scene-name-slug/scene.yaml
-        ./scene-name-slug/[etc]
-        ./scene-name-slug/.tangramplay/metadata.json
-        ./scene-name-slug/.tangramplay/thumbnail.png
-
-    Meta files are kept separate from scene related files but in a
-    .tangramplay directory in the scene directory's root. This is to keep
-    url schemes simple for the end user and namespace Play-related
-    files. Think .git or similar.
-
-    Scene files may eventually contain any quantity of files.
-    (e.g. textures, multiple yamls, fonts, etc)
-
-    Tangram Play only has two scene-related meta files now, a json
-    for random strings and a thumbnail image.
-
-    Eventually Tangram Play per-user settings may be stored in the root
-*/
-
 // We only need the user-id for the API (plus, I assume, cookie credentials).
 // This is for retrieving just the user ID from Redux store. Maybe this goes
 // elsewhere eventually.
@@ -102,17 +81,12 @@ function makeThumbnail() {
 function addMetadata(data) {
     // Add some additional view information to the metadata.
     const metadata = Object.assign({}, data, {
-        view: {
-            // label: getLocationLabel(), // TODO: change now that search component is React
-            label: '',
-            lat: map.getCenter().lat,
-            lng: map.getCenter().lng,
-            zoom: map.getZoom(),
-        },
-        versions: {
-            tangram: window.Tangram.version,
-            leaflet: L.version,
-        },
+        view_label: '', // label: getLocationLabel(), // TODO: change now that search component is React
+        view_lat: map.getCenter().lat,
+        view_lng: map.getCenter().lng,
+        view_zoom: map.getZoom(),
+        versions_leaflet: L.version,
+        versions_tangram: window.Tangram.version,
     });
 
     return metadata;
