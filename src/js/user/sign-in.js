@@ -2,6 +2,7 @@
  * SignIn to mapzen.com
  */
 import store from '../store';
+import config from '../config';
 import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
 import { getQueryStringObject } from '../tools/url-state';
 
@@ -20,7 +21,7 @@ const signInEnabled = (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname)
 // but are always included for local environments (this allows back-ends to
 // run on different ports than Tangram Play.
 const signInCredentials = window.location.hostname === 'localhost' ? 'include' : 'same-origin';
-const signInHost = window.location.hostname === 'localhost' ? 'http://localhost' : '';
+const signInHost = window.location.hostname === 'localhost' ? config.MAPZEN_API.ORIGIN.DEVELOPMENT : '';
 
 let cachedSignInData;
 

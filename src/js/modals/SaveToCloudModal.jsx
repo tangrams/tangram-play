@@ -67,6 +67,7 @@ export default class SaveToCloudModal extends React.Component {
             name,
             description,
             public: this.publicCheckbox.checked,
+            entrypoint: 'TODO_REPLACE_ME.yaml',
         };
 
         saveToMapzenUserAccount(data)

@@ -106,7 +106,7 @@ export default class OpenFromCloudModal extends React.Component {
                                 {/* Show the date this was saved.
                                     TODO: better formatting;
                                     maybe use moment.js */}
-                                Saved on {new Date(item.timestamp).toLocaleString()}
+                                Saved on {new Date(item.updated_at).toLocaleString()}
                             </div>
                         </div>
                     </div>
