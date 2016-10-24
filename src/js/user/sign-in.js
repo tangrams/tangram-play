@@ -61,6 +61,7 @@ export function requestUserSignInState() {
 
                 store.dispatch({
                     type: USER_SIGNED_IN,
+                    id: data.id,
                     nickname: data.nickname,
                     email: data.email,
                     avatar: data.avatar,
