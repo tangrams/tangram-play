@@ -58,8 +58,24 @@ export function getEditorContent() {
 }
 
 /**
- * Creates a new CodeMirror document instance with new editor content, after
- * scrubbing API keys. This function is sometimes used to restore old editor
+ * Creates a new CodeMirror document instance from a text string of file content,
+ * scrubbing API keys if necessary.
+ *
+ * @public
+ * @param {string} content - to display in editor
+ * @returns {CodeMirror.Doc} doc - a CodeMirror document instance
+ */
+export function createCodeMirrorDoc(content) {
+    // Remove any instances of Tangram Play's default API key
+    const scrubbedContent = suppressAPIKeys(content, config.TILES.API_KEYS.SUPPRESSED);
+
+    // Create a new instance of a CodeMirror document
+    return new CodeMirror.Doc(scrubbedContent, 'yaml-tangram');
+}
+
+/**
+ * Sets editor content with a given CodeMirror document instance.
+ * This function is sometimes used to restore old editor
  * content that has not been saved (e.g. from local memory). Although it is
  * a new document instance, there are conditions from the old document that
  * must also be restored. (Note: we remember if a document in memory is "not
@@ -67,17 +83,24 @@ export function getEditorContent() {
  * document when it is first created.)
  *
  * @public
- * @param {string} content - to display in editor
+ * @param {CodeMirror.Doc} doc - A CodeMirror document instance to set in editor
+ * @param {Boolean} readOnly - whether the editor contents are read-only
  */
-export function setEditorContent(content) {
-    // Remove any instances of Tangram Play's default API key
-    const revisedContent = suppressAPIKeys(content, config.TILES.API_KEYS.SUPPRESSED);
+export function setEditorContent(doc, readOnly = false) {
+    // Swap current content in CodeMirror document with the provided Doc instance.
+    editor.swapDoc(doc);
+    editor.setOption('readOnly', readOnly);
+}
 
-    // Set content in CodeMirror document. Rather than replace the value in
-    // the document, we create a new Doc instance so that multiple tabs can
-    // swap in and out easily.
-    const newDoc = new CodeMirror.Doc(revisedContent, 'yaml-tangram');
-    editor.swapDoc(newDoc);
+/**
+ * Clears the current editor document, by creating a new, blank CodeMirror
+ * document instance and swapping it from the current editor.
+ *
+ * @public
+ */
+export function clearEditorContent() {
+    const clearedDoc = createCodeMirrorDoc('');
+    setEditorContent(clearedDoc, false);
 }
 
 // If editor is updated, send it to the map.
