@@ -34,28 +34,46 @@ export function isEmptyString(str) {
 }
 
 /**
+ * Checks to see if a string is an absolute URI (fully-qualified) - that is,
+ * not a relative path. It checks by seeing if the string begins with what
+ * looks like a URI scheme with two following slashes. It does not hard-check
+ * for scheme validity.
+ *
+ * @param {string} url string to test
+ * @returns {Boolean} true if url is an absolute URI (fully-qualified), false otherwise
+ */
+export function isAbsoluteUrl(url) {
+    // Look for whether or not the url string appears to begin with a valid
+    // scheme. "The scheme consists of a sequence of characters beginning with
+    // a letter and followed by any combination of letters, digits, plus (+),
+    // period (.), or hyphen (-)." (Wikipedia) It also checks for two slashes.
+    // "This is required by some schemes and not required by some others."
+    // But we will assume it is required here.
+    const schemePattern = /([a-zA-Z0-9+.-]+:)?\/\//;
+
+    return url.search(schemePattern) === 0;
+}
+
+/**
  * Prepends a relative-protocol string to the beginning of a url.
  *
  * @param {string} url
  */
 export function prependProtocolToUrl(url) {
-    // Look for whether or not the url string appears to begin with a valid
-    // scheme. "The scheme consists of a sequence of characters beginning with
-    // a letter and followed by any combination of letters, digits, plus (+),
-    // period (.), or hyphen (-)." (Wikipedia)
-    const schemePattern = /([a-zA-Z0-9+.-]+:)?\/\//;
+    // We have two checks. The first is whether the url string begins with a
+    // valid scheme (via `isAbsoluteUrl()`).
 
-    // If the url string does not begin with a valid scheme, next check if it
+    // If the url string does not begin with a valid scheme, we also check if it
     // looks like a domain name. This test expects the domain name to be
     // followed by a slash, otherwise file extension will look like a TLD.
     // Be sure to take into account "localhost" and port numbers.
     const domainPattern = /((([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+)|localhost)(:[0-9]+)?\//;
 
     // The string MUST start with this pattern. If not, append only the slashes
-    // to make this a protocol-relative URL. This is because we cannot necessarily
-    // guess whether the protocol is https://, http:// or something else. However,
+    // to make this a protocol-relative URL. This is because we cannot guess
+    // whether the desired protocol is https://, http:// or something else. However,
     // we can let the browser decide.
-    if (url.search(schemePattern) !== 0 && url.search(domainPattern) === 0) {
+    if (isAbsoluteUrl(url) === false && url.search(domainPattern) === 0) {
         return `//${url}`;
     }
 
@@ -72,9 +90,29 @@ export function prependProtocolToUrl(url) {
  * @returns {string} filename - a best guess.
  */
 export function getFilenameFromUrl(url) {
-    const filenameParts = url.split('/');
+    const filenameParts = url.split('#')[0].split('?')[0].split('/');
     const filename = filenameParts[filenameParts.length - 1];
     return filename;
+}
+
+/**
+ * Interprets a file name and base path for a URL.
+ * Given a url like http://somewhere.com/dir/scene.yaml, returns an array
+ * containing what like the filename, e.g. `scene.yaml` in index 1, and the
+ * remainder of the url string in index 0, preserving protocol, hostname, and
+ * port, but removing query strings and hash fragments.
+ *
+ * @param {string} url - the input url string
+ * @returns {Array} url parts - a best guess.
+ */
+export function splitUrlIntoFilenameAndBasePath(url) {
+    const filenameParts = url.split('#')[0].split('?')[0].split('/');
+    const filename = filenameParts.pop();
+
+    // Rejoin base path parts and make sure it contains a trailing slash
+    filenameParts.push('');
+    const basePath = filenameParts.join('/');
+    return [basePath, filename];
 }
 
 /**

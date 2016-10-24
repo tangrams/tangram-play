@@ -11,6 +11,11 @@ export default function Icon(props) {
         className += ' icon-active';
     }
 
+    // Additional classes
+    if (props.className) {
+        className += ` ${props.className}`;
+    }
+
     return (
         <i className={className} />
     );
@@ -18,5 +23,6 @@ export default function Icon(props) {
 
 Icon.propTypes = {
     type: React.PropTypes.string.isRequired,
+    className: React.PropTypes.string,
     active: React.PropTypes.bool,
 };

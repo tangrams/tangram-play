@@ -36,6 +36,8 @@
 }
 
 .editor-tabs {
+  display: flex;
+  align-items: baseline;
   padding-left: 13px;
   padding-top: 5px;
   padding-right: 36px; /* Space for collapse button */
@@ -56,6 +58,7 @@
   border-bottom: 0;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
+  max-width: 120px;
   background-color: var(--ui-editor-background-color);
   box-shadow: inset 0 0 0 1px var(--ui-component-color);
 }
@@ -73,9 +76,10 @@
 .editor-tab-label {
   overflow: hidden;
   padding: 8px 24px 8px 10px;
-  max-width: 200px;
+  width: 100%;
   text-overflow: ellipsis;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .editor-tab-is-dirty {
@@ -113,6 +117,17 @@
 
 .editor-tab-close:hover {
   color: var(--ui-highlight-color);
+}
+
+.editor-tab-read-only {
+  margin-right: 0.5em;
+  /* override normal icon weight */
+  font-weight: 600;
+  /* position tweak */
+  top: -1px;
+  position: relative;
+  /* temp: use misc color because white is pretty bright */
+  color: var(--ui-unnamed-light-color);
 }
 
 .editor-collapse-button {

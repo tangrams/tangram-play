@@ -14,7 +14,9 @@ import { SET_SETTINGS } from '../store/actions';
 import {
     initEditor,
     editor,
+    createCodeMirrorDoc,
     setEditorContent,
+    clearEditorContent,
     watchEditorForChanges }
 from '../editor/editor';
 import { highlightRanges } from '../editor/highlight';
@@ -43,28 +45,29 @@ class Editor extends React.PureComponent {
 
             // If no active file, clear editor buffer.
             if (this.props.activeFile < 0) {
-                setEditorContent('', true);
+                clearEditorContent();
             } else {
                 const activeFile = this.props.files[this.props.activeFile];
 
                 // If there is an active CodeMirror document buffer, we swap out the document.
                 if (activeFile) {
                     if (activeFile.buffer) {
-                        editor.swapDoc(activeFile.buffer);
+                        setEditorContent(activeFile.buffer, activeFile.readOnly);
+
+                        // Restore cursor state
+                        if (activeFile.cursor) {
+                            console.log(activeFile.cursor);
+                            editor.getDoc().setCursor(activeFile.cursor);
+                        }
+
+                        // TODO: Restore selected areas, if any (supercedes cursor).
+                        // TODO: Restore highlighted lines, if any.
                     // Otherwise we use its text-value `contents` property and
                     // other state properties, if present.
                     } else if (activeFile.contents) {
-                        // Mark as "clean" if the contents are freshly loaded
-                        // (there is no isClean property defined) or if contents
-                        // have been restored with the isClean property set to "true"
-                        // This is converted from JSON so the value is a string, not
-                        // a Boolean. Otherwise, the document has not been previously
-                        // saved and it is left in the "dirty" state.
-                        const shouldMarkClean = (typeof activeFile.isClean === 'undefined' ||
-                            activeFile.isClean === 'true');
-
                         // Use the text content and (TODO: reparse)
-                        setEditorContent(activeFile.contents, shouldMarkClean);
+                        const doc = createCodeMirrorDoc(activeFile.contents);
+                        setEditorContent(doc, activeFile.readOnly);
                     }
 
                     // Highlights lines, if provided.
