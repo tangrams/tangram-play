@@ -113,13 +113,16 @@ export function newScene() {
     });
 }
 
+export function getRootFileName() {
+    // Get the filename from state (or use scene.yaml fallback)
+    const scene = store.getState().scene;
+    return scene.files[scene.rootFileIndex].filename || 'scene.yaml';
+}
+
 export function exportSceneFile() {
     const typedArray = getEditorContent();
     const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
-
-    // Get the filename from state (or use scene.yaml fallback)
-    const scene = store.getState().scene;
-    const filename = scene.files[scene.rootFileIndex].filename || 'scene.yaml';
+    const filename = getRootFileName();
 
     // Use FileSaver implementation, pass `true` as third parameter
     // to prevent auto-prepending a Byte-Order Mark (BOM)

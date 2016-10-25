@@ -9,6 +9,7 @@ import SaveToCloudSuccessModal from './SaveToCloudSuccessModal';
 import { showErrorModal } from './ErrorModal';
 import { saveToMapzenUserAccount } from '../storage/mapzen';
 import { editor } from '../editor/editor';
+import { getRootFileName } from '../editor/io';
 import { replaceHistoryState } from '../tools/url-state';
 
 // Default values in UI
@@ -67,7 +68,7 @@ export default class SaveToCloudModal extends React.Component {
             name,
             description,
             public: this.publicCheckbox.checked,
-            entrypoint: 'TODO_REPLACE_ME.yaml',
+            entrypoint: getRootFileName(),
         };
 
         saveToMapzenUserAccount(data)
@@ -119,7 +120,6 @@ export default class SaveToCloudModal extends React.Component {
     //
     // `data` is (currently) the object saved to `scenelist.json`
     handleSaveSuccess(data) {
-        console.log(data)
         // Close the modal
         this.component.unmount();
 
