@@ -3,8 +3,6 @@ import L from 'leaflet';
 import { getEditorContent } from '../editor/editor';
 import { map } from '../map/map';
 import { getScreenshotData } from '../map/screenshot';
-// TODO: implement now that move to react has changed this
-// import { getLocationLabel } from '../map/search';
 import { createThumbnail } from '../tools/thumbnail';
 
 import store from '../store';
@@ -80,8 +78,9 @@ function makeThumbnail() {
  */
 function addMetadata(data) {
     // Add some additional view information to the metadata.
+    const mapLabel = store.getState().map.label;
     const metadata = Object.assign({}, data, {
-        view_label: '', // label: getLocationLabel(), // TODO: change now that search component is React
+        view_label: mapLabel || '',
         view_lat: map.getCenter().lat,
         view_lng: map.getCenter().lng,
         view_zoom: map.getZoom(),
