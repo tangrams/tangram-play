@@ -119,6 +119,7 @@ export default class SaveToCloudModal extends React.Component {
     //
     // `data` is (currently) the object saved to `scenelist.json`
     handleSaveSuccess(data) {
+        console.log(data)
         // Close the modal
         this.component.unmount();
 
@@ -127,12 +128,12 @@ export default class SaveToCloudModal extends React.Component {
 
         // Update the page URL. The scene parameter should
         // reflect the new scene URL.
-        replaceHistoryState({ scene: data.files.scene });
+        replaceHistoryState({ scene: data.entrypoint_url });
 
         // Show success modal
         // TODO
         ReactDOM.render(
-            <SaveToCloudSuccessModal urlValue={data.files.scene} />,
+            <SaveToCloudSuccessModal urlValue={data.entrypoint_url} />,
             document.getElementById('modal-container')
         );
     }
@@ -148,6 +149,7 @@ export default class SaveToCloudModal extends React.Component {
         if (this.component) {
             this.component.unmount();
         }
+        console.trace(error);
 
         const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 

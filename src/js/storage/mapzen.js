@@ -111,15 +111,14 @@ export function fetchSceneList() {
             }
 
             // Returns with array of scenes (or empty array if no scenes).
-            console.log(scenes);
             return scenes;
         });
 }
 
 export function saveToMapzenUserAccount(data) {
     const userId = getUserId();
-    // TODO: add other data - here, or provided upstream?
 
+    // Add other data - here, or provided upstream?
     const metadata = addMetadata(data);
 
     // This is a single YAML file for now - whatever's in the current editor.
@@ -131,7 +130,6 @@ export function saveToMapzenUserAccount(data) {
         .then(screenshotData => {
             // Add thumbnail as data-URI to payload
             metadata.thumbnail = screenshotData;
-            console.log(metadata);
 
             const requestOptions = {
                 method: 'POST',
@@ -139,19 +137,22 @@ export function saveToMapzenUserAccount(data) {
                 body: JSON.stringify(metadata),
             };
 
-            return makeMapzenAPIRequest(`${userId}`, requestOptions)
-                .then(sceneData => {
-                    // This data will contain the `id` and `resources_url` needed to
-                    // POST each of our resources.
-                    console.log(sceneData);
+            return makeMapzenAPIRequest(`${userId}`, requestOptions);
+        })
+        // The returned `sceneData` will contain the `id` and
+        // `resources_url` needed to POST each of our scene resources.
 
-                    // temp: to deal with this not needing url concatenation
-                    return window.fetch(sceneData.entrypoint_url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/x-yaml' },
-                        body: content,
-                        credentials: 'include',
-                    });
-                });
-        });
+        // temp: to deal with this not needing url concatenation
+        .then(sceneData => window.fetch(sceneData.entrypoint_url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/x-yaml' },
+            body: content,
+            credentials: 'include',
+        })
+        .then(response => {
+            // Response from the fetch request is a 404 - why?
+            console.log(response);
+            // Return original scene data to success handler.
+            return sceneData;
+        }));
 }
