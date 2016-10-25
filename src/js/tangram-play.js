@@ -143,10 +143,13 @@ function makeSceneStateObjectFromUrl(url) {
         })
         .then(response => {
             if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error('The scene you requested could not be found.');
-                } else {
-                    throw new Error('Something went wrong loading the scene!');
+                switch (response.status) {
+                    case 403:
+                        throw new Error('You do not have permission to open that scene.');
+                    case 404:
+                        throw new Error('The scene you requested could not be found.');
+                    default:
+                        throw new Error('Something went wrong loading the scene!');
                 }
             }
 
