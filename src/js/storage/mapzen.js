@@ -143,13 +143,12 @@ export function saveToMapzenUserAccount(data) {
 
         // temp: to deal with this not needing url concatenation
         .then(sceneData => window.fetch(sceneData.entrypoint_url, {
-            method: 'POST',
+            method: 'PUT',
             headers: { 'Content-Type': 'text/x-yaml' },
             body: content,
             credentials: 'include',
         })
         .then(response => {
-            // Response from the fetch request is a 404 - why?
             console.log(response);
             // Return original scene data to success handler.
             return sceneData;
