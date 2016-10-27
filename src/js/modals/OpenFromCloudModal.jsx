@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
 import { showErrorModal } from './ErrorModal';
-import { fetchSceneList } from '../storage/mapzen';
+import { fetchSceneList, deleteScene } from '../storage/mapzen';
 import { load } from '../tangram-play';
 
 export default class OpenFromCloudModal extends React.Component {
@@ -16,13 +16,58 @@ export default class OpenFromCloudModal extends React.Component {
             loaded: false,
             scenes: [],
             selected: null,
+            beingDeleted: null,
         };
 
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
+        this.onClickSceneItem = this.onClickSceneItem.bind(this);
+        this.onDoubleClickSceneItem = this.onDoubleClickSceneItem.bind(this);
+        this.onClickDeleteScene = this.onClickDeleteScene.bind(this);
+        this.getSceneList = this.getSceneList.bind(this);
     }
 
     componentWillMount() {
+        this.getSceneList();
+    }
+
+    onClickCancel() {
+        this.component.unmount();
+    }
+
+    onClickConfirm() {
+        if (this.state.selected) {
+            this.onClickCancel(); // to close modal
+            load({ url: this.state.selected.entrypoint_url });
+        }
+    }
+
+    onClickSceneItem(event, item) {
+        if (this.state.beingDeleted !== item.id) {
+            this.setState({ selected: item });
+        }
+    }
+
+    onDoubleClickSceneItem(event, item) {
+        if (this.state.beingDeleted !== item.id) {
+            this.onClickConfirm();
+        }
+    }
+
+    onClickDeleteScene(event, sceneId) {
+        event.stopPropagation();
+        this.setState({ beingDeleted: sceneId });
+        deleteScene(sceneId)
+            .then(() => {
+                this.setState({ beingDeleted: null });
+                this.getSceneList();
+            })
+            .catch(error => {
+                showErrorModal('Could not delete the scene.');
+            });
+    }
+
+    getSceneList() {
         // Always load new set of saved scenes from the cloud each
         // time this modal is opened, in case it has changed
         fetchSceneList()
@@ -36,17 +81,6 @@ export default class OpenFromCloudModal extends React.Component {
                     scenes,
                 });
             });
-    }
-
-    onClickCancel() {
-        this.component.unmount();
-    }
-
-    onClickConfirm() {
-        if (this.state.selected) {
-            this.onClickCancel(); // to close modal
-            load({ url: this.state.selected.entrypoint_url });
-        }
     }
 
     /**
@@ -67,9 +101,15 @@ export default class OpenFromCloudModal extends React.Component {
         let sceneList = scenes.map((item, index) => {
             // If the scene is selected, a special class is applied later to it
             let classString = 'open-from-cloud-option';
+            let deleteButtonText = 'Delete';
 
             if (this.state.selected && this.state.selected.id === item.id) {
                 classString += ' open-from-cloud-selected';
+            }
+
+            if (this.state.beingDeleted && this.state.beingDeleted === item.id) {
+                classString += ' open-from-cloud-deleting';
+                deleteButtonText = 'Deleting...';
             }
 
             // TODO:
@@ -79,8 +119,8 @@ export default class OpenFromCloudModal extends React.Component {
                 <div
                     className={classString}
                     key={item.id}
-                    onClick={() => { this.setState({ selected: item }); }}
-                    onDoubleClick={this.onClickConfirm}
+                    onClick={(e) => { this.onClickSceneItem(e, item); }}
+                    onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
                 >
                     <div className="open-from-cloud-option-thumbnail">
                         <img src={item.thumbnail} role="presentation" />
@@ -98,6 +138,14 @@ export default class OpenFromCloudModal extends React.Component {
                                 maybe use moment.js */}
                             Saved on {new Date(item.updated_at).toLocaleString()}
                         </div>
+                    </div>
+                    <div className="open-from-cloud-option-tasks">
+                        <button
+                            onClick={(e) => { this.onClickDeleteScene(e, item.id); }}
+                            disabled={this.state.beingDeleted !== null}
+                        >
+                            {deleteButtonText}
+                        </button>
                     </div>
                 </div>
             );

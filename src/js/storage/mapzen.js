@@ -159,3 +159,9 @@ export function saveToMapzenUserAccount(data) {
             return sceneData;
         }));
 }
+
+export function deleteScene(sceneId) {
+    // DELETE scenes/:developer_id/:scene_id
+    const userId = getUserId();
+    return makeMapzenAPIRequest(`${userId}/${sceneId}`, { method: 'DELETE' });
+}
