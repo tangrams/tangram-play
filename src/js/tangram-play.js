@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 
 // Core elements
+import config from './config';
 import { tangramLayer } from './map/map';
 import { editor } from './editor/editor';
 
@@ -139,7 +140,12 @@ function makeSceneStateObjectFromUrl(url) {
             sceneState.files = [{
                 filename: getFilenameFromUrl(sceneUrl),
             }];
-            return window.fetch(sceneUrl);
+            // for dev server, we need to pass credentials to load anything
+            const options = {};
+            if (window.location.origin === config.MAPZEN_API.ORIGIN.STAGING) {
+                options.credentials = 'same-origin';
+            }
+            return window.fetch(sceneUrl, options);
         })
         .then(response => {
             if (!response.ok) {
