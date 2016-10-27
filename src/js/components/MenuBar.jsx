@@ -17,7 +17,7 @@ import MenuFullscreen from './MenuFullscreen';
 import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
 import SaveGistModal from '../modals/SaveGistModal'; // LEGACY.
-// import SaveToCloudModal from '../modals/SaveToCloudModal';
+import SaveToCloudModal from '../modals/SaveToCloudModal';
 import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
@@ -65,28 +65,31 @@ function clickSaveGist() {
     ReactDOM.render(<SaveGistModal />, document.getElementById('modal-container'));
 }
 
-// function unsubscribeSaveToCloud() {
-//     // eslint-disable-next-line no-use-before-define
-//     EventEmitter.unsubscribe('mapzen:sign_in', clickSaveToCloud);
-// }
+function unsubscribeSaveToCloud() {
+    // eslint-disable-next-line no-use-before-define
+    EventEmitter.unsubscribe('mapzen:sign_in', clickSaveToCloud);
+}
 
-// function showSaveToCloudModal() {
-//     unsubscribeSaveToCloud();
-//     ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
-// }
+function showSaveToCloudModal() {
+    unsubscribeSaveToCloud();
+    ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
+}
 
 function clickSaveToCloud() {
-    showConfirmDialogModal('This feature is being renovated! Please come back later.');
-    // requestUserSignInState()
-    //     .then((data) => {
-    //         if (data.id) {
-    //             showSaveToCloudModal();
-    //         } else {
-    //             const message = 'You are not signed in! Please sign in now.';
-    //             showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
-    //             EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
-    //         }
-    //     });
+    // showConfirmDialogModal('This feature is being renovated! Please come back later.');
+    requestUserSignInState()
+        .then(data => {
+            if (!data) {
+                console.log('error'); // TODO:
+            }
+            if (data.id) {
+                showSaveToCloudModal();
+            } else {
+                const message = 'You are not signed in! Please sign in now.';
+                showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
+                EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
+            }
+        });
 }
 
 function unsubscribeOpenFromCloud() {

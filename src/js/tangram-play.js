@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 
 // Core elements
+import config from './config';
 import { tangramLayer } from './map/map';
 import { editor } from './editor/editor';
 
@@ -139,14 +140,22 @@ function makeSceneStateObjectFromUrl(url) {
             sceneState.files = [{
                 filename: getFilenameFromUrl(sceneUrl),
             }];
-            return window.fetch(sceneUrl);
+            // for dev server, we need to pass credentials to load anything
+            const options = {};
+            if (window.location.origin === config.MAPZEN_API.ORIGIN.STAGING) {
+                options.credentials = 'same-origin';
+            }
+            return window.fetch(sceneUrl, options);
         })
         .then(response => {
             if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error('The scene you requested could not be found.');
-                } else {
-                    throw new Error('Something went wrong loading the scene!');
+                switch (response.status) {
+                    case 403:
+                        throw new Error('You do not have permission to open that scene.');
+                    case 404:
+                        throw new Error('The scene you requested could not be found.');
+                    default:
+                        throw new Error('Something went wrong loading the scene!');
                 }
             }
 

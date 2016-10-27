@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
 import { showErrorModal } from './ErrorModal';
-import { fetchSceneList } from '../storage/mapzen';
+import { fetchSceneList, deleteScene } from '../storage/mapzen';
 import { load } from '../tangram-play';
 
 export default class OpenFromCloudModal extends React.Component {
@@ -16,26 +16,19 @@ export default class OpenFromCloudModal extends React.Component {
             loaded: false,
             scenes: [],
             selected: null,
+            beingDeleted: null,
         };
 
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
+        this.onClickSceneItem = this.onClickSceneItem.bind(this);
+        this.onDoubleClickSceneItem = this.onDoubleClickSceneItem.bind(this);
+        this.onClickDeleteScene = this.onClickDeleteScene.bind(this);
+        this.getSceneList = this.getSceneList.bind(this);
     }
 
     componentWillMount() {
-        // Always load new set of saved scenes from the cloud each
-        // time this modal is opened, in case it has changed
-        fetchSceneList()
-            .then((sceneList) => {
-                // Sort the scene list by the most recent up top
-                // Note this mutates the original array.
-                const scenes = reverse(sortBy(sceneList, 'timestamp'));
-
-                this.setState({
-                    loaded: true,
-                    scenes,
-                });
-            });
+        this.getSceneList();
     }
 
     onClickCancel() {
@@ -45,8 +38,49 @@ export default class OpenFromCloudModal extends React.Component {
     onClickConfirm() {
         if (this.state.selected) {
             this.onClickCancel(); // to close modal
-            load({ url: this.state.selected });
+            load({ url: this.state.selected.entrypoint_url });
         }
+    }
+
+    onClickSceneItem(event, item) {
+        if (this.state.beingDeleted !== item.id) {
+            this.setState({ selected: item });
+        }
+    }
+
+    onDoubleClickSceneItem(event, item) {
+        if (this.state.beingDeleted !== item.id) {
+            this.onClickConfirm();
+        }
+    }
+
+    onClickDeleteScene(event, sceneId) {
+        event.stopPropagation();
+        this.setState({ beingDeleted: sceneId });
+        deleteScene(sceneId)
+            .then(() => {
+                this.setState({ beingDeleted: null });
+                this.getSceneList();
+            })
+            .catch(error => {
+                showErrorModal('Could not delete the scene.');
+            });
+    }
+
+    getSceneList() {
+        // Always load new set of saved scenes from the cloud each
+        // time this modal is opened, in case it has changed
+        fetchSceneList()
+            .then(sceneList => {
+                // Sort the scene list by the most recent up top
+                // Note this mutates the original array.
+                const scenes = reverse(sortBy(sceneList, 'updated_at'));
+
+                this.setState({
+                    loaded: true,
+                    scenes,
+                });
+            });
     }
 
     /**
@@ -62,56 +96,64 @@ export default class OpenFromCloudModal extends React.Component {
 
     render() {
         const scenes = this.state.scenes;
+        const noScenesMsg = 'No scenes have been saved!';
 
-        let sceneList;
+        let sceneList = scenes.map((item, index) => {
+            // If the scene is selected, a special class is applied later to it
+            let classString = 'open-from-cloud-option';
+            let deleteButtonText = 'Delete';
 
-        if (this.state.loaded === true && scenes.length === 0) {
-            sceneList = 'No scenes have been saved!';
-        } else {
-            sceneList = scenes.map((item, index) => {
-                // If the scene is selected, a special class is applied later to it
-                let classString = 'open-from-cloud-option';
+            if (this.state.selected && this.state.selected.id === item.id) {
+                classString += ' open-from-cloud-selected';
+            }
 
-                // Placeholder text for no description.
-                if (item.description.length === 0) {
-                    item.description = 'No description provided.';
-                }
+            if (this.state.beingDeleted && this.state.beingDeleted === item.id) {
+                classString += ' open-from-cloud-deleting';
+                deleteButtonText = 'Deleting...';
+            }
 
-                if (this.state.selected === item.files.scene) {
-                    classString += ' open-from-cloud-selected';
-                }
-
-                // TODO:
-                // There is actually a lot more info stored than is currently being
-                // displayed. We have date, user, public or not, and map view.
-                return (
-                    <div
-                        className={classString}
-                        key={index}
-                        data-url={item.files.scene}
-                        onClick={() => { this.setState({ selected: item.files.scene }); }}
-                        onDoubleClick={this.onClickConfirm}
-                    >
-                        <div className="open-from-cloud-option-thumbnail">
-                            <img src={item.files.thumbnail} role="presentation" />
+            // TODO:
+            // There is actually a lot more info stored than is currently being
+            // displayed. We have date, user, public or not, and map view.
+            return (
+                <div
+                    className={classString}
+                    key={item.id}
+                    onClick={(e) => { this.onClickSceneItem(e, item); }}
+                    onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
+                >
+                    <div className="open-from-cloud-option-thumbnail">
+                        <img src={item.thumbnail} role="presentation" />
+                    </div>
+                    <div className="open-from-cloud-option-info">
+                        <div className="open-from-cloud-option-name">
+                            {item.name}
                         </div>
-                        <div className="open-from-cloud-option-info">
-                            <div className="open-from-cloud-option-name">
-                                {item.name}
-                            </div>
-                            <div className="open-from-cloud-option-description">
-                                {item.description}
-                            </div>
-                            <div className="open-from-cloud-option-date">
-                                {/* Show the date this was saved.
-                                    TODO: better formatting;
-                                    maybe use moment.js */}
-                                Saved on {new Date(item.timestamp).toLocaleString()}
-                            </div>
+                        <div className="open-from-cloud-option-description">
+                            {item.description || 'No description provided.'}
+                        </div>
+                        <div className="open-from-cloud-option-date">
+                            {/* Show the date this was saved.
+                                TODO: better formatting;
+                                maybe use moment.js */}
+                            Saved on {new Date(item.updated_at).toLocaleString()}
                         </div>
                     </div>
-                );
-            });
+                    <div className="open-from-cloud-option-tasks">
+                        <button
+                            onClick={(e) => { this.onClickDeleteScene(e, item.id); }}
+                            disabled={this.state.beingDeleted !== null}
+                        >
+                            {deleteButtonText}
+                        </button>
+                    </div>
+                </div>
+            );
+        });
+
+        // If, after parsing scenes, nothing is there, display message.
+        if (this.state.loaded === true && sceneList.length === 0) {
+            sceneList = noScenesMsg;
         }
 
         // Render the entire modal

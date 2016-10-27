@@ -1,261 +1,167 @@
-import { find } from 'lodash';
 import L from 'leaflet';
 
 import { getEditorContent } from '../editor/editor';
 import { map } from '../map/map';
 import { getScreenshotData } from '../map/screenshot';
-// TODO: implement now that move to react has changed this
-// import { getLocationLabel } from '../map/search';
 import { createThumbnail } from '../tools/thumbnail';
 
-const APP_NAME = 'play';
-const METADATA_DIR = '.tangramplay/';
-const METADATA_FILEPATH = `${METADATA_DIR}metadata.json`;
+import store from '../store';
+import config from '../config';
+
 const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
-const THUMBNAIL_FILEPATH = `${METADATA_DIR}thumbnail.png`;
-const SCENELIST_FILEPATH = 'scenelist.json';
 
-// We don't allow this to be customized (yet) and in the future you might
-// have multiple scene files anyway, so we'll do that all at once when we figure
-// it out.
-const SCENE_FILENAME = 'scene.yaml';
-
-/*
-    Store files like this:
-        ./scene-name-slug/scene.yaml
-        ./scene-name-slug/[etc]
-        ./scene-name-slug/.tangramplay/metadata.json
-        ./scene-name-slug/.tangramplay/thumbnail.png
-
-    Meta files are kept separate from scene related files but in a
-    .tangramplay directory in the scene directory's root. This is to keep
-    url schemes simple for the end user and namespace Play-related
-    files. Think .git or similar.
-
-    Scene files may eventually contain any quantity of files.
-    (e.g. textures, multiple yamls, fonts, etc)
-
-    Tangram Play only has two scene-related meta files now, a json
-    for random strings and a thumbnail image.
-
-    Eventually Tangram Play per-user settings may be stored in the root
-*/
-
-// super quickly written slugify function. only replaces whitespace with dashes.
-// does not deal with funky characters. or condense spaces, all that stuff.
-// should also eventually enforce a maximum length. or handle errors.
-function slugify(string) {
-    return string.trim().toLowerCase().replace(/\s/g, '-');
+// We only need the user-id for the API (plus, I assume, cookie credentials).
+// This is for retrieving just the user ID from Redux store. Maybe this goes
+// elsewhere eventually.
+function getUserId() {
+    return store.getState().user.id;
 }
 
-/**
- * Upload a file using the Mapzen upload API.
- *
- * @param {*} contents - content of the file to upload. This will be converted
- *      to a Blob object by this function.
- * @param {string} filepath - file path and file name to save to, relative
- *      to the app data directory. e.g. 'scene-name/scene.yaml'
- * @param {string} type - MIME type of contents. Defaults to 'plain/text'.
- * @returns {Promise} - fulfilled with the response of the POST request.
- */
-function uploadFile(contents, filepath, type = 'plain/text') {
-    let uploadedFileUrl;
-
-    return window.fetch(`/api/uploads/new?app=${APP_NAME}&path=${filepath}`, {
+// wrap fetch to make it work both locally and stuff
+function makeMapzenAPIRequest(path, options = {}) {
+    const apiPath = config.MAPZEN_API.SCENE_API_PATH;
+    const mergeOptions = {
+        ...options,
         credentials: 'same-origin',
-    })
-    .then(response => response.json())
-    .then(upload => {
-        const formData = new FormData();
-        Object.keys(upload.fields).forEach(field => {
-            formData.append(field, upload.fields[field]);
+    };
+
+    let baseUrl;
+
+    // use hostname to determine environment
+    // (should we use process.env.NODE_ENV for this?)
+    switch (window.location.hostname) {
+        case 'localhost':
+            baseUrl = config.MAPZEN_API.ORIGIN.DEVELOPMENT;
+            mergeOptions.credentials = 'include';
+            break;
+        case 'dev.mapzen.com':
+            baseUrl = config.MAPZEN_API.ORIGIN.STAGING;
+            break;
+        default:
+            baseUrl = config.MAPZEN_API.ORIGIN.PRODUCTION;
+    }
+
+    // Return wrapped fetch. This also wraps the part that checks if response
+    // is OK and throws an error or returns JSON.
+    return window.fetch(`${baseUrl}${apiPath}${path}`, mergeOptions)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.status);
+            }
+
+            return response.json();
         });
-
-        const blob = new Blob([contents], { type });
-        formData.append('file', blob, filepath);
-
-        // Remember the location of the file we want to save.
-        uploadedFileUrl = upload.url + upload.path;
-
-        return window.fetch(upload.url, {
-            method: 'POST',
-            body: formData,
-        });
-    })
-    .then(response => {
-        // If uploaded, return the url of the uploaded file.
-        if (response.ok) {
-            return uploadedFileUrl;
-        }
-
-        // Caller should catch this error.
-        // For now it just passes the status code.
-        throw new Error(response.status);
-    });
 }
 
 /**
- * Creates and uploads a thumbnail image of the current map scene.
+ * Create a thumbnail image of the current map scene as a Data-URI (which is
+ * currently the format accepted by the Mapzen scene API).
  *
- * @params {string} slug - slugified scene name to use as scene directory
- * @returns {Promise} - fulfilled with the response of the POST request.
+ * @returns {Promise} - fulfilled with the screenshot as a Data-URI.
  */
-function makeAndUploadThumbnail(slug) {
+function makeThumbnail() {
     // Grab a screenshot from the map and convert it to a thumbnail at a fixed
     // dimension. This makes file sizes and layout more predictable.
     return getScreenshotData()
         // At this size, thumbnail image should clock in at around ~90kb
         // to ~120kb (unoptimized, but that's the limitations of our
         // thumbnail function)
-        .then(screenshot => createThumbnail(screenshot.blob, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
-        // Make upload request
-        .then(thumbnail => uploadFile(thumbnail, slug + THUMBNAIL_FILEPATH, 'image/png'));
+        .then(screenshot => createThumbnail(screenshot.blob, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, true, false));
 }
 
 /**
- * Creates and uploads metadata information about the current scene.
+ * Creates additional metadata information about the current scene.
  *
  * @params {Object} data - data passed to saveToMapzenUserAccount()
- * @params {string} slug - slugified scene name to use as scene directory
- * @returns {Promise} - fulfilled with the response of the POST request.
+ * @returns {Object} metadata - additional metadata for the Scene API
  */
-function makeAndUploadMetadata(data, slug) {
+function addMetadata(data) {
     // Add some additional view information to the metadata.
+    const mapLabel = store.getState().map.label;
     const metadata = Object.assign({}, data, {
-        slug,
-        view: {
-            // label: getLocationLabel(), // TODO: change now that search component is React
-            label: '',
-            lat: map.getCenter().lat,
-            lng: map.getCenter().lng,
-            zoom: map.getZoom(),
-        },
-        versions: {
-            tangram: window.Tangram.version,
-            leaflet: L.version,
-        },
+        view_label: mapLabel || '',
+        view_lat: map.getCenter().lat,
+        view_lng: map.getCenter().lng,
+        view_zoom: map.getZoom(),
+        versions_leaflet: L.version,
+        versions_tangram: window.Tangram.version,
     });
 
-    // Store metadata
-    return uploadFile(JSON.stringify(metadata), slug + METADATA_FILEPATH, 'application/json');
+    return metadata;
 }
 
 /**
- * Creates and uploads the current scene file. We assume one editor document
- * and one scene file.
- *
- * @params {Object} data - data passed to saveToMapzenUserAccount()
- * @params {string} slug - slugified scene name to use as scene directory
- * @returns {Promise} - fulfilled with the response of the POST request.
- */
-function makeAndUploadScene(data, slug) {
-    // This is a single YAML file for now
-    const content = getEditorContent();
-
-    // Store metadata
-    return uploadFile(content, slug + SCENE_FILENAME, 'application/x-yaml');
-}
-
-/**
- * Fetches `scenelist.json` from the user account. Returns a Promise, resolved
- * with its contents in the form of an Array, or an empty Array if the file is
- * not found.
+ * Retrieve scene list from Mapzen scene API. Returns a Promise, resolved with
+ * its contents in the form of an Array. This array is empty if there are no
+ * scenes saved.
  *
  * @returns {Promise} - resolved with an array of saved scene data (or empty
  *          array if nothing is saved yet)
  */
 export function fetchSceneList() {
-    const fetchOpts = { credentials: 'same-origin' };
+    const userId = getUserId();
 
-    // TODO: Don't hardcode this URL!!
-    const sceneListPath =
-        /https:\/\/mapzen-uploads.s3.amazonaws.com\/play\/[a-z0-9-]+\/scenelist.json/;
-
-    // Checks the uploads object at `/api/uploads?app=play` to see if we have an
-    // existing `scenelist.json`. This is so that we can make the check without
-    // causing a 404 if it doesn't exist.
-    return window.fetch(`/api/uploads?app=${APP_NAME}`, fetchOpts)
-        .then(response => response.json())
-        .then(uploadsObj =>
-            find(uploadsObj.uploads, url =>
-                url.match(sceneListPath)))
-        .then((sceneListFile) => {
-            // `sceneListFile` is a url
-            if (sceneListFile) {
-                return window.fetch(sceneListFile, fetchOpts)
-                    .then(response => response.json());
+    return makeMapzenAPIRequest(userId)
+        .then(scenes => {
+            // API gives an object with error property if an error occurred.
+            if (scenes.error) {
+                throw new Error(scenes.error);
             }
 
-            // If not found, `sceneListFile` is null.
-            // Create a new one of these
-            return [];
+            // Returns with array of scenes (or empty array if no scenes).
+            return scenes;
         });
 }
 
-/**
- * Downloads the scene list (or creates a new one if not already present) and
- * appends saved scene data to it.
- *
- * @params {Object} data - data passed to saveToMapzenUserAccount()
- * @params {Array} savedLocations - array of saved files. This is created by
- *          Promise.all() and values should be in order:
- *          - savedLocations[0] - thumbnail.png
- *          - savedLocations[1] - metadata.json
- *          - savedLocations[2] - scene.yaml
- * @returns {Promise} - fulfilled with the object of scene data saved to
- *          `scenelist.json`
- */
-function downloadAndUpdateSceneList(data, savedLocations) {
-    const sceneData = Object.assign({}, data, {
-        files: {
-            thumbnail: savedLocations[0],
-            metadata: savedLocations[1],
-            scene: savedLocations[2],
-        },
-    });
+export function saveToMapzenUserAccount(data) {
+    const userId = getUserId();
 
-    // The resolved value `sceneList` of `fetchSceneList` is current
-    // scenelist.json contents or an empty array if it doesn't exist yet.
-    return fetchSceneList()
-        .then((sceneList) => {
-            let foundExistingName = false;
+    // Add other data - here, or provided upstream?
+    const metadata = addMetadata(data);
 
-            // If the scene exists already, overwrite its position in the list
-            for (let i = 0; i < sceneList.length; i++) {
-                if (sceneList[i].name === sceneData.name) {
-                    sceneList[i] = sceneData;
-                    foundExistingName = true;
-                    break;
-                }
-            }
-            // If not found, push to the end of array
-            if (foundExistingName === false) {
-                sceneList.push(sceneData);
-            }
+    // This is a single YAML file for now - whatever's in the current editor.
+    // TODO: get only root scene file
+    const content = getEditorContent();
 
-            return uploadFile(JSON.stringify(sceneList), SCENELIST_FILEPATH, 'application/json');
+    // POST a new scene.
+    return makeThumbnail()
+        .then(screenshotData => {
+            // Add thumbnail as data-URI to payload
+            metadata.thumbnail = screenshotData;
+
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(metadata),
+            };
+
+            return makeMapzenAPIRequest(`${userId}`, requestOptions);
         })
-        .then(() => sceneData);
+        // The returned `sceneData` will contain the `id` and
+        // `resources_url` needed to POST each of our scene resources.
+
+        // temp: to deal with this not needing url concatenation
+        .then(sceneData => window.fetch(sceneData.entrypoint_url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'text/x-yaml' },
+            body: content,
+            credentials: 'include',
+        })
+        .then(response => {
+            // There may be errors
+            if (!response.ok) {
+                const message = `There was a problem saving your scene. Error code ${response.status}`;
+                throw new Error(message);
+            }
+
+            // Return original scene data to success handler.
+            return sceneData;
+        }));
 }
 
-export function saveToMapzenUserAccount(data) {
-    // Add timestamp to `data`
-    data.timestamp = new Date().toJSON();
-
-    // Get a scene directory by slugifying the scene name, add a trailing slash.
-    const slug = `${slugify(data.name)}/`;
-
-    // These are Promises. Each creates its own contents and makes
-    // individual upload requests. We resolve this function when all Promises
-    // resolve.
-    const uploadThumbnail = makeAndUploadThumbnail(slug);
-    const uploadMetadata = makeAndUploadMetadata(data, slug);
-    const uploadScene = makeAndUploadScene(data, slug);
-
-    // Should all be urls of the saved files.
-    // Returns some an object containing metadata for the success handler
-    // Errors should be handled upstream as well
-    return Promise.all([uploadThumbnail, uploadMetadata, uploadScene])
-        .then(savedLocations => downloadAndUpdateSceneList(data, savedLocations));
+export function deleteScene(sceneId) {
+    // DELETE scenes/:developer_id/:scene_id
+    const userId = getUserId();
+    return makeMapzenAPIRequest(`${userId}/${sceneId}`, { method: 'DELETE' });
 }

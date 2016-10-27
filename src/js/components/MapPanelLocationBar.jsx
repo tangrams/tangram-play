@@ -11,6 +11,9 @@ import { map } from '../map/map';
 import config from '../config';
 import { saveLocationBookmark } from '../map/bookmarks';
 
+import store from '../store';
+import { UPDATE_MAP_LABEL } from '../store/actions';
+
 const MAP_UPDATE_DELTA = 0.002;
 
 /**
@@ -187,6 +190,20 @@ export default class MapPanelLocationBar extends React.Component {
                 .then((state) => {
                     this.setState(state);
                 });
+        }
+    }
+
+    /**
+     * React lifecycle method
+     * When state updates, put the updated label in Redux store. This is so
+     * things like saving to Mapzen can pick up the label.
+     */
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.placeholder !== this.state.placeholder) {
+            store.dispatch({
+                type: UPDATE_MAP_LABEL,
+                label: this.state.placeholder,
+            });
         }
     }
 

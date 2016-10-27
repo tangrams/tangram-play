@@ -1,6 +1,7 @@
 import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../actions';
 
 const initialState = {
+    id: null,
     nickname: null,
     email: null,
     avatar: null,
@@ -13,6 +14,7 @@ const user = (state = initialState, action) => {
         // Mapzen's user endpoint to the store.
         case USER_SIGNED_IN:
             return {
+                id: action.id,
                 nickname: action.nickname,
                 email: action.email,
                 avatar: action.avatar,

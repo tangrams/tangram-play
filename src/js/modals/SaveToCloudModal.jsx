@@ -9,6 +9,7 @@ import SaveToCloudSuccessModal from './SaveToCloudSuccessModal';
 import { showErrorModal } from './ErrorModal';
 import { saveToMapzenUserAccount } from '../storage/mapzen';
 import { editor } from '../editor/editor';
+import { getRootFileName } from '../editor/io';
 import { replaceHistoryState } from '../tools/url-state';
 
 // Default values in UI
@@ -67,6 +68,7 @@ export default class SaveToCloudModal extends React.Component {
             name,
             description,
             public: this.publicCheckbox.checked,
+            entrypoint: getRootFileName(),
         };
 
         saveToMapzenUserAccount(data)
@@ -126,12 +128,12 @@ export default class SaveToCloudModal extends React.Component {
 
         // Update the page URL. The scene parameter should
         // reflect the new scene URL.
-        replaceHistoryState({ scene: data.files.scene });
+        replaceHistoryState({ scene: data.entrypoint_url });
 
         // Show success modal
         // TODO
         ReactDOM.render(
-            <SaveToCloudSuccessModal urlValue={data.files.scene} />,
+            <SaveToCloudSuccessModal urlValue={data.entrypoint_url} />,
             document.getElementById('modal-container')
         );
     }
@@ -147,6 +149,7 @@ export default class SaveToCloudModal extends React.Component {
         if (this.component) {
             this.component.unmount();
         }
+        console.trace(error);
 
         const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 
