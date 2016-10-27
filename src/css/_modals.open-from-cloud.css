@@ -97,6 +97,8 @@
 .open-from-cloud-option-date {
   font-size: 0.8em;
   color: var(--ui-subtext-color);
+  /* Breathing room in case description gets too close to where the date output is. */
+  margin-top: 0.5em;
 }
 
 .open-from-cloud-deleting {
