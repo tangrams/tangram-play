@@ -149,7 +149,12 @@ export function saveToMapzenUserAccount(data) {
             credentials: 'include',
         })
         .then(response => {
-            console.log(response);
+            // There may be errors
+            if (!response.ok) {
+                const message = `There was a problem saving your scene. Error code ${response.status}`;
+                throw new Error(message);
+            }
+
             // Return original scene data to success handler.
             return sceneData;
         }));
