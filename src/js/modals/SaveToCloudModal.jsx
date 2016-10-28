@@ -13,9 +13,13 @@ import { getRootFileName } from '../editor/io';
 import { replaceHistoryState } from '../tools/url-state';
 
 // Default values in UI
-const DEFAULT_SCENE_NAME = 'Tangram scene';
-
+const DEFAULT_SCENE_NAME = 'Untitled scene';
 const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
+const DEFAULT_VALUES = {
+    sceneName: DEFAULT_SCENE_NAME,
+    sceneDescription: '',
+    sceneIsPublic: true,
+};
 
 export default class SaveToCloudModal extends React.Component {
     constructor(props) {
@@ -24,9 +28,14 @@ export default class SaveToCloudModal extends React.Component {
         this.timeout = null;
 
         this.state = {
+            ...DEFAULT_VALUES,
             thinking: false,
         };
 
+        this.onChangeSceneName = this.onChangeSceneName.bind(this);
+        this.onChangeSceneDescription = this.onChangeSceneDescription.bind(this);
+        this.onChangeScenePublic = this.onChangeScenePublic.bind(this);
+        this.onKeyPressInput = this.onKeyPressInput.bind(this);
         this.onClickConfirm = this.onClickConfirm.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
         this.setReadyUI = this.setReadyUI.bind(this);
@@ -48,6 +57,25 @@ export default class SaveToCloudModal extends React.Component {
         window.clearTimeout(this.timeout);
     }
 
+    onChangeSceneName(event) {
+        this.setState({ sceneName: event.target.value });
+    }
+
+    onChangeSceneDescription(event) {
+        this.setState({ sceneDescription: event.target.value });
+    }
+
+    onChangeScenePublic(event) {
+        this.setState({ sceneIsPublic: event.target.checked });
+    }
+
+    // Allows form to be submitted when one presses 'Enter' inside an input
+    onKeyPressInput(event) {
+        if (event.which === 13) {
+            this.onClickConfirm();
+        }
+    }
+
     onClickConfirm() {
         // Waiting state
         this.setState({
@@ -55,19 +83,19 @@ export default class SaveToCloudModal extends React.Component {
         });
 
         // Name of the scene
-        let name = this.nameInput.value;
+        let name = this.state.sceneName.trim();
         if (name.length === 0) {
             name = DEFAULT_SCENE_NAME;
         }
 
         // Description is optional
         // or appended to the user-produced value
-        const description = this.descriptionInput.value.trim();
+        const description = this.state.sceneDescription.trim();
 
         const data = {
             name,
             description,
-            public: this.publicCheckbox.checked,
+            public: this.state.sceneIsPublic,
             entrypoint: getRootFileName(),
         };
 
@@ -105,12 +133,7 @@ export default class SaveToCloudModal extends React.Component {
      * settings might be used.
      */
     resetInputs() {
-        this.descriptionInput.value = '';
-        this.descriptionInput.blur();
-        this.nameInput.value = DEFAULT_SCENE_NAME;
-        this.nameInput.blur();
-        this.publicCheckbox.checked = true;
-        this.publicCheckbox.blur();
+        this.setState(DEFAULT_VALUES);
     }
 
     // If successful, turn off wait state,
@@ -180,17 +203,21 @@ export default class SaveToCloudModal extends React.Component {
                     <input
                         type="text"
                         id="save-scene-name"
+                        value={this.state.sceneName}
                         ref={(ref) => { this.nameInput = ref; }}
                         placeholder="(default: Tangram scene)"
-                        defaultValue={DEFAULT_SCENE_NAME}
+                        onChange={this.onChangeSceneName}
+                        onKeyPress={this.onKeyPressInput}
                     />
                     <p>
                         <label htmlFor="save-scene-description">Scene description</label>
                         <input
                             type="text"
                             id="save-scene-description"
-                            ref={(ref) => { this.descriptionInput = ref; }}
+                            value={this.state.sceneDescription}
                             placeholder="(optional description)"
+                            onChange={this.onChangeSceneDescription}
+                            onKeyPress={this.onKeyPressInput}
                         />
                     </p>
                     <p>
@@ -198,9 +225,9 @@ export default class SaveToCloudModal extends React.Component {
                         <input
                             type="checkbox"
                             id="save-scene-public"
-                            ref={(ref) => { this.publicCheckbox = ref; }}
-                            defaultChecked
+                            checked={this.state.sceneIsPublic}
                             style={{ marginLeft: '0.5em' }}
+                            onChange={this.onChangeScenePublic}
                         />
                     </p>
                 </div>
