@@ -362,7 +362,7 @@ MenuBar.defaultProps = {
 
 function mapStateToProps(state) {
     return {
-        mapzenAccount: state.user.admin || false,
+        mapzenAccount: state.user.admin || window.location.hostname === 'localhost' || false,
         cameraToolsVisible: state.app.cameraToolsVisible,
     };
 }
