@@ -47,9 +47,9 @@ export default class WidgetToggle extends React.Component {
         this.setEditorValue(newvalue.toString());
     }
 
-    /* SHARED METHOD FOR ALL WIDGETS */
+    /* SHARED METHOD FOR ALL BOOKMARKS */
     /**
-     *  Use this method within a widget to communicate a value
+     *  Use this method within a bookmark to communicate a value
      *  back to the Tangram Play editor.
      */
     setEditorValue(string) {
@@ -65,7 +65,7 @@ export default class WidgetToggle extends React.Component {
     render() {
         return (
             <Checkbox
-                className="widget widget-toggle"
+                className="bookmark bookmark-toggle"
                 onChange={this.onChange}
                 inputRef={ref => { this.input = ref; }}
             />

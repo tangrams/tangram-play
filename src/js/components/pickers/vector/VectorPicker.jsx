@@ -154,7 +154,7 @@ export default class VectorPicker extends React.Component {
         return (
             <div>
                 {/* The button user clicks to open the vector picker */}
-                <div className="widget vectorpicker-bookmark" onClick={this.onClickBookmark} />
+                <div className="bookmark bookmark-vectorpicker" onClick={this.onClickBookmark} />
 
                 {/* Floating panel */}
                 <FloatingPanel

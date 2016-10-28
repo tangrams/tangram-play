@@ -7,7 +7,7 @@ import { editor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
-import { initMarks } from './widgets/widgets-manager';
+import { initMarks } from './editor/bookmarks';
 import { initErrorsManager } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
 import { initSceneImportDetector } from './editor/imports';

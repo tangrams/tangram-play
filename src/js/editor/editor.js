@@ -9,7 +9,7 @@ import { injectAPIKey, suppressAPIKeys } from './api-keys';
 import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
 import { loadScene } from '../map/map';
-import { insertMarksInViewport } from '../widgets/widgets-manager';
+import { insertMarksInViewport } from '../editor/bookmarks';
 import EventEmitter from '../components/event-emitter';
 
 import store from '../store';

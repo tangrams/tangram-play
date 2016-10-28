@@ -24,27 +24,15 @@ function isThereMark(node) {
     return node;
 }
 
-function createEl(type) {
+/**
+ * Creates an that CodeMirror inserts as the bookmark's DOM node. This element
+ * is merely an empty container that React later mounts into.
+ *
+ * @returns {Element} - empty element used as React root element.
+ **/
+function createMarkRootNode(type) {
     const el = document.createElement('div');
-
-    switch (type) {
-        case 'color':
-            el.className = 'widget-parent widget-color';
-            break;
-        case 'boolean':
-            el.className = 'widget-parent widget-boolean';
-            break;
-        case 'string':
-            el.className = 'widget-parent widget-string';
-            break;
-        case 'vector':
-            el.className = 'widget-parent widget-vector';
-            break;
-        default:
-            // Nothing
-            break;
-    }
-
+    el.className = 'editor-bookmark-root';
     return el;
 }
 
@@ -61,7 +49,7 @@ function insertMarks(fromLine, toLine) {
     toLine = (toLine || fromLine);
 
     // For each line in the range, get the line handle, check for nodes,
-    // check for widgets, and add or remove them.
+    // check for marks, and add or remove them.
     for (let line = fromLine; line <= toLine; line++) {
         const doc = editor.getDoc();
         const lineHandle = doc.getLineHandle(line);
@@ -82,14 +70,14 @@ function insertMarks(fromLine, toLine) {
         }
 
         for (let node of nodes) {
-            // See if there's a widget constructor attached to it, and
+            // See if there's a bookmark constructor attached to it, and
             // if so, we create it and insert it into the document.
-            // Skip blank lines, which may have the state (and widget
+            // Skip blank lines, which may have the state (and bookmark
             // constructor) of the previous line.
-            if (node.widgetMark && lineHandle.text.trim() !== '') {
+            if (node.bookmark && lineHandle.text.trim() !== '') {
                 const lineNumber = doc.getLineNumber(lineHandle);
 
-                const mytype = node.widgetMark.type;
+                const mytype = node.bookmark.type;
 
                 // TODO: What does this do?
                 if (lineNumber) {
@@ -102,9 +90,9 @@ function insertMarks(fromLine, toLine) {
                 let mybookmark = {};
 
                 if (node !== '') {
-                    const myel = createEl(mytype);
+                    const myel = createMarkRootNode(mytype);
 
-                    // inserts the widget into CodeMirror DOM
+                    // inserts the bookmark into CodeMirror DOM
                     mybookmark = doc.setBookmark(node.range.to, {
                         widget: myel, // inserted DOM element into position
                         insertLeft: true,
@@ -112,7 +100,7 @@ function insertMarks(fromLine, toLine) {
                         handleMouseEvents: false,
                     });
                     // We attach only one property to a bookmark that only inline
-                    // widgets will need to use to verify position within a node array
+                    // bookmark will need to use to verify position within a node array
                     mybookmark.widgetPos = node.range;
 
                     if (mytype === 'color') {
@@ -122,13 +110,13 @@ function insertMarks(fromLine, toLine) {
                         );
                     } else if (mytype === 'string') {
                         // We need to pass a few more values to the dropdown
-                        // widget: a set of options, a key, and a sources string
+                        // mark: a set of options, a key, and a sources string
                         ReactDOM.render(
                             <WidgetDropdown
                                 bookmark={mybookmark}
-                                options={node.widgetMark.options}
+                                options={node.bookmark.options}
                                 keyType={node.key}
-                                source={node.widgetMark.source}
+                                source={node.bookmark.source}
                                 initialValue={node.value}
                             />,
                             myel
@@ -197,9 +185,10 @@ function getExistingMarks(fromLine, toLine) {
         existingMarks = existingMarks.concat(trailingMarks);
     }
 
-    // Filter out anything that is not of type `bookmark`. Text markers can
-    // come from different sources, such as the matching-brackets plugin for
-    // CodeMirror. We only want widget bookmarks.
+    // Filter out anything that is not of type `bookmark`. Text markers in
+    // CodeMirro can come from other sources, such as the matching-brackets
+    // plugin for CodeMirror. We only want bookmarks attached by Tangram Play.
+    // Find out: `widgetNode` is created by CodeMirror?
     existingMarks = existingMarks.filter(marker =>
         marker.type === 'bookmark' && {}.hasOwnProperty.call(marker, 'widgetNode'));
 
@@ -207,7 +196,7 @@ function getExistingMarks(fromLine, toLine) {
 }
 
 /**
- * Removes all existing widget bookmarks.
+ * Removes all existing bookmarks.
  *
  * @param {Number} fromLine - The line number to clear from
  * @param {Number} toLine - Optional. The line number to clear to. If not
@@ -236,10 +225,10 @@ function handleEditorChanges(cm, changes) {
         const fromLine = change.from.line;
         let toLine = change.to.line;
 
-        // Changes from a widget popup mark its origin as `+value_change`
+        // Changes from a popup will declare its origin as `+value_change`.
         // Just call insertMarks, which will determine whether a mark should be
         // inserted, if not already. Don't clear marks here, which causes the
-        // widget popups to lose contact with the original widget bookmark.
+        // popups to lose contact with the original bookmark.
         if (change.origin === '+value_change' && fromLine === toLine) {
             insertMarks(fromLine, toLine);
         } else {
@@ -276,7 +265,7 @@ function handleEditorChanges(cm, changes) {
 
 /**
  * Handler function for the CodeMirror `scroll` event.
- * As the different parts of the viewport come into view, insert widget marks
+ * As the different parts of the viewport come into view, insert editor marks
  * that may exist in the viewport.
  *
  * @param {CodeMirror} cm - instance of CodeMirror editor, automatically
@@ -289,9 +278,11 @@ function handleEditorScroll(cm) {
 }
 
 /**
- * For inline nodes
- * Reparses lines that have inline nodes when a widget changes the text in the editor
- * @param {Object} data contains the from.line and from.ch of the widget the user has just edited
+ * For inline nodes. Reparses lines that have inline nodes when a bookmark
+ * changes text in the editor.
+ *
+ * @param {Object} data contains the position of the bookmark connected to
+ *          data that the user has just edited
  */
 function reparseInlineNodes(data) {
     const changedNodeCh = data.from.ch; // Contains the from character of the text the user has just edited
@@ -304,10 +295,10 @@ function reparseInlineNodes(data) {
 
     // If there is more than one node in the inline line,
     // then only remove the ones that the user has not just edited
-    for (const marker of existingMarks) {
-        if (marker.widgetPos.from.ch !== changedNodeCh) {
-            ReactDOM.unmountComponentAtNode(marker.replacedWith);
-            marker.clear();
+    for (const mark of existingMarks) {
+        if (mark.widgetPos.from.ch !== changedNodeCh) {
+            ReactDOM.unmountComponentAtNode(mark.replacedWith);
+            mark.clear();
         }
     }
 

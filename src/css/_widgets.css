@@ -6,16 +6,16 @@
   text-indent: initial;
 }
 
-/* React Widgets */
+/* CodeMirror bookmarks and popups */
 
-.widget {
+.bookmark {
   display: inline-block;
   position: relative;
   margin: 0 0.5em;
   user-select: none;
 }
 
-.widget-parent {
+.editor-bookmark-root {
   display: inline-block;
   position: relative;
   box-sizing: border-box;
@@ -23,6 +23,7 @@
   user-select: none;
 }
 
+/* TODO: Rename, merge with floating-panel ? */
 .widget-modal {
   display: inline-flex !important;
   width: auto;
@@ -45,7 +46,7 @@
 
 /* React: Widget Toggle */
 
-.widget-toggle {
+.bookmark-toggle {
   box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.15);
   max-width: 14px;
@@ -57,17 +58,17 @@
   display: flex;
 }
 
-.widget-toggle label {
+.bookmark-toggle label {
   display: flex;
 }
 
-.widget-toggle input[type=checkbox] {
+.bookmark-toggle input[type=checkbox] {
   position: relative;
   outline: none;
   margin-top: -0.15em;
 }
 
-.widget-toggle input[type=checkbox]::after {
+.bookmark-toggle input[type=checkbox]::after {
   content: '\FF58';
   color: white;
   visibility: visible;
@@ -77,7 +78,7 @@
   background-color: var(--ui-element-color);
 }
 
-.widget-toggle input[type=checkbox]:checked::after {
+.bookmark-toggle input[type=checkbox]:checked::after {
   content: '\2713';
   color: white;
 }
@@ -134,7 +135,7 @@ select {
 
 /* Should probably simplify this for color picker too.
    just refers to button being clicked to open modal */
-.vectorpicker-bookmark {
+.bookmark-vectorpicker {
   box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.15);
   max-width: 14px;

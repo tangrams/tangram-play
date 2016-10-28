@@ -3,7 +3,7 @@ import CodeMirror from 'codemirror';
 // import YAMLParser from 'yaml-ast-parser';
 import 'codemirror/mode/yaml/yaml.js';
 import './glsl-tangram';
-import { attachWidgetMarkConstructorsToDocumentState } from './widgets';
+import { attachBookmarkConstructorsToDocumentState } from './widgets';
 
 const ADDRESS_KEY_DELIMITER = ':';
 
@@ -295,7 +295,7 @@ export function parseYamlString(string, state, tabSize) {
     }
 
     // Adds widgets to nodes, if they have them.
-    state = attachWidgetMarkConstructorsToDocumentState(state);
+    state = attachBookmarkConstructorsToDocumentState(state);
 
     return state;
 }

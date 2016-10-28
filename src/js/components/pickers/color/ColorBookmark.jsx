@@ -199,7 +199,7 @@ export default class ColorBookmark extends React.Component {
 
                         return (
                             <div
-                                className="widget bookmark-color"
+                                className="bookmark bookmark-color"
                                 ref={(ref) => { this.colorPickerBookmark = ref; }}
                                 onClick={this.onClickBookmark}
                             >
