@@ -49,6 +49,11 @@
   margin-top: 20px;
 }
 
+/* used in save-to modals */
+.modal-content p {
+  margin-top: 1em;
+}
+
 .modal-well {
   border: var(--ui-border);
   box-shadow: var(--ui-well-shadow);
