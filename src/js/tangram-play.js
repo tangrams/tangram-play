@@ -7,7 +7,7 @@ import { editor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
-import { initWidgetMarks } from './widgets/widgets-manager';
+import { initMarks } from './widgets/widgets-manager';
 import { initErrorsManager } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
 import { initSceneImportDetector } from './editor/imports';
@@ -290,7 +290,7 @@ export function initTangramPlay() {
             // TODO: Verify if this is still true?
             if (window.isEmbedded === undefined) {
                 // Add widgets marks and errors manager.
-                initWidgetMarks();
+                initMarks();
 
                 // This for sure depends on Tangram
                 initErrorsManager();

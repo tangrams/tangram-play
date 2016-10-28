@@ -49,6 +49,8 @@ function createEl(type) {
 }
 
 /**
+ * Parses the editor from `fromLine` to `toLine` and inserts marks where
+ * needed.
  *
  * @param {Number} fromLine - The line number to insert from
  * @param {Number} toLine - Optional. The line number to insert to. If not
@@ -142,6 +144,15 @@ function insertMarks(fromLine, toLine) {
             }
         }
     }
+}
+
+/**
+ * A convenience function using insertMarks() to insert all marks in the
+ * current visible viewport.
+ */
+export function insertMarksInViewport() {
+    const viewport = editor.getViewport();
+    insertMarks(viewport.from, viewport.to);
 }
 
 /**
@@ -268,7 +279,8 @@ function handleEditorChanges(cm, changes) {
  * As the different parts of the viewport come into view, insert widget marks
  * that may exist in the viewport.
  *
- * @param {CodeMirror} cm - instance of CodeMirror editor.
+ * @param {CodeMirror} cm - instance of CodeMirror editor, automatically
+ *          passed in by the editor.on('scroll') event listener.
  */
 function handleEditorScroll(cm) {
     const viewport = cm.getViewport();
@@ -303,14 +315,14 @@ function reparseInlineNodes(data) {
 }
 
 /**
- * Initializes widget marks in the current editor viewport and adds event
- * listeners to handle new marks that need to be created as the editor content
- * is changed on scrolled.
+ * Initializes marks in the current editor viewport and adds event listeners
+ * to handle new marks that need to be created as the editor content is
+ * changed or scrolled. These listeners are applied on the entire editor
+ * instance, not on the document.
  */
-export function initWidgetMarks() {
+export function initMarks() {
     // On initialization, insert all marks in the current viewport.
-    const viewport = editor.getViewport();
-    insertMarks(viewport.from, viewport.to);
+    insertMarksInViewport();
 
     // On editor changes, update those marks
     editor.on('changes', handleEditorChanges);

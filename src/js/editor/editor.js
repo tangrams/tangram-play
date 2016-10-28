@@ -9,6 +9,7 @@ import { injectAPIKey, suppressAPIKeys } from './api-keys';
 import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
 import { loadScene } from '../map/map';
+import { insertMarksInViewport } from '../widgets/widgets-manager';
 import EventEmitter from '../components/event-emitter';
 
 import store from '../store';
@@ -90,6 +91,12 @@ export function setEditorContent(doc, readOnly = false) {
     // Swap current content in CodeMirror document with the provided Doc instance.
     editor.swapDoc(doc);
     editor.setOption('readOnly', readOnly);
+
+    // Once the document is swapped in, if the content is not read-only,
+    // add bookmarks back in if they're not added already.
+    if (readOnly === false) {
+        insertMarksInViewport();
+    }
 }
 
 /**
