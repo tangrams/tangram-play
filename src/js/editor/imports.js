@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { editor } from './editor';
 import { isAbsoluteUrl, splitUrlIntoFilenameAndBasePath } from '../tools/helpers';
 import { showErrorModal } from '../modals/ErrorModal';
@@ -9,33 +8,33 @@ import { ADD_FILE } from '../store/actions';
 
 // TODO: this does not know what to do if imports are all on one line, e.g. flow notation
 function normalizeImportValue(string) {
-    // Truncate anything beyond what looks like a comment (the `#` mark)
-    // Note this will truncate URL strings with hash fragments, but why are
-    // importing those anyway?
-    let urlString = string.split('#')[0];
+  // Truncate anything beyond what looks like a comment (the `#` mark)
+  // Note this will truncate URL strings with hash fragments, but why are
+  // importing those anyway?
+  let urlString = string.split('#')[0];
 
-    // Replace what strings start with (the collection marker `-` or the
-    // `import:` key), remove whitespace
-    urlString = urlString.replace(/^\s*(-|import:)\s*/, '').trim();
+  // Replace what strings start with (the collection marker `-` or the
+  // `import:` key), remove whitespace
+  urlString = urlString.replace(/^\s*(-|import:)\s*/, '').trim();
 
-    // Remove quotation marks around the value, if present
-    urlString = urlString.replace(/^('|")?/, '').replace(/('|")?$/, '').trim();
+  // Remove quotation marks around the value, if present
+  urlString = urlString.replace(/^('|")?/, '').replace(/('|")?$/, '').trim();
 
-    return urlString;
+  return urlString;
 }
 
 // Check the files array to see if a file of "key" property is open already
 function isAlreadyOpened(key) {
-    const files = store.getState().scene.files;
-    let found = false;
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.key && file.key === key) {
-            found = true;
-            break;
-        }
+  const files = store.getState().scene.files;
+  let found = false;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (file.key && file.key === key) {
+      found = true;
+      break;
     }
-    return found;
+  }
+  return found;
 }
 
 // Let's work on finding scene imports.
@@ -122,7 +121,7 @@ export function initSceneImportDetector() {
           store.dispatch({
             type: ADD_FILE,
             file,
-        });
+          });
         })
         .catch(error => {
           showErrorModal(error.message);

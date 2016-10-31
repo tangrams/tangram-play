@@ -16,7 +16,7 @@ let previousUniqueInteger = 0;
  * @returns {Number}
  */
 export function uniqueInteger() {
-    return previousUniqueInteger++;
+  return previousUniqueInteger++;
 }
 
 /**
@@ -30,7 +30,7 @@ export function uniqueInteger() {
  * @returns {Boolean}
  */
 export function isEmptyString(str) {
-    return (!str || str.trim().length === 0);
+  return (!str || str.trim().length === 0);
 }
 
 /**
@@ -43,15 +43,15 @@ export function isEmptyString(str) {
  * @returns {Boolean} true if url is an absolute URI (fully-qualified), false otherwise
  */
 export function isAbsoluteUrl(url) {
-    // Look for whether or not the url string appears to begin with a valid
-    // scheme. "The scheme consists of a sequence of characters beginning with
-    // a letter and followed by any combination of letters, digits, plus (+),
-    // period (.), or hyphen (-)." (Wikipedia) It also checks for two slashes.
-    // "This is required by some schemes and not required by some others."
-    // But we will assume it is required here.
-    const schemePattern = /([a-zA-Z0-9+.-]+:)?\/\//;
+  // Look for whether or not the url string appears to begin with a valid
+  // scheme. "The scheme consists of a sequence of characters beginning with
+  // a letter and followed by any combination of letters, digits, plus (+),
+  // period (.), or hyphen (-)." (Wikipedia) It also checks for two slashes.
+  // "This is required by some schemes and not required by some others."
+  // But we will assume it is required here.
+  const schemePattern = /([a-zA-Z0-9+.-]+:)?\/\//;
 
-    return url.search(schemePattern) === 0;
+  return url.search(schemePattern) === 0;
 }
 
 /**
@@ -60,25 +60,25 @@ export function isAbsoluteUrl(url) {
  * @param {string} url
  */
 export function prependProtocolToUrl(url) {
-    // We have two checks. The first is whether the url string begins with a
-    // valid scheme (via `isAbsoluteUrl()`).
+  // We have two checks. The first is whether the url string begins with a
+  // valid scheme (via `isAbsoluteUrl()`).
 
-    // If the url string does not begin with a valid scheme, we also check if it
-    // looks like a domain name. This test expects the domain name to be
-    // followed by a slash, otherwise file extension will look like a TLD.
-    // Be sure to take into account "localhost" and port numbers.
-    const domainPattern = /((([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+)|localhost)(:[0-9]+)?\//;
+  // If the url string does not begin with a valid scheme, we also check if it
+  // looks like a domain name. This test expects the domain name to be
+  // followed by a slash, otherwise file extension will look like a TLD.
+  // Be sure to take into account "localhost" and port numbers.
+  const domainPattern = /((([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+)|localhost)(:[0-9]+)?\//;
 
-    // The string MUST start with this pattern. If not, append only the slashes
-    // to make this a protocol-relative URL. This is because we cannot guess
-    // whether the desired protocol is https://, http:// or something else. However,
-    // we can let the browser decide.
-    if (isAbsoluteUrl(url) === false && url.search(domainPattern) === 0) {
-        return `//${url}`;
-    }
+  // The string MUST start with this pattern. If not, append only the slashes
+  // to make this a protocol-relative URL. This is because we cannot guess
+  // whether the desired protocol is https://, http:// or something else. However,
+  // we can let the browser decide.
+  if (isAbsoluteUrl(url) === false && url.search(domainPattern) === 0) {
+    return `//${url}`;
+  }
 
-    // If the string does already start with a protocol (scheme), return it as is.
-    return url;
+  // If the string does already start with a protocol (scheme), return it as is.
+  return url;
 }
 
 /**
@@ -90,9 +90,9 @@ export function prependProtocolToUrl(url) {
  * @returns {string} filename - a best guess.
  */
 export function getFilenameFromUrl(url) {
-    const filenameParts = url.split('#')[0].split('?')[0].split('/');
-    const filename = filenameParts[filenameParts.length - 1];
-    return filename;
+  const filenameParts = url.split('#')[0].split('?')[0].split('/');
+  const filename = filenameParts[filenameParts.length - 1];
+  return filename;
 }
 
 /**
@@ -106,13 +106,13 @@ export function getFilenameFromUrl(url) {
  * @returns {Array} url parts - a best guess.
  */
 export function splitUrlIntoFilenameAndBasePath(url) {
-    const filenameParts = url.split('#')[0].split('?')[0].split('/');
-    const filename = filenameParts.pop();
+  const filenameParts = url.split('#')[0].split('?')[0].split('/');
+  const filename = filenameParts.pop();
 
-    // Rejoin base path parts and make sure it contains a trailing slash
-    filenameParts.push('');
-    const basePath = filenameParts.join('/');
-    return [basePath, filename];
+  // Rejoin base path parts and make sure it contains a trailing slash
+  filenameParts.push('');
+  const basePath = filenameParts.join('/');
+  return [basePath, filename];
 }
 
 /**
@@ -123,20 +123,20 @@ export function splitUrlIntoFilenameAndBasePath(url) {
  * @returns {string} path string
  */
 export function getBasePathFromUrl(url) {
-    if (typeof url === 'string' && url.search(/^(data|blob):/) === -1) {
-        const qs = url.indexOf('?');
-        if (qs > -1) {
-            url = url.substr(0, qs);
-        }
-
-        const hash = url.indexOf('#');
-        if (hash > -1) {
-            url = url.substr(0, hash);
-        }
-
-        return url.substr(0, url.lastIndexOf('/') + 1) || '';
+  if (typeof url === 'string' && url.search(/^(data|blob):/) === -1) {
+    const qs = url.indexOf('?');
+    if (qs > -1) {
+      url = url.substr(0, qs);
     }
-    return '';
+
+    const hash = url.indexOf('#');
+    if (hash > -1) {
+      url = url.substr(0, hash);
+    }
+
+    return url.substr(0, url.lastIndexOf('/') + 1) || '';
+  }
+  return '';
 }
 
 /**
@@ -146,11 +146,11 @@ export function getBasePathFromUrl(url) {
  * @return {Number} ratio
  */
 export function getDevicePixelRatio(ctx) {
-    const devicePixelRatio = window.devicePixelRatio || 1;
-    const backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
-                            ctx.mozBackingStorePixelRatio ||
-                            ctx.msBackingStorePixelRatio ||
-                            ctx.oBackingStorePixelRatio ||
-                            ctx.backingStorePixelRatio || 1;
-    return devicePixelRatio / backingStoreRatio;
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  const backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+    ctx.mozBackingStorePixelRatio ||
+    ctx.msBackingStorePixelRatio ||
+    ctx.oBackingStorePixelRatio ||
+    ctx.backingStorePixelRatio || 1;
+  return devicePixelRatio / backingStoreRatio;
 }

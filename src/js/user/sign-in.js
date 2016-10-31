@@ -14,7 +14,7 @@ const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
 // It is disabled on http and any other host.
 const signInEnabled = (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
     window.location.protocol === 'https:') ||
-    (getQueryStringObject().forceSignIn === 'true' && window.location.hostname === 'localhost');
+  (getQueryStringObject().forceSignIn === 'true' && window.location.hostname === 'localhost');
 
 // Set credentials option for window.fetch depending on host.
 // Cookies are sent for each request only if the origin matches on mapzen.com,
@@ -48,40 +48,40 @@ let cachedSignInData;
  * @todo Handle errors related to fetching API.
  */
 export function requestUserSignInState() {
-    if (signInEnabled) {
-        return window.fetch(signInHost + SIGN_IN_STATE_API_ENDPOINT, { credentials: signInCredentials })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(response.status);
-                }
+  if (signInEnabled) {
+    return window.fetch(signInHost + SIGN_IN_STATE_API_ENDPOINT, { credentials: signInCredentials })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.status);
+        }
 
-                return response.json();
-            })
-            .then(data => {
-                cachedSignInData = data;
+        return response.json();
+      })
+      .then(data => {
+        cachedSignInData = data;
 
-                store.dispatch({
-                    type: USER_SIGNED_IN,
-                    id: data.id,
-                    nickname: data.nickname,
-                    email: data.email,
-                    avatar: data.avatar,
-                    admin: data.admin,
-                });
+        store.dispatch({
+          type: USER_SIGNED_IN,
+          id: data.id,
+          nickname: data.nickname,
+          email: data.email,
+          avatar: data.avatar,
+          admin: data.admin,
+        });
 
-                return data;
-            });
-    }
+        return data;
+      });
+  }
 
-    // Returns a promise that resolves to `null` if Tangram Play is not
-    // hosted somewhere where the `/api/developer.json` endpoint is
-    // available.
-    return Promise.resolve(null);
+  // Returns a promise that resolves to `null` if Tangram Play is not
+  // hosted somewhere where the `/api/developer.json` endpoint is
+  // available.
+  return Promise.resolve(null);
 }
 
 // Note: deprecated (only used for Gist)
 export function getCachedUserSignInData() {
-    return cachedSignInData;
+  return cachedSignInData;
 }
 
 /**
@@ -89,14 +89,14 @@ export function getCachedUserSignInData() {
  * is performed.
  */
 export function requestUserSignOut() {
-    return window.fetch(signInHost + SIGN_OUT_API_ENDPOINT, {
-        method: 'POST',
-        credentials: signInCredentials,
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error(response.status);
-        }
+  return window.fetch(signInHost + SIGN_OUT_API_ENDPOINT, {
+    method: 'POST',
+    credentials: signInCredentials,
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
 
-        store.dispatch({ type: USER_SIGNED_OUT });
-    });
+    store.dispatch({ type: USER_SIGNED_OUT });
+  });
 }

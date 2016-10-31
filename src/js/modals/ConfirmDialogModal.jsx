@@ -6,82 +6,82 @@ import Modal from './Modal';
 import Icon from '../components/Icon';
 
 export default class ConfirmDialogModal extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.onClickCancel = this.onClickCancel.bind(this);
-        this.onClickConfirm = this.onClickConfirm.bind(this);
+    this.onClickCancel = this.onClickCancel.bind(this);
+    this.onClickConfirm = this.onClickConfirm.bind(this);
+  }
+
+  componentDidMount() {
+    // Focus on the confirm button if `prop.focusConfirm` is true, which it
+    // is by default. Set `focusConfirm={false}` for potentially dangerous
+    // actions when you want to make sure the user has confirmed the action.
+    if (this.props.focusConfirm === true) {
+      // eslint-disable-next-line react/no-find-dom-node
+      ReactDOM.findDOMNode(this.confirmButton).focus();
+    } else {
+      // eslint-disable-next-line react/no-find-dom-node
+      ReactDOM.findDOMNode(this.cancelButton).focus();
     }
+  }
 
-    componentDidMount() {
-        // Focus on the confirm button if `prop.focusConfirm` is true, which it
-        // is by default. Set `focusConfirm={false}` for potentially dangerous
-        // actions when you want to make sure the user has confirmed the action.
-        if (this.props.focusConfirm === true) {
-            // eslint-disable-next-line react/no-find-dom-node
-            ReactDOM.findDOMNode(this.confirmButton).focus();
-        } else {
-            // eslint-disable-next-line react/no-find-dom-node
-            ReactDOM.findDOMNode(this.cancelButton).focus();
-        }
-    }
+  onClickCancel() {
+    this.component.unmount();
+    this.props.cancelCallback();
+  }
 
-    onClickCancel() {
-        this.component.unmount();
-        this.props.cancelCallback();
-    }
+  onClickConfirm() {
+    this.component.unmount();
+    this.props.confirmCallback();
+  }
 
-    onClickConfirm() {
-        this.component.unmount();
-        this.props.confirmCallback();
-    }
+  render() {
+    return (
+      <Modal
+        className="error-modal"
+        ref={(ref) => { this.component = ref; }}
+        cancelFunction={this.onClickCancel}
+      >
+        <p className="modal-text">
+          {this.props.message}
+        </p>
 
-    render() {
-        return (
-            <Modal
-                className="error-modal"
-                ref={(ref) => { this.component = ref; }}
-                cancelFunction={this.onClickCancel}
-            >
-                <p className="modal-text">
-                    {this.props.message}
-                </p>
-
-                <div className="modal-buttons">
-                    <Button
-                        className="button-cancel"
-                        onClick={this.onClickCancel}
-                        ref={(ref) => { this.cancelButton = ref; }}
-                    >
-                        <Icon type="bt-times" />
-                        Cancel
-                    </Button>
-                    <Button
-                        className="button-confirm"
-                        onClick={this.onClickConfirm}
-                        ref={(ref) => { this.confirmButton = ref; }}
-                    >
-                        <Icon type="bt-check" />
-                        Continue
-                    </Button>
-                </div>
-            </Modal>
-        );
-    }
+        <div className="modal-buttons">
+          <Button
+            className="button-cancel"
+            onClick={this.onClickCancel}
+            ref={(ref) => { this.cancelButton = ref; }}
+          >
+            <Icon type="bt-times" />
+            Cancel
+          </Button>
+          <Button
+            className="button-confirm"
+            onClick={this.onClickConfirm}
+            ref={(ref) => { this.confirmButton = ref; }}
+          >
+            <Icon type="bt-check" />
+            Continue
+          </Button>
+        </div>
+      </Modal>
+    );
+  }
 }
 
 ConfirmDialogModal.propTypes = {
-    // Error message might be an Error object or a string
-    message: React.PropTypes.string.isRequired,
-    confirmCallback: React.PropTypes.func,
-    cancelCallback: React.PropTypes.func,
-    focusConfirm: React.PropTypes.bool,
+  // Error message might be an Error object or a string
+  message: React.PropTypes.string.isRequired,
+  confirmCallback: React.PropTypes.func,
+  cancelCallback: React.PropTypes.func,
+  focusConfirm: React.PropTypes.bool,
 };
 
 ConfirmDialogModal.defaultProps = {
-    confirmCallback: noop,
-    cancelCallback: noop,
-    focusConfirm: true,
+  confirmCallback: noop,
+  cancelCallback: noop,
+  focusConfirm: true,
 };
 
 // For cached reference to element
@@ -101,16 +101,16 @@ let modalContainerEl;
  *          `cancelCallback` prop.
  */
 export function showConfirmDialogModal(message, confirmCallback, cancelCallback) {
-    if (!modalContainerEl || !modalContainerEl.nodeName) {
-        modalContainerEl = document.getElementById('modal-container');
-    }
+  if (!modalContainerEl || !modalContainerEl.nodeName) {
+    modalContainerEl = document.getElementById('modal-container');
+  }
 
-    ReactDOM.render(
-        <ConfirmDialogModal
-            message={message}
-            confirmCallback={confirmCallback}
-            cancelCallback={cancelCallback}
-        />,
-        modalContainerEl
-    );
+  ReactDOM.render(
+    <ConfirmDialogModal
+      message={message}
+      confirmCallback={confirmCallback}
+      cancelCallback={cancelCallback}
+    />,
+    modalContainerEl
+  );
 }

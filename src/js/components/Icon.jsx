@@ -5,24 +5,24 @@ import React from 'react';
  * as well as an optional 'active' prop indicating whether icon should be active
  */
 export default function Icon(props) {
-    let className = `btm ${props.type}`;
+  let className = `btm ${props.type}`;
 
-    if (props.active) {
-        className += ' icon-active';
-    }
+  if (props.active) {
+    className += ' icon-active';
+  }
 
-    // Additional classes
-    if (props.className) {
-        className += ` ${props.className}`;
-    }
+  // Additional classes
+  if (props.className) {
+    className += ` ${props.className}`;
+  }
 
-    return (
-        <i className={className} />
-    );
+  return (
+    <i className={className} />
+  );
 }
 
 Icon.propTypes = {
-    type: React.PropTypes.string.isRequired,
-    className: React.PropTypes.string,
-    active: React.PropTypes.bool,
+  type: React.PropTypes.string.isRequired,
+  className: React.PropTypes.string,
+  active: React.PropTypes.bool,
 };

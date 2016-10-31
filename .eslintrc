@@ -16,12 +16,8 @@
   "plugins": ["react"],
   "extends": ["airbnb"],
   "rules": {
-    // Override airbnb indentation
-    "indent": ["error", 4, { SwitchCase: 1, VariableDeclarator: 1, outerIIFEBody: 1 }],
-    "react/jsx-indent": [2, 4],
-    "react/jsx-indent-props": [2, 4],
-
-    // Extend max-len because we have more indentation
+    // TODO: remove
+    // Extend max-len because we used to have more indentation
     // ignoreUrls and ignoreComments are the same as airbnb rules
     // ignorePattern is added here - we have some very long regexes
     // this may be supported by a `ignoreRegex` pattern in future, but for now
@@ -32,7 +28,6 @@
       "ignoreComments": false,
       "ignorePattern": "^\\s*(const|let|var)\\s+\\w+\\s+\\=\\s+\\/.*\\/(|i|g|m|ig|im|gm|igm);?$",
     }],
-    // --End override airbnb indentation
 
     // Allow arguments in functions to be unused
     // This allows us to specify that a function will be called with arguments

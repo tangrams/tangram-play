@@ -30,67 +30,67 @@ const STORAGE_LAST_EDITOR_STATE = 'last-scene';
 let initialScene = ''; // Stores initial scene file for embedded play.
 
 function setSceneContentsInEditor(scene) {
-    // Set new scene information in Redux store
-    store.dispatch({
-        type: OPEN_SCENE,
-        ...scene,
-    });
+  // Set new scene information in Redux store
+  store.dispatch({
+    type: OPEN_SCENE,
+    ...scene,
+  });
 
-    // Also remember the scene in list of recently opened scenes
-    // This sends the entire scene object - TODO: clean it up a bit
-    // TODO: Only store if the url is reachable?
-    // TODO: Persist across sessions
-    store.dispatch({
-        type: ADD_RECENT_SCENE,
-        scene,
-    });
+  // Also remember the scene in list of recently opened scenes
+  // This sends the entire scene object - TODO: clean it up a bit
+  // TODO: Only store if the url is reachable?
+  // TODO: Persist across sessions
+  store.dispatch({
+    type: ADD_RECENT_SCENE,
+    scene,
+  });
 }
 
 // `scene` is the state object matching the Redux state signature.
 function doLoadProcess(scene) {
-    // Store our intial scene for use within embedded Tangram Play
-    initialScene = scene;
+  // Store our intial scene for use within embedded Tangram Play
+  initialScene = scene;
 
-    setSceneContentsInEditor(scene);
+  setSceneContentsInEditor(scene);
 
-    // Update history
-    // Don't push a new history state if we are loading a scene from the
-    // initial load of Tangram Play.
-    if (store.getState().app.initialized === true) {
-        pushHistoryState({
-            scene: (scene.originalUrl) ? scene.originalUrl : null,
-        });
-    } else {
-        // Okay, we are initialized now.
-        store.dispatch({ type: APP_INITIALIZED });
-    }
-
-    // Reset map-not-loaded state
-    store.dispatch({
-        type: SET_APP_STATE,
-        mapNotLoaded: false,
+  // Update history
+  // Don't push a new history state if we are loading a scene from the
+  // initial load of Tangram Play.
+  if (store.getState().app.initialized === true) {
+    pushHistoryState({
+      scene: (scene.originalUrl) ? scene.originalUrl : null,
     });
+  } else {
+    // Okay, we are initialized now.
+    store.dispatch({ type: APP_INITIALIZED });
+  }
 
-    // Trigger Events
-    // Event object is empty right now.
-    EventEmitter.dispatch('tangram:sceneload', {});
+  // Reset map-not-loaded state
+  store.dispatch({
+    type: SET_APP_STATE,
+    mapNotLoaded: false,
+  });
 
-    // Return the Promise from Tangram initializing
-    return tangramLayer.scene.initializing;
+  // Trigger Events
+  // Event object is empty right now.
+  EventEmitter.dispatch('tangram:sceneload', {});
+
+  // Return the Promise from Tangram initializing
+  return tangramLayer.scene.initializing;
 }
 
 function onLoadError(error) {
-    showErrorModal(error.message);
-    hideSceneLoadingIndicator();
+  showErrorModal(error.message);
+  hideSceneLoadingIndicator();
 
-    // TODO: editor should not be attached to this
-    if (!store.getState().app.initialized) {
-        store.dispatch({
-            type: SET_APP_STATE,
-            mapNotLoaded: true,
-        });
-        editor.doc.markClean();
-    }
+  // TODO: editor should not be attached to this
+  if (!store.getState().app.initialized) {
+    store.dispatch({
+      type: SET_APP_STATE,
+      mapNotLoaded: true,
+    });
+    editor.doc.markClean();
+  }
 }
 
 /**
@@ -106,22 +106,22 @@ function onLoadError(error) {
  * @returns {Promise} A promise which resolves to the final URL value.
  */
 function processUrl(url) {
-    let sceneUrl = url;
+  let sceneUrl = url;
 
-    // Provide protocol if it appears to be protocol-less URL
-    sceneUrl = prependProtocolToUrl(sceneUrl);
+  // Provide protocol if it appears to be protocol-less URL
+  sceneUrl = prependProtocolToUrl(sceneUrl);
 
-    // Detect if URL is a Gist URL and obtain the root YAML scene file
-    // This is an asynchronous response that returns Promises.
-    if (isGistURL(sceneUrl) === true) {
-        return getSceneURLFromGistAPI(sceneUrl);
-    }
+  // Detect if URL is a Gist URL and obtain the root YAML scene file
+  // This is an asynchronous response that returns Promises.
+  if (isGistURL(sceneUrl) === true) {
+    return getSceneURLFromGistAPI(sceneUrl);
+  }
 
-    // If not a Gist URL, wrap the return value in a Promise for consistent
-    // return values.
-    return new Promise(resolve => {
-        resolve(sceneUrl);
-    });
+  // If not a Gist URL, wrap the return value in a Promise for consistent
+  // return values.
+  return new Promise(resolve => {
+    resolve(sceneUrl);
+  });
 }
 
 /**
@@ -132,54 +132,54 @@ function processUrl(url) {
  * @returns {Promise} a Promise resolved with the scene state object.
  */
 function makeSceneStateObjectFromUrl(url) {
-    const sceneState = {};
+  const sceneState = {};
 
-    return processUrl(url)
-        .then(sceneUrl => {
-            sceneState.originalUrl = sceneUrl;
-            sceneState.files = [{
-                filename: getFilenameFromUrl(sceneUrl),
-            }];
-            // for dev server, we need to pass credentials to load anything
-            const options = {};
-            if (window.location.origin === config.MAPZEN_API.ORIGIN.STAGING) {
-                options.credentials = 'same-origin';
-            }
-            return window.fetch(sceneUrl, options);
-        })
-        .then(response => {
-            if (!response.ok) {
-                switch (response.status) {
-                    case 403:
-                        throw new Error('You do not have permission to open that scene.');
-                    case 404:
-                        throw new Error('The scene you requested could not be found.');
-                    default:
-                        throw new Error('Something went wrong loading the scene!');
-                }
-            }
+  return processUrl(url)
+    .then(sceneUrl => {
+      sceneState.originalUrl = sceneUrl;
+      sceneState.files = [{
+        filename: getFilenameFromUrl(sceneUrl),
+      }];
+      // for dev server, we need to pass credentials to load anything
+      const options = {};
+      if (window.location.origin === config.MAPZEN_API.ORIGIN.STAGING) {
+        options.credentials = 'same-origin';
+      }
+      return window.fetch(sceneUrl, options);
+    })
+    .then(response => {
+      if (!response.ok) {
+        switch (response.status) {
+          case 403:
+            throw new Error('You do not have permission to open that scene.');
+          case 404:
+            throw new Error('The scene you requested could not be found.');
+          default:
+            throw new Error('Something went wrong loading the scene!');
+        }
+      }
 
-            // Check content-type header to see how to handle it
-            const contentType = response.headers.get('Content-Type');
+      // Check content-type header to see how to handle it
+      const contentType = response.headers.get('Content-Type');
 
-            // If it is a binary file of type application/zip, return
-            // an array buffer, which is what JSZip reads
-            if (contentType.startsWith('application/zip')) {
-                return response.arrayBuffer();
-            }
+      // If it is a binary file of type application/zip, return
+      // an array buffer, which is what JSZip reads
+      if (contentType.startsWith('application/zip')) {
+        return response.arrayBuffer();
+      }
 
-            // Otherwise, assume a text file, e.g. "text/yaml" or "text/plain",
-            // which are valid content-types for text-based YAML scenes.
-            return response.text();
-        })
-        .then(contents => {
-            if (contents instanceof ArrayBuffer) {
-                throw new Error('Tangram Play does not support zipped scene bundles right now.');
-            }
+      // Otherwise, assume a text file, e.g. "text/yaml" or "text/plain",
+      // which are valid content-types for text-based YAML scenes.
+      return response.text();
+    })
+    .then(contents => {
+      if (contents instanceof ArrayBuffer) {
+        throw new Error('Tangram Play does not support zipped scene bundles right now.');
+      }
 
-            sceneState.files[0].contents = contents;
-            return sceneState;
-        });
+      sceneState.files[0].contents = contents;
+      return sceneState;
+    });
 }
 
 /**
@@ -194,29 +194,29 @@ function makeSceneStateObjectFromUrl(url) {
  * @returns {Promise} - resolves to an object of scene data.
  */
 function determineScene() {
-    // If there is a query, use it
-    const query = getQueryStringObject();
+  // If there is a query, use it
+  const query = getQueryStringObject();
 
-    if (query.scene) {
-        return makeSceneStateObjectFromUrl(query.scene)
-            .then(sceneState => {
-                sceneState.files[0].highlightedLines = query.lines; // eslint-disable-line no-param-reassign
-                return doLoadProcess(sceneState);
-            });
-    }
+  if (query.scene) {
+    return makeSceneStateObjectFromUrl(query.scene)
+      .then(sceneState => {
+        sceneState.files[0].highlightedLines = query.lines; // eslint-disable-line no-param-reassign
+        return doLoadProcess(sceneState);
+      });
+  }
 
-    // Else if there is something saved in memory (localforage), return that.
-    // To be valid, it must contain at least one file.
-    return localforage.getItem(STORAGE_LAST_EDITOR_STATE)
-        .then(sceneState => {
-            if (sceneState && sceneState.files && sceneState.files.length > 0) {
-                return doLoadProcess(sceneState);
-            }
+  // Else if there is something saved in memory (localforage), return that.
+  // To be valid, it must contain at least one file.
+  return localforage.getItem(STORAGE_LAST_EDITOR_STATE)
+    .then(sceneState => {
+      if (sceneState && sceneState.files && sceneState.files.length > 0) {
+        return doLoadProcess(sceneState);
+      }
 
-            // Else load the default scene file.
-            return makeSceneStateObjectFromUrl(DEFAULT_SCENE)
-                .then(doLoadProcess);
-        });
+      // Else load the default scene file.
+      return makeSceneStateObjectFromUrl(DEFAULT_SCENE)
+        .then(doLoadProcess);
+    });
 }
 
 /**
@@ -237,77 +237,77 @@ function determineScene() {
  *      contents has been fetched.
  */
 export function load(scene) {
-    EventEmitter.dispatch('tangram:clear-palette', {});
+  EventEmitter.dispatch('tangram:clear-palette', {});
 
-    // Turn on loading indicator. This is turned off later
-    // when Tangram reports that it's done.
-    showSceneLoadingIndicator();
+  // Turn on loading indicator. This is turned off later
+  // when Tangram reports that it's done.
+  showSceneLoadingIndicator();
 
-    // Either we are passed a url path, or scene file contents
-    if (scene.url) {
-        return makeSceneStateObjectFromUrl(scene.url)
-            .then(doLoadProcess)
-            .catch(onLoadError);
-    } else if (scene.contents) {
-        // If scene contents are provided, no asynchronous work is
-        // performed here, but wrap this response in a Promise anyway
-        // so that the return object is always a thenable.
-        return new Promise(resolve => {
-            // Make a scene object from the contents
-            // TODO: add more data to this.
-            const sceneState = {
-                files: [{
-                    filename: scene.filename,
-                    contents: scene.contents,
-                }],
-            };
-            doLoadProcess(sceneState);
-            resolve();
-        })
-        .catch(onLoadError);
-    }
+  // Either we are passed a url path, or scene file contents
+  if (scene.url) {
+    return makeSceneStateObjectFromUrl(scene.url)
+      .then(doLoadProcess)
+      .catch(onLoadError);
+  } else if (scene.contents) {
+    // If scene contents are provided, no asynchronous work is
+    // performed here, but wrap this response in a Promise anyway
+    // so that the return object is always a thenable.
+    return new Promise(resolve => {
+      // Make a scene object from the contents
+      // TODO: add more data to this.
+      const sceneState = {
+        files: [{
+          filename: scene.filename,
+          contents: scene.contents,
+        }],
+      };
+      doLoadProcess(sceneState);
+      resolve();
+    })
+    .catch(onLoadError);
+  }
 
-    // if neither `scene.url` or `scene.contents` is provided, throw an error
-    throw new Error('no scene url or contents provided');
+  // if neither `scene.url` or `scene.contents` is provided, throw an error
+  throw new Error('no scene url or contents provided');
 }
 
 export function initTangramPlay() {
-    // TODO: Manage history / routing in its own module
-    window.onpopstate = (e) => {
-        if (e.state && e.state.scene) {
-            load({ url: e.state.scene });
-        }
-    };
+  // TODO: Manage history / routing in its own module
+  window.onpopstate = (e) => {
+    if (e.state && e.state.scene) {
+      load({ url: e.state.scene });
+    }
+  };
 
-    showSceneLoadingIndicator();
+  showSceneLoadingIndicator();
 
-    // LOAD SCENE FILE
-    determineScene()
-        // Things we do after Tangram is finished initializing
-        .then(() => {
-            // Initialize addons after Tangram is done, because
-            // some addons depend on Tangram scene config being present
-            // TODO: Verify if this is still true?
-            if (window.isEmbedded === undefined) {
-                // Add widgets marks and errors manager.
-                initMarks();
+  // LOAD SCENE FILE
+  determineScene()
+    // Things we do after Tangram is finished initializing
+    .then(() => {
+      // Initialize addons after Tangram is done, because
+      // some addons depend on Tangram scene config being present
+      // TODO: Verify if this is still true?
+      if (window.isEmbedded === undefined) {
+        // Add widgets marks and errors manager.
+        initMarks();
 
-                // This for sure depends on Tangram
-                initErrorsManager();
+        // This for sure depends on Tangram
+        initErrorsManager();
 
-                initSuggestions();
-                initSceneImportDetector();
-                initGlslPickers();
-            }
+        initSuggestions();
+        initSceneImportDetector();
+        initGlslPickers();
+      }
 
-            // Need to send a signal to the dropdown widgets of type source to populate
-            EventEmitter.dispatch('tangram:sceneinit', {});
-        })
-        .catch(onLoadError);
+      // Need to send a signal to the dropdown widgets of type source to populate
+      EventEmitter.dispatch('tangram:sceneinit', {});
+    })
+    .catch(onLoadError);
 }
 
 // This function is only used by the embedded version of Tangram Play.
 // We need it in order to refresh the original scene file if user makes any changes in the editor
 export function reloadOriginalScene() {
-    setSceneContentsInEditor(initialScene);
+  setSceneContentsInEditor(initialScene);
 }

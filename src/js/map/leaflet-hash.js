@@ -14,154 +14,154 @@
 import L from 'leaflet';
 
 export default class LeafletHash {
-    constructor(map, opts = {}) {
-        this.map = null;
-        this.lastHash = null;
-        this.movingMap = false;
+  constructor(map, opts = {}) {
+    this.map = null;
+    this.lastHash = null;
+    this.movingMap = false;
 
-        this.refreshInterval = opts.refreshInterval || 100;
+    this.refreshInterval = opts.refreshInterval || 100;
 
-        // defer hash change updates every 100ms
-        this.changeDefer = 100;
-        this.changeTimeout = null;
-        this.isListening = false;
-        this.hashChangeInterval = null;
+    // defer hash change updates every 100ms
+    this.changeDefer = 100;
+    this.changeTimeout = null;
+    this.isListening = false;
+    this.hashChangeInterval = null;
 
-        if (map) {
-            this.init(map);
-        }
-
-        this.onHashChange = this.onHashChange.bind(this);
+    if (map) {
+      this.init(map);
     }
 
-    init(map) {
-        this.map = map;
+    this.onHashChange = this.onHashChange.bind(this);
+  }
 
-        // reset the hash
-        this.lastHash = null;
-        this.onHashChange();
+  init(map) {
+    this.map = map;
 
-        if (!this.isListening) {
-            this.startListening();
-        }
+    // reset the hash
+    this.lastHash = null;
+    this.onHashChange();
+
+    if (!this.isListening) {
+      this.startListening();
+    }
+  }
+
+  parseHash(hash) {
+    if (hash.indexOf('#') === 0) {
+      hash = hash.substr(1);
     }
 
-    parseHash(hash) {
-        if (hash.indexOf('#') === 0) {
-            hash = hash.substr(1);
-        }
+    const args = hash.split('/');
 
-        const args = hash.split('/');
+    if (args.length === 3) {
+      const zoom = Number.parseFloat(args[0]);
+      const lat = Number.parseFloat(args[1]);
+      const lon = Number.parseFloat(args[2]);
 
-        if (args.length === 3) {
-            const zoom = Number.parseFloat(args[0]);
-            const lat = Number.parseFloat(args[1]);
-            const lon = Number.parseFloat(args[2]);
-
-            if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
-                return false;
-            }
-
-            return {
-                center: new L.LatLng(lat, lon),
-                zoom,
-            };
-        }
-
+      if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
         return false;
+      }
+
+      return {
+        center: new L.LatLng(lat, lon),
+        zoom,
+      };
     }
 
-    formatHash(map) {
-        const center = map.getCenter();
-        const zoom = map.getZoom();
-        const precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
-        const hashString = [
-            zoom.toFixed(precision),
-            center.lat.toFixed(precision),
-            center.lng.toFixed(precision),
-        ].join('/');
+    return false;
+  }
 
-        return `#${hashString}`;
+  formatHash(map) {
+    const center = map.getCenter();
+    const zoom = map.getZoom();
+    const precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
+    const hashString = [
+      zoom.toFixed(precision),
+      center.lat.toFixed(precision),
+      center.lng.toFixed(precision),
+    ].join('/');
+
+    return `#${hashString}`;
+  }
+
+  removeFrom(map) {
+    if (this.changeTimeout) {
+      clearTimeout(this.changeTimeout);
     }
 
-    removeFrom(map) {
-        if (this.changeTimeout) {
-            clearTimeout(this.changeTimeout);
-        }
-
-        if (this.isListening) {
-            this.stopListening();
-        }
-
-        this.map = null;
+    if (this.isListening) {
+      this.stopListening();
     }
 
-    onMapMove() {
-        // bail if we're moving the map (updating from a hash),
-        // or if the map is not yet loaded
-        if (this.movingMap || !this.map._loaded) {
-            return;
-        }
+    this.map = null;
+  }
 
-        const hash = this.formatHash(this.map);
-        if (this.lastHash !== hash) {
-            location.replace(hash);
-            this.lastHash = hash;
-        }
+  onMapMove() {
+    // bail if we're moving the map (updating from a hash),
+    // or if the map is not yet loaded
+    if (this.movingMap || !this.map._loaded) {
+      return;
     }
 
-    update() {
-        const hash = location.hash;
-        if (hash === this.lastHash) {
-            return;
-        }
+    const hash = this.formatHash(this.map);
+    if (this.lastHash !== hash) {
+      location.replace(hash);
+      this.lastHash = hash;
+    }
+  }
 
-        const parsed = this.parseHash(hash);
-        if (parsed) {
-            this.movingMap = true;
-            this.map.setView(parsed.center, parsed.zoom);
-            this.movingMap = false;
-        } else {
-            this.onMapMove(this.map);
-        }
+  update() {
+    const hash = location.hash;
+    if (hash === this.lastHash) {
+      return;
     }
 
-    onHashChange() {
-        // throttle calls to update() so that they only happen every
-        // `changeDefer` ms
-        if (!this.changeTimeout) {
-            this.changeTimeout = window.setTimeout(() => {
-                this.update();
-                this.changeTimeout = null;
-            }, this.changeDefer);
-        }
+    const parsed = this.parseHash(hash);
+    if (parsed) {
+      this.movingMap = true;
+      this.map.setView(parsed.center, parsed.zoom);
+      this.movingMap = false;
+    } else {
+      this.onMapMove(this.map);
     }
+  }
 
-    startListening() {
-        this.map.on('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
-
-        L.DomEvent.addListener(window, 'hashchange', this.onHashChange, this);
-
-        this.isListening = true;
+  onHashChange() {
+    // throttle calls to update() so that they only happen every
+    // `changeDefer` ms
+    if (!this.changeTimeout) {
+      this.changeTimeout = window.setTimeout(() => {
+        this.update();
+        this.changeTimeout = null;
+      }, this.changeDefer);
     }
+  }
 
-    stopListening() {
-        this.map.off('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
+  startListening() {
+    this.map.on('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
 
-        L.DomEvent.removeListener(window, 'hashchange', this.onHashChange, this);
+    L.DomEvent.addListener(window, 'hashchange', this.onHashChange, this);
 
-        this.isListening = false;
-    }
+    this.isListening = true;
+  }
+
+  stopListening() {
+    this.map.off('moveend', L.Util.throttle(this.onMapMove, this.refreshInterval, this), this);
+
+    L.DomEvent.removeListener(window, 'hashchange', this.onHashChange, this);
+
+    this.isListening = false;
+  }
 }
 
 L.hash = function (map) {
-    return new LeafletHash(map);
+  return new LeafletHash(map);
 };
 
 L.Map.prototype.addHash = function () {
-    this._hash = L.hash(this);
+  this._hash = L.hash(this);
 };
 
 L.Map.prototype.removeHash = function () {
-    this._hash.removeFrom();
+  this._hash.removeFrom();
 };

@@ -61,11 +61,11 @@ const INDENT_UNIT = 4;
  * @returns {Object} a valid value for CodeMirror's `rulers` option.
  */
 function createRulersOption(indentSize = INDENT_UNIT, amount = 10) {
-    const rulers = [];
-    for (let i = 1; i < amount; i++) {
-        rulers.push({ column: i * indentSize });
-    }
-    return rulers;
+  const rulers = [];
+  for (let i = 1; i < amount; i++) {
+    rulers.push({ column: i * indentSize });
+  }
+  return rulers;
 }
 
 /**
@@ -75,56 +75,56 @@ function createRulersOption(indentSize = INDENT_UNIT, amount = 10) {
  * @returns {CodeMirror} an instance of the CodeMirror editor.
  */
 export function initCodeMirror(el) {
-    let autofocus = true;
+  let autofocus = true;
 
-    // If we're using an embedded version of play, we don't want the CodeMirror
-    // instance to focus by default since presumably we'll be embedding it
-    // within another page
-    if (window.isEmbedded) {
-        autofocus = false;
-    }
+  // If we're using an embedded version of play, we don't want the CodeMirror
+  // instance to focus by default since presumably we'll be embedding it
+  // within another page
+  if (window.isEmbedded) {
+    autofocus = false;
+  }
 
-    const cm = new CodeMirror(el, {
-        mode: 'text/x-yaml-tangram',
-        theme: 'tangram',
-        indentUnit: INDENT_UNIT,
-        rulers: createRulersOption(),
-        keyMap: 'sublime',
-        extraKeys: getExtraKeyMap(),
-        lineWrapping: true,
-        lineNumbers: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        foldGutter: {
-            rangeFinder: CodeMirror.fold.indent,
-        },
-        styleActiveLine: true,
-        showCursorWhenSelecting: true,
-        autofocus,
-        showTrailingSpace: true,
-        matchBrackets: true,
-        autoCloseBrackets: true,
-    });
+  const cm = new CodeMirror(el, {
+    mode: 'text/x-yaml-tangram',
+    theme: 'tangram',
+    indentUnit: INDENT_UNIT,
+    rulers: createRulersOption(),
+    keyMap: 'sublime',
+    extraKeys: getExtraKeyMap(),
+    lineWrapping: true,
+    lineNumbers: true,
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    foldGutter: {
+      rangeFinder: CodeMirror.fold.indent,
+    },
+    styleActiveLine: true,
+    showCursorWhenSelecting: true,
+    autofocus,
+    showTrailingSpace: true,
+    matchBrackets: true,
+    autoCloseBrackets: true,
+  });
 
-    // Better line wrapping. Wrapped lines are based on the indentation
-    // of the current line. See this demo:
-    //      https://codemirror.net/demo/indentwrap.html
-    // Modified slightly to provide an additional hanging indent that is based
-    // off of the document's indentUnit setting. This mimics how wrapping behaves
-    // in Sublime Text.
-    // eslint-disable-next-line no-shadow
-    cm.on('renderLine', (cm, line, el) => {
-        const indentUnit = cm.getOption('indentUnit');
-        const charWidth = cm.defaultCharWidth();
-        const columns = CodeMirror.countColumn(line.text, null, indentUnit);
-        const offset = (columns + indentUnit) * charWidth;
-        const basePadding = 4; // Magic number: it is CodeMirror's default value.
+  // Better line wrapping. Wrapped lines are based on the indentation
+  // of the current line. See this demo:
+  //      https://codemirror.net/demo/indentwrap.html
+  // Modified slightly to provide an additional hanging indent that is based
+  // off of the document's indentUnit setting. This mimics how wrapping behaves
+  // in Sublime Text.
+  // eslint-disable-next-line no-shadow
+  cm.on('renderLine', (cm, line, el) => {
+    const indentUnit = cm.getOption('indentUnit');
+    const charWidth = cm.defaultCharWidth();
+    const columns = CodeMirror.countColumn(line.text, null, indentUnit);
+    const offset = (columns + indentUnit) * charWidth;
+    const basePadding = 4; // Magic number: it is CodeMirror's default value.
 
-        /* eslint-disable no-param-reassign */
-        el.style.textIndent = `-${offset}px`;
-        el.style.paddingLeft = `${basePadding + offset}px`;
-        /* eslint-enable no-param-reassign */
-    });
-    cm.refresh();
+    /* eslint-disable no-param-reassign */
+    el.style.textIndent = `-${offset}px`;
+    el.style.paddingLeft = `${basePadding + offset}px`;
+    /* eslint-enable no-param-reassign */
+  });
+  cm.refresh();
 
-    return cm;
+  return cm;
 }

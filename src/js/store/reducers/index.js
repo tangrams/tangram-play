@@ -8,13 +8,13 @@ import shield from './shield';
 import user from './user';
 
 const reducers = combineReducers({
-    app,
-    errors,
-    map,
-    scene,
-    settings,
-    shield,
-    user,
+  app,
+  errors,
+  map,
+  scene,
+  settings,
+  shield,
+  user,
 });
 
 export default reducers;
