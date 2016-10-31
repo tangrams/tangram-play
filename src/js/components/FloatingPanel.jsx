@@ -3,104 +3,104 @@ import Modal from 'react-bootstrap/lib/Modal';
 import DraggableModal from './DraggableModal';
 
 export default class FloatingPanel extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            x: this.props.x,
-            y: this.props.y,
-        };
+    this.state = {
+      x: this.props.x,
+      y: this.props.y,
+    };
 
-        this.recalculatePosition = this.recalculatePosition.bind(this);
+    this.recalculatePosition = this.recalculatePosition.bind(this);
+  }
+
+  componentWillMount() {
+    // Set the state with the results of the recalculated position
+    this.setState(this.recalculatePosition(this.state));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.recalculatePosition(nextProps));
+  }
+
+  /**
+   * The panel is provided, via props, an `x`, `y`, `width` and `height`
+   * values. `x` and `y` are the positions to display the upper left corner
+   * of the panel. However, we want to make sure that the panel does not
+   * appear outside of the viewport. This function takes into account the
+   * panels' `width` and `height` values and ensures that `x` and `y` is
+   * recalculated to keep the panel inside the viewport.
+   *
+   * @param {Object} state - object containing properties `x` and `y`
+   *          (e.g. from `state` or `props`)
+   * @returns {Object} - object containing properties `x` and `y` that should
+   *          be passed to `setState()`
+   */
+  recalculatePosition(state) {
+    // Magic number: a vertical distance in pixels to offset from the
+    // provided Y value to give it a little bit of breathing room.
+    const VERTICAL_POSITION_BUFFER = 5;
+
+    // TODO: don't hardcode this bounding element.
+    const workspaceEl = document.getElementsByClassName('workspace-container')[0];
+    const workspaceBounds = workspaceEl.getBoundingClientRect();
+
+    const width = this.props.width;
+    const height = this.props.height;
+
+    // Read position from current state
+    let posX = state.x;
+    let posY = state.y + VERTICAL_POSITION_BUFFER;
+
+    // Prevent positions from going negative
+    posX = Math.max(posX, workspaceBounds.left);
+    posY = Math.max(posY, workspaceBounds.top);
+
+    // Calculate maximum position values
+    const maxX = posX + width;
+    const maxY = posY + height;
+
+    // Check if the widget would render outside of the workspace container area
+    if (maxX > workspaceBounds.width) {
+      posX = workspaceBounds.width - width;
+    }
+    if (maxY > workspaceBounds.height) {
+      posY = workspaceBounds.height - height;
     }
 
-    componentWillMount() {
-        // Set the state with the results of the recalculated position
-        this.setState(this.recalculatePosition(this.state));
-    }
+    return {
+      x: posX,
+      y: posY,
+    };
+  }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState(this.recalculatePosition(nextProps));
-    }
-
-    /**
-     * The panel is provided, via props, an `x`, `y`, `width` and `height`
-     * values. `x` and `y` are the positions to display the upper left corner
-     * of the panel. However, we want to make sure that the panel does not
-     * appear outside of the viewport. This function takes into account the
-     * panels' `width` and `height` values and ensures that `x` and `y` is
-     * recalculated to keep the panel inside the viewport.
-     *
-     * @param {Object} state - object containing properties `x` and `y`
-     *          (e.g. from `state` or `props`)
-     * @returns {Object} - object containing properties `x` and `y` that should
-     *          be passed to `setState()`
-     */
-    recalculatePosition(state) {
-        // Magic number: a vertical distance in pixels to offset from the
-        // provided Y value to give it a little bit of breathing room.
-        const VERTICAL_POSITION_BUFFER = 5;
-
-        // TODO: don't hardcode this bounding element.
-        const workspaceEl = document.getElementsByClassName('workspace-container')[0];
-        const workspaceBounds = workspaceEl.getBoundingClientRect();
-
-        const width = this.props.width;
-        const height = this.props.height;
-
-        // Read position from current state
-        let posX = state.x;
-        let posY = state.y + VERTICAL_POSITION_BUFFER;
-
-        // Prevent positions from going negative
-        posX = Math.max(posX, workspaceBounds.left);
-        posY = Math.max(posY, workspaceBounds.top);
-
-        // Calculate maximum position values
-        const maxX = posX + width;
-        const maxY = posY + height;
-
-        // Check if the widget would render outside of the workspace container area
-        if (maxX > workspaceBounds.width) {
-            posX = workspaceBounds.width - width;
-        }
-        if (maxY > workspaceBounds.height) {
-            posY = workspaceBounds.height - height;
-        }
-
-        return {
-            x: posX,
-            y: posY,
-        };
-    }
-
-    render() {
-        return (
-            <Modal
-                dialogComponentClass={DraggableModal}
-                className="widget-modal"
-                enforceFocus={false}
-                show={this.props.show}
-                onHide={this.props.onClickClose}
-                x={this.state.x}
-                y={this.state.y}
-            >
-                <div className="floating-panel-topbar">
-                    <div className="floating-panel-drag" />
-                    <div className="floating-panel-close" onClick={this.props.onClickClose}>×</div>
-                </div>
-                {this.props.children}
-            </Modal>
-        );
-    }
+  render() {
+    return (
+      <Modal
+        dialogComponentClass={DraggableModal}
+        className="widget-modal"
+        enforceFocus={false}
+        show={this.props.show}
+        onHide={this.props.onClickClose}
+        x={this.state.x}
+        y={this.state.y}
+      >
+        <div className="floating-panel-topbar">
+          <div className="floating-panel-drag" />
+          <div className="floating-panel-close" onClick={this.props.onClickClose}>×</div>
+        </div>
+        {this.props.children}
+      </Modal>
+    );
+  }
 }
 
 FloatingPanel.propTypes = {
-    x: React.PropTypes.number,
-    y: React.PropTypes.number,
-    height: React.PropTypes.number,
-    width: React.PropTypes.number,
-    show: React.PropTypes.bool,
-    onClickClose: React.PropTypes.func,
-    children: React.PropTypes.node,
+  x: React.PropTypes.number,
+  y: React.PropTypes.number,
+  height: React.PropTypes.number,
+  width: React.PropTypes.number,
+  show: React.PropTypes.bool,
+  onClickClose: React.PropTypes.func,
+  children: React.PropTypes.node,
 };

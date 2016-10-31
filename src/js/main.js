@@ -25,17 +25,17 @@ import { migrateLocalStorageToForage } from './storage/migrate';
 // Load this before all other modules. Only load when run in production.
 // Requires `loose-envify` package in build process to set the correct `NODE_ENV`.
 if (process.env.NODE_ENV === 'production') {
-    Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
-        whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/],
-        environment: process.env.NODE_ENV,
-    }).install();
+  Raven.config('https://728949999d2a438ab006fed5829fb9c5@app.getsentry.com/78467', {
+    whitelistUrls: [/mapzen\.com/, /www\.mapzen\.com/],
+    environment: process.env.NODE_ENV,
+  }).install();
 }
 
 // Set and persist localForage options. This must be called before any other
 // calls to localForage are made, but can be called after localForage is loaded.
 localforage.config({
-    name: 'Tangram Play',
-    storeName: 'tangram_play',
+  name: 'Tangram Play',
+  storeName: 'tangram_play',
 });
 
 // Convert all current localStorage items to localforage
@@ -50,34 +50,34 @@ const STORAGE_SETTINGS = 'settings';
 // application, so that they are available to components immediately.
 // This is asynchronous, so
 localforage.getItem(STORAGE_SETTINGS)
-    .then(settings => {
-        store.dispatch({
-            type: SET_SETTINGS,
-            ...settings,
-        });
-    })
-    .catch(() => {
-        // Catch errors here so that they don't fall through elsewhere
-        // and cause other problems
-        console.log('failure retrieving settings');
-    })
-    // Always do this regardless of whether localforage retrieval
-    // or Redux state setting was successful.
-    .then(() => {
-        // Mount React components
-        ReactDOM.render(
-            <Provider store={store}>
-                <App />
-            </Provider>,
-            document.getElementById('tangram-play-app')
-        );
+  .then(settings => {
+    store.dispatch({
+      type: SET_SETTINGS,
+      ...settings,
     });
+  })
+  .catch(() => {
+    // Catch errors here so that they don't fall through elsewhere
+    // and cause other problems
+    console.log('failure retrieving settings');
+  })
+  // Always do this regardless of whether localforage retrieval
+  // or Redux state setting was successful.
+  .then(() => {
+    // Mount React components
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.getElementById('tangram-play-app')
+    );
+  });
 
 // On unload, stash settings into local storage.
 window.addEventListener('beforeunload', () => {
-    const settings = store.getState().settings;
+  const settings = store.getState().settings;
 
-    if (settings) {
-        localforage.setItem(STORAGE_SETTINGS, settings);
-    }
+  if (settings) {
+    localforage.setItem(STORAGE_SETTINGS, settings);
+  }
 });

@@ -10,24 +10,24 @@ import ModalDialog from 'react-bootstrap/lib/ModalDialog';
  * Modal components. See here. https://github.com/mzabriskie/react-draggable/issues/56
  */
 export default class DraggableModal extends React.PureComponent {
-    render() {
-        return (
-            <Draggable
-                bounds="#draggable-container"
-                defaultPosition={{ x: this.props.x, y: this.props.y }}
-                zIndex={1800}
-                handle=".floating-panel-drag"
-            >
-                <ModalDialog {...this.props} />
-            </Draggable>
-        );
-    }
+  render() {
+    return (
+      <Draggable
+        bounds="#draggable-container"
+        defaultPosition={{ x: this.props.x, y: this.props.y }}
+        zIndex={1800}
+        handle=".floating-panel-drag"
+      >
+        <ModalDialog {...this.props} />
+      </Draggable>
+    );
+  }
 }
 
 /**
  * Prop validation required by React
  */
 DraggableModal.propTypes = {
-    x: React.PropTypes.number,
-    y: React.PropTypes.number,
+  x: React.PropTypes.number,
+  y: React.PropTypes.number,
 };

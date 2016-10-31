@@ -1,4 +1,3 @@
-/* eslint-disable indent, react/jsx-indent, react/jsx-indent-props */
 import React from 'react';
 import { connect } from 'react-redux';
 import IconButton from './IconButton';
@@ -52,11 +51,11 @@ class Camera extends React.Component {
 
     // Add animation classes depending on state
     if (this.preventTransition === false) {
-        if (this.props.isVisible) {
-          classNames += ' camera-animate-enter';
-        } else {
-          classNames += ' camera-animate-leave';
-        }
+      if (this.props.isVisible) {
+        classNames += ' camera-animate-enter';
+      } else {
+        classNames += ' camera-animate-leave';
+      }
     }
 
     // Add classes when recording
@@ -132,11 +131,11 @@ class Camera extends React.Component {
 }
 
 Camera.propTypes = {
-    isVisible: React.PropTypes.bool,
+  isVisible: React.PropTypes.bool,
 };
 
 Camera.defaultProps = {
-    isVisible: false,
+  isVisible: false,
 };
 
 function mapStateToProps(state) {

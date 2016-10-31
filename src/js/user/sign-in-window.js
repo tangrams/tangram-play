@@ -22,19 +22,19 @@ let pollWindowStateIntervalId;
  * and some multi-monitor setups.
  */
 function popupCenter(url, title, w, h) {
-    // Fixes dual-screen position                            Most browsers       Firefox
-    const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screen.left;
-    const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screen.top;
+  // Fixes dual-screen position                            Most browsers       Firefox
+  const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screen.left;
+  const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screen.top;
 
-    /* eslint-disable max-len, no-nested-ternary */
-    const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : window.screen.width;
-    const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : window.screen.height;
-    /* eslint-enable max-len, no-nested-ternary */
+  /* eslint-disable max-len, no-nested-ternary */
+  const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : window.screen.width;
+  const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : window.screen.height;
+  /* eslint-enable max-len, no-nested-ternary */
 
-    const left = ((width / 2) - (w / 2)) + dualScreenLeft;
-    const top = ((height / 3) - (h / 3)) + dualScreenTop;
+  const left = ((width / 2) - (w / 2)) + dualScreenLeft;
+  const top = ((height / 3) - (h / 3)) + dualScreenTop;
 
-    return window.open(url, title, `scrollbars=yes, location=no, width=${w}, height=${h}, top=${top}, left=${left}`);
+  return window.open(url, title, `scrollbars=yes, location=no, width=${w}, height=${h}, top=${top}, left=${left}`);
 }
 
 /**
@@ -44,29 +44,29 @@ function popupCenter(url, title, w, h) {
  * due to the `close` event handler.
  */
 function closeSignInWindow() {
-    if (signInWindow) {
-        signInWindow.close();
-    }
+  if (signInWindow) {
+    signInWindow.close();
+  }
 }
 
 /**
  * Called when user completes the flow in the sign-in window.
  */
 function signInStateReady() {
-    EventEmitter.dispatch('mapzen:sign_in', {});
-    closeSignInWindow();
-    hideSignInOverlay();
+  EventEmitter.dispatch('mapzen:sign_in', {});
+  closeSignInWindow();
+  hideSignInOverlay();
 
-    // Returns focus to the original parent window.
-    window.focus();
+  // Returns focus to the original parent window.
+  window.focus();
 }
 
 /**
  * Cleans up event listeners from the app window to prevent memory leaks.
  */
 function cleanup() {
-    window.removeEventListener('unload', closeSignInWindow);
-    window.clearInterval(pollWindowStateIntervalId);
+  window.removeEventListener('unload', closeSignInWindow);
+  window.clearInterval(pollWindowStateIntervalId);
 }
 
 /**
@@ -75,13 +75,13 @@ function cleanup() {
  * elements, class selectors and styles may evolve over time.
  */
 function adjustSignInPageContent() {
-    const childDocument = signInWindow.document;
+  const childDocument = signInWindow.document;
 
-    // Only do this once
-    if (childDocument.querySelector('#dev_login') &&
+  // Only do this once
+  if (childDocument.querySelector('#dev_login') &&
     !childDocument.getElementById('tangram-play-signin-override-styles')) {
-        const newStyleEl = document.createElement('style');
-        const newStyleText = `
+    const newStyleEl = document.createElement('style');
+    const newStyleText = `
             body {
                 margin-top: 0;
                 overflow: hidden;
@@ -139,62 +139,62 @@ function adjustSignInPageContent() {
                 display: none;
             }
         `;
-        newStyleEl.id = 'tangram-play-signin-override-styles';
-        newStyleEl.textContent = newStyleText;
+    newStyleEl.id = 'tangram-play-signin-override-styles';
+    newStyleEl.textContent = newStyleText;
 
-        childDocument.head.appendChild(newStyleEl);
-        childDocument.querySelector('#dev_login h1').textContent = 'Sign in to Mapzen';
-        childDocument.querySelector('#dev_login h3').textContent = 'You can save Tangram scenes to your Mapzen account and do other stuff good too'; // eslint-disable-line max-len
-    }
+    childDocument.head.appendChild(newStyleEl);
+    childDocument.querySelector('#dev_login h1').textContent = 'Sign in to Mapzen';
+    childDocument.querySelector('#dev_login h3').textContent = 'You can save Tangram scenes to your Mapzen account and do other stuff good too'; // eslint-disable-line max-len
+  }
 }
 
 function pollWindowState() {
-    if (!signInWindow || signInWindow.closed) {
-        window.clearInterval(pollWindowStateIntervalId);
+  if (!signInWindow || signInWindow.closed) {
+    window.clearInterval(pollWindowStateIntervalId);
+    signInStateReady();
+  } else {
+    try {
+      // If it's exactly /developers, we're probably logged in now
+      if (signInWindow.location.pathname === '/developers') {
         signInStateReady();
-    } else {
-        try {
-            // If it's exactly /developers, we're probably logged in now
-            if (signInWindow.location.pathname === '/developers') {
-                signInStateReady();
-            }
-            // Experimental: hack the view for developer pages.
-            if (signInWindow.location.pathname.indexOf('/developers/') === 0) {
-                adjustSignInPageContent();
-            }
-        } catch (e) {
-            // Probably a security policy in the way; ignore
-        }
+      }
+      // Experimental: hack the view for developer pages.
+      if (signInWindow.location.pathname.indexOf('/developers/') === 0) {
+        adjustSignInPageContent();
+      }
+    } catch (e) {
+      // Probably a security policy in the way; ignore
     }
+  }
 }
 
 /**
  * Primary entry point for opening a sign-in window.
  */
 export function openSignInWindow() {
-    // Only open if not open already; or was closed from a previous attempt.
-    // If it's already open, focus on that instead.
-    if (!signInWindow || signInWindow.closed === true) {
-        const url = SIGN_IN_HOSTNAME + SIGN_IN_API_ENDPOINT;
+  // Only open if not open already; or was closed from a previous attempt.
+  // If it's already open, focus on that instead.
+  if (!signInWindow || signInWindow.closed === true) {
+    const url = SIGN_IN_HOSTNAME + SIGN_IN_API_ENDPOINT;
 
-        signInWindow = popupCenter(url, 'Sign in to Mapzen Developer Portal', 650, 650);
-        signInWindow.addEventListener('close', cleanup);
-        window.addEventListener('unload', closeSignInWindow);
+    signInWindow = popupCenter(url, 'Sign in to Mapzen Developer Portal', 650, 650);
+    signInWindow.addEventListener('close', cleanup);
+    window.addEventListener('unload', closeSignInWindow);
 
-        // Show an overlay in the app window.
-        showSignInOverlay();
+    // Show an overlay in the app window.
+    showSignInOverlay();
 
-        // Experimental.
-        signInWindow.addEventListener('load', adjustSignInPageContent);
+    // Experimental.
+    signInWindow.addEventListener('load', adjustSignInPageContent);
 
-        // We can't add load or close event listeners to the new window (they
-        // don't trigger) so instead we poll the window at a set interval
-        // and perform actions based on what we can detect inside of it.
-        pollWindowStateIntervalId = window.setInterval(pollWindowState, 100);
-    }
+    // We can't add load or close event listeners to the new window (they
+    // don't trigger) so instead we poll the window at a set interval
+    // and perform actions based on what we can detect inside of it.
+    pollWindowStateIntervalId = window.setInterval(pollWindowState, 100);
+  }
 
-    // This new window should grab the user's attention immediately
-    // Apparently, this doesn't work in all browsers (e.g. Chrome) due to
-    // security policies.
-    signInWindow.focus();
+  // This new window should grab the user's attention immediately
+  // Apparently, this doesn't work in all browsers (e.g. Chrome) due to
+  // security policies.
+  signInWindow.focus();
 }

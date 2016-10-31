@@ -1,4 +1,3 @@
-/* eslint-disable indent, react/jsx-indent, react/jsx-indent-props */
 // Take a video capture and save to file
 import { saveAs } from 'file-saver';
 import { tangramLayer } from './map';
@@ -13,7 +12,7 @@ export function startVideoCapture() {
   } else {
     tangramLayer.scene.stopVideoCapture().then((video) => {
       isCapturing = false;
-      saveAs(video.blob, 'tangram-video-' + (+new Date()) + '.webm');
+      saveAs(video.blob, `tangram-video-${+new Date()}.webm`);
     });
   }
 }

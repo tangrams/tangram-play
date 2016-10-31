@@ -15,8 +15,8 @@ let targetLine;
  * @param {Number} line - The line number to add a highlight to.
  */
 function highlightLine(doc, line) {
-    doc.addLineClass(line, 'gutter', HIGHLIGHT_CLASS);
-    doc.addLineClass(line, 'background', HIGHLIGHT_CLASS);
+  doc.addLineClass(line, 'gutter', HIGHLIGHT_CLASS);
+  doc.addLineClass(line, 'background', HIGHLIGHT_CLASS);
 }
 
 /**
@@ -26,8 +26,8 @@ function highlightLine(doc, line) {
  * @param {Number} line - The line number to remove a highlight from.
  */
 function unhighlightLine(doc, line) {
-    doc.removeLineClass(line, 'gutter', HIGHLIGHT_CLASS);
-    doc.removeLineClass(line, 'background', HIGHLIGHT_CLASS);
+  doc.removeLineClass(line, 'gutter', HIGHLIGHT_CLASS);
+  doc.removeLineClass(line, 'background', HIGHLIGHT_CLASS);
 }
 
 /**
@@ -39,14 +39,14 @@ function unhighlightLine(doc, line) {
  * @returns {Boolean}
  */
 function isLineHighlighted(line) {
-    const lineInfo = editor.lineInfo(line);
+  const lineInfo = editor.lineInfo(line);
 
-    // .bgClass may be null
-    if (!lineInfo.bgClass) {
-        return false;
-    }
+  // .bgClass may be null
+  if (!lineInfo.bgClass) {
+    return false;
+  }
 
-    return (lineInfo.bgClass.indexOf(HIGHLIGHT_CLASS) >= 0);
+  return (lineInfo.bgClass.indexOf(HIGHLIGHT_CLASS) >= 0);
 }
 
 /**
@@ -59,13 +59,13 @@ function isLineHighlighted(line) {
  *          and `false` if a line was unhighlighted.
  */
 function toggleHighlightLine(doc, line) {
-    if (isLineHighlighted(line)) {
-        unhighlightLine(doc, line);
-        return false;
-    }
+  if (isLineHighlighted(line)) {
+    unhighlightLine(doc, line);
+    return false;
+  }
 
-    highlightLine(doc, line);
-    return true;
+  highlightLine(doc, line);
+  return true;
 }
 
 /**
@@ -79,16 +79,16 @@ function toggleHighlightLine(doc, line) {
  *          highlighting on. Lines are zero-indexed.
  */
 function highlightLines(startLine, endLine) {
-    const doc = editor.getDoc();
+  const doc = editor.getDoc();
 
-    // Swap arguments if startLine is higher than endLine
-    if (startLine > endLine) {
-        [startLine, endLine] = [endLine, startLine];
-    }
+  // Swap arguments if startLine is higher than endLine
+  if (startLine > endLine) {
+    [startLine, endLine] = [endLine, startLine];
+  }
 
-    for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
-        highlightLine(doc, currentLine);
-    }
+  for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
+    highlightLine(doc, currentLine);
+  }
 }
 
 /**
@@ -101,16 +101,16 @@ function highlightLines(startLine, endLine) {
  *          unhighlighting on. Lines are zero-indexed.
  */
 function unhighlightLines(startLine, endLine) {
-    const doc = editor.getDoc();
+  const doc = editor.getDoc();
 
-    // Swap arguments if startLine is higher than endLine
-    if (startLine > endLine) {
-        [startLine, endLine] = [endLine, startLine];
-    }
+  // Swap arguments if startLine is higher than endLine
+  if (startLine > endLine) {
+    [startLine, endLine] = [endLine, startLine];
+  }
 
-    for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
-        unhighlightLine(doc, currentLine);
-    }
+  for (let currentLine = startLine; currentLine <= endLine; currentLine++) {
+    unhighlightLine(doc, currentLine);
+  }
 }
 
 /**
@@ -130,41 +130,41 @@ function unhighlightLines(startLine, endLine) {
  *          line ranges to highlight.
  */
 export function highlightRanges(lines) {
-    const ranges = lines.split(',');
+  const ranges = lines.split(',');
 
-    for (let i = 0, j = ranges.length; i < j; i++) {
-        const lineNumbers = ranges[i].split('-');
+  for (let i = 0, j = ranges.length; i < j; i++) {
+    const lineNumbers = ranges[i].split('-');
 
-        // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
-        // Just in case, the return value is clamped to a minimum value of 0.
-        const startLine = Math.max(Number(lineNumbers[0]) - 1, 0);
-        let endLine = Math.max(Number(lineNumbers[1]) - 1, 0);
+    // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
+    // Just in case, the return value is clamped to a minimum value of 0.
+    const startLine = Math.max(Number(lineNumbers[0]) - 1, 0);
+    let endLine = Math.max(Number(lineNumbers[1]) - 1, 0);
 
-        // If a "range" is just a single number (`6` rather than `6-7`, say)
-        // then `endLine` will be NaN. In this case we make `endLine` equal
-        // to `startLine` so we can properly highlight the "range".
-        if (Number.isNaN(endLine)) {
-            endLine = startLine;
-        }
-
-        // Only jump to the first range given.
-        if (i === 0) {
-            jumpToLine(editor, startLine);
-        }
-
-        highlightLines(startLine, endLine);
+    // If a "range" is just a single number (`6` rather than `6-7`, say)
+    // then `endLine` will be NaN. In this case we make `endLine` equal
+    // to `startLine` so we can properly highlight the "range".
+    if (Number.isNaN(endLine)) {
+      endLine = startLine;
     }
+
+    // Only jump to the first range given.
+    if (i === 0) {
+      jumpToLine(editor, startLine);
+    }
+
+    highlightLines(startLine, endLine);
+  }
 }
 
 /**
  * Removes highlights from all lines in the document.
  */
 function unhighlightAll() {
-    const doc = editor.getDoc();
+  const doc = editor.getDoc();
 
-    for (let i = 0, j = doc.lineCount(); i <= j; i++) {
-        unhighlightLine(doc, i);
-    }
+  for (let i = 0, j = doc.lineCount(); i <= j; i++) {
+    unhighlightLine(doc, i);
+  }
 }
 
 /**
@@ -177,21 +177,21 @@ function unhighlightAll() {
  *
  */
 function getLineNumberRanges(array) {
-    const ranges = [];
-    let start;
-    let end;
+  const ranges = [];
+  let start;
+  let end;
 
-    for (let i = 0, j = array.length; i < j; i++) {
-        start = array[i];
-        end = start;
-        while (array[i + 1] - array[i] === 1) {
-            end = array[i + 1]; // increment the index if the numbers sequential
-            i++;
-        }
-        ranges.push(start === end ? start.toString() : `${start}-${end}`);
+  for (let i = 0, j = array.length; i < j; i++) {
+    start = array[i];
+    end = start;
+    while (array[i + 1] - array[i] === 1) {
+      end = array[i + 1]; // increment the index if the numbers sequential
+      i++;
     }
+    ranges.push(start === end ? start.toString() : `${start}-${end}`);
+  }
 
-    return ranges;
+  return ranges;
 }
 
 /**
@@ -203,11 +203,11 @@ function getLineNumberRanges(array) {
  *
  */
 function getLineNumberString(array) {
-    // Line number arrays are zero-indexed, so before converting to a string,
-    // we increment each number by one.
-    const incrementedArray = array.map(number => number + 1);
-    const ranges = getLineNumberRanges(incrementedArray);
-    return ranges.join(',');
+  // Line number arrays are zero-indexed, so before converting to a string,
+  // we increment each number by one.
+  const incrementedArray = array.map(number => number + 1);
+  const ranges = getLineNumberRanges(incrementedArray);
+  return ranges.join(',');
 }
 
 /**
@@ -219,17 +219,17 @@ function getLineNumberString(array) {
  *          returned by getLineNumberString() function
  */
 export function getAllHighlightedLines() {
-    const lineNumbers = [];
+  const lineNumbers = [];
 
-    for (let i = 0, j = editor.getDoc().lineCount(); i < j; i++) {
-        if (isLineHighlighted(i)) {
-            lineNumbers.push(i);
-        }
+  for (let i = 0, j = editor.getDoc().lineCount(); i < j; i++) {
+    if (isLineHighlighted(i)) {
+      lineNumbers.push(i);
     }
+  }
 
-    const string = getLineNumberString(lineNumbers);
+  const string = getLineNumberString(lineNumbers);
 
-    return string;
+  return string;
 }
 
 /**
@@ -238,12 +238,12 @@ export function getAllHighlightedLines() {
  *
  */
 export function updateLinesQueryString() {
-    const allHighlightedLines = getAllHighlightedLines();
-    if (allHighlightedLines !== '') {
-        replaceHistoryState({ lines: allHighlightedLines });
-    } else {
-        replaceHistoryState({ lines: null });
-    }
+  const allHighlightedLines = getAllHighlightedLines();
+  if (allHighlightedLines !== '') {
+    replaceHistoryState({ lines: allHighlightedLines });
+  } else {
+    replaceHistoryState({ lines: null });
+  }
 }
 
 /**
@@ -255,121 +255,121 @@ export function updateLinesQueryString() {
  * @param {Object} node - YAML-Tangram node object
  */
 export function highlightBlock(node) {
-    const doc = editor.getDoc();
+  const doc = editor.getDoc();
 
-    // Scroll the top of the block into view. Do this first so that
-    // CodeMirror will parse the lines in this viewport. This is necessary
-    // for the `stateAfter.keyLevel` to be available.
-    jumpToLine(editor, node.range.from.line);
+  // Scroll the top of the block into view. Do this first so that
+  // CodeMirror will parse the lines in this viewport. This is necessary
+  // for the `stateAfter.keyLevel` to be available.
+  jumpToLine(editor, node.range.from.line);
 
-    // Determine the range to highlight from.
-    const blockLine = node.range.from.line;
-    // This can still sometimes fail, for unknown reasons.
-    const blockLevel = doc.getLineHandle(blockLine).stateAfter.keyLevel;
-    let toLine = blockLine;
-    let thisLevel = blockLevel;
-    do {
-        const nextLineHandle = doc.getLineHandle(toLine + 1);
-        if (nextLineHandle !== undefined && !isEmptyString(nextLineHandle.text)) {
-            // The nextLineHandle might not have a stateAfter, so wrap in try {}
-            try {
-                thisLevel = nextLineHandle.stateAfter.keyLevel;
-            } catch (err) {
-                break;
-            }
+  // Determine the range to highlight from.
+  const blockLine = node.range.from.line;
+  // This can still sometimes fail, for unknown reasons.
+  const blockLevel = doc.getLineHandle(blockLine).stateAfter.keyLevel;
+  let toLine = blockLine;
+  let thisLevel = blockLevel;
+  do {
+    const nextLineHandle = doc.getLineHandle(toLine + 1);
+    if (nextLineHandle !== undefined && !isEmptyString(nextLineHandle.text)) {
+      // The nextLineHandle might not have a stateAfter, so wrap in try {}
+      try {
+        thisLevel = nextLineHandle.stateAfter.keyLevel;
+      } catch (err) {
+        break;
+      }
 
-            if (thisLevel > blockLevel) {
-                toLine++;
-            }
-        } else {
-            // Break if no next line. Required to prevent infinite loops.
-            break;
-        }
-    } while (thisLevel > blockLevel);
+      if (thisLevel > blockLevel) {
+        toLine++;
+      }
+    } else {
+      // Break if no next line. Required to prevent infinite loops.
+      break;
+    }
+  } while (thisLevel > blockLevel);
 
-    // First, remove all existing instances of the highlight class.
-    // Then highlight the block's range and update query string.
-    unhighlightAll();
-    highlightLines(node.range.from.line, toLine);
-    updateLinesQueryString();
+  // First, remove all existing instances of the highlight class.
+  // Then highlight the block's range and update query string.
+  unhighlightAll();
+  highlightLines(node.range.from.line, toLine);
+  updateLinesQueryString();
 
-    // Reset
-    anchorLine = undefined;
-    targetLine = undefined;
+  // Reset
+  anchorLine = undefined;
+  targetLine = undefined;
 }
 
 function onEditorGutterClick(cm, line, gutter, event) {
-    // Do work when the click occurs for the left (or main) mouse button only
-    if (event.button !== 0) {
-        return;
-    }
+  // Do work when the click occurs for the left (or main) mouse button only
+  if (event.button !== 0) {
+    return;
+  }
 
-    // Do work only on the line number target element
-    if (!event.target.classList.contains('CodeMirror-linenumber')) {
-        return;
-    }
+  // Do work only on the line number target element
+  if (!event.target.classList.contains('CodeMirror-linenumber')) {
+    return;
+  }
 
-    // The `line` parameter is a 0-indexed line number.
+  // The `line` parameter is a 0-indexed line number.
 
-    // The meta (command or control keys) will allow highlighting of
-    // non-sequential lines.
-    if (event.metaKey === true) {
-        const didHighlight = toggleHighlightLine(cm.getDoc(), line);
-        anchorLine = didHighlight ? line : undefined;
+  // The meta (command or control keys) will allow highlighting of
+  // non-sequential lines.
+  if (event.metaKey === true) {
+    const didHighlight = toggleHighlightLine(cm.getDoc(), line);
+    anchorLine = didHighlight ? line : undefined;
 
-        // Reset
-        targetLine = undefined;
+    // Reset
+    targetLine = undefined;
     // Shift keys will allow highlighting of multiple lines.
-    } else if (event.shiftKey === true && anchorLine !== undefined) {
-        // Clears a previous range if it exists
-        if (targetLine) {
-            unhighlightLines(anchorLine, targetLine);
-        }
-
-        // Then highlight the desired range
-        highlightLines(anchorLine, line);
-
-        // Remember state of how this happened
-        targetLine = line;
-    } else {
-        // If shift key is not pressed or there is not a previously selected line
-        // (which you need to do the whole range) then select one line.
-
-        // Clear all existing highlights first
-        unhighlightAll();
-
-        // If the clicked line is the same as the one before, reset
-        if (line === anchorLine) {
-            anchorLine = undefined;
-        } else {
-            // Otherwise, highlight that one line
-            highlightLine(cm.getDoc(), line);
-            anchorLine = line;
-        }
-
-        // Reset
-        targetLine = undefined;
+  } else if (event.shiftKey === true && anchorLine !== undefined) {
+    // Clears a previous range if it exists
+    if (targetLine) {
+      unhighlightLines(anchorLine, targetLine);
     }
 
-    // Update the query string
-    updateLinesQueryString();
+    // Then highlight the desired range
+    highlightLines(anchorLine, line);
+
+    // Remember state of how this happened
+    targetLine = line;
+  } else {
+    // If shift key is not pressed or there is not a previously selected line
+    // (which you need to do the whole range) then select one line.
+
+    // Clear all existing highlights first
+    unhighlightAll();
+
+    // If the clicked line is the same as the one before, reset
+    if (line === anchorLine) {
+      anchorLine = undefined;
+    } else {
+      // Otherwise, highlight that one line
+      highlightLine(cm.getDoc(), line);
+      anchorLine = line;
+    }
+
+    // Reset
+    targetLine = undefined;
+  }
+
+  // Update the query string
+  updateLinesQueryString();
 }
 
 // Editor operations, such as cut, paste, delete, or inserts, can mutate
 // highlighted lines. This will make sure the query string remains updated.
 function onEditorChanges(cm, changes) {
-    // Small performance tweak: if there's just one change on one line,
-    // don't bother updating the query string, which must check the highlight
-    // state on all lines
-    if (changes.length === 1 && changes[0].removed.length === 1 && changes[0].text.length === 1) {
-        return;
-    }
+  // Small performance tweak: if there's just one change on one line,
+  // don't bother updating the query string, which must check the highlight
+  // state on all lines
+  if (changes.length === 1 && changes[0].removed.length === 1 && changes[0].text.length === 1) {
+    return;
+  }
 
-    updateLinesQueryString();
+  updateLinesQueryString();
 }
 
 // Add handlers for these events to the editor.
 export function addHighlightEventListeners() {
-    editor.on('gutterClick', onEditorGutterClick);
-    editor.on('changes', onEditorChanges);
+  editor.on('gutterClick', onEditorGutterClick);
+  editor.on('changes', onEditorChanges);
 }

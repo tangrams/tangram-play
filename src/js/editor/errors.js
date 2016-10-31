@@ -15,28 +15,28 @@ const blockErrors = new Set();
  * @param {string} message - the string to display in the error
  */
 function createErrorLineElement(type, message) {
-    let iconTypeClass;
-    if (type === 'error') {
-        iconTypeClass = 'btm bt-exclamation-triangle error-icon';
-    } else if (type === 'warning') {
-        iconTypeClass = 'btm bt-exclamation-circle warning-icon';
-    }
+  let iconTypeClass;
+  if (type === 'error') {
+    iconTypeClass = 'btm bt-exclamation-triangle error-icon';
+  } else if (type === 'warning') {
+    iconTypeClass = 'btm bt-exclamation-circle warning-icon';
+  }
 
-    let displayText = message;
-    if (!displayText || displayText.length === 0) {
-        displayText = `Unspecified ${type}.`;
-    }
+  let displayText = message;
+  if (!displayText || displayText.length === 0) {
+    displayText = `Unspecified ${type}.`;
+  }
 
-    const node = document.createElement('div');
-    node.className = type;
+  const node = document.createElement('div');
+  node.className = type;
 
-    const icon = document.createElement('span');
-    icon.className = iconTypeClass;
+  const icon = document.createElement('span');
+  icon.className = iconTypeClass;
 
-    node.appendChild(icon);
-    node.appendChild(document.createTextNode(displayText));
+  node.appendChild(icon);
+  node.appendChild(document.createTextNode(displayText));
 
-    return node;
+  return node;
 }
 
 /**
@@ -47,25 +47,25 @@ function createErrorLineElement(type, message) {
  * @param {string} message - the string to display in the error
  */
 function createLineWidget(type, line, message) {
-    const node = createErrorLineElement(type, message);
-    const lineWidget = editor.addLineWidget(line, node, {
-        coverGutter: false,
-        noHScroll: true,
-    });
+  const node = createErrorLineElement(type, message);
+  const lineWidget = editor.addLineWidget(line, node, {
+    coverGutter: false,
+    noHScroll: true,
+  });
 
-    lineWidgets.push(lineWidget);
+  lineWidgets.push(lineWidget);
 }
 
 function clearAllErrors() {
-    for (let i = 0; i < lineWidgets.length; i++) {
-        editor.removeLineWidget(lineWidgets[i]);
-    }
-    lineWidgets.length = 0;
-    blockErrors.clear();
+  for (let i = 0; i < lineWidgets.length; i++) {
+    editor.removeLineWidget(lineWidgets[i]);
+  }
+  lineWidgets.length = 0;
+  blockErrors.clear();
 
-    store.dispatch({
-        type: CLEAR_ERRORS,
-    });
+  store.dispatch({
+    type: CLEAR_ERRORS,
+  });
 }
 
 /**
@@ -75,132 +75,134 @@ function clearAllErrors() {
  *          vary depending on the `errorObj.type` property.
  */
 function addError(errorObj) {
-    let error;
+  let error;
 
-    switch (errorObj.type) {
-        case 'yaml': {
-            const line = errorObj.error.mark.line;
-            const message = errorObj.error.reason;
-            createLineWidget('error', line, message);
+  switch (errorObj.type) {
+    case 'yaml':
+      {
+        const line = errorObj.error.mark.line;
+        const message = errorObj.error.reason;
+        createLineWidget('error', line, message);
 
-            error = {
-                type: 'error',
-                line,
-                message,
-                originalError: errorObj,
-            };
+        error = {
+          type: 'error',
+          line,
+          message,
+          originalError: errorObj,
+        };
 
-            break;
-        }
-        // case 'scene':
-        case 'scene_import':
-            // errorObj contains these properties:
-            //      `message` - handy error from Tangram
-            //      `url` - the url that could not be loaded
-            // we do not have a line number on which the error exists
-            // import values are returned as fully qualified urls, so we cannot
-            // check the value itself
-            error = {
-                type: 'error',
-                message: errorObj.message,
-                originalError: errorObj,
-            };
+        break;
+      }
+      // case 'scene':
+    case 'scene_import':
+      // errorObj contains these properties:
+      //      `message` - handy error from Tangram
+      //      `url` - the url that could not be loaded
+      // we do not have a line number on which the error exists
+      // import values are returned as fully qualified urls, so we cannot
+      // check the value itself
+      error = {
+        type: 'error',
+        message: errorObj.message,
+        originalError: errorObj,
+      };
 
-            break;
-        // Default case handles unknown error types or undefined types, which
-        // can happen if Tangram Play itself (and not Tangram) throws an error
-        // when Tangram is executing a Promise and catches a Tangram Play error.
-        default:
-            error = {
-                type: 'error',
-                message: errorObj.message,
-                originalError: errorObj,
-            };
-            break;
-    }
+      break;
+      // Default case handles unknown error types or undefined types, which
+      // can happen if Tangram Play itself (and not Tangram) throws an error
+      // when Tangram is executing a Promise and catches a Tangram Play error.
+    default:
+      error = {
+        type: 'error',
+        message: errorObj.message,
+        originalError: errorObj,
+      };
+      break;
+  }
 
-    store.dispatch({
-        type: ADD_ERROR,
-        error,
-    });
+  store.dispatch({
+    type: ADD_ERROR,
+    error,
+  });
 }
 
 function addWarning(errorObj) {
-    switch (errorObj.type) {
-        case 'styles': {
-            // Only show first error, cascading errors can be confusing
-            const errors = errorObj.shader_errors.slice(0, 1);
+  switch (errorObj.type) {
+    case 'styles':
+      {
+        // Only show first error, cascading errors can be confusing
+        const errors = errorObj.shader_errors.slice(0, 1);
 
-            for (let i = 0; i < errors.length; i++) {
-                const style = errors[i].block.scope;
+        for (let i = 0; i < errors.length; i++) {
+          const style = errors[i].block.scope;
 
-                // Skip generic errors not originating in style-sheet
-                if (style === 'ShaderProgram') {
-                    continue; // eslint-disable-line no-continue
-                }
+          // Skip generic errors not originating in style-sheet
+          if (style === 'ShaderProgram') {
+            continue; // eslint-disable-line no-continue
+          }
 
-                const block = errors[i].block;
+          const block = errors[i].block;
 
-                // De-dupe errors per block
-                if (blockErrors.has(JSON.stringify(block))) {
-                    continue; // eslint-disable-line no-continue
-                }
+          // De-dupe errors per block
+          if (blockErrors.has(JSON.stringify(block))) {
+            continue; // eslint-disable-line no-continue
+          }
 
-                const address = `styles:${style}:shaders:blocks:${block.name}`;
-                const node = getNodesForAddress(address);
-                const message = errors[i].message;
+          const address = `styles:${style}:shaders:blocks:${block.name}`;
+          const node = getNodesForAddress(address);
+          const message = errors[i].message;
 
-                const warning = {
-                    type: 'warning',
-                    message,
-                    originalError: errorObj,
-                };
+          const warning = {
+            type: 'warning',
+            message,
+            originalError: errorObj,
+          };
 
-                store.dispatch({
-                    type: ADD_ERROR,
-                    error: warning,
-                });
+          store.dispatch({
+            type: ADD_ERROR,
+            error: warning,
+          });
 
-                if (node) {
-                    const line = node.range.from.line + 1 + block.line;
-                    createLineWidget('warning', line, message);
-                    blockErrors.add(JSON.stringify(block)); // track unique errors
-                }
-            }
-
-            break;
+          if (node) {
+            const line = node.range.from.line + 1 + block.line;
+            createLineWidget('warning', line, message);
+            blockErrors.add(JSON.stringify(block)); // track unique errors
+          }
         }
-        // Handle unknown warning types.
-        default:
-            store.dispatch({
-                type: ADD_ERROR,
-                error: {
-                    type: 'warning',
-                    message: errorObj.message,
-                    originalError: errorObj,
-                },
-            });
 
-            break;
-    }
+        break;
+      }
+      // Handle unknown warning types.
+    default:
+      store.dispatch({
+        type: ADD_ERROR,
+        error: {
+          type: 'warning',
+          message: errorObj.message,
+          originalError: errorObj,
+        },
+      });
+
+      break;
+  }
 }
 
 /**
  * Depends on CodeMirror editor and Tangram layer being present.
  */
 export function initErrorsManager() {
-    editor.on('changes', (cm, changesObjs) => {
-        clearAllErrors();
-    });
+  editor.on('changes', (cm, changesObjs) => {
+    clearAllErrors();
+  });
 
-    // Subscribe to error events from Tangram
-    // See documentation: https://mapzen.com/documentation/tangram/Javascript-API/#error-and-warning
-    tangramLayer.scene.subscribe({
-        error: (event) => {
-            addError(event);
-        },
-        warning: (event) => {
-            addWarning(event);
-        },
-    });
+  // Subscribe to error events from Tangram
+  // See documentation: https://mapzen.com/documentation/tangram/Javascript-API/#error-and-warning
+  tangramLayer.scene.subscribe({
+    error: (event) => {
+      addError(event);
+    },
+    warning: (event) => {
+      addWarning(event);
+    },
+  });
 }

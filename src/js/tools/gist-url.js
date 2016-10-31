@@ -27,12 +27,12 @@ const gistIdRegexp = /\/\/(?:(?:gist.github.com|gist.githubusercontent.com)(?:\/
  * @returns {Boolean}
  */
 export function isGistURL(url) {
-    if ((url.includes('api.github.com/gists') || url.includes('gist.github.com')) &&
-        url.match(gistIdRegexp).length > 1) {
-        return true;
-    }
+  if ((url.includes('api.github.com/gists') || url.includes('gist.github.com')) &&
+    url.match(gistIdRegexp).length > 1) {
+    return true;
+  }
 
-    return false;
+  return false;
 }
 
 /**
@@ -50,9 +50,9 @@ export function isGistURL(url) {
  *      SHAs or different files within a gist.
  */
 export function getGistURL(url) {
-    // The last capture group of the RegExp should be the gistID
-    const gistId = url.match(gistIdRegexp).pop();
-    return `https://api.github.com/gists/${gistId}`;
+  // The last capture group of the RegExp should be the gistID
+  const gistId = url.match(gistIdRegexp).pop();
+  return `https://api.github.com/gists/${gistId}`;
 }
 
 /**
@@ -67,36 +67,36 @@ export function getGistURL(url) {
  * @returns {Promise} fulfilled with scene file's raw URL value
  */
 export function getSceneURLFromGistAPI(url) {
-    // Make sure that the URL is the Gist API's single gist manifest endpoint.
-    const gistUrl = getGistURL(url);
+  // Make sure that the URL is the Gist API's single gist manifest endpoint.
+  const gistUrl = getGistURL(url);
 
-    return window.fetch(gistUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(response.status);
-            }
-            return response.json();
-        })
-        .then(gist => {
-            // Iterate through gist.files, an object whose keys are the filenames of each file.
-            // Find the first file with type "text/x-yaml".
-            const yamlFile = Object.keys(gist.files).find(key => gist.files[key].type === 'text/x-yaml');
+  return window.fetch(gistUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
+    .then(gist => {
+      // Iterate through gist.files, an object whose keys are the filenames of each file.
+      // Find the first file with type "text/x-yaml".
+      const yamlFile = Object.keys(gist.files).find(key => gist.files[key].type === 'text/x-yaml');
 
-            // In the future, we will have to be smarter than this -- there might be
-            // multiple files, or it might be in a different format. But for now,
-            // we assume there's one Tangram YAML file and that the MIME-type is correct.
+      // In the future, we will have to be smarter than this -- there might be
+      // multiple files, or it might be in a different format. But for now,
+      // we assume there's one Tangram YAML file and that the MIME-type is correct.
 
-            if (!yamlFile) {
-                throw new Error('This Gist URL doesn’t appear to have a YAML file in it!');
-            } else {
-                // Returns the file's raw_url property.
-                // Loading this URL in Tangram instead of returning the "content"
-                // property will preserve the original URL location, which is preferable
-                // for Tangram. Don't read the "content" property directly because
-                // (a) it may be truncated and (b) we would have to construct a Blob
-                // URL for it anyway for Tangram, so there's no use saving an HTTP
-                // request here.
-                return gist.files[yamlFile].raw_url;
-            }
-        });
+      if (!yamlFile) {
+        throw new Error('This Gist URL doesn’t appear to have a YAML file in it!');
+      } else {
+        // Returns the file's raw_url property.
+        // Loading this URL in Tangram instead of returning the "content"
+        // property will preserve the original URL location, which is preferable
+        // for Tangram. Don't read the "content" property directly because
+        // (a) it may be truncated and (b) we would have to construct a Blob
+        // URL for it anyway for Tangram, so there's no use saving an HTTP
+        // request here.
+        return gist.files[yamlFile].raw_url;
+      }
+    });
 }
