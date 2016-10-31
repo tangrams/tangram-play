@@ -28,7 +28,7 @@ export function isEmpty(cm, nLine) {
 
 //  Check if the line is commented YAML style
 export function isStrCommented(str) {
-  const regex = /^\s*[#||\/\/]/gm;
+  const regex = /^\s*[#||//]/gm;
   return (regex.exec(str) || []).length > 0;
 }
 export function isCommented(cm, nLine) {

@@ -48,7 +48,7 @@ export function injectAPIKey(content, apiKey) {
 export function suppressAPIKeys(content, suppressedKeys) {
   // Creates a string for the regex, e.g.
   // "vector\-tiles\-P6dkVl4|vector\-tiles\-HqUVidw|vector\-tiles\-JUsa0Gc"
-  const escapedKeys = suppressedKeys.map((key) => key.replace(/\-/g, '\\-')).join('|');
+  const escapedKeys = suppressedKeys.map((key) => key.replace(/-/g, '\\-')).join('|');
   const re = new RegExp(`${URL_PATTERN.source}\\?api_key\\=(${escapedKeys})`, 'gm');
   return content.replace(re, '$1');
 }

@@ -140,7 +140,7 @@ export function initSuggestions() {
       editor.showHint({
         completeSingle: false,
         alignWithWord: true,
-        closeCharacters: /[\s()\[\]{};:>,]/,
+        closeCharacters: /[\s()[\]{};:>,]/,
         customKeys: {
           Tab: (cm, handle) => {
             cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));

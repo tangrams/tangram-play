@@ -160,7 +160,7 @@ function getInlineNodes(str, nLine) {
     } else {
       // check for keypair
       // This seems to check for inline nodes
-      const isNode = /^\s*([\w|\-|_|\$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
+      const isNode = /^\s*([\w|\-|_|$]+)(\s*:\s*)([\w|\-|'|#]*)\s*/gm.exec(str.substr(i));
       if (isNode) {
         stack[level] = isNode[1];
         i += isNode[1].length;
@@ -170,7 +170,7 @@ function getInlineNodes(str, nLine) {
         let value = isNode[3];
         // This regex checks for vec arrays
         // eslint-disable-next-line max-len
-        const isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?\]/gm);
+        const isVector = str.substr(i + 1 + colon.length).match(/^\[\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*,\s*(\d\.|\d*\.?\d+)\s*(,\s*(\d\.|\d*\.?\d+)\s*)?]/gm);
         if (isVector) {
           value = isVector[0];
         }
@@ -206,7 +206,7 @@ function getInlineNodes(str, nLine) {
 
 // Add Address to token states
 export function parseYamlString(string, state, tabSize) {
-  const regex = /(^\s*)([\w|\-|_|\/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
+  const regex = /(^\s*)([\w|\-|_|/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
   const node = regex.exec(string);
 
   // Each node entry is based off of this object.
