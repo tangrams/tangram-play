@@ -5,6 +5,7 @@ import localforage from 'localforage';
 import config from '../config';
 import { initCodeMirror } from './codemirror';
 import { parseYamlString } from './codemirror/yaml-tangram';
+import { parseYAML } from './yaml-ast';
 import { suppressAPIKeys } from './api-keys';
 import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
@@ -157,6 +158,8 @@ export function watchEditorForChanges() {
   const content = getEditorContent();
   const doc = editor.getDoc();
   const isClean = doc.isClean();
+
+  parseYAML(content);
 
   // Update all the properties of the active file in local memory.
   // Localforage is async so it cannot be relied on to do this on the
