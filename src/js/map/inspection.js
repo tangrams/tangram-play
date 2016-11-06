@@ -245,7 +245,7 @@ class TangramInspectionPopup extends React.Component {
                 </tr>
                 {(() => {
                   // Not all data sources will have multiple layers.
-                  // For instance, https://vector.mapzen.com/osm/earth/{z}/{x}/{y}.topojson
+                  // For instance, https://tile.mapzen.com/mapzen/vector/earth/{z}/{x}/{y}.topojson
                   // is just the earth layer. In this situation, the
                   // `selection.feature` object reported by Tangram
                   // does not contain a `source_layer` property.

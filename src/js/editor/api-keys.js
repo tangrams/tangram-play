@@ -4,9 +4,11 @@
  * Scene files that use Mapzen's vector tile service, but do not have API keys,
  * should have an API key injected so that they can still be properly rendered
  * by Tangram. This default key should always be masked and not seen by the end user.
+ *
+ * The URL_PATTERN handles the old vector.mapzen.com origin (until it is fully
+ * deprecated) as well as the new v1 tile.mapzen.com endpoint.
  */
-
-const URL_PATTERN = /((https?:)?\/\/vector.mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|:)+(topojson|geojson|mvt))/;
+const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|:)+(topojson|geojson|mvt))/;
 
 /**
  * Parses Tangram YAML content for URL references to Mapzen vector tile service
