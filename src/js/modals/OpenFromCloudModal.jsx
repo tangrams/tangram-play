@@ -56,7 +56,10 @@ export default class OpenFromCloudModal extends React.Component {
 
   onClickDeleteScene(event, sceneId) {
     event.stopPropagation();
-    this.setState({ beingDeleted: sceneId });
+    this.setState({
+      beingDeleted: sceneId,
+      selected: null, // Prevent the deleted scene from being selected
+    });
     deleteScene(sceneId)
       .then(() => {
         this.setState({ beingDeleted: null });
