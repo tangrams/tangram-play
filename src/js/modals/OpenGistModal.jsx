@@ -183,6 +183,7 @@ export default class OpenGistModal extends React.Component {
         className="modal-alt open-from-cloud-modal"
         ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickClose}
+        confirmFunction={this.onClickConfirm}
       >
         <h4>Open a previously saved Gist</h4>
 

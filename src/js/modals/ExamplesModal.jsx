@@ -82,6 +82,7 @@ export default class ExamplesModal extends React.Component {
         className="modal-alt example-modal"
         ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
+        confirmFunction={this.onClickConfirm}
       >
         <h4>Choose an example to open</h4>
 

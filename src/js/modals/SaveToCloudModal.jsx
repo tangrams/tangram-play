@@ -35,7 +35,6 @@ export default class SaveToCloudModal extends React.Component {
     this.onChangeSceneName = this.onChangeSceneName.bind(this);
     this.onChangeSceneDescription = this.onChangeSceneDescription.bind(this);
     this.onChangeScenePublic = this.onChangeScenePublic.bind(this);
-    this.onKeyPressInput = this.onKeyPressInput.bind(this);
     this.onClickConfirm = this.onClickConfirm.bind(this);
     this.onClickCancel = this.onClickCancel.bind(this);
     this.setReadyUI = this.setReadyUI.bind(this);
@@ -67,13 +66,6 @@ export default class SaveToCloudModal extends React.Component {
 
   onChangeScenePublic(event) {
     this.setState({ sceneIsPublic: event.target.checked });
-  }
-
-  // Allows form to be submitted when one presses 'Enter' inside an input
-  onKeyPressInput(event) {
-    if (event.which === 13) {
-      this.onClickConfirm();
-    }
   }
 
   onClickConfirm() {
@@ -187,6 +179,7 @@ export default class SaveToCloudModal extends React.Component {
         disableEsc={this.state.thinking}
         ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
+        confirmFunction={this.onClickConfirm}
       >
         <div className="modal-text">
           <h4>Save this scene to your Mapzen account</h4>
@@ -207,7 +200,6 @@ export default class SaveToCloudModal extends React.Component {
             ref={(ref) => { this.nameInput = ref; }}
             placeholder="(default: Tangram scene)"
             onChange={this.onChangeSceneName}
-            onKeyPress={this.onKeyPressInput}
           />
           <p>
             <label htmlFor="save-scene-description">Scene description</label>
@@ -217,7 +209,6 @@ export default class SaveToCloudModal extends React.Component {
               value={this.state.sceneDescription}
               placeholder="(optional description)"
               onChange={this.onChangeSceneDescription}
-              onKeyPress={this.onKeyPressInput}
             />
           </p>
           <p>
