@@ -19,7 +19,6 @@ export default class OpenUrlModal extends React.Component {
 
     this.onClickConfirm = this.onClickConfirm.bind(this);
     this.onClickCancel = this.onClickCancel.bind(this);
-    this.onKeyPressInput = this.onKeyPressInput.bind(this);
     this.onChangeInput = this.onChangeInput.bind(this);
     this.unmountSelf = this.unmountSelf.bind(this);
   }
@@ -30,6 +29,9 @@ export default class OpenUrlModal extends React.Component {
   }
 
   onClickConfirm() {
+    // Bail if no input
+    if (!this.state.input) return;
+
     // Waiting state
     this.setState({
       thinking: true,
@@ -38,6 +40,8 @@ export default class OpenUrlModal extends React.Component {
     // Cache this
     lastAttemptedUrlInput = this.state.input;
 
+    // We no longer check for valid URL signatures.
+    // It is easier to attempt to fetch an input URL and see what happens.
     const url = this.state.input.trim();
     load({ url })
       .then(this.unmountSelf);
@@ -49,17 +53,6 @@ export default class OpenUrlModal extends React.Component {
 
   onChangeInput(event) {
     this.setState({ input: event.target.value });
-  }
-
-  onKeyPressInput(event) {
-    // We no longer check for valid URL signatures.
-    // It is easier to attempt to fetch an input URL and see what happens.
-    if (this.state.input) {
-      const key = event.keyCode || event.which;
-      if (key === 13) {
-        this.onClickConfirm();
-      }
-    }
   }
 
   unmountSelf() {
@@ -75,6 +68,7 @@ export default class OpenUrlModal extends React.Component {
         disableEsc={this.state.thinking}
         ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
+        confirmFunction={this.onClickConfirm}
       >
         <h4>Open a scene file from URL</h4>
 
@@ -86,7 +80,6 @@ export default class OpenUrlModal extends React.Component {
             spellCheck="false"
             value={this.state.input}
             ref={(ref) => { this.input = ref; }}
-            onKeyPress={this.onKeyPressInput}
             onChange={this.onChangeInput}
           />
         </div>

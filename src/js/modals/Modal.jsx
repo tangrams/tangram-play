@@ -9,7 +9,9 @@ export default class Modal extends React.Component {
     super(props);
 
     this.storeRefs = this.storeRefs.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.handleEscKey = this.handleEscKey.bind(this);
+    this.handleEnterKey = this.handleEnterKey.bind(this);
   }
 
   componentDidMount() {
@@ -19,8 +21,8 @@ export default class Modal extends React.Component {
       visible: true,
     });
 
-    // Add the listener for the escape key
-    window.addEventListener('keydown', this.handleEscKey, false);
+    // Add listeners for keys
+    window.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
@@ -29,7 +31,22 @@ export default class Modal extends React.Component {
       visible: false,
     });
 
-    window.removeEventListener('keydown', this.handleEscKey, false);
+    window.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  onKeyDown(event) {
+    const key = event.keyCode || event.which;
+
+    switch (key) {
+      case 13:
+        this.handleEnterKey(event);
+        break;
+      case 27:
+        this.handleEscKey(event);
+        break;
+      default:
+        break;
+    }
   }
 
   /**
@@ -51,20 +68,29 @@ export default class Modal extends React.Component {
   }
 
   /**
-   * Function to handle when the escape key is pressed.
+   * Handles when the Enter key is pressed.
+   * Should be the same function as if you pressed the Confirm button.
+   * Events are passed to the function as the first parameter.
+   */
+  handleEnterKey(event) {
+    // By default, the confirmFunction prop is a no-op
+    this.props.confirmFunction(event);
+  }
+
+  /**
+   * Handles when the Escape key is pressed.
    * Should be the same function as if you pressed the Cancel button.
    * Events are passed to the function as the first parameter.
    */
   handleEscKey(event) {
-    const key = event.keyCode || event.which;
+    // Bail if escape disabled via props
+    if (this.props.disableEsc === true) return;
 
-    if (key === 27 && !this.props.disableEsc) {
-      if (this.props.cancelFunction !== noop) {
-        this.props.cancelFunction(event);
-      } else {
-        // Without a cancel function handler, just unmount
-        this.unmount();
-      }
+    if (this.props.cancelFunction !== noop) {
+      this.props.cancelFunction(event);
+    } else {
+      // Without a cancel function handler, just unmount
+      this.unmount();
     }
   }
 
@@ -88,11 +114,13 @@ Modal.propTypes = {
   className: React.PropTypes.string,
   disableEsc: React.PropTypes.bool,
   cancelFunction: React.PropTypes.func,
+  confirmFunction: React.PropTypes.func,
   setRef: React.PropTypes.func,
 };
 
 Modal.defaultProps = {
   disableEsc: false,
   cancelFunction: noop,
+  confirmFunction: noop,
   setRef: noop,
 };
