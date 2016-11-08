@@ -14,12 +14,13 @@ export default class OpenUrlModal extends React.Component {
 
     this.state = {
       thinking: false,
-      hasInput: Boolean(lastAttemptedUrlInput),
+      input: lastAttemptedUrlInput || '',
     };
 
     this.onClickConfirm = this.onClickConfirm.bind(this);
     this.onClickCancel = this.onClickCancel.bind(this);
     this.onKeyPressInput = this.onKeyPressInput.bind(this);
+    this.onChangeInput = this.onChangeInput.bind(this);
     this.unmountSelf = this.unmountSelf.bind(this);
   }
 
@@ -35,9 +36,9 @@ export default class OpenUrlModal extends React.Component {
     });
 
     // Cache this
-    lastAttemptedUrlInput = this.input.value;
+    lastAttemptedUrlInput = this.state.input;
 
-    const url = this.input.value.trim();
+    const url = this.state.input.trim();
     load({ url })
       .then(this.unmountSelf);
   }
@@ -46,18 +47,18 @@ export default class OpenUrlModal extends React.Component {
     this.unmountSelf();
   }
 
+  onChangeInput(event) {
+    this.setState({ input: event.target.value });
+  }
+
   onKeyPressInput(event) {
     // We no longer check for valid URL signatures.
     // It is easier to attempt to fetch an input URL and see what happens.
-    if (this.input.value) {
-      this.setState({ hasInput: true });
-
+    if (this.state.input) {
       const key = event.keyCode || event.which;
       if (key === 13) {
         this.onClickConfirm();
       }
-    } else {
-      this.setState({ hasInput: false });
     }
   }
 
@@ -83,9 +84,10 @@ export default class OpenUrlModal extends React.Component {
             id="open-url-input"
             placeholder="https://"
             spellCheck="false"
+            value={this.state.input}
             ref={(ref) => { this.input = ref; }}
             onKeyPress={this.onKeyPressInput}
-            defaultValue={lastAttemptedUrlInput}
+            onChange={this.onChangeInput}
           />
         </div>
 
@@ -100,7 +102,7 @@ export default class OpenUrlModal extends React.Component {
           </Button>
           <Button
             className="button-confirm"
-            disabled={!this.state.hasInput || this.state.thinking}
+            disabled={Boolean(!this.state.input) || this.state.thinking}
             onClick={this.onClickConfirm}
           >
             <Icon type="bt-check" /> Open
