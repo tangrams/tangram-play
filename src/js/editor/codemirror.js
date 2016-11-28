@@ -75,15 +75,6 @@ function createRulersOption(indentSize = INDENT_UNIT, amount = 10) {
  * @returns {CodeMirror} an instance of the CodeMirror editor.
  */
 export function initCodeMirror(el) {
-  let autofocus = true;
-
-  // If we're using an embedded version of play, we don't want the CodeMirror
-  // instance to focus by default since presumably we'll be embedding it
-  // within another page
-  if (window.isEmbedded) {
-    autofocus = false;
-  }
-
   const cm = new CodeMirror(el, {
     mode: 'text/x-yaml-tangram',
     theme: 'tangram',
@@ -99,7 +90,9 @@ export function initCodeMirror(el) {
     },
     styleActiveLine: true,
     showCursorWhenSelecting: true,
-    autofocus,
+    // Do not autofocus by default if Tangram Play is embedded / iframed
+    // into another page.
+    autofocus: (window.self === window.top),
     showTrailingSpace: true,
     matchBrackets: true,
     autoCloseBrackets: true,
