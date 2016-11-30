@@ -116,7 +116,6 @@
     "react-draggable": "2.2.3",
     "react-redux": "4.4.6",
     "redux": "3.6.0",
-    "redux-logger": "2.7.4",
     "three": "0.82.1",
     "tinycolor2": "1.4.1",
     "whatwg-fetch": "2.0.1",
