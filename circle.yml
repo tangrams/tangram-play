@@ -1,17 +1,26 @@
 machine:
+  pre:
+    - mkdir ~/.yarn-cache
   node:
-    version: 6.9.1
+    version: stable
   environment:
     NODE_ENV: test
 
 dependencies:
-  # Gulp must be installed in the global environment.
   pre:
-    - npm install -g gulp-cli
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
+    # Gulp must be installed in the global environment.
+    - yarn install -g gulp-cli
+  cache_directories:
+    - ~/.yarn-cache
+  override:
+    - yarn install
   post:
-    - npm install -g aws-cli
+    - yarn install -g aws-cli
 
 test:
+  override:
+    - yarn test
   post:
     # For Precog.
     - NODE_ENV=production gulp build
