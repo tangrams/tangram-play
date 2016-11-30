@@ -10,13 +10,12 @@ dependencies:
   pre:
     - curl -o- -L https://yarnpkg.com/install.sh | bash
     # Gulp must be installed in the global environment.
-    - yarn install -g gulp-cli
+    - yarn global add gulp-cli
+    - yarn global add aws-cli
   cache_directories:
     - ~/.yarn-cache
   override:
     - yarn install
-  post:
-    - yarn install -g aws-cli
 
 test:
   override:
