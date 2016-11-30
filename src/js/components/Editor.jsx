@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import EventEmitter from './event-emitter';
 import EditorTabs from './EditorTabs';
 import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
@@ -18,6 +19,7 @@ import {
   setEditorContent,
   clearEditorContent,
   watchEditorForChanges,
+  refreshEditor,
 }
 from '../editor/editor';
 import { highlightRanges } from '../editor/highlight';
@@ -25,12 +27,18 @@ import { highlightRanges } from '../editor/highlight';
 let docsHasInitAlready = false;
 
 class Editor extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.updateEditorWidth = this.updateEditorWidth.bind(this);
+  }
+
   componentDidMount() {
     // instantiate CodeMirror with the editor container element's
     // DOM node reference
     initEditor(this.editorEl);
 
-    // Turn change watching on.
+    EventEmitter.subscribe('divider:drag', this.updateEditorWidth);
     editor.on('changes', watchEditorForChanges);
   }
 
@@ -120,6 +128,11 @@ class Editor extends React.PureComponent {
     });
   }
 
+  updateEditorWidth(event) {
+    this.el.style.width = `${window.innerWidth - event.posX}px`;
+    refreshEditor();
+  }
+
   render() {
     const customStyles = {};
     if (this.props.fontSize) {
@@ -127,8 +140,7 @@ class Editor extends React.PureComponent {
     }
 
     return (
-      /* id='content' is used only as a hook for Divider right now */
-      <div className="editor-container" id="content">
+      <div className="editor-container" ref={(ref) => { this.el = ref; }}>
         <Divider />
         {(() => {
           // Don't flash this when Tangram Play is initializing;

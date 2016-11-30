@@ -1,9 +1,6 @@
 import React from 'react';
 import Draggable from 'react-draggable';
 import { connect } from 'react-redux';
-
-import { throttle } from 'lodash';
-import { editor } from '../editor/editor';
 import EventEmitter from './event-emitter';
 
 // Redux
@@ -58,9 +55,7 @@ class Divider extends React.Component {
       position: { x: 0, y: 0 },
     };
 
-    this.throttledRefresh = throttle(this.refreshMapAndEditor, 20);
     this.onResizeWindow = this.onResizeWindow.bind(this);
-    this.changeMapAndEditorSize = this.changeMapAndEditorSize.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.onStop = this.onStop.bind(this);
   }
@@ -73,13 +68,9 @@ class Divider extends React.Component {
   // function (because it reads from localforage) so it is retrieved and
   // set on state.
   componentDidMount() {
-    // Cache element references for map and editor
-    this.contentEl = document.getElementById('content');
-
     window.addEventListener('resize', this.onResizeWindow);
 
     // Set up initial positioning
-    this.changeMapAndEditorSize(this.props.posX);
     EventEmitter.dispatch('divider:drag', {
       posX: this.props.posX,
     });
@@ -93,14 +84,14 @@ class Divider extends React.Component {
 
   // Called when something updates props (e.g. new divider position.)
   componentWillUpdate(nextProps) {
-    this.changeMapAndEditorSize(nextProps.posX);
+    EventEmitter.dispatch('divider:drag', {
+      posX: nextProps.posX,
+    });
   }
 
   onDrag(event, position) {
     const currentPosX = this.dividerEl.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX + position.x);
-    this.changeMapAndEditorSize(clampedPosX);
-
     // While dragging, dispatch events containing divider position data.
     // Map and editor components will subscribe to this event to resize themselves.
     // This is much faster and less jankier than passing divider position
@@ -138,33 +129,10 @@ class Divider extends React.Component {
     // Window size has changed; update position
     const currentPosX = this.dividerEl.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX);
-    this.changeMapAndEditorSize(clampedPosX);
 
     EventEmitter.dispatch('divider:drag', {
       posX: clampedPosX,
     });
-  }
-
-  /**
-   * This directly adjusts the map and editor content elements.
-   * Not very React-friendly, but is quite fast.
-   * TODO: Explore optimal ways to replace this.
-   */
-  changeMapAndEditorSize(positionX) {
-    this.contentEl.style.width = `${window.innerWidth - positionX}px`;
-
-    this.throttledRefresh();
-  }
-
-  /**
-   * Refreshes CodeMirror and Leaflet to respond to different element sizes
-   * during or after a divider drag. This may be expensive so it is
-   * throttled and aliased as `this.throttledRefresh()`.
-   */
-  refreshMapAndEditor() {
-    if (editor) {
-      editor.refresh();
-    }
   }
 
   render() {

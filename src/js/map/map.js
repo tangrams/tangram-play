@@ -216,8 +216,7 @@ export function initMap() {
 /**
  * Utility function to check if the map container size changed and updates
  * the map if so — call it after the map size has changed dynamically.
- * This function is automatically throttled to prevent it from executing too
- * quickly.
+ * This function is throttled to prevent it from executing too quickly.
  */
 export const refreshMap = throttle(() => {
   map.invalidateSize({

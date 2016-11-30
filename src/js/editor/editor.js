@@ -1,4 +1,4 @@
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 import CodeMirror from 'codemirror';
 import localforage from 'localforage';
 
@@ -16,6 +16,7 @@ import store from '../store';
 import { MARK_FILE_DIRTY, MARK_FILE_CLEAN } from '../store/actions';
 
 const STORAGE_LAST_EDITOR_STATE = 'last-scene';
+const EDITOR_REFRESH_THROTTLE = 20;
 
 // Export an instantiated CodeMirror instance
 // eslint-disable-next-line import/no-mutable-exports
@@ -41,6 +42,17 @@ export function initEditor(el) {
   // Turn on highlighting module
   addHighlightEventListeners();
 }
+
+/**
+ * Utility function to refresh the editor layout - call it after the editor
+ * size has changed dynamically. This function is throttled to prevent it from
+ * executing too quickly.
+ */
+export const refreshEditor = throttle(() => {
+  if (editor) {
+    editor.refresh();
+  }
+}, EDITOR_REFRESH_THROTTLE);
 
 // Sets or gets scene contents in the editor.
 // =============================================================================
