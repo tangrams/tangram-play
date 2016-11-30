@@ -46,6 +46,21 @@ function getStartingPosition() {
   return Math.floor(window.innerWidth / 2);
 }
 
+/**
+ * Announces divider position to other components via EventEmitter.
+ * Other components (Map and Editor) subscribe to this event so they can
+ * resize themselves and respond accordingly.
+ * This is much faster and less jankier than passing divider position
+ * as Redux state and re-rendering components as it updates, especially
+ * during the drag action.
+ *
+ * @params {Number} posX - the current X position, from left edge of window,
+ *      of the divider element.
+ */
+function broadcastDividerPosition(posX) {
+  EventEmitter.dispatch('divider:reposition', { posX });
+}
+
 class Divider extends React.Component {
   constructor(props) {
     super(props);
@@ -69,11 +84,7 @@ class Divider extends React.Component {
   // set on state.
   componentDidMount() {
     window.addEventListener('resize', this.onResizeWindow);
-
-    // Set up initial positioning
-    EventEmitter.dispatch('divider:drag', {
-      posX: this.props.posX,
-    });
+    broadcastDividerPosition(this.props.posX);
   }
 
   // Only update if the position changes - this prevents layout flashing
@@ -84,21 +95,13 @@ class Divider extends React.Component {
 
   // Called when something updates props (e.g. new divider position.)
   componentWillUpdate(nextProps) {
-    EventEmitter.dispatch('divider:drag', {
-      posX: nextProps.posX,
-    });
+    broadcastDividerPosition(nextProps.posX);
   }
 
   onDrag(event, position) {
     const currentPosX = this.dividerEl.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX + position.x);
-    // While dragging, dispatch events containing divider position data.
-    // Map and editor components will subscribe to this event to resize themselves.
-    // This is much faster and less jankier than passing divider position
-    // as Redux state and re-rendering components as it updates.
-    EventEmitter.dispatch('divider:drag', {
-      posX: clampedPosX,
-    });
+    broadcastDividerPosition(clampedPosX);
   }
 
   onStop(event, position) {
@@ -121,18 +124,13 @@ class Divider extends React.Component {
       type: SET_SETTINGS,
       dividerPositionX: posX,
     });
-
-    EventEmitter.dispatch('divider:dragend');
   }
 
+  // Window size has changed; update position
   onResizeWindow() {
-    // Window size has changed; update position
     const currentPosX = this.dividerEl.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX);
-
-    EventEmitter.dispatch('divider:drag', {
-      posX: clampedPosX,
-    });
+    broadcastDividerPosition(clampedPosX);
   }
 
   render() {

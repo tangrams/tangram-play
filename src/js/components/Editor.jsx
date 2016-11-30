@@ -38,7 +38,7 @@ class Editor extends React.PureComponent {
     // DOM node reference
     initEditor(this.editorEl);
 
-    EventEmitter.subscribe('divider:drag', this.updateEditorWidth);
+    EventEmitter.subscribe('divider:reposition', this.updateEditorWidth);
     editor.on('changes', watchEditorForChanges);
   }
 

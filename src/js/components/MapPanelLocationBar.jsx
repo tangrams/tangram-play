@@ -130,7 +130,7 @@ export default class MapPanelLocationBar extends React.Component {
     });
 
     // Need a notification when divider moves to change the latlng label precision
-    EventEmitter.subscribe('divider:drag', this.setLabelPrecision);
+    EventEmitter.subscribe('divider:reposition', this.setLabelPrecision);
 
     // Need to add an event listener to detect keydown on ENTER. Why? Because the react Autosuggest
     // currently closes the panel upon 'Enter'

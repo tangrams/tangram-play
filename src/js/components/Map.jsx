@@ -14,7 +14,7 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    EventEmitter.subscribe('divider:drag', this.updateMapWidth);
+    EventEmitter.subscribe('divider:reposition', this.updateMapWidth);
 
     // We have to run initMap here because this instantiates Leaflet
     // into a map container, which expects the DOM element for it to
