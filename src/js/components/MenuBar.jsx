@@ -78,7 +78,7 @@ function showSaveToCloudModal() {
 function clickSaveToCloud() {
   // showConfirmDialogModal('This feature is being renovated! Please come back later.');
   requestUserSignInState()
-    .then(data => {
+    .then((data) => {
       if (!data) {
         console.log('error'); // TODO:
       }

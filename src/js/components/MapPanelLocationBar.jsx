@@ -310,7 +310,7 @@ export default class MapPanelLocationBar extends React.Component {
     const endpoint = `https://${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
 
     return window.fetch(endpoint)
-      .then((response) => response.json())
+      .then(response => response.json())
       .then((response) => {
         const state = {};
 
@@ -368,7 +368,7 @@ export default class MapPanelLocationBar extends React.Component {
    */
   makeRequest(endpoint) {
     window.fetch(endpoint)
-      .then((response) => response.json())
+      .then(response => response.json())
       .then((results) => {
         // Stores a new set of autocomplete suggestions in 'suggestions'
         // data causing the search list to re-render

@@ -29,9 +29,9 @@ export function saveToGist(data, successCallback, errorCallback) {
   // convert it to a thumbnail at a fixed dimension. This
   // makes file sizes and layout more predictable.
   getScreenshotData()
-    .then((screenshot) =>
+    .then(screenshot =>
       createThumbnail(screenshot.url, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, true, false))
-    .then(thumbnail => {
+    .then((thumbnail) => {
       const files = {};
       const cachedUserData = getCachedUserSignInData();
       const metadata = {
@@ -84,7 +84,7 @@ export function saveToGist(data, successCallback, errorCallback) {
         // POSTing to /gists API requires a JSON blob of
         // MIME-type 'application/json'
         body: JSON.stringify(postData),
-      }).then(response => {
+      }).then((response) => {
         switch (response.status) {
           case 201:
             return response.json();

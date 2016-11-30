@@ -19,7 +19,8 @@ export function getQueryStringObject(queryString = window.location.search) {
   const entries = params.entries();
   const object = {};
 
-  for (let entry of entries) {
+  // `entries` is an Iterator object, we must of the for-of syntax.
+  for (const entry of entries) { // eslint-disable-line no-restricted-syntax
     const key = entry[0];
     const value = entry[1];
 

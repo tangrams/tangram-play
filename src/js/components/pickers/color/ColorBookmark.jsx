@@ -236,7 +236,6 @@ ColorBookmark.propTypes = {
   value: React.PropTypes.string,
   // These props are only used for GLSL pickers within the shader blocks
   shader: React.PropTypes.bool,
-  display: React.PropTypes.bool,
   cursor: React.PropTypes.object,
   match: React.PropTypes.object,
   vec: React.PropTypes.string,

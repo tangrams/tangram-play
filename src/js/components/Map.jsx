@@ -52,7 +52,7 @@ class Map extends React.Component {
   // being resized. Directly adjusting DOM in this way is much faster than
   // re-rendering on a state change.
   updateMapWidth(event) {
-    this.mapEl.style.width =`${event.posX}px`;
+    this.mapEl.style.width = `${event.posX}px`;
 
     // Invalidates and refreshes Leaflet's map size.
     refreshMap();
@@ -90,8 +90,14 @@ class Map extends React.Component {
 
 Map.propTypes = {
   panel: React.PropTypes.bool,
-  app: React.PropTypes.object,
-  scene: React.PropTypes.object
+  app: React.PropTypes.shape({
+    initialized: React.PropTypes.bool,
+    mapNotLoaded: React.PropTypes.bool,
+  }),
+  scene: React.PropTypes.shape({
+    counter: React.PropTypes.number,
+    files: React.PropTypes.array,
+  }),
 };
 
 Map.defaultProps = {

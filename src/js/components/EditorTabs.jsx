@@ -88,7 +88,7 @@ EditorTabs.propTypes = {
   // Injected by `mapStateToProps`
   activeTab: React.PropTypes.number,
   mainTab: React.PropTypes.number,
-  files: React.PropTypes.array,
+  files: React.PropTypes.arrayOf(React.PropTypes.object),
 
   // Injected by `mapDispatchToProps`
   setActiveFile: React.PropTypes.func,

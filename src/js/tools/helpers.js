@@ -1,7 +1,7 @@
 export function returnTrue() {}
 
 // Cache previously generated unique integer, used by `uniqueInteger()`
-let previousUniqueInteger = 0;
+let uniqueIntegerCounter = 0;
 
 /**
  * Returns a locally-unique integer. These are not random (the easiest way
@@ -16,7 +16,8 @@ let previousUniqueInteger = 0;
  * @returns {Number}
  */
 export function uniqueInteger() {
-  return previousUniqueInteger++;
+  uniqueIntegerCounter += 1;
+  return uniqueIntegerCounter;
 }
 
 /**

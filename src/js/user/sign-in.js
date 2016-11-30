@@ -50,14 +50,14 @@ let cachedSignInData;
 export function requestUserSignInState() {
   if (signInEnabled) {
     return window.fetch(signInHost + SIGN_IN_STATE_API_ENDPOINT, { credentials: signInCredentials })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(response.status);
         }
 
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         cachedSignInData = data;
 
         store.dispatch({
@@ -92,7 +92,7 @@ export function requestUserSignOut() {
   return window.fetch(signInHost + SIGN_OUT_API_ENDPOINT, {
     method: 'POST',
     credentials: signInCredentials,
-  }).then(response => {
+  }).then((response) => {
     if (!response.ok) {
       throw new Error(response.status);
     }

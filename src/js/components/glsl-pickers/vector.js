@@ -14,7 +14,7 @@ export default class Vector {
       const strValues = (parts[1] || parts[0].replace(/(\[)/g, '')).split(/,\s*/);
       type = type || (parts[1] ? parts[0].substr(0, 4) : `vec${strValues.length}`);
       const values = [];
-      Object.keys(strValues).forEach(key => {
+      Object.keys(strValues).forEach((key) => {
         values.push(parseFloat(strValues[key]));
       });
       this.set(values, type);

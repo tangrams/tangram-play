@@ -71,13 +71,13 @@ export function getSceneURLFromGistAPI(url) {
   const gistUrl = getGistURL(url);
 
   return window.fetch(gistUrl)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(response.status);
       }
       return response.json();
     })
-    .then(gist => {
+    .then((gist) => {
       // Iterate through gist.files, an object whose keys are the filenames of each file.
       // Find the first file with type "text/x-yaml".
       const yamlFile = Object.keys(gist.files).find(key => gist.files[key].type === 'text/x-yaml');

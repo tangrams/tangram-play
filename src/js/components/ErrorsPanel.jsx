@@ -75,7 +75,7 @@ class ErrorsPanel extends React.Component {
 }
 
 ErrorsPanel.propTypes = {
-  errors: React.PropTypes.array,
+  errors: React.PropTypes.arrayOf(React.PropTypes.object),
 };
 
 ErrorsPanel.defaultProps = {

@@ -45,14 +45,14 @@ class SignInButton extends React.Component {
   onClickSignOut(event) {
     checkSaveStateThen(() => {
       requestUserSignOut()
-        .catch(error => {
+        .catch((error) => {
           showErrorModal('Unable to sign you out.');
         });
     });
   }
 
   checkLoggedInState() {
-    requestUserSignInState().then(data => {
+    requestUserSignInState().then((data) => {
       // This tells us we've contacted mapzen.com and the API is valid
       // `data` is null if we are not hosted in the right place
       if (data) {

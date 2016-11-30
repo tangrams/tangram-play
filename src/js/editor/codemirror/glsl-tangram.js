@@ -1,5 +1,5 @@
 import CodeMirror from 'codemirror';
-import 'codemirror/mode/clike/clike.js';
+import 'codemirror/mode/clike/clike';
 
 function wordsToObj(str) {
   const obj = {};

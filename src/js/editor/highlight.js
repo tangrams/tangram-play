@@ -186,7 +186,7 @@ function getLineNumberRanges(array) {
     end = start;
     while (array[i + 1] - array[i] === 1) {
       end = array[i + 1]; // increment the index if the numbers sequential
-      i++;
+      i += 1;
     }
     ranges.push(start === end ? start.toString() : `${start}-${end}`);
   }
@@ -279,7 +279,7 @@ export function highlightBlock(node) {
       }
 
       if (thisLevel > blockLevel) {
-        toLine++;
+        toLine += 1;
       }
     } else {
       // Break if no next line. Required to prevent infinite loops.

@@ -20,7 +20,7 @@ function removeNonexistentGistFromLocalStorage(url) {
   localforage.getItem(STORAGE_SAVED_GISTS)
     .then((gists) => {
       // Filter the unfound gist URL from the gist list
-      const data = reject(gists, (item) => url === item.url);
+      const data = reject(gists, item => url === item.url);
       localforage.setItem(STORAGE_SAVED_GISTS, data);
     });
 }
@@ -50,7 +50,7 @@ export default class OpenGistModal extends React.Component {
           // NOTE:
           // string-only gists urls are migrated anyway;
           // we'll skip these for now, filter them out
-          const data = reject(gists, (item) => typeof item === 'string');
+          const data = reject(gists, item => typeof item === 'string');
 
           // Reverse-sort the gists; most recent will display up top
           // Note this mutates the original array.

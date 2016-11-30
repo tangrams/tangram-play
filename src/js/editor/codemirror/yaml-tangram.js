@@ -1,7 +1,7 @@
 import { startsWith } from 'lodash';
 import CodeMirror from 'codemirror';
 // import YAMLParser from 'yaml-ast-parser';
-import 'codemirror/mode/yaml/yaml.js';
+import 'codemirror/mode/yaml/yaml';
 import './glsl-tangram';
 import { attachBookmarkConstructorsToDocumentState } from './widgets';
 
@@ -152,11 +152,11 @@ function getInlineNodes(str, nLine) {
     const curr = str.substr(i, 1);
     if (curr === '{') {
       // Go one level up
-      level++;
+      level += 1;
     } else if (curr === '}') {
       // Go one level down
       stack.pop();
-      level--;
+      level -= 1;
     } else {
       // check for keypair
       // This seems to check for inline nodes
@@ -199,7 +199,7 @@ function getInlineNodes(str, nLine) {
         });
       }
     }
-    i++;
+    i += 1;
   }
   return rta;
 }
@@ -358,7 +358,7 @@ CodeMirror.defineMode('yaml-tangram', (config, parserConfig) => {
 
       // We need to know the exact line number for our YAML addressing system.
       // Increment blank lines here.
-      state.line++;
+      state.line += 1;
 
       // We also need to set the indentation to zero so that smart
       // indentation does not try to pick up indentation from a previous
@@ -396,7 +396,7 @@ CodeMirror.defineMode('yaml-tangram', (config, parserConfig) => {
         // Increment line count in the state, since CodeMirror normally
         // does not keep track of this for us. Note: we may not need
         // this ultimately if widget data is embedded directly on the state.
-        state.line++;
+        state.line += 1;
       }
 
       // Do the following only once per line

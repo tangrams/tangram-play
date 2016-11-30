@@ -98,7 +98,7 @@ class Camera extends React.Component {
     }
 
     return (
-      <div className={classNames} ref={ref => { this.el = ref; }}>
+      <div className={classNames} ref={(ref) => { this.el = ref; }}>
         <div className="camera-controls modal">
           <IconButton
             className="camera-screenshot-button"

@@ -99,7 +99,7 @@ export function initSceneImportDetector() {
 
       // Next: fetch contents of this file
       window.fetch(urlString)
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw new Error('did not work');
           }
@@ -108,7 +108,7 @@ export function initSceneImportDetector() {
           // zips, or images etc
           return response.text();
         })
-        .then(contents => {
+        .then((contents) => {
           // If successful, add it to the files array in state.
           const urlParts = splitUrlIntoFilenameAndBasePath(urlString);
           const file = {
@@ -123,7 +123,7 @@ export function initSceneImportDetector() {
             file,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           showErrorModal(error.message);
         });
     }

@@ -197,7 +197,7 @@ Editor.propTypes = {
   admin: React.PropTypes.bool,
   sceneCounter: React.PropTypes.number,
   activeFile: React.PropTypes.number,
-  files: React.PropTypes.array,
+  files: React.PropTypes.arrayOf(React.PropTypes.object),
   appInitialized: React.PropTypes.bool,
   fontSize: React.PropTypes.number,
   dividerPositionX: React.PropTypes.number,

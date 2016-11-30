@@ -76,7 +76,7 @@ export function handleFileList(fileList) {
   if (fileList.length < 1) return;
 
   // Assume one file or first file is main file
-  loadContentFromFile(fileList[0]).catch(error => {
+  loadContentFromFile(fileList[0]).catch((error) => {
     showErrorModal(error.message || error);
   });
 }
@@ -94,7 +94,7 @@ function constructInvisibleFileInputElement() {
   fileSelector.setAttribute('type', 'file');
   fileSelector.setAttribute('accept', 'text/x-yaml');
   fileSelector.style.display = 'none';
-  fileSelector.addEventListener('change', event => {
+  fileSelector.addEventListener('change', (event) => {
     handleFileList(event.target.files);
   });
   return fileSelector;

@@ -1,7 +1,7 @@
 import { throttle } from 'lodash';
 import localforage from 'localforage';
 import L from 'leaflet';
-import Tangram from 'tangram'; // eslint-disable-line import/no-extraneous-dependencies, import/no-unresolved
+import Tangram from 'tangram'; // eslint-disable-line import/no-extraneous-dependencies, import/no-unresolved, import/extensions
 import LeafletHash from './leaflet-hash';
 import EventEmitter from '../components/event-emitter';
 
@@ -160,7 +160,7 @@ export function initMap() {
     // Enables fractional zoom.
     zoomSnap: 0,
     // Prevents scroll wheel zoom when iframed.
-    scrollWheelZoom: (window.self === window.top)
+    scrollWheelZoom: (window.self === window.top),
   });
 
   // Provide alternate zoom in/zoom out button controls in embedded version

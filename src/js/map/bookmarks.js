@@ -13,7 +13,7 @@ export function getLocationBookmarks() {
   return localforage.getItem(STORAGE_BOOKMARKS_KEY)
     // If not set previously, then this value is null, so return an
     // empty array.
-    .then((bookmarks) => bookmarks || []);
+    .then(bookmarks => bookmarks || []);
 }
 
 /**

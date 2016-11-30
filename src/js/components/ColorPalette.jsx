@@ -40,9 +40,9 @@ export default class ColorPalette extends React.Component {
    * Has to subscribe to color widget change events
    */
   componentDidMount() {
-    EventEmitter.subscribe('widgets:color', data => { this.addNewColor(data); });
-    EventEmitter.subscribe('widgets:color-unmount', data => { this.removeColor(data); });
-    EventEmitter.subscribe('widgets:color-change', data => { this.changeColor(data); });
+    EventEmitter.subscribe('widgets:color', (data) => { this.addNewColor(data); });
+    EventEmitter.subscribe('widgets:color-unmount', (data) => { this.removeColor(data); });
+    EventEmitter.subscribe('widgets:color-change', (data) => { this.changeColor(data); });
     EventEmitter.subscribe('tangram:clear-palette', this.clearColors);
   }
 
@@ -192,9 +192,9 @@ export default class ColorPalette extends React.Component {
 
   /* For the moment, keeping this for debugging what's in the color palette */
   printPalette(array) {
-    for (const color of array) {
+    array.forEach((color) => {
       console.log(`Color: ${color.color.getHexString()} count: ${color.count}`);
-    }
+    });
   }
 
   render() {
@@ -205,7 +205,7 @@ export default class ColorPalette extends React.Component {
         const widgetStyle = { backgroundColor: color.color.getRgbaString() };
 
         // This represents each squared div for a color in the color palette
-        colors.push(
+        const picker = (
           <div
             key={i}
             className="colorpalette-color"
@@ -214,6 +214,8 @@ export default class ColorPalette extends React.Component {
             <div className="colorpalette-square" style={widgetStyle} />
           </div>
         );
+
+        colors.push(picker);
       }
     }
 

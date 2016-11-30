@@ -2,14 +2,6 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
 
-// The URLSearchParams polyfill cannot be imported because its author does
-// not believe it is proper to do it in this way. No matter: we will use a
-// `require` and attach it globally if not present in the current environment.
-const URLSearchParams = require('url-search-params')
-if (!window.URLSearchParams) {
-  window.URLSearchParams = URLSearchParams
-}
-
 // React
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -28,6 +20,15 @@ import { SET_SETTINGS } from './store/actions';
 
 // Miscellaneous
 import { migrateLocalStorageToForage } from './storage/migrate';
+
+// The URLSearchParams polyfill cannot be imported because its author does
+// not believe it is proper to do it in this way. No matter: we will use a
+// `require` and attach it globally if not present in the current environment.
+const URLSearchParams = require('url-search-params');
+
+if (!window.URLSearchParams) {
+  window.URLSearchParams = URLSearchParams;
+}
 
 // Error tracking
 // Load this before all other modules. Only load when run in production.
@@ -58,16 +59,14 @@ const STORAGE_SETTINGS = 'settings';
 // application, so that they are available to components immediately.
 // This is asynchronous, so
 localforage.getItem(STORAGE_SETTINGS)
-  .then(settings => {
+  .then((settings) => {
     store.dispatch({
       type: SET_SETTINGS,
       ...settings,
     });
   })
   .catch(() => {
-    // Catch errors here so that they don't fall through elsewhere
-    // and cause other problems
-    console.log('failure retrieving settings');
+    // Catch errors here so that they don't fall through and cause problems elsewhere
   })
   // Always do this regardless of whether localforage retrieval
   // or Redux state setting was successful.

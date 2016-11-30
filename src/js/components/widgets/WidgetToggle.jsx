@@ -67,16 +67,13 @@ export default class WidgetToggle extends React.Component {
       <Checkbox
         className="bookmark bookmark-toggle"
         onChange={this.onChange}
-        inputRef={ref => { this.input = ref; }}
+        inputRef={(ref) => { this.input = ref; }}
       />
     );
   }
 }
 
-/**
- * Prop validation required by React
- */
 WidgetToggle.propTypes = {
-  bookmark: React.PropTypes.object,
+  bookmark: React.PropTypes.object, // eslint-disable-line react/forbid-prop-types
   value: React.PropTypes.string,
 };

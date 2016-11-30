@@ -119,7 +119,7 @@ function processUrl(url) {
 
   // If not a Gist URL, wrap the return value in a Promise for consistent
   // return values.
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolve(sceneUrl);
   });
 }
@@ -135,7 +135,7 @@ function makeSceneStateObjectFromUrl(url) {
   const sceneState = {};
 
   return processUrl(url)
-    .then(sceneUrl => {
+    .then((sceneUrl) => {
       sceneState.originalUrl = sceneUrl;
       sceneState.files = [{
         filename: getFilenameFromUrl(sceneUrl),
@@ -147,7 +147,7 @@ function makeSceneStateObjectFromUrl(url) {
       }
       return window.fetch(sceneUrl, options);
     })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         switch (response.status) {
           case 403:
@@ -172,7 +172,7 @@ function makeSceneStateObjectFromUrl(url) {
       // which are valid content-types for text-based YAML scenes.
       return response.text();
     })
-    .then(contents => {
+    .then((contents) => {
       if (contents instanceof ArrayBuffer) {
         throw new Error('Tangram Play does not support zipped scene bundles right now.');
       }
@@ -199,7 +199,7 @@ function determineScene() {
 
   if (query.scene) {
     return makeSceneStateObjectFromUrl(query.scene)
-      .then(sceneState => {
+      .then((sceneState) => {
         sceneState.files[0].highlightedLines = query.lines; // eslint-disable-line no-param-reassign
         return doLoadProcess(sceneState);
       });
@@ -208,7 +208,7 @@ function determineScene() {
   // Else if there is something saved in memory (localforage), return that.
   // To be valid, it must contain at least one file.
   return localforage.getItem(STORAGE_LAST_EDITOR_STATE)
-    .then(sceneState => {
+    .then((sceneState) => {
       if (sceneState && sceneState.files && sceneState.files.length > 0) {
         return doLoadProcess(sceneState);
       }
@@ -252,7 +252,7 @@ export function load(scene) {
     // If scene contents are provided, no asynchronous work is
     // performed here, but wrap this response in a Promise anyway
     // so that the return object is always a thenable.
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // Make a scene object from the contents
       // TODO: add more data to this.
       const sceneState = {

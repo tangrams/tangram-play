@@ -102,7 +102,7 @@ export function foldByLevel(cm, level) {
         cm.foldCode({ line: actualLine, ch: 0 }, opts.rangeFinder);
       }
     }
-    actualLine--;
+    actualLine -= 1;
   }
 }
 

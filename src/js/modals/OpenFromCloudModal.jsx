@@ -65,7 +65,7 @@ export default class OpenFromCloudModal extends React.Component {
         this.setState({ beingDeleted: null });
         this.getSceneList();
       })
-      .catch(error => {
+      .catch((error) => {
         showErrorModal('Could not delete the scene.');
       });
   }
@@ -74,7 +74,7 @@ export default class OpenFromCloudModal extends React.Component {
     // Always load new set of saved scenes from the cloud each
     // time this modal is opened, in case it has changed
     fetchSceneList()
-      .then(sceneList => {
+      .then((sceneList) => {
         // Sort the scene list by the most recent up top
         // Note this mutates the original array.
         const scenes = reverse(sortBy(sceneList, 'updated_at'));

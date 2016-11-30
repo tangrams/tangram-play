@@ -43,5 +43,35 @@
     // code relies explicitly on this behavior to set properties on an object
     // referred to by an outer function (most notably CodeMirror state)
     "no-param-reassign": "warn",
+
+    // Allow class functions to not use `this`
+    "class-methods-use-this": "warn",
+
+    // Allow unary operators in the afterthought of a foor loop
+    // Not sure why Airbnb disallows this
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+
+    // Allow non-interactive DOM elements to have interactive handlers. This is
+    // now a warning as a reminder that another element might be better, but
+    // we will not enforce it.
+    "jsx-a11y/no-static-element-interactions": "warn",
+
+    // Ignores comma-dangle for function arguments, as it breaks parsing and it
+    // behaves strangely if arguments are JSX
+    "comma-dangle": ["error", {
+      arrays: "always-multiline",
+      objects: "always-multiline",
+      imports: "always-multiline",
+      exports: "always-multiline",
+      functions: "ignore",
+    }],
+
+    // Remove `ForOfSyntax`. Some things are iterators.
+    'no-restricted-syntax': [
+      'error',
+      'ForInStatement',
+      'LabeledStatement',
+      'WithStatement',
+    ],
   }
 }

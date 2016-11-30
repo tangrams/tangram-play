@@ -173,7 +173,6 @@ export function initGlslPickers() {
             if (match.type === 'vec4') {
               ReactDOM.render(
                 <ColorBookmark
-                  display
                   cursor={cursor}
                   match={match}
                   value={cleanNum}
@@ -185,7 +184,6 @@ export function initGlslPickers() {
             } else {
               ReactDOM.render(
                 <ColorBookmark
-                  display
                   cursor={cursor}
                   match={match}
                   value={cleanNum}

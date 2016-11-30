@@ -45,7 +45,7 @@ function makeMapzenAPIRequest(path, options = {}) {
   // Return wrapped fetch. This also wraps the part that checks if response
   // is OK and throws an error or returns JSON.
   return window.fetch(`${baseUrl}${apiPath}${path}`, mergeOptions)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(response.status);
       }
@@ -103,7 +103,7 @@ export function fetchSceneList() {
   const userId = getUserId();
 
   return makeMapzenAPIRequest(userId)
-    .then(scenes => {
+    .then((scenes) => {
       // API gives an object with error property if an error occurred.
       if (scenes.error) {
         throw new Error(scenes.error);
@@ -126,7 +126,7 @@ export function saveToMapzenUserAccount(data) {
 
   // POST a new scene.
   return makeThumbnail()
-    .then(screenshotData => {
+    .then((screenshotData) => {
       // Add thumbnail as data-URI to payload
       metadata.thumbnail = screenshotData;
 
@@ -148,7 +148,7 @@ export function saveToMapzenUserAccount(data) {
     body: content,
     credentials: 'include',
   })
-  .then(response => {
+  .then((response) => {
     // There may be errors
     if (!response.ok) {
       const message = `There was a problem saving your scene. Error code ${response.status}`;
