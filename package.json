@@ -5,7 +5,6 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "install": "yarn install",
     "start": "gulp serve",
     "test": "yarn run lint --silent && yarn run karma --silent",
     "lint": "yarn run lint-js --silent && yarn run lint-css --silent",
