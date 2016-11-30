@@ -155,8 +155,18 @@ export function initMap() {
     attributionControl: false,
     maxZoom: 20,
     keyboardZoomOffset: 0.05,
-    zoomSnap: 0, // Enables fractional zoom.
+    // Enables fractional zoom.
+    zoomSnap: 0,
+    // Prevents scroll wheel zoom when iframed.
+    scrollWheelZoom: (window.self === window.top)
   });
+
+  // Provide alternate zoom in/zoom out button controls in embedded version
+  // since, when iframed, the scroll wheel zoom will no longer work.
+  if (window.isEmbedded) {
+    const zoomControl = L.control.zoom();
+    zoomControl.addTo(map);
+  }
 
   // Get map start position
   getMapStartLocation()
