@@ -2,6 +2,14 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
 
+// The URLSearchParams polyfill cannot be imported because its author does
+// not believe it is proper to do it in this way. No matter: we will use a
+// `require` and attach it globally if not present in the current environment.
+const URLSearchParams = require('url-search-params')
+if (!window.URLSearchParams) {
+  window.URLSearchParams = URLSearchParams
+}
+
 // React
 import React from 'react';
 import ReactDOM from 'react-dom';

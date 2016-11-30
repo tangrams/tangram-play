@@ -15,15 +15,13 @@
  * @returns {Object} deserialized key-value pairs
  */
 export function getQueryStringObject(queryString = window.location.search) {
-  // Slices off the initial '?' separator on the string,
-  // then splits the string into an array of key-value pairs
-  const arr = queryString.slice(1).split('&');
+  const params = new window.URLSearchParams(queryString);
+  const entries = params.entries();
+  const object = {};
 
-  // For each key-value pair, deserialize to properties on a new object.
-  const queryObj = arr.reduce((object, pair) => {
-    const keyValue = pair.split('=');
-    const key = decodeURIComponent(keyValue[0]);
-    const value = decodeURIComponent(keyValue[1]);
+  for (let entry of entries) {
+    const key = entry[0];
+    const value = entry[1];
 
     // Do not assign if key is a blank string or
     // if value is undefined. Do not test for 'falsy'
@@ -31,13 +29,9 @@ export function getQueryStringObject(queryString = window.location.search) {
     if (key !== '' && typeof value !== 'undefined') {
       object[key] = value;
     }
+  }
 
-    return object;
-  }, {});
-
-  // The lack of a query string should still return an empty
-  // object. This should not be undefined.
-  return queryObj;
+  return object;
 }
 
 /**
