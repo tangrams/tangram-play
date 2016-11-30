@@ -3,7 +3,6 @@ import Draggable from 'react-draggable';
 import { connect } from 'react-redux';
 
 import { throttle } from 'lodash';
-import { map } from '../map/map';
 import { editor } from '../editor/editor';
 import EventEmitter from './event-emitter';
 
@@ -140,6 +139,10 @@ class Divider extends React.Component {
     const currentPosX = this.dividerEl.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX);
     this.changeMapAndEditorSize(clampedPosX);
+
+    EventEmitter.dispatch('divider:drag', {
+      posX: clampedPosX,
+    });
   }
 
   /**
@@ -162,13 +165,6 @@ class Divider extends React.Component {
     if (editor) {
       editor.refresh();
     }
-
-    // Also refresh the map
-    map.invalidateSize({
-      pan: { animate: false },
-      zoom: { animate: false },
-      debounceMoveend: true,
-    });
   }
 
   render() {

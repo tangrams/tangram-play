@@ -21,6 +21,8 @@ export let map;
 export let tangramLayer = null;
 export let tangramScene = null;
 
+const MAP_REFRESH_THROTTLE = 20;
+
 /**
  * Initializes Tangram
  * Tangram must be initialized with a scene file. Only initialize Tangram when
@@ -210,3 +212,17 @@ export function initMap() {
 
   setupEventListeners();
 }
+
+/**
+ * Utility function to check if the map container size changed and updates
+ * the map if so — call it after the map size has changed dynamically.
+ * This function is automatically throttled to prevent it from executing too
+ * quickly.
+ */
+export const refreshMap = throttle(() => {
+  map.invalidateSize({
+    pan: { animate: false },
+    zoom: { animate: false },
+    debounceMoveend: true,
+  });
+}, 20);

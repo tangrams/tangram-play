@@ -4,7 +4,7 @@ import EventEmitter from './event-emitter';
 import MapPanel from './MapPanel';
 import Camera from './Camera';
 import MapLoading from '../map/MapLoading';
-import { initMap, loadScene, destroyScene } from '../map/map';
+import { initMap, loadScene, destroyScene, refreshMap } from '../map/map';
 
 class Map extends React.Component {
   constructor(props) {
@@ -14,7 +14,6 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    // Listen for changes to bookmarks from other components
     EventEmitter.subscribe('divider:drag', this.updateMapWidth);
 
     // We have to run initMap here because this instantiates Leaflet
@@ -54,6 +53,9 @@ class Map extends React.Component {
   // re-rendering on a state change.
   updateMapWidth(event) {
     this.mapEl.style.width =`${event.posX}px`;
+
+    // Invalidates and refreshes Leaflet's map size.
+    refreshMap();
   }
 
   render() {
