@@ -60,7 +60,7 @@ class Map extends React.Component {
 
   render() {
     return (
-      <div className="map-container" id="map-container" ref={(ref) => { this.mapEl = ref; }}>
+      <div className="map-container" ref={(ref) => { this.mapEl = ref; }}>
         {(() => {
           // Don't flash this when Tangram Play is initializing;
           // files are still zero, but we won't prompt until after

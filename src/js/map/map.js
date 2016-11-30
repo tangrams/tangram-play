@@ -224,4 +224,4 @@ export const refreshMap = throttle(() => {
     zoom: { animate: false },
     debounceMoveend: true,
   });
-}, 20);
+}, MAP_REFRESH_THROTTLE);

@@ -216,8 +216,7 @@ export default class MapPanelLocationBar extends React.Component {
   setLabelPrecision(event) {
     // Updates the precision of the lat-lng display label
     // based on the available screen width
-    const mapcontainer = document.getElementById('map-container');
-    const width = mapcontainer.offsetWidth;
+    const width = event.posX;
     let latlngLabelPrecision;
 
     if (width < 600) {

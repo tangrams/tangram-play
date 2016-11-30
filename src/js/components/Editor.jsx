@@ -38,6 +38,10 @@ class Editor extends React.PureComponent {
     // DOM node reference
     initEditor(this.editorEl);
 
+    // Initially set the editor width based on Redux state. This is because
+    // this component mounts before Divider is ready to send events.
+    this.updateEditorWidth({ posX: this.props.dividerPositionX });
+
     EventEmitter.subscribe('divider:reposition', this.updateEditorWidth);
     editor.on('changes', watchEditorForChanges);
   }
@@ -128,6 +132,13 @@ class Editor extends React.PureComponent {
     });
   }
 
+  /**
+   * Sets editor pane width.
+   * This is called in response to the `divider:reposition` event which
+   * passes an event object containing the left edge of the divider element.
+   * It can also be called manually (see `componentDidMount()`) as long as
+   * the `event` object matches the signature.
+   */
   updateEditorWidth(event) {
     this.el.style.width = `${window.innerWidth - event.posX}px`;
     refreshEditor();
@@ -189,6 +200,7 @@ Editor.propTypes = {
   files: React.PropTypes.array,
   appInitialized: React.PropTypes.bool,
   fontSize: React.PropTypes.number,
+  dividerPositionX: React.PropTypes.number,
 };
 
 Editor.defaultProps = {
@@ -205,6 +217,7 @@ function mapStateToProps(state) {
     files: state.scene.files,
     appInitialized: state.app.initialized,
     fontSize: state.settings.editorFontSize,
+    dividerPositionX: state.settings.dividerPositionX,
   };
 }
 

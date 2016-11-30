@@ -99,7 +99,7 @@ class Divider extends React.Component {
   }
 
   onDrag(event, position) {
-    const currentPosX = this.dividerEl.getBoundingClientRect().left;
+    const currentPosX = position.node.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX + position.x);
     broadcastDividerPosition(clampedPosX);
   }
