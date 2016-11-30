@@ -1,12 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import EventEmitter from './event-emitter';
 import MapPanel from './MapPanel';
 import Camera from './Camera';
 import MapLoading from '../map/MapLoading';
 import { initMap, loadScene, destroyScene } from '../map/map';
 
 class Map extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.updateMapWidth = this.updateMapWidth.bind(this);
+  }
+
   componentDidMount() {
+    // Listen for changes to bookmarks from other components
+    EventEmitter.subscribe('divider:drag', this.updateMapWidth);
+
     // We have to run initMap here because this instantiates Leaflet
     // into a map container, which expects the DOM element for it to
     // exist already. So we can only call it during this lifecycle method.
@@ -39,9 +49,16 @@ class Map extends React.Component {
     }
   }
 
+  // Updating map element width can happen many times a second while it's
+  // being resized. Directly adjusting DOM in this way is much faster than
+  // re-rendering on a state change.
+  updateMapWidth(event) {
+    this.mapEl.style.width =`${event.posX}px`;
+  }
+
   render() {
     return (
-      <div className="map-container" id="map-container">
+      <div className="map-container" id="map-container" ref={(ref) => { this.mapEl = ref; }}>
         {(() => {
           // Don't flash this when Tangram Play is initializing;
           // files are still zero, but we won't prompt until after
@@ -72,7 +89,7 @@ class Map extends React.Component {
 Map.propTypes = {
   panel: React.PropTypes.bool,
   app: React.PropTypes.object,
-  scene: React.PropTypes.object,
+  scene: React.PropTypes.object
 };
 
 Map.defaultProps = {
