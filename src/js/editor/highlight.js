@@ -78,8 +78,10 @@ function toggleHighlightLine(doc, line) {
  * @param {Number} to - Required. The line number to end
  *          highlighting on. Lines are zero-indexed.
  */
-function highlightLines(startLine, endLine) {
+function highlightLines(from, to) {
   const doc = editor.getDoc();
+  let startLine = from;
+  let endLine = to;
 
   // Swap arguments if startLine is higher than endLine
   if (startLine > endLine) {
@@ -100,8 +102,10 @@ function highlightLines(startLine, endLine) {
  * @param {Number} to - Required. The line number to end
  *          unhighlighting on. Lines are zero-indexed.
  */
-function unhighlightLines(startLine, endLine) {
+function unhighlightLines(from, to) {
   const doc = editor.getDoc();
+  let startLine = from;
+  let endLine = to;
 
   // Swap arguments if startLine is higher than endLine
   if (startLine > endLine) {

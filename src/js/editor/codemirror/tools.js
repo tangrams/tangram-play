@@ -56,15 +56,18 @@ export function regexEscape(text) {
 //  Common NAVIGATION functions on CM
 //  ===============================================================================
 
-//  Jump to a specific line
-export function jumpToLine(cm, nLine) {
-  cm.scrollTo(null, cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top);
-}
-
-//  Jump to a specific line
-export function jumpToLineAt(cm, nLine) {
-  const t = cm.charCoords({ line: nLine - 1, ch: 0 }, 'local').top;
-  cm.scrollTo(null, t);
+/**
+ * Scrolls a given line into view.
+ *
+ * CodeMirror's native `scrollIntoView()` method only scrolls just enough to
+ * bring a line into view, which can put the line at the bottom of the viewport.
+ * This forces the line to be placed as high as possible in the viewport.
+ *
+ * @params {CodeMirror} cm - instance of CodeMirror.
+ * @params {Number} line - the line number to scroll to.
+ */
+export function jumpToLine(cm, line) {
+  cm.scrollTo(null, cm.charCoords({ line, ch: 0 }, 'local').top);
 }
 
 //  Common FOLD functions on CM
