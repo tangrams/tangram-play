@@ -55,6 +55,7 @@
 @import '_sandbox';
 @import '_sign-in-overlay';
 @import '_call-to-action';
+@import '_editor-hidden-tooltip';
 
 /* Bookmarks and pickers */
 @import '_floating-panel';
@@ -89,6 +90,7 @@
   --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
   --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
   --ui-modal-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.25);
+  --ui-tooltip-background-color: rgba(0, 2, 6, 0.85);
   --ui-error-color: #be1a20;
   --ui-warning-color: #fc0;
 

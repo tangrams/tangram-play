@@ -2,7 +2,7 @@
 
 .map-inspection {
   border-radius: var(--ui-border-radius);
-  background-color: rgba(0, 2, 6, 0.85);
+  background-color: var(--ui-tooltip-background-color);
   font-family: var(--font-family);
   font-weight: 200;
   font-size: 0.8rem;
@@ -19,7 +19,7 @@
     height: 0;
     border-left: 12px solid transparent;
     border-right: 12px solid transparent;
-    border-top: 12px solid rgba(0, 0, 0, 0.85);
+    border-top: 12px solid var(--ui-tooltip-background-color);
     left: 50%;
     margin-left: -12px;
     top: 100%;
@@ -200,7 +200,7 @@
   }
 
   .leaflet-popup-tip {
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: var(--ui-tooltip-background-color);
     box-shadow: none;
   }
 

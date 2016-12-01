@@ -6,6 +6,7 @@ import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
 import Divider, { setDividerPositionInStore } from './Divider';
+import EditorHiddenTooltip from './EditorHiddenTooltip';
 
 // Import editor logic
 import {
@@ -156,6 +157,7 @@ class Editor extends React.PureComponent {
     return (
       <div className="editor-container" ref={(ref) => { this.el = ref; }}>
         <Divider />
+        <EditorHiddenTooltip />
         {(() => {
           // Don't flash this when Tangram Play is initializing;
           // files are still zero, but we won't prompt until after
