@@ -109,7 +109,10 @@ class Divider extends React.Component {
 
   // Called when something updates props (e.g. new divider position.)
   componentWillUpdate(nextProps) {
-    broadcastDividerPosition(nextProps.posX);
+    // Ensure that props change included a valid posX value.
+    if (nextProps.posX && typeof nextProps.posX === 'number') {
+      broadcastDividerPosition(nextProps.posX);
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
