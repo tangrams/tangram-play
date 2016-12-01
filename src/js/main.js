@@ -21,15 +21,6 @@ import { SET_SETTINGS } from './store/actions';
 // Miscellaneous
 import { migrateLocalStorageToForage } from './storage/migrate';
 
-// The URLSearchParams polyfill cannot be imported because its author does
-// not believe it is proper to do it in this way. No matter: we will use a
-// `require` and attach it globally if not present in the current environment.
-const URLSearchParams = require('url-search-params');
-
-if (!window.URLSearchParams) {
-  window.URLSearchParams = URLSearchParams;
-}
-
 // Error tracking
 // Load this before all other modules. Only load when run in production.
 // Requires `loose-envify` package in build process to set the correct `NODE_ENV`.

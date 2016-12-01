@@ -6,6 +6,15 @@
  * replaceState). Do not modify window.location or window.history on your own!
  */
 
+// The URLSearchParams polyfill cannot be imported because its author does
+// not believe it is proper to do it in this way. No matter: we will use a
+// `require` and attach it globally if not present in the current environment.
+const URLSearchParams = require('url-search-params');
+
+if (!window.URLSearchParams) {
+  window.URLSearchParams = URLSearchParams;
+}
+
 /**
  * Gets a deserialized object from the current window's URL.
  * It breaks down the query string, e.g. '?scene=foo.yaml'
@@ -16,13 +25,10 @@
  */
 export function getQueryStringObject(queryString = window.location.search) {
   const params = new window.URLSearchParams(queryString);
-  const entries = params.entries();
   const object = {};
 
-  // `entries` is an Iterator object, we must of the for-of syntax.
-  for (const entry of entries) { // eslint-disable-line no-restricted-syntax
-    const key = entry[0];
-    const value = entry[1];
+  for (const param of params) {
+    const [key, value] = param;
 
     // Do not assign if key is a blank string or
     // if value is undefined. Do not test for 'falsy'
@@ -36,33 +42,46 @@ export function getQueryStringObject(queryString = window.location.search) {
 }
 
 /**
- * Given an object of key-value pairs, serializes that object
- * into a valid query string. It turns { scene: "foo.yaml", bar: "baz" }
- * into '?scene=foo.yaml&bar=baz'
+ * Convenience function for returning a parameter from current query string.
  *
- * @param {Object} obj - set of key-value pairs
- * @returns {string} valid facsimile for window.location.search
+ * @param {string} param - search param to get
+ * @returns {string} value - value, if present; otherwise returns `undefined`
  */
-function serializeToQueryString(obj = {}) {
-  const str = [];
+export function getURLSearchParam(param) {
+  const params = new window.URLSearchParams(window.location.search);
+  return params.get(param);
+}
 
-  Object.keys(obj).forEach((key, index) => {
-    // Nulls or undefined are skipped. Do not test for "falsy" values
-    // here. Values like `0` or `false` should be stored in the query.
-    if (obj[key] === null || typeof obj[key] === 'undefined') {
-      return;
-    }
+/**
+ * Merges an object containing new parameters into a query string. If no
+ * query string is provided, a new, empty URLSearchParams object is created.
+ *
+ * @param {Object} params - new parameters to add, change or remove from the
+ *          query string. This object is merged into an instance of the
+ *          URLSearchParams interface.
+ *          To delete an existing query string, pass in a property whose value
+ *          is `null`.
+ *          Params are added or replaced; we do not append them.
+ * @param {string} queryString - the query string to merge params into.
+ * @returns {string} newQueryString - a new query string.
+ */
+function mergeParamObjectToQueryString(params = {}, queryString) {
+  const searchParams = new window.URLSearchParams(queryString);
 
-    if ({}.hasOwnProperty.call(obj, key)) {
-      str.push(`${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`);
+  Object.entries(params).forEach((param) => {
+    const [key, value] = param;
+
+    if (value === null) {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
     }
   });
 
-  // Returns a string prepended with '?' separator if
-  // key value pairs are provided; otherwise, returns
-  // an empty string. This allows URL-assemblage to
-  // "just work" if query string is empty.
-  return (str.length > 0) ? `?${str.join('&')}` : '';
+  // URLSearchParams.toString() does not return the prepended `?`, so add it
+  const newQueryString = `?${searchParams.toString()}`;
+
+  return newQueryString;
 }
 
 /**
@@ -71,42 +90,33 @@ function serializeToQueryString(obj = {}) {
  * and hash (this is managed by leaflet-hash), and only the query strings
  * are modified.
  *
- * @param {Object} props - new properties to add, change or remove from the
- *          query string. This object is merged into a source object representing
- *          the current query strings and then re-serialized into a url string.
- *          To delete an existing query string, pass in a property whose value
- *          is `null`.
+ * @param {Object} params - parameters to add, change or remove from the
+ *          query string.
  */
-export function replaceHistoryState(props = {}) {
+export function replaceHistoryState(params = {}) {
   const locationPrefix = window.location.pathname;
-  const currentProps = getQueryStringObject();
-  const newProps = Object.assign({}, currentProps, props);
-  const queryString = serializeToQueryString(newProps);
+  const queryString = mergeParamObjectToQueryString(params, window.location.search);
 
-  // The new url must be a path relative to the host name because security
-  // policies prevent doing a replaceState when the url contains `localhost`,
-  // even when the current page is `localhost`. The relative path lets the
-  // the browser handle it so we don't trip any security alarms.
-  // We also keep the original hash in place -- it is handled by leaflet-hash.
+  // Browser security policies prevent manipulating history where the URL
+  // includes 'http://localhost', even if it's the current origin. So we do
+  // routing as a relative URL so that it doesn't trip any browser warnings.
+  // Also, keep the original hash -- it is handled by leaflet-hash.
   window.history.replaceState({}, null, locationPrefix + queryString + window.location.hash);
 }
 
 /**
  * Like `replaceHistoryState()`, this pushes a new history state, using
- * `window.history.pushState()`. The only exception is that the props passed
+ * `window.history.pushState()`. The only exception is that the params passed
  * into this function are not merged with the current query strings (we assume
  * you want a fresh state) and we also pass it to the first parameter
  * for `pushState()`.
  *
- * @param {Object} props - See `props` param for `replaceHistoryState()`.
- *          This object is also passed to `pushState()`.
+ * @param {Object} params - new parameters to create a new history state.
  */
-export function pushHistoryState(props = {}) {
+export function pushHistoryState(params = {}) {
   const locationPrefix = window.location.pathname;
-  const queryString = serializeToQueryString(props);
+  const queryString = mergeParamObjectToQueryString(params);
 
-  // Browser security policies prevent doing a pushstate where the URL
-  // includes 'http://localhost'. So we have to let the browser do the
-  // routing relative to the server
-  window.history.pushState(props, null, locationPrefix + queryString + window.location.hash);
+  // See comment for similar line in `replaceHistoryState()`.
+  window.history.pushState(params, null, locationPrefix + queryString + window.location.hash);
 }

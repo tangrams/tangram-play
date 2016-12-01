@@ -4,7 +4,7 @@
 import store from '../store';
 import config from '../config';
 import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
-import { getQueryStringObject } from '../tools/url-state';
+import { getURLSearchParam } from '../tools/url-state';
 
 const SIGN_IN_STATE_API_ENDPOINT = '/api/developer.json';
 const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
@@ -13,8 +13,8 @@ const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
 // Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
 // It is disabled on http and any other host.
 const signInEnabled = (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
-    window.location.protocol === 'https:') ||
-  (getQueryStringObject().forceSignIn === 'true' && window.location.hostname === 'localhost');
+  window.location.protocol === 'https:') ||
+  (getURLSearchParam('forceSignIn') === 'true' && window.location.hostname === 'localhost');
 
 // Set credentials option for window.fetch depending on host.
 // Cookies are sent for each request only if the origin matches on mapzen.com,
