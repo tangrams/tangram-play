@@ -61,6 +61,20 @@ function broadcastDividerPosition(posX) {
   EventEmitter.dispatch('divider:reposition', { posX });
 }
 
+/**
+ * Sets the divider position in Redux store. Exported for other components
+ * to use so that they do not need to maintain their own logic about clamping
+ * position.
+ *
+ * @params {Number} posX - desired X position of divider.
+ */
+export function setDividerPositionInStore(posX) {
+  store.dispatch({
+    type: SET_SETTINGS,
+    dividerPositionX: clampPosition(posX),
+  });
+}
+
 class Divider extends React.Component {
   constructor(props) {
     super(props);
@@ -98,6 +112,7 @@ class Divider extends React.Component {
     broadcastDividerPosition(nextProps.posX);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   onDrag(event, position) {
     const currentPosX = position.node.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX + position.x);
@@ -106,6 +121,7 @@ class Divider extends React.Component {
 
   onStop(event, position) {
     const posX = position.node.getBoundingClientRect().left;
+    setDividerPositionInStore(posX);
 
     // React-draggable internally manages its state if the `position` prop
     // is not provided. Using a combination of JavaScript and CSS we can
@@ -117,12 +133,6 @@ class Divider extends React.Component {
     // possible.
     this.setState({
       position: { x: 0, y: 0 },
-    });
-
-    // Save the position in Redux
-    store.dispatch({
-      type: SET_SETTINGS,
-      dividerPositionX: posX,
     });
   }
 

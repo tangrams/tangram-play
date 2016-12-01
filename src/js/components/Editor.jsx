@@ -5,11 +5,7 @@ import EditorTabs from './EditorTabs';
 import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
-import Divider from './Divider';
-
-// Import Redux
-import store from '../store';
-import { SET_SETTINGS } from '../store/actions';
+import Divider, { setDividerPositionInStore } from './Divider';
 
 // Import editor logic
 import {
@@ -69,7 +65,6 @@ class Editor extends React.PureComponent {
 
             // Restore cursor state
             if (activeFile.cursor) {
-              console.log(activeFile.cursor);
               editor.getDoc().setCursor(activeFile.cursor);
             }
 
@@ -117,19 +112,22 @@ class Editor extends React.PureComponent {
       this.docsPanel.init();
       docsHasInitAlready = true;
     }
+
+    // Handle divider position changes
+    if (this.props.dividerPositionX !== prevProps.dividerPositionX) {
+      this.updateEditorWidth({ posX: this.props.dividerPositionX });
+    }
   }
 
   /**
    * Hides the editor pane.
-   * This does so really simply; it updates the position of the divider to the
-   * current window width (to make it go as far to the right as possible).
+   * There is no special "flag" for hidden; it requests the Divider component
+   * to update its position to the full window width (as far right as possible).
    * The Divider component will take care of the rest.
    */
+  // eslint-disable-next-line class-methods-use-this
   onClickHideEditor(event) {
-    store.dispatch({
-      type: SET_SETTINGS,
-      dividerPositionX: window.innerWidth,
-    });
+    setDividerPositionInStore(window.innerWidth);
   }
 
   /**
@@ -140,6 +138,11 @@ class Editor extends React.PureComponent {
    * the `event` object matches the signature.
    */
   updateEditorWidth(event) {
+    // Early return if `this.el` is `null`, which happens when this function
+    // is called from listening for `divider:reposition` while the component
+    // is still updating, so the DOM node has not appeared as a ref.
+    if (!this.el) return;
+
     this.el.style.width = `${window.innerWidth - event.posX}px`;
     refreshEditor();
   }
