@@ -25,6 +25,11 @@ function getMapChangeDelta(startLatLng, endLatLng) {
   const startY = startLatLng.lng;
   const endX = endLatLng.lat;
   const endY = endLatLng.lng;
+
+  // Airbnb styleguide disallows Math.pow() in favor of the exponentiation
+  // operator (**) but this is causing parsing problems in our current
+  // transpilation / lint pipeline.
+  // eslint-disable-next-line no-restricted-properties
   return Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
 }
 
@@ -75,7 +80,8 @@ export default class MapPanelLocationBar extends React.Component {
     });
 
     this.relocatingMap = false;
-    this.shouldCloseDropdownNextEnter = false; // Boolean to track whether we should close the map on next 'Enter'
+    // Track whether we should close the map on next 'Enter'
+    this.shouldCloseDropdownNextEnter = false;
 
     this.focusInput = this.focusInput.bind(this);
     this.onChangeAutosuggest = this.onChangeAutosuggest.bind(this);
@@ -141,14 +147,16 @@ export default class MapPanelLocationBar extends React.Component {
       // If the key user pressed is Enter
       if (e.key === 'Enter') {
         // Find out whether the input div has an 'aria-activedescentant' property
-        // This property tells us whether the user is actually selecting a result from the list of suggestions
+        // This property tells us whether the user is actually selecting a result
+        // from the list of suggestions
         const activeSuggestion = inputDIV.hasAttribute('aria-activedescendant'); // A boolean
 
         // Also find out whether the panel is open or not
         let dropdownExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
         dropdownExpanded = (dropdownExpanded === 'true'); // Now its a boolean
 
-        // If the user is pressing Enter after a list of search results are displayed, the dropdown should close
+        // If the user is pressing Enter after a list of search results are
+        // displayed, the dropdown should close
         if (!activeSuggestion && dropdownExpanded && this.shouldCloseDropdownNextEnter) {
           inputDIV.blur();
           inputDIV.select();
@@ -176,16 +184,16 @@ export default class MapPanelLocationBar extends React.Component {
   }
 
   /**
-   * Official React lifecycle method
-   * Invoked when a component is receiving new props. This method is not called for the initial render.
-   * Every time user locates him or herself we need to update the value of the search bar
+   * Every time user locates him or herself we need to update the value of the
+   * search bar
+   *
    * @param nextProps - the new incoming props
    */
   componentWillReceiveProps(nextProps) {
     const geolocateActive = nextProps.geolocateActive;
 
     // If the geolocate button has been activated, perform a reverseGeocode
-    if (geolocateActive.active === 'true') {
+    if (geolocateActive.active === true) {
       this.reverseGeocode(geolocateActive.latlng)
         .then((state) => {
           this.setState(state);
@@ -268,6 +276,7 @@ export default class MapPanelLocationBar extends React.Component {
    * @param suggestion - current suggestion in the autocomplete list being selected
    *      or hovered on by user
    */
+  // eslint-disable-next-line class-methods-use-this
   getSuggestionValue(suggestion) {
     return suggestion.properties.label;
   }
@@ -411,6 +420,7 @@ export default class MapPanelLocationBar extends React.Component {
    *
    * @param suggestion - particular item from autocomplete result list to style
    */
+  // eslint-disable-next-line class-methods-use-this
   renderSuggestion(suggestion, { query }) {
     const label = suggestion.properties.label;
 
@@ -454,6 +464,7 @@ export default class MapPanelLocationBar extends React.Component {
    *
    * @param event - event that caused the change
    */
+  // eslint-disable-next-line class-methods-use-this
   onFocusAutosuggest(event) {
     event.target.select();
   }
@@ -512,5 +523,8 @@ export default class MapPanelLocationBar extends React.Component {
 }
 
 MapPanelLocationBar.propTypes = {
-  geolocateActive: React.PropTypes.object,
+  geolocateActive: React.PropTypes.shape({
+    active: React.PropTypes.bool,
+    latlng: React.PropTypes.object,
+  }),
 };

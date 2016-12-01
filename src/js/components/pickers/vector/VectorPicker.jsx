@@ -91,6 +91,7 @@ export default class VectorPicker extends React.Component {
     renderer.render(scene, camera);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   buildLine() {
     const mat = new THREE.LineBasicMaterial({
       linewidth: 5,
@@ -115,24 +116,73 @@ export default class VectorPicker extends React.Component {
   buildAxes(length) {
     const axes = new THREE.Object3D();
 
-    axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), 0xFF0000, false)); // +X
-    axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), 0xFF0000, true)); // -X
-    axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), 0x00FF00, false)); // +Y
-    axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), 0x00FF00, true)); // -Y
-    axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), 0x0000FF, false)); // +Z
-    axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), 0x0000FF, true)); // -Z
+    // +X
+    axes.add(this.buildAxis(
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(length, 0, 0),
+      0xFF0000,
+      false
+    ));
+
+    // -X
+    axes.add(this.buildAxis(
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(-length, 0, 0),
+      0xFF0000,
+      true
+    ));
+
+    // +Y
+    axes.add(this.buildAxis(
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, length, 0),
+      0x00FF00,
+      false
+    ));
+
+    // -Y
+    axes.add(this.buildAxis(
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, -length, 0),
+      0x00FF00,
+      true
+    ));
+
+    // +Z
+    axes.add(this.buildAxis(
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0, length),
+      0x0000FF,
+      false
+    ));
+
+    // -Z
+    axes.add(this.buildAxis(
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0, -length),
+      0x0000FF, true
+    ));
 
     return axes;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   buildAxis(src, dst, colorHex, dashed) {
     const geom = new THREE.Geometry();
     let mat;
 
     if (dashed) {
-      mat = new THREE.LineDashedMaterial({ linewidth: 3, color: colorHex, dashSize: 3, gapSize: 3 });
+      mat = new THREE.LineDashedMaterial({
+        linewidth: 3,
+        color: colorHex,
+        dashSize: 3,
+        gapSize: 3,
+      });
     } else {
-      mat = new THREE.LineBasicMaterial({ linewidth: 3, color: colorHex });
+      mat = new THREE.LineBasicMaterial({
+        linewidth: 3,
+        color: colorHex,
+      });
     }
 
     geom.vertices.push(src.clone());
@@ -172,9 +222,7 @@ export default class VectorPicker extends React.Component {
   }
 }
 
-/**
- * Prop validation required by React
- */
 VectorPicker.propTypes = {
-  bookmark: React.PropTypes.object,
+  // Pass through object; types do not matter here.
+  bookmark: React.PropTypes.objectOf(React.PropTypes.any),
 };

@@ -106,6 +106,6 @@ export default class ColorPicker extends React.Component {
 }
 
 ColorPicker.propTypes = {
-  color: React.PropTypes.object,
+  color: React.PropTypes.objectOf(React.PropTypes.any),
   onChange: React.PropTypes.func,
 };

@@ -29,7 +29,7 @@ export default class MapPanel extends React.Component {
       open: (settings && 'mapToolbarDisplay' in settings) ? settings.mapToolbarDisplay : true,
       geolocatorButton: 'bt-map-arrow', // Icon to display for the geolocator button
       geolocateActive: {
-        active: 'false',
+        active: false,
       }, // Whether the geolocate function has been activated
     };
 
@@ -58,13 +58,13 @@ export default class MapPanel extends React.Component {
     // component MapPanelSearch can know how to update
     this.setState({
       geolocateActive: {
-        active: 'true',
+        active: true,
         latlng: { lat: latitude, lng: longitude },
       },
     });
     this.setState({
       geolocateActive: {
-        active: 'false',
+        active: false,
       },
     });
 

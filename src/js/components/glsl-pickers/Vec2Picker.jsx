@@ -142,6 +142,7 @@ export default class Vec2Picker extends React.Component {
   /**
    * Function to get a mouse position within the canvas element
    */
+  // eslint-disable-next-line class-methods-use-this
   getMousePos(canvas, event) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -263,7 +264,12 @@ export default class Vec2Picker extends React.Component {
 
 Vec2Picker.propTypes = {
   display: React.PropTypes.bool,
-  cursor: React.PropTypes.object,
-  match: React.PropTypes.object,
+  cursor: React.PropTypes.shape({
+    line: React.PropTypes.number,
+  }),
+  match: React.PropTypes.shape({
+    start: React.PropTypes.number,
+    end: React.PropTypes.number,
+  }),
   value: React.PropTypes.string,
 };

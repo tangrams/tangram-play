@@ -1,4 +1,5 @@
 /* eslint-disable react/no-multi-comp */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 // TODO: Separate out; make JSX files
 import { upperFirst } from 'lodash';
 import L from 'leaflet';
@@ -39,6 +40,7 @@ function getMountNode() {
 
 // This is shared between the hover and the popup
 class TangramInspectionHeader extends React.Component {
+  // eslint-disable-next-line class-methods-use-this
   determineKindValue(properties) {
     // Kind is usually present on properties in Mapzen vector tile service.
     // (For more info: https://mapzen.com/documentation/vector-tiles/layers/)
@@ -54,6 +56,7 @@ class TangramInspectionHeader extends React.Component {
     return null;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   formatKindValue(text) {
     let formattedText;
 
@@ -67,6 +70,7 @@ class TangramInspectionHeader extends React.Component {
     return formattedText;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   determineFeatureName(properties) {
     if (properties.name) {
       return properties.name;
@@ -104,7 +108,9 @@ class TangramInspectionHeader extends React.Component {
 }
 
 TangramInspectionHeader.propTypes = {
-  feature: React.PropTypes.object,
+  feature: React.PropTypes.shape({
+    properties: React.PropTypes.object,
+  }),
 };
 
 class TangramInspectionHover extends React.Component {
@@ -153,7 +159,10 @@ class TangramInspectionHover extends React.Component {
 }
 
 TangramInspectionHover.propTypes = {
-  selection: React.PropTypes.object,
+  selection: React.PropTypes.shape({
+    feature: React.PropTypes.object,
+    pixel: React.PropTypes.object,
+  }),
 };
 
 class TangramInspectionPopup extends React.Component {
@@ -165,6 +174,7 @@ class TangramInspectionPopup extends React.Component {
     this.onClickClose = this.onClickClose.bind(this);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   onClickSourceName(event) {
     const name = event.currentTarget.dataset.sourceName;
     const node = getNodesForAddress(`sources:${name}`);
@@ -183,10 +193,12 @@ class TangramInspectionPopup extends React.Component {
     event.target.classList.add('active');
   }
 
+  // eslint-disable-next-line class-methods-use-this
   onMouseOutLayer(event) {
     event.target.classList.remove('active');
   }
 
+  // eslint-disable-next-line class-methods-use-this
   onMouseUpLayer(event) {
     event.target.classList.remove('active');
   }
@@ -206,10 +218,12 @@ class TangramInspectionPopup extends React.Component {
     highlightBlock(node);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   onClickClose(event) {
     map.closePopup();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   sortFeatureProperties(properties) {
     const sorted = [];
     Object.keys(properties)
@@ -331,7 +345,9 @@ class TangramInspectionPopup extends React.Component {
 }
 
 TangramInspectionPopup.propTypes = {
-  selection: React.PropTypes.object,
+  selection: React.PropTypes.shape({
+    feature: React.PropTypes.object,
+  }),
 };
 
 /**

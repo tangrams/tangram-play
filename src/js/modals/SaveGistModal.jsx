@@ -201,7 +201,7 @@ export default class SaveGistModal extends React.Component {
         <div className="modal-text">
           <h4>Save this scene to gist</h4>
           <p>
-            This saves your Tangram scene as an anonymous gist on GitHub, so you'll have a permanent link to share publicly. Don’t lose this URL! <a href="https://help.github.com/articles/about-gists/" target="_blank" rel="noopener noreferrer">Learn more about anonymous gists</a>.
+            This saves your Tangram scene as an anonymous gist on GitHub, so you’ll have a permanent link to share publicly. Don’t lose this URL! <a href="https://help.github.com/articles/about-gists/" target="_blank" rel="noopener noreferrer">Learn more about anonymous gists</a>.
           </p>
         </div>
 

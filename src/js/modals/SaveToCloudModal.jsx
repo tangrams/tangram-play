@@ -185,7 +185,7 @@ export default class SaveToCloudModal extends React.Component {
           <h4>Save this scene to your Mapzen account</h4>
           <p>
             This uploads your Tangram scene file to your Mapzen
-            account, so you'll have a permanent link to share publicly.
+            account, so you’ll have a permanent link to share publicly.
           </p>
         </div>
 

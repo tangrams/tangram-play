@@ -127,6 +127,6 @@ export default class ColorPickerSaturation extends React.Component {
 
 ColorPickerSaturation.propTypes = {
   hue: React.PropTypes.number,
-  color: React.PropTypes.object,
+  color: React.PropTypes.objectOf(React.PropTypes.any),
   onChange: React.PropTypes.func,
 };

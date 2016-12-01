@@ -19,7 +19,8 @@ export default class NumberPicker extends React.Component {
     this.cursor = this.props.cursor;
     this.match = this.props.match;
 
-    const linePos = { line: this.cursor.line, ch: this.match.start }; // Position where user cliked on a line
+    // Position where user clicked on a line
+    const linePos = { line: this.cursor.line, ch: this.match.start };
     this.x = getCoordinates(linePos).left;
     this.y = getCoordinates(linePos).bottom;
 
@@ -173,6 +174,7 @@ export default class NumberPicker extends React.Component {
   /**
    * Function to get a mouse position within the canvas element
    */
+  // eslint-disable-next-line class-methods-use-this
   getMousePos(canvas, evt) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -283,8 +285,13 @@ export default class NumberPicker extends React.Component {
 
 NumberPicker.propTypes = {
   display: React.PropTypes.bool,
-  cursor: React.PropTypes.object,
-  match: React.PropTypes.object,
+  cursor: React.PropTypes.shape({
+    line: React.PropTypes.number,
+  }),
+  match: React.PropTypes.shape({
+    start: React.PropTypes.number,
+    end: React.PropTypes.number,
+  }),
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
     React.PropTypes.number,

@@ -232,11 +232,18 @@ export default class ColorBookmark extends React.Component {
  * Prop validation required by React
  */
 ColorBookmark.propTypes = {
-  bookmark: React.PropTypes.object,
+  bookmark: React.PropTypes.shape({
+    widgetPos: React.PropTypes.object,
+  }),
   value: React.PropTypes.string,
   // These props are only used for GLSL pickers within the shader blocks
   shader: React.PropTypes.bool,
-  cursor: React.PropTypes.object,
-  match: React.PropTypes.object,
+  cursor: React.PropTypes.shape({
+    line: React.PropTypes.number,
+  }),
+  match: React.PropTypes.shape({
+    start: React.PropTypes.number,
+    end: React.PropTypes.number,
+  }),
   vec: React.PropTypes.string,
 };

@@ -60,7 +60,8 @@ export default class WidgetDropdown extends React.Component {
   }
 
   /**
-   * Called anytime there is a change in the dropdown form. I.e. when user opens or selects something
+   * Called anytime there is a change in the dropdown form.
+   * i.e. when user opens or selects something
    */
   onChange(e) {
     this.value = e.target.value;
@@ -72,7 +73,8 @@ export default class WidgetDropdown extends React.Component {
    * Called each time dropdown button is clicked to move the cursor to the right line
    */
   onClick() {
-    // Set the editor cursor to the correct line. (When you click on the widget button it doesn't move the cursor)
+    // Set the editor cursor to the correct line. (When you click on the
+    // button it doesn't move the cursor)
     setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
   }
 
@@ -154,9 +156,11 @@ export default class WidgetDropdown extends React.Component {
 }
 
 WidgetDropdown.propTypes = {
-  bookmark: React.PropTypes.object,
+  bookmark: React.PropTypes.shape({
+    widgetPos: React.PropTypes.object,
+  }),
   keyType: React.PropTypes.string,
-  options: React.PropTypes.array,
+  options: React.PropTypes.arrayOf(React.PropTypes.string),
   source: React.PropTypes.string,
   initialValue: React.PropTypes.string,
 };
