@@ -17,14 +17,16 @@ export default class ColorPickerSaturation extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.setBoundingBox = this.setBoundingBox.bind(this);
   }
 
   componentDidMount() {
     // Record height and width of the saturation area for calculations.
     // This is initially set in CSS. It should not change.
-    const boundingBox = this.container.getBoundingClientRect();
-    this.width = boundingBox.width;
-    this.height = boundingBox.height;
+    this.setBoundingBox();
+    this.width = this.boundingBox.width;
+    this.height = this.boundingBox.height;
   }
 
   componentWillUnmount() {
@@ -36,9 +38,9 @@ export default class ColorPickerSaturation extends React.Component {
       e.preventDefault();
     }
 
-    // left and top position can change as user moves colorpicker
-    // around, so always get new values for this.
-    const boundingBox = this.container.getBoundingClientRect();
+    // Read bounding box from cached value (rather than each onChange call).
+    // Make sure it is set to a correct value before any interaction begins.
+    const boundingBox = this.boundingBox;
     const x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX;
     const y = typeof e.pageY === 'number' ? e.pageY : e.touches[0].pageY;
     let left = x - boundingBox.left;
@@ -73,6 +75,7 @@ export default class ColorPickerSaturation extends React.Component {
   }
 
   onMouseDown(e) {
+    this.setBoundingBox();
     this.onChange(e, true);
     window.addEventListener('mousemove', this.onChange);
     window.addEventListener('mouseup', this.onMouseUp);
@@ -80,6 +83,19 @@ export default class ColorPickerSaturation extends React.Component {
 
   onMouseUp() {
     this.unbindEventListeners();
+  }
+
+  onTouchStart() {
+    this.setBoundingBox();
+    this.onChange();
+  }
+
+  // Bounding box value of this component can vary if user moves it around
+  // the screen, so cache the bounding box value before the start of any
+  // touch or mouse interaction. We want to make sure this is read as little
+  // as possible to help prevent layout thrashing.
+  setBoundingBox() {
+    this.boundingBox = this.container.getBoundingClientRect();
   }
 
   unbindEventListeners() {
@@ -111,7 +127,7 @@ export default class ColorPickerSaturation extends React.Component {
         ref={(ref) => { this.container = ref; }}
         onMouseDown={this.onMouseDown}
         onTouchMove={this.onChange}
-        onTouchStart={this.onChange}
+        onTouchStart={this.onTouchStart}
         style={containerStyle}
       >
         <div className="colorpicker-saturation-white">
