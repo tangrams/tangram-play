@@ -11,6 +11,7 @@
   color: var(--ui-component-text-color);
   z-index: var(--z09-tooltip);
   pointer-events: none;
+  user-select: none;
 
   /* Pointer tip */
   &::after {

@@ -5,8 +5,12 @@ import EditorTabs from './EditorTabs';
 import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
-import Divider, { setDividerPositionInStore } from './Divider';
+import Divider, { setDividerPosition } from './Divider';
 import EditorHiddenTooltip from './EditorHiddenTooltip';
+
+// Redux
+import store from '../store';
+import { SET_APP_STATE } from '../store/actions';
 
 // Import editor logic
 import {
@@ -128,7 +132,11 @@ class Editor extends React.PureComponent {
    */
   // eslint-disable-next-line class-methods-use-this
   onClickHideEditor(event) {
-    setDividerPositionInStore(window.innerWidth);
+    setDividerPosition(window.innerWidth);
+    store.dispatch({
+      type: SET_APP_STATE,
+      showEditorHiddenTooltip: true,
+    });
   }
 
   /**

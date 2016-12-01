@@ -68,7 +68,7 @@ function broadcastDividerPosition(posX) {
  *
  * @params {Number} posX - desired X position of divider.
  */
-export function setDividerPositionInStore(posX) {
+export function setDividerPosition(posX) {
   store.dispatch({
     type: SET_SETTINGS,
     dividerPositionX: clampPosition(posX),
@@ -108,11 +108,8 @@ class Divider extends React.Component {
   }
 
   // Called when something updates props (e.g. new divider position.)
-  componentWillUpdate(nextProps) {
-    // Ensure that props change included a valid posX value.
-    if (nextProps.posX && typeof nextProps.posX === 'number') {
-      broadcastDividerPosition(nextProps.posX);
-    }
+  componentDidUpdate(prevProps) {
+    broadcastDividerPosition(this.props.posX);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -124,7 +121,7 @@ class Divider extends React.Component {
 
   onStop(event, position) {
     const posX = position.node.getBoundingClientRect().left;
-    setDividerPositionInStore(posX);
+    setDividerPosition(posX);
 
     // React-draggable internally manages its state if the `position` prop
     // is not provided. Using a combination of JavaScript and CSS we can
