@@ -5,7 +5,7 @@ import EventEmitter from './event-emitter';
 
 // Redux
 import store from '../store';
-import { SET_SETTINGS } from '../store/actions';
+import { SET_SETTINGS, SET_APP_STATE } from '../store/actions';
 
 // Constraints
 // A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
@@ -87,6 +87,8 @@ class Divider extends React.Component {
     this.onResizeWindow = this.onResizeWindow.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.onStop = this.onStop.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
   }
 
   // We need to begin with an initial value to set the absolute
@@ -136,6 +138,21 @@ class Divider extends React.Component {
     });
   }
 
+  onMouseOver(event) {
+    // TODO: Figure out how to do a hover tooltip
+    // this.props.dispatch({
+    //   type: SET_APP_STATE,
+    //   showEditorHiddenTooltip: true,
+    // });
+  }
+
+  onMouseOut(event) {
+    // this.props.dispatch({
+    //   type: SET_APP_STATE,
+    //   showEditorHiddenTooltip: false,
+    // });
+  }
+
   // Window size has changed; update position
   onResizeWindow() {
     const currentPosX = this.dividerEl.getBoundingClientRect().left;
@@ -155,6 +172,8 @@ class Divider extends React.Component {
         <div
           className="divider"
           ref={(ref) => { this.dividerEl = ref; }}
+          onMouseOver={this.onMouseOver}
+          onMouseOut={this.onMouseOut}
         >
           <span className="divider-affordance" />
         </div>
@@ -164,6 +183,7 @@ class Divider extends React.Component {
 }
 
 Divider.propTypes = {
+  dispatch: React.PropTypes.func,
   posX: React.PropTypes.number,
 };
 

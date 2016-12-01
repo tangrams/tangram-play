@@ -9,7 +9,6 @@ import Divider, { setDividerPosition } from './Divider';
 import EditorHiddenTooltip from './EditorHiddenTooltip';
 
 // Redux
-import store from '../store';
 import { SET_APP_STATE } from '../store/actions';
 
 // Import editor logic
@@ -31,6 +30,7 @@ class Editor extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.onClickHideEditor = this.onClickHideEditor.bind(this);
     this.updateEditorWidth = this.updateEditorWidth.bind(this);
   }
 
@@ -130,10 +130,9 @@ class Editor extends React.PureComponent {
    * to update its position to the full window width (as far right as possible).
    * The Divider component will take care of the rest.
    */
-  // eslint-disable-next-line class-methods-use-this
   onClickHideEditor(event) {
     setDividerPosition(window.innerWidth);
-    store.dispatch({
+    this.props.dispatch({
       type: SET_APP_STATE,
       showEditorHiddenTooltip: true,
     });
@@ -207,6 +206,7 @@ class Editor extends React.PureComponent {
 }
 
 Editor.propTypes = {
+  dispatch: React.PropTypes.func,
   admin: React.PropTypes.bool,
   sceneCounter: React.PropTypes.number,
   activeFile: React.PropTypes.number,
