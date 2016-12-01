@@ -67,7 +67,7 @@ localforage.getItem(STORAGE_SETTINGS)
       <Provider store={store}>
         <App />
       </Provider>,
-      document.getElementById('tangram-play-app')
+      document.getElementById('root')
     );
   });
 

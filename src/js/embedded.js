@@ -31,5 +31,5 @@ ReactDOM.render(
   <Provider store={store}>
     <AppEmbedded />
   </Provider>,
-  document.getElementById('tangram-play-app')
+  document.getElementById('root')
 );
