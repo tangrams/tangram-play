@@ -21,6 +21,7 @@ class SignInButton extends React.Component {
 
     this.state = {
       serverContacted: false,
+      authDisabled: false,
     };
 
     this.onClickSignIn = this.onClickSignIn.bind(this);
@@ -35,7 +36,11 @@ class SignInButton extends React.Component {
   }
 
   onClickSignIn(event) {
-    openSignInWindow();
+    if (this.state.authDisabled === true) {
+      showErrorModal('Sign in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
+    } else {
+      openSignInWindow();
+    }
   }
 
   /**
@@ -56,7 +61,10 @@ class SignInButton extends React.Component {
       // This tells us we've contacted mapzen.com and the API is valid
       // `data` is null if we are not hosted in the right place
       if (data) {
-        this.setState({ serverContacted: true });
+        this.setState({
+          serverContacted: true,
+          authDisabled: Boolean(data.authDisabled) || false,
+        });
       }
     });
   }
@@ -111,10 +119,27 @@ class SignInButton extends React.Component {
       // Logged out state. Only display if server is contacted and has confirmed
       // no user is logged in. This is to prevent this button from having a
       // "Sign in" momentarily flash before the sign-in-state API is contacted.
+      let classNames = 'menu-sign-in';
+      if (this.state.authDisabled) {
+        classNames += ' menu-sign-in-disabled';
+      }
+
+      let tooltipContents = 'Sign in with your Mapzen account';
+      if (this.state.authDisabled === true) {
+        tooltipContents = 'Sign in is currently unavailable';
+      }
+
       return (
-        <NavItem onClick={this.onClickSignIn} href="#" className="menu-sign-in">
-          Sign in <Icon type="bt-sign-in" />
-        </NavItem>
+        <OverlayTrigger
+          rootClose
+          placement="bottom"
+          overlay={<Tooltip id="tooltip">{tooltipContents}</Tooltip>}
+          delayShow={200}
+        >
+          <NavItem onClick={this.onClickSignIn} href="#" className={classNames}>
+            Sign in <Icon type="bt-sign-in" />
+          </NavItem>
+        </OverlayTrigger>
       );
     }
 
