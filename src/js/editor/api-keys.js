@@ -11,25 +11,39 @@
 const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|:)+(topojson|geojson|mvt))/;
 
 /**
- * Parses Tangram YAML content for URL references to Mapzen vector tile service
- * and injects an API key if it does not have one. Do not inject an API key
- * if the vector tile service is not hosted at vector.mapzen.com.
+ * Parses a Tangram scene config object for sources that specify a Mapzen
+ * vector tile service URL, and injects an API key if it does not have one.
+ * Do not inject an API key if the vector tile service is not hosted at
+ * vector.mapzen.com or tile.mapzen.com. This is better than parsing the
+ * string content of the file because the config object has already been
+ * compiled and manipulating that JS object directly is faster and less error
+ * prone.
  *
- * TODO: Only inject API keys if it matches the source/url mapping.
- * Currently it checks if a line begins with the "url: " key, but there are
- * other ways of writing this that this function won't catch, e.g. inline YAML,
- * global properties or YAML variables.
- *
- * @param {string} content - Tangram YAML content
+ * @param {Object} config - Tangram scene config object
  * @param {string} apiKey - the API key to inject
- * @returns {string} content - Tangram YAML with API keys injected, if needed
+ * @returns {Object} config - a scene config object with injected keys, if needed
  */
-export function injectAPIKey(content, apiKey) {
-  const pattern = new RegExp(`(^\\s+url:\\s+${URL_PATTERN.source}$)`, 'gm');
-  // Do not use a template string here, it's incompatible with the $1 from the regex pattern
-  // eslint-disable-next-line prefer-template
-  const result = '$1?api_key=' + apiKey;
-  return content.replace(pattern, result);
+export function injectAPIKey(config, apiKey) {
+  Object.entries(config.sources).forEach((entry) => {
+    const [key, value] = entry;
+
+    // Only operate on the URL if it's a Mapzen-hosted vector tile service
+    // and if it does not already have a url_params.api_key field
+    // and if it does not appear to contain a api_key param in the query string
+    if (value.url.match(URL_PATTERN) && !(value.url_params && value.url_params.api_key) && !value.url.match(/(\?|&)api_key=/)) {
+      // Add a default API key as a url_params setting.
+      // Preserve existing url_params if present.
+      const params = Object.assign({}, config.sources[key].url_params, {
+        api_key: apiKey,
+      });
+
+      // Mutate the original on purpose.
+      // eslint-disable-next-line no-param-reassign
+      config.sources[key].url_params = params;
+    }
+  });
+
+  return config;
 }
 
 /**
