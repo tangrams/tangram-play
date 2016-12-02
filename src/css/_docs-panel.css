@@ -5,9 +5,7 @@
   z-index: var(--z04-map-toolbar);
   bottom: 0;
   right: 0;
-  /* TODO: don't hardcode magic number */
-  width: calc(100% - 54px);
-  padding-left: 2px;
+  width: 100%;
 }
 
 /* Style for map panel button to show it */

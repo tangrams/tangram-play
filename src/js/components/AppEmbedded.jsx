@@ -1,6 +1,6 @@
 import React from 'react';
 import Map from './Map';
-import Editor from './Editor';
+import EditorPane from './EditorPane';
 import RefreshButton from './RefreshButton';
 
 import { initTangramPlay } from '../tangram-play';
@@ -26,7 +26,7 @@ export default class AppEmbedded extends React.Component {
 
         <div>
           <Map panel={false} />
-          <Editor />
+          <EditorPane />
         </div>
 
         <RefreshButton />

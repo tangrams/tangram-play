@@ -5,8 +5,7 @@ import EditorTabs from './EditorTabs';
 import EditorCallToAction from './EditorCallToAction';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
-import Divider, { setDividerPosition } from './Divider';
-import EditorHiddenTooltip from './EditorHiddenTooltip';
+import { setDividerPosition } from './Divider';
 
 // Redux
 import { SET_APP_STATE } from '../store/actions';
@@ -31,20 +30,16 @@ class Editor extends React.PureComponent {
     super(props);
 
     this.onClickHideEditor = this.onClickHideEditor.bind(this);
-    this.updateEditorWidth = this.updateEditorWidth.bind(this);
   }
 
   componentDidMount() {
     // instantiate CodeMirror with the editor container element's
     // DOM node reference
     initEditor(this.editorEl);
-
-    // Initially set the editor width based on Redux state. This is because
-    // this component mounts before Divider is ready to send events.
-    this.updateEditorWidth({ posX: this.props.dividerPositionX });
-
-    EventEmitter.subscribe('divider:reposition', this.updateEditorWidth);
     editor.on('changes', watchEditorForChanges);
+
+    // CodeMirror instance must refresh when editor pane is resized.
+    EventEmitter.subscribe('divider:reposition', refreshEditor);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -117,11 +112,6 @@ class Editor extends React.PureComponent {
       this.docsPanel.init();
       docsHasInitAlready = true;
     }
-
-    // Handle divider position changes
-    if (this.props.dividerPositionX !== prevProps.dividerPositionX) {
-      this.updateEditorWidth({ posX: this.props.dividerPositionX });
-    }
   }
 
   /**
@@ -138,23 +128,6 @@ class Editor extends React.PureComponent {
     });
   }
 
-  /**
-   * Sets editor pane width.
-   * This is called in response to the `divider:reposition` event which
-   * passes an event object containing the left edge of the divider element.
-   * It can also be called manually (see `componentDidMount()`) as long as
-   * the `event` object matches the signature.
-   */
-  updateEditorWidth(event) {
-    // Early return if `this.el` is `null`, which happens when this function
-    // is called from listening for `divider:reposition` while the component
-    // is still updating, so the DOM node has not appeared as a ref.
-    if (!this.el) return;
-
-    this.el.style.width = `${window.innerWidth - event.posX}px`;
-    refreshEditor();
-  }
-
   render() {
     const customStyles = {};
     if (this.props.fontSize) {
@@ -162,10 +135,7 @@ class Editor extends React.PureComponent {
     }
 
     return (
-      <div className="editor-container" ref={(ref) => { this.el = ref; }}>
-        <Divider />
-        <EditorHiddenTooltip />
-
+      <div className="editor-container">
         {(() => {
           // Don't flash this when Tangram Play is initializing;
           // files are still zero, but we won't prompt until after
@@ -196,6 +166,7 @@ class Editor extends React.PureComponent {
           style={customStyles}
         />
 
+        <DocsPanel ref={(ref) => { this.docsPanel = ref; }} />
         {(() => {
           if (this.props.admin) {
             return (
@@ -217,7 +188,6 @@ Editor.propTypes = {
   files: React.PropTypes.arrayOf(React.PropTypes.object),
   appInitialized: React.PropTypes.bool,
   fontSize: React.PropTypes.number,
-  dividerPositionX: React.PropTypes.number,
 };
 
 Editor.defaultProps = {
@@ -234,7 +204,6 @@ function mapStateToProps(state) {
     files: state.scene.files,
     appInitialized: state.app.initialized,
     fontSize: state.settings.editorFontSize,
-    dividerPositionX: state.settings.dividerPositionX,
   };
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import Map from './Map';
-import Editor from './Editor';
+import EditorPane from './EditorPane';
 import MenuBar from './MenuBar';
 import ShieldContainer from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
@@ -31,7 +31,7 @@ export default class App extends React.Component {
 
           <div>
             <Map />
-            <Editor />
+            <EditorPane />
           </div>
 
           <div id="glsl-pickers" />

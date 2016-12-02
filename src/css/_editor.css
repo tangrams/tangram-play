@@ -4,11 +4,25 @@
   --editor-tab-height: 38px;
 }
 
-.editor-container {
+.editor-pane {
   position: absolute;
   right: 0;
   width: 50%;
   height: 100%;
+}
+
+.editor-container {
+  position: absolute;
+  height: 100%;
+  width: calc(100% - var(--divider-width));
+  top: 0;
+  right: 0;
+
+  /*
+    Prevent a case where collapse button and doc panel button can leak
+    out of the editor container
+  */
+  overflow: hidden;
 }
 
 .editor-no-content {
@@ -36,14 +50,12 @@
 
 .editor-tab-bar {
   position: relative;
-  /* Prevent a case where collapse button can leak out of the editor container */
-  overflow: hidden;
 }
 
 .editor-tabs {
   display: flex;
   align-items: baseline;
-  padding-left: 13px;
+  padding-left: 5px;
   padding-top: 5px;
   padding-right: 36px; /* Space for collapse button */
   user-select: none;

@@ -4,7 +4,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 10px;
+  width: var(--divider-width);
   height: 100%;
   opacity: 1;
   background-color: var(--ui-component-color);
