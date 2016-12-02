@@ -166,7 +166,6 @@ class Editor extends React.PureComponent {
           style={customStyles}
         />
 
-        <DocsPanel ref={(ref) => { this.docsPanel = ref; }} />
         {(() => {
           if (this.props.admin) {
             return (
