@@ -12,8 +12,8 @@ const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
 // Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
 // Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
 // It is disabled on http and any other host.
-const signInEnabled = (/^(dev.|www.)?mapzen.com$/.test(window.location.hostname) &&
-  window.location.protocol === 'https:') ||
+const isMapzenHosted = /^(dev.|www.)?mapzen.com$/.test(window.location.hostname);
+const signInEnabled = (isMapzenHosted && window.location.protocol === 'https:') ||
   (getURLSearchParam('forceSignIn') === 'true' && window.location.hostname === 'localhost');
 
 // Set credentials option for window.fetch depending on host.
@@ -71,6 +71,10 @@ export function requestUserSignInState() {
 
         return data;
       });
+  } else if (isMapzenHosted && window.location.protocol === 'http') {
+    return Promise.resolve({
+      authDisabled: true,
+    });
   }
 
   // Returns a promise that resolves to `null` if Tangram Play is not

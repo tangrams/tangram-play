@@ -168,6 +168,14 @@ nav {
     color: white;
   }
 
+  /* disabled state */
+  &.menu-sign-in-disabled a[role='button'] {
+    background-color: #514e4e;
+    border-color: #242323;
+    color: #9e9d94;
+    cursor: default;
+  }
+
   /* open dropdowwn style override */
   &.open.dropdown > a {
     background-color: #8d0000 !important;

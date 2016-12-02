@@ -22,6 +22,7 @@ import OpenFromCloudModal from '../modals/OpenFromCloudModal';
 import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
+import { showErrorModal } from '../modals/ErrorModal';
 import { setGlobalIntrospection } from '../map/inspection';
 import { requestUserSignInState } from '../user/sign-in';
 import { openSignInWindow } from '../user/sign-in-window';
@@ -84,6 +85,8 @@ function clickSaveToCloud() {
       }
       if (data.id) {
         showSaveToCloudModal();
+      } else if (data.authDisabled) {
+        showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
       } else {
         const message = 'You are not signed in! Please sign in now.';
         showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
@@ -109,6 +112,8 @@ function clickOpenFromCloud() {
     .then((data) => {
       if (data.id) {
         showOpenFromCloudModal();
+      } else if (data.authDisabled) {
+        showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
       } else {
         const message = 'You are not signed in! Please sign in now.';
         showConfirmDialogModal(message, openSignInWindow, unsubscribeOpenFromCloud);
