@@ -12,7 +12,6 @@
   background-color: var(--ui-base-color);
   box-shadow: var(--ui-modal-shadow), var(--ui-emboss-shadow);
   z-index: var(--z01-modal);
-  user-select: none;
   pointer-events: auto;
   border: 1px solid var(--ui-border-color);
   border-radius: 2px;
@@ -23,6 +22,14 @@
     font-weight: 400;
     font-size: 1.25em;
   }
+}
+
+/*
+  For error modals we want the message to be user-selectable so it can be
+  copy-pasted elsewhere.
+*/
+.modal:not(.error-modal) {
+  user-select: none;
 }
 
 .modal-alt {
@@ -38,7 +45,6 @@
   margin: 0;
   padding: 0;
   line-height: 1.4;
-  user-select: none;
 
   a {
     text-decoration: underline;
