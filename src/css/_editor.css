@@ -34,6 +34,12 @@
   line-height: 1.4;
 }
 
+.editor-tab-bar {
+  position: relative;
+  /* Prevent a case where collapse button can leak out of the editor container */
+  overflow: hidden;
+}
+
 .editor-tabs {
   display: flex;
   align-items: baseline;
