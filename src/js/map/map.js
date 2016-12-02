@@ -161,6 +161,10 @@ export function initMap() {
     zoomSnap: 0,
     // Prevents scroll wheel zoom when iframed.
     scrollWheelZoom: (window.self === window.top),
+    // If iframed & touchscreen, disable dragging & tap to prevent Leaflet
+    // from hijacking the page scroll.
+    dragging: !(window.self !== window.top && L.Browser.touch),
+    tap: !(window.self !== window.top && L.Browser.touch),
   });
 
   // Provide alternate zoom in/zoom out button controls in embedded version
@@ -177,7 +181,8 @@ export function initMap() {
       map.setView(mapStartLocation.latlng, mapStartLocation.zoom);
 
       // Add leaflet-hash (forked version)
-      const hash = new LeafletHash(map, { refreshInterval: 250 }); // eslint-disable-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
+      const hash = new LeafletHash(map, { refreshInterval: 250 });
 
       // Report ready to other things that depend on map state.
       // The problem is that the other map-based sub-components like MapPanel
@@ -191,7 +196,8 @@ export function initMap() {
       EventEmitter.dispatch('map:init');
     })
     .catch((error) => {
-      console.error(error);
+      // Do nothing; ignore.
+      // console.error(error);
     });
 
   // Force Leaflet to update itself.
