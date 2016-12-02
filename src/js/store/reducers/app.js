@@ -9,6 +9,7 @@ const initialState = {
   // state shall be treated the same as a `false` value.
   initialized: false,
   recentScenes: [],
+  showEditorHiddenTooltip: false,
 };
 
 const app = (state = initialState, action) => {

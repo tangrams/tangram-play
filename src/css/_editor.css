@@ -9,7 +9,6 @@
   right: 0;
   width: 50%;
   height: 100%;
-  overflow: hidden;
 }
 
 .editor-no-content {
@@ -33,6 +32,12 @@
   /* Easier to adjust font size from this element */
   font-size: 14px;
   line-height: 1.4;
+}
+
+.editor-tab-bar {
+  position: relative;
+  /* Prevent a case where collapse button can leak out of the editor container */
+  overflow: hidden;
 }
 
 .editor-tabs {

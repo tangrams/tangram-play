@@ -5,7 +5,7 @@ import EventEmitter from './event-emitter';
 
 // Redux
 import store from '../store';
-import { SET_SETTINGS } from '../store/actions';
+import { SET_SETTINGS, SET_APP_STATE } from '../store/actions';
 
 // Constraints
 // A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
@@ -68,7 +68,7 @@ function broadcastDividerPosition(posX) {
  *
  * @params {Number} posX - desired X position of divider.
  */
-export function setDividerPositionInStore(posX) {
+export function setDividerPosition(posX) {
   store.dispatch({
     type: SET_SETTINGS,
     dividerPositionX: clampPosition(posX),
@@ -87,6 +87,8 @@ class Divider extends React.Component {
     this.onResizeWindow = this.onResizeWindow.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.onStop = this.onStop.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
   }
 
   // We need to begin with an initial value to set the absolute
@@ -108,11 +110,8 @@ class Divider extends React.Component {
   }
 
   // Called when something updates props (e.g. new divider position.)
-  componentWillUpdate(nextProps) {
-    // Ensure that props change included a valid posX value.
-    if (nextProps.posX && typeof nextProps.posX === 'number') {
-      broadcastDividerPosition(nextProps.posX);
-    }
+  componentDidUpdate(prevProps) {
+    broadcastDividerPosition(this.props.posX);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -124,7 +123,7 @@ class Divider extends React.Component {
 
   onStop(event, position) {
     const posX = position.node.getBoundingClientRect().left;
-    setDividerPositionInStore(posX);
+    setDividerPosition(posX);
 
     // React-draggable internally manages its state if the `position` prop
     // is not provided. Using a combination of JavaScript and CSS we can
@@ -137,6 +136,21 @@ class Divider extends React.Component {
     this.setState({
       position: { x: 0, y: 0 },
     });
+  }
+
+  onMouseOver(event) {
+    // TODO: Figure out how to do a hover tooltip
+    // this.props.dispatch({
+    //   type: SET_APP_STATE,
+    //   showEditorHiddenTooltip: true,
+    // });
+  }
+
+  onMouseOut(event) {
+    // this.props.dispatch({
+    //   type: SET_APP_STATE,
+    //   showEditorHiddenTooltip: false,
+    // });
   }
 
   // Window size has changed; update position
@@ -158,6 +172,8 @@ class Divider extends React.Component {
         <div
           className="divider"
           ref={(ref) => { this.dividerEl = ref; }}
+          onMouseOver={this.onMouseOver}
+          onMouseOut={this.onMouseOut}
         >
           <span className="divider-affordance" />
         </div>
@@ -167,6 +183,7 @@ class Divider extends React.Component {
 }
 
 Divider.propTypes = {
+  dispatch: React.PropTypes.func,
   posX: React.PropTypes.number,
 };
 
