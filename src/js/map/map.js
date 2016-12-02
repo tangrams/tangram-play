@@ -1,12 +1,15 @@
 import { throttle } from 'lodash';
 import localforage from 'localforage';
 import L from 'leaflet';
-import Tangram from 'tangram'; // eslint-disable-line import/no-extraneous-dependencies, import/no-unresolved, import/extensions
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved, import/extensions
+import Tangram from 'tangram';
+import config from '../config';
 import LeafletHash from './leaflet-hash';
 import EventEmitter from '../components/event-emitter';
 
 import { hideSceneLoadingIndicator } from './MapLoading';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
+import { injectAPIKey } from '../editor/api-keys';
 
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
@@ -46,8 +49,14 @@ function initTangram(pathToSceneFile, sceneBasePath) {
   tangramLayer.addTo(map);
 
   tangramLayer.scene.subscribe({
-    load(args) {
-      EventEmitter.dispatch('tangram:sceneupdate', args);
+    load(event) {
+      // Modify the scene config object here. This mutates the original scene
+      // config object directly and does not have to be returned. Tangram will
+      // render with the mutated object.
+      // eslint-disable-next-line no-param-reassign
+      event.config = injectAPIKey(event.config, config.MAPZEN_API_KEY);
+
+      EventEmitter.dispatch('tangram:sceneupdate', event);
     },
 
     // Hides loading indicator after vector tiles have downloaded and rendered

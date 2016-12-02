@@ -5,7 +5,7 @@ import localforage from 'localforage';
 import config from '../config';
 import { initCodeMirror } from './codemirror';
 import { parseYamlString } from './codemirror/yaml-tangram';
-import { injectAPIKey, suppressAPIKeys } from './api-keys';
+import { suppressAPIKeys } from './api-keys';
 import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
 import { loadScene } from '../map/map';
@@ -58,16 +58,13 @@ export const refreshEditor = throttle(() => {
 // =============================================================================
 
 /**
- * Returns content of the editor, with injected API keys.
+ * Convenience function returning content of the editor.
  *
  * @public
  * @return {string} content
  */
 export function getEditorContent() {
-  let content = editor.getDoc().getValue();
-  //  If API keys are missing, inject one
-  content = injectAPIKey(content, config.MAPZEN_API_KEY);
-  return content;
+  return editor.getDoc().getValue();
 }
 
 /**
