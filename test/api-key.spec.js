@@ -7,127 +7,171 @@ const TEST_SUPPRESSED_KEYS = [TEST_API_KEY, 'mapzen-abcdef', 'mapzen-123abc'];
 describe('API keys for Mapzen vector tiles', () => {
   describe('injects a missing API key', () => {
     it('adds an API key when it is missing from TopoJSON endpoint', () => {
-      const snippet = `
-                sources:
-                    osm:
-                        type: TopoJSON
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
-            `;
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+          },
+        },
+      };
 
-      const target = `
-                sources:
-                    osm:
-                        type: TopoJSON
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_API_KEY}
-            `;
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params = {
+        api_key: TEST_API_KEY,
+      };
 
-      const result = injectAPIKey(snippet, TEST_API_KEY);
+      const result = injectAPIKey(config, TEST_API_KEY);
 
-      assert.strictEqual(result, target);
+      assert.deepEqual(result, target);
     });
 
     it('adds an API key when it is missing from GeoJSON endpoint', () => {
-      // This snippet also uses https:// instead of protocol-relative url
-      const snippet = `
-                sources:
-                    osm:
-                        type: GeoJSON
-                        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson
-            `;
+      // This config also uses https:// instead of protocol-relative url
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'GeoJSON',
+            url: 'https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson',
+          },
+        },
+      };
 
-      const target = `
-                sources:
-                    osm:
-                        type: GeoJSON
-                        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=${TEST_API_KEY}
-            `;
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params = {
+        api_key: TEST_API_KEY,
+      };
 
-      const result = injectAPIKey(snippet, TEST_API_KEY);
+      const result = injectAPIKey(config, TEST_API_KEY);
 
-      assert.strictEqual(result, target);
+      assert.deepEqual(result, target);
     });
 
     it('adds an API key when it is missing from MVT endpoint', () => {
-      const snippet = `
-                sources:
-                    osm:
-                        type: MVT
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt
-            `;
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'MVT',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt',
+          },
+        },
+      };
 
-      const target = `
-                sources:
-                    osm:
-                        type: MVT
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt?api_key=${TEST_API_KEY}
-            `;
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params = {
+        api_key: TEST_API_KEY,
+      };
 
-      const result = injectAPIKey(snippet, TEST_API_KEY);
+      const result = injectAPIKey(config, TEST_API_KEY);
 
-      assert.strictEqual(result, target);
+      assert.deepEqual(result, target);
     });
 
-    it('does nothing if an API key is already present', () => {
-      const snippet = `
-                sources:
-                    osm:
-                        type: TopoJSON
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-f00bar
-            `;
+    it('does nothing if an API key is already present in the query string', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-f00bar',
+          },
+        },
+      };
 
-      const result = injectAPIKey(snippet, TEST_API_KEY);
+      const result = injectAPIKey(config, TEST_API_KEY);
 
-      // The result should not differ from the original snippet
-      assert.strictEqual(result, snippet);
+      // The result should not differ from the original config
+      assert.deepEqual(result, config);
+    });
+
+    it('does nothing if an API key is already present in the url_params object', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+            url_params: {
+              api_key: 'vector-tiles-f00bar',
+            },
+          },
+        },
+      };
+
+      const result = injectAPIKey(config, TEST_API_KEY);
+
+      // The result should not differ from the original config
+      assert.deepEqual(result, config);
+    });
+
+    it('does not overwrite other parameters in the url_params object', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+            url_params: {
+              foo: 'bar',
+            },
+          },
+        },
+      };
+
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params.api_key = TEST_API_KEY;
+
+      const result = injectAPIKey(config, TEST_API_KEY);
+
+      assert.deepEqual(result, target);
     });
 
     it('does nothing if the url extension is unfamiliar', () => {
-      const snippet = `
-                sources:
-                    osm:
-                        type: vtm
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.vtm
-            `;
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'vtm',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.vtm',
+          },
+        },
+      };
 
-      const result = injectAPIKey(snippet, TEST_API_KEY);
+      const result = injectAPIKey(config, TEST_API_KEY);
 
-      // The result should not differ from the original snippet
-      assert.strictEqual(result, snippet);
+      // The result should not differ from the original config
+      assert.deepEqual(result, config);
     });
 
     it('does nothing if the tile source is a non-production service', () => {
-      // This snippet also uses https:// instead of protocol-relative url
-      const snippet = `
-                sources:
-                    osm:
-                        type: TopoJSON
-                        url: https://dev.tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
-            `;
+      // This config also uses https:// instead of protocol-relative url
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: 'https://dev.tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+          },
+        },
+      };
 
-      const result = injectAPIKey(snippet, TEST_API_KEY);
+      const result = injectAPIKey(config, TEST_API_KEY);
 
-      // The result should not differ from the original snippet
-      assert.strictEqual(result, snippet);
+      // The result should not differ from the original config
+      assert.deepEqual(result, config);
     });
 
     it('does nothing if the tile source is a non-Mapzen service', () => {
-      const snippet = `
-                sources:
-                    osm:
-                        type: TopoJSON
-                        url: //example.tileservice.com/{z}/{x}/{y}.topojson
-            `;
+      // This config also uses https:// instead of protocol-relative url
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: '//example.tileservice.com/{z}/{x}/{y}.topojson',
+          },
+        },
+      };
 
-      const result = injectAPIKey(snippet, TEST_API_KEY);
+      const result = injectAPIKey(config, TEST_API_KEY);
 
-      // The result should not differ from the original snippet
-      assert.strictEqual(result, snippet);
+      // The result should not differ from the original config
+      assert.deepEqual(result, config);
     });
-
-    // Future
-    it('adds a missing key to inline YAML url');
-    it('adds a missing key when the url is resolved from a global property');
-    it('adds a missing key when the url is resolved from a YAML variable');
   });
 
   describe('suppresses Mapzen’s reserved API keys', () => {
