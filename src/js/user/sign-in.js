@@ -71,7 +71,7 @@ export function requestUserSignInState() {
 
         return data;
       });
-  } else if (isMapzenHosted && window.location.protocol === 'http') {
+  } else if (isMapzenHosted && window.location.protocol === 'http:') {
     return Promise.resolve({
       authDisabled: true,
     });
