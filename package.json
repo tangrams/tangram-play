@@ -6,14 +6,14 @@
   "private": true,
   "scripts": {
     "start": "gulp serve",
-    "test": "yarn run lint --silent && yarn run karma --silent",
-    "lint": "yarn run lint-js --silent && yarn run lint-css --silent",
+    "test": "npm run lint --silent && npm run karma --silent",
+    "lint": "npm run lint-js --silent && npm run lint-css --silent",
     "lint-js": "eslint src/ test/ --ext .js,.jsx --quiet; eslint *.js --config .eslintrc-legacy --no-eslintrc --quiet",
     "lint-css": "stylelint src/css/*.css",
     "prekarma": "node node_modules/phantomjs-prebuilt/install.js",
     "karma": "./node_modules/karma/bin/karma start",
     "postinstall": "gulp build",
-    "examples": "yarn run examples:scenes && yarn run examples:thumbnails",
+    "examples": "npm run examples:scenes && npm run examples:thumbnails",
     "examples:scenes": "node meta/example-scenes/cache-scenes.js",
     "examples:thumbnails": "node meta/example-scenes/cache-thumbnails.js"
   },
