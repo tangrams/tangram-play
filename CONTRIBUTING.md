@@ -2,11 +2,23 @@
 
 ## Local installation / deployment process
 
-Clone this repository to your local machine, and then run the following command in this repository's root directory:
+First, clone this repository to your local machine, e.g.
+
+    git clone https://github.com/tangrams/tangram-play.git && cd tangram-play
+
+Tangram Play uses [Yarn][yarn] to guarantee dependency versions are locked and consistent across environments. If you have [installed Yarn](https://yarnpkg.com/en/docs/install), run the following command in this repository's root directory:
+
+    yarn
+
+**If you intend to contribute to Tangram Play, please use Yarn to guarantee consistent dependency installation. However, Yarn is not required to run Tangram Play.** If you want to keep using `npm`, you may continue to do this instead:
 
     npm install
 
-This installs all the required Node.js modules and dependencies, and immediately compiles everything. You should only need to do once after cloning, or every once in a while when dependencies change.
+Yarn / npm installs all the required Node.js modules and dependencies, and immediately compiles everything. You should only need to do once after cloning, or every once in a while when dependencies change.
+
+Note: For the remainder of this document, we will continue to use `npm` commands, but the `yarn` CLI equivalent will work as well.
+
+[yarn]: https://yarnpkg.com/
 
 ### Building, serving, and watching with Gulp
 
@@ -110,9 +122,28 @@ We use [EditorConfig](http://editorconfig.org/) to automatically set editor sett
 
 ## Code style and linting
 
-Tangram Play uses [ESLint][eslint] to lint JavaScript for both syntax errors and code style. Rules were inherited from Tangram's [JSHint][jshint] rules, with gaps filled in by [JavaScript Standard Style][standard]. Generally, please refer to the [Airbnb Javascript style guide][airbnb] for Javascript / ES6 best practices, although we did not necessarily adopt their rules directly. We may document rationales for certain rules as comments within `.eslintrc`.
+### JavaScript
+
+Tangram Play adopts the [Airbnb Javascript style guide][airbnb] for Javascript, which is using the [ESLint][eslint] engine. Some rules are overridden globally within `.eslintrc`, with rationale, when it does not apply to our project or is overly strict. Some overridden rules are warnings instead of errors, while some are simply allowed.
+
+Rule violations that occur rarely, but for good reason, can be overridden by using the `eslint-disable`, `eslint-disable-line`, or `eslint-disable-next-line` [directives](http://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments) to keep linter output clean. These should not be used liberally to avoid writing code to the guidelines, but should be considered when obeying the rule would result in overly unreadable and unmaintainable code. Ideally, use `eslint-disable-next-line` with the rule that is being overridden because this is more readable, e.g.
+
+```js
+// eslint-disable-next-line no-use-before-define
+EventEmitter.unsubscribe('mapzen:sign_in', clickOpenFromCloud);
+```
+
+As opposed to, this, which might line wrap:
+
+```js
+EventEmitter.unsubscribe('mapzen:sign_in', clickOpenFromCloud); // eslint-disable-line no-use-before-define
+```
+
+### CSS
 
 We use [Stylelint][stylelint] and build on [`stylelint-config-standard`][stylelint-standard] for linting CSS.
+
+### How to run
 
 To run the linter, there is an `npm` script that runs ESLint and Stylelint on non-vendor-sourced files.
 
