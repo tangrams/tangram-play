@@ -8,7 +8,7 @@ import { editor } from './editor/editor';
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
 import { initMarks } from './editor/bookmarks';
-import { initErrorsManager } from './editor/errors';
+import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
 import { initSceneImportDetector } from './editor/imports';
 import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
@@ -238,6 +238,9 @@ function determineScene() {
  */
 export function load(scene) {
   EventEmitter.dispatch('tangram:clear-palette', {});
+
+  // Reset editor/Tangram errors
+  clearAllErrors();
 
   // Turn on loading indicator. This is turned off later
   // when Tangram reports that it's done.

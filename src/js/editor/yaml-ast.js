@@ -28,25 +28,8 @@ function parseYAML(content) {
   // Timing of safeLoad: about 0.5-1.5ms for a small file, could be 20ms+ for a 6000 line Cinnabar.
   const parsedYAML = YAMLParser.safeLoad(content);
   if (parsedYAML.errors.length > 0) {
-    // console.log(parsedYAML.errors);
+    // TODO: Handle errors?
   }
-
-  // EXPERIMENT TIME
-  // Let's output all imports, if there are any.
-  // for (let i = 0, j = parsedYAML.mappings.length; i < j; i++) {
-  //   const mapping = parsedYAML.mappings[i];
-  //   if (mapping.key.value === 'import') {
-  //     const importValue = mapping.value;
-  //     if (importValue.kind === YAML_SEQUENCE) {
-  //       importValue.items.forEach((item) => {
-  //         console.log('IMPORT:', item.value);
-  //       });
-  //     } else if (importValue.kind === YAML_SCALAR) {
-  //       console.log('IMPORT:', importValue.value);
-  //     }
-  //   }
-  // }
-  // END EXPERIMENT TIME
 
   return parsedYAML;
 }
@@ -116,6 +99,9 @@ function getNodeAtKeyAddress(ast, address) {
 
 /**
  * Given an AST node, construct a key address for it by traversing its parent nodes.
+ *
+ * @param {Object} theNode - a node from YAML-AST-parser
+ * @returns {string} address - an address that looks like "this:string:example"
  */
 export function getKeyAddressForNode(theNode) {
   function builder(node, keys = []) {
@@ -123,7 +109,7 @@ export function getKeyAddressForNode(theNode) {
     if (!node) return null;
 
     // Assume key is scalar value
-    if (node.key) {
+    if (node.key && node.key.kind === 0) {
       keys.push(node.key.value);
     }
 
@@ -135,12 +121,11 @@ export function getKeyAddressForNode(theNode) {
     return keys;
   }
 
-  const keys = builder(theNode, []);
-  keys.reverse();
-  return keys.join(ADDRESS_KEY_DELIMITER);
+  const addressParts = builder(theNode, []);
+  addressParts.reverse();
+  return addressParts.join(ADDRESS_KEY_DELIMITER);
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export class ParsedYAMLDocument {
   constructor(content) {
     this.nodes = {};

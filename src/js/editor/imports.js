@@ -1,6 +1,6 @@
 import { editor, parsedYAMLDocument } from './editor';
 import { isAbsoluteUrl, splitUrlIntoFilenameAndBasePath } from '../tools/helpers';
-import { showErrorModal } from '../modals/ErrorModal';
+import { addError } from './errors';
 import { getKeyAddressForNode } from './yaml-ast';
 
 // Redux
@@ -90,7 +90,9 @@ export function initSceneImportDetector() {
       window.fetch(urlString)
         .then((response) => {
           if (!response.ok) {
-            throw new Error('did not work');
+            const error = new Error(`HTTP error code ${response.status}: Could not open ${urlString}`);
+            error.line = cursorPos.line;
+            throw error;
           }
 
           // Assume text content of file; don't use this to open other
@@ -113,7 +115,12 @@ export function initSceneImportDetector() {
           });
         })
         .catch((error) => {
-          showErrorModal(error.message);
+          // Error message is thrown as stringified JSON, parse it first
+          addError({
+            type: 'error',
+            line: error.line,
+            message: error.message,
+          });
         });
     }
   });

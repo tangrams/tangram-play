@@ -1,6 +1,7 @@
 /**
  * For errors and warnings reported by Tangram
  */
+import { uniqWith, isEqual } from 'lodash';
 import {
   ADD_ERROR,
   CLEAR_ERRORS,
@@ -15,9 +16,12 @@ const errors = (state = initialState, action) => {
     case ADD_ERROR:
       {
         // Append an error object the current list of errors.
+        // Filter out identical errors.
+        const errorsCollection = [...state.errors, action.error];
+
         return {
           ...state,
-          errors: [...state.errors, action.error],
+          errors: uniqWith(errorsCollection, isEqual),
         };
       }
     case CLEAR_ERRORS:
