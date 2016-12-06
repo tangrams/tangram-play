@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
@@ -6,20 +7,20 @@ import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
 import IconButton from './IconButton';
-
 import { editor } from '../editor/editor';
 
 // Redux
-import store from '../store';
 import { SET_SETTINGS } from '../store/actions';
 
 import TANGRAM from '../tangram-docs.json';
+
+const INITIAL_HEIGHT = 200;
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
  * map.
  */
-export default class DocsPanel extends React.Component {
+class DocsPanel extends React.Component {
   /**
    * Used to setup the state of the component. Regular ES6 classes do not
    * automatically bind 'this' to the instance, therefore this is the best
@@ -30,13 +31,10 @@ export default class DocsPanel extends React.Component {
   constructor(props) {
     super(props);
 
-    const settings = store.getState().settings;
-    const INITIAL_HEIGHT = 200;
     this.MIN_HEIGHT = 50;
 
     this.state = {
       display: '{}',
-      height: (settings && 'docsPanelHeight' in settings) ? settings.docsPanelHeight : INITIAL_HEIGHT,
     };
 
     this.lastSavedHeight = INITIAL_HEIGHT;
@@ -54,15 +52,13 @@ export default class DocsPanel extends React.Component {
   }
 
   onDrag(e, ui) {
-    let delta = this.state.height - (ui.y);
+    let delta = this.props.height - (ui.y);
 
     if (delta < this.MIN_HEIGHT) {
       delta = this.MIN_HEIGHT;
     }
 
-    this.setState({ height: delta });
-
-    store.dispatch({
+    this.props.dispatch({
       type: SET_SETTINGS,
       docsPanelHeight: delta,
     });
@@ -105,23 +101,21 @@ export default class DocsPanel extends React.Component {
    * Toggle the panel so it is visible or not visible
    */
   openPanel() {
-    this.setState({ height: this.lastSavedHeight });
-    store.dispatch({
+    this.props.dispatch({
       type: SET_SETTINGS,
       docsPanelHeight: this.lastSavedHeight,
     });
   }
 
   closePanel() {
-    this.lastSavedHeight = this.state.height;
-
-    this.setState({ height: 0 });
-    store.dispatch({
+    this.lastSavedHeight = this.props.height;
+    this.props.dispatch({
       type: SET_SETTINGS,
       docsPanelHeight: 0,
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   findMatch(address, optionalBool) {
     let currentTree = TANGRAM.keys; // Initializes to the tree at level 0
     // console.log(address);
@@ -231,7 +225,7 @@ export default class DocsPanel extends React.Component {
    */
   render() {
     const divStyle = {
-      height: `${this.state.height}px`,
+      height: `${this.props.height}px`,
     };
 
     const result = JSON.parse(this.state.display);
@@ -303,3 +297,20 @@ export default class DocsPanel extends React.Component {
     );
   }
 }
+
+DocsPanel.propTypes = {
+  dispatch: React.PropTypes.func,
+  height: React.PropTypes.number,
+};
+
+DocsPanel.defaultProps = {
+  height: INITIAL_HEIGHT,
+};
+
+function mapStateToProps(state) {
+  return {
+    height: state.settings.docsPanelHeight,
+  };
+}
+
+export default connect(mapStateToProps)(DocsPanel);

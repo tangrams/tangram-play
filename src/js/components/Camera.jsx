@@ -5,7 +5,6 @@ import { takeScreenshot } from '../map/screenshot';
 import { startVideoCapture } from '../map/video';
 
 // Redux
-import store from '../store';
 import { SET_APP_STATE } from '../store/actions';
 
 class Camera extends React.Component {
@@ -18,6 +17,7 @@ class Camera extends React.Component {
     };
 
     this.onClickRecord = this.onClickRecord.bind(this);
+    this.onClickClose = this.onClickClose.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,7 +39,7 @@ class Camera extends React.Component {
   }
 
   onClickClose() {
-    store.dispatch({
+    this.props.dispatch({
       type: SET_APP_STATE,
       cameraToolsVisible: false,
     });
@@ -131,6 +131,7 @@ class Camera extends React.Component {
 }
 
 Camera.propTypes = {
+  dispatch: React.PropTypes.func,
   isVisible: React.PropTypes.bool,
 };
 

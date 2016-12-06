@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import React from 'react';
+import { connect } from 'react-redux';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import IconButton from './IconButton';
@@ -11,22 +12,17 @@ import { map } from '../map/map';
 import { showErrorModal } from '../modals/ErrorModal';
 
 // Redux
-import store from '../store';
 import { SET_SETTINGS } from '../store/actions';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
  * map.
  */
-export default class MapPanel extends React.Component {
+class MapPanel extends React.Component {
   constructor(props) {
     super(props);
 
-    const settings = store.getState().settings;
-
     this.state = {
-      // Whether panel should be open or not
-      open: (settings && 'mapToolbarDisplay' in settings) ? settings.mapToolbarDisplay : true,
       geolocatorButton: 'bt-map-arrow', // Icon to display for the geolocator button
       geolocateActive: {
         active: false,
@@ -166,11 +162,10 @@ export default class MapPanel extends React.Component {
    * Toggle the panel so it is visible or not visible
    */
   toggleMapPanel() {
-    const value = !this.state.open;
-    this.setState({ open: value });
+    const value = !this.props.open;
 
     // Save the position in Redux
-    store.dispatch({
+    this.props.dispatch({
       type: SET_SETTINGS,
       mapToolbarDisplay: value,
     });
@@ -180,7 +175,7 @@ export default class MapPanel extends React.Component {
     return (
       <div className="map-panel">
         {/* Map panel*/}
-        <Panel collapsible expanded={this.state.open} className="map-panel-collapsible">
+        <Panel collapsible expanded={this.props.open} className="map-panel-collapsible">
           <div className="map-panel-toolbar">
             <MapPanelZoom />
 
@@ -212,7 +207,7 @@ export default class MapPanel extends React.Component {
 
         {/* Toggle map panel to show it*/}
         {(() => {
-          if (!this.state.open) {
+          if (!this.props.open) {
             return (
               <IconButton
                 icon="bt-caret-down"
@@ -228,3 +223,21 @@ export default class MapPanel extends React.Component {
     );
   }
 }
+
+MapPanel.propTypes = {
+  dispatch: React.PropTypes.func,
+  // Whether panel should be open or not
+  open: React.PropTypes.bool,
+};
+
+MapPanel.defaultProps = {
+  open: true,
+};
+
+function mapStateToProps(state) {
+  return {
+    open: state.settings.mapToolbarDisplay,
+  };
+}
+
+export default connect(mapStateToProps)(MapPanel);

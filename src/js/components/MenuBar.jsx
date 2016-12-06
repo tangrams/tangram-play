@@ -29,7 +29,6 @@ import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
 
 // Redux
-import store from '../store';
 import { SET_APP_STATE } from '../store/actions';
 
 function clickNew() {
@@ -81,8 +80,10 @@ function clickSaveToCloud() {
   requestUserSignInState()
     .then((data) => {
       if (!data) {
-        console.log('error'); // TODO:
+        showErrorModal('ERROR 12A: There was a problem signing you in. Please try again later.');
+        return;
       }
+
       if (data.id) {
         showSaveToCloudModal();
       } else if (data.authDisabled) {
@@ -163,7 +164,7 @@ class MenuBar extends React.Component {
 
   onClickCamera() {
     // Toggle camera state
-    store.dispatch({
+    this.props.dispatch({
       type: SET_APP_STATE,
       cameraToolsVisible: !this.props.cameraToolsVisible,
     });
@@ -356,6 +357,7 @@ class MenuBar extends React.Component {
 }
 
 MenuBar.propTypes = {
+  dispatch: React.PropTypes.func,
   mapzenAccount: React.PropTypes.bool,
   cameraToolsVisible: React.PropTypes.bool,
 };
