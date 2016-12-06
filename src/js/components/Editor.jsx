@@ -23,8 +23,6 @@ import {
 from '../editor/editor';
 import { highlightRanges } from '../editor/highlight';
 
-let docsHasInitAlready = false;
-
 class Editor extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -104,14 +102,6 @@ class Editor extends React.PureComponent {
       // Turn change watching back on.
       editor.on('changes', watchEditorForChanges);
     }
-
-    // DocsPanel is only available behind an admin flag.
-    // Update after props have determined sign-in, and init docsPanel.
-    // Only do this once.
-    if (!docsHasInitAlready && this.props.admin) {
-      this.docsPanel.init();
-      docsHasInitAlready = true;
-    }
   }
 
   /**
@@ -169,7 +159,7 @@ class Editor extends React.PureComponent {
         {(() => {
           if (this.props.admin) {
             return (
-              <DocsPanel ref={(ref) => { this.docsPanel = ref; }} />
+              <DocsPanel />
             );
           }
           return null;
