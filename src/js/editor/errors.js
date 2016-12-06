@@ -48,6 +48,14 @@ function createErrorLineElement(type, message) {
  */
 function createLineWidget(type, line, message) {
   const node = createErrorLineElement(type, message);
+
+  // Do not add line widgets that already exist
+  for (let i = 0, j = lineWidgets.length; i < j; i++) {
+    const lineNo = lineWidgets[i].line.lineNo();
+    const textContent = lineWidgets[i].node.textContent;
+    if (line === lineNo && message === textContent) return;
+  }
+
   const lineWidget = editor.addLineWidget(line, node, {
     coverGutter: false,
     noHScroll: true,
@@ -56,7 +64,7 @@ function createLineWidget(type, line, message) {
   lineWidgets.push(lineWidget);
 }
 
-function clearAllErrors() {
+export function clearAllErrors() {
   for (let i = 0; i < lineWidgets.length; i++) {
     editor.removeLineWidget(lineWidgets[i]);
   }
@@ -69,12 +77,29 @@ function clearAllErrors() {
 }
 
 /**
+ * Add a generic error.
+ *
+ * @param {Object} error - error object to add. It should be of the signature
+ *          {
+ *            type: 'error',
+ *            message: // {string} The message to display
+ *            line: // {number} A line number, if known.
+ *          }
+ */
+export function addError(error) {
+  store.dispatch({
+    type: ADD_ERROR,
+    error,
+  });
+}
+
+/**
  * Handles error object returned by Tangram's error event.
  *
  * @param {Object} errorObj - error object from Tangram. Its signature will
  *          vary depending on the `errorObj.type` property.
  */
-function addError(errorObj) {
+function addTangramError(errorObj) {
   let error;
 
   switch (errorObj.type) {
@@ -82,7 +107,6 @@ function addError(errorObj) {
       {
         const line = errorObj.error.mark.line;
         const message = errorObj.error.reason;
-        createLineWidget('error', line, message);
 
         error = {
           type: 'error',
@@ -120,13 +144,10 @@ function addError(errorObj) {
       break;
   }
 
-  store.dispatch({
-    type: ADD_ERROR,
-    error,
-  });
+  addError(error);
 }
 
-function addWarning(errorObj) {
+function addTangramWarning(errorObj) {
   switch (errorObj.type) {
     case 'styles':
       {
@@ -154,20 +175,19 @@ function addWarning(errorObj) {
 
           const warning = {
             type: 'warning',
+            line: (node) ? node.range.from.line + 1 + block.line : undefined,
             message,
             originalError: errorObj,
           };
+
+          if (node) {
+            blockErrors.add(JSON.stringify(block)); // track unique errors
+          }
 
           store.dispatch({
             type: ADD_ERROR,
             error: warning,
           });
-
-          if (node) {
-            const line = node.range.from.line + 1 + block.line;
-            createLineWidget('warning', line, message);
-            blockErrors.add(JSON.stringify(block)); // track unique errors
-          }
         }
 
         break;
@@ -199,10 +219,23 @@ export function initErrorsManager() {
   // See documentation: https://mapzen.com/documentation/tangram/Javascript-API/#error-and-warning
   tangramLayer.scene.subscribe({
     error: (event) => {
-      addError(event);
+      addTangramError(event);
     },
     warning: (event) => {
-      addWarning(event);
+      addTangramWarning(event);
     },
+  });
+
+  // Render line widgets from errors store
+  store.subscribe(() => {
+    const errors = store.getState().errors.errors;
+
+    // Generate line errors for each error that has a line number.
+    errors.forEach((item) => {
+      // Do not check for falsy values; 0 is a valid line number.
+      if (typeof item.line === 'number') {
+        createLineWidget(item.type, item.line, item.message);
+      }
+    });
   });
 }

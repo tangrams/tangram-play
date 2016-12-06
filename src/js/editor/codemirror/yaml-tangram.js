@@ -1,6 +1,5 @@
 import { startsWith } from 'lodash';
 import CodeMirror from 'codemirror';
-// import YAMLParser from 'yaml-ast-parser';
 import 'codemirror/mode/yaml/yaml';
 import './glsl-tangram';
 import { attachBookmarkConstructorsToDocumentState } from './widgets';
