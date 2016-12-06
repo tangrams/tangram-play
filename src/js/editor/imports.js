@@ -1,26 +1,30 @@
-import { editor } from './editor';
+import { editor, parsedYAMLDocument } from './editor';
 import { isAbsoluteUrl, splitUrlIntoFilenameAndBasePath } from '../tools/helpers';
 import { showErrorModal } from '../modals/ErrorModal';
+import { getKeyAddressForNode } from './yaml-ast';
 
 // Redux
 import store from '../store';
 import { ADD_FILE } from '../store/actions';
 
-// TODO: this does not know what to do if imports are all on one line, e.g. flow notation
-function normalizeImportValue(string) {
-  // Truncate anything beyond what looks like a comment (the `#` mark)
-  // Note this will truncate URL strings with hash fragments, but why are
-  // importing those anyway?
-  let urlString = string.split('#')[0];
+/**
+ * Is the provided scalar value node an import?
+ *
+ * @param {YAML-AST node} node
+ * @returns {Boolean}
+ */
+function isImportValue(node) {
+  // Returns false if not in a node, or is a top-level node
+  if (!node || !node.parent) return false;
 
-  // Replace what strings start with (the collection marker `-` or the
-  // `import:` key), remove whitespace
-  urlString = urlString.replace(/^\s*(-|import:)\s*/, '').trim();
+  // Returns true if the node value is a scalar, and the key address for this value is 'import'
+  // We don't want to return true if we're inside an import node but at the
+  // sequence node level
+  const address = getKeyAddressForNode(node);
+  if (address === 'import' && node.kind === 0) return true;
 
-  // Remove quotation marks around the value, if present
-  urlString = urlString.replace(/^('|")?/, '').replace(/('|")?$/, '').trim();
-
-  return urlString;
+  // All other cases, return false
+  return false;
 }
 
 // Check the files array to see if a file of "key" property is open already
@@ -49,38 +53,23 @@ export function initSceneImportDetector() {
       return;
     }
 
-    // bail out if we were doing a selection and not a click
-    if (editor.somethingSelected()) {
-      return;
-    }
+    const doc = editor.getDoc();
 
-    const cursor = editor.getCursor(true);
+    // Bail if we were doing a selection and not a click
+    if (doc.somethingSelected()) return;
 
-    // If the user clicks somewhere that is not where the cursor is
-    // This checks for cases where a user clicks on a normal picker trigger
-    // (not glsl) but the cursor is over a shader block
-    // if (cursorAndClickDontMatch(cursor, event)) {
-    //   return;
-    // }
+    const cursorPos = doc.getCursor();
+    const cursorIndex = doc.indexFromPos(cursorPos); // -> Number
+    const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
+    const isImportBlock = isImportValue(node);
 
-    const token = editor.getTokenAt(cursor);
-    const isImportBlock = token.state.keyStack[token.state.keyStack.length - 1] === 'import';
     if (isImportBlock) {
-      // Using the string of the line, determine the url of the imported scene.
-      // Note that `nodes` array will not always contain a URL for its `value`
-      // property because `import` may be a YAML collections and we cannot parse
-      // YAML collections yet.
-      let urlString = normalizeImportValue(token.state.string);
-
-      // If the url string is blank at this point (which can happen on a line
-      // whose value is just "import:") then bail
-      if (urlString === '') return;
+      let urlString = node.value;
 
       // TODO: url strings that are passed in as globals
 
       // Attach the file's base path if it looks like a relative URL!
-      // TODO: handle relative files using ./ or ../ notation
-      // TODO: relative paths must be resolved in relationship to current FILE,
+      // Relative paths must be resolved in relationship to current FILE,
       // not the current SCENE. Imagine a scene that imports an external file,
       // which then imports a file relative to it; attaching the scene's base
       // path will break it.

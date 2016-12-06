@@ -5,7 +5,7 @@ import localforage from 'localforage';
 import config from '../config';
 import { initCodeMirror } from './codemirror';
 import { parseYamlString } from './codemirror/yaml-tangram';
-import { parseYAML } from './yaml-ast';
+import { ParsedYAMLDocument } from './yaml-ast';
 import { suppressAPIKeys } from './api-keys';
 import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
@@ -20,8 +20,10 @@ const STORAGE_LAST_EDITOR_STATE = 'last-scene';
 const EDITOR_REFRESH_THROTTLE = 20;
 
 // Export an instantiated CodeMirror instance
-// eslint-disable-next-line import/no-mutable-exports
+/* eslint-disable import/no-mutable-exports */
 export let editor;
+export let parsedYAMLDocument;
+/* eslint-enable import/no-mutable-exports */
 
 // Timeout for saving things in memory
 let localMemorySaveTimer;
@@ -102,6 +104,13 @@ export function setEditorContent(doc, readOnly = false) {
   editor.swapDoc(doc);
   editor.setOption('readOnly', readOnly);
 
+  // Parse the document
+  const content = doc.getValue();
+  parsedYAMLDocument = new ParsedYAMLDocument(content);
+
+  // Debug access
+  window.parsedYAMLDocument = parsedYAMLDocument;
+
   // Once the document is swapped in, if the content is not read-only,
   // add bookmarks back in if they're not added already.
   if (readOnly === false) {
@@ -159,7 +168,7 @@ export function watchEditorForChanges() {
   const doc = editor.getDoc();
   const isClean = doc.isClean();
 
-  parseYAML(content);
+  parsedYAMLDocument.regenerate(content);
 
   // Update all the properties of the active file in local memory.
   // Localforage is async so it cannot be relied on to do this on the
@@ -307,7 +316,8 @@ export function getNodesForAddress(address) {
       // if nothing was found. Record the state and try again
       lastState = state;
       // TODO:
-      // We might want to have two different parsers, a simpler one without keys and just address for
+      // We might want to have two different parsers, a simpler one without
+      // keys and just address for
       // the higliting and another more roboust that keep tracks of:
       // pairs (key/values), their ranges (from-to positions),
       // address and a some functions like getValue, setValue which could
@@ -344,7 +354,8 @@ function clearInlineNodes(fromPos) {
  * @param {string} value - The new value to set to
  */
 export function setCodeMirrorValue(bookmark, value) {
-  let foundInlineNodes = null; // If an inline node is changed, we need to reparse all the other nodes in that line.
+  // If an inline node is changed, we need to reparse all the other nodes in that line.
+  let foundInlineNodes = null;
 
   const origin = '+value_change';
 

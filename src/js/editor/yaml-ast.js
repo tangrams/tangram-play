@@ -21,34 +21,34 @@ const YAML_SEQUENCE = 3;
 // const YAML_ANCHOR_REF = 4; //?
 // const YAML_INCLUDE_REF = 5; //? only RAML?
 
-// Cached YAML AST here.
-let parsedYAML;
+const ADDRESS_KEY_DELIMITER = ':';
 
-export function parseYAML(content) {
+function parseYAML(content) {
   // Run all the content through the AST parser and store it here.
   // Timing of safeLoad: about 0.5-1.5ms for a small file, could be 20ms+ for a 6000 line Cinnabar.
-  parsedYAML = YAMLParser.safeLoad(content);
+  const parsedYAML = YAMLParser.safeLoad(content);
   if (parsedYAML.errors.length > 0) {
-    console.log(parsedYAML.errors);
+    // console.log(parsedYAML.errors);
   }
-  console.log(parsedYAML);
 
   // EXPERIMENT TIME
   // Let's output all imports, if there are any.
-  for (let i = 0, j = parsedYAML.mappings.length; i < j; i++) {
-    const mapping = parsedYAML.mappings[i];
-    if (mapping.key.value === 'import') {
-      const importValue = mapping.value;
-      if (importValue.kind === YAML_SEQUENCE) {
-        importValue.items.forEach((item) => {
-          console.log('IMPORT:', item.value);
-        });
-      } else if (importValue.kind === YAML_SCALAR) {
-        console.log('IMPORT:', importValue.value);
-      }
-    }
-  }
+  // for (let i = 0, j = parsedYAML.mappings.length; i < j; i++) {
+  //   const mapping = parsedYAML.mappings[i];
+  //   if (mapping.key.value === 'import') {
+  //     const importValue = mapping.value;
+  //     if (importValue.kind === YAML_SEQUENCE) {
+  //       importValue.items.forEach((item) => {
+  //         console.log('IMPORT:', item.value);
+  //       });
+  //     } else if (importValue.kind === YAML_SCALAR) {
+  //       console.log('IMPORT:', importValue.value);
+  //     }
+  //   }
+  // }
   // END EXPERIMENT TIME
+
+  return parsedYAML;
 }
 
 /**
@@ -59,7 +59,7 @@ export function parseYAML(content) {
  * @param {Number} index - a position index
  * @returns {Object} a node
  */
-export function getNodeAtIndex(ast, index) {
+function getNodeAtIndex(ast, index) {
   function searchNodes(node, idx) {
     // Nodes can be `null` if current document state has errors
     if (!node) return null;
@@ -110,25 +110,52 @@ export function getNodeAtIndex(ast, index) {
   return node;
 }
 
-export function getNodeAtKeyAddress(ast, index) {
+function getNodeAtKeyAddress(ast, address) {
 
 }
 
-// Testing
-window.getNodeAtKeyAddress = function getNodeAtKeyAddressPerf(index) {
-  const startTime = window.performance.now();
-  const node = getNodeAtKeyAddress(parsedYAML, index);
-  const endTime = window.performance.now();
-  console.log('[PERF: getNodeAtKeyAddress]', endTime - startTime);
-  console.log('[RESULT: getNodeAtKeyAddress]', node);
-  return node;
-};
+/**
+ * Given an AST node, construct a key address for it by traversing its parent nodes.
+ */
+export function getKeyAddressForNode(theNode) {
+  function builder(node, keys = []) {
+    // Nodes can be `null` if current document state has errors
+    if (!node) return null;
 
-window.getNodeAtIndex = function getNodeAtIndexPerf(index) {
-  const startTime = window.performance.now();
-  const node = getNodeAtIndex(parsedYAML, index);
-  const endTime = window.performance.now();
-  console.log('[PERF: getNodeAtIndex]', endTime - startTime);
-  console.log('[RESULT: getNodeAtIndex]', node);
-  return node;
-};
+    // Assume key is scalar value
+    if (node.key) {
+      keys.push(node.key.value);
+    }
+
+    // Traverse parents until we hit no more parents
+    if (node.parent) {
+      keys.concat(builder(node.parent, keys));
+    }
+
+    return keys;
+  }
+
+  const keys = builder(theNode, []);
+  keys.reverse();
+  return keys.join(ADDRESS_KEY_DELIMITER);
+}
+
+// eslint-disable-next-line import/prefer-default-export
+export class ParsedYAMLDocument {
+  constructor(content) {
+    this.nodes = {};
+    this.regenerate(content);
+  }
+
+  regenerate(content) {
+    this.nodes = parseYAML(content);
+  }
+
+  getNodeAtIndex(index) {
+    return getNodeAtIndex(this.nodes, index);
+  }
+
+  getNodeAtKeyAddress(address) {
+    return getNodeAtKeyAddress(this.nodes, address);
+  }
+}
