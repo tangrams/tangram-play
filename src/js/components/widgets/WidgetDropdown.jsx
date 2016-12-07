@@ -1,7 +1,6 @@
 import React from 'react';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
-import { clone } from 'lodash';
 import EventEmitter from '../event-emitter';
 
 import { setCodeMirrorValue, setCursor } from '../../editor/editor';
@@ -23,7 +22,7 @@ export default class WidgetDropdown extends React.Component {
     // If the dropdown is NOT of type source
     if (this.key !== 'source') {
       // Make a clone so as not to mutate the original props
-      options = clone(this.props.options);
+      options = this.props.options.slice(0);
     } else {
       // If the dropdown is of type source
       // Try to find the sources from the tangram scene
