@@ -388,6 +388,8 @@ export function setCodeMirrorValue(bookmark, value) {
     }
   }
 
+  const doc = editor.getDoc();
+
   // Force a space between the ':' and the value
   if (value === '') {
     value = ` ${value}`;
@@ -428,9 +430,6 @@ export function setCodeMirrorValue(bookmark, value) {
  * @param {Object} end - End { line, ch }
  */
 export function setCodeMirrorShaderValue(value, start, end) {
-  // If editor is readonly, do nothing..
-  if (editor.isReadOnly()) return;
-
   editor.replaceRange(value, start, end);
 }
 
