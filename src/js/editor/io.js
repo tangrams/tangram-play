@@ -22,6 +22,26 @@ export function checkSaveStateThen(callback = noop) {
 }
 
 /**
+ * Checks the whether a particular file in the scene file list needs to be
+ * saved before executing `callback`. The file may have the `isClean` property
+ * set to false if it has been edited. As a shortcut, files with `readOnly`
+ * property set to true is assumed to not have been edited.
+ *
+ * @param {number} doc - index of file in store
+ * @param {function} callback - callback function to run if document is clean
+ *          or confirmation is given
+ * @todo - this probably doesn't belong here.
+ */
+export function checkSaveStateOfDocumentThen(index, callback = noop) {
+  const file = store.getState().scene.files[index];
+  if (file.readOnly === true || file.isClean === true) {
+    callback();
+  } else {
+    showConfirmDialogModal('Your scene has not been saved. Continue?', callback);
+  }
+}
+
+/**
  * Wrap FileReader in a Promise and returns it.
  */
 function loadContentFromFile(file) {
