@@ -12,25 +12,18 @@ import { getAddressSceneContent } from '../../editor/codemirror/yaml-tangram';
  * Represents a dropdown widget
  */
 export default class WidgetDropdown extends React.Component {
-  /**
-   * Used to setup the state of the component. Regular ES6 classes do not
-   * automatically bind 'this' to the instance, therefore this is the best
-   * place to bind event handlers
-   *
-   * @param props - parameters passed from the parent
-   */
   constructor(props) {
     super(props);
 
     this.bookmark = this.props.bookmark;
     this.key = this.props.keyType;
-    this.value = '';
 
     let options;
 
     // If the dropdown is NOT of type source
     if (this.key !== 'source') {
-      options = this.props.options;
+      // Make a clone so as not to mutate the original props
+      options = clone(this.props.options);
     } else {
       // If the dropdown is of type source
       // Try to find the sources from the tangram scene
@@ -42,18 +35,29 @@ export default class WidgetDropdown extends React.Component {
       options = (obj) ? Object.keys(obj) : [];
     }
 
+    // If the initial value is blank, we add a disabled "select one"
+    // choice to the options array.
+    if (!this.props.initialValue || this.props.initialValue.length === 0) {
+      options.unshift('(select one)');
+    }
+
+    // If the initial value in the editor is not one of the options, we
+    // append it to the options dropdown. This allows a user to recover the
+    // original value easily.
+    if (this.props.initialValue && options.indexOf(this.props.initialValue) === -1) {
+      options.push(this.props.initialValue);
+    }
+
     this.state = {
+      value: this.props.initialValue,
       options,
     };
 
     this.onChange = this.onChange.bind(this);
-    this.setSource = this.setSource.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.setSource = this.setSource.bind(this);
   }
 
-  /**
-   * React lifecycle function. Gets called once when DIV is mounted
-   */
   componentDidMount() {
     // Need to subscribe to when Tangram scene loads in order to populate the source widget
     EventEmitter.subscribe('tangram:sceneinit', this.setSource);
@@ -64,9 +68,11 @@ export default class WidgetDropdown extends React.Component {
    * i.e. when user opens or selects something
    */
   onChange(e) {
-    this.value = e.target.value;
+    this.setState({
+      value: e.target.value,
+    });
 
-    this.setEditorValue(this.value);
+    this.setEditorValue(e.target.value);
   }
 
   /**
@@ -100,29 +106,8 @@ export default class WidgetDropdown extends React.Component {
     this.bookmark = setCodeMirrorValue(this.bookmark, string);
   }
 
-  /**
-   * Official React lifecycle method
-   * Called every time state or props are changed
-   */
   render() {
-    // Clone a copy of the original options array.
-    const options = clone(this.state.options);
-    const initialValue = this.props.initialValue;
-
-    // If the initial value is blank, we add a disabled "select one"
-    // choice to the options array.
-    if (!initialValue || initialValue.length === 0) {
-      options.unshift('(select one)');
-    }
-
-    // If the initial value in the editor is not one of the options, we
-    // append it to the options dropdown. This allows a user to recover the
-    // original value easily.
-    if (initialValue && options.indexOf(initialValue) === -1) {
-      options.push(initialValue);
-    }
-
-    if (this.state.options.length !== 0) {
+    if (this.state.options !== 0) {
       return (
         <FormGroup
           className="widget-dropdown"
@@ -134,9 +119,9 @@ export default class WidgetDropdown extends React.Component {
             className="widget-form-control"
             placeholder="select"
             onChange={this.onChange}
-            value={initialValue}
+            value={this.state.value}
           >
-            {options.map((result, i) => (
+            {this.state.options.map((result, i) => (
               <option
                 key={i}
                 value={result}
