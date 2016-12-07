@@ -66,7 +66,6 @@
 }
 
 .editor-tab {
-  display: inline-block;
   position: relative;
   color: var(--ui-component-text-color);
   font-size: 12px;
@@ -75,9 +74,16 @@
   border-bottom: 0;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  max-width: 120px;
   background-color: var(--ui-editor-background-color);
   box-shadow: inset 0 0 0 1px var(--ui-component-color);
+  overflow: hidden;
+
+  /* Tabs shrink when its parent container is narrow. Sizing is adjusted
+     to account for absolutely-positioned children throwing off its layout */
+  flex-basis: 160px;
+  flex-shrink: 1;
+  height: calc(100% + 2px);
+  min-width: 60px;
 }
 
 .editor-tab-is-active {
@@ -91,12 +97,17 @@
 }
 
 .editor-tab-label {
+  position: absolute; /* Allows tab to shrink smaller than content box */
   overflow: hidden;
   padding: 8px 24px 8px 10px;
   width: 100%;
   text-overflow: ellipsis;
   display: inline-block;
   white-space: nowrap;
+}
+
+.editor-tab-is-active .editor-tab-label {
+  box-shadow: inset 0 2px 0 var(--ui-highlight-color);
 }
 
 .editor-tab-is-dirty {
