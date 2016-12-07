@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Icon from './Icon';
 import { SET_ACTIVE_FILE, REMOVE_FILE, CLOSE_SCENE, STASH_DOCUMENT } from '../store/actions';
 import { editor } from '../editor/editor';
-import { checkSaveStateThen } from '../editor/io';
+import { checkSaveStateOfDocumentThen } from '../editor/io';
 
 class EditorTabs extends React.PureComponent {
   setActiveTab(index, event) {
@@ -28,7 +28,7 @@ class EditorTabs extends React.PureComponent {
     // TODO: this needs to check WHICH document, not just the one currently
     // in the editor, because closeTab() can be called on a document not
     // currently in the editor.
-    checkSaveStateThen(() => {
+    checkSaveStateOfDocumentThen(index, () => {
       // If index = 0, it's the main file, so we close the scene.
       if (index === 0) {
         this.props.closeScene();
@@ -63,8 +63,6 @@ class EditorTabs extends React.PureComponent {
 
           let fileIcon;
           if (item.readOnly === true) {
-            // TEMPORARY: emoji lock
-            // TODO: consider a replacement; and remove line-height override for this
             fileIcon = <Icon type="bt-lock" className="editor-tab-read-only" />;
           }
 

@@ -354,6 +354,11 @@ function clearInlineNodes(fromPos) {
  * @param {string} value - The new value to set to
  */
 export function setCodeMirrorValue(bookmark, value) {
+  // If editor is readonly, pass through bookmark unchanged.
+  if (editor.isReadOnly()) {
+    return bookmark;
+  }
+
   // If an inline node is changed, we need to reparse all the other nodes in that line.
   let foundInlineNodes = null;
 
@@ -382,8 +387,6 @@ export function setCodeMirrorValue(bookmark, value) {
       }
     }
   }
-
-  const doc = editor.getDoc();
 
   // Force a space between the ':' and the value
   if (value === '') {
@@ -425,6 +428,9 @@ export function setCodeMirrorValue(bookmark, value) {
  * @param {Object} end - End { line, ch }
  */
 export function setCodeMirrorShaderValue(value, start, end) {
+  // If editor is readonly, do nothing..
+  if (editor.isReadOnly()) return;
+
   editor.replaceRange(value, start, end);
 }
 
