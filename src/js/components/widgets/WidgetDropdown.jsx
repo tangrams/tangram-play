@@ -106,7 +106,7 @@ export default class WidgetDropdown extends React.Component {
   }
 
   render() {
-    if (this.state.options !== 0) {
+    if (this.state.options.length !== 0) {
       return (
         <FormGroup
           className="widget-dropdown"
