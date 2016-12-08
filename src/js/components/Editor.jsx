@@ -62,20 +62,23 @@ class Editor extends React.PureComponent {
         if (activeFile) {
           if (activeFile.buffer) {
             setEditorContent(activeFile.buffer, activeFile.readOnly);
-
-            // Restore cursor state
-            if (activeFile.cursor) {
-              editor.getDoc().setCursor(activeFile.cursor);
-            }
-
-            // TODO: Restore selected areas, if any (supercedes cursor).
-            // TODO: Restore highlighted lines, if any.
-            // Otherwise we use its text-value `contents` property and
-            // other state properties, if present.
           } else if (activeFile.contents) {
-            // Use the text content and (TODO: reparse)
+            // Otherwise we use its text-value `contents` property
+            // (TODO: reparse)
             const doc = createCodeMirrorDoc(activeFile.contents);
             setEditorContent(doc, activeFile.readOnly);
+          }
+
+          // Restore cursor state
+          if (activeFile.cursor) {
+            editor.getDoc().setCursor(activeFile.cursor, {
+              scroll: false,
+            });
+          }
+
+          // Restore selected areas, if any (supercedes cursor).
+          if (activeFile.selections) {
+            editor.getDoc().setSelections(activeFile.selections);
           }
 
           // Highlights lines, if provided.
@@ -90,14 +93,8 @@ class Editor extends React.PureComponent {
             editor.scrollTo(left, top);
           }
 
-          if (window.isEmbedded === undefined) {
-            // Restore cursor position, if provided.
-            if (activeFile.cursor) {
-              editor.getDoc().setCursor(activeFile.cursor, {
-                scroll: false,
-              });
-            }
-          }
+          // Editor must have focus or the cursor won't show up.
+          editor.focus();
         }
       }
 
