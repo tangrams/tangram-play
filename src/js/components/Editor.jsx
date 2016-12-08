@@ -93,7 +93,8 @@ class Editor extends React.PureComponent {
             editor.scrollTo(left, top);
           }
 
-          // Editor must have focus or the cursor won't show up.
+          // By default, switching the document won't give it focus automatically.
+          // Editor must be given focus or the cursor won't show up.
           editor.focus();
         }
       }
