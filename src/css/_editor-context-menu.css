@@ -12,6 +12,7 @@
   overflow: hidden;
   z-index: var(--z09-context-menu);
   user-select: none;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 .editor-context-menu ul {
