@@ -41,18 +41,79 @@ function isAlreadyOpened(key) {
   return found;
 }
 
+function handleImportValue(node, cursorPos) {
+  let urlString = node.value;
+
+  // TODO: url strings that are passed in as globals
+
+  // Attach the file's base path if it looks like a relative URL!
+  // Relative paths must be resolved in relationship to current FILE,
+  // not the current SCENE. Imagine a scene that imports an external file,
+  // which then imports a file relative to it; attaching the scene's base
+  // path will break it.
+  if (isAbsoluteUrl(urlString) === false) {
+    // Get the files's base path if present
+    const scene = store.getState().scene;
+
+    const activeFile = scene.files[scene.activeFileIndex];
+    const basePath = activeFile.basePath || scene.originalBasePath;
+    const intermediaryUrlResolver = new window.URL(urlString, basePath);
+    urlString = intermediaryUrlResolver.href;
+  }
+
+  // if the urlString is already opened, don't open it again
+  if (isAlreadyOpened(urlString) === true) return;
+
+  // Next: fetch contents of this file
+  window.fetch(urlString)
+    .then((response) => {
+      if (!response.ok) {
+        const error = new Error(`HTTP error code ${response.status}: Could not open ${urlString}`);
+        error.line = cursorPos.line;
+        throw error;
+      }
+
+      // Assume text content of file; don't use this to open other
+      // zips, or images etc
+      return response.text();
+    })
+    .then((contents) => {
+      // If successful, add it to the files array in state.
+      const urlParts = splitUrlIntoFilenameAndBasePath(urlString);
+      const file = {
+        key: urlString,
+        basePath: urlParts[0],
+        filename: urlParts[1],
+        contents,
+        readOnly: true,
+      };
+      store.dispatch({
+        type: ADD_FILE,
+        file,
+      });
+    })
+    .catch((error) => {
+      // Error message is thrown as stringified JSON, parse it first
+      addError({
+        type: 'error',
+        line: error.line,
+        message: error.message,
+      });
+    });
+}
+
 // Let's work on finding scene imports.
 // TODO: This is not a final API; this is just for testing purposes.
-export function initSceneImportDetector() {
+export function initContextSensitiveClickEvents() {
+  // Currently scoped to admin-users only or local development environment.
+  // Bail if neither is true
+  if (window.location.hostname !== 'localhost' && store.getState().user.admin === false) {
+    return;
+  }
+
   const wrapper = editor.getWrapperElement();
 
   wrapper.addEventListener('mouseup', (event) => {
-    // Currently scoped to admin-users only or local development environment.
-    // Bail if neither is true
-    if (window.location.hostname !== 'localhost' && store.getState().user.admin === false) {
-      return;
-    }
-
     const doc = editor.getDoc();
 
     // Bail if we were doing a selection and not a click
@@ -64,64 +125,7 @@ export function initSceneImportDetector() {
     const isImportBlock = isImportValue(node);
 
     if (isImportBlock) {
-      let urlString = node.value;
-
-      // TODO: url strings that are passed in as globals
-
-      // Attach the file's base path if it looks like a relative URL!
-      // Relative paths must be resolved in relationship to current FILE,
-      // not the current SCENE. Imagine a scene that imports an external file,
-      // which then imports a file relative to it; attaching the scene's base
-      // path will break it.
-      if (isAbsoluteUrl(urlString) === false) {
-        // Get the files's base path if present
-        const scene = store.getState().scene;
-
-        const activeFile = scene.files[scene.activeFileIndex];
-        const basePath = activeFile.basePath || scene.originalBasePath;
-        const intermediaryUrlResolver = new window.URL(urlString, basePath);
-        urlString = intermediaryUrlResolver.href;
-      }
-
-      // if the urlString is already opened, don't open it again
-      if (isAlreadyOpened(urlString) === true) return;
-
-      // Next: fetch contents of this file
-      window.fetch(urlString)
-        .then((response) => {
-          if (!response.ok) {
-            const error = new Error(`HTTP error code ${response.status}: Could not open ${urlString}`);
-            error.line = cursorPos.line;
-            throw error;
-          }
-
-          // Assume text content of file; don't use this to open other
-          // zips, or images etc
-          return response.text();
-        })
-        .then((contents) => {
-          // If successful, add it to the files array in state.
-          const urlParts = splitUrlIntoFilenameAndBasePath(urlString);
-          const file = {
-            key: urlString,
-            basePath: urlParts[0],
-            filename: urlParts[1],
-            contents,
-            readOnly: true,
-          };
-          store.dispatch({
-            type: ADD_FILE,
-            file,
-          });
-        })
-        .catch((error) => {
-          // Error message is thrown as stringified JSON, parse it first
-          addError({
-            type: 'error',
-            line: error.line,
-            message: error.message,
-          });
-        });
+      handleImportValue(node, cursorPos);
     }
   });
 }
