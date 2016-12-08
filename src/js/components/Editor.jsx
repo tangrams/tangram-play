@@ -44,11 +44,11 @@ class Editor extends React.PureComponent {
     // Set content of editor based on currently active file.
     // When incoming props for file content changes we set the state
     // of the editor directly. This only runs if the scene has changed, or
-    // if the active tab has changed, or the number of files has changed (which
-    // handles when a file has been removed).
+    // if the active tab has changed, or the number of files is less than
+    // before (which handles when a file has been removed).
     if ((this.props.sceneCounter > prevProps.sceneCounter) ||
       (this.props.activeFile !== prevProps.activeFile) ||
-      (this.props.files.length !== prevProps.files.length)) {
+      (this.props.files.length < prevProps.files.length)) {
       // Turn off watching for changes in editor.
       editor.off('changes', watchEditorForChanges);
 
