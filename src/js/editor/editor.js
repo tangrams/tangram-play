@@ -145,7 +145,8 @@ function updateLocalMemory(content, doc, isClean) {
     return;
   }
 
-  const scene = store.getState().scene;
+  // Creates a clone of existing data
+  const scene = Object.assign({}, store.getState().scene);
   const activeFile = scene.activeFileIndex;
 
   scene.files[activeFile].contents = content;
@@ -153,6 +154,14 @@ function updateLocalMemory(content, doc, isClean) {
   scene.files[activeFile].scrollInfo = editor.getScrollInfo();
   scene.files[activeFile].cursor = doc.getCursor();
   scene.files[activeFile].highlightedLines = getAllHighlightedLines();
+
+  // Currently CodeMirror buffers are stashed in store. This is not a good idea
+  // because they are non-serializable (have circular references) so for the
+  // moment we just delete them from the object if present.
+  scene.files.forEach((item) => {
+    // eslint-disable-next-line no-param-reassign
+    delete item.buffer;
+  });
 
   // Store in local memory
   localforage.setItem(STORAGE_LAST_EDITOR_STATE, scene);

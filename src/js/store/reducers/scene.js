@@ -4,6 +4,7 @@ import {
   SET_ACTIVE_FILE,
   ADD_FILE,
   REMOVE_FILE,
+  SET_FILE_METADATA,
   MARK_FILE_CLEAN,
   MARK_FILE_DIRTY,
   STASH_DOCUMENT,
@@ -92,6 +93,9 @@ What is a file object? A file object can contain the following properties:
     - highlightedLines (string)
         a string of all highlighted line ranges returned from
         `getAllHighlightedLines()`
+    - selections (array)
+        an array of all selections in the document, returned from
+        `doc.listSelections()`
     - buffer (CodeMirror.Doc object)
         returned from `CodeMirror.getDoc()`. Editor buffer associated with a
         specific file. Used when operating between `.swapDoc()` operations.
@@ -177,6 +181,22 @@ const scene = (state = initialState, action) => {
           activeFileIndex,
         };
       }
+    // Generically set properties for a certain file
+    case SET_FILE_METADATA: {
+      const { fileIndex, ...data } = action;
+      delete data.type; // Prevent saving of `type` in store
+
+      const newProps = Object.assign({}, state.files[fileIndex], data);
+
+      return {
+        ...state,
+        files: [
+          ...state.files.slice(0, fileIndex),
+          newProps,
+          ...state.files.slice(fileIndex + 1),
+        ],
+      };
+    }
     case MARK_FILE_CLEAN:
       // TODO: return new array of files with file object at fileIndex
       // toggled dirty property

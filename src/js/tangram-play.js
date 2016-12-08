@@ -10,7 +10,7 @@ import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapL
 import { initMarks } from './editor/bookmarks';
 import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
-import { initSceneImportDetector } from './editor/imports';
+import { initContextSensitiveClickEvents } from './editor/imports';
 import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import { showErrorModal } from './modals/ErrorModal';
 
@@ -299,7 +299,7 @@ export function initTangramPlay() {
         initErrorsManager();
 
         initSuggestions();
-        initSceneImportDetector();
+        initContextSensitiveClickEvents();
         initGlslPickers();
       }
 

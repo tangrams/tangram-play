@@ -1,9 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Icon from './Icon';
-import { SET_ACTIVE_FILE, REMOVE_FILE, CLOSE_SCENE, STASH_DOCUMENT } from '../store/actions';
+import {
+  SET_ACTIVE_FILE,
+  REMOVE_FILE,
+  CLOSE_SCENE,
+  SET_FILE_METADATA,
+  STASH_DOCUMENT,
+} from '../store/actions';
 import { editor } from '../editor/editor';
 import { checkSaveStateOfDocumentThen } from '../editor/io';
+import { getAllHighlightedLines } from '../editor/highlight';
 
 class EditorTabs extends React.PureComponent {
   setActiveTab(index, event) {
@@ -14,6 +21,15 @@ class EditorTabs extends React.PureComponent {
       const currentIndex = this.props.activeTab;
       const currentDoc = editor.getDoc();
       this.props.stashDoc(currentIndex, currentDoc);
+
+      // Stash things we want to restore: cursor, selections, highlighted lines,
+      // and scroll position.
+      this.props.setFileMetadata(currentIndex, {
+        cursor: currentDoc.getCursor(),
+        scrollInfo: editor.getScrollInfo(),
+        highlightedLines: getAllHighlightedLines(),
+        selections: currentDoc.listSelections(),
+      });
 
       // Sets the next active tab
       this.props.setActiveFile(index);
@@ -92,6 +108,7 @@ EditorTabs.propTypes = {
   setActiveFile: React.PropTypes.func,
   removeFile: React.PropTypes.func,
   closeScene: React.PropTypes.func,
+  setFileMetadata: React.PropTypes.func,
   stashDoc: React.PropTypes.func,
 };
 
@@ -123,6 +140,13 @@ function mapDispatchToProps(dispatch) {
     },
     closeScene: (index) => {
       dispatch({ type: CLOSE_SCENE });
+    },
+    setFileMetadata: (index, data) => {
+      dispatch({
+        ...data,
+        type: SET_FILE_METADATA,
+        fileIndex: index,
+      });
     },
     stashDoc: (index, buffer) => {
       dispatch({
