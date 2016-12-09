@@ -41,9 +41,22 @@ function isAlreadyOpened(key) {
   return found;
 }
 
-function handleImportValue(node, cursorPos) {
-  let urlString = node.value;
+let urlString;
+let cursorPos;
 
+function handleImportValue(node, doc, incomingCursorPos) {
+  urlString = node.value;
+  cursorPos = incomingCursorPos;
+
+  const startPosition = doc.posFromIndex(node.startPosition);
+  const startCharCoords = editor.charCoords(startPosition);
+  const el = document.querySelector('.editor-context-menu');
+  el.style.display = 'block';
+  el.style.left = `${startCharCoords.left}px`;
+  el.style.top = `${startCharCoords.bottom}px`;
+}
+
+function openLink(event) {
   // TODO: url strings that are passed in as globals
 
   // Attach the file's base path if it looks like a relative URL!
@@ -91,6 +104,10 @@ function handleImportValue(node, cursorPos) {
         type: ADD_FILE,
         file,
       });
+
+      // finally (todo: don't do this here)
+      const el = document.querySelector('.editor-context-menu');
+      el.style.display = 'none';
     })
     .catch((error) => {
       // Error message is thrown as stringified JSON, parse it first
@@ -125,7 +142,28 @@ export function initContextSensitiveClickEvents() {
     const isImportBlock = isImportValue(node);
 
     if (isImportBlock) {
-      handleImportValue(node, cursorPos);
+      handleImportValue(node, doc, cursorPos);
+    } else {
+      const el = document.querySelector('.editor-context-menu');
+      el.style.display = 'none';
     }
+  });
+
+  // listener for links
+  const contextLink = document.querySelector('.editor-context-menu li');
+  contextLink.addEventListener('click', openLink, true);
+
+  // Shut down the context menu on other interactions
+  // todo: move elsewhere, react flow
+  window.addEventListener('mousedown', (event) => {
+    if (event.target.textContent !== 'Open in new tab (read-only)') {
+      const el = document.querySelector('.editor-context-menu');
+      el.style.display = 'none';
+    }
+  });
+
+  editor.on('scroll', (event) => {
+    const el = document.querySelector('.editor-context-menu');
+    el.style.display = 'none';
   });
 }

@@ -164,13 +164,21 @@ const scene = (state = initialState, action) => {
           ...state.files.slice(action.index + 1),
         ];
 
+        // Adjust the active file index
+        let activeFileIndex = state.activeFileIndex;
+
+        // If the index of the removed removed is less than the current active file,
+        // shift the activeFileIndex down to keep it referring to the same file
+        if (activeFileIndex > action.index) {
+          activeFileIndex -= 1;
+        }
+
         // If the active file index is now out of bounds, it must be set
         // to one that is in bounds. If the file removed is the last one,
         // activeFileIndex is set to -1. This should generally not be
         // allowed, as there should always be a "main scene file" present
         // to represent the scene, and removing the "main scene file"
         // should call CLOSE_SCENE instead to clean up properly.
-        let activeFileIndex = state.activeFileIndex;
         if (activeFileIndex >= fileList.length - 1) {
           activeFileIndex = fileList.length - 1;
         }

@@ -1,0 +1,35 @@
+.editor-context-menu {
+  position: fixed;
+  display: none;
+  padding: 0;
+  min-width: 200px;
+  font-size: 1rem;
+  background-color: var(--ui-component-color);
+  border-radius: var(--ui-border-radius);
+  border: var(--ui-border);
+  pointer-events: auto;
+  overflow: hidden;
+  z-index: var(--z09-context-menu);
+  user-select: none;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.editor-context-menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.editor-context-menu li {
+  padding: 0.25em 0.5em;
+  border-top: 1px solid var(--ui-active-color);
+  cursor: pointer;
+  line-height: 1.4;
+  color: var(--ui-component-text-color);
+  font-weight: 300;
+  font-size: 0.9em;
+}
+
+.editor-context-menu li:hover {
+  background-color: var(--ui-active-color);
+}

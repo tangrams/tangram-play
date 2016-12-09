@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import EventEmitter from './event-emitter';
 import EditorTabs from './EditorTabs';
 import EditorCallToAction from './EditorCallToAction';
+import EditorContextMenu from './EditorContextMenu';
 import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
 import { setDividerPosition } from './Divider';
@@ -155,6 +156,8 @@ class Editor extends React.PureComponent {
           ref={(ref) => { this.editorEl = ref; }}
           style={customStyles}
         />
+
+        <EditorContextMenu />
 
         {(() => {
           if (this.props.admin) {

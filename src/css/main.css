@@ -55,6 +55,7 @@
 @import '_sandbox';
 @import '_sign-in-overlay';
 @import '_call-to-action';
+@import '_editor-context-menu';
 @import '_editor-hidden-tooltip';
 
 /* Bookmarks and pickers */
@@ -147,6 +148,7 @@
   /* 09-10: Anything that demands absolutely the highest priority */
   --z09-pickers: var(--z09);
   --z09-tooltip: var(--z09);
+  --z09-context-menu: var(--z09);
   --z10-dropdown-button: var(--z10);
   --z10-mobile-message: var(--z10);
 }
