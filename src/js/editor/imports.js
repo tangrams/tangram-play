@@ -41,8 +41,15 @@ function isAlreadyOpened(key) {
   return found;
 }
 
-function handleImportValue(node, cursorPos) {
+function handleImportValue(node, doc, cursorPos) {
   let urlString = node.value;
+
+  const startPosition = doc.posFromIndex(node.startPosition);
+  const startCharCoords = editor.charCoords(startPosition);
+  const el = document.querySelector('.editor-context-menu');
+  el.style.display = 'block';
+  el.style.left = `${startCharCoords.left}px`;
+  el.style.top = `${startCharCoords.bottom}px`;
 
   // TODO: url strings that are passed in as globals
 
@@ -125,7 +132,10 @@ export function initContextSensitiveClickEvents() {
     const isImportBlock = isImportValue(node);
 
     if (isImportBlock) {
-      handleImportValue(node, cursorPos);
+      handleImportValue(node, doc, cursorPos);
+    } else {
+      const el = document.querySelector('.editor-context-menu');
+      el.style.display = 'none';
     }
   });
 }
