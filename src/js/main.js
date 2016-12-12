@@ -31,6 +31,12 @@ if (process.env.NODE_ENV === 'production') {
   }).install();
 }
 
+// When hosted on Mapzen, set document.domain to allow cross-origin access
+// across subdomains.
+if (document.domain.indexOf('mapzen.com') >= 0) {
+  document.domain = 'mapzen.com';
+}
+
 // Set and persist localForage options. This must be called before any other
 // calls to localForage are made, but can be called after localForage is loaded.
 localforage.config({

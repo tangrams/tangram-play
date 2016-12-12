@@ -26,6 +26,12 @@ if (process.env.NODE_ENV === 'production') {
   }).install();
 }
 
+// When hosted on Mapzen, set document.domain to allow cross-origin access
+// across subdomains.
+if (document.domain.indexOf('mapzen.com') >= 0) {
+  document.domain = 'mapzen.com';
+}
+
 // Mount React components
 ReactDOM.render(
   <Provider store={store}>
