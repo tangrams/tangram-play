@@ -122,9 +122,10 @@ export function initGlslPickers() {
 
   wrapper.addEventListener('mouseup', (event) => {
     // bail out if we were doing a selection and not a click
-    if (editor.somethingSelected()) {
-      return;
-    }
+    if (editor.somethingSelected()) return;
+
+    // Bail if editor is in read-only mode
+    if (editor.isReadOnly()) return;
 
     const cursor = editor.getCursor(true);
 

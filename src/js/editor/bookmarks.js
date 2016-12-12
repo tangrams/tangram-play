@@ -37,16 +37,17 @@ function createMarkRootNode(type) {
 }
 
 /**
- * Parses the editor from `fromLine` to `toLine` and inserts marks where
- * needed.
+ * Parses the editor from `fromLine` to `toLine` and inserts markers where
+ * needed. Do not insert markers for read-only documents, since their presence
+ * implies values can be changed.
  *
  * @param {Number} fromLine - The line number to insert from
  * @param {Number} toLine - Optional. The line number to insert to. If not
  *          provided, just the fromLine is checked.
  */
-function insertMarks(fromLine, toLine) {
-  // If `to` is not provided, use `from`.
-  toLine = (toLine || fromLine);
+function insertMarks(fromLine, toLine = fromLine) {
+  // Bail if editor is in read-only mode
+  if (editor.isReadOnly()) return;
 
   // For each line in the range, get the line handle, check for nodes,
   // check for marks, and add or remove them.
@@ -159,10 +160,7 @@ export function insertMarksInViewport() {
  * @param {Number} toLine - Optional. The line number to look to. If not
  *          provided, just the fromLine is checked.
  */
-function getExistingMarks(fromLine, toLine) {
-  // If `to` is not provided, use `from`.
-  toLine = fromLine;
-
+function getExistingMarks(fromLine, toLine = fromLine) {
   const doc = editor.getDoc();
   let existingMarks = [];
 
@@ -285,7 +283,7 @@ function handleEditorScroll(cm) {
  *          data that the user has just edited
  */
 function reparseInlineNodes(data) {
-  const changedNodeCh = data.from.ch; // Contains the from character of the text the user has just edited
+  const changedNodeCh = data.from.ch; // The first character of edited text
   const existingMarks = getExistingMarks(data.from.line, data.from.line);
 
   // If there is only one node in the inline line, then do not do anything

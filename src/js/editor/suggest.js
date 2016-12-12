@@ -122,6 +122,9 @@ export function initSuggestions() {
   EventEmitter.dispatch('tangram:sceneupdate', (args) => {
     let bOpen = true;
 
+    // Bail if editor is in read-only mode
+    if (editor.isReadOnly()) return;
+
     const line = editor.getCursor().line;
     const stateAfter = editor.getLineHandle(line).stateAfter;
     if (stateAfter && stateAfter.innerMode && stateAfter.innerMode.helperType) {
