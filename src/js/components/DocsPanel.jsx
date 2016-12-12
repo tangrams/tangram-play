@@ -34,7 +34,7 @@ class DocsPanel extends React.Component {
     this.MIN_HEIGHT = 50;
 
     this.state = {
-      display: '{}',
+      display: {},
     };
 
     this.lastSavedHeight = INITIAL_HEIGHT;
@@ -159,7 +159,12 @@ class DocsPanel extends React.Component {
       currentNode.originalAddress = address;
     }
 
-    return JSON.stringify(currentNode);
+    if (currentNode) {
+      return currentNode;
+    }
+
+    // Return an empty object if no currentNode
+    return {};
   }
 
   renderChildren(node) {
@@ -225,7 +230,7 @@ class DocsPanel extends React.Component {
       height: `${this.props.height}px`,
     };
 
-    const result = JSON.parse(this.state.display);
+    const result = this.state.display;
 
     return (
       <div className="docs-panel">
