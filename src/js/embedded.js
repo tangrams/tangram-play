@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'production') {
 // When hosted on Mapzen, set document.domain to allow cross-origin access
 // across subdomains.
 if (document.domain.indexOf('mapzen.com') >= 0) {
-  document.domain = 'mapzen.com';
+  document.domain = document.domain;
 }
 
 // Mount React components
