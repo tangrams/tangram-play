@@ -47,6 +47,7 @@ class DocsPanel extends React.Component {
   }
 
   componentDidMount() {
+    if (!editor) return;
     const wrapper = editor.getWrapperElement();
     wrapper.addEventListener('mouseup', this.onMouseUpEditor);
   }
@@ -154,7 +155,7 @@ class DocsPanel extends React.Component {
     }
 
     // Adding original address searched (not the regex)
-    if (optionalBool) {
+    if (optionalBool && currentNode) {
       currentNode.originalAddress = address;
     }
 
