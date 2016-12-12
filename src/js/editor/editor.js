@@ -139,18 +139,29 @@ function updateContent(content) {
 // changes from continuously updating the map.
 const debouncedUpdateContent = debounce(updateContent, 500);
 
-function updateLocalMemory(content, doc, isClean) {
+/**
+ * Saves editor content and state to local memory which can be recovered in a
+ * following session (or tab refresh). This function is debounced (see
+ * `debouncedUpdateLocalMemory`) so editor state is autosaved fairly
+ * frequently when content is being edited. This function is exported as-is
+ * so other functionality can force an update at specific times. Do not use this
+ * to update memory before a `window.unload` event: localforage is asynchronous,
+ * which may not complete before the window is closed.
+ *
+ * @return {undefined}
+ */
+export function updateLocalMemory() {
   // Bail if embedded
-  if (window.isEmbedded) {
-    return;
-  }
+  if (window.isEmbedded) return;
 
   // Creates a clone of existing data
   const scene = Object.assign({}, store.getState().scene);
   const activeFile = scene.activeFileIndex;
 
-  scene.files[activeFile].contents = content;
-  scene.files[activeFile].isClean = isClean;
+  // Updates the data for currently visible file
+  const doc = editor.getDoc();
+  scene.files[activeFile].contents = getEditorContent();
+  scene.files[activeFile].isClean = doc.isClean();
   scene.files[activeFile].scrollInfo = editor.getScrollInfo();
   scene.files[activeFile].cursor = doc.getCursor();
   scene.files[activeFile].highlightedLines = getAllHighlightedLines();
@@ -167,9 +178,12 @@ function updateLocalMemory(content, doc, isClean) {
   localforage.setItem(STORAGE_LAST_EDITOR_STATE, scene);
 }
 
-// Wrap updateLocalMemory() in a debounce function. This actually does incur
-// an extra significant processing overhead on every edit so we keep it from
-// executing all the time.
+/**
+ * Wrap updateLocalMemory() in a debounce function. This actually does incur
+ * an extra significant processing overhead on every edit so we keep it from
+ * executing all the time when called by a frequently-updating event like
+ * `watchEditorForChanges()`.
+ */
 const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
 
 export function watchEditorForChanges() {
@@ -185,8 +199,7 @@ export function watchEditorForChanges() {
   // completed before the page tears down. See here:
   // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#Warning_About_Browser_Shutdown
   window.clearTimeout(localMemorySaveTimer);
-  localMemorySaveTimer = window.setTimeout(debouncedUpdateLocalMemory,
-    250, content, doc, isClean);
+  localMemorySaveTimer = window.setTimeout(debouncedUpdateLocalMemory, 250);
 
   // Send scene data to Tangram
   debouncedUpdateContent(content);
