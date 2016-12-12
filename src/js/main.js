@@ -31,9 +31,9 @@ if (process.env.NODE_ENV === 'production') {
   }).install();
 }
 
-// When hosted on Mapzen, set document.domain to allow cross-origin access
-// across subdomains.
-if (document.domain.indexOf('mapzen.com') >= 0) {
+// When hosted on production Mapzen, set document.domain to allow cross-origin
+// access across subdomains.
+if (document.domain.indexOf('mapzen.com') === 0) {
   document.domain = document.domain;
 }
 
