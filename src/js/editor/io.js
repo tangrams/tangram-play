@@ -42,33 +42,34 @@ export function checkSaveStateOfDocumentThen(index, callback = noop) {
 }
 
 /**
- * Wrap FileReader in a Promise and returns it.
+ * Wraps FileReader.readAsText() in a Promise
+ *
+ * @param {Blob|File} blob - the Blob or File from which to read. This argument
+ *          is passed as the first argument to FileReader.readAsText().
+ * @return {Promise} - resolved with content of Blob or File, or a Promise
+ *          rejection with error message.
  */
-function loadContentFromFile(file) {
+export function readBlobAsText(blob) {
   return new Promise((resolve, reject) => {
     // Rejects the Promise immediately if the `file` argument is not
-    // a Blob object provided by a browser's file input control.
-    if (!(file instanceof Blob)) {
+    // a Blob or File object
+    if (!(blob instanceof Blob || blob instanceof File)) {
       reject('Unable to load your file: it is not a valid file type.');
       return;
     }
 
-    if (file.type.startsWith('application/zip')) {
+    if (blob.type && blob.type.startsWith('application/zip')) {
       reject('Tangram Play does not support zipped scene bundles right now.');
       return;
     }
 
     const reader = new FileReader();
 
-    // Resolves when FileReader is completely done loading. The `load`
-    // event can fire before the end of a file is encountered so we
-    // listen for `loadend` instead. The Promise resolves with the value
-    // of the file contents but also loads into the editor.
+    // Resolves when FileReader is completely done loading. The `load` event
+    // can fire before the end of a file is encountered so we listen for
+    // loadend` instead. The Promise resolves with the value of the file
+    // contents but also loads into the editor.
     reader.addEventListener('loadend', (event) => {
-      load({
-        filename: file.name,
-        contents: event.target.result,
-      });
       resolve(event.target.result);
     });
 
@@ -78,8 +79,21 @@ function loadContentFromFile(file) {
       reject(reader.error);
     });
 
-    reader.readAsText(file);
+    reader.readAsText(blob);
   });
+}
+
+/**
+ * Wrap FileReader in a Promise and returns it.
+ */
+export function loadContentFromFile(file) {
+  return readBlobAsText(file)
+    .then((contents) => {
+      load({
+        filename: file.name,
+        contents,
+      });
+    });
 }
 
 /**
