@@ -81,7 +81,7 @@ export function clearAllErrors() {
  *
  * @param {Object} error - error object to add. It should be of the signature
  *          {
- *            type: 'error',
+ *            type: 'error', // {string} 'error' or 'warning'
  *            message: // {string} The message to display
  *            line: // {number} A line number, if known.
  *          }
@@ -147,6 +147,60 @@ function addTangramError(errorObj) {
   addError(error);
 }
 
+/**
+ * Handles a shader error with a known block
+ *
+ * @param {Object} error - the error to handle
+ * @param {Object} errorObj - the original error object from Tangram
+ */
+function handleShaderErrorWithBlock(error, errorObj) {
+  const style = error.block.scope;
+
+  // Skip generic errors not originating in style-sheet
+  if (style === 'ShaderProgram') return;
+
+  const block = error.block;
+
+  // De-dupe errors per block
+  if (blockErrors.has(JSON.stringify(block))) return;
+
+  const address = `styles:${style}:shaders:blocks:${block.name}`;
+  const node = getNodesForAddress(address);
+  const message = error.message;
+
+  const warning = {
+    type: 'warning',
+    line: (node) ? node.range.from.line + 1 + block.line : undefined,
+    message,
+    originalError: errorObj,
+  };
+
+  if (node) {
+    blockErrors.add(JSON.stringify(block)); // track unique errors
+  }
+
+  store.dispatch({
+    type: ADD_ERROR,
+    error: warning,
+  });
+}
+
+/**
+ * Handles a shader error where the block is not known
+ *
+ * @param {Object} error - the error to handle
+ * @param {Object} errorObj - the original error object from Tangram
+ */
+function handleShaderErrorWithoutBlock(error, errorObj) {
+  const data = {
+    type: 'warning',
+    message: `An error occurred while compiling a shader block in ${error.message}`,
+    originalError: errorObj,
+  };
+
+  addError(data);
+}
+
 function addTangramWarning(errorObj) {
   switch (errorObj.type) {
     case 'styles':
@@ -155,39 +209,20 @@ function addTangramWarning(errorObj) {
         const errors = errorObj.shader_errors.slice(0, 1);
 
         for (let i = 0; i < errors.length; i++) {
-          const style = errors[i].block.scope;
-
-          // Skip generic errors not originating in style-sheet
-          if (style === 'ShaderProgram') {
-            continue; // eslint-disable-line no-continue
+          // There are two kinds of shader error.
+          // Usually, the shader block is known. This is provided as a `block`
+          // property on the error. This allows us to track down where the
+          // error is.
+          // There is a second type of syntax error that causes the block to
+          // be unknown. One example of this is when the last line of the
+          // shader doesn't have a semicolon, so the error "overflows" beyond
+          // it to the next line, which is not considered to be part of the block.
+          const error = errors[i];
+          if (error.block) {
+            handleShaderErrorWithBlock(error, errorObj);
+          } else {
+            handleShaderErrorWithoutBlock(error, errorObj);
           }
-
-          const block = errors[i].block;
-
-          // De-dupe errors per block
-          if (blockErrors.has(JSON.stringify(block))) {
-            continue; // eslint-disable-line no-continue
-          }
-
-          const address = `styles:${style}:shaders:blocks:${block.name}`;
-          const node = getNodesForAddress(address);
-          const message = errors[i].message;
-
-          const warning = {
-            type: 'warning',
-            line: (node) ? node.range.from.line + 1 + block.line : undefined,
-            message,
-            originalError: errorObj,
-          };
-
-          if (node) {
-            blockErrors.add(JSON.stringify(block)); // track unique errors
-          }
-
-          store.dispatch({
-            type: ADD_ERROR,
-            error: warning,
-          });
         }
 
         break;
