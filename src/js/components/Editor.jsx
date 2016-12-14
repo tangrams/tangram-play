@@ -20,6 +20,7 @@ import {
   clearEditorContent,
   watchEditorForChanges,
   refreshEditor,
+  debouncedUpdateLocalMemory,
 }
 from '../editor/editor';
 import { highlightRanges } from '../editor/highlight';
@@ -36,6 +37,11 @@ class Editor extends React.PureComponent {
     // DOM node reference
     initEditor(this.editorEl);
     editor.on('changes', watchEditorForChanges);
+
+    // Watch for cursor or viewport change activities. Autosave this state
+    // so it can be restored if page is reloaded.
+    editor.on('cursorActivity', debouncedUpdateLocalMemory);
+    editor.on('viewportChange', debouncedUpdateLocalMemory);
 
     // CodeMirror instance must refresh when editor pane is resized.
     EventEmitter.subscribe('divider:reposition', refreshEditor);
@@ -97,6 +103,9 @@ class Editor extends React.PureComponent {
           // By default, switching the document won't give it focus automatically.
           // Editor must be given focus or the cursor won't show up.
           editor.focus();
+
+          // Autosave editor state
+          debouncedUpdateLocalMemory();
         }
       }
 

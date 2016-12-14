@@ -156,9 +156,9 @@ export function updateLocalMemory() {
 
   // Creates a clone of existing data
   const scene = Object.assign({}, store.getState().scene);
-  const activeFile = scene.activeFileIndex;
 
   // Updates the data for currently visible file
+  const activeFile = scene.activeFileIndex;
   const doc = editor.getDoc();
   scene.files[activeFile].contents = getEditorContent();
   scene.files[activeFile].isClean = doc.isClean();
@@ -184,7 +184,7 @@ export function updateLocalMemory() {
  * executing all the time when called by a frequently-updating event like
  * `watchEditorForChanges()`.
  */
-const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
+export const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
 
 export function watchEditorForChanges() {
   const content = getEditorContent();
