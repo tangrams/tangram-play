@@ -26,8 +26,10 @@ const ADDRESS_KEY_DELIMITER = ':';
 function parseYAML(content) {
   // Run all the content through the AST parser and store it here.
   // Timing of safeLoad: about 0.5-1.5ms for a small file, could be 20ms+ for a 6000 line Cinnabar.
+  // `parsedYAML` will be undefined if content is blank (e.g. empty string)
   const parsedYAML = YAMLParser.safeLoad(content);
-  if (parsedYAML.errors.length > 0) {
+
+  if (parsedYAML && parsedYAML.errors.length > 0) {
     // TODO: Handle errors?
   }
 
@@ -133,7 +135,7 @@ export class ParsedYAMLDocument {
   }
 
   regenerate(content) {
-    this.nodes = parseYAML(content);
+    this.nodes = parseYAML(content) || {};
   }
 
   getNodeAtIndex(index) {
