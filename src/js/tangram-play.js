@@ -81,6 +81,7 @@ function doLoadProcess(scene) {
 
 function onLoadError(error) {
   showErrorModal(error.message);
+  console.error(error.message); // eslint-disable-line no-console
   hideSceneLoadingIndicator();
 
   // TODO: editor should not be attached to this
@@ -108,13 +109,16 @@ function onLoadError(error) {
 function processUrl(url) {
   let sceneUrl = url;
 
-  // Provide protocol if it appears to be protocol-less URL
-  sceneUrl = prependProtocolToUrl(sceneUrl);
+  // Do not operate on blob urls, pass those through as-is.
+  if (!sceneUrl.startsWith('blob:')) {
+    // Provide protocol if it appears to be protocol-less URL
+    sceneUrl = prependProtocolToUrl(sceneUrl);
 
-  // Detect if URL is a Gist URL and obtain the root YAML scene file
-  // This is an asynchronous response that returns Promises.
-  if (isGistURL(sceneUrl) === true) {
-    return getSceneURLFromGistAPI(sceneUrl);
+    // Detect if URL is a Gist URL and obtain the root YAML scene file
+    // This is an asynchronous response that returns Promises.
+    if (isGistURL(sceneUrl) === true) {
+      return getSceneURLFromGistAPI(sceneUrl);
+    }
   }
 
   // If not a Gist URL, wrap the return value in a Promise for consistent
@@ -162,9 +166,9 @@ function makeSceneStateObjectFromUrl(url) {
       // Check content-type header to see how to handle it
       const contentType = response.headers.get('Content-Type');
 
-      // If it is a binary file of type application/zip, return
-      // an array buffer, which is what JSZip reads
-      if (contentType.startsWith('application/zip')) {
+      // If content type exists, and it is a binary file of type application/zip,
+      // return an array buffer, which is what JSZip reads
+      if (contentType && contentType.startsWith('application/zip')) {
         return response.arrayBuffer();
       }
 
