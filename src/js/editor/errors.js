@@ -166,12 +166,11 @@ function handleShaderErrorWithBlock(error, errorObj) {
 
   const address = `styles:${style}:shaders:blocks:${block.name}`;
   const node = getNodesForAddress(address);
-  const message = error.message;
 
-  const warning = {
+  const data = {
     type: 'warning',
     line: (node) ? node.range.from.line + 1 + block.line : undefined,
-    message,
+    message: `${errorObj.message}: ${error.message}`,
     originalError: errorObj,
   };
 
@@ -179,10 +178,7 @@ function handleShaderErrorWithBlock(error, errorObj) {
     blockErrors.add(JSON.stringify(block)); // track unique errors
   }
 
-  store.dispatch({
-    type: ADD_ERROR,
-    error: warning,
-  });
+  addError(data);
 }
 
 /**
@@ -194,7 +190,7 @@ function handleShaderErrorWithBlock(error, errorObj) {
 function handleShaderErrorWithoutBlock(error, errorObj) {
   const data = {
     type: 'warning',
-    message: `An error occurred while compiling the style '${errorObj.style.name}', in the shader block for ${error.message}`,
+    message: `${errorObj.message}: ${error.message} [The line number for this error is unknown.]`,
     originalError: errorObj,
   };
 
