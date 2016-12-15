@@ -26,7 +26,7 @@ describe('GitHub Gist url parsing', () => {
     it('accepts https://api.github.com/gists/{gist_id}', () => {
       const test = 'https://api.github.com/gists/1234567890abcd';
       assert.strictEqual(getGistURL(test), result);
-      assert.strictEqual(getGistURL(test + '/'), result);
+      assert.strictEqual(getGistURL(`${test}/`), result);
     });
 
     // Forks for this Gist API endpoint

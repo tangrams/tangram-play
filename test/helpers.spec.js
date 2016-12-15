@@ -8,9 +8,9 @@ describe('Helpers', () => {
       const test2 = 'api.github.com/gists/f00bar';
       const test3 = 'localhost:8000/scene.yaml';
 
-      assert.strictEqual(prependProtocolToUrl(test1), '//' + test1);
-      assert.strictEqual(prependProtocolToUrl(test2), '//' + test2);
-      assert.strictEqual(prependProtocolToUrl(test3), '//' + test3);
+      assert.strictEqual(prependProtocolToUrl(test1), `//${test1}`);
+      assert.strictEqual(prependProtocolToUrl(test2), `//${test2}`);
+      assert.strictEqual(prependProtocolToUrl(test3), `//${test3}`);
     });
 
     it('ignores urls that already have a scheme', () => {
@@ -23,6 +23,12 @@ describe('Helpers', () => {
       assert.strictEqual(prependProtocolToUrl(test2), test2);
       assert.strictEqual(prependProtocolToUrl(test3), test3);
       assert.strictEqual(prependProtocolToUrl(test4), test4);
+    });
+
+    it('ignores blob urls', () => {
+      const test1 = 'blob:http://mapzen.com/98fb542f-f3ef-4c31-9b1e-e1d5d0bc52dc';
+
+      assert.strictEqual(prependProtocolToUrl(test1), test1);
     });
 
     it('ignores urls that should be relative links', () => {
