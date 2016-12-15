@@ -46,7 +46,7 @@ function parseYAML(content) {
  */
 function getNodeAtIndex(ast, index) {
   function searchNodes(node, idx) {
-    // Nodes can be `null` if current document state has errors
+    // Nodes can be `null` if current document is blank or has errors
     if (!node) return null;
 
     if (idx < node.startPosition || idx > node.endPosition) {
@@ -95,8 +95,52 @@ function getNodeAtIndex(ast, index) {
   return node;
 }
 
+/**
+ * Given an address, return a node representing its value(s). This is used when
+ * Tangram refers to a scene file only with address, rather than a position value
+ * in a scene file.
+ *
+ * @param {Object} ast - a parsed syntax tree object
+ * @param {string} address - an address that looks like "this:string:example"
+ * @returns {Object} a node
+ */
 function getNodeAtKeyAddress(ast, address) {
+  function searchNodes(node, rest) {
+    // Nodes can be `null` if current document is blank or has errors
+    if (!node) return null;
 
+    switch (node.kind) {
+      // A scalar node has no further depth; return its parent node, which
+      // includes its key.
+      case YAML_SCALAR:
+        return node.parent;
+      case YAML_MAPPING:
+        return searchNodes(node.value, rest);
+      case YAML_MAP:
+        // Find the first node in node.mappings that contains rest[0] and
+        // continue searching
+        for (let i = 0, j = node.mappings.length; i < j; i++) {
+          const mapping = node.mappings[i];
+          // Can be null if document has errors
+          if (!mapping) return null;
+          if (mapping.key.value === rest[0]) {
+            rest.shift();
+            return searchNodes(mapping.value, rest);
+          }
+        }
+        return node.parent;
+      // A sequence node has no further depth (in Tangram YAML anyway);
+      // return its parent node, which includes its key.
+      case YAML_SEQUENCE:
+        return node.parent;
+      default:
+        return null;
+    }
+  }
+
+  const parts = address.split(ADDRESS_KEY_DELIMITER);
+  const node = searchNodes(ast, parts);
+  return node;
 }
 
 /**
