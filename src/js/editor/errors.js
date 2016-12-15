@@ -194,7 +194,7 @@ function handleShaderErrorWithBlock(error, errorObj) {
 function handleShaderErrorWithoutBlock(error, errorObj) {
   const data = {
     type: 'warning',
-    message: `An error occurred while compiling a shader block in ${error.message}`,
+    message: `An error occurred while compiling the style '${errorObj.style.name}', in the shader block for ${error.message}`,
     originalError: errorObj,
   };
 
