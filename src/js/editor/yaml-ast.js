@@ -67,11 +67,12 @@ function getNodeAtIndex(ast, index) {
           // Can be null if document has errors
           if (!mapping) return null;
           if (idx >= mapping.startPosition && idx <= mapping.endPosition) {
-            return searchNodes(mapping, idx);
+            return searchNodes(mapping.value, idx);
           }
         }
         return null;
       case YAML_SEQUENCE:
+        // See if index falls in any of the sequence items
         for (let i = 0, j = node.items.length; i < j; i++) {
           const item = node.items[i];
           // Can be null if document has errors
@@ -80,7 +81,8 @@ function getNodeAtIndex(ast, index) {
             return searchNodes(item, idx);
           }
         }
-        return null;
+        // If not, return the sequence node itself
+        return node;
       default:
         if (idx >= node.startPosition && idx <= node.startPosition) {
           return node;
