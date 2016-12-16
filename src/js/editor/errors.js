@@ -56,7 +56,18 @@ function createLineWidget(type, line, message) {
     if (line === lineNo && message === textContent) return;
   }
 
-  const lineWidget = editor.addLineWidget(line, node, {
+  // Get the root document, if it's not the current document in editor.
+  // If it's not the current document, get it from the scene buffer.
+  const scene = store.getState().scene;
+  let doc;
+  if (scene.activeFileIndex === scene.rootFileIndex) {
+    doc = editor.getDoc();
+  } else {
+    // Note; adding lineWidgets to a buffer doc doesn't get restored.
+    doc = scene.files[scene.rootFileIndex].buffer;
+  }
+
+  const lineWidget = doc.addLineWidget(line, node, {
     coverGutter: false,
     noHScroll: true,
   });
