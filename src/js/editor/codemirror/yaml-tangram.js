@@ -204,7 +204,7 @@ function getInlineNodes(str, nLine) {
 }
 
 // Add Address to token states
-export function parseYamlString(string, state, tabSize) {
+function parseYamlString(string, state, tabSize) {
   const regex = /(^\s*)([\w|\-|_|/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
   const node = regex.exec(string);
 
