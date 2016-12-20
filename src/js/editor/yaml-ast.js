@@ -188,7 +188,7 @@ export function getKeyAddressForNode(theNode) {
  * @todo Does this function belong here?
  */
 export function getPositionsForNode(node, doc) {
-  // Returns a null object of similar shape if a null is undefined
+  // Returns a null object of similar shape if a node is undefined
   if (!node) {
     const nullPos = { line: null, ch: null };
     return { from: nullPos, to: nullPos };
