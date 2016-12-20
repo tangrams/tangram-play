@@ -14,9 +14,6 @@ export function getSpaces(str) {
 }
 
 //  Get the indentation level of a line
-export function getInd(string) {
-  return getSpaces(string) / 4;
-}
 export function getLineInd(cm, nLine) {
   return getSpaces(cm.lineInfo(nLine).text) / cm.getOption('tabSize');
 }
@@ -106,63 +103,5 @@ export function foldByLevel(cm, level) {
       }
     }
     actualLine -= 1;
-  }
-}
-
-//  Select everything except for a range of lines
-//
-export function foldAllBut(cm, From, To, queryLevel) {
-  // default level is 0
-  queryLevel = typeof queryLevel !== 'undefined' ? queryLevel : 0;
-
-  // fold everything
-  foldByLevel(cm, queryLevel);
-
-  // get minimum indentation
-  let minLevel = 10;
-  let startOn = To;
-  let onBlock = true;
-
-  for (let i = From - 1; i >= 0; i--) {
-    const level = getLineInd(cm, i);
-
-    if (level === 0) {
-      break;
-    }
-
-    if (level < minLevel) {
-      minLevel = level;
-    } else if (onBlock) {
-      startOn = i;
-      onBlock = false;
-    }
-  }
-
-  minLevel = 10;
-  for (let i = To; i >= From; i--) {
-    const level = getLineInd(cm, i);
-    const chars = cm.lineInfo(i).text.length;
-    if (level < minLevel && chars > 0) {
-      minLevel = level;
-    }
-  }
-  const opts = cm.state.foldGutter.options;
-
-  for (let i = startOn; i >= 0; i--) {
-    const level = getLineInd(cm, i);
-
-    if (level === 0 && cm.lineInfo(i).text.length) {
-      break;
-    }
-
-    if (level <= minLevel) {
-      cm.foldCode({ line: i }, opts.rangeFinder, 'fold');
-    }
-  }
-
-  for (let i = To; i < cm.lineCount(); i++) {
-    if (getLineInd(cm, i) >= queryLevel) {
-      cm.foldCode({ line: i }, opts.rangeFinder, 'fold');
-    }
   }
 }
