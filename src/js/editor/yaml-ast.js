@@ -157,7 +157,7 @@ export function getKeyAddressForNode(theNode) {
     if (!node) return null;
 
     // Assume key is scalar value
-    if (node.key && node.key.kind === 0) {
+    if (node.key && node.key.kind === YAML_SCALAR) {
       keys.push(node.key.value);
     }
 
