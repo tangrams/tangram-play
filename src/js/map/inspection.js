@@ -6,7 +6,7 @@ import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { map, tangramLayer } from './map';
-import { getNodesForAddress, parsedYAMLDocument } from '../editor/editor';
+import { parsedYAMLDocument } from '../editor/editor';
 import { highlightNode } from '../editor/highlight';
 import EventEmitter from '../components/event-emitter';
 
@@ -308,7 +308,7 @@ class TangramInspectionPopup extends React.Component {
           <div className="map-inspection-layers-container" ref={(el) => { this.layersEl = el; }}>
             {layers.map((item) => {
               const address = `layers:${item}`;
-              const node = getNodesForAddress(address);
+              const node = parsedYAMLDocument.getNodeAtKeyAddress(address);
 
               if (node) {
                 return (
