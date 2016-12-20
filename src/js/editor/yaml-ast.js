@@ -174,6 +174,34 @@ export function getKeyAddressForNode(theNode) {
   return addressParts.join(ADDRESS_KEY_DELIMITER);
 }
 
+/**
+ * Given an AST node, convert its `startPosition` and `endPosition` values to
+ * CodeMirror editor positions.
+ *
+ * @param {Object} node - a node from YAML-AST-parser
+ * @param {CodeMirror.doc} doc - the CodeMirror document
+ * @returns {Object} range - an object of this shape:
+ *        range = {
+ *          from: { line, ch },
+ *          to: { line, ch }
+ *        }
+ * @todo Does this function belong here?
+ */
+export function getPositionsForNode(node, doc) {
+  // Returns a null object of similar shape if a null is undefined
+  if (!node) {
+    const nullPos = { line: null, ch: null };
+    return { from: nullPos, to: nullPos };
+  }
+
+  const startPosition = doc.posFromIndex(node.startPosition);
+  const endPosition = doc.posFromIndex(node.endPosition);
+  return {
+    from: startPosition,
+    to: endPosition,
+  };
+}
+
 export class ParsedYAMLDocument {
   constructor(content) {
     this.nodes = {};
