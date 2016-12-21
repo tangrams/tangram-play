@@ -40,7 +40,7 @@ function parseYAML(content) {
  * Given a parsed syntax tree of YAML, and a position index, return
  * the deepest node that contains that position. Returns nothing if not found.
  *
- * @param {Object} ast - a parsed syntax tree object
+ * @param {Object} ast - a parsed syntax tree object, should be root of the tree
  * @param {Number} index - a position index
  * @returns {Object} a node
  */
@@ -102,12 +102,12 @@ function getNodeAtIndex(ast, index) {
  * Tangram refers to a scene file only with address, rather than a position value
  * in a scene file.
  *
- * @param {Object} ast - a parsed syntax tree object
+ * @param {Object} ast - a parsed syntax tree object, should be root of the tree
  * @param {string} address - an address that looks like "this:string:example"
  * @returns {Object} a node
  */
 function getNodeAtKeyAddress(ast, address) {
-  function searchNodes(node, rest) {
+  function searchNodes(node, stack) {
     // Nodes can be `null` if current document is blank or has errors
     if (!node) return null;
 
@@ -117,17 +117,18 @@ function getNodeAtKeyAddress(ast, address) {
       case YAML_SCALAR:
         return node.parent;
       case YAML_MAPPING:
-        return searchNodes(node.value, rest);
+        return searchNodes(node.value, stack);
       case YAML_MAP:
-        // Find the first node in node.mappings that contains rest[0] and
-        // continue searching
+        // Find the first node in node.mappings that contains stack[0].
+        // If found, remove from stack and continue searching with remainder
+        // of the stack.
         for (let i = 0, j = node.mappings.length; i < j; i++) {
           const mapping = node.mappings[i];
           // Can be null if document has errors
           if (!mapping) return null;
-          if (mapping.key.value === rest[0]) {
-            rest.shift();
-            return searchNodes(mapping.value, rest);
+          if (mapping.key.value === stack[0]) {
+            stack.shift();
+            return searchNodes(mapping.value, stack);
           }
         }
         return node.parent;
@@ -140,38 +141,39 @@ function getNodeAtKeyAddress(ast, address) {
     }
   }
 
-  const parts = address.split(ADDRESS_KEY_DELIMITER);
-  const node = searchNodes(ast, parts);
+  const stack = address.split(ADDRESS_KEY_DELIMITER);
+  const node = searchNodes(ast, stack);
   return node;
 }
 
 /**
  * Given an AST node, construct a key address for it by traversing its parent nodes.
  *
- * @param {Object} theNode - a node from YAML-AST-parser
+ * @param {Object} node - a node from YAML-AST-parser
  * @returns {string} address - an address that looks like "this:string:example"
  */
-export function getKeyAddressForNode(theNode) {
-  function builder(node, keys = []) {
+export function getKeyAddressForNode(node) {
+  function builder(currentNode, stack = []) {
     // Nodes can be `null` if current document state has errors
-    if (!node) return null;
+    if (!currentNode) return null;
 
-    // Assume key is scalar value
-    if (node.key && node.key.kind === YAML_SCALAR) {
-      keys.push(node.key.value);
+    // Add key's value to the current key stack.
+    // Only accept scalar values for keys
+    if (currentNode.key && currentNode.key.kind === YAML_SCALAR) {
+      stack.push(currentNode.key.value);
     }
 
     // Traverse parents until we hit no more parents
-    if (node.parent) {
-      keys.concat(builder(node.parent, keys));
+    if (currentNode.parent) {
+      stack.concat(builder(currentNode.parent, stack));
     }
 
-    return keys;
+    return stack;
   }
 
-  const addressParts = builder(theNode, []);
-  addressParts.reverse();
-  return addressParts.join(ADDRESS_KEY_DELIMITER);
+  const stack = builder(node, []);
+  stack.reverse();
+  return stack.join(ADDRESS_KEY_DELIMITER);
 }
 
 /**
