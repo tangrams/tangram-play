@@ -29,7 +29,7 @@ export function getExtraKeyMap() {
       }
     },
     'Alt-F': (cm) => {
-      cm.foldCode(cm.getCursor(), cm.state.foldGutter.options.rangeFinder);
+      cm.foldCode(cm.getCursor(), cm.getOption('foldGutter').rangeFinder);
     },
     'Alt-P': (cm) => {
       takeScreenshot();

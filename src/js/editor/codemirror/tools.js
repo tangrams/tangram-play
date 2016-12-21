@@ -14,8 +14,8 @@ export function getSpaces(str) {
 }
 
 //  Get the indentation level of a line
-export function getLineInd(cm, nLine) {
-  return getSpaces(cm.lineInfo(nLine).text) / cm.getOption('tabSize');
+export function getLineInd(cm, line) {
+  return getSpaces(cm.lineInfo(line).text) / cm.getOption('tabSize');
 }
 
 //  Check if a line is empty
@@ -67,41 +67,40 @@ export function jumpToLine(cm, line) {
   cm.scrollTo(null, cm.charCoords({ line, ch: 0 }, 'local').top);
 }
 
-//  Common FOLD functions on CM
-//  ===============================================================================
+// Helper functions for code folding in CodeMirror
+// Depends on the `fold/foldcode.js' addon being present
+// =============================================================================
 
-//  Is posible to fold
-//
-export function isFolder(cm, nLine) {
-  if (cm.lineInfo(nLine).gutterMarkers) {
-    return cm.lineInfo(nLine).gutterMarkers['CodeMirror-foldgutter'] !== null;
-  }
-
-  return false;
-}
-
-//  Unfold all lines
-//
+/**
+ * Unfolds all lines.
+ *
+ * @param {CodeMirror} cm - the CodeMirror instance.
+ */
 export function unfoldAll(cm) {
-  const opts = cm.state.foldGutter.options;
-  for (let i = 0; i < cm.lineCount(); i++) {
-    cm.foldCode({ line: i }, opts.rangeFinder, 'unfold');
+  const rangeFinder = cm.getOption('foldGutter').rangeFinder;
+  for (let i = 0, j = cm.lineCount(); i < j; i++) {
+    cm.foldCode({ line: i }, rangeFinder, 'unfold');
   }
 }
 
-//  Fold all lines above a specific indentation level
-//
+/**
+ * Folds all lines above a specific indentation level. At level 1, all top-level
+ * YAML blocks are folded. At level 2, all second-level YAML blocks are folded,
+ * and so on.
+ *
+ * @param {CodeMirror} cm - the CodeMirror instance.
+ * @param {number} level - the indentation level, after which blocks will be
+ *          folded.
+ */
 export function foldByLevel(cm, level) {
   unfoldAll(cm);
-  const opts = cm.state.foldGutter.options;
+  const rangeFinder = cm.getOption('foldGutter').rangeFinder;
 
-  let actualLine = cm.getDoc().size - 1;
-  while (actualLine >= 0) {
-    if (isFolder(cm, actualLine)) {
-      if (getLineInd(cm, actualLine) >= level) {
-        cm.foldCode({ line: actualLine, ch: 0 }, opts.rangeFinder);
-      }
+  let line = cm.lineCount() - 1;
+  while (line >= 0) {
+    if (getLineInd(cm, line) >= level) {
+      cm.foldCode({ line, ch: 0 }, rangeFinder);
     }
-    actualLine -= 1;
+    line -= 1;
   }
 }
