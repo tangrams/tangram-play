@@ -1,6 +1,6 @@
 import { editor } from './editor';
+import { getPositionsForNode } from './yaml-ast';
 import { jumpToLine } from './codemirror/tools';
-import { isEmptyString } from '../tools/helpers';
 import { replaceHistoryState } from '../tools/url-state';
 
 const HIGHLIGHT_CLASS = 'editor-highlight';
@@ -15,6 +15,7 @@ let targetLine;
  * @param {Number} line - The line number to add a highlight to.
  */
 function highlightLine(doc, line) {
+  if (line === null) return;
   doc.addLineClass(line, 'gutter', HIGHLIGHT_CLASS);
   doc.addLineClass(line, 'background', HIGHLIGHT_CLASS);
 }
@@ -26,6 +27,7 @@ function highlightLine(doc, line) {
  * @param {Number} line - The line number to remove a highlight from.
  */
 function unhighlightLine(doc, line) {
+  if (line === null) return;
   doc.removeLineClass(line, 'gutter', HIGHLIGHT_CLASS);
   doc.removeLineClass(line, 'background', HIGHLIGHT_CLASS);
 }
@@ -251,50 +253,22 @@ export function updateLinesQueryString() {
 }
 
 /**
- * Given a node, find all the lines that are part of that entire block, and then
+ * Given a YAML-AST node, find all the lines that are part of that node, and then
  * applies a highlight class to each of those lines.
- * TODO: This can still be pretty buggy because `stateAfter` is still not
- * guaranteed.
  *
  * @param {Object} node - YAML-Tangram node object
  */
-export function highlightBlock(node) {
+export function highlightNode(node) {
   const doc = editor.getDoc();
+  const range = getPositionsForNode(node, doc);
 
-  // Scroll the top of the block into view. Do this first so that
-  // CodeMirror will parse the lines in this viewport. This is necessary
-  // for the `stateAfter.keyLevel` to be available.
-  jumpToLine(editor, node.range.from.line);
-
-  // Determine the range to highlight from.
-  const blockLine = node.range.from.line;
-  // This can still sometimes fail, for unknown reasons.
-  const blockLevel = doc.getLineHandle(blockLine).stateAfter.keyLevel;
-  let toLine = blockLine;
-  let thisLevel = blockLevel;
-  do {
-    const nextLineHandle = doc.getLineHandle(toLine + 1);
-    if (nextLineHandle !== undefined && !isEmptyString(nextLineHandle.text)) {
-      // The nextLineHandle might not have a stateAfter, so wrap in try {}
-      try {
-        thisLevel = nextLineHandle.stateAfter.keyLevel;
-      } catch (err) {
-        break;
-      }
-
-      if (thisLevel > blockLevel) {
-        toLine += 1;
-      }
-    } else {
-      // Break if no next line. Required to prevent infinite loops.
-      break;
-    }
-  } while (thisLevel > blockLevel);
+  // Scroll the top of the block into view.
+  jumpToLine(editor, range.from.line);
 
   // First, remove all existing instances of the highlight class.
-  // Then highlight the block's range and update query string.
+  // Then highlight the node's range and update query string.
   unhighlightAll();
-  highlightLines(node.range.from.line, toLine);
+  highlightLines(range.from.line, range.to.line);
   updateLinesQueryString();
 
   // Reset

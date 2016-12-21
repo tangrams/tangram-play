@@ -1,35 +1,28 @@
-// Import CodeMirror
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
-import { editor, getNodesOfLine } from './editor';
 import TANGRAM_API from '../tangram-api.json';
+import { editor, getNodesOfLine } from './editor';
+import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
+import { getCompiledValueByAddress, truncateAddressToLevel } from '../editor/codemirror/yaml-tangram';
 import { tangramLayer } from '../map/map';
 import EventEmitter from '../components/event-emitter';
 
-// Load some common functions
-import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
-import { getAddressSceneContent, getAddressForLevel } from '../editor/codemirror/yaml-tangram';
-
-//  private variables
 const keySuggestions = [];
 const valueSuggestions = [];
 
 class Suggestion {
   constructor(datum) {
-    //  TODO: must be a better way to do this
     if (datum.address) {
       this.checkAgainst = 'address';
     } else if (datum.key) {
       this.checkAgainst = 'key';
-    } else if (datum.value) {
-      this.checkAgainst = 'value';
     }
 
-    this.checkPatern = datum[this.checkAgainst];
+    this.checkPattern = datum[this.checkAgainst];
 
-    if (datum.keyLevel) {
-      this.keyLevel = datum.keyLevel;
+    if (datum.level) {
+      this.level = datum.level;
     }
 
     if (datum.options) {
@@ -51,7 +44,7 @@ class Suggestion {
       if (!forceLevel && this.level) {
         rightLevel = getLineInd(editor, node.pos.line) === this.level;
       }
-      return RegExp(this.checkPatern).test(node[this.checkAgainst]) && rightLevel;
+      return RegExp(this.checkPattern).test(node[this.checkAgainst]) && rightLevel;
     }
 
     return false;
@@ -73,13 +66,13 @@ class Suggestion {
 
     // Add sources
     if (this.source) {
-      const obj = getAddressSceneContent(scene, this.source);
+      const obj = getCompiledValueByAddress(scene, this.source);
       const keyFromSource = obj ? Object.keys(obj) : [];
       Array.prototype.push.apply(list, keyFromSource);
     }
 
     // Take out present keys
-    const obj = getAddressSceneContent(scene, node.address);
+    const obj = getCompiledValueByAddress(scene, node.address);
     presentNodes = obj ? Object.keys(obj) : [];
     for (let j = list.length - 1; j >= 0; j--) {
       if (presentNodes.indexOf(list[j]) > -1) {
@@ -205,7 +198,7 @@ export function hint(cm, options) {
       if (node.key === '') {
         // Fallback the address to match
         const actualLevel = getLineInd(cm, line);
-        address = getAddressForLevel(node.address, actualLevel);
+        address = truncateAddressToLevel(node.address, actualLevel);
         node.address = address;
         // Suggest key
         for (const datum of keySuggestions) {

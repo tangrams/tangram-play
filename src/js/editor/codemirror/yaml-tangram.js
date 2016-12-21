@@ -2,32 +2,29 @@ import { startsWith } from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml';
 import './glsl-tangram';
-import { attachBookmarkConstructorsToDocumentState } from './widgets';
+import { attachBookmarkConstructorsToDocumentState } from './bookmarks';
 
 const ADDRESS_KEY_DELIMITER = ':';
 
-// GET public functions
-// =============================================================================
-
 /**
- * Return a string address from an array of key names
+ * Return a string address from an array of key names (a 'key stack')
  *
  * @param {Array} keys - an array of keys
  * @return {string} address - in the form of 'key1:key2:key3'
  */
-function getAddressFromKeys(keys) {
+export function addressFromKeyStack(keys) {
   return keys.join(ADDRESS_KEY_DELIMITER);
 }
 
 /**
- * Return an array of key names from an address
+ * Return an array of key names (a 'key stack') from an address
  * An empty string will still return an array whose first item
  * is the empty string.
  *
  * @param {string} address - in the form of 'key1:key2:key3'
  * @return {Array} keys
  */
-function getKeysFromAddress(address) {
+export function keyStackFromAddress(address) {
   return address.split(ADDRESS_KEY_DELIMITER);
 }
 
@@ -38,32 +35,34 @@ function getKeysFromAddress(address) {
  * @param {Number} level - the level of address to obtain
  * @return {string} address - truncated to maximum of `level`, e.g. 'key1:key2'
  */
-export function getAddressForLevel(address, level) {
-  const keys = getKeysFromAddress(address);
+export function truncateAddressToLevel(address, level) {
+  const keys = keyStackFromAddress(address);
   const newKeys = keys.slice(0, level);
-  return getAddressFromKeys(newKeys);
+  return addressFromKeyStack(newKeys);
 }
 
 /**
- * Returns the content given an address
- * If for any reason the content is not found, return an empty string
+ * Returns a value from the compiled Tangram scene object, given an address
+ * If for any reason the value is not found, return an empty string
  *
+ * @todo this is not a YAML syntax method, it is a Tangram scene method. does it
+ *        belong elsewhere?
  * @param {Object} tangramScene - Tangram's parsed object tree of scene content
  * @param {string} address - in the form of 'key1:key2:key3'
- * @return {mixed} content - Whatever is stored as a value for that key
+ * @return {mixed} value - Whatever is stored as a value for that key
  */
-export function getAddressSceneContent(tangramScene, address) {
+export function getCompiledValueByAddress(tangramScene, address) {
   try {
-    const keys = getKeysFromAddress(address);
+    const keys = keyStackFromAddress(address);
 
-    // Looks up content in Tangram's scene.config property.
+    // Looks up the value in Tangram's scene.config property.
     // It's a nested object, so to look up from an array of nested keys,
     // we reduce this array down to a single reference.
-    // e.g. ['a', 'b', 'c'] looks up content in
+    // e.g. ['a', 'b', 'c'] looks up the value in
     // tangramScene.config['a']['b']['c']
-    const content = keys.reduce((obj, property) => obj[property], tangramScene.config);
+    const value = keys.reduce((obj, property) => obj[property], tangramScene.config);
 
-    return content;
+    return value;
   } catch (error) {
     return '';
   }
@@ -179,8 +178,8 @@ function getInlineNodes(str, nLine) {
         rta.push({
           // This gets an array starting at index 1. This means that the
           // result for address will come back as ':key1:key2:etc' because stack[0]
-          // is undefined, but it will still be joined in getAddressFromKeys()
-          address: getAddressFromKeys(stack),
+          // is undefined, but it will still be joined in addressFromKeyStack()
+          address: addressFromKeyStack(stack),
           key,
           value,
           anchor,
@@ -204,7 +203,7 @@ function getInlineNodes(str, nLine) {
 }
 
 // Add Address to token states
-export function parseYamlString(string, state, tabSize) {
+function parseYamlString(string, state, tabSize) {
   const regex = /(^\s*)([\w|\-|_|/]+)(\s*:\s*)([\w|\W]*)\s*$/gm;
   const node = regex.exec(string);
 
@@ -255,7 +254,7 @@ export function parseYamlString(string, state, tabSize) {
     // Record all that in the state value
     state.keyLevel = level;
 
-    const address = getAddressFromKeys(state.keyStack);
+    const address = addressFromKeyStack(state.keyStack);
     const fromCh = spaces;
     const toCh = spaces + nodeKey.length + nodeSeparator.length;
 
@@ -289,11 +288,10 @@ export function parseYamlString(string, state, tabSize) {
     }
   } else {
     // Commented or empty lines
-    nodeEntry.address = getAddressFromKeys(state.keyStack);
     state.nodes = [nodeEntry];
   }
 
-  // Adds widgets to nodes, if they have them.
+  // Adds bookmark constructors to nodes, if they have them.
   state = attachBookmarkConstructorsToDocumentState(state);
 
   return state;

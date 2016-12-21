@@ -6,8 +6,8 @@ import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { map, tangramLayer } from './map';
-import { getNodesForAddress } from '../editor/editor';
-import { highlightBlock } from '../editor/highlight';
+import { parsedYAMLDocument } from '../editor/editor';
+import { highlightNode } from '../editor/highlight';
 import EventEmitter from '../components/event-emitter';
 
 // Magic numbers
@@ -177,10 +177,8 @@ class TangramInspectionPopup extends React.Component {
   // eslint-disable-next-line class-methods-use-this
   onClickSourceName(event) {
     const name = event.currentTarget.dataset.sourceName;
-    const node = getNodesForAddress(`sources:${name}`);
-    if (node) {
-      highlightBlock(node);
-    }
+    const node = parsedYAMLDocument.getNodeAtKeyAddress(`sources:${name}`);
+    highlightNode(node);
   }
 
   // Active highlighting
@@ -214,8 +212,8 @@ class TangramInspectionPopup extends React.Component {
     event.target.classList.add('map-inspection-selected');
 
     // Highlight the block & jump to line.
-    const node = getNodesForAddress(event.currentTarget.dataset.nodeAddress);
-    highlightBlock(node);
+    const node = parsedYAMLDocument.getNodeAtKeyAddress(event.currentTarget.dataset.nodeAddress);
+    highlightNode(node);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -310,7 +308,7 @@ class TangramInspectionPopup extends React.Component {
           <div className="map-inspection-layers-container" ref={(el) => { this.layersEl = el; }}>
             {layers.map((item) => {
               const address = `layers:${item}`;
-              const node = getNodesForAddress(address);
+              const node = parsedYAMLDocument.getNodeAtKeyAddress(address);
 
               if (node) {
                 return (
@@ -391,7 +389,8 @@ function showPopup(selection) {
     // Provide an animation out. Like the transition in, removing the transform
     // style here just provides a "transition to" point. We use the Leaflet
     // popup class to provide the Y-position transform.
-    event.popup._container.style.transform = null; // eslint-disable-line no-underscore-dangle
+    const popupEl = event.popup._container; // eslint-disable-line no-underscore-dangle
+    popupEl.style.transform = null;
     isPopupOpen = false;
 
     // Clean up React DOM

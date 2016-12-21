@@ -17,11 +17,13 @@ function isImportValue(node) {
   // Returns false if not in a node, or is a top-level node
   if (!node || !node.parent) return false;
 
-  // Returns true if the node value is a scalar, and the key address for this value is 'import'
-  // We don't want to return true if we're inside an import node but at the
-  // sequence node level
+  // Returns false if node is not a scalar - e.g. we're inside an import node,
+  // but at the sequence node level.
+  if (node.kind !== 0) return false;
+
+  // Returns true if the key address for this value is 'import'
   const address = getKeyAddressForNode(node);
-  if (address === 'import' && node.kind === 0) return true;
+  if (address === 'import') return true;
 
   // All other cases, return false
   return false;
