@@ -4,10 +4,14 @@
 import { APP_INITIALIZED, SET_APP_STATE, ADD_RECENT_SCENE } from '../actions';
 
 const initialState = {
-  // Set to true after Tangram Play has initialized - ready and waiting to
+  // Set to `true` after Tangram Play has initialized - ready and waiting to
   // accept user input. The absence of the `initialized` prop in the `app`
   // state shall be treated the same as a `false` value.
   initialized: false,
+
+  // Set to `true` while Tangram is loading and rendering a scene.
+  tangramSceneLoading: false,
+
   recentScenes: [],
   showEditorHiddenTooltip: false,
 };

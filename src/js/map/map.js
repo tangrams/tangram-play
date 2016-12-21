@@ -7,7 +7,7 @@ import config from '../config';
 import LeafletHash from './leaflet-hash';
 import EventEmitter from '../components/event-emitter';
 
-import { hideSceneLoadingIndicator } from './MapLoading';
+import { hideSceneLoadingIndicator } from './actions';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { injectAPIKey } from '../editor/api-keys';
 

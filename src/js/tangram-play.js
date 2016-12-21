@@ -6,7 +6,7 @@ import { tangramLayer } from './map/map';
 import { editor } from './editor/editor';
 
 // Addons
-import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/MapLoading';
+import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/actions';
 import { initMarks } from './editor/bookmarks';
 import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
