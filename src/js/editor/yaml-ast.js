@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import YAMLParser from 'yaml-ast-parser';
+import { addressFromKeyStack, keyStackFromAddress } from './codemirror/yaml-tangram';
 
 // YAML node kinds are assigned a number by YAMLParser.
 // A node of type SCALAR is a simple key-value pair with a string `value`.
@@ -20,8 +21,6 @@ const YAML_SEQUENCE = 3;
 // Other node kinds exist, we currently don't handle this.
 // const YAML_ANCHOR_REF = 4; //?
 // const YAML_INCLUDE_REF = 5; //? only RAML?
-
-const ADDRESS_KEY_DELIMITER = ':';
 
 function parseYAML(content) {
   // Run all the content through the AST parser and store it here.
@@ -141,7 +140,7 @@ function getNodeAtKeyAddress(ast, address) {
     }
   }
 
-  const stack = address.split(ADDRESS_KEY_DELIMITER);
+  const stack = keyStackFromAddress(address);
   const node = searchNodes(ast, stack);
   return node;
 }
@@ -173,7 +172,7 @@ export function getKeyAddressForNode(node) {
 
   const stack = builder(node, []);
   stack.reverse();
-  return stack.join(ADDRESS_KEY_DELIMITER);
+  return addressFromKeyStack(stack);
 }
 
 /**

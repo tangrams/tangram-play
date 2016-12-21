@@ -5,7 +5,7 @@ import EventEmitter from '../event-emitter';
 
 import { setCodeMirrorValue, setCursor } from '../../editor/editor';
 import { tangramLayer } from '../../map/map';
-import { getAddressSceneContent } from '../../editor/codemirror/yaml-tangram';
+import { getCompiledValueByAddress } from '../../editor/codemirror/yaml-tangram';
 
 /**
  * Represents a dropdown widget
@@ -30,7 +30,7 @@ export default class WidgetDropdown extends React.Component {
       // state in order for React to render
       // Keys WILL NOT be empty in cases where users presses 'New' button on the same scene file.
       // Keys WILL be empty when users reload the whole page
-      const obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
+      const obj = getCompiledValueByAddress(tangramLayer.scene, this.props.source);
       options = (obj) ? Object.keys(obj) : [];
     }
 
@@ -89,7 +89,7 @@ export default class WidgetDropdown extends React.Component {
   setSource() {
     // If the dropdown is of type source then get sources from tangramLayer.scene
     if (this.key === 'source') {
-      const obj = getAddressSceneContent(tangramLayer.scene, this.props.source);
+      const obj = getCompiledValueByAddress(tangramLayer.scene, this.props.source);
       const keys = (obj) ? Object.keys(obj) : [];
 
       this.setState({ options: keys });

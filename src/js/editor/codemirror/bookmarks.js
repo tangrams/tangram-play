@@ -4,10 +4,10 @@ import { isEmptyString } from '../../tools/helpers';
 
 class Bookmark {
   constructor(datum) {
-    // Widgets exist for different types of Tangram scene syntax.
-    //      value - a widget exists for this type of value (not used?)
-    //      key - a widget exists when the key matches this
-    //      address - a widget exists when the address (sequence of keys)
+    // Bookmarks exist for different types of Tangram scene syntax.
+    //      value - a bookmark exists for this type of value (not used?)
+    //      key - a bookmark exists when the key matches this
+    //      address - a bookmark exists when the address (sequence of keys)
     //          matches this
     const matchTypes = [
       'value',
@@ -39,19 +39,19 @@ class Bookmark {
   }
 }
 
-// Only certain types of values in Tangram syntax will have widgets, so
+// Only certain types of values in Tangram syntax will have bookmarks, so
 // filter out all other ones.
 const listOfBookmarkConstructors = filter(TANGRAM_API.values, item =>
   item.type === 'color' || item.type === 'vector' ||
   item.type === 'boolean' || item.type === 'string'
 );
 
-// Create a set of ready-to-go widget objects.
+// Create a set of ready-to-go bookmarks.
 // new BookmarkConstructor() is passed an object from TANGRAM_API.
 const allBookmarkConstructors = listOfBookmarkConstructors.map(item => new Bookmark(item));
 
 /**
- * Given a state from YAML-Tangram parser, adds matching widget constructors
+ * Given a state from YAML-Tangram parser, adds matching bookmark constructors
  * to each node.
  */
 export function attachBookmarkConstructorsToDocumentState(state) {
@@ -62,7 +62,7 @@ export function attachBookmarkConstructorsToDocumentState(state) {
       continue; // eslint-disable-line no-continue
     }
 
-    // Check for widgets to add
+    // Check for bookmarks to add
     for (const bookmark of allBookmarkConstructors) {
       if (bookmark.match(node)) {
         node.bookmark = bookmark;
