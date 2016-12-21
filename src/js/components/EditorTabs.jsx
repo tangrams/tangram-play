@@ -152,6 +152,8 @@ function mapDispatchToProps(dispatch) {
       dispatch({
         type: STASH_DOCUMENT,
         index,
+        // We are also updating contents, which seems to lag behind otherwise
+        contents: buffer.getValue(),
         buffer,
       });
     },

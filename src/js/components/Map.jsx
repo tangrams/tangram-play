@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import EventEmitter from './event-emitter';
 import MapPanel from './MapPanel';
 import Camera from './Camera';
-import MapLoading from '../map/MapLoading';
+import SceneLoading from '../map/SceneLoading';
 import { initMap, loadScene, destroyScene, refreshMap } from '../map/map';
 
 class Map extends React.Component {
@@ -75,7 +75,7 @@ class Map extends React.Component {
         })()}
         <div className="map-view" id="map" />
         <Camera />
-        <MapLoading />
+        <SceneLoading />
         {(() => {
           if (this.props.panel) {
             return (<MapPanel />);

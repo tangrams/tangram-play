@@ -99,6 +99,11 @@ describe('YAML abstract syntax tree parser', () => {
       const node = parsed.getNodeAtKeyAddress('foo:bar');
       assert.isNull(node);
     });
+
+    it('returns null for an address that partially matches the structure but cannot be found', () => {
+      const node = parsed.getNodeAtKeyAddress('layers:foo');
+      assert.isNull(node);
+    });
   });
 
   describe('getKeyAddressForNode()', () => {

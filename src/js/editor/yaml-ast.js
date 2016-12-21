@@ -127,10 +127,19 @@ function getNodeAtKeyAddress(ast, address) {
           if (!mapping) return null;
           if (mapping.key.value === stack[0]) {
             stack.shift();
-            return searchNodes(mapping.value, stack);
+
+            // If keys remain in stack, keep searching
+            if (stack.length > 0) {
+              return searchNodes(mapping.value, stack);
+            }
+
+            // Otherwise, return the found mapping
+            return mapping;
           }
         }
-        return node.parent;
+
+        // If not found, return null.
+        return null;
       // A sequence node has no further depth (in Tangram YAML anyway);
       // return its parent node, which includes its key.
       case YAML_SEQUENCE:

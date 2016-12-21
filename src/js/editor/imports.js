@@ -1,4 +1,5 @@
 import { editor, parsedYAMLDocument } from './editor';
+import { clickIsAtCursorPosition } from './codemirror/tools';
 import { isAbsoluteUrl, splitUrlIntoFilenameAndBasePath } from '../tools/helpers';
 import { addError } from './errors';
 import { getKeyAddressForNode } from './yaml-ast';
@@ -138,13 +139,16 @@ export function initContextSensitiveClickEvents() {
     // Bail if we were doing a selection and not a click
     if (doc.somethingSelected()) return;
 
-    const cursorPos = doc.getCursor();
-    const cursorIndex = doc.indexFromPos(cursorPos); // -> Number
+    // Bail if click did not occur near the cursor position
+    if (!clickIsAtCursorPosition(editor, event)) return;
+
+    const cursor = doc.getCursor();
+    const cursorIndex = doc.indexFromPos(cursor); // -> Number
     const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
     const isImportBlock = isImportValue(node);
 
     if (isImportBlock) {
-      handleImportValue(node, doc, cursorPos);
+      handleImportValue(node, doc, cursor);
     } else {
       const el = document.querySelector('.editor-context-menu');
       el.style.display = 'none';

@@ -238,6 +238,7 @@ const scene = (state = initialState, action) => {
           ...state.files.slice(0, action.index),
           {
             ...state.files[action.index],
+            contents: action.contents,
             buffer: action.buffer,
           },
           ...state.files.slice(action.index + 1),
