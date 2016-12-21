@@ -125,12 +125,6 @@ function openLink(event) {
 // Let's work on finding scene imports.
 // TODO: This is not a final API; this is just for testing purposes.
 export function initContextSensitiveClickEvents() {
-  // Currently scoped to admin-users only or local development environment.
-  // Bail if neither is true
-  if (window.location.hostname !== 'localhost' && store.getState().user.admin === false) {
-    return;
-  }
-
   const wrapper = editor.getWrapperElement();
 
   wrapper.addEventListener('mouseup', (event) => {
