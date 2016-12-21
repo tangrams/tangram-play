@@ -2,35 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { clone } from 'lodash';
 import { editor } from '../../editor/editor';
+import { clickIsAtCursorPosition } from '../../editor/codemirror/tools';
 import Vec2Picker from './Vec2Picker';
 import NumberPicker from './NumberPicker';
 import ColorBookmark from '../pickers/color/ColorBookmark';
-
-/**
- * Find whether the current CodeMirror cursor and a given click event match up in the
- * location on the page
- */
-function cursorAndClickDontMatch(cursor, event) {
-  const cursorCoords = editor.cursorCoords(true, 'window');
-  const cursorX = cursorCoords.left;
-  const cursorY = cursorCoords.top;
-
-  const clickX = event.x;
-  const clickY = event.y - 10; // 10 seems to be the height of the cursor
-
-  const OFFSET = 10; // Space to check around click and cursor
-
-  // If cursorX is not between a minimum and max bounds then they do NOT match. Return TRUE
-  if (!(cursorX >= (clickX - OFFSET) && cursorX <= (clickX + OFFSET))) {
-    return true;
-  }
-
-  if (!(cursorY >= (clickY - OFFSET) && cursorY <= (clickY + OFFSET))) {
-    return true;
-  }
-
-  return false;
-}
 
 /**
  * RegExp.exec() method normally returns just one match.
@@ -132,7 +107,7 @@ export function initGlslPickers() {
     // If the user clicks somewhere that is not where the cursor is
     // This checks for cases where a user clicks on a normal picker trigger
     // (not glsl) but the cursor is over a shader block
-    if (cursorAndClickDontMatch(cursor, event)) {
+    if (clickIsAtCursorPosition(editor, event) === false) {
       return;
     }
 

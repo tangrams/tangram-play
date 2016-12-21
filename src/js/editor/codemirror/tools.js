@@ -104,3 +104,33 @@ export function foldByLevel(cm, level) {
     line -= 1;
   }
 }
+
+// Interaction tools.
+// =============================================================================
+
+/**
+ * Compares a click event with the current CodeMirror cursor position.
+ * Use this when listening for clicks in a editor that then trigger some actions
+ * based on where the cursor is, and you want to make sure that where the user
+ * clicked is actually where the cursor is.
+ *
+ * @param {CodeMirror} cm - the CodeMirror instance
+ * @param {Event} event - event object from click action
+ * @param {Number} bufferX - horizontal buffer space to check around the cursor's
+ *          x-axis. Since the CodeMirror cursor is usually 1-pixel wide, a default
+ *          value of 10pixels is provided.
+ * @param {Number} bufferY - vertical buffer space to check around the cursor's
+ *          y-axis. Since the CodeMirror cursor usually has a height, the default
+ *          value of this buffer is zero.
+ * @return {Boolean} - `true` if an event's coordinates is in or near the cursor.
+ *          `false` if not.
+ */
+export function clickIsAtCursorPosition(cm, event, bufferX = 10, bufferY = 0) {
+  const cursor = cm.cursorCoords(true, 'window');
+  const withinX = (event.x >= cursor.left - bufferX) && (event.x <= cursor.right + bufferX);
+  const withinY = (event.y >= cursor.top - bufferY) && (event.y <= cursor.bottom + bufferY);
+
+  // Return true if click is between the minimum and max bounds of the cursor
+  // (including the buffer)
+  return (withinX && withinY);
+}
