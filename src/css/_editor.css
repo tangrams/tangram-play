@@ -13,6 +13,8 @@
 
 .editor-container {
   position: absolute;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: calc(100% - var(--divider-width));
   top: 0;
@@ -41,8 +43,9 @@
 }
 
 .editor {
-  height: calc(100% - var(--editor-tab-height));
   position: relative;
+  /* This should grow to take up all available vertical space */
+  flex-grow: 1;
   /* Easier to adjust font size from this element */
   font-size: 14px;
   line-height: 1.4;
@@ -168,8 +171,10 @@
 }
 
 .CodeMirror {
-  font-family: var(--editor-font-family);
+  /* Required position property to take up 100% of parent flex-item */
+  position: absolute;
   height: 100%;
+  font-family: var(--editor-font-family);
 }
 
 .CodeMirror-linenumbers {

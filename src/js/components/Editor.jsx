@@ -155,15 +155,26 @@ class Editor extends React.PureComponent {
           return null;
         })()}
 
-        <div className="editor-tab-bar">
-          <EditorTabs />
-          <IconButton
-            className="editor-collapse-button"
-            icon="bt-caret-right"
-            tooltip="Hide editor"
-            onClick={this.onClickHideEditor}
-          />
-        </div>
+        {(() => {
+          // Disable tabs in embedded mode. See request https://github.com/tangrams/tangram-play/issues/620
+          // Rather than expose Yet Another Embed Option, there's a product
+          // answer to this: there's no real need for tabs in embedded mode (at
+          // least not yet) so let's remove this functionality from embedded.
+          if (window.isEmbedded) {
+            return null;
+          }
+          return (
+            <div className="editor-tab-bar">
+              <EditorTabs />
+              <IconButton
+                className="editor-collapse-button"
+                icon="bt-caret-right"
+                tooltip="Hide editor"
+                onClick={this.onClickHideEditor}
+              />
+            </div>
+          );
+        })()}
 
         <div
           className="editor"
