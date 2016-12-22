@@ -100,9 +100,15 @@ class Editor extends React.PureComponent {
             editor.scrollTo(left, top);
           }
 
-          // By default, switching the document won't give it focus automatically.
+          // Switching the document won't give it focus automatically.
           // Editor must be given focus or the cursor won't show up.
-          editor.focus();
+          // Only put focus on editor if the document itself is in focus.
+          // Documents may not be in focus if they are iframed, and focusing
+          // the editor will also cause the document to focus, which can cause
+          // a page to jump to the iframe unexpectedly.
+          if (document.hasFocus()) {
+            editor.focus();
+          }
 
           // Autosave editor state
           debouncedUpdateLocalMemory();
