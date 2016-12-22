@@ -464,6 +464,11 @@
       "defaultValue": "[0., 0., 0.]"
     },
     {
+      "address": "styles:(\\w|\\_|\\-|\\/)+:dash_background_color$",
+      "type": "color",
+      "defaultValue": "[1, 1, 1]"
+    },
+    {
       "key": "join",
       "type": "string",
       "options": [
