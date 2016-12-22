@@ -110,6 +110,9 @@ class Editor extends React.PureComponent {
             editor.focus();
           }
 
+          // Fix word wrapping not working correctly
+          editor.refresh();
+
           // Autosave editor state
           debouncedUpdateLocalMemory();
         }
