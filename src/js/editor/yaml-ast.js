@@ -185,6 +185,63 @@ export function getKeyAddressForNode(node) {
 }
 
 /**
+ * Given an AST node, determine its level (nesting depth in YAML mappings).
+ *
+ * Replaces the old ways - storing keyLevel on the CodeMirror token parser,
+ * or calculating the depth via a hard-coded tab indent value. This is VERY
+ * fast - almost as fast as reading the keyLevel property on the token state.
+ *
+ * Regarding levels, and how it compares with the deprecated keyLevel method:
+ * This returns `null` when there's no node, e.g. blank lines.
+ * This differs from `keyLevel` implementation which is determined line by line,
+ * but also requires knowledge of the previous line. Blank lines in `keyLevel`
+ * implementation will pick up the level from the previous line. The YAML
+ * AST parser picks up level based on the tree structure.
+ *
+ * `keyLevel`s suffer from a CodeMirror token parsing problem where the first
+ * character of a line has the previous value, not the value for the current line.
+ *
+ * Level 0 is any mapping at the top-level (e.g. `import`, `styles`, `layers`).
+ * Each subsequent level goes up by 1.
+ *
+ * In the `keyLevel` implementation, it goes up by 1 when the _line_ the node
+ * is on increases. In the AST implementation, it goes up by 1 at the beginning
+ * of the key, because that is where the node's startPosition is (not at the
+ * beginning of a line).
+ *
+ * The AST implementation also correctly ignores tab indentation, and correctly
+ * accounts for inline nodes. The state token implementation cannot do either of these.
+ *
+ * NOTE: shorten the above description once the old way is gone.
+ *
+ * @param {Object} node - a node from YAML-AST-parser
+ * @returns {Number} level - an address that looks like "this:string:example"
+ */
+export function getNodeLevel(node) {
+  function traverser(currentNode, level = -1) {
+    // Nodes can be `null` if current document state has errors
+    if (!currentNode) return null;
+
+    let returnLevel = level;
+
+    // For each mapping the level stack is increased by one
+    if (currentNode.kind === YAML_MAPPING) {
+      returnLevel += 1;
+    }
+
+    // Traverse parents until we hit no more parents
+    if (currentNode.parent) {
+      returnLevel = traverser(currentNode.parent, returnLevel);
+    }
+
+    return returnLevel;
+  }
+
+  const level = traverser(node);
+  return level;
+}
+
+/**
  * Given an AST node, convert its `startPosition` and `endPosition` values to
  * CodeMirror editor positions.
  *

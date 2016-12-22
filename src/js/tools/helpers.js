@@ -35,6 +35,17 @@ export function isEmptyString(str) {
 }
 
 /**
+ * Count the number of whitespace characters at the beginning of a string.
+ *
+ * @param {string} str - string to test
+ * @param {Number} spaces - 0 if no spaces, 1 or more if spaces
+ */
+export function countLeadingSpaces(str) {
+  // Regex for index of first non-whitespace character, or end of line
+  return str.search(/\S|$/);
+}
+
+/**
  * Checks to see if a string is an absolute URI (fully-qualified) - that is,
  * not a relative path. It checks by seeing if the string begins with what
  * looks like a URI scheme with two following slashes. It does not hard-check

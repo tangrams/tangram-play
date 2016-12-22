@@ -1,5 +1,9 @@
 import { assert } from 'chai';
-import { ParsedYAMLDocument, getKeyAddressForNode } from '../src/js/editor/yaml-ast';
+import {
+  ParsedYAMLDocument,
+  getKeyAddressForNode,
+  getNodeLevel,
+} from '../src/js/editor/yaml-ast';
 
 // YAML node kinds are assigned a number by YAMLParser.
 const YAML_SCALAR = 0;
@@ -20,6 +24,7 @@ sources:
 
 layers:
     earth:
+        # Comment line
         data: { source: mapzen }
         draw:
             polygons:
@@ -122,6 +127,44 @@ describe('YAML abstract syntax tree parser', () => {
       const node = parsed.nodes.mappings[1].value.mappings[0].value.mappings[1].value;
       const address = getKeyAddressForNode(node);
       assert.equal(address, 'sources:mapzen:url');
+    });
+  });
+
+  describe('getNodeLevel()', () => {
+    it('returns null for a blank line', () => {
+      const node = parsed.getNodeAtIndex(212);
+      const level = getNodeLevel(node);
+      assert.equal(level, null);
+    });
+
+    it('returns 0 for a top-level block', () => {
+      const node = parsed.getNodeAtKeyAddress('sources');
+      const level = getNodeLevel(node);
+      assert.equal(level, 0);
+    });
+
+    it('returns 0 for the character at the beginning of a top-level block following another nested block', () => {
+      const node = parsed.getNodeAtIndex(213);
+      const level = getNodeLevel(node);
+      assert.equal(level, 0);
+    });
+
+    it('returns the correct level for a nested block', () => {
+      const node = parsed.getNodeAtIndex(263);
+      const level = getNodeLevel(node);
+      assert.equal(level, 2);
+    });
+
+    it('returns the correct level for an inline block', () => {
+      const node = parsed.getNodeAtIndex(271);
+      const level = getNodeLevel(node);
+      assert.equal(level, 3);
+    });
+
+    it('does not increment level inside a sequence', () => {
+      const node = parsed.getNodeAtIndex(20);
+      const level = getNodeLevel(node);
+      assert.equal(level, 0);
     });
   });
 });

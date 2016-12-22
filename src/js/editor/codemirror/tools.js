@@ -1,21 +1,13 @@
 //  GET Functions
 //  ===============================================================================
-import { isEmptyString } from '../../tools/helpers';
-
-//  Get the spaces of a string
-export function getSpaces(str) {
-  const regex = /^(\s+)/gm;
-  const space = regex.exec(str);
-  if (space) {
-    return (space[1].match(/\s/g) || []).length;
-  }
-
-  return 0;
-}
+import { isEmptyString, countLeadingSpaces } from '../../tools/helpers';
+import { parsedYAMLDocument } from '../../editor/editor';
+import { getNodeLevel } from '../../editor/yaml-ast';
 
 //  Get the indentation level of a line
+// @deprecated
 export function getLineInd(cm, line) {
-  return getSpaces(cm.lineInfo(line).text) / cm.getOption('tabSize');
+  return countLeadingSpaces(cm.lineInfo(line).text) / cm.getOption('tabSize');
 }
 
 //  Check if a line is empty
@@ -30,18 +22,6 @@ export function isStrCommented(str) {
 }
 export function isCommented(cm, nLine) {
   return isStrCommented(cm.lineInfo(nLine).text);
-}
-
-// Get the text of a line and ignore the previus spaces
-export function getText(cm, nLine) {
-  const value = /^\s*(\w+)/gm.exec(cm.lineInfo(nLine).text);
-  return value ? value[1] : '';
-}
-
-//  Get value of a key pair
-export function getValue(cm, nLine) {
-  const value = /^\s*\w+:\s*([\w|\W|\s]+)$/gm.exec(cm.lineInfo(nLine).text);
-  return value ? value[1] : '';
 }
 
 // Escape regex special characters
@@ -95,12 +75,25 @@ export function unfoldAll(cm) {
 export function foldByLevel(cm, level) {
   unfoldAll(cm);
   const rangeFinder = cm.getOption('foldGutter').rangeFinder;
+  const doc = cm.getDoc();
 
   let line = cm.lineCount() - 1;
   while (line >= 0) {
-    if (getLineInd(cm, line) >= level) {
-      cm.foldCode({ line, ch: 0 }, rangeFinder);
+    // For each line, get the first character after whitespace, determine
+    // its level, and if it is above the requested level, fold it.
+    const text = doc.getLine(line);
+    const spaces = countLeadingSpaces(text);
+    const pos = { line, ch: spaces };
+    const index = doc.indexFromPos(pos);
+
+    // Depends on the parsed YAML interface - is this too side-effecty?
+    const node = parsedYAMLDocument.getNodeAtIndex(index);
+    const compareLevel = getNodeLevel(node);
+
+    if (compareLevel >= level) {
+      cm.foldCode({ line, ch: 0 }, rangeFinder, 'fold');
     }
+
     line -= 1;
   }
 }
