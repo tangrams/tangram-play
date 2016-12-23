@@ -1,26 +1,40 @@
-/* eslint-disable no-console */
 import YAMLParser from 'yaml-ast-parser';
 import { addressFromKeyStack, keyStackFromAddress } from './codemirror/yaml-tangram';
 
-// YAML node kinds are assigned a number by YAMLParser.
-// A node of type SCALAR is a simple key-value pair with a string `value`.
-const YAML_SCALAR = 0;
+/*
+YAML node kinds are assigned a number by YAMLParser.
 
-// A node of type MAPPING is a key-value pair whose `value` is another YAML node.
-// Values can be another MAPPING, a MAP, or SEQUENCE.
-const YAML_MAPPING = 1;
+SCALAR (type 0)
+This is the simplest node type. Its most important property is `value`, which
+is a string. It has no other child nodes. Its parent may be a MAPPING or a
+SEQUENCE node.
 
-// A node of type MAP is a value of the MAPPING node. It does not have a `value`
-// but rather a `mappings` array of one or more YAML nodes.
-const YAML_MAP = 2;
+MAPPING (type 1)
+This is a key-value pair. It contains a `key` property as well as a `value`
+property. Values are child nodes and can be a SCALAR, MAP, or a SEQUENCE node.
+Its parent node is a MAP.
 
-// A node of type SEQUENCE is a value of a YAML node. It does not have a `value`
-// but rather a `items` array of one or more YAML nodes.
-const YAML_SEQUENCE = 3;
+MAP (type 2)
+Similarly named to MAPPING, it is a related concept. The best way to think
+about this is that MAPS are collections of MAPPINGS. It does not have a `value`
+property but rather a `mappings` property which is an array of MAP nodes. Its
+parent is usually a MAPPING. At the top level of a Tangram YAML document, the
+root node (which has no parents) should be a MAP.
 
-// Other node kinds exist, we currently don't handle this.
-// const YAML_ANCHOR_REF = 4; //?
-// const YAML_INCLUDE_REF = 5; //? only RAML?
+SEQUENCE (type 3)
+This node is an array of items. It does not have a `value` property but rather
+an `items` array of one or more YAML nodes. In Tangram YAML, child nodes are
+usually SCALARS.
+
+Other node kinds exist, but we currently don't handle this here. We still need
+to understand what they are and whether they are used by Tangram YAML.
+*/
+export const YAML_SCALAR = 0;
+export const YAML_MAPPING = 1;
+export const YAML_MAP = 2;
+export const YAML_SEQUENCE = 3;
+// export const YAML_ANCHOR_REF = 4;
+// export const YAML_INCLUDE_REF = 5;
 
 function parseYAML(content) {
   // Run all the content through the AST parser and store it here.

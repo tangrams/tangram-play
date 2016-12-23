@@ -4,7 +4,11 @@ import 'codemirror/mode/yaml/yaml';
 import './glsl-tangram';
 import { attachBookmarkConstructorsToDocumentState } from './bookmarks';
 
-const ADDRESS_KEY_DELIMITER = ':';
+// This was chosen by Tangram to delimit a key stack of keys into a single
+// string address. Note that keys in YAML may contain colons legally, and they
+// are differentiated from by quoting the key, e.g. `"a:key": value`. Currently
+// there is not a workaround for this.
+export const ADDRESS_KEY_DELIMITER = ':';
 
 /**
  * Return a string address from an array of key names (a 'key stack')
