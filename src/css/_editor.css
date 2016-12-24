@@ -446,3 +446,10 @@
     font-size: 1em;
   }
 }
+
+/* Styles external links - imports, for example. */
+.cm-tangram-link {
+  border-bottom: 1px dotted lightblue;
+  color: lightblue;
+  cursor: pointer;
+}

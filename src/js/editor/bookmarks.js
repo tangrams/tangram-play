@@ -184,7 +184,7 @@ function getExistingMarks(fromLine, toLine = fromLine) {
   }
 
   // Filter out anything that is not of type `bookmark`. Text markers in
-  // CodeMirro can come from other sources, such as the matching-brackets
+  // CodeMirror can come from other sources, such as the matching-brackets
   // plugin for CodeMirror. We only want bookmarks attached by Tangram Play.
   // Find out: `widgetNode` is created by CodeMirror?
   existingMarks = existingMarks.filter(marker =>
@@ -224,38 +224,30 @@ function handleEditorChanges(cm, changes) {
     let toLine = change.to.line;
 
     // Changes from a popup will declare its origin as `+value_change`.
-    // Just call insertMarks, which will determine whether a mark should be
-    // inserted, if not already. Don't clear marks here, which causes the
-    // popups to lose contact with the original bookmark.
     if (change.origin === '+value_change' && fromLine === toLine) {
+      // Just call insertMarks, which will determine whether a mark should be
+      // inserted, if not already. Don't clear marks here, which causes the
+      // popups to lose contact with the original bookmark.
       insertMarks(fromLine, toLine);
     } else {
       // CodeMirror's `from` and `to` properties are pre-change values, so
-      // we adjust the range if lines were removed or added. The `removed`
-      // and `text` properties are arrays which indicate how many lines
-      // were removed or added respectively.
+      // we adjust the range if lines were removed or added.
       if (change.origin === '+delete' || change.origin === 'cut') {
-        // In a delete or cut operation, CodeMirror's `to` line
-        // includes lines have just been removed. However, we don't
-        // want to parse those lines, since they're gone. We will
-        // only reparse the current line.
+        // In a delete or cut operation, CodeMirror's `to` line includes lines
+        // have just been removed. However, we don't want to parse those lines,
+        // since they're gone. We will only reparse the current line.
         toLine = fromLine;
       } else if (change.origin === 'paste' || change.origin === 'undo') {
-        // In a paste operation, CodeMirror's to line is the same
-        // as the from line. We can get the correct to-line by
-        // adding the pasted lines minus the removed lines.
-        // This also captures undo operations where removals of
-        // lines are undone (so it works like a paste)
+        // In a paste operation, CodeMirror's `to` line is the same as the
+        // `from` line. We can get the correct to-line by adding the pasted
+        // lines minus the removed lines. This also captures undo operations
+        // where removals of lines are undone (so it works like a paste)
+        // The `removed` and `text` properties are arrays which indicate how
+        // many lines were removed or added respectively.
         toLine += change.text.length - change.removed.length;
       }
 
       clearMarks(fromLine, toLine);
-
-      // Force CodeMirror to parse the last line of the code. Fixes a
-      // strange bug where the last line's node address is wrong
-      // const lastline = editorDoc.lastLine();
-      // editor.getStateAfter(lastline, true);
-
       insertMarks(fromLine, toLine);
     }
   }
@@ -271,7 +263,6 @@ function handleEditorChanges(cm, changes) {
  */
 function handleEditorScroll(cm) {
   const viewport = cm.getViewport();
-  // clearMarks(viewport.from, viewport.to);
   insertMarks(viewport.from, viewport.to);
 }
 
