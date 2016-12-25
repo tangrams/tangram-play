@@ -1,15 +1,14 @@
 import { assert } from 'chai';
 import {
+  YAML_SCALAR,
+  YAML_MAPPING,
+  // YAML_MAP,
+  YAML_SEQUENCE,
   ParsedYAMLDocument,
+  getScalarNodesInRange,
   getKeyAddressForNode,
   getNodeLevel,
 } from '../src/js/editor/yaml-ast';
-
-// YAML node kinds are assigned a number by YAMLParser.
-const YAML_SCALAR = 0;
-const YAML_MAPPING = 1;
-// const YAML_MAP = 2;
-const YAML_SEQUENCE = 3;
 
 const TEST_DOCUMENT = `
 import:
@@ -109,6 +108,22 @@ describe('YAML abstract syntax tree parser', () => {
       const node = parsed.getNodeAtKeyAddress('layers:foo');
       assert.isNull(node);
     });
+  });
+
+  describe('getScalarNodesInRange()', () => {
+    it('returns all scalar nodes in document', () => {
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, parsed.nodes.endPosition);
+      assert.equal(nodes.length, 11);
+    });
+
+    it.skip('returns a node that overlaps the start of the range');
+    it.skip('returns a node that overlaps the end of the range');
+    it.skip('returns a node that overlaps both the start and end of the range');
+    it.skip('does not return nodes before the range');
+    it.skip('does not return nodes after the range');
+    it.skip('includes scalar nodes that are children of sequences');
+    it.skip('returns nodes that straddle branches of the syntax tree');
+    it.skip('returns an empty array if no nodes are found');
   });
 
   describe('getKeyAddressForNode()', () => {
