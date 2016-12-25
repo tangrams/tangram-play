@@ -5,7 +5,9 @@ import WidgetDropdown from '../components/widgets/WidgetDropdown';
 // import VectorPicker from '../components/pickers/vector/VectorPicker';
 import WidgetToggle from '../components/widgets/WidgetToggle';
 import EventEmitter from '../components/event-emitter';
-import { editor } from '../editor/editor';
+import { editor } from './editor';
+import { indexesFromLineRange } from './codemirror/tools';
+import { getScalarNodesInRange, getKeyAddressForNode } from './yaml-ast';
 
 function isThereMark(node) {
   const to = node.range.to;
@@ -142,6 +144,25 @@ function insertMarks(fromLine, toLine = fromLine) {
 export function insertMarksInViewport() {
   const viewport = editor.getViewport();
   insertMarks(viewport.from, viewport.to);
+}
+
+/**
+ * An experimental function for inserting marks based on a range but based on
+ * the YAML abstract syntax tree.
+ *
+ * @todo finish this + documentation
+ * Let's try this but using passed-in CodeMirror and AST instead of importing
+ * them as global to the module
+ */
+export function insertMarksWithAST(cm, ast, fromLine, toLine) {
+  const doc = cm.getDoc();
+  const range = indexesFromLineRange(doc, fromLine, toLine);
+  const nodes = getScalarNodesInRange(ast, range.start, range.end);
+  const addresses = nodes.reduce((accumulator, item) => {
+    accumulator.push(getKeyAddressForNode(item));
+    return accumulator;
+  }, []);
+  console.log(addresses);
 }
 
 /**

@@ -53,7 +53,7 @@ function parseYAML(content) {
  * Given a parsed syntax tree of YAML, and a position index, return
  * the deepest node that contains that position. Returns nothing if not found.
  *
- * @param {Object} ast - a parsed syntax tree object, should be root of the tree
+ * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
  * @param {Number} index - a position index
  * @returns {Object} a node
  */
@@ -115,7 +115,7 @@ function getNodeAtIndex(ast, index) {
  * Tangram refers to a scene file only with address, rather than a position value
  * in a scene file.
  *
- * @param {Object} ast - a parsed syntax tree object, should be root of the tree
+ * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
  * @param {string} address - an address that looks like "this:string:example"
  * @returns {Object} a node
  */
@@ -169,9 +169,77 @@ function getNodeAtKeyAddress(ast, address) {
 }
 
 /**
+ * Returns an array of scalar nodes between `fromIndex` and `toIndex`.
+ * Include nodes that overlap this range.
+ *
+ * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
+ * @param {Number} fromIndex - a position index at start of range
+ * @param {Number} toIndex - a position index at end of range
+ * @returns {Array} foundNodes - array of scalar nodes that overlap this range.
+ */
+export function getScalarNodesInRange(ast, fromIndex, toIndex) {
+  function findNodes(node, start, end, initial = []) {
+    // Nodes can be `null` if current document is blank or has errors
+    if (!node) return initial;
+
+    // If the node ends before my start range, or starts after my end range,
+    // this branch is not important, so we can exclude it.
+    if (node.endPosition < start || node.startPosition > end) return initial;
+
+    // Clone the array of nodes we already found
+    let found = initial.slice();
+
+    switch (node.kind) {
+      // A scalar node has no further depth; return as is.
+      case YAML_SCALAR:
+        found.push(node);
+        break;
+      case YAML_MAPPING:
+        found = findNodes(node.value, start, end, initial);
+        break;
+      case YAML_MAP:
+        for (let i = 0, j = node.mappings.length; i < j; i++) {
+          const mapping = node.mappings[i];
+
+          // Can be null if document has errors
+          if (!mapping) continue; // eslint-disable-line no-continue
+
+          // Stop searching in mappings when we hit a node that lies outside range
+          if (node.endPosition < start || node.startPosition > end) break;
+
+          found = findNodes(mapping.value, start, end, found);
+        }
+        break;
+      case YAML_SEQUENCE:
+        // See if index falls in any of the sequence items
+        for (let i = 0, j = node.items.length; i < j; i++) {
+          const item = node.items[i];
+
+          // Can be null if document has errors
+          if (!item) continue; // eslint-disable-line no-continue
+
+          // Stop searching in items when we hit a node that lies outside range
+          if (node.endPosition < start || node.startPosition > end) break;
+
+          found = findNodes(item, start, end, found);
+        }
+        break;
+      // Catch-all for unhandled node types: return accrued array as-is
+      default:
+        break;
+    }
+
+    return found;
+  }
+
+  const foundNodes = findNodes(ast, fromIndex, toIndex, []);
+  return foundNodes;
+}
+
+/**
  * Given an AST node, construct a key address for it by traversing its parent nodes.
  *
- * @param {Object} node - a node from YAML-AST-parser
+ * @param {YAMLNode} node - a node from YAML-AST-parser
  * @returns {string} address - an address that looks like "this:string:example"
  */
 export function getKeyAddressForNode(node) {
@@ -228,7 +296,7 @@ export function getKeyAddressForNode(node) {
  *
  * NOTE: shorten the above description once the old way is gone.
  *
- * @param {Object} node - a node from YAML-AST-parser
+ * @param {YAMLNode} node - a node from YAML-AST-parser
  * @returns {Number} level - an address that looks like "this:string:example"
  */
 export function getNodeLevel(node) {
@@ -299,5 +367,9 @@ export class ParsedYAMLDocument {
 
   getNodeAtKeyAddress(address) {
     return getNodeAtKeyAddress(this.nodes, address);
+  }
+
+  getScalarNodesInRange(fromIndex, toIndex) {
+    return getScalarNodesInRange(this.nodes, fromIndex, toIndex);
   }
 }

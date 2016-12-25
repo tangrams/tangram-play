@@ -127,3 +127,32 @@ export function clickIsAtCursorPosition(cm, event, bufferX = 10, bufferY = 0) {
   // (including the buffer)
   return (withinX && withinY);
 }
+
+// Position and index conversion helpers.
+// =============================================================================
+
+export function positionFromLineStart(doc, line) {
+  return { line, ch: 0 };
+}
+
+export function positionFromLineEnd(doc, line) {
+  const lineContent = doc.getLine(line) || '';
+  return { line, ch: lineContent.length };
+}
+
+export function indexFromLineStart(doc, line) {
+  const pos = positionFromLineStart(doc, line);
+  return doc.indexFromPos(pos);
+}
+
+export function indexFromLineEnd(doc, line) {
+  const pos = positionFromLineEnd(doc, line);
+  return doc.indexFromPos(pos);
+}
+
+export function indexesFromLineRange(doc, fromLine, toLine) {
+  return {
+    start: indexFromLineStart(doc, fromLine),
+    end: indexFromLineEnd(doc, toLine),
+  };
+}
