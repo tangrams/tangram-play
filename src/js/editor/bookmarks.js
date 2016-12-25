@@ -5,7 +5,7 @@ import WidgetDropdown from '../components/widgets/WidgetDropdown';
 // import VectorPicker from '../components/pickers/vector/VectorPicker';
 import WidgetToggle from '../components/widgets/WidgetToggle';
 import EventEmitter from '../components/event-emitter';
-import { editor } from './editor';
+import { editor, parsedYAMLDocument } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
 import { getScalarNodesInRange, getKeyAddressForNode } from './yaml-ast';
 
@@ -154,8 +154,7 @@ export function insertMarksInViewport() {
  * Let's try this but using passed-in CodeMirror and AST instead of importing
  * them as global to the module
  */
-export function insertMarksWithAST(cm, ast, fromLine, toLine) {
-  const doc = cm.getDoc();
+export function insertMarksWithAST(doc, ast, fromLine, toLine) {
   const range = indexesFromLineRange(doc, fromLine, toLine);
   const nodes = getScalarNodesInRange(ast, range.start, range.end);
   const addresses = nodes.reduce((accumulator, item) => {
@@ -271,6 +270,8 @@ function handleEditorChanges(cm, changes) {
       clearMarks(fromLine, toLine);
       insertMarks(fromLine, toLine);
     }
+
+    insertMarksWithAST(cm.getDoc(), parsedYAMLDocument.nodes, fromLine, toLine);
   }
 }
 
