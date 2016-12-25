@@ -7,7 +7,8 @@ import WidgetToggle from '../components/widgets/WidgetToggle';
 import EventEmitter from '../components/event-emitter';
 import { editor, parsedYAMLDocument } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
-import { getScalarNodesInRange, getKeyAddressForNode } from './yaml-ast';
+import { getScalarNodesInRange } from './yaml-ast';
+import { getTextMarkerConstructors } from './codemirror/bookmarks';
 
 function isThereMark(node) {
   const to = node.range.to;
@@ -157,11 +158,10 @@ export function insertMarksInViewport() {
 export function insertMarksWithAST(doc, ast, fromLine, toLine) {
   const range = indexesFromLineRange(doc, fromLine, toLine);
   const nodes = getScalarNodesInRange(ast, range.start, range.end);
-  const addresses = nodes.reduce((accumulator, item) => {
-    accumulator.push(getKeyAddressForNode(item));
-    return accumulator;
-  }, []);
-  console.log(addresses);
+
+  // For each node mimic bookmark constructor stuff
+  const marks = getTextMarkerConstructors(nodes);
+  console.log(marks);
 }
 
 /**
