@@ -245,7 +245,7 @@ export function getScalarNodesInRange(ast, fromIndex, toIndex) {
 export function getKeyAddressForNode(node) {
   function builder(currentNode, stack = []) {
     // Nodes can be `null` if current document state has errors
-    if (!currentNode) return null;
+    if (!currentNode) return stack;
 
     // Add key's value to the current key stack.
     // Only accept scalar values for keys

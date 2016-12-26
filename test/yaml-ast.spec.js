@@ -143,6 +143,11 @@ describe('YAML abstract syntax tree parser', () => {
       const address = getKeyAddressForNode(node);
       assert.equal(address, 'sources:mapzen:url');
     });
+
+    it('returns an empty string if passed in a null value', () => {
+      const address = getKeyAddressForNode(null);
+      assert.equal(address, '');
+    });
   });
 
   describe('getNodeLevel()', () => {

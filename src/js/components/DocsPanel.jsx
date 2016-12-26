@@ -87,9 +87,7 @@ class DocsPanel extends React.Component {
     const cursorIndex = doc.indexFromPos(cursor); // -> Number
     const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
     const address = getKeyAddressForNode(node);
-    if (address) {
-      this.setState({ display: this.findMatch(address, true) });
-    }
+    this.setState({ display: this.findMatch(address, true) });
   }
 
   /**
