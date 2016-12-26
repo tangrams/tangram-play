@@ -7,17 +7,8 @@ import { setCodeMirrorValue } from '../../editor/editor';
  * Represents a boolean checkbox
  */
 export default class WidgetToggle extends React.Component {
-  /**
-   * Used to setup the state of the component. Regular ES6 classes do not
-   * automatically bind 'this' to the instance, therefore this is the best
-   * place to bind event handlers
-   *
-   * @param props - parameters passed from the parent
-   */
   constructor(props) {
     super(props);
-
-    this.bookmark = this.props.bookmark;
 
     this.state = {
       value: this.props.value,
@@ -27,8 +18,7 @@ export default class WidgetToggle extends React.Component {
   }
 
   /**
-   * Official React lifecycle method
-   * Invoked once immediately after the initial rendering occurs.
+   * React lifecycle method: invoked once immediately after initial rendering.
    * The input default to being 'false'. Have to set it to 'true' if the code value is 'true'
    */
   componentDidMount() {
@@ -53,15 +43,9 @@ export default class WidgetToggle extends React.Component {
    *  back to the Tangram Play editor.
    */
   setEditorValue(string) {
-    this.bookmark = setCodeMirrorValue(this.bookmark, string);
+    setCodeMirrorValue(this.props.marker, string);
   }
 
-  /**
-   * Official React lifecycle method
-   * Called every time state or props are changed
-   *
-   * this.input refers to the <input> div on the checkbox
-   */
   render() {
     return (
       <Checkbox
@@ -74,6 +58,6 @@ export default class WidgetToggle extends React.Component {
 }
 
 WidgetToggle.propTypes = {
-  bookmark: React.PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  marker: React.PropTypes.object, // eslint-disable-line react/forbid-prop-types
   value: React.PropTypes.string,
 };

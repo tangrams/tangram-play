@@ -4,10 +4,9 @@ import ColorBookmark from '../components/pickers/color/ColorBookmark';
 import WidgetDropdown from '../components/widgets/WidgetDropdown';
 // import VectorPicker from '../components/pickers/vector/VectorPicker';
 import WidgetToggle from '../components/widgets/WidgetToggle';
-import EventEmitter from '../components/event-emitter';
 import { editor, parsedYAMLDocument } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
-import { getScalarNodesInRange } from './yaml-ast';
+import { getScalarNodesInRange, getKeyValueOfNode } from './yaml-ast';
 import { getTextMarkerConstructors } from './codemirror/bookmarks';
 
 function isTextMarkerAlreadyInDocument(doc, pos) {
@@ -36,86 +35,52 @@ function createTextMarkerRootElement() {
   return el;
 }
 
-function createAndRenderTextMarker(doc, node) {
-  const markerRootEl = createTextMarkerRootElement();
-  const markerType = node.bookmark.type;
-  const marker = doc.setBookmark(node.range.to, {
-    widget: markerRootEl, // inserted DOM element into position
-    insertLeft: true,
-    clearWhenEmpty: true,
-    handleMouseEvents: false,
-  });
-  // We attach only one new property to a text marker. This is so inline nodes
-  // that have attached text markers can verify its position within an array of nodes
-  // TODO: deprecate with AST
-  marker.widgetPos = node.range;
-
-  // Create the text marker element
-  let markerEl = null;
-  switch (markerType) {
-    case 'color':
-      markerEl = <ColorBookmark bookmark={marker} value={node.value} shader={false} />;
-      break;
-    case 'string':
-      // We need to pass a few more values to the dropdown mark: a set of
-      // options, a key, and a sources string
-      markerEl = (
-        <WidgetDropdown
-          bookmark={marker}
-          options={node.bookmark.options}
-          keyType={node.key}
-          source={node.bookmark.source}
-          initialValue={node.value}
-        />
-      );
-      break;
-    case 'boolean':
-      markerEl = <WidgetToggle bookmark={marker} value={node.value} />;
-      break;
-    // Disabling vector for now
-    // case 'vector':
-    //   markerEl = <VectorPicker bookmark={mybookmark} />;
-    //   break;
-    default:
-      break;
-  }
-
-  // Insert the text marker into CodeMirror DOM
-  ReactDOM.render(markerEl, markerRootEl);
-}
-
-function createAndRenderTextMarkerAST(doc, node, mark) {
+/**
+ * Parses the CodeMirror document from `fromLine` to `toLine` and inserts text
+ * markers where needed. Do not insert markers for read-only documents, since
+ * their presence implies values can be changed.
+ *
+ * @param {CodeMirror} cm - instance of CodeMirror editor
+ * @param {YAMLNode} ast - YAML abstract syntax tree root node
+ * @param {Number} fromLine - The line number to insert from
+ * @param {Number} toLine - Optional. The line number to insert to. If not
+ *          provided, just the fromLine is checked.
+ */
+function createAndRenderTextMarker(doc, node, mark) {
   const markerRootEl = createTextMarkerRootElement();
   const markerType = mark.type;
   const markerPos = doc.posFromIndex(node.endPosition);
   const marker = doc.setBookmark(markerPos, {
-    widget: markerRootEl, // inserted DOM element into position
+    widget: markerRootEl, // a DOM element inserted at marker position
     insertLeft: true,
     clearWhenEmpty: true,
     handleMouseEvents: false,
   });
 
+  // Add a reference to the YAMLNode on the marker.
+  marker.node = node;
+
   // Create the text marker element
   let markerEl = null;
   switch (markerType) {
     case 'color':
-      markerEl = <ColorBookmark bookmark={marker} value={node.value} shader={false} />;
+      markerEl = <ColorBookmark marker={marker} value={node.value} shader={false} />;
       break;
     case 'string':
       // We need to pass a few more values to the dropdown mark: a set of
       // options, a key, and a sources string
       markerEl = (
         <WidgetDropdown
-          bookmark={marker}
+          keyName={getKeyValueOfNode(node)}
+          marker={marker}
           options={mark.options}
-          keyType={node.parent.key.value}
           source={mark.source}
           initialValue={node.value}
         />
       );
       break;
     case 'boolean':
-      markerEl = <WidgetToggle bookmark={marker} value={node.value} />;
+      markerEl = <WidgetToggle marker={marker} value={node.value} />;
       break;
     // Disabling vector for now
     // case 'vector':
@@ -126,72 +91,35 @@ function createAndRenderTextMarkerAST(doc, node, mark) {
   }
 
   // Insert the text marker into CodeMirror DOM
-  ReactDOM.render(markerEl, markerRootEl);
-}
-
-/**
- * Parses the editor from `fromLine` to `toLine` and inserts markers where
- * needed. Do not insert markers for read-only documents, since their presence
- * implies values can be changed.
- *
- * @param {Number} fromLine - The line number to insert from
- * @param {Number} toLine - Optional. The line number to insert to. If not
- *          provided, just the fromLine is checked.
- */
-function insertMarks(fromLine, toLine = fromLine) {
-  // Bail if editor is in read-only mode
-  if (editor.isReadOnly()) return;
-
-  const doc = editor.getDoc();
-
-  // For each line in the range, get the line handle, check for nodes,
-  // check for any existing text markers, and add them if necessary.
-  for (let line = fromLine; line <= toLine; line++) {
-    const lineHandle = doc.getLineHandle(line);
-
-    // If no lineHandle, then CodeMirror probably has not parsed it yet
-    // eslint-disable-next-line no-continue
-    if (!lineHandle || !lineHandle.stateAfter) continue;
-
-    const nodes = lineHandle.stateAfter.nodes || null;
-
-    // If there are no nodes, go to the next line
-    // eslint-disable-next-line no-continue
-    if (!nodes) continue;
-
-    for (const node of nodes) {
-      // Skip blank lines, which may have the state (and bookmark
-      // constructor) of the previous line.
-      if (node.bookmark && lineHandle.text.trim() !== '') {
-        // Check if a text marker is already in the document. If not, create it
-        // and insert it into the document.
-        if (isTextMarkerAlreadyInDocument(doc, node.range.to) === false) {
-          createAndRenderTextMarker(doc, node);
-        }
-      }
-    }
+  if (markerEl) {
+    ReactDOM.render(markerEl, markerRootEl);
   }
 }
 
 /**
- * An experimental function for inserting marks based on a range but based on
- * the YAML abstract syntax tree.
+ * Parses the CodeMirror document from `fromLine` to `toLine` and inserts text
+ * markers where needed. Do not insert markers for read-only documents, since
+ * their presence implies values can be changed.
  *
- * @todo finish this + documentation
- * Let's try this but using passed-in CodeMirror and AST instead of importing
- * them as global to the module
+ * @param {CodeMirror} cm - instance of CodeMirror editor
+ * @param {YAMLNode} ast - YAML abstract syntax tree root node
+ * @param {Number} fromLine - The line number to insert from
+ * @param {Number} toLine - Optional. The line number to insert to. If not
+ *          provided, just the fromLine is checked.
  */
-export function insertMarksWithAST(doc, ast, fromLine, toLine) {
+export function insertTextMarkers(cm, ast, fromLine, toLine) {
+  // Bail if editor is in read-only mode
+  if (cm.isReadOnly()) return;
+
+  const doc = cm.getDoc();
   const range = indexesFromLineRange(doc, fromLine, toLine);
   const nodes = getScalarNodesInRange(ast, range.start, range.end);
-
-  // For each node mimic bookmark constructor stuff
   const marks = getTextMarkerConstructors(nodes);
 
   for (const mark of marks) {
     const pos = doc.posFromIndex(mark.node.endPosition);
     if (isTextMarkerAlreadyInDocument(doc, pos) === false) {
-      createAndRenderTextMarkerAST(doc, mark.node, mark);
+      createAndRenderTextMarker(doc, mark.node, mark);
     }
   }
 }
@@ -199,33 +127,34 @@ export function insertMarksWithAST(doc, ast, fromLine, toLine) {
 /**
  * A convenience function using insertMarks() to insert all marks in the
  * current visible viewport.
+ *
+ * @param {CodeMirror} cm - instance of CodeMirror editor
  */
-export function insertMarksInViewport() {
-  const viewport = editor.getViewport();
-  const doc = editor.getDoc();
-  insertMarksWithAST(doc, parsedYAMLDocument.nodes, viewport.from, viewport.to);
-  // insertMarks(viewport.from, viewport.to);
+export function insertTextMarkersInViewport(cm) {
+  const viewport = cm.getViewport();
+  insertTextMarkers(cm, parsedYAMLDocument.nodes, viewport.from, viewport.to);
 }
 
 /**
- * Returns an array of existing marks between a range of lines.
+ * Returns an array of existing text markers between a range of lines.
  * This abstracts over CodeMirror's `findMarks()` method, which requires
- * giving it character positions, and does not find marks that are located
+ * giving it character positions, and does not find markers that are located
  * at the edge of a character range (you would need `findMarksAt()` for that).
  * Furthermore, `findMarks()` fails to locate marks on blank lines within the
  * given range.
  *
  * In our implementation, you only need to provide line numbers, and we'll
  * iterate through each line, calling `findMarks` and `findMarksAt` to make
- * sure that all marks on those lines are found.
+ * sure that all markers on those lines are found.
  *
+ * @param {CodeMirror} cm - instance of CodeMirror editor
  * @param {Number} fromLine - The line number to start looking from
  * @param {Number} toLine - Optional. The line number to look to. If not
  *          provided, just the fromLine is checked.
  */
-function getExistingMarks(fromLine, toLine = fromLine) {
-  const doc = editor.getDoc();
-  let existingMarks = [];
+function getExistingTextMarkers(cm, fromLine, toLine = fromLine) {
+  const doc = cm.getDoc();
+  let markers = [];
 
   for (let line = fromLine; line <= toLine; line++) {
     const lineContent = doc.getLine(line) || '';
@@ -236,51 +165,55 @@ function getExistingMarks(fromLine, toLine = fromLine) {
 
     // Look for existing text markers within this range
     const foundMarks = doc.findMarks(fromPos, toPos) || [];
-    existingMarks = existingMarks.concat(foundMarks);
+    markers = markers.concat(foundMarks);
 
-    // `findMarks()` does not find marks at the outer edge of a range.
-    // Nor will it find marks located on blank lines, even if it is within
+    // `findMarks()` does not find markers at the outer edge of a range.
+    // Nor will it find markers located on blank lines, even if it is within
     // the range. So we must specifically check the end of each line,
-    // including position 0 of a blank line, for a mark.
+    // including position 0 of a blank line, for a marker.
     const trailingMarks = doc.findMarksAt(toPos);
-    existingMarks = existingMarks.concat(trailingMarks);
+    markers = markers.concat(trailingMarks);
   }
 
   // Filter out anything that is not of type `bookmark`. Text markers in
   // CodeMirror can come from other sources, such as the matching-brackets
-  // plugin for CodeMirror. We only want bookmarks attached by Tangram Play.
-  // Find out: `widgetNode` is created by CodeMirror?
-  existingMarks = existingMarks.filter(marker =>
+  // plugin for CodeMirror. We only want markers attached by Tangram Play.
+  // `widgetNode` is CodeMirror's reference to the marker's DOM element.
+  markers = markers.filter(marker =>
     marker.type === 'bookmark' && {}.hasOwnProperty.call(marker, 'widgetNode'));
 
-  return existingMarks;
+  return markers;
 }
 
 /**
- * Removes all existing bookmarks.
+ * Removes all existing text markers.
  *
+ * @param {CodeMirror} cm - instance of CodeMirror editor
  * @param {Number} fromLine - The line number to clear from
  * @param {Number} toLine - Optional. The line number to clear to. If not
  *          provided, just the fromLine is checked.
  */
-function clearMarks(fromLine, toLine) {
-  const existingMarks = getExistingMarks(fromLine, toLine);
+function clearTextMarkers(cm, fromLine, toLine) {
+  const markers = getExistingTextMarkers(cm, fromLine, toLine);
 
   // And remove them, if present.
-  for (const bookmark of existingMarks) {
-    ReactDOM.unmountComponentAtNode(bookmark.replacedWith);
-    bookmark.clear();
+  for (const marker of markers) {
+    ReactDOM.unmountComponentAtNode(marker.replacedWith);
+    marker.clear();
   }
 }
 
 /**
  * Handler function for the CodeMirror `changes` event.
  *
- * @param {CodeMirror} cm - instance of CodeMirror editor.
+ * @param {CodeMirror} cm - instance of CodeMirror editor
  * @param {Array} changes - an array of change objects representing changes in
  *          editor content.
  */
 function handleEditorChanges(cm, changes) {
+  // This should be handled by the main editor change handler, but since these
+  // are both triggered by events, it's possible this executes first, so we have
+  // to force regeneration anyway. TODO: fix this
   parsedYAMLDocument.regenerate(cm.getDoc().getValue());
 
   for (const change of changes) {
@@ -288,13 +221,11 @@ function handleEditorChanges(cm, changes) {
     const fromLine = change.from.line;
     let toLine = change.to.line;
 
-    // Changes from a popup will declare its origin as `+value_change`.
-    if (change.origin === '+value_change' && fromLine === toLine) {
-      // Just call insertMarks, which will determine whether a mark should be
-      // inserted, if not already. Don't clear marks here, which causes the
-      // popups to lose contact with the original bookmark.
-      insertMarks(fromLine, toLine);
-    } else {
+    // In some cases we clear all original text markers first before adding them.
+    // Changes from a picker/popup will declare its origin as `+value_change`.
+    // Don't clear marks first, which causes the pickers to lose contact with
+    // the original text marker.
+    if (!(change.origin === '+value_change' && fromLine === toLine)) {
       // CodeMirror's `from` and `to` properties are pre-change values, so
       // we adjust the range if lines were removed or added.
       if (change.origin === '+delete' || change.origin === 'cut') {
@@ -312,11 +243,10 @@ function handleEditorChanges(cm, changes) {
         toLine += change.text.length - change.removed.length;
       }
 
-      clearMarks(fromLine, toLine);
-      insertMarks(fromLine, toLine);
+      clearTextMarkers(cm, fromLine, toLine);
     }
 
-    insertMarksWithAST(cm.getDoc(), parsedYAMLDocument.nodes, fromLine, toLine);
+    insertTextMarkers(cm, parsedYAMLDocument.nodes, fromLine, toLine);
   }
 }
 
@@ -330,35 +260,7 @@ function handleEditorChanges(cm, changes) {
  */
 function handleEditorScroll(cm) {
   const viewport = cm.getViewport();
-  insertMarks(viewport.from, viewport.to);
-}
-
-/**
- * For inline nodes. Reparses lines that have inline nodes when a bookmark
- * changes text in the editor.
- *
- * @param {Object} data contains the position of the bookmark connected to
- *          data that the user has just edited
- */
-function reparseInlineNodes(data) {
-  const changedNodeCh = data.from.ch; // The first character of edited text
-  const existingMarks = getExistingMarks(data.from.line, data.from.line);
-
-  // If there is only one node in the inline line, then do not do anything
-  if (existingMarks.length === 1) {
-    return;
-  }
-
-  // If there is more than one node in the inline line,
-  // then only remove the ones that the user has not just edited
-  for (const mark of existingMarks) {
-    if (mark.widgetPos.from.ch !== changedNodeCh) {
-      ReactDOM.unmountComponentAtNode(mark.replacedWith);
-      mark.clear();
-    }
-  }
-
-  insertMarks(data.from.line, data.from.line);
+  insertTextMarkers(cm, parsedYAMLDocument.nodes, viewport.from, viewport.to);
 }
 
 /**
@@ -367,9 +269,9 @@ function reparseInlineNodes(data) {
  * changed or scrolled. These listeners are applied on the entire editor
  * instance, not on the document.
  */
-export function initMarks() {
+export function initTextMarkers() {
   // On initialization, insert all marks in the current viewport.
-  insertMarksInViewport();
+  insertTextMarkersInViewport(editor);
 
   // On editor changes, update those marks
   editor.on('changes', handleEditorChanges);
@@ -377,7 +279,4 @@ export function initMarks() {
   // CodeMirror only parses lines inside of the current viewport.
   // When we scroll, we start inserting marks on lines as they're parsed.
   editor.on('scroll', handleEditorScroll);
-
-  // If an inline node is changed, we'd like to reparse all the other nodes in that line
-  EventEmitter.subscribe('editor:inlinenodes', reparseInlineNodes);
 }

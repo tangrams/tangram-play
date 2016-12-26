@@ -2,7 +2,6 @@ import { startsWith } from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml';
 import './glsl-tangram';
-import { attachBookmarkConstructorsToDocumentState } from './bookmarks';
 
 // This was chosen by Tangram to delimit a key stack of keys into a single
 // string address. Note that keys in YAML may contain colons legally, and they
@@ -294,9 +293,6 @@ function parseYamlString(string, state, tabSize) {
     // Commented or empty lines
     state.nodes = [nodeEntry];
   }
-
-  // Adds bookmark constructors to nodes, if they have them.
-  state = attachBookmarkConstructorsToDocumentState(state);
 
   return state;
 }

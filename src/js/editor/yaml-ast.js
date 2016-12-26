@@ -351,6 +351,23 @@ export function getPositionsForNode(node, doc) {
   };
 }
 
+/**
+ * Given a node, traverse parents until we find the nearest ancestor with a
+ * `key` property and return that node
+ *
+ * @param {YAMLNode} node - the node we want to find the key for
+ * @param {YAMLNode | null} node - key node or null if not found
+ */
+export function getKeyValueOfNode(node) {
+  function findKeyNode(currentNode) {
+    if (currentNode.key) return currentNode.key.value;
+    if (currentNode.parent) return findKeyNode(currentNode.parent);
+    return null;
+  }
+
+  return findKeyNode(node);
+}
+
 export class ParsedYAMLDocument {
   constructor(content) {
     this.nodes = {};

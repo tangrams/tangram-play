@@ -14,13 +14,10 @@ export default class WidgetDropdown extends React.Component {
   constructor(props) {
     super(props);
 
-    this.bookmark = this.props.bookmark;
-    this.key = this.props.keyType;
-
     let options;
 
     // If the dropdown is NOT of type source
-    if (this.key !== 'source') {
+    if (this.props.keyName !== 'source') {
       // Make a clone so as not to mutate the original props
       options = this.props.options.slice(0);
     } else {
@@ -80,7 +77,8 @@ export default class WidgetDropdown extends React.Component {
   onClick() {
     // Set the editor cursor to the correct line. (When you click on the
     // button it doesn't move the cursor)
-    setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
+    const pos = this.props.marker.find();
+    setCursor(pos.line, pos.ch);
   }
 
   /**
@@ -88,7 +86,7 @@ export default class WidgetDropdown extends React.Component {
    */
   setSource() {
     // If the dropdown is of type source then get sources from tangramLayer.scene
-    if (this.key === 'source') {
+    if (this.props.keyName === 'source') {
       const obj = getCompiledValueByAddress(tangramLayer.scene, this.props.source);
       const keys = (obj) ? Object.keys(obj) : [];
 
@@ -102,7 +100,7 @@ export default class WidgetDropdown extends React.Component {
    *  back to the Tangram Play editor.
    */
   setEditorValue(string) {
-    this.bookmark = setCodeMirrorValue(this.bookmark, string);
+    setCodeMirrorValue(this.props.marker, string);
   }
 
   render() {
@@ -140,10 +138,10 @@ export default class WidgetDropdown extends React.Component {
 }
 
 WidgetDropdown.propTypes = {
-  bookmark: React.PropTypes.shape({
-    widgetPos: React.PropTypes.object,
+  marker: React.PropTypes.shape({
+    find: React.PropTypes.func,
   }),
-  keyType: React.PropTypes.string,
+  keyName: React.PropTypes.string,
   options: React.PropTypes.arrayOf(React.PropTypes.string),
   source: React.PropTypes.string,
   initialValue: React.PropTypes.string,

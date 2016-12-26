@@ -1,25 +1,6 @@
 import { filter } from 'lodash';
 import TANGRAM_API from '../../tangram-api.json';
-import { isEmptyString } from '../../tools/helpers';
 import { getKeyAddressForNode } from '../yaml-ast';
-
-class Bookmark {
-  constructor(datum) {
-    this.matchAgainst = datum.matchAgainst;
-    this.matchPattern = datum.matchPattern;
-    this.type = datum.type;
-    this.options = datum.options || [];
-    this.source = datum.source || null;
-  }
-
-  match(node) {
-    if (this.matchAgainst) {
-      return RegExp(this.matchPattern).test(node[this.matchAgainst]);
-    }
-
-    return false;
-  }
-}
 
 function makeTextMarkerConstructionKit(tangramAPIValues) {
   const filtered = filter(tangramAPIValues, item =>
@@ -51,34 +32,6 @@ function makeTextMarkerConstructionKit(tangramAPIValues) {
 // Only certain types of values in Tangram syntax will have bookmarks, so
 // filter out all other ones.
 const listOfBookmarkConstructors = makeTextMarkerConstructionKit(TANGRAM_API.values);
-
-// Create a set of ready-to-go bookmarks.
-// new BookmarkConstructor() is passed an object from TANGRAM_API.
-const allBookmarkConstructors = listOfBookmarkConstructors.map(item => new Bookmark(item));
-
-/**
- * Given a state from YAML-Tangram parser, adds matching bookmark constructors
- * to each node.
- */
-export function attachBookmarkConstructorsToDocumentState(state) {
-  const nodes = state.nodes || [];
-  for (const node of nodes) {
-    const value = node.value;
-    if (value === '|' || isEmptyString(value)) {
-      continue; // eslint-disable-line no-continue
-    }
-
-    // Check for bookmarks to add
-    for (const bookmark of allBookmarkConstructors) {
-      if (bookmark.match(node)) {
-        node.bookmark = bookmark;
-        break;
-      }
-    }
-  }
-
-  return state;
-}
 
 /**
  * Get bookmark constructors for each AST node
@@ -128,10 +81,10 @@ export function getTextMarkerConstructors(nodes) {
   // (b) have the `type` of "color"
   // - replace the node with the parent node
   const filteredMarks = marks.reduce((accumulator, mark) => {
-    // automatically pass through any mark not of type `color`
+    // Automatically pass through any marker not of type `color`
     if (mark.type !== 'color') accumulator.push(mark);
 
-    // see if last item on the accumulator matches address
+    // Compare this mark's address with the last item on the accumulator
     if (accumulator.length === 0 || accumulator[accumulator.length - 1].address !== mark.address) {
       // Replace the reference node with parent if it's a member of a sequence
       // colors can also be strings, if that's true, it should stay the same

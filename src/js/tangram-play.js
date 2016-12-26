@@ -7,7 +7,7 @@ import { editor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/actions';
-import { initMarks } from './editor/bookmarks';
+import { initTextMarkers } from './editor/bookmarks';
 import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initSuggestions } from './editor/suggest';
 import { initContextSensitiveClickEvents } from './editor/imports';
@@ -297,7 +297,7 @@ export function initTangramPlay() {
       // TODO: Verify if this is still true?
       if (window.isEmbedded === undefined) {
         // Add widgets marks and errors manager.
-        initMarks();
+        initTextMarkers();
 
         // This for sure depends on Tangram
         initErrorsManager();
