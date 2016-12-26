@@ -10,21 +10,18 @@ import { indexesFromLineRange } from './codemirror/tools';
 import { getScalarNodesInRange } from './yaml-ast';
 import { getTextMarkerConstructors } from './codemirror/bookmarks';
 
-function isThereMark(node) {
-  const to = node.range.to;
+function isTextMarkerAlreadyInDocument(doc, node) {
+  const marks = doc.findMarksAt(node.range.to);
 
-  const doc = editor.getDoc();
-  const otherMarks = doc.findMarksAt(to);
-
-  // If there is a mark return true
-  for (const mark of otherMarks) {
+  // If there is a text marker already inserted, return true
+  for (const mark of marks) {
     if (mark.type === 'bookmark') {
-      return '';
+      return true;
     }
   }
 
-  // If there is no mark at this location return false
-  return node;
+  // If there is no text marker at this location return false
+  return false;
 }
 
 /**
@@ -33,10 +30,58 @@ function isThereMark(node) {
  *
  * @returns {Element} - empty element used as React root element.
  **/
-function createMarkRootNode(type) {
+function createTextMarkerRootElement() {
   const el = document.createElement('div');
   el.className = 'editor-bookmark-root';
   return el;
+}
+
+function createAndRenderTextMarker(doc, node) {
+  const markerRootEl = createTextMarkerRootElement();
+  const markerType = node.bookmark.type;
+  const marker = doc.setBookmark(node.range.to, {
+    widget: markerRootEl, // inserted DOM element into position
+    insertLeft: true,
+    clearWhenEmpty: true,
+    handleMouseEvents: false,
+  });
+  // We attach only one new property to a text marker. This is so inline nodes
+  // that have attached text markers can verify its position within an array of nodes
+  // TODO: deprecate with AST
+  marker.widgetPos = node.range;
+
+  // Create the text marker element
+  let markerEl = null;
+  switch (markerType) {
+    case 'color':
+      markerEl = <ColorBookmark bookmark={marker} value={node.value} shader={false} />;
+      break;
+    case 'string':
+      // We need to pass a few more values to the dropdown mark: a set of
+      // options, a key, and a sources string
+      markerEl = (
+        <WidgetDropdown
+          bookmark={marker}
+          options={node.bookmark.options}
+          keyType={node.key}
+          source={node.bookmark.source}
+          initialValue={node.value}
+        />
+      );
+      break;
+    case 'boolean':
+      markerEl = <WidgetToggle bookmark={marker} value={node.value} />;
+      break;
+    // Disabling vector for now
+    // case 'vector':
+    //   markerEl = <VectorPicker bookmark={mybookmark} />;
+    //   break;
+    default:
+      break;
+  }
+
+  // Insert the text marker into CodeMirror DOM
+  ReactDOM.render(markerEl, markerRootEl);
 }
 
 /**
@@ -52,86 +97,31 @@ function insertMarks(fromLine, toLine = fromLine) {
   // Bail if editor is in read-only mode
   if (editor.isReadOnly()) return;
 
+  const doc = editor.getDoc();
+
   // For each line in the range, get the line handle, check for nodes,
-  // check for marks, and add or remove them.
+  // check for any existing text markers, and add them if necessary.
   for (let line = fromLine; line <= toLine; line++) {
-    const doc = editor.getDoc();
     const lineHandle = doc.getLineHandle(line);
 
-    // If no lineHandle, then CodeMirror probably has not parsed it yet;
-    // continue
-    if (!lineHandle || !lineHandle.stateAfter) {
-      // eslint-disable-next-line no-continue
-      continue;
-    }
+    // If no lineHandle, then CodeMirror probably has not parsed it yet
+    // eslint-disable-next-line no-continue
+    if (!lineHandle || !lineHandle.stateAfter) continue;
 
     const nodes = lineHandle.stateAfter.nodes || null;
 
     // If there are no nodes, go to the next line
-    if (!nodes) {
-      // eslint-disable-next-line no-continue
-      continue;
-    }
+    // eslint-disable-next-line no-continue
+    if (!nodes) continue;
 
-    for (let node of nodes) {
-      // See if there's a bookmark constructor attached to it, and
-      // if so, we create it and insert it into the document.
+    for (const node of nodes) {
       // Skip blank lines, which may have the state (and bookmark
       // constructor) of the previous line.
       if (node.bookmark && lineHandle.text.trim() !== '') {
-        const lineNumber = doc.getLineNumber(lineHandle);
-
-        const mytype = node.bookmark.type;
-
-        // TODO: What does this do?
-        if (lineNumber) {
-          node.range.to.line = lineNumber;
-          node.range.from.line = lineNumber;
-        }
-
-        node = isThereMark(node);
-
-        let mybookmark = {};
-
-        if (node !== '') {
-          const myel = createMarkRootNode(mytype);
-
-          // inserts the bookmark into CodeMirror DOM
-          mybookmark = doc.setBookmark(node.range.to, {
-            widget: myel, // inserted DOM element into position
-            insertLeft: true,
-            clearWhenEmpty: true,
-            handleMouseEvents: false,
-          });
-          // We attach only one property to a bookmark that only inline
-          // bookmark will need to use to verify position within a node array
-          mybookmark.widgetPos = node.range;
-
-          if (mytype === 'color') {
-            ReactDOM.render(
-              <ColorBookmark bookmark={mybookmark} value={node.value} shader={false} />,
-              myel
-            );
-          } else if (mytype === 'string') {
-            // We need to pass a few more values to the dropdown
-            // mark: a set of options, a key, and a sources string
-            ReactDOM.render(
-              <WidgetDropdown
-                bookmark={mybookmark}
-                options={node.bookmark.options}
-                keyType={node.key}
-                source={node.bookmark.source}
-                initialValue={node.value}
-              />,
-              myel
-            );
-          } else if (mytype === 'boolean') {
-            ReactDOM.render(<WidgetToggle bookmark={mybookmark} value={node.value} />, myel);
-          }
-          // Disabling vector for now
-          // else if (mytype === 'vector') {
-          //     ReactDOM.render(<VectorPicker bookmark={mybookmark}/>, myel);
-          // }
+        // Check if a text marker is already in the document. If not, create it
+        // and insert it into the document.
+        if (isTextMarkerAlreadyInDocument(doc, node) === false) {
+          createAndRenderTextMarker(doc, node);
         }
       }
     }
