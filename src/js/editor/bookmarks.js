@@ -10,8 +10,8 @@ import { indexesFromLineRange } from './codemirror/tools';
 import { getScalarNodesInRange } from './yaml-ast';
 import { getTextMarkerConstructors } from './codemirror/bookmarks';
 
-function isTextMarkerAlreadyInDocument(doc, node) {
-  const marks = doc.findMarksAt(node.range.to);
+function isTextMarkerAlreadyInDocument(doc, pos) {
+  const marks = doc.findMarksAt(pos);
 
   // If there is a text marker already inserted, return true
   for (const mark of marks) {
@@ -84,6 +84,51 @@ function createAndRenderTextMarker(doc, node) {
   ReactDOM.render(markerEl, markerRootEl);
 }
 
+function createAndRenderTextMarkerAST(doc, node, mark) {
+  const markerRootEl = createTextMarkerRootElement();
+  const markerType = mark.type;
+  const markerPos = doc.posFromIndex(node.endPosition);
+  const marker = doc.setBookmark(markerPos, {
+    widget: markerRootEl, // inserted DOM element into position
+    insertLeft: true,
+    clearWhenEmpty: true,
+    handleMouseEvents: false,
+  });
+
+  // Create the text marker element
+  let markerEl = null;
+  switch (markerType) {
+    case 'color':
+      markerEl = <ColorBookmark bookmark={marker} value={node.value} shader={false} />;
+      break;
+    case 'string':
+      // We need to pass a few more values to the dropdown mark: a set of
+      // options, a key, and a sources string
+      markerEl = (
+        <WidgetDropdown
+          bookmark={marker}
+          options={mark.options}
+          keyType={node.parent.key.value}
+          source={mark.source}
+          initialValue={node.value}
+        />
+      );
+      break;
+    case 'boolean':
+      markerEl = <WidgetToggle bookmark={marker} value={node.value} />;
+      break;
+    // Disabling vector for now
+    // case 'vector':
+    //   markerEl = <VectorPicker bookmark={mybookmark} />;
+    //   break;
+    default:
+      break;
+  }
+
+  // Insert the text marker into CodeMirror DOM
+  ReactDOM.render(markerEl, markerRootEl);
+}
+
 /**
  * Parses the editor from `fromLine` to `toLine` and inserts markers where
  * needed. Do not insert markers for read-only documents, since their presence
@@ -120,21 +165,12 @@ function insertMarks(fromLine, toLine = fromLine) {
       if (node.bookmark && lineHandle.text.trim() !== '') {
         // Check if a text marker is already in the document. If not, create it
         // and insert it into the document.
-        if (isTextMarkerAlreadyInDocument(doc, node) === false) {
+        if (isTextMarkerAlreadyInDocument(doc, node.range.to) === false) {
           createAndRenderTextMarker(doc, node);
         }
       }
     }
   }
-}
-
-/**
- * A convenience function using insertMarks() to insert all marks in the
- * current visible viewport.
- */
-export function insertMarksInViewport() {
-  const viewport = editor.getViewport();
-  insertMarks(viewport.from, viewport.to);
 }
 
 /**
@@ -151,7 +187,24 @@ export function insertMarksWithAST(doc, ast, fromLine, toLine) {
 
   // For each node mimic bookmark constructor stuff
   const marks = getTextMarkerConstructors(nodes);
-  console.log(marks);
+
+  for (const mark of marks) {
+    const pos = doc.posFromIndex(mark.node.endPosition);
+    if (isTextMarkerAlreadyInDocument(doc, pos) === false) {
+      createAndRenderTextMarkerAST(doc, mark.node, mark);
+    }
+  }
+}
+
+/**
+ * A convenience function using insertMarks() to insert all marks in the
+ * current visible viewport.
+ */
+export function insertMarksInViewport() {
+  const viewport = editor.getViewport();
+  const doc = editor.getDoc();
+  insertMarksWithAST(doc, parsedYAMLDocument.nodes, viewport.from, viewport.to);
+  // insertMarks(viewport.from, viewport.to);
 }
 
 /**
@@ -228,6 +281,8 @@ function clearMarks(fromLine, toLine) {
  *          editor content.
  */
 function handleEditorChanges(cm, changes) {
+  parsedYAMLDocument.regenerate(cm.getDoc().getValue());
+
   for (const change of changes) {
     // Each change object specifies a range of lines
     const fromLine = change.from.line;
