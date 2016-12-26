@@ -49,9 +49,15 @@ class DocsPanel extends React.Component {
   }
 
   componentDidMount() {
-    EventEmitter.subscribe('editor:ready', () => {
+    // Respond to changes in cursor position. If the editor is not present
+    // at the time of mounting, add a event listener to listen for readiness.
+    if (editor) {
       editor.on('cursorActivity', this.onEditorCursorActivity);
-    });
+    } else {
+      EventEmitter.subscribe('editor:ready', () => {
+        editor.on('cursorActivity', this.onEditorCursorActivity);
+      });
+    }
   }
 
   componentWillUnmount() {
