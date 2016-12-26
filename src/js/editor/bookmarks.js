@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import ColorBookmark from '../components/pickers/color/ColorBookmark';
 import WidgetDropdown from '../components/widgets/WidgetDropdown';
 // import VectorPicker from '../components/pickers/vector/VectorPicker';
-import WidgetToggle from '../components/widgets/WidgetToggle';
+import BooleanMarker from '../components/widgets/BooleanMarker';
 import { editor, parsedYAMLDocument } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
 import { getScalarNodesInRange, getKeyValueOfNode } from './yaml-ast';
@@ -80,7 +80,7 @@ function createAndRenderTextMarker(doc, node, mark) {
       );
       break;
     case 'boolean':
-      markerEl = <WidgetToggle marker={marker} value={node.value} />;
+      markerEl = <BooleanMarker marker={marker} value={node.value} />;
       break;
     // Disabling vector for now
     // case 'vector':

@@ -14,7 +14,7 @@ import Color from './color';
 // import EventEmitter from '../../event-emitter';
 
 /**
- * Represents a color picker widget
+ * Represents a color swatch text marker
  */
 export default class ColorBookmark extends React.Component {
   /**

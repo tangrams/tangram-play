@@ -8,7 +8,9 @@
 
 /* CodeMirror bookmarks and popups */
 
-.bookmark {
+/* deprecate "bookmark" namespace */
+.bookmark,
+.textmarker {
   display: inline-block;
   position: relative;
   margin: 0 0.5em;
@@ -46,30 +48,31 @@
 
 /* React: Widget Toggle */
 
-.bookmark-toggle {
+.textmarker-boolean {
   box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  max-width: 14px;
-  max-height: 14px;
+  border-radius: var(--ui-border-radius);
   width: 1em;
   height: 1em;
   cursor: pointer;
   margin-top: -0.15em;
   display: flex;
+  overflow: hidden;
 }
 
-.bookmark-toggle label {
+.textmarker-boolean label {
   display: flex;
 }
 
-.bookmark-toggle input[type=checkbox] {
+.textmarker-boolean input[type=checkbox] {
   position: relative;
   outline: none;
   margin-top: -0.15em;
+  cursor: pointer;
 }
 
-.bookmark-toggle input[type=checkbox]::after {
-  content: '\FF58';
+.textmarker-boolean input[type=checkbox]::after {
+  content: '\2717';
   color: white;
   visibility: visible;
   display: flex;
@@ -78,7 +81,7 @@
   background-color: var(--ui-element-color);
 }
 
-.bookmark-toggle input[type=checkbox]:checked::after {
+.textmarker-boolean input[type=checkbox]:checked::after {
   content: '\2713';
   color: white;
 }
