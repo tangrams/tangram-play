@@ -7,7 +7,9 @@ import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
 import IconButton from './IconButton';
-import { editor } from '../editor/editor';
+import EventEmitter from './event-emitter';
+import { editor, parsedYAMLDocument } from '../editor/editor';
+import { getKeyAddressForNode } from '../editor/yaml-ast';
 
 // Redux
 import { SET_SETTINGS } from '../store/actions';
@@ -41,20 +43,19 @@ class DocsPanel extends React.Component {
 
     this.onDrag = this.onDrag.bind(this);
     this.onClickChild = this.onClickChild.bind(this);
-    this.onMouseUpEditor = this.onMouseUpEditor.bind(this);
+    this.onEditorCursorActivity = this.onEditorCursorActivity.bind(this);
     this.openPanel = this.openPanel.bind(this);
     this.closePanel = this.closePanel.bind(this);
   }
 
   componentDidMount() {
-    if (!editor) return;
-    const wrapper = editor.getWrapperElement();
-    wrapper.addEventListener('mouseup', this.onMouseUpEditor);
+    EventEmitter.subscribe('editor:ready', () => {
+      editor.on('cursorActivity', this.onEditorCursorActivity);
+    });
   }
 
   componentWillUnmount() {
-    const wrapper = editor.getWrapperElement();
-    wrapper.removeEventListener('mouseup', this.onMouseUpEditor);
+    editor.off('cursorActivity', this.onEditorCursorActivity);
   }
 
   onDrag(e, ui) {
@@ -74,23 +75,14 @@ class DocsPanel extends React.Component {
     this.setState({ display: this.findMatch(address, false) });
   }
 
-  onMouseUpEditor(event) {
-    // bail out if we were doing a selection and not a click
-    if (editor.somethingSelected()) {
-      return;
-    }
-
-    const cursor = editor.getCursor(true);
-    const line = editor.lineInfo(cursor.line);
-    const nodes = line.handle.stateAfter.nodes;
-
-    let address;
-
-    if (nodes.length === 1) {
-      address = nodes[0].address;
+  onEditorCursorActivity(cm) {
+    const doc = cm.getDoc();
+    const cursor = doc.getCursor();
+    const cursorIndex = doc.indexFromPos(cursor); // -> Number
+    const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
+    const address = getKeyAddressForNode(node);
+    if (address) {
       this.setState({ display: this.findMatch(address, true) });
-    } else {
-      console.log('line has more than one node');
     }
   }
 

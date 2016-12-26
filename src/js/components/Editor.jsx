@@ -43,6 +43,9 @@ class Editor extends React.PureComponent {
     editor.on('cursorActivity', debouncedUpdateLocalMemory);
     editor.on('viewportChange', debouncedUpdateLocalMemory);
 
+    // Broadcast editor state ready to other componentClass
+    EventEmitter.dispatch('editor:ready');
+
     // CodeMirror instance must refresh when editor pane is resized.
     EventEmitter.subscribe('divider:reposition', refreshEditor);
   }

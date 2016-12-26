@@ -184,9 +184,9 @@ export function updateLocalMemory() {
  */
 export const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
 
-export function watchEditorForChanges() {
+export function watchEditorForChanges(cm, changes) {
   const content = getEditorContent();
-  const doc = editor.getDoc();
+  const doc = cm.getDoc();
   const isClean = doc.isClean();
 
   parsedYAMLDocument.regenerate(content);
