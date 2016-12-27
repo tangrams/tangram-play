@@ -156,8 +156,8 @@ export default class ColorMarker extends React.Component {
    *  Use this method within a picker to communicate a value
    *  back to the Tangram Play editor.
    */
-  setEditorValue(string) {
-    setCodeMirrorValue(this.props.marker, string);
+  setEditorValue(value) {
+    setCodeMirrorValue(this.props.marker, value);
   }
 
   /**

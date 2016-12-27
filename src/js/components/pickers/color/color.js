@@ -180,6 +180,19 @@ export default class Color {
     return `[${v}, ${e}, ${c}, ${a}]`;
   }
 
+  /**
+   * Returns a color value as an array of strings, as in [v, e, c, a]
+   * Reserved for future use: batch updating of arbitrary sequence formats
+   */
+  getVecArray() {
+    const vecColor = this.rgb2vec();
+    const v = vecColor.v.toFixed(3);
+    const e = vecColor.e.toFixed(3);
+    const c = vecColor.c.toFixed(3);
+    const a = this.color.getAlpha().toFixed(2);
+    return [v, e, c, a];
+  }
+
   // For use within GLSL pickers and shader blocks
   // Returns vec string "[0.x, 0.x , 0.x]" No alpha.
   getVec3String() {

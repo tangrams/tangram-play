@@ -231,7 +231,7 @@ export function watchEditorForChanges(cm, changes) {
  *
  * @public
  * @param {Object} marker - The marker whose value changes
- * @param {string} value - The new value to set to
+ * @param {string} value - The new value to set to.
  */
 export function setCodeMirrorValue(marker, value) {
   // Bail if editor is read-only
@@ -242,17 +242,13 @@ export function setCodeMirrorValue(marker, value) {
 
   // Find the position of the text marker, and the range of the scalar node
   // it's attached to. That range is replaced with the new value.
-  if (marker.node.kind === 0) {
-    const pos = marker.find(); // returns { line, ch } - does this ever become
-    // a { from, to } object like the documentation says? maybe if it's a text range?
-    const index = doc.indexFromPos(pos);
-    const node = parsedYAMLDocument.getNodeAtIndex(index);
-    const from = doc.posFromIndex(node.startPosition);
-    const to = doc.posFromIndex(node.endPosition);
-    doc.replaceRange(value, from, to, origin);
-  } else if (marker.node.kind === 3) {
-    // TODO: handle sequence values, like colors
-  }
+  const pos = marker.find(); // returns { line, ch } - does this ever become
+  // a { from, to } object like the documentation says? maybe if it's a text range?
+  const index = doc.indexFromPos(pos);
+  const node = parsedYAMLDocument.getNodeAtIndex(index);
+  const from = doc.posFromIndex(node.startPosition);
+  const to = doc.posFromIndex(node.endPosition);
+  doc.replaceRange(value, from, to, origin);
 }
 
 /* This section is for the shader widget links */
