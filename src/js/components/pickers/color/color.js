@@ -30,23 +30,14 @@ export default class Color {
       if (color.charAt(0) === '\'' && (color.charAt(color.length - 1) === '\'')) {
         return color.replace(/'/g, '');
       } else if ((color.charAt(0) === '[') && (color.charAt(color.length - 1) === ']')) {
-        // If a vec color
-        let colorString = color;
-        colorString = colorString.replace('[', '');
-        colorString = colorString.replace(']', '');
-        colorString = colorString.split(',');
+        const vec = this.vecStringToVecObject(color);
 
-        if (colorString.length >= 3) {
-          const vec = {
-            v: colorString[0],
-            e: colorString[1],
-            c: colorString[2],
-            a: colorString[3] || 1.0,
-          };
+        if (vec) {
           const rgb = this.vec2rgb(vec);
           return rgb;
         }
 
+        // If it looks like a vec string but can't be parsed as one, it's not valid
         this.valid = false;
         return 'black';
       }
@@ -99,7 +90,8 @@ export default class Color {
   }
 
   /**
-   * Converts a `vec` color object to an `rgb` object
+   * Converts a `vec` color object to an `rgb` object. Alpha values will be
+   * passed through if provided, but they are optional.
    *
    * @private
    * @param {Object} vec - an object of shape {v, e, c, a}
@@ -118,6 +110,40 @@ export default class Color {
     }
 
     return rgb;
+  }
+
+  /**
+   * Converts a string that looks like this: `[0.25, 0.25, 0.25, 1]` to a
+   * `vec` object of shape {v, e, c, a}. Alpha values do not need to be provided
+   * but if it is not, a default value of 1.0 is provided.
+   *
+   * @private
+   * @param {string} vecString - a string that looks like `[0.25, 0.25, 0.25, 1]`
+   * @returns {Object} vecObj - an object of shape {v, e, c, a}
+   */
+  vecStringToVecObject(vecString) {
+    if ((vecString.charAt(0) === '[') && (vecString.charAt(vecString.length - 1) === ']')) {
+      let str = vecString;
+      str = str.replace('[', '');
+      str = str.replace(']', '');
+      str = str.split(',');
+
+      if (str.length >= 3) {
+        // Parse all values as floats. Unparseable values default to 0.
+        // If an alpha is not provided, use 1.0 as default value.
+        const vec = {
+          v: Number.parseFloat(str[0]) || 0,
+          e: Number.parseFloat(str[1]) || 0,
+          c: Number.parseFloat(str[2]) || 0,
+          a: str[3] ? Number.parseFloat(str[3]) || 0 : 1.0,
+        };
+
+        return vec;
+      }
+    }
+
+    // The default response is `null` if vecString cannot be converted.
+    return null;
   }
 
   /**
