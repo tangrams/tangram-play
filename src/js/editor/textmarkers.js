@@ -25,9 +25,9 @@ function makeTextMarkerConstructionKit(tangramAPIValues) {
     const modified = Object.assign({}, item);
 
     // Text markers exist for different types of Tangram scene syntax.
-    //      value - a bookmark exists for this type of value (not used?)
-    //      key - a bookmark exists when the key matches this
-    //      address - a bookmark exists when the address (sequence of keys)
+    //      value - a marker exists for this type of value (not used?)
+    //      key - a marker exists when the key matches this
+    //      address - a marker exists when the address (sequence of keys)
     //          matches this
     // This normalizes the syntax matching method to a single property.
     if (Object.prototype.hasOwnProperty.call(modified, 'key')) {
@@ -44,10 +44,10 @@ function makeTextMarkerConstructionKit(tangramAPIValues) {
 
 // Only certain types of values in Tangram syntax will have textmarkers, so
 // filter out all other ones.
-const listOfBookmarkConstructors = makeTextMarkerConstructionKit(TANGRAM_API.values);
+const listOfTextMarkerConstructors = makeTextMarkerConstructionKit(TANGRAM_API.values);
 
 /**
- * Get bookmark constructors for each AST node
+ * Get text marker constructors for each AST node
  *
  * @param {Array} nodes - nodes to search through
  * @param {Array} marks - array of TextMarkers to build
@@ -58,7 +58,7 @@ export function getTextMarkerConstructors(nodes) {
   // Find text marker constructors that match the node
   nodes.forEach((node) => {
     // Compare node against all available marker types
-    for (const mark of listOfBookmarkConstructors) {
+    for (const mark of listOfTextMarkerConstructors) {
       if (mark.matchAgainst === 'key') {
         const key = getKeyNameForNode(node);
         if (key) {
@@ -128,14 +128,14 @@ function isTextMarkerAlreadyInDocument(doc, pos) {
 }
 
 /**
- * Creates an that CodeMirror inserts as the bookmark's DOM node. This element
+ * Creates an that CodeMirror inserts as the text marker's DOM node. This element
  * is merely an empty container that React later mounts into.
  *
  * @returns {Element} - empty element used as React root element.
  **/
 function createTextMarkerRootElement() {
   const el = document.createElement('div');
-  el.className = 'editor-bookmark-root';
+  el.className = 'textmarker-root';
   return el;
 }
 

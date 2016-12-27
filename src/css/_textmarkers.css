@@ -7,18 +7,21 @@
 }
 
 /* CodeMirror text markers and popups */
-.textmarker {
-  display: inline-block;
-  position: relative;
-  margin: 0 0.5em;
-  user-select: none;
-}
-
-.editor-bookmark-root {
+/* Root element inserted by CodeMirror */
+.textmarker-root {
   display: inline-block;
   position: relative;
   box-sizing: border-box;
   background-color: none;
+  user-select: none;
+}
+
+/* Generic top-level namespace for textmarker elements, which will be a direct
+   child element inserted into the root element. */
+.textmarker {
+  display: inline-block;
+  position: relative;
+  margin: 0 0.5em;
   user-select: none;
 }
 
