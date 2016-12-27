@@ -1,12 +1,12 @@
 import tinycolor from 'tinycolor2';
 
-const valueRanges = {
+const COLOR_VALUE_RANGES = {
   rgb: { r: [0, 255], g: [0, 255], b: [0, 255] },
 };
 
 export default class Color {
   constructor(color) {
-    // Invalid colors (junk input or user is typing) are created as white by default
+    // Invalid colors (junk input or user is typing) are created as black by default
     // We need a way to distinguish what inputs were junk, so invalid colors
     // will be this.valid = false
     this.valid = true;
@@ -22,7 +22,7 @@ export default class Color {
    * As such, we need to check for array notation and for hex written as a string
    *
    * @private
-   * @param {string} color - color to parse
+   * @param {string|Array} color - color to parse
    */
   processColor(color) {
     if (typeof color === 'string' || color instanceof String) {
@@ -37,21 +37,29 @@ export default class Color {
         colorString = colorString.split(',');
 
         if (colorString.length >= 3) {
-          const vec = { v: colorString[0], e: colorString[1], c: colorString[2] };
+          const vec = {
+            v: colorString[0],
+            e: colorString[1],
+            c: colorString[2],
+            a: colorString[3] || 1.0,
+          };
           const rgb = this.vec2rgb(vec);
-
-          // We need to add an alpha by default so that the widget
-          // button can update css properly
-          rgb.a = 1.0;
-
-          if (colorString.length === 4) {
-            rgb.a = parseFloat(colorString[3]);
-          }
           return rgb;
         }
 
         this.valid = false;
-        return 'white';
+        return 'black';
+      }
+    } else if (Array.isArray(color)) {
+      if (color.length >= 3) {
+        const vec = {
+          v: color[0],
+          e: color[1],
+          c: color[2],
+          a: color[3] || 1.0,
+        };
+        const rgb = this.vec2rgb(vec);
+        return rgb;
       }
     }
 
@@ -84,39 +92,49 @@ export default class Color {
 
     if (!newColor.isValid()) {
       this.valid = false;
-      newColor = tinycolor('white');
+      newColor = tinycolor('black');
     }
 
     return newColor;
   }
 
   /**
-   * Converts the internally stored color from vec to rgb
+   * Converts a `vec` color object to an `rgb` object
    *
    * @private
+   * @param {Object} vec - an object of shape {v, e, c, a}
+   * @returns {Object} rgb - an object of shape {r, g, b, a}
    */
   vec2rgb(vec) {
-    return {
-      r: vec.v * valueRanges.rgb.r[1],
-      g: vec.e * valueRanges.rgb.g[1],
-      b: vec.c * valueRanges.rgb.b[1],
+    const rgb = {
+      r: Number.parseFloat(vec.v) * COLOR_VALUE_RANGES.rgb.r[1],
+      g: Number.parseFloat(vec.e) * COLOR_VALUE_RANGES.rgb.g[1],
+      b: Number.parseFloat(vec.c) * COLOR_VALUE_RANGES.rgb.b[1],
     };
+
+    // Alpha values are optional. Add it if present.
+    if (vec.a) {
+      rgb.a = Number.parseFloat(vec.a);
+    }
+
+    return rgb;
   }
 
   /**
-   * Converts the internally stored color from rgb to vec
+   * Converts an internally stored color object to an `vec` object
    *
    * @private
+   * @returns {Object} vec - an object of shape {v, e, c}
    */
   rgb2vec() {
     return {
-      v: this.color.toRgb().r / valueRanges.rgb.r[1],
-      e: this.color.toRgb().g / valueRanges.rgb.g[1],
-      c: this.color.toRgb().b / valueRanges.rgb.b[1],
+      v: this.color.toRgb().r / COLOR_VALUE_RANGES.rgb.r[1],
+      e: this.color.toRgb().g / COLOR_VALUE_RANGES.rgb.g[1],
+      c: this.color.toRgb().b / COLOR_VALUE_RANGES.rgb.b[1],
     };
   }
 
-  // Returns rgba object { r: , g: , b: , a: }
+  // Returns rgba object { r , g , b , a }
   getRgba() {
     return this.color.toRgb();
   }

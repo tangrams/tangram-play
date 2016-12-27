@@ -415,6 +415,27 @@ export function getKeyValueOfNode(node) {
   return findKeyNode(node);
 }
 
+/**
+ * Given a sequence node, return an array of all scalar values in the sequence
+ * as strings. On errors, return an empty array. Skip child nodes that do not
+ * contain scalar values. Do not traverse more than one level.
+ *
+ * @param {YAMLNode} node - the sequence node we want to extract values from
+ * @returns {Array} values - array of scalar values.
+ */
+export function getValuesFromSequenceNode(node) {
+  if (node.kind !== YAML_SEQUENCE) return [];
+
+  const items = [];
+  node.items.forEach((item) => {
+    if (item.kind === YAML_SCALAR) {
+      items.push(item.value);
+    }
+  });
+
+  return items;
+}
+
 export class ParsedYAMLDocument {
   constructor(content) {
     this.nodes = {};

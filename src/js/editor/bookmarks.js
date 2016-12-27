@@ -6,7 +6,7 @@ import WidgetDropdown from '../components/widgets/WidgetDropdown';
 import BooleanMarker from '../components/widgets/BooleanMarker';
 import { editor, parsedYAMLDocument } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
-import { getScalarNodesInRange, getKeyValueOfNode } from './yaml-ast';
+import { getScalarNodesInRange, getKeyValueOfNode, getValuesFromSequenceNode } from './yaml-ast';
 import { getTextMarkerConstructors } from './codemirror/bookmarks';
 
 function isTextMarkerAlreadyInDocument(doc, pos) {
@@ -63,9 +63,16 @@ function createAndRenderTextMarker(doc, node, mark) {
   // Create the text marker element
   let markerEl = null;
   switch (markerType) {
-    case 'color':
-      markerEl = <ColorMarker marker={marker} value={node.value} shader={false} />;
+    case 'color': {
+      // A color value may be a string or an array of values.
+      markerEl = (
+        <ColorMarker
+          marker={marker}
+          value={node.value || getValuesFromSequenceNode(node)}
+        />
+      );
       break;
+    }
     case 'string':
       // We need to pass a few more values to the dropdown mark: a set of
       // options, a key, and a sources string

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Checkboard } from 'react-color/lib/components/common';
@@ -17,13 +18,6 @@ import Color from './color';
  * Represents a color swatch text marker
  */
 export default class ColorMarker extends React.Component {
-  /**
-   * Used to setup the state of the component. Regular ES6 classes do not
-   * automatically bind 'this' to the instance, therefore this is the best
-   * place to bind event handlers
-   *
-   * @param props - parameters passed from the parent
-   */
   constructor(props) {
     super(props);
 
@@ -61,9 +55,6 @@ export default class ColorMarker extends React.Component {
     }
   }
 
-  /**
-   * React lifecycle function. Gets called once when DIV is mounted
-   */
   componentDidMount() {
     // Colorpalette section
     /*
@@ -195,12 +186,12 @@ export default class ColorMarker extends React.Component {
 
             return (
               <div
-                className="bookmark bookmark-color"
+                className="textmarker textmarker-color"
                 ref={(ref) => { this.markerEl = ref; }}
                 onClick={this.onClickTextMarker}
               >
                 <Checkboard size="3" />
-                <div className="bookmark-color-swatch" style={colorStyle} />
+                <div className="textmarker-color-swatch" style={colorStyle} />
               </div>
             );
           })()}
@@ -228,7 +219,11 @@ ColorMarker.propTypes = {
   marker: React.PropTypes.shape({
     find: React.PropTypes.func,
   }),
-  value: React.PropTypes.string,
+  // The value may be a string, or an array of string values.
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.arrayOf(React.PropTypes.string),
+  ]).isRequired,
   // These props are only used for GLSL pickers within the shader blocks
   shader: React.PropTypes.bool,
   cursor: React.PropTypes.shape({
@@ -239,4 +234,8 @@ ColorMarker.propTypes = {
     end: React.PropTypes.number,
   }),
   vec: React.PropTypes.string,
+};
+
+ColorMarker.defaultProps = {
+  shader: false,
 };
