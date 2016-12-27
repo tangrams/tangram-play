@@ -7,7 +7,12 @@ import DropdownMarker from '../components/textmarkers/DropdownMarker';
 import BooleanMarker from '../components/textmarkers/BooleanMarker';
 import { editor, parsedYAMLDocument } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
-import { getScalarNodesInRange, getKeyValueOfNode, getValuesFromSequenceNode, getKeyAddressForNode } from './yaml-ast';
+import {
+  getScalarNodesInRange,
+  getKeyNameForNode,
+  getValuesFromSequenceNode,
+  getKeyAddressForNode,
+} from './yaml-ast';
 import TANGRAM_API from '../tangram-api.json';
 
 function makeTextMarkerConstructionKit(tangramAPIValues) {
@@ -55,19 +60,19 @@ export function getTextMarkerConstructors(nodes) {
     // Compare node against all available marker types
     for (const mark of listOfBookmarkConstructors) {
       if (mark.matchAgainst === 'key') {
-        // Get the key value of node, whch is either on its parent node,
-        // or two parents up if it's part of a sequence.
-        const key = node.parent.key || node.parent.parent.key;
-        const check = RegExp(mark.matchPattern).test(key);
+        const key = getKeyNameForNode(node);
+        if (key) {
+          const check = RegExp(mark.matchPattern).test(key);
 
-        // If a matching mark type is found, make a copy of it and store
-        // information about the node.
-        if (check) {
-          const clone = Object.assign({}, mark);
-          clone.key = key;
-          clone.node = node;
-          marks.push(clone);
-          break;
+          // If a matching mark type is found, make a copy of it and store
+          // information about the node.
+          if (check) {
+            const clone = Object.assign({}, mark);
+            clone.key = key;
+            clone.node = node;
+            marks.push(clone);
+            break;
+          }
         }
       } else if (mark.matchAgainst === 'address') {
         const address = getKeyAddressForNode(node);
@@ -177,7 +182,7 @@ function createAndRenderTextMarker(doc, node, mark) {
       // options, a key, and a sources string
       markerEl = (
         <DropdownMarker
-          keyName={getKeyValueOfNode(node)}
+          keyName={getKeyNameForNode(node)}
           marker={marker}
           options={mark.options}
           source={mark.source}

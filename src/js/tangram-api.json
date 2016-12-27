@@ -449,12 +449,7 @@
       "defaultValue": 1
     },
     {
-      "address": ":draw:(\\w|\\_|\\-|\\/)+:color$",
-      "type": "color",
-      "defaultValue": "[1, 1, 1]"
-    },
-    {
-      "address": ":draw:(\\w|\\_|\\-|\\/)+:outline:color$",
+      "address": ":draw:(\\w|\\_|\\-|\\/|:)+:color$",
       "type": "color",
       "defaultValue": "[1, 1, 1]"
     },
@@ -494,7 +489,7 @@
       "source": "sources"
     },
     {
-      "address": "^layers:(\\w|\\_|\\-|\\/)+:extrude$",
+      "address": "^layers:(\\w|\\_|\\-|\\/|:)+:extrude$",
       "type": "boolean",
       "defaultValue": "true"
     },
