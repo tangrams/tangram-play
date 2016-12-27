@@ -5,7 +5,7 @@ import { editor } from '../../editor/editor';
 import { clickIsAtCursorPosition } from '../../editor/codemirror/tools';
 import Vec2Picker from './Vec2Picker';
 import NumberPicker from './NumberPicker';
-import ColorBookmark from '../pickers/color/ColorBookmark';
+import ColorMarker from '../pickers/color/ColorMarker';
 
 /**
  * RegExp.exec() method normally returns just one match.
@@ -141,14 +141,14 @@ export function initGlslPickers() {
         case 'vec4':
         case 'vec3':
           {
-            // Cleaning up the value we send to the ColorBookmark
+            // Cleaning up the value we send to the ColorMarker
             let cleanNum = match.string.substr(4);
             cleanNum = cleanNum.replace(/[()]/g, '');
             cleanNum = `[${cleanNum}]`;
 
             if (match.type === 'vec4') {
               ReactDOM.render(
-                <ColorBookmark
+                <ColorMarker
                   cursor={cursor}
                   match={match}
                   value={cleanNum}
@@ -159,7 +159,7 @@ export function initGlslPickers() {
               );
             } else {
               ReactDOM.render(
-                <ColorBookmark
+                <ColorMarker
                   cursor={cursor}
                   match={match}
                   value={cleanNum}

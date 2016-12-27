@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ColorBookmark from '../components/pickers/color/ColorBookmark';
+import ColorMarker from '../components/pickers/color/ColorMarker';
 import WidgetDropdown from '../components/widgets/WidgetDropdown';
 // import VectorPicker from '../components/pickers/vector/VectorPicker';
 import BooleanMarker from '../components/widgets/BooleanMarker';
@@ -64,7 +64,7 @@ function createAndRenderTextMarker(doc, node, mark) {
   let markerEl = null;
   switch (markerType) {
     case 'color':
-      markerEl = <ColorBookmark marker={marker} value={node.value} shader={false} />;
+      markerEl = <ColorMarker marker={marker} value={node.value} shader={false} />;
       break;
     case 'string':
       // We need to pass a few more values to the dropdown mark: a set of

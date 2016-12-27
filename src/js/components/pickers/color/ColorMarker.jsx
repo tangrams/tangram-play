@@ -16,7 +16,7 @@ import Color from './color';
 /**
  * Represents a color swatch text marker
  */
-export default class ColorBookmark extends React.Component {
+export default class ColorMarker extends React.Component {
   /**
    * Used to setup the state of the component. Regular ES6 classes do not
    * automatically bind 'this' to the instance, therefore this is the best
@@ -224,7 +224,7 @@ export default class ColorBookmark extends React.Component {
   }
 }
 
-ColorBookmark.propTypes = {
+ColorMarker.propTypes = {
   marker: React.PropTypes.shape({
     find: React.PropTypes.func,
   }),
