@@ -13,12 +13,13 @@ import {
   getValuesFromSequenceNode,
   getKeyAddressForNode,
 } from './yaml-ast';
+import { applySyntaxHighlighting } from './imports';
 import TANGRAM_API from '../tangram-api.json';
 
 function makeTextMarkerConstructionKit(tangramAPIValues) {
   const filtered = filter(tangramAPIValues, item =>
     item.type === 'color' || item.type === 'vector' ||
-    item.type === 'boolean' || item.type === 'string'
+    item.type === 'boolean' || item.type === 'string' || item.type === 'link'
   );
 
   return filtered.map((item) => {
@@ -140,19 +141,14 @@ function createTextMarkerRootElement() {
 }
 
 /**
- * Parses the CodeMirror document from `fromLine` to `toLine` and inserts text
- * markers where needed. Do not insert markers for read-only documents, since
- * their presence implies values can be changed.
+ * Creates and renders DOM elements for text markers that need them.
  *
  * @param {CodeMirror} cm - instance of CodeMirror editor
- * @param {YAMLNode} ast - YAML abstract syntax tree root node
- * @param {Number} fromLine - The line number to insert from
- * @param {Number} toLine - Optional. The line number to insert to. If not
- *          provided, just the fromLine is checked.
+ * @param {YAMLNode} node - YAML abstract syntax tree root node
+ * @param {Object} mark - information about the text marker to add
  */
 function createAndRenderTextMarker(doc, node, mark) {
   const markerRootEl = createTextMarkerRootElement();
-  const markerType = mark.type;
   const markerPos = doc.posFromIndex(node.endPosition);
   const marker = doc.setBookmark(markerPos, {
     widget: markerRootEl, // a DOM element inserted at marker position
@@ -166,7 +162,7 @@ function createAndRenderTextMarker(doc, node, mark) {
 
   // Create the text marker element
   let markerEl = null;
-  switch (markerType) {
+  switch (mark.type) {
     case 'color': {
       // A color value may be a string or an array of values.
       markerEl = (
@@ -230,7 +226,13 @@ export function insertTextMarkers(cm, ast, fromLine, toLine) {
   for (const mark of marks) {
     const pos = doc.posFromIndex(mark.node.endPosition);
     if (isTextMarkerAlreadyInDocument(doc, pos) === false) {
-      createAndRenderTextMarker(doc, mark.node, mark);
+      if (mark.type === 'link') {
+        // This is a marked range, not a DOM node.
+        applySyntaxHighlighting(doc, mark.node);
+      } else {
+        // This is for text markers that have DOM nodes (like the color picker)
+        createAndRenderTextMarker(doc, mark.node, mark);
+      }
     }
   }
 }

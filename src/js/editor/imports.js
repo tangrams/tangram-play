@@ -173,3 +173,33 @@ export function initContextSensitiveClickEvents() {
     el.style.display = 'none';
   });
 }
+
+/**
+ * Apply syntax highlighting class to import values in a CodeMirror document
+ * instance.
+ *
+ * @param {CodeMirror.doc} doc - the CodeMirror document instance to work on
+ * @param {YAMLNode} node - a node (must be a scalar value) to mark text for
+ */
+export function applySyntaxHighlighting(doc, node) {
+  const SYNTAX_CLASS_LINK = 'cm-tangram-link';
+
+  // A node can be null if an entry is created, but has no value
+  if (!node) return;
+
+  const fromPos = doc.posFromIndex(node.startPosition);
+  const toPos = doc.posFromIndex(node.endPosition);
+
+  // If the text span is already marked, remove it first.
+  const existingMarks = doc.findMarks(fromPos, toPos);
+  existingMarks.forEach((mark) => {
+    if (mark.type === 'range' && mark.className === SYNTAX_CLASS_LINK) {
+      mark.clear();
+    }
+  });
+
+  // Now add the new marker
+  doc.markText(fromPos, toPos, {
+    className: SYNTAX_CLASS_LINK,
+  });
+}
