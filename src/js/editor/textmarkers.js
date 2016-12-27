@@ -215,9 +215,6 @@ function createAndRenderTextMarker(doc, node, mark) {
  *          provided, just the fromLine is checked.
  */
 export function insertTextMarkers(cm, ast, fromLine, toLine) {
-  // Bail if editor is in read-only mode
-  if (cm.isReadOnly()) return;
-
   const doc = cm.getDoc();
   const range = indexesFromLineRange(doc, fromLine, toLine);
   const nodes = getScalarNodesInRange(ast, range.start, range.end);
@@ -227,9 +224,12 @@ export function insertTextMarkers(cm, ast, fromLine, toLine) {
     const pos = doc.posFromIndex(mark.node.endPosition);
     if (isTextMarkerAlreadyInDocument(doc, pos) === false) {
       if (mark.type === 'link') {
-        // This is a marked range, not a DOM node.
+        // This is a marked range, not a DOM node. Still apply this in read-only docs
         applySyntaxHighlighting(doc, mark.node);
       } else {
+        // Bail if editor is in read-only mode
+        if (cm.isReadOnly()) return;
+
         // This is for text markers that have DOM nodes (like the color picker)
         createAndRenderTextMarker(doc, mark.node, mark);
       }
