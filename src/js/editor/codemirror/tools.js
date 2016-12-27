@@ -1,37 +1,9 @@
-//  GET Functions
-//  ===============================================================================
-import { isEmptyString, countLeadingSpaces } from '../../tools/helpers';
+import { countLeadingSpaces } from '../../tools/helpers';
 import { parsedYAMLDocument } from '../../editor/editor';
 import { getNodeLevel } from '../../editor/yaml-ast';
 
-//  Get the indentation level of a line
-// @deprecated
-export function getLineInd(cm, line) {
-  return countLeadingSpaces(cm.lineInfo(line).text) / cm.getOption('tabSize');
-}
-
-//  Check if a line is empty
-export function isEmpty(cm, nLine) {
-  return isEmptyString(cm.lineInfo(nLine).text);
-}
-
-//  Check if the line is commented YAML style
-export function isStrCommented(str) {
-  const regex = /^\s*[#||//]/gm;
-  return (regex.exec(str) || []).length > 0;
-}
-export function isCommented(cm, nLine) {
-  return isStrCommented(cm.lineInfo(nLine).text);
-}
-
-// Escape regex special characters
-// via http://stackoverflow.com/a/9310752
-export function regexEscape(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
-
-//  Common NAVIGATION functions on CM
-//  ===============================================================================
+// Navigation functions for CodeMirror
+// ===============================================================================
 
 /**
  * Scrolls a given line into view.
@@ -155,4 +127,9 @@ export function indexesFromLineRange(doc, fromLine, toLine) {
     start: indexFromLineStart(doc, fromLine),
     end: indexFromLineEnd(doc, toLine),
   };
+}
+
+export function getIndexAtCursor(doc) {
+  const pos = doc.getCursor(); // -> Pos {line, ch}
+  return doc.indexFromPos(pos); // -> Number
 }

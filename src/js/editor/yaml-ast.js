@@ -51,15 +51,34 @@ function parseYAML(content) {
 
 /**
  * Given a parsed syntax tree of YAML, and a position index, return
- * the deepest node that contains that position. Returns nothing if not found.
+ * the deepest node that contains that position. Returns `null` if not found.
+ *
+ * When does a node not exist?
+ *
+ * The YAML abstract syntax tree parser will create a node whose value is `null`
+ * in these conditions:
+ *
+ *  - The document is blank (e.g. an empty string)
+ *  - There is an error, and that portion of the document cannot be parsed.
+ *
+ * Additionally, `getNodeAtIndex()` (and similar functions in this module) will
+ * return `null` when a node cannot be found in the tree that matches the
+ * arguments provided. In this case, a given index may not actually lead to a
+ * YAML node. This can happen if:
+ *
+ *  - The line is blank between mapping items. (NOTE: blank lines between
+ *      sequence items do return a node - they are considered part of the range
+ *      for a sequence.)
+ *  - The content is a comment following a scalar value. (NOTE: comments after
+ *      mapping keys are still part of the mapping node - they are considered
+ *      part of the range for a mapping node, although its content is ignored.)
  *
  * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
  * @param {Number} index - a position index
- * @returns {Object} a node
+ * @returns {Object} a node, or null if not found
  */
 function getNodeAtIndex(ast, index) {
   function searchNodes(node, idx) {
-    // Nodes can be `null` if current document is blank or has errors
     if (!node) return null;
 
     if (idx < node.startPosition || idx > node.endPosition) {
@@ -121,7 +140,7 @@ function getNodeAtIndex(ast, index) {
  */
 function getNodeAtKeyAddress(ast, address) {
   function searchNodes(node, stack) {
-    // Nodes can be `null` if current document is blank or has errors
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
     if (!node) return null;
 
     switch (node.kind) {
@@ -179,7 +198,7 @@ function getNodeAtKeyAddress(ast, address) {
  */
 export function getScalarNodesInRange(ast, fromIndex, toIndex) {
   function findNodes(node, start, end, initial = []) {
-    // Nodes can be `null` if current document is blank or has errors
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
     if (!node) return initial;
 
     // If the node ends before my start range, or starts after my end range,
@@ -244,7 +263,7 @@ export function getScalarNodesInRange(ast, fromIndex, toIndex) {
  */
 export function getKeyAddressForNode(node) {
   function builder(currentNode, stack = []) {
-    // Nodes can be `null` if current document state has errors
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
     if (!currentNode) return stack;
 
     // Add key's value to the current key stack.
@@ -264,6 +283,34 @@ export function getKeyAddressForNode(node) {
   const stack = builder(node, []);
   stack.reverse();
   return addressFromKeyStack(stack);
+}
+
+/**
+ * Given an AST node, return its key value or the key value of its closest
+ * ancestor.
+ *
+ * @param {YAMLNode} node - a node from YAML-AST-parser
+ * @returns {string} keyName - a single value, like "order" or "color"
+ */
+export function getKeyNameForNode(node) {
+  function traverser(currentNode) {
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
+    if (!currentNode) return null;
+
+    // If this node has a key, and it is a scalar value, return it
+    if (currentNode.key && currentNode.key.kind === YAML_SCALAR) {
+      return currentNode.key.value;
+    }
+
+    // Otherwise, traverse parents until we hit no more parents
+    if (currentNode.parent) {
+      return traverser(currentNode.parent);
+    }
+
+    return null;
+  }
+
+  return traverser(node);
 }
 
 /**
@@ -301,7 +348,7 @@ export function getKeyAddressForNode(node) {
  */
 export function getNodeLevel(node) {
   function traverser(currentNode, level = -1) {
-    // Nodes can be `null` if current document state has errors
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
     if (!currentNode) return null;
 
     let returnLevel = level;

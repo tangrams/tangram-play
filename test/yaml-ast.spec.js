@@ -7,6 +7,7 @@ import {
   ParsedYAMLDocument,
   getScalarNodesInRange,
   getKeyAddressForNode,
+  getKeyNameForNode,
   getNodeLevel,
 } from '../src/js/editor/yaml-ast';
 
@@ -147,6 +148,36 @@ describe('YAML abstract syntax tree parser', () => {
     it('returns an empty string if passed in a null value', () => {
       const address = getKeyAddressForNode(null);
       assert.equal(address, '');
+    });
+  });
+
+  describe('getKeyNameForNode()', () => {
+    it('returns null for a top-level node', () => {
+      const address = getKeyNameForNode(parsed.nodes);
+      assert.equal(address, null);
+    });
+
+    it('returns the key name for a node of type "mapping"', () => {
+      const node = parsed.nodes.mappings[1].value.mappings[0].value.mappings[1];
+      const address = getKeyNameForNode(node);
+      assert.equal(address, 'url');
+    });
+
+    it('returns the key name for a node of type "scalar"', () => {
+      const node = parsed.nodes.mappings[1].value.mappings[0].value.mappings[1].value;
+      const address = getKeyNameForNode(node);
+      assert.equal(address, 'url');
+    });
+
+    it('returns the key name for a node in a sequence', () => {
+      const node = parsed.getNodeAtIndex(50);
+      const address = getKeyNameForNode(node);
+      assert.equal(address, 'import');
+    });
+
+    it('returns null if passed in a null value', () => {
+      const address = getKeyNameForNode(null);
+      assert.equal(address, null);
     });
   });
 

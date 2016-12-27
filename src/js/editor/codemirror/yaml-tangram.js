@@ -34,6 +34,7 @@ export function keyStackFromAddress(address) {
 /**
  * Return a string address, truncated to a certain level
  *
+ * @deprecated ?
  * @param {string} address  - in the form of 'key1:key2:key3'
  * @param {Number} level - the level of address to obtain
  * @return {string} address - truncated to maximum of `level`, e.g. 'key1:key2'
