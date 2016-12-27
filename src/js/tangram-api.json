@@ -206,12 +206,16 @@
   ],
   "values": [
     {
+      "key": "imported",
+      "type": "link"
+    },
+    {
       "address": "^scene:background:color$",
       "type": "color",
       "defaultValue": "[0., 0., 0.]"
     },
     {
-      "key": "^animated$",
+      "key": "animated",
       "type": "boolean",
       "defaultValue": "false"
     },
@@ -296,17 +300,17 @@
       ]
     },
     {
-      "key": "^ambient$",
+      "key": "ambient",
       "type": "color",
       "defaultValue": "[0., 0., 0.]"
     },
     {
-      "key": "^diffuse$",
+      "key": "diffuse",
       "type": "color",
       "defaultValue": "[1., 1., 1.]"
     },
     {
-      "key": "^specular$",
+      "key": "specular",
       "type": "color",
       "defaultValue": "[0., 0., 0.]"
     },
@@ -414,7 +418,7 @@
       "defaultValue": "false"
     },
     {
-      "key": "^emission$",
+      "key": "emission",
       "type": "color"
     },
     {
@@ -454,7 +458,7 @@
       "defaultValue": "[1, 1, 1]"
     },
     {
-      "key": "^fill$",
+      "key": "fill",
       "type": "color",
       "defaultValue": "[0., 0., 0.]"
     },

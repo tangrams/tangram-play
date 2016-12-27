@@ -62,7 +62,7 @@ export function getTextMarkerConstructors(nodes) {
       if (mark.matchAgainst === 'key') {
         const key = getKeyNameForNode(node);
         if (key) {
-          const check = RegExp(mark.matchPattern).test(key);
+          const check = (mark.matchPattern === key);
 
           // If a matching mark type is found, make a copy of it and store
           // information about the node.

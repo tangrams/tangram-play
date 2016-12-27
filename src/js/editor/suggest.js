@@ -56,6 +56,12 @@ class Suggestion {
       if (!ignoreLevel && this.level) {
         rightLevel = getNodeLevel(node) === this.level;
       }
+
+      // Simpler, non-regex check for keys
+      if (this.checkAgainst === 'key') {
+        return this.checkPattern === node.key;
+      }
+
       return RegExp(this.checkPattern).test(node[this.checkAgainst]) && rightLevel;
     }
 
@@ -192,6 +198,10 @@ export function hint(cm, options) {
   const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
   let list = [];
   let isKey = false;
+
+  // Node is null if unparseable. This needs to be handled better, because
+  // you can still offer a suggestion before a node is completed.
+  if (!node) return;
 
   if (node.kind === 0) {
     // Things we need to know to match address
