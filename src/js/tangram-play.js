@@ -7,10 +7,10 @@ import { editor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/actions';
-import { initTextMarkers } from './editor/bookmarks';
-import { initErrorsManager, clearAllErrors } from './editor/errors';
+import { initTextMarkers } from './editor/textmarkers';
 import { initSuggestions } from './editor/suggest';
 import { initContextSensitiveClickEvents } from './editor/imports';
+import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import { showErrorModal } from './modals/ErrorModal';
 

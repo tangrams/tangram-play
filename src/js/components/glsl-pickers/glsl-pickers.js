@@ -5,7 +5,7 @@ import { editor } from '../../editor/editor';
 import { clickIsAtCursorPosition } from '../../editor/codemirror/tools';
 import Vec2Picker from './Vec2Picker';
 import NumberPicker from './NumberPicker';
-import ColorMarker from '../pickers/color/ColorMarker';
+import ColorMarker from '../textmarkers/color/ColorMarker';
 
 /**
  * RegExp.exec() method normally returns just one match.

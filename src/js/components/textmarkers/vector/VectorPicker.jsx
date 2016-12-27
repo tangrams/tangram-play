@@ -11,7 +11,7 @@ let camera;
 let controls;
 
 /**
- * Represents a vector picker and editor bookmark to trigger this
+ * Represents a vector picker and editor marker to trigger this
  */
 export default class VectorPicker extends React.Component {
   constructor(props) {
@@ -21,7 +21,7 @@ export default class VectorPicker extends React.Component {
       displayPicker: false,
     };
 
-    this.bookmark = this.props.bookmark;
+    this.marker = this.props.marker;
 
     this.onClickBookmark = this.onClickBookmark.bind(this);
     this.animate = this.animate.bind(this);
@@ -82,7 +82,7 @@ export default class VectorPicker extends React.Component {
    *  back to the Tangram Play editor.
    */
   setEditorValue(string) {
-    this.bookmark = setCodeMirrorValue(this.bookmark, string);
+    setCodeMirrorValue(this.marker, string);
   }
 
   animate() {
@@ -204,7 +204,7 @@ export default class VectorPicker extends React.Component {
     return (
       <div>
         {/* The button user clicks to open the vector picker */}
-        <div className="bookmark bookmark-vectorpicker" onClick={this.onClickBookmark} />
+        <div className="textmarker textmarker-vectorpicker" onClick={this.onClickBookmark} />
 
         {/* Floating panel */}
         <FloatingPanel
@@ -224,5 +224,5 @@ export default class VectorPicker extends React.Component {
 
 VectorPicker.propTypes = {
   // Pass through object; types do not matter here.
-  bookmark: React.PropTypes.objectOf(React.PropTypes.any),
+  marker: React.PropTypes.objectOf(React.PropTypes.any),
 };

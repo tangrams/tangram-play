@@ -1,4 +1,4 @@
-/* Editor Widgets */
+/* CodeMirror text markers */
 
 .CodeMirror-widget {
   /* Resets this property for wrapped lines. The hanging indent adds
@@ -6,10 +6,7 @@
   text-indent: initial;
 }
 
-/* CodeMirror bookmarks and popups */
-
-/* deprecate "bookmark" namespace */
-.bookmark,
+/* CodeMirror text markers and popups */
 .textmarker {
   display: inline-block;
   position: relative;
@@ -36,9 +33,8 @@
   z-index: var(--z09-pickers);
 }
 
-/* ******************** */
-/* INDIVIDUAL WIDGETS */
-/* ******************** */
+/* INDIVIDUAL TEXT MARKERS AND PICKERS */
+/* *********************************** */
 
 /* GLSL pickers */
 
@@ -46,7 +42,7 @@
   background-color: var(--ui-element-color);
 }
 
-/* React: Widget Toggle */
+/* Boolean (true/false toggle) */
 
 .textmarker-boolean {
   box-sizing: border-box;
@@ -86,19 +82,19 @@
   color: white;
 }
 
-/* React: Widget Dropdown */
+/* Dropdown selector */
 
-.widget-dropdown {
+.textmarker-dropdown {
   display: inline-flex;
   position: relative;
   font-weight: 400;
   margin-left: 10px;
   margin-right: 10px;
   outline: none;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
-.widget-dropdown select {
+.textmarker-dropdown select {
   font-family: var(--font-family);
   font-size: 100%;
   font-weight: 400;
@@ -106,22 +102,15 @@
   background-color: #5e6064;
   color: white;
   border: 0;
-  height: 20px;
-  width: 16px; /* Remove width to get full dropdown to appear */
+  height: 1.2em;
+  width: 1em; /* Remove width to get full dropdown to appear */
   border-radius: 4px;
   padding-left: 16px;
 }
 
-.widget-dropdown option {
+.textmarker-dropdown option {
   outline: none;
   margin-left: 20px;
-}
-
-.form-control:focus {
-  border-color: transparent;
-  box-shadow: none;
-  border-radius: 6px;
-  outline: none;
 }
 
 select {
@@ -138,7 +127,7 @@ select {
 
 /* Should probably simplify this for color picker too.
    just refers to button being clicked to open modal */
-.bookmark-vectorpicker {
+.textmarker-vectorpicker {
   box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.15);
   max-width: 14px;

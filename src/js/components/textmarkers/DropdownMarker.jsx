@@ -8,9 +8,9 @@ import { tangramLayer } from '../../map/map';
 import { getCompiledValueByAddress } from '../../editor/codemirror/yaml-tangram';
 
 /**
- * Represents a dropdown widget
+ * Represents a dropdown text marker
  */
-export default class WidgetDropdown extends React.Component {
+export default class DropdownMarker extends React.Component {
   constructor(props) {
     super(props);
 
@@ -55,7 +55,7 @@ export default class WidgetDropdown extends React.Component {
   }
 
   componentDidMount() {
-    // Need to subscribe to when Tangram scene loads in order to populate the source widget
+    // Subscribe to when Tangram scene loads in order to populate the source list
     EventEmitter.subscribe('tangram:sceneinit', this.setSource);
   }
 
@@ -94,10 +94,8 @@ export default class WidgetDropdown extends React.Component {
     }
   }
 
-  /* SHARED METHOD FOR ALL WIDGETS */
   /**
-   *  Use this method within a widget to communicate a value
-   *  back to the Tangram Play editor.
+   * Communicates a value back to CodeMirror.
    */
   setEditorValue(string) {
     setCodeMirrorValue(this.props.marker, string);
@@ -107,13 +105,12 @@ export default class WidgetDropdown extends React.Component {
     if (this.state.options.length !== 0) {
       return (
         <FormGroup
-          className="widget-dropdown"
-          controlId="widget-form-dropdown"
+          className="textmarker-dropdown"
+          controlId="textmarker-form-dropdown"
           onClick={this.onClick}
         >
           <FormControl
             componentClass="select"
-            className="widget-form-control"
             placeholder="select"
             onChange={this.onChange}
             value={this.state.value}
@@ -137,7 +134,7 @@ export default class WidgetDropdown extends React.Component {
   }
 }
 
-WidgetDropdown.propTypes = {
+DropdownMarker.propTypes = {
   marker: React.PropTypes.shape({
     find: React.PropTypes.func,
   }),
@@ -147,6 +144,6 @@ WidgetDropdown.propTypes = {
   initialValue: React.PropTypes.string,
 };
 
-WidgetDropdown.defaultProps = {
+DropdownMarker.defaultProps = {
   options: [],
 };

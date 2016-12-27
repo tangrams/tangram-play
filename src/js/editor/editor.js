@@ -9,7 +9,7 @@ import { suppressAPIKeys } from './api-keys';
 import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
 import { loadScene } from '../map/map';
-import { insertTextMarkersInViewport } from '../editor/bookmarks';
+import { insertTextMarkersInViewport } from '../editor/textmarkers';
 
 import store from '../store';
 import { MARK_FILE_DIRTY, MARK_FILE_CLEAN } from '../store/actions';
