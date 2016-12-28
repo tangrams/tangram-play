@@ -53,10 +53,12 @@ migrateLocalStorageToForage();
 const STORAGE_SETTINGS = 'settings';
 
 // Localhost flags
-store.dispatch({
-  type: SET_APP_STATE,
-  disableMultiFile: false,
-});
+if (window.location.hostname === 'localhost') {
+  store.dispatch({
+    type: SET_APP_STATE,
+    disableMultiFile: false,
+  });
+}
 
 // Settings that are stored are populated in state before we mount the
 // application, so that they are available to components immediately.
