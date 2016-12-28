@@ -1,37 +1,9 @@
-//  GET Functions
-//  ===============================================================================
-import { isEmptyString, countLeadingSpaces } from '../../tools/helpers';
+import { countLeadingSpaces } from '../../tools/helpers';
 import { parsedYAMLDocument } from '../../editor/editor';
 import { getNodeLevel } from '../../editor/yaml-ast';
 
-//  Get the indentation level of a line
-// @deprecated
-export function getLineInd(cm, line) {
-  return countLeadingSpaces(cm.lineInfo(line).text) / cm.getOption('tabSize');
-}
-
-//  Check if a line is empty
-export function isEmpty(cm, nLine) {
-  return isEmptyString(cm.lineInfo(nLine).text);
-}
-
-//  Check if the line is commented YAML style
-export function isStrCommented(str) {
-  const regex = /^\s*[#||//]/gm;
-  return (regex.exec(str) || []).length > 0;
-}
-export function isCommented(cm, nLine) {
-  return isStrCommented(cm.lineInfo(nLine).text);
-}
-
-// Escape regex special characters
-// via http://stackoverflow.com/a/9310752
-export function regexEscape(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
-
-//  Common NAVIGATION functions on CM
-//  ===============================================================================
+// Navigation functions for CodeMirror
+// ===============================================================================
 
 /**
  * Scrolls a given line into view.
@@ -126,4 +98,38 @@ export function clickIsAtCursorPosition(cm, event, bufferX = 10, bufferY = 0) {
   // Return true if click is between the minimum and max bounds of the cursor
   // (including the buffer)
   return (withinX && withinY);
+}
+
+// Position and index conversion helpers.
+// =============================================================================
+
+export function positionFromLineStart(doc, line) {
+  return { line, ch: 0 };
+}
+
+export function positionFromLineEnd(doc, line) {
+  const lineContent = doc.getLine(line) || '';
+  return { line, ch: lineContent.length };
+}
+
+export function indexFromLineStart(doc, line) {
+  const pos = positionFromLineStart(doc, line);
+  return doc.indexFromPos(pos);
+}
+
+export function indexFromLineEnd(doc, line) {
+  const pos = positionFromLineEnd(doc, line);
+  return doc.indexFromPos(pos);
+}
+
+export function indexesFromLineRange(doc, fromLine, toLine) {
+  return {
+    start: indexFromLineStart(doc, fromLine),
+    end: indexFromLineEnd(doc, toLine),
+  };
+}
+
+export function getIndexAtCursor(doc) {
+  const pos = doc.getCursor(); // -> Pos {line, ch}
+  return doc.indexFromPos(pos); // -> Number
 }

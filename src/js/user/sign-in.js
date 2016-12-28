@@ -3,7 +3,7 @@
  */
 import store from '../store';
 import config from '../config';
-import { USER_SIGNED_IN, USER_SIGNED_OUT } from '../store/actions';
+import { USER_SIGNED_IN, USER_SIGNED_OUT, SET_APP_STATE } from '../store/actions';
 import { getURLSearchParam } from '../tools/url-state';
 
 const SIGN_IN_STATE_API_ENDPOINT = '/api/developer.json';
@@ -24,6 +24,21 @@ const signInCredentials = window.location.hostname === 'localhost' ? 'include' :
 const signInHost = window.location.hostname === 'localhost' ? config.MAPZEN_API.ORIGIN.DEVELOPMENT : '';
 
 let cachedSignInData;
+
+function enableAdminFlags() {
+  store.dispatch({
+    type: SET_APP_STATE,
+    disableMultiFile: false,
+  });
+}
+
+function disableAdminFlags() {
+  store.dispatch({
+    type: SET_APP_STATE,
+    // Only disable again if not on localhost
+    disableMultiFile: (window.location.hostname !== 'localhost'),
+  });
+}
 
 /**
  * Request user sign-in information from mapzen.com. This only works with
@@ -69,6 +84,10 @@ export function requestUserSignInState() {
           admin: data.admin,
         });
 
+        if (data.admin === true) {
+          enableAdminFlags();
+        }
+
         return data;
       });
   } else if (isMapzenHosted && window.location.protocol === 'http:') {
@@ -102,5 +121,6 @@ export function requestUserSignOut() {
     }
 
     store.dispatch({ type: USER_SIGNED_OUT });
+    disableAdminFlags();
   });
 }

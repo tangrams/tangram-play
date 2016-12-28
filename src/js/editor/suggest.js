@@ -2,14 +2,26 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 import TANGRAM_API from '../tangram-api.json';
-import { editor, getNodesOfLine } from './editor';
-import { getLineInd, isCommented, isEmpty, regexEscape } from '../editor/codemirror/tools';
-import { getCompiledValueByAddress, truncateAddressToLevel } from '../editor/codemirror/yaml-tangram';
+import { editor, parsedYAMLDocument } from './editor';
+import { getIndexAtCursor } from './codemirror/tools';
+import { getNodeLevel, getKeyAddressForNode, getKeyNameForNode } from './yaml-ast';
+import { getCompiledValueByAddress } from '../editor/codemirror/yaml-tangram';
 import { tangramLayer } from '../map/map';
 import EventEmitter from '../components/event-emitter';
 
 const keySuggestions = [];
 const valueSuggestions = [];
+// temp: debug
+window.keySuggestions = keySuggestions;
+window.valueSuggestions = valueSuggestions;
+
+// MIGRATE deprecated helper functions that are only used here.
+
+// Escape regex special characters
+// via http://stackoverflow.com/a/9310752
+function regexEscape(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
 
 class Suggestion {
   constructor(datum) {
@@ -38,20 +50,22 @@ class Suggestion {
     }
   }
 
-  check(node, forceLevel) {
+  check(node, ignoreLevel) {
     if (node && this.checkAgainst) {
       let rightLevel = true;
-      if (!forceLevel && this.level) {
-        rightLevel = getLineInd(editor, node.pos.line) === this.level;
+      if (!ignoreLevel && this.level) {
+        rightLevel = getNodeLevel(node) === this.level;
       }
+
+      // Simpler, non-regex check for keys
+      if (this.checkAgainst === 'key') {
+        return this.checkPattern === node.key;
+      }
+
       return RegExp(this.checkPattern).test(node[this.checkAgainst]) && rightLevel;
     }
 
     return false;
-  }
-
-  getDefault() {
-    return this.defaultValue || '';
   }
 
   getList(node) {
@@ -84,16 +98,16 @@ class Suggestion {
   }
 }
 
-function getDefault(address, completion) {
+function getDefaultValue(address, completion) {
   const key = {
-    address: `${address}/${completion}`,
+    address: `${address}:${completion}`,
     key: completion,
     value: '',
   };
   let defaultValue = '';
-  for (const datum of valueSuggestions) {
-    if (datum.check(key, true)) {
-      defaultValue = datum.getDefault();
+  for (const suggestion of valueSuggestions) {
+    if (suggestion.check(key, true)) {
+      defaultValue = suggestion.defaultValue || '';
       break;
     }
   }
@@ -112,145 +126,145 @@ export function initSuggestions() {
   }
 
   // Trigger hint after each time the scene is uploaded
-  EventEmitter.dispatch('tangram:sceneupdate', (args) => {
-    let bOpen = true;
+  EventEmitter.subscribe('tangram:sceneupdate', (args) => {
+    // Bail if editor is in read-only mode, or if the showHint addon is not
+    // defined on the editor.
+    if (editor.isReadOnly() || !editor.showHint) return;
 
-    // Bail if editor is in read-only mode
-    if (editor.isReadOnly()) return;
+    // Get the node at the current cursor location
+    const doc = editor.getDoc();
+    const node = parsedYAMLDocument.getNodeAtIndex(getIndexAtCursor(doc));
 
+    // Bail if there is no YAML node.
+    if (!node) return;
+
+    // Bail if the node is is not of type scalar or mapping? (this is currently
+    // checked later, in the hint() method. Revisit this later.)
+
+    // Don't open hints on GLSL or JavaScript strings. This is using the old
+    // CodeMirror parser way of knowing whether something is GLSL or JS. This
+    // might not be so bad, because we are already using CM to know language
+    // for syntax highlighting. In this case we can easily defer to CM as the
+    // source of truth for language type and not try to re-analyze this
+    // ourselves. However, let's try to make this less error prone.
     const line = editor.getCursor().line;
     const stateAfter = editor.getLineHandle(line).stateAfter;
     if (stateAfter && stateAfter.innerMode && stateAfter.innerMode.helperType) {
       const helperType = stateAfter.innerMode.helperType;
-      if (helperType === 'glsl' || helperType === 'javascript') {
-        bOpen = false;
-      }
+      if (helperType === 'glsl' || helperType === 'javascript') return;
     }
 
-    if (isCommented(editor, line) ||
-      isEmpty(editor, line)) {
-      bOpen = false;
-    }
-
-    if (bOpen && editor.showHint) {
-      editor.showHint({
-        completeSingle: false,
-        alignWithWord: true,
-        closeCharacters: /[\s()[\]{};:>,]/,
-        customKeys: {
-          Tab: (cm, handle) => {
-            cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
-          },
-          Up: (cm, handle) => {
-            handle.moveFocus(-1);
-          },
-          Down: (cm, handle) => {
-            handle.moveFocus(1);
-          },
-          PageUp: (cm, handle) => {
-            handle.moveFocus(-handle.menuSize() + 1, true);
-          },
-          PageDown: (cm, handle) => {
-            handle.moveFocus(handle.menuSize() - 1, true);
-          },
-          Home: (cm, handle) => {
-            handle.setFocus(0);
-          },
-          End: (cm, handle) => {
-            handle.setFocus(handle.length - 1);
-          },
-          Enter: (cm, handle) => {
-            handle.pick();
-          },
-          Esc: (cm, handle) => {
-            handle.close();
-          },
+    editor.showHint({
+      completeSingle: false,
+      alignWithWord: true,
+      closeCharacters: /[\s()[\]{};:>,]/,
+      customKeys: {
+        Tab: (cm, handle) => {
+          cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '));
         },
-      });
-    }
+        Up: (cm, handle) => {
+          handle.moveFocus(-1);
+        },
+        Down: (cm, handle) => {
+          handle.moveFocus(1);
+        },
+        PageUp: (cm, handle) => {
+          handle.moveFocus(-handle.menuSize() + 1, true);
+        },
+        PageDown: (cm, handle) => {
+          handle.moveFocus(handle.menuSize() - 1, true);
+        },
+        Home: (cm, handle) => {
+          handle.setFocus(0);
+        },
+        End: (cm, handle) => {
+          handle.setFocus(handle.length - 1);
+        },
+        Enter: (cm, handle) => {
+          handle.pick();
+        },
+        Esc: (cm, handle) => {
+          handle.close();
+        },
+      },
+    });
   });
 }
 
 export function hint(cm, options) {
-  const cursor = { line: cm.getCursor().line, ch: cm.getCursor().ch };
-  cursor.ch -= 1;
-  // console.log("Cursor", cursor);
-
-  const range = cm.findWordAt(cursor);
-  const from = range.anchor;
-  const to = range.head;
-  // console.log("RANGE",from,to);
-
-  const line = cursor.line;
+  const doc = cm.getDoc();
+  const cursor = doc.getCursor();
+  const cursorIndex = doc.indexFromPos(cursor); // -> Number
+  const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
   let list = [];
+  let isKey = false;
 
-  let wasKey = false;
-  let address = '/';
+  // Node is null if unparseable. This needs to be handled better, because
+  // you can still offer a suggestion before a node is completed.
+  if (!node) return;
 
-  // What's the main key of the line?
-  const nodes = getNodesOfLine(line);
-  if (nodes) {
-    // Get key pair where the cursor is
-    const node = nodes[0];
+  if (node.kind === 0) {
+    // Things we need to know to match address
+    node.address = getKeyAddressForNode(node);
 
-    if (node) {
-      // If there is no key search for a KEY
-      if (node.key === '') {
-        // Fallback the address to match
-        const actualLevel = getLineInd(cm, line);
-        address = truncateAddressToLevel(node.address, actualLevel);
-        node.address = address;
-        // Suggest key
-        for (const datum of keySuggestions) {
-          if (datum.check(node)) {
-            list.push(...datum.getList(node));
-          }
-        }
-        wasKey = true;
-      } else {
-        // if it have a key search for the value
-        // Suggest value
-        for (const datum of valueSuggestions) {
-          if (datum.check(node)) {
-            list.push(...datum.getList(node));
-            break;
-          }
-        }
+    // use value suggestion
+    for (const datum of valueSuggestions) {
+      // todo: rewrite the check
+      if (datum.check(node)) {
+        list.push(...datum.getList(node));
+        break;
       }
-      // console.log("List",list);
+    }
+  } else if (node.kind === 1) {
+    isKey = true;
+    // get key value to check
+    // Verify correct address here if someone is typing a new key
+    node.key = getKeyNameForNode(node);
 
-      // What ever the list is suggest using it
-      let string = cm.getRange(from, to);
-      string = regexEscape(string);
-
-      // If the word is already begin to type, filter outcome
-      if (string !== '') {
-        const matchedList = [];
-        const match = RegExp(`^${string}.*`);
-        for (let i = 0; i < list.length; i++) {
-          if (list[i] !== string && match.test(list[i])) {
-            matchedList.push(list[i]);
-          }
-        }
-        list = matchedList;
+    // this is a mapping with a key prop - use node.key info
+    for (const datum of keySuggestions) {
+      // todo: rewrite the check
+      if (datum.check(node)) {
+        list.push(...datum.getList(node));
       }
     }
   }
+  // TODO: If it's not a node we can use, return a null `result` value; avoid
+  // doing all this extra work coming up next
+
+  // The start and end position of the value to replace will come from our node
+  const from = doc.posFromIndex(node.startPosition);
+  const to = doc.posFromIndex(node.endPosition);
+
+  // If the word has already begun to be typed, filter outcome
+  // Get currently written word
+  let string = cm.getRange(from, to);
+  string = regexEscape(string);
+
+  if (string !== '') {
+    const matchedList = [];
+    const match = RegExp(`^${string}.*`);
+    for (let i = 0; i < list.length; i++) {
+      if (list[i] !== string && match.test(list[i])) {
+        matchedList.push(list[i]);
+      }
+    }
+    list = matchedList;
+  }
 
   const result = { list, from, to };
+  const address = getKeyAddressForNode(node);
   CodeMirror.on(result, 'pick', (completion) => {
-    // If is a key autocomplete with de default value
-    if (wasKey) {
-      // console.log(address+'/'+completion);
-      const defaultValue = getDefault(address, completion);
+    // If we are autocompleting a key, also put in the default value
+    if (isKey) {
+      const defaultValue = getDefaultValue(address, completion);
       cm.replaceRange(`: ${defaultValue}`, {
         line: result.to.line,
         ch: result.to.ch + completion.length,
       }, {
         line: result.to.line,
         ch: result.to.ch + completion.length + 1,
-      },
-        'complete');
+      }, 'autocomplete');
     }
   });
 

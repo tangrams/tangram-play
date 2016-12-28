@@ -1,15 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import EventEmitter from './event-emitter';
-import EditorTabs from './EditorTabs';
+import EditorTabBar from './EditorTabBar';
 import EditorCallToAction from './EditorCallToAction';
 import EditorContextMenu from './EditorContextMenu';
-import IconButton from './IconButton';
 import DocsPanel from './DocsPanel';
-import { setDividerPosition } from './Divider';
-
-// Redux
-import { SET_APP_STATE } from '../store/actions';
 
 // Import editor logic
 import {
@@ -26,15 +21,8 @@ from '../editor/editor';
 import { highlightRanges } from '../editor/highlight';
 
 class Editor extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.onClickHideEditor = this.onClickHideEditor.bind(this);
-  }
-
   componentDidMount() {
-    // instantiate CodeMirror with the editor container element's
-    // DOM node reference
+    // instantiate CodeMirror with the editor container element's DOM node ref
     initEditor(this.editorEl);
     editor.on('changes', watchEditorForChanges);
 
@@ -42,6 +30,9 @@ class Editor extends React.PureComponent {
     // so it can be restored if page is reloaded.
     editor.on('cursorActivity', debouncedUpdateLocalMemory);
     editor.on('viewportChange', debouncedUpdateLocalMemory);
+
+    // Broadcast editor state ready to other componentClass
+    EventEmitter.dispatch('editor:ready');
 
     // CodeMirror instance must refresh when editor pane is resized.
     EventEmitter.subscribe('divider:reposition', refreshEditor);
@@ -123,20 +114,6 @@ class Editor extends React.PureComponent {
     }
   }
 
-  /**
-   * Hides the editor pane.
-   * There is no special "flag" for hidden; it requests the Divider component
-   * to update its position to the full window width (as far right as possible).
-   * The Divider component will take care of the rest.
-   */
-  onClickHideEditor(event) {
-    setDividerPosition(window.innerWidth);
-    this.props.dispatch({
-      type: SET_APP_STATE,
-      showEditorHiddenTooltip: true,
-    });
-  }
-
   render() {
     const customStyles = {};
     if (this.props.fontSize) {
@@ -158,26 +135,7 @@ class Editor extends React.PureComponent {
           return null;
         })()}
 
-        {(() => {
-          // Disable tabs in embedded mode. See request https://github.com/tangrams/tangram-play/issues/620
-          // Rather than expose Yet Another Embed Option, there's a product
-          // answer to this: there's no real need for tabs in embedded mode (at
-          // least not yet) so let's remove this functionality from embedded.
-          if (window.isEmbedded) {
-            return null;
-          }
-          return (
-            <div className="editor-tab-bar">
-              <EditorTabs />
-              <IconButton
-                className="editor-collapse-button"
-                icon="bt-caret-right"
-                tooltip="Hide editor"
-                onClick={this.onClickHideEditor}
-              />
-            </div>
-          );
-        })()}
+        <EditorTabBar />
 
         <div
           className="editor"
@@ -187,23 +145,13 @@ class Editor extends React.PureComponent {
         />
 
         <EditorContextMenu />
-
-        {(() => {
-          if (this.props.admin) {
-            return (
-              <DocsPanel />
-            );
-          }
-          return null;
-        })()}
+        <DocsPanel />
       </div>
     );
   }
 }
 
 Editor.propTypes = {
-  dispatch: React.PropTypes.func,
-  admin: React.PropTypes.bool,
   sceneCounter: React.PropTypes.number,
   activeFile: React.PropTypes.number,
   files: React.PropTypes.arrayOf(React.PropTypes.object),
@@ -212,14 +160,12 @@ Editor.propTypes = {
 };
 
 Editor.defaultProps = {
-  admin: false,
   activeFile: -1,
   files: [],
 };
 
 function mapStateToProps(state) {
   return {
-    admin: state.user.admin || false,
     sceneCounter: state.scene.counter,
     activeFile: state.scene.activeFileIndex,
     files: state.scene.files,

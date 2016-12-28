@@ -2,9 +2,12 @@ import { startsWith } from 'lodash';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/yaml/yaml';
 import './glsl-tangram';
-import { attachBookmarkConstructorsToDocumentState } from './bookmarks';
 
-const ADDRESS_KEY_DELIMITER = ':';
+// This was chosen by Tangram to delimit a key stack of keys into a single
+// string address. Note that keys in YAML may contain colons legally, and they
+// are differentiated from by quoting the key, e.g. `"a:key": value`. Currently
+// there is not a workaround for this.
+export const ADDRESS_KEY_DELIMITER = ':';
 
 /**
  * Return a string address from an array of key names (a 'key stack')
@@ -31,6 +34,7 @@ export function keyStackFromAddress(address) {
 /**
  * Return a string address, truncated to a certain level
  *
+ * @deprecated ?
  * @param {string} address  - in the form of 'key1:key2:key3'
  * @param {Number} level - the level of address to obtain
  * @return {string} address - truncated to maximum of `level`, e.g. 'key1:key2'
@@ -128,15 +132,6 @@ function getKeyAddressFromState(state) {
   return '';
 }
 
-function getAnchorFromValue(value) {
-  if (/(^\s*(&\w+)\s+)/.test(value)) {
-    const link = /(^\s*(&\w+)\s+)/gm.exec(value);
-    return link[1];
-  }
-
-  return '';
-}
-
 // Given a YAML string return an array of keys
 // TODO: We will need a different way of parsing YAML flow notation,
 // since this function does not cover the full range of legal YAML specification
@@ -172,8 +167,6 @@ function getInlineNodes(str, nLine) {
         if (isVector) {
           value = isVector[0];
         }
-        const anchor = getAnchorFromValue(value);
-        value = value.substr(anchor.length);
 
         rta.push({
           // This gets an array starting at index 1. This means that the
@@ -182,7 +175,6 @@ function getInlineNodes(str, nLine) {
           address: addressFromKeyStack(stack),
           key,
           value,
-          anchor,
           range: {
             from: {
               line: nLine,
@@ -212,7 +204,6 @@ function parseYamlString(string, state, tabSize) {
   const nodeEntry = {
     address: '',
     key: '',
-    anchor: '',
     value: '',
     range: {
       from: {
@@ -275,12 +266,9 @@ function parseYamlString(string, state, tabSize) {
         state.nodes.push(subNodes[i]);
       }
     } else {
-      const anchor = getAnchorFromValue(nodeValue);
-
       nodeEntry.address = address;
       nodeEntry.key = nodeKey;
-      nodeEntry.anchor = anchor;
-      nodeEntry.value = nodeValue.substr(anchor.length);
+      nodeEntry.value = nodeValue;
       nodeEntry.range.from.ch = fromCh;
       nodeEntry.range.to.ch = toCh + nodeValue.length;
 
@@ -290,9 +278,6 @@ function parseYamlString(string, state, tabSize) {
     // Commented or empty lines
     state.nodes = [nodeEntry];
   }
-
-  // Adds bookmark constructors to nodes, if they have them.
-  state = attachBookmarkConstructorsToDocumentState(state);
 
   return state;
 }

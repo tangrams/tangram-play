@@ -8,19 +8,16 @@ import { tangramLayer } from '../../map/map';
 import { getCompiledValueByAddress } from '../../editor/codemirror/yaml-tangram';
 
 /**
- * Represents a dropdown widget
+ * Represents a dropdown text marker
  */
-export default class WidgetDropdown extends React.Component {
+export default class DropdownMarker extends React.Component {
   constructor(props) {
     super(props);
-
-    this.bookmark = this.props.bookmark;
-    this.key = this.props.keyType;
 
     let options;
 
     // If the dropdown is NOT of type source
-    if (this.key !== 'source') {
+    if (this.props.keyName !== 'source') {
       // Make a clone so as not to mutate the original props
       options = this.props.options.slice(0);
     } else {
@@ -58,7 +55,7 @@ export default class WidgetDropdown extends React.Component {
   }
 
   componentDidMount() {
-    // Need to subscribe to when Tangram scene loads in order to populate the source widget
+    // Subscribe to when Tangram scene loads in order to populate the source list
     EventEmitter.subscribe('tangram:sceneinit', this.setSource);
   }
 
@@ -80,7 +77,8 @@ export default class WidgetDropdown extends React.Component {
   onClick() {
     // Set the editor cursor to the correct line. (When you click on the
     // button it doesn't move the cursor)
-    setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
+    const pos = this.props.marker.find();
+    setCursor(pos.line, pos.ch);
   }
 
   /**
@@ -88,7 +86,7 @@ export default class WidgetDropdown extends React.Component {
    */
   setSource() {
     // If the dropdown is of type source then get sources from tangramLayer.scene
-    if (this.key === 'source') {
+    if (this.props.keyName === 'source') {
       const obj = getCompiledValueByAddress(tangramLayer.scene, this.props.source);
       const keys = (obj) ? Object.keys(obj) : [];
 
@@ -96,26 +94,23 @@ export default class WidgetDropdown extends React.Component {
     }
   }
 
-  /* SHARED METHOD FOR ALL WIDGETS */
   /**
-   *  Use this method within a widget to communicate a value
-   *  back to the Tangram Play editor.
+   * Communicates a value back to CodeMirror.
    */
   setEditorValue(string) {
-    this.bookmark = setCodeMirrorValue(this.bookmark, string);
+    setCodeMirrorValue(this.props.marker, string);
   }
 
   render() {
     if (this.state.options.length !== 0) {
       return (
         <FormGroup
-          className="widget-dropdown"
-          controlId="widget-form-dropdown"
+          className="textmarker-dropdown"
+          controlId="textmarker-form-dropdown"
           onClick={this.onClick}
         >
           <FormControl
             componentClass="select"
-            className="widget-form-control"
             placeholder="select"
             onChange={this.onChange}
             value={this.state.value}
@@ -139,16 +134,16 @@ export default class WidgetDropdown extends React.Component {
   }
 }
 
-WidgetDropdown.propTypes = {
-  bookmark: React.PropTypes.shape({
-    widgetPos: React.PropTypes.object,
+DropdownMarker.propTypes = {
+  marker: React.PropTypes.shape({
+    find: React.PropTypes.func,
   }),
-  keyType: React.PropTypes.string,
+  keyName: React.PropTypes.string,
   options: React.PropTypes.arrayOf(React.PropTypes.string),
   source: React.PropTypes.string,
   initialValue: React.PropTypes.string,
 };
 
-WidgetDropdown.defaultProps = {
+DropdownMarker.defaultProps = {
   options: [],
 };

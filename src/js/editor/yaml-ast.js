@@ -1,26 +1,49 @@
-/* eslint-disable no-console */
 import YAMLParser from 'yaml-ast-parser';
 import { addressFromKeyStack, keyStackFromAddress } from './codemirror/yaml-tangram';
 
-// YAML node kinds are assigned a number by YAMLParser.
-// A node of type SCALAR is a simple key-value pair with a string `value`.
-const YAML_SCALAR = 0;
+/*
+YAML node kinds are assigned a number by YAMLParser.
 
-// A node of type MAPPING is a key-value pair whose `value` is another YAML node.
-// Values can be another MAPPING, a MAP, or SEQUENCE.
-const YAML_MAPPING = 1;
+SCALAR (type 0)
+This is the simplest node type. Its most important property is `value`, which
+is a string. It has no other child nodes. Its parent may be a MAPPING or a
+SEQUENCE node.
 
-// A node of type MAP is a value of the MAPPING node. It does not have a `value`
-// but rather a `mappings` array of one or more YAML nodes.
-const YAML_MAP = 2;
+MAPPING (type 1)
+This is a key-value pair. It contains a `key` property as well as a `value`
+property. Values are child nodes and can be a SCALAR, MAP, or a SEQUENCE node.
+Its parent node is a MAP.
 
-// A node of type SEQUENCE is a value of a YAML node. It does not have a `value`
-// but rather a `items` array of one or more YAML nodes.
-const YAML_SEQUENCE = 3;
+MAP (type 2)
+Similarly named to MAPPING, it is a related concept. The best way to think
+about this is that MAPS are collections of MAPPINGS. It does not have a `value`
+property but rather a `mappings` property which is an array of MAP nodes. Its
+parent is usually a MAPPING. At the top level of a Tangram YAML document, the
+root node (which has no parents) should be a MAP.
 
-// Other node kinds exist, we currently don't handle this.
-// const YAML_ANCHOR_REF = 4; //?
-// const YAML_INCLUDE_REF = 5; //? only RAML?
+SEQUENCE (type 3)
+This node is an array of items. It does not have a `value` property but rather
+an `items` array of one or more YAML nodes. In Tangram YAML, child nodes are
+usually SCALARS.
+
+ANCHOR REFERENCE (type 4)
+This node is a reference to a previously defined anchor. (An anchor must already
+be defined earlier in a YAML document before it can be referenced by a later
+node.)  This node will have a `referencesAnchor` property, and its `value`
+property will be the node that it references (including its original start and
+end position), so it's very easy to find again. Nodes that define an anchor
+will have an additional `anchorId` property (which will match `referencesAnchor`).
+Nodes that can have anchors include scalars, maps, and sequences.
+
+There is another node kind called INCLUDE_REF, but I don't know what that is
+and how it should be used.
+*/
+export const YAML_SCALAR = 0;
+export const YAML_MAPPING = 1;
+export const YAML_MAP = 2;
+export const YAML_SEQUENCE = 3;
+export const YAML_ANCHOR_REF = 4;
+// export const YAML_INCLUDE_REF = 5;
 
 function parseYAML(content) {
   // Run all the content through the AST parser and store it here.
@@ -37,15 +60,34 @@ function parseYAML(content) {
 
 /**
  * Given a parsed syntax tree of YAML, and a position index, return
- * the deepest node that contains that position. Returns nothing if not found.
+ * the deepest node that contains that position. Returns `null` if not found.
  *
- * @param {Object} ast - a parsed syntax tree object, should be root of the tree
+ * When does a node not exist?
+ *
+ * The YAML abstract syntax tree parser will create a node whose value is `null`
+ * in these conditions:
+ *
+ *  - The document is blank (e.g. an empty string)
+ *  - There is an error, and that portion of the document cannot be parsed.
+ *
+ * Additionally, `getNodeAtIndex()` (and similar functions in this module) will
+ * return `null` when a node cannot be found in the tree that matches the
+ * arguments provided. In this case, a given index may not actually lead to a
+ * YAML node. This can happen if:
+ *
+ *  - The line is blank between mapping items. (NOTE: blank lines between
+ *      sequence items do return a node - they are considered part of the range
+ *      for a sequence.)
+ *  - The content is a comment following a scalar value. (NOTE: comments after
+ *      mapping keys are still part of the mapping node - they are considered
+ *      part of the range for a mapping node, although its content is ignored.)
+ *
+ * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
  * @param {Number} index - a position index
- * @returns {Object} a node
+ * @returns {Object} a node, or null if not found
  */
 function getNodeAtIndex(ast, index) {
   function searchNodes(node, idx) {
-    // Nodes can be `null` if current document is blank or has errors
     if (!node) return null;
 
     if (idx < node.startPosition || idx > node.endPosition) {
@@ -83,7 +125,7 @@ function getNodeAtIndex(ast, index) {
         // If not, return the sequence node itself
         return node;
       default:
-        if (idx >= node.startPosition && idx <= node.startPosition) {
+        if (idx >= node.startPosition && idx <= node.endPosition) {
           return node;
         } else if (node.parent) {
           return node.parent;
@@ -101,13 +143,13 @@ function getNodeAtIndex(ast, index) {
  * Tangram refers to a scene file only with address, rather than a position value
  * in a scene file.
  *
- * @param {Object} ast - a parsed syntax tree object, should be root of the tree
+ * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
  * @param {string} address - an address that looks like "this:string:example"
  * @returns {Object} a node
  */
 function getNodeAtKeyAddress(ast, address) {
   function searchNodes(node, stack) {
-    // Nodes can be `null` if current document is blank or has errors
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
     if (!node) return null;
 
     switch (node.kind) {
@@ -155,15 +197,89 @@ function getNodeAtKeyAddress(ast, address) {
 }
 
 /**
+ * Returns an array of scalar nodes between `fromIndex` and `toIndex`.
+ * Include nodes that overlap this range.
+ *
+ * Scalar nodes that are children of anchor reference nodes are skipped.
+ * This is because these nodes reference the original scalar nodes, so they're
+ * not clones. A referenced node can't be traced back to its anchor reference
+ * when it's returned by itself, since its parent is its original source parent,
+ * not the anchor reference parent.
+ *
+ * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
+ * @param {Number} fromIndex - a position index at start of range
+ * @param {Number} toIndex - a position index at end of range
+ * @returns {Array} foundNodes - array of scalar nodes that overlap this range.
+ */
+export function getScalarNodesInRange(ast, fromIndex, toIndex) {
+  function findNodes(node, start, end, initial = []) {
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
+    if (!node) return initial;
+
+    // If the node ends before my start range, or starts after my end range,
+    // this branch is not important, so we can exclude it.
+    if (node.endPosition < start || node.startPosition > end) return initial;
+
+    // Clone the array of nodes we already found
+    let found = initial.slice();
+
+    switch (node.kind) {
+      // A scalar node has no further depth; return as is.
+      case YAML_SCALAR:
+        found.push(node);
+        break;
+      case YAML_MAPPING:
+        found = findNodes(node.value, start, end, initial);
+        break;
+      case YAML_MAP:
+        for (let i = 0, j = node.mappings.length; i < j; i++) {
+          const mapping = node.mappings[i];
+
+          // Can be null if document has errors
+          if (!mapping) continue; // eslint-disable-line no-continue
+
+          // Stop searching in mappings when we hit a node that lies outside range
+          if (node.endPosition < start || node.startPosition > end) break;
+
+          found = findNodes(mapping.value, start, end, found);
+        }
+        break;
+      case YAML_SEQUENCE:
+        // See if index falls in any of the sequence items
+        for (let i = 0, j = node.items.length; i < j; i++) {
+          const item = node.items[i];
+
+          // Can be null if document has errors
+          if (!item) continue; // eslint-disable-line no-continue
+
+          // Stop searching in items when we hit a node that lies outside range
+          if (node.endPosition < start || node.startPosition > end) break;
+
+          found = findNodes(item, start, end, found);
+        }
+        break;
+      // Catch-all for unhandled node types: return accrued array as-is
+      default:
+        break;
+    }
+
+    return found;
+  }
+
+  const foundNodes = findNodes(ast, fromIndex, toIndex, []);
+  return foundNodes;
+}
+
+/**
  * Given an AST node, construct a key address for it by traversing its parent nodes.
  *
- * @param {Object} node - a node from YAML-AST-parser
+ * @param {YAMLNode} node - a node from YAML-AST-parser
  * @returns {string} address - an address that looks like "this:string:example"
  */
 export function getKeyAddressForNode(node) {
   function builder(currentNode, stack = []) {
-    // Nodes can be `null` if current document state has errors
-    if (!currentNode) return null;
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
+    if (!currentNode) return stack;
 
     // Add key's value to the current key stack.
     // Only accept scalar values for keys
@@ -182,6 +298,34 @@ export function getKeyAddressForNode(node) {
   const stack = builder(node, []);
   stack.reverse();
   return addressFromKeyStack(stack);
+}
+
+/**
+ * Given an AST node, return its key value or the key value of its closest
+ * ancestor.
+ *
+ * @param {YAMLNode} node - a node from YAML-AST-parser
+ * @returns {string} keyName - a single value, like "order" or "color"
+ */
+export function getKeyNameForNode(node) {
+  function traverser(currentNode) {
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
+    if (!currentNode) return null;
+
+    // If this node has a key, and it is a scalar value, return it
+    if (currentNode.key && currentNode.key.kind === YAML_SCALAR) {
+      return currentNode.key.value;
+    }
+
+    // Otherwise, traverse parents until we hit no more parents
+    if (currentNode.parent) {
+      return traverser(currentNode.parent);
+    }
+
+    return null;
+  }
+
+  return traverser(node);
 }
 
 /**
@@ -214,12 +358,12 @@ export function getKeyAddressForNode(node) {
  *
  * NOTE: shorten the above description once the old way is gone.
  *
- * @param {Object} node - a node from YAML-AST-parser
+ * @param {YAMLNode} node - a node from YAML-AST-parser
  * @returns {Number} level - an address that looks like "this:string:example"
  */
 export function getNodeLevel(node) {
   function traverser(currentNode, level = -1) {
-    // Nodes can be `null` if current document state has errors
+    // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
     if (!currentNode) return null;
 
     let returnLevel = level;
@@ -269,6 +413,44 @@ export function getPositionsForNode(node, doc) {
   };
 }
 
+/**
+ * Given a node, traverse parents until we find the nearest ancestor with a
+ * `key` property and return that node
+ *
+ * @param {YAMLNode} node - the node we want to find the key for
+ * @param {YAMLNode | null} node - key node or null if not found
+ */
+export function getKeyValueOfNode(node) {
+  function findKeyNode(currentNode) {
+    if (currentNode.key) return currentNode.key.value;
+    if (currentNode.parent) return findKeyNode(currentNode.parent);
+    return null;
+  }
+
+  return findKeyNode(node);
+}
+
+/**
+ * Given a sequence node, return an array of all scalar values in the sequence
+ * as strings. On errors, return an empty array. Skip child nodes that do not
+ * contain scalar values. Do not traverse more than one level.
+ *
+ * @param {YAMLNode} node - the sequence node we want to extract values from
+ * @returns {Array} values - array of scalar values.
+ */
+export function getValuesFromSequenceNode(node) {
+  if (node.kind !== YAML_SEQUENCE) return [];
+
+  const items = [];
+  node.items.forEach((item) => {
+    if (item.kind === YAML_SCALAR) {
+      items.push(item.value);
+    }
+  });
+
+  return items;
+}
+
 export class ParsedYAMLDocument {
   constructor(content) {
     this.nodes = {};
@@ -285,5 +467,9 @@ export class ParsedYAMLDocument {
 
   getNodeAtKeyAddress(address) {
     return getNodeAtKeyAddress(this.nodes, address);
+  }
+
+  getScalarNodesInRange(fromIndex, toIndex) {
+    return getScalarNodesInRange(this.nodes, fromIndex, toIndex);
   }
 }

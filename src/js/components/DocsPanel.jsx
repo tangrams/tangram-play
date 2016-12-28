@@ -7,7 +7,9 @@ import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
 import IconButton from './IconButton';
-import { editor } from '../editor/editor';
+import EventEmitter from './event-emitter';
+import { editor, parsedYAMLDocument } from '../editor/editor';
+import { getKeyAddressForNode } from '../editor/yaml-ast';
 
 // Redux
 import { SET_SETTINGS } from '../store/actions';
@@ -16,18 +18,7 @@ import TANGRAM from '../tangram-docs.json';
 
 const INITIAL_HEIGHT = 200;
 
-/**
- * Represents the main map panel that user can toggle in and out of the leaflet
- * map.
- */
 class DocsPanel extends React.Component {
-  /**
-   * Used to setup the state of the component. Regular ES6 classes do not
-   * automatically bind 'this' to the instance, therefore this is the best
-   * place to bind event handlers
-   *
-   * @param props - parameters passed from the parent
-   */
   constructor(props) {
     super(props);
 
@@ -41,20 +32,25 @@ class DocsPanel extends React.Component {
 
     this.onDrag = this.onDrag.bind(this);
     this.onClickChild = this.onClickChild.bind(this);
-    this.onMouseUpEditor = this.onMouseUpEditor.bind(this);
+    this.onEditorCursorActivity = this.onEditorCursorActivity.bind(this);
     this.openPanel = this.openPanel.bind(this);
     this.closePanel = this.closePanel.bind(this);
   }
 
   componentDidMount() {
-    if (!editor) return;
-    const wrapper = editor.getWrapperElement();
-    wrapper.addEventListener('mouseup', this.onMouseUpEditor);
+    // Respond to changes in cursor position. If the editor is not present
+    // at the time of mounting, add a event listener to listen for readiness.
+    if (editor) {
+      editor.on('cursorActivity', this.onEditorCursorActivity);
+    } else {
+      EventEmitter.subscribe('editor:ready', () => {
+        editor.on('cursorActivity', this.onEditorCursorActivity);
+      });
+    }
   }
 
   componentWillUnmount() {
-    const wrapper = editor.getWrapperElement();
-    wrapper.removeEventListener('mouseup', this.onMouseUpEditor);
+    editor.off('cursorActivity', this.onEditorCursorActivity);
   }
 
   onDrag(e, ui) {
@@ -74,24 +70,13 @@ class DocsPanel extends React.Component {
     this.setState({ display: this.findMatch(address, false) });
   }
 
-  onMouseUpEditor(event) {
-    // bail out if we were doing a selection and not a click
-    if (editor.somethingSelected()) {
-      return;
-    }
-
-    const cursor = editor.getCursor(true);
-    const line = editor.lineInfo(cursor.line);
-    const nodes = line.handle.stateAfter.nodes;
-
-    let address;
-
-    if (nodes.length === 1) {
-      address = nodes[0].address;
-      this.setState({ display: this.findMatch(address, true) });
-    } else {
-      console.log('line has more than one node');
-    }
+  onEditorCursorActivity(cm) {
+    const doc = cm.getDoc();
+    const cursor = doc.getCursor();
+    const cursorIndex = doc.indexFromPos(cursor); // -> Number
+    const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
+    const address = getKeyAddressForNode(node);
+    this.setState({ display: this.findMatch(address, true) });
   }
 
   /**
@@ -221,16 +206,15 @@ class DocsPanel extends React.Component {
     return list;
   }
 
-  /**
-   * Official React lifecycle method
-   * Called every time state or props are changed
-   */
   render() {
     const divStyle = {
       height: `${this.props.height}px`,
     };
 
     const result = this.state.display;
+
+    // This line disables DocsPanel unless it's an admin
+    if (this.props.admin === false) return null;
 
     return (
       <div className="docs-panel">
@@ -301,16 +285,19 @@ class DocsPanel extends React.Component {
 }
 
 DocsPanel.propTypes = {
+  admin: React.PropTypes.bool,
   dispatch: React.PropTypes.func,
   height: React.PropTypes.number,
 };
 
 DocsPanel.defaultProps = {
+  admin: false,
   height: INITIAL_HEIGHT,
 };
 
 function mapStateToProps(state) {
   return {
+    admin: state.user.admin || false,
     height: state.settings.docsPanelHeight,
   };
 }

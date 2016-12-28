@@ -14,6 +14,18 @@ const initialState = {
 
   recentScenes: [],
   showEditorHiddenTooltip: false,
+
+  // Whether the application is running with the /embed path.
+  isEmbedded: false,
+  disableMapToolbar: false,
+
+  // Whether editor should be allowed to handle multiple files.
+  // This feature is experimental and should be disabled in production and in
+  // embedded modes.
+  disableMultiFile: true,
+
+  // Whether editor should display the tab bar. This is view-only.
+  showEditorTabBar: true,
 };
 
 const app = (state = initialState, action) => {

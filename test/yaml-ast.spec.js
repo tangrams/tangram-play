@@ -1,15 +1,16 @@
 import { assert } from 'chai';
 import {
+  YAML_SCALAR,
+  YAML_MAPPING,
+  // YAML_MAP,
+  YAML_SEQUENCE,
+  YAML_ANCHOR_REF,
   ParsedYAMLDocument,
+  getScalarNodesInRange,
   getKeyAddressForNode,
+  getKeyNameForNode,
   getNodeLevel,
 } from '../src/js/editor/yaml-ast';
-
-// YAML node kinds are assigned a number by YAMLParser.
-const YAML_SCALAR = 0;
-const YAML_MAPPING = 1;
-// const YAML_MAP = 2;
-const YAML_SEQUENCE = 3;
 
 const TEST_DOCUMENT = `
 import:
@@ -29,13 +30,13 @@ layers:
         draw:
             polygons:
                 order: 0
-                color: grey
+                color: &color grey
     water:
         data: { source: mapzen }
         draw:
             polygons:
                 order: 1
-                color: lightblue
+                color: *color
 `;
 
 let parsed;
@@ -68,6 +69,11 @@ describe('YAML abstract syntax tree parser', () => {
       const node = parsed.getNodeAtIndex(50);
       assert.equal(node.kind, YAML_SCALAR);
       assert.equal(node.parent.kind, YAML_SEQUENCE);
+    });
+
+    it('returns an anchor reference node', () => {
+      const node = parsed.getNodeAtIndex(517);
+      assert.equal(node.kind, YAML_ANCHOR_REF);
     });
 
     it('returns null if index does not correspond to a node', () => {
@@ -111,6 +117,23 @@ describe('YAML abstract syntax tree parser', () => {
     });
   });
 
+  describe('getScalarNodesInRange()', () => {
+    it('returns all scalar nodes in document', () => {
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, parsed.nodes.endPosition);
+      assert.equal(nodes.length, 10);
+    });
+
+    it.skip('returns a node that overlaps the start of the range');
+    it.skip('returns a node that overlaps the end of the range');
+    it.skip('returns a node that overlaps both the start and end of the range');
+    it.skip('does not return nodes before the range');
+    it.skip('does not return nodes after the range');
+    it.skip('includes scalar nodes that are children of sequences');
+    it.skip('returns nodes that straddle branches of the syntax tree');
+    it.skip('returns an empty array if no nodes are found');
+    it.skip('does not include child nodes of anchor reference nodes');
+  });
+
   describe('getKeyAddressForNode()', () => {
     it('returns an empty string for a top-level node', () => {
       const address = getKeyAddressForNode(parsed.nodes);
@@ -127,6 +150,41 @@ describe('YAML abstract syntax tree parser', () => {
       const node = parsed.nodes.mappings[1].value.mappings[0].value.mappings[1].value;
       const address = getKeyAddressForNode(node);
       assert.equal(address, 'sources:mapzen:url');
+    });
+
+    it('returns an empty string if passed in a null value', () => {
+      const address = getKeyAddressForNode(null);
+      assert.equal(address, '');
+    });
+  });
+
+  describe('getKeyNameForNode()', () => {
+    it('returns null for a top-level node', () => {
+      const address = getKeyNameForNode(parsed.nodes);
+      assert.equal(address, null);
+    });
+
+    it('returns the key name for a node of type "mapping"', () => {
+      const node = parsed.nodes.mappings[1].value.mappings[0].value.mappings[1];
+      const address = getKeyNameForNode(node);
+      assert.equal(address, 'url');
+    });
+
+    it('returns the key name for a node of type "scalar"', () => {
+      const node = parsed.nodes.mappings[1].value.mappings[0].value.mappings[1].value;
+      const address = getKeyNameForNode(node);
+      assert.equal(address, 'url');
+    });
+
+    it('returns the key name for a node in a sequence', () => {
+      const node = parsed.getNodeAtIndex(50);
+      const address = getKeyNameForNode(node);
+      assert.equal(address, 'import');
+    });
+
+    it('returns null if passed in a null value', () => {
+      const address = getKeyNameForNode(null);
+      assert.equal(address, null);
     });
   });
 

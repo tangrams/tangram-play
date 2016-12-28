@@ -125,11 +125,8 @@ function openLink(event) {
 // Let's work on finding scene imports.
 // TODO: This is not a final API; this is just for testing purposes.
 export function initContextSensitiveClickEvents() {
-  // Currently scoped to admin-users only or local development environment.
-  // Bail if neither is true
-  if (window.location.hostname !== 'localhost' && store.getState().user.admin === false) {
-    return;
-  }
+  // Bail if disableMultiFile mode is on
+  if (store.getState().app.disableMultiFile === true) return;
 
   const wrapper = editor.getWrapperElement();
 
@@ -171,5 +168,38 @@ export function initContextSensitiveClickEvents() {
   editor.on('scroll', (event) => {
     const el = document.querySelector('.editor-context-menu');
     el.style.display = 'none';
+  });
+}
+
+/**
+ * Apply syntax highlighting class to import values in a CodeMirror document
+ * instance.
+ *
+ * @param {CodeMirror.doc} doc - the CodeMirror document instance to work on
+ * @param {YAMLNode} node - a node (must be a scalar value) to mark text for
+ */
+export function applySyntaxHighlighting(doc, node) {
+  // Bail if disableMultiFile mode is on
+  if (store.getState().app.disableMultiFile === true) return;
+
+  const SYNTAX_CLASS_LINK = 'cm-tangram-link';
+
+  // A node can be null if an entry is created, but has no value
+  if (!node) return;
+
+  const fromPos = doc.posFromIndex(node.startPosition);
+  const toPos = doc.posFromIndex(node.endPosition);
+
+  // If the text span is already marked, remove it first.
+  const existingMarks = doc.findMarks(fromPos, toPos);
+  existingMarks.forEach((mark) => {
+    if (mark.type === 'range' && mark.className === SYNTAX_CLASS_LINK) {
+      mark.clear();
+    }
+  });
+
+  // Now add the new marker
+  doc.markText(fromPos, toPos, {
+    className: SYNTAX_CLASS_LINK,
   });
 }

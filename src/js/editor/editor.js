@@ -9,8 +9,7 @@ import { suppressAPIKeys } from './api-keys';
 import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
 import { loadScene } from '../map/map';
-import { insertMarksInViewport } from '../editor/bookmarks';
-import EventEmitter from '../components/event-emitter';
+import { insertTextMarkersInViewport } from '../editor/textmarkers';
 
 import store from '../store';
 import { MARK_FILE_DIRTY, MARK_FILE_CLEAN } from '../store/actions';
@@ -110,11 +109,8 @@ export function setEditorContent(doc, readOnly = false) {
   // Debug access
   window.parsedYAMLDocument = parsedYAMLDocument;
 
-  // Once the document is swapped in, if the content is not read-only,
-  // add bookmarks back in if they're not added already.
-  if (readOnly === false) {
-    insertMarksInViewport();
-  }
+  // Once the document is swapped in, add text markers back in
+  insertTextMarkersInViewport(editor);
 }
 
 /**
@@ -185,9 +181,9 @@ export function updateLocalMemory() {
  */
 export const debouncedUpdateLocalMemory = debounce(updateLocalMemory, 500);
 
-export function watchEditorForChanges() {
+export function watchEditorForChanges(cm, changes) {
   const content = getEditorContent();
-  const doc = editor.getDoc();
+  const doc = cm.getDoc();
   const isClean = doc.isClean();
 
   parsedYAMLDocument.regenerate(content);
@@ -226,154 +222,32 @@ export function watchEditorForChanges() {
   }
 }
 
-// Getting parsed nodes.
-// =============================================================================
-
 /**
- * Returns an array of nodes recorded in a parsed line's state.
- * If there are no nodes for any reason, return an empty array.
+ * Changes the value of a scalar node attached to a text marker. This relies on
+ * the abstract syntax tree to make sure the correct range is replaced. (Using
+ * the syntax tree allows us to account for anchor values, for example.)
  *
  * @public
- * @param {Number} line - the number of the line to check, 0-index.
- * @return {Array} nodes
+ * @param {Object} marker - The marker whose value changes
+ * @param {string} value - The new value to set to.
  */
-export function getNodesOfLine(line) {
-  const lineHandle = editor.getLineHandle(line);
-
-  // Return the nodes. If any property in the chain is not defined,
-  // return an empty array.
-  try {
-    return lineHandle.stateAfter.nodes || [];
-  } catch (e) {
-    return [];
-  }
-}
-
-/**
- * Returns an array of nodes in a given range. Calls getNodesOfLine()
- * repeatedly for each line in the range.
- *
- * @public
- * @param {Number} line - the number of the line to check, 0-index.
- * @return {Array} nodes
- */
-export function getNodesInRange(from, to) {
-  const nodes = [];
-
-  if (from.line === to.line) {
-    // If the searched nodes are in a same line
-    const line = from.line;
-    const inLineNodes = getNodesOfLine(line);
-
-    for (const node of inLineNodes) {
-      if (node.range.to.ch > from.ch || node.range.from.ch < to.ch) {
-        nodes.push(node);
-      }
-    }
-  } else {
-    // If the searched nodes are in a range of lines
-    for (let i = from.line; i <= to.line; i++) {
-      const inLineNodes = getNodesOfLine(i);
-
-      for (const node of inLineNodes) {
-        if (node.range.from.line === from.line) {
-          // Is in the beginning line
-          if (node.range.to.ch > from.ch) {
-            nodes.push(node);
-          }
-        } else if (node.range.to.line === to.line) {
-          // is in the end line
-          if (node.range.from.ch < to.ch) {
-            nodes.push(node);
-          }
-        } else {
-          // is in the sandwich lines
-          nodes.push(node);
-        }
-      }
-    }
-  }
-  return nodes;
-}
-
-// If an inline node was changed, we'd like to reparse all the widgets in the line
-// This function sends an event to our widgets-manager.js
-function clearInlineNodes(fromPos) {
-  EventEmitter.dispatch('editor:inlinenodes', { from: fromPos });
-}
-
-/**
- * Sets a bookmark's value. If a value is prepended with a YAML anchor, the
- * anchor is left in place.
- *
- * @public
- * @param {Object} bookmark - An object representing the bookmark whose value changes
- * @param {string} value - The new value to set to
- */
-export function setCodeMirrorValue(bookmark, value) {
-  // If editor is readonly, pass through bookmark unchanged.
-  if (editor.isReadOnly()) {
-    return bookmark;
-  }
-
-  // If an inline node is changed, we need to reparse all the other nodes in that line.
-  let foundInlineNodes = null;
+export function setCodeMirrorValue(marker, value) {
+  // Bail if editor is read-only
+  if (editor.isReadOnly()) return;
 
   const origin = '+value_change';
-
-  // We should refresh the editor before the replacement
-  // Believe this catches cases where we are parsing multiple colors that are in the viewport
-  // TODO: probably not necessary if not using colorpalette probably
-  editor.getStateAfter(bookmark.widgetPos.from.line, true);
-  editor.getStateAfter(bookmark.widgetPos.to.line, true);
-
-  const nodeArray = bookmark.lines[0].stateAfter.nodes;
-  let node;
-
-  // If only one node per line, always just fetch the node in Code Mirror's state after
-  // This will reduce all sorts of errors because most cases are one-widget lines.
-  if (nodeArray.length === 1) {
-    node = nodeArray[0];
-  } else {
-    // If inline nodes
-    for (const singleNode of nodeArray) {
-      if (singleNode.range.from.ch === bookmark.widgetPos.from.ch) {
-        node = singleNode;
-        foundInlineNodes = node.range.from; // We found an inline node, log where it's at
-        break;
-      }
-    }
-  }
-
   const doc = editor.getDoc();
 
-  // Force a space between the ':' and the value
-  if (value === '') {
-    value = ` ${value}`;
-  }
-
-  // Calculate beginning character of the value
-  //               key:_[anchor]value
-  //               ^ ^^^^
-  //               | ||||__ + anchor.length
-  //               | |||___ + 1
-  //               | | `--- + 1
-  //  range.from.ch  key.length
-  const fromPos = {
-    line: node.range.from.line,
-    // Magic number: 2 refers to the colon + space between key and value
-    ch: node.range.from.ch + node.key.length + 2 + node.anchor.length,
-  };
-  const toPos = node.range.to;
-
-  doc.replaceRange(value, fromPos, toPos, origin);
-
-  // If an inline node was changed, we'd like to reparse all the widgets in the line
-  if (foundInlineNodes !== null) {
-    setTimeout(clearInlineNodes(foundInlineNodes), 0);
-  }
-
-  return bookmark;
+  // Find the position of the text marker, and the range of the scalar node
+  // it's attached to. That range is replaced with the new value.
+  const pos = marker.find(); // returns { line, ch } - does this ever become
+  // a { from, to } object like the documentation says? maybe if it's a text range?
+  const index = doc.indexFromPos(pos);
+  // Rely on the latest parsed condition
+  const node = parsedYAMLDocument.getNodeAtIndex(index);
+  const from = doc.posFromIndex(node.startPosition);
+  const to = doc.posFromIndex(node.endPosition);
+  doc.replaceRange(value, from, to, origin);
 }
 
 /* This section is for the shader widget links */

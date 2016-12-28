@@ -1,4 +1,4 @@
-/* Editor Widgets */
+/* CodeMirror text markers */
 
 .CodeMirror-widget {
   /* Resets this property for wrapped lines. The hanging indent adds
@@ -6,20 +6,22 @@
   text-indent: initial;
 }
 
-/* CodeMirror bookmarks and popups */
-
-.bookmark {
-  display: inline-block;
-  position: relative;
-  margin: 0 0.5em;
-  user-select: none;
-}
-
-.editor-bookmark-root {
+/* CodeMirror text markers and popups */
+/* Root element inserted by CodeMirror */
+.textmarker-root {
   display: inline-block;
   position: relative;
   box-sizing: border-box;
   background-color: none;
+  user-select: none;
+}
+
+/* Generic top-level namespace for textmarker elements, which will be a direct
+   child element inserted into the root element. */
+.textmarker {
+  display: inline-block;
+  position: relative;
+  margin: 0 0.5em;
   user-select: none;
 }
 
@@ -34,9 +36,8 @@
   z-index: var(--z09-pickers);
 }
 
-/* ******************** */
-/* INDIVIDUAL WIDGETS */
-/* ******************** */
+/* INDIVIDUAL TEXT MARKERS AND PICKERS */
+/* *********************************** */
 
 /* GLSL pickers */
 
@@ -44,32 +45,33 @@
   background-color: var(--ui-element-color);
 }
 
-/* React: Widget Toggle */
+/* Boolean (true/false toggle) */
 
-.bookmark-toggle {
+.textmarker-boolean {
   box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  max-width: 14px;
-  max-height: 14px;
+  border-radius: var(--ui-border-radius);
   width: 1em;
   height: 1em;
   cursor: pointer;
   margin-top: -0.15em;
   display: flex;
+  overflow: hidden;
 }
 
-.bookmark-toggle label {
+.textmarker-boolean label {
   display: flex;
 }
 
-.bookmark-toggle input[type=checkbox] {
+.textmarker-boolean input[type=checkbox] {
   position: relative;
   outline: none;
   margin-top: -0.15em;
+  cursor: pointer;
 }
 
-.bookmark-toggle input[type=checkbox]::after {
-  content: '\FF58';
+.textmarker-boolean input[type=checkbox]::after {
+  content: '\2717';
   color: white;
   visibility: visible;
   display: flex;
@@ -78,24 +80,24 @@
   background-color: var(--ui-element-color);
 }
 
-.bookmark-toggle input[type=checkbox]:checked::after {
+.textmarker-boolean input[type=checkbox]:checked::after {
   content: '\2713';
   color: white;
 }
 
-/* React: Widget Dropdown */
+/* Dropdown selector */
 
-.widget-dropdown {
+.textmarker-dropdown {
   display: inline-flex;
   position: relative;
   font-weight: 400;
   margin-left: 10px;
   margin-right: 10px;
   outline: none;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
-.widget-dropdown select {
+.textmarker-dropdown select {
   font-family: var(--font-family);
   font-size: 100%;
   font-weight: 400;
@@ -103,22 +105,15 @@
   background-color: #5e6064;
   color: white;
   border: 0;
-  height: 20px;
-  width: 16px; /* Remove width to get full dropdown to appear */
+  height: 1.2em;
+  width: 1em; /* Remove width to get full dropdown to appear */
   border-radius: 4px;
   padding-left: 16px;
 }
 
-.widget-dropdown option {
+.textmarker-dropdown option {
   outline: none;
   margin-left: 20px;
-}
-
-.form-control:focus {
-  border-color: transparent;
-  box-shadow: none;
-  border-radius: 6px;
-  outline: none;
 }
 
 select {
@@ -135,7 +130,7 @@ select {
 
 /* Should probably simplify this for color picker too.
    just refers to button being clicked to open modal */
-.bookmark-vectorpicker {
+.textmarker-vectorpicker {
   box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.15);
   max-width: 14px;

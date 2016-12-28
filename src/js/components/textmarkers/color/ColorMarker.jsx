@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Checkboard } from 'react-color/lib/components/common';
@@ -14,16 +15,9 @@ import Color from './color';
 // import EventEmitter from '../../event-emitter';
 
 /**
- * Represents a color picker widget
+ * Represents a color swatch text marker
  */
-export default class ColorBookmark extends React.Component {
-  /**
-   * Used to setup the state of the component. Regular ES6 classes do not
-   * automatically bind 'this' to the instance, therefore this is the best
-   * place to bind event handlers
-   *
-   * @param props - parameters passed from the parent
-   */
+export default class ColorMarker extends React.Component {
   constructor(props) {
     super(props);
 
@@ -34,7 +28,6 @@ export default class ColorBookmark extends React.Component {
       displayColorPicker: this.props.shader,
       color: new Color(this.props.value),
     };
-    this.bookmark = this.props.bookmark;
     this.mounted = true;
     this.x = 0;
     this.y = 0;
@@ -45,7 +38,7 @@ export default class ColorBookmark extends React.Component {
     this.height = 300;
     this.width = 250;
 
-    this.onClickBookmark = this.onClickBookmark.bind(this);
+    this.onClickTextMarker = this.onClickTextMarker.bind(this);
     this.onClickClose = this.onClickClose.bind(this);
     this.onChange = this.onChange.bind(this);
     // this.onPaletteChange = this.onPaletteChange.bind(this);
@@ -62,9 +55,6 @@ export default class ColorBookmark extends React.Component {
     }
   }
 
-  /**
-   * React lifecycle function. Gets called once when DIV is mounted
-   */
   componentDidMount() {
     // Colorpalette section
     /*
@@ -97,18 +87,19 @@ export default class ColorBookmark extends React.Component {
   /**
    * Open or close the color picker
    */
-  onClickBookmark() {
+  onClickTextMarker() {
     // Set the editor cursor to the correct line. (When you click on the
-    // widget button it doesn't move the cursor)
-    setCursor(this.bookmark.widgetPos.from.line, this.bookmark.widgetPos.from.ch);
+    // text marker it doesn't move the cursor)
+    const pos = this.props.marker.find();
+    setCursor(pos.line, pos.ch);
 
-    // Every time user clicks, modal position has to be updated.
+    // Every time user clicks, colorpicker popup position has to be updated.
     // This is because the user might have scrolled the CodeMirror editor
-    const bookmarkPosition = this.colorPickerBookmark.getBoundingClientRect();
+    const pickerRect = this.markerEl.getBoundingClientRect();
 
-    // Set the x and y of the modal that will contain the widget
-    this.x = bookmarkPosition.left;
-    this.y = bookmarkPosition.bottom;
+    // Set the x and y of the colorpicker popup
+    this.x = pickerRect.left;
+    this.y = pickerRect.bottom;
     this.setState({ displayColorPicker: true });
   }
 
@@ -165,8 +156,8 @@ export default class ColorBookmark extends React.Component {
    *  Use this method within a picker to communicate a value
    *  back to the Tangram Play editor.
    */
-  setEditorValue(string) {
-    this.bookmark = setCodeMirrorValue(this.bookmark, string);
+  setEditorValue(value) {
+    setCodeMirrorValue(this.props.marker, value);
   }
 
   /**
@@ -181,10 +172,6 @@ export default class ColorBookmark extends React.Component {
     setCodeMirrorShaderValue(color, start, end);
   }
 
-  /**
-   * Official React lifecycle method
-   * Called every time state or props are changed
-   */
   render() {
     if (this.mounted) {
       const colorStyle = { backgroundColor: this.state.color.getRgbaString() };
@@ -199,12 +186,12 @@ export default class ColorBookmark extends React.Component {
 
             return (
               <div
-                className="bookmark bookmark-color"
-                ref={(ref) => { this.colorPickerBookmark = ref; }}
-                onClick={this.onClickBookmark}
+                className="textmarker textmarker-color"
+                ref={(ref) => { this.markerEl = ref; }}
+                onClick={this.onClickTextMarker}
               >
                 <Checkboard size="3" />
-                <div className="bookmark-color-swatch" style={colorStyle} />
+                <div className="textmarker-color-swatch" style={colorStyle} />
               </div>
             );
           })()}
@@ -228,14 +215,15 @@ export default class ColorBookmark extends React.Component {
   }
 }
 
-/**
- * Prop validation required by React
- */
-ColorBookmark.propTypes = {
-  bookmark: React.PropTypes.shape({
-    widgetPos: React.PropTypes.object,
+ColorMarker.propTypes = {
+  marker: React.PropTypes.shape({
+    find: React.PropTypes.func,
   }),
-  value: React.PropTypes.string,
+  // The value may be a string, or an array of string values.
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.arrayOf(React.PropTypes.string),
+  ]).isRequired,
   // These props are only used for GLSL pickers within the shader blocks
   shader: React.PropTypes.bool,
   cursor: React.PropTypes.shape({
@@ -246,4 +234,8 @@ ColorBookmark.propTypes = {
     end: React.PropTypes.number,
   }),
   vec: React.PropTypes.string,
+};
+
+ColorMarker.defaultProps = {
+  shader: false,
 };

@@ -21,20 +21,6 @@ export function uniqueInteger() {
 }
 
 /**
- * Checks is a string is empty.
- * Returns true if:
- *      - Falsy: null, undefined
- *      - Zero-length string
- *      - Any-length string that can be trimmed to zero-length
- *
- * @param {string} str - the string to check
- * @returns {Boolean}
- */
-export function isEmptyString(str) {
-  return (!str || str.trim().length === 0);
-}
-
-/**
  * Count the number of whitespace characters at the beginning of a string.
  *
  * @param {string} str - string to test

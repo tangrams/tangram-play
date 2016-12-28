@@ -7,10 +7,10 @@ import { editor } from './editor/editor';
 
 // Addons
 import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/actions';
-import { initMarks } from './editor/bookmarks';
-import { initErrorsManager, clearAllErrors } from './editor/errors';
+import { initTextMarkers } from './editor/textmarkers';
 import { initSuggestions } from './editor/suggest';
 import { initContextSensitiveClickEvents } from './editor/imports';
+import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import { showErrorModal } from './modals/ErrorModal';
 
@@ -295,9 +295,9 @@ export function initTangramPlay() {
       // Initialize addons after Tangram is done, because
       // some addons depend on Tangram scene config being present
       // TODO: Verify if this is still true?
-      if (window.isEmbedded === undefined) {
+      if (store.getState().app.isEmbedded === false) {
         // Add widgets marks and errors manager.
-        initMarks();
+        initTextMarkers();
 
         // This for sure depends on Tangram
         initErrorsManager();

@@ -25,7 +25,7 @@ export default class AppEmbedded extends React.Component {
         </div>
 
         <div>
-          <Map panel={false} />
+          <Map />
           <EditorPane />
         </div>
 

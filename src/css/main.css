@@ -58,9 +58,9 @@
 @import '_editor-context-menu';
 @import '_editor-hidden-tooltip';
 
-/* Bookmarks and pickers */
+/* Text markers and pickers */
 @import '_floating-panel';
-@import '_widgets';
+@import '_textmarkers';
 @import '_color';
 
 /* Embedded Tangram Play */

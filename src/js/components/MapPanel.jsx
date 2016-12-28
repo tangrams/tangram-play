@@ -172,6 +172,8 @@ class MapPanel extends React.Component {
   }
 
   render() {
+    if (this.props.disabled) return null;
+
     return (
       <div className="map-panel">
         {/* Map panel*/}
@@ -226,16 +228,19 @@ class MapPanel extends React.Component {
 
 MapPanel.propTypes = {
   dispatch: React.PropTypes.func,
+  disabled: React.PropTypes.bool,
   // Whether panel should be open or not
   open: React.PropTypes.bool,
 };
 
 MapPanel.defaultProps = {
+  disabled: false,
   open: true,
 };
 
 function mapStateToProps(state) {
   return {
+    disabled: state.app.disableMapToolbar,
     open: state.settings.mapToolbarDisplay,
   };
 }
