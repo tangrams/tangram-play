@@ -77,7 +77,11 @@ function createLineWidget(type, line, message) {
 }
 
 export function clearAllErrors() {
-  for (let i = 0; i < lineWidgets.length; i++) {
+  // Early return if errors are already cleared, this avoids a lot of extra
+  // work and polluting the Redux action log
+  if (lineWidgets.length === 0) return;
+
+  for (let i = 0, j = lineWidgets.length; i < j; i++) {
     editor.removeLineWidget(lineWidgets[i]);
   }
   lineWidgets.length = 0;
@@ -255,7 +259,7 @@ function addTangramWarning(errorObj) {
  * Depends on CodeMirror editor and Tangram layer being present.
  */
 export function initErrorsManager() {
-  editor.on('changes', (cm, changesObjs) => {
+  editor.on('changes', (cm, changes) => {
     clearAllErrors();
   });
 

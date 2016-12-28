@@ -185,6 +185,7 @@ export function watchEditorForChanges(cm, changes) {
   const content = getEditorContent();
   const doc = cm.getDoc();
   const isClean = doc.isClean();
+  const previousCleanState = store.getState().scene.files[0].isClean; // TODO: replace with current file
 
   parsedYAMLDocument.regenerate(content);
 
@@ -203,7 +204,9 @@ export function watchEditorForChanges(cm, changes) {
   // and the the editor state is not clean), we erase the ?scene= state
   // from the URL string. This prevents a situation where reloading (or
   // copy-pasting the URL) loads the scene file from an earlier state.
-  if (isClean === false) {
+  // Only do this if clean state has changed between edits to avoid polluting
+  // the action log.
+  if (previousCleanState === true && isClean === false) {
     replaceHistoryState({
       scene: null,
     });
@@ -212,12 +215,12 @@ export function watchEditorForChanges(cm, changes) {
     // TODO: These checks do not have to be debounced for Tangram.
     store.dispatch({
       type: MARK_FILE_DIRTY,
-      fileIndex: 0,
+      fileIndex: 0, // TODO: replace with current file
     });
-  } else {
+  } else if (previousCleanState === false && isClean === true) {
     store.dispatch({
       type: MARK_FILE_CLEAN,
-      fileIndex: 0,
+      fileIndex: 0, // TODO: replace with current file
     });
   }
 }
