@@ -226,8 +226,9 @@ export function watchEditorForChanges(cm, changes) {
 }
 
 /**
- * Sets a text marker's value. If a value is prepended with a YAML anchor, the
- * anchor is left in place.
+ * Changes the value of a scalar node attached to a text marker. This relies on
+ * the abstract syntax tree to make sure the correct range is replaced. (Using
+ * the syntax tree allows us to account for anchor values, for example.)
  *
  * @public
  * @param {Object} marker - The marker whose value changes
@@ -245,6 +246,7 @@ export function setCodeMirrorValue(marker, value) {
   const pos = marker.find(); // returns { line, ch } - does this ever become
   // a { from, to } object like the documentation says? maybe if it's a text range?
   const index = doc.indexFromPos(pos);
+  // Rely on the latest parsed condition
   const node = parsedYAMLDocument.getNodeAtIndex(index);
   const from = doc.posFromIndex(node.startPosition);
   const to = doc.posFromIndex(node.endPosition);

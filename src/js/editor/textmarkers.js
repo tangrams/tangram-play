@@ -49,6 +49,8 @@ const listOfTextMarkerConstructors = makeTextMarkerConstructionKit(TANGRAM_API.v
 
 /**
  * Get text marker constructors for each AST node
+ * TODO: This is a slow function. We should speed it up. According to the Chrome
+ * profiler this can take longer than the actual creation of a text marker DOM element.
  *
  * @param {Array} nodes - nodes to search through
  * @param {Array} marks - array of TextMarkers to build

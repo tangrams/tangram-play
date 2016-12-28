@@ -132,15 +132,6 @@ function getKeyAddressFromState(state) {
   return '';
 }
 
-function getAnchorFromValue(value) {
-  if (/(^\s*(&\w+)\s+)/.test(value)) {
-    const link = /(^\s*(&\w+)\s+)/gm.exec(value);
-    return link[1];
-  }
-
-  return '';
-}
-
 // Given a YAML string return an array of keys
 // TODO: We will need a different way of parsing YAML flow notation,
 // since this function does not cover the full range of legal YAML specification
@@ -176,8 +167,6 @@ function getInlineNodes(str, nLine) {
         if (isVector) {
           value = isVector[0];
         }
-        const anchor = getAnchorFromValue(value);
-        value = value.substr(anchor.length);
 
         rta.push({
           // This gets an array starting at index 1. This means that the
@@ -186,7 +175,6 @@ function getInlineNodes(str, nLine) {
           address: addressFromKeyStack(stack),
           key,
           value,
-          anchor,
           range: {
             from: {
               line: nLine,
@@ -216,7 +204,6 @@ function parseYamlString(string, state, tabSize) {
   const nodeEntry = {
     address: '',
     key: '',
-    anchor: '',
     value: '',
     range: {
       from: {
@@ -279,12 +266,9 @@ function parseYamlString(string, state, tabSize) {
         state.nodes.push(subNodes[i]);
       }
     } else {
-      const anchor = getAnchorFromValue(nodeValue);
-
       nodeEntry.address = address;
       nodeEntry.key = nodeKey;
-      nodeEntry.anchor = anchor;
-      nodeEntry.value = nodeValue.substr(anchor.length);
+      nodeEntry.value = nodeValue;
       nodeEntry.range.from.ch = fromCh;
       nodeEntry.range.to.ch = toCh + nodeValue.length;
 
