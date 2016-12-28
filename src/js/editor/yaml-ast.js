@@ -26,14 +26,23 @@ This node is an array of items. It does not have a `value` property but rather
 an `items` array of one or more YAML nodes. In Tangram YAML, child nodes are
 usually SCALARS.
 
-Other node kinds exist, but we currently don't handle this here. We still need
-to understand what they are and whether they are used by Tangram YAML.
+ANCHOR REFERENCE (type 4)
+This node is a reference to a previously defined anchor. (An anchor must already
+be defined earlier in a YAML document before it can be referenced by a later
+node.)  This node will have a `referencesAnchor` property, and its `value`
+property will be the node that it references (including its original start and
+end position), so it's very easy to find again. Nodes that define an anchor
+will have an additional `anchorId` property (which will match `referencesAnchor`).
+Nodes that can have anchors include scalars, maps, and sequences.
+
+There is another node kind called INCLUDE_REF, but I don't know what that is
+and how it should be used.
 */
 export const YAML_SCALAR = 0;
 export const YAML_MAPPING = 1;
 export const YAML_MAP = 2;
 export const YAML_SEQUENCE = 3;
-// export const YAML_ANCHOR_REF = 4;
+export const YAML_ANCHOR_REF = 4;
 // export const YAML_INCLUDE_REF = 5;
 
 function parseYAML(content) {
@@ -116,7 +125,7 @@ function getNodeAtIndex(ast, index) {
         // If not, return the sequence node itself
         return node;
       default:
-        if (idx >= node.startPosition && idx <= node.startPosition) {
+        if (idx >= node.startPosition && idx <= node.endPosition) {
           return node;
         } else if (node.parent) {
           return node.parent;
@@ -190,6 +199,12 @@ function getNodeAtKeyAddress(ast, address) {
 /**
  * Returns an array of scalar nodes between `fromIndex` and `toIndex`.
  * Include nodes that overlap this range.
+ *
+ * Scalar nodes that are children of anchor reference nodes are skipped.
+ * This is because these nodes reference the original scalar nodes, so they're
+ * not clones. A referenced node can't be traced back to its anchor reference
+ * when it's returned by itself, since its parent is its original source parent,
+ * not the anchor reference parent.
  *
  * @param {YAMLNode} ast - a parsed syntax tree object, should be root of the tree
  * @param {Number} fromIndex - a position index at start of range

@@ -4,6 +4,7 @@ import {
   YAML_MAPPING,
   // YAML_MAP,
   YAML_SEQUENCE,
+  YAML_ANCHOR_REF,
   ParsedYAMLDocument,
   getScalarNodesInRange,
   getKeyAddressForNode,
@@ -29,13 +30,13 @@ layers:
         draw:
             polygons:
                 order: 0
-                color: grey
+                color: &color grey
     water:
         data: { source: mapzen }
         draw:
             polygons:
                 order: 1
-                color: lightblue
+                color: *color
 `;
 
 let parsed;
@@ -68,6 +69,11 @@ describe('YAML abstract syntax tree parser', () => {
       const node = parsed.getNodeAtIndex(50);
       assert.equal(node.kind, YAML_SCALAR);
       assert.equal(node.parent.kind, YAML_SEQUENCE);
+    });
+
+    it('returns an anchor reference node', () => {
+      const node = parsed.getNodeAtIndex(517);
+      assert.equal(node.kind, YAML_ANCHOR_REF);
     });
 
     it('returns null if index does not correspond to a node', () => {
@@ -114,7 +120,7 @@ describe('YAML abstract syntax tree parser', () => {
   describe('getScalarNodesInRange()', () => {
     it('returns all scalar nodes in document', () => {
       const nodes = getScalarNodesInRange(parsed.nodes, 0, parsed.nodes.endPosition);
-      assert.equal(nodes.length, 11);
+      assert.equal(nodes.length, 10);
     });
 
     it.skip('returns a node that overlaps the start of the range');
@@ -125,6 +131,7 @@ describe('YAML abstract syntax tree parser', () => {
     it.skip('includes scalar nodes that are children of sequences');
     it.skip('returns nodes that straddle branches of the syntax tree');
     it.skip('returns an empty array if no nodes are found');
+    it.skip('does not include child nodes of anchor reference nodes');
   });
 
   describe('getKeyAddressForNode()', () => {
