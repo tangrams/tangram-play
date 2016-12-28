@@ -295,7 +295,7 @@ export function initTangramPlay() {
       // Initialize addons after Tangram is done, because
       // some addons depend on Tangram scene config being present
       // TODO: Verify if this is still true?
-      if (window.isEmbedded === undefined) {
+      if (store.getState().app.isEmbedded === false) {
         // Add widgets marks and errors manager.
         initTextMarkers();
 

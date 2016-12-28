@@ -18,18 +18,7 @@ import TANGRAM from '../tangram-docs.json';
 
 const INITIAL_HEIGHT = 200;
 
-/**
- * Represents the main map panel that user can toggle in and out of the leaflet
- * map.
- */
 class DocsPanel extends React.Component {
-  /**
-   * Used to setup the state of the component. Regular ES6 classes do not
-   * automatically bind 'this' to the instance, therefore this is the best
-   * place to bind event handlers
-   *
-   * @param props - parameters passed from the parent
-   */
   constructor(props) {
     super(props);
 
@@ -217,16 +206,15 @@ class DocsPanel extends React.Component {
     return list;
   }
 
-  /**
-   * Official React lifecycle method
-   * Called every time state or props are changed
-   */
   render() {
     const divStyle = {
       height: `${this.props.height}px`,
     };
 
     const result = this.state.display;
+
+    // This line disables DocsPanel unless it's an admin
+    if (this.props.admin === false) return null;
 
     return (
       <div className="docs-panel">
@@ -297,16 +285,19 @@ class DocsPanel extends React.Component {
 }
 
 DocsPanel.propTypes = {
+  admin: React.PropTypes.bool,
   dispatch: React.PropTypes.func,
   height: React.PropTypes.number,
 };
 
 DocsPanel.defaultProps = {
+  admin: false,
   height: INITIAL_HEIGHT,
 };
 
 function mapStateToProps(state) {
   return {
+    admin: state.user.admin || false,
     height: state.settings.docsPanelHeight,
   };
 }

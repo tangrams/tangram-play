@@ -60,7 +60,7 @@ EditorTabBar.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    disabled: state.app.multiFileDisabled,
+    disabled: !state.app.showEditorTabBar,
   };
 }
 

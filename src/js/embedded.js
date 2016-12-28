@@ -37,6 +37,7 @@ if (document.domain.indexOf('mapzen.com') === 0) {
 store.dispatch({
   type: SET_APP_STATE,
   multiFileDisabled: true,
+  showEditorTabBar: false,
   isEmbedded: true,
 });
 

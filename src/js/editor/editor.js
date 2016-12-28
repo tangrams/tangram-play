@@ -109,11 +109,8 @@ export function setEditorContent(doc, readOnly = false) {
   // Debug access
   window.parsedYAMLDocument = parsedYAMLDocument;
 
-  // Once the document is swapped in, if the content is not read-only,
-  // add bookmarks back in if they're not added already.
-  if (readOnly === false) {
-    insertTextMarkersInViewport(editor);
-  }
+  // Once the document is swapped in, add text markers back in
+  insertTextMarkersInViewport(editor);
 }
 
 /**

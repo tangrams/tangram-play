@@ -221,6 +221,7 @@ export function insertTextMarkers(cm, ast, fromLine, toLine) {
   const range = indexesFromLineRange(doc, fromLine, toLine);
   const nodes = getScalarNodesInRange(ast, range.start, range.end);
   const marks = getTextMarkerConstructors(nodes);
+  const readOnly = cm.isReadOnly();
 
   for (const mark of marks) {
     const pos = doc.posFromIndex(mark.node.endPosition);
@@ -228,10 +229,9 @@ export function insertTextMarkers(cm, ast, fromLine, toLine) {
       if (mark.type === 'link') {
         // This is a marked range, not a DOM node. Still apply this in read-only docs
         applySyntaxHighlighting(doc, mark.node);
-      } else {
+      } else if (!readOnly) {
         // Bail if editor is in read-only mode
-        if (cm.isReadOnly()) return;
-
+        // TODO: better way of handling this.
         // This is for text markers that have DOM nodes (like the color picker)
         createAndRenderTextMarker(doc, mark.node, mark);
       }

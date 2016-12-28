@@ -145,22 +145,13 @@ class Editor extends React.PureComponent {
         />
 
         <EditorContextMenu />
-
-        {(() => {
-          if (this.props.admin) {
-            return (
-              <DocsPanel />
-            );
-          }
-          return null;
-        })()}
+        <DocsPanel />
       </div>
     );
   }
 }
 
 Editor.propTypes = {
-  admin: React.PropTypes.bool,
   sceneCounter: React.PropTypes.number,
   activeFile: React.PropTypes.number,
   files: React.PropTypes.arrayOf(React.PropTypes.object),
@@ -169,14 +160,12 @@ Editor.propTypes = {
 };
 
 Editor.defaultProps = {
-  admin: false,
   activeFile: -1,
   files: [],
 };
 
 function mapStateToProps(state) {
   return {
-    admin: state.user.admin || false,
     sceneCounter: state.scene.counter,
     activeFile: state.scene.activeFileIndex,
     files: state.scene.files,
