@@ -125,8 +125,8 @@ function openLink(event) {
 // Let's work on finding scene imports.
 // TODO: This is not a final API; this is just for testing purposes.
 export function initContextSensitiveClickEvents() {
-  // Bail if multiFileDisabled mode is on
-  if (store.getState().app.multiFileDisabled === true) return;
+  // Bail if disableMultiFile mode is on
+  if (store.getState().app.disableMultiFile === true) return;
 
   const wrapper = editor.getWrapperElement();
 
@@ -179,8 +179,8 @@ export function initContextSensitiveClickEvents() {
  * @param {YAMLNode} node - a node (must be a scalar value) to mark text for
  */
 export function applySyntaxHighlighting(doc, node) {
-  // Bail if multiFileDisabled mode is on
-  if (store.getState().app.multiFileDisabled === true) return;
+  // Bail if disableMultiFile mode is on
+  if (store.getState().app.disableMultiFile === true) return;
 
   const SYNTAX_CLASS_LINK = 'cm-tangram-link';
 

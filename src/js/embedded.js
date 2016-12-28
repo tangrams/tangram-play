@@ -36,7 +36,8 @@ if (document.domain.indexOf('mapzen.com') === 0) {
 // Set some application state variables that control the view in embedded mode
 store.dispatch({
   type: SET_APP_STATE,
-  multiFileDisabled: true,
+  disableMapToolbar: true,
+  disableMultiFile: true,
   showEditorTabBar: false,
   isEmbedded: true,
 });

@@ -76,12 +76,7 @@ class Map extends React.Component {
         <div className="map-view" id="map" />
         <Camera />
         <SceneLoading />
-        {(() => {
-          if (this.props.panel) {
-            return (<MapPanel />);
-          }
-          return null;
-        })()}
+        <MapPanel />
         <div id="map-inspection-components" />
       </div>
     );
@@ -89,7 +84,6 @@ class Map extends React.Component {
 }
 
 Map.propTypes = {
-  panel: React.PropTypes.bool,
   app: React.PropTypes.shape({
     initialized: React.PropTypes.bool,
     mapNotLoaded: React.PropTypes.bool,
@@ -98,10 +92,6 @@ Map.propTypes = {
     counter: React.PropTypes.number,
     files: React.PropTypes.array,
   }),
-};
-
-Map.defaultProps = {
-  panel: true,
 };
 
 function mapStateToProps(state) {

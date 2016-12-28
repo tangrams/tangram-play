@@ -28,7 +28,7 @@ let cachedSignInData;
 function enableAdminFlags() {
   store.dispatch({
     type: SET_APP_STATE,
-    multiFileDisabled: false,
+    disableMultiFile: false,
   });
 }
 
@@ -36,7 +36,7 @@ function disableAdminFlags() {
   store.dispatch({
     type: SET_APP_STATE,
     // Only disable again if not on localhost
-    multiFileDisabled: (window.location.hostname !== 'localhost'),
+    disableMultiFile: (window.location.hostname !== 'localhost'),
   });
 }
 

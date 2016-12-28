@@ -55,7 +55,7 @@ const STORAGE_SETTINGS = 'settings';
 // Localhost flags
 store.dispatch({
   type: SET_APP_STATE,
-  multiFileDisabled: false,
+  disableMultiFile: false,
 });
 
 // Settings that are stored are populated in state before we mount the
