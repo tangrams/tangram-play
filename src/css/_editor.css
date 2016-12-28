@@ -449,7 +449,7 @@
 
 /* Styles external links - imports, for example. */
 .cm-tangram-link {
-  border-bottom: 1px dotted lightblue;
+  border-bottom: 1px solid lightblue;
   color: lightblue;
   cursor: pointer;
 }
