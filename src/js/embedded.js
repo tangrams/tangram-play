@@ -15,6 +15,7 @@ import AppEmbedded from './components/AppEmbedded';
 
 // Redux
 import store from './store';
+import { SET_APP_STATE } from './store/actions';
 
 // Error tracking
 // Load this before all other modules. Only load when run in production.
@@ -31,6 +32,13 @@ if (process.env.NODE_ENV === 'production') {
 if (document.domain.indexOf('mapzen.com') === 0) {
   document.domain = document.domain;
 }
+
+// Set some application state variables that control the view in embedded mode
+store.dispatch({
+  type: SET_APP_STATE,
+  multiFileDisabled: true,
+  isEmbedded: true,
+});
 
 // Mount React components
 ReactDOM.render(
