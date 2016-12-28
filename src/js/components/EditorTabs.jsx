@@ -61,6 +61,10 @@ class EditorTabs extends React.PureComponent {
         {this.props.files.map((item, i) => {
           let classes = 'editor-tab';
 
+          // Set classes on tab based on properties of the file
+          if (i === this.props.mainTab) {
+            classes += ' editor-tab-is-main';
+          }
           if (i === this.props.activeTab) {
             classes += ' editor-tab-is-active';
           }
@@ -68,14 +72,12 @@ class EditorTabs extends React.PureComponent {
             classes += ' editor-tab-is-dirty';
           }
 
-          // The main tab (root scene file) is not closeable
+          // The main tab (root scene file) is not closeable right now
           let closeButtonEl;
           if (i !== this.props.mainTab) {
             closeButtonEl = (
               <div className="editor-tab-close" onClick={(e) => { this.closeTab(i, e); }}>×</div>
             );
-          } else {
-            classes += ' editor-tab-is-main';
           }
 
           let fileIcon;

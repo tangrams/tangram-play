@@ -122,28 +122,14 @@ class Editor extends React.PureComponent {
 
     return (
       <div className="editor-container">
-        {(() => {
-          // Don't flash this when Tangram Play is initializing;
-          // files are still zero, but we won't prompt until after
-          if (!this.props.appInitialized) return null;
-
-          if (this.props.files.length === 0) {
-            return (
-              <EditorCallToAction />
-            );
-          }
-          return null;
-        })()}
-
+        <EditorCallToAction />
         <EditorTabBar />
-
         <div
           className="editor"
           id="editor"
           ref={(ref) => { this.editorEl = ref; }}
           style={customStyles}
         />
-
         <EditorContextMenu />
         <DocsPanel />
       </div>
@@ -155,7 +141,6 @@ Editor.propTypes = {
   sceneCounter: React.PropTypes.number,
   activeFile: React.PropTypes.number,
   files: React.PropTypes.arrayOf(React.PropTypes.object),
-  appInitialized: React.PropTypes.bool,
   fontSize: React.PropTypes.number,
 };
 
@@ -169,7 +154,6 @@ function mapStateToProps(state) {
     sceneCounter: state.scene.counter,
     activeFile: state.scene.activeFileIndex,
     files: state.scene.files,
-    appInitialized: state.app.initialized,
     fontSize: state.settings.editorFontSize,
   };
 }
