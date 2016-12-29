@@ -11,6 +11,9 @@ import { hideSceneLoadingIndicator } from './actions';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { injectAPIKey } from '../editor/api-keys';
 
+// Redux
+import store from '../store';
+
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
 L.Icon.Default.imagePath = './data/imgs';
@@ -178,7 +181,7 @@ export function initMap() {
 
   // Provide alternate zoom in/zoom out button controls in embedded version
   // since, when iframed, the scroll wheel zoom will no longer work.
-  if (window.isEmbedded) {
+  if (store.getState().app.isEmbedded === true) {
     const zoomControl = L.control.zoom();
     zoomControl.addTo(map);
   }

@@ -147,7 +147,7 @@ const debouncedUpdateContent = debounce(updateContent, 500);
  */
 export function updateLocalMemory() {
   // Bail if embedded
-  if (window.isEmbedded) return;
+  if (store.getState().app.isEmbedded === true) return;
 
   // Creates a clone of existing data
   const scene = Object.assign({}, store.getState().scene);
