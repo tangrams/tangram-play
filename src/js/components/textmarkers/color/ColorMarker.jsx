@@ -173,45 +173,43 @@ export default class ColorMarker extends React.Component {
   }
 
   render() {
-    if (this.mounted) {
-      const colorStyle = { backgroundColor: this.state.color.getRgbaString() };
+    if (!this.mounted) return null;
 
-      return (
-        <div>
-          {/* The button user clicks to open color picker */}
-          {(() => {
-            if (this.props.shader) {
-              return null;
-            }
+    const colorStyle = { backgroundColor: this.state.color.getRgbaString() };
 
-            return (
-              <div
-                className="textmarker textmarker-color"
-                ref={(ref) => { this.markerEl = ref; }}
-                onClick={this.onClickTextMarker}
-              >
-                <Checkboard size="3" />
-                <div className="textmarker-color-swatch" style={colorStyle} />
-              </div>
-            );
-          })()}
+    return (
+      <div>
+        {/* The button user clicks to open color picker */}
+        {(() => {
+          if (this.props.shader) {
+            return null;
+          }
 
-          {/* Floating panel */}
-          <FloatingPanel
-            x={this.x}
-            y={this.y}
-            width={this.width}
-            height={this.height}
-            show={this.state.displayColorPicker}
-            onClickClose={this.onClickClose}
-          >
-            <ColorPicker color={this.state.color} onChange={this.onChange} />
-          </FloatingPanel>
-        </div>
-      );
-    }
+          return (
+            <div
+              className="textmarker textmarker-color"
+              ref={(ref) => { this.markerEl = ref; }}
+              onClick={this.onClickTextMarker}
+            >
+              <Checkboard size="3" />
+              <div className="textmarker-color-swatch" style={colorStyle} />
+            </div>
+          );
+        })()}
 
-    return null;
+        {/* Floating panel */}
+        <FloatingPanel
+          x={this.x}
+          y={this.y}
+          width={this.width}
+          height={this.height}
+          show={this.state.displayColorPicker}
+          onClickClose={this.onClickClose}
+        >
+          <ColorPicker color={this.state.color} onChange={this.onChange} />
+        </FloatingPanel>
+      </div>
+    );
   }
 }
 
