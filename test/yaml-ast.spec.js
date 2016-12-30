@@ -128,9 +128,25 @@ describe('YAML abstract syntax tree parser', () => {
     it.skip('returns a node that overlaps both the start and end of the range');
     it.skip('does not return nodes before the range');
     it.skip('does not return nodes after the range');
-    it.skip('includes scalar nodes that are children of sequences');
+
+    it('includes scalar nodes that are children of sequences', () => {
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, 90);
+      assert.equal(nodes[0].parent.kind, YAML_SEQUENCE);
+      assert.equal(nodes[1].parent.kind, YAML_SEQUENCE);
+      assert.equal(nodes[2].parent.kind, YAML_SEQUENCE);
+      assert.equal(nodes[0].value, 'components/globals.yaml');
+      assert.equal(nodes[1].value, 'styles/common.yaml');
+      assert.equal(nodes[2].value, 'layers/water.yaml');
+    });
+
     it.skip('returns nodes that straddle branches of the syntax tree');
-    it.skip('returns an empty array if no nodes are found');
+
+    it('returns an empty array if no nodes are found', () => {
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, 1);
+      assert.isArray(nodes);
+      assert.equal(nodes.length, 0);
+    });
+
     it.skip('does not include child nodes of anchor reference nodes');
   });
 
