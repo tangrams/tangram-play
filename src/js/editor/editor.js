@@ -4,7 +4,7 @@ import localforage from 'localforage';
 
 import config from '../config';
 import { initCodeMirror } from './codemirror';
-import { getNodeAtIndex } from './yaml-ast';
+import { getNodeAtIndex, YAML_ANCHOR_REF } from './yaml-ast';
 import { suppressAPIKeys } from './api-keys';
 import {
   highlightOnEditorGutterClick,
@@ -269,8 +269,13 @@ export function setCodeMirrorValue(marker, value) {
   const index = doc.indexFromPos(pos);
   // Rely on the latest parsed condition
   const node = getNodeAtIndex(doc.yamlNodes, index);
-  const from = doc.posFromIndex(node.startPosition);
-  const to = doc.posFromIndex(node.endPosition);
+
+  // If the node is an anchor reference, we replace the reference value instead.
+  const from = (node.kind === YAML_ANCHOR_REF) ?
+    doc.posFromIndex(node.value.startPosition) : doc.posFromIndex(node.startPosition);
+  const to = (node.kind === YAML_ANCHOR_REF) ?
+    doc.posFromIndex(node.value.endPosition) : doc.posFromIndex(node.endPosition);
+
   doc.replaceRange(value, from, to, origin);
 }
 

@@ -124,6 +124,11 @@ describe('YAML abstract syntax tree parser', () => {
       assert.equal(nodes.length, 10);
     });
 
+    it('returns all scalar nodes in document (including anchor references)', () => {
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, parsed.nodes.endPosition, true);
+      assert.equal(nodes.length, 11);
+    });
+
     it('returns a node that overlaps the start of the range', () => {
       const start = 130;
       const nodes = getScalarNodesInRange(parsed, start, parsed.endPosition);
