@@ -28,18 +28,31 @@ export function injectAPIKey(config, apiKey) {
     const [key, value] = entry;
 
     // Only operate on the URL if it's a Mapzen-hosted vector tile service
-    // and if it does not already have a url_params.api_key field
     // and if it does not appear to contain a api_key param in the query string
-    if (value.url.match(URL_PATTERN) && !(value.url_params && value.url_params.api_key) && !value.url.match(/(\?|&)api_key=/)) {
-      // Add a default API key as a url_params setting.
-      // Preserve existing url_params if present.
-      const params = Object.assign({}, config.sources[key].url_params, {
-        api_key: apiKey,
-      });
+    if (value.url.match(URL_PATTERN) && !value.url.match(/(\?|&)api_key=/)) {
+      // If it does not already have a url_params.api_key field
+      if (!(value.url_params && value.url_params.api_key)) {
+        // Add a default API key as a url_params setting.
+        // Preserve existing url_params values, if present.
+        const params = Object.assign({}, config.sources[key].url_params, {
+          api_key: apiKey,
+        });
 
-      // Mutate the original on purpose.
-      // eslint-disable-next-line no-param-reassign
-      config.sources[key].url_params = params;
+        // Mutate the original on purpose.
+        // eslint-disable-next-line no-param-reassign
+        config.sources[key].url_params = params;
+      // If it has an api_key field but it refers to a global, replace the
+      // global if it is a falsy or blank value.
+      } else if (value.url_params && value.url_params.api_key && value.url_params.api_key.startsWith('global.')) {
+        // Check the value of the global property
+        const prop = value.url_params.api_key.split('.')[1];
+        const val = config.global[prop];
+        if (!val || val.trim().length === 0) {
+          // Mutate the original on purpose.
+          // eslint-disable-next-line no-param-reassign
+          config.global[prop] = apiKey;
+        }
+      }
     }
   });
 
