@@ -305,7 +305,8 @@ export function getKeyAddressForNode(node) {
  * ancestor.
  *
  * @param {YAMLNode} node - a node from YAML-AST-parser
- * @returns {string} keyName - a single value, like "order" or "color"
+ * @returns {string | null} keyName - a single value, like "order" or "color",
+ *        or `null` if a key name cannot be determined
  */
 export function getKeyNameForNode(node) {
   function traverser(currentNode) {

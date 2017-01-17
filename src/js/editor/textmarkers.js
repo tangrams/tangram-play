@@ -58,26 +58,24 @@ const listOfTextMarkerConstructors = makeTextMarkerConstructionKit(TANGRAM_API.v
 export function getTextMarkerConstructors(nodes) {
   const marks = [];
 
-  // Find text marker constructors that match the node
+  // Find text marker constructors that match each node
   nodes.forEach((node) => {
     // Compare node against all available marker types
     for (const mark of listOfTextMarkerConstructors) {
       if (mark.matchAgainst === 'key') {
         const key = getKeyNameForNode(node);
-        if (key) {
-          const address = getKeyAddressForNode(node);
-          const check = (mark.matchPattern === key);
+        const check = (mark.matchPattern === key);
 
-          // If a matching mark type is found, make a copy of it and store
-          // information about the node.
-          if (check) {
-            const clone = Object.assign({}, mark);
-            clone.key = key;
-            clone.address = address;
-            clone.node = node;
-            marks.push(clone);
-            break;
-          }
+        // If a matching mark type is found, make a copy of it and store
+        // information about the node.
+        if (check) {
+          const clone = Object.assign({}, mark);
+          const address = getKeyAddressForNode(node);
+          clone.key = key;
+          clone.address = address;
+          clone.node = node;
+          marks.push(clone);
+          break;
         }
       } else if (mark.matchAgainst === 'address') {
         const address = getKeyAddressForNode(node);
