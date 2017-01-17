@@ -123,15 +123,89 @@ describe('YAML abstract syntax tree parser', () => {
       assert.equal(nodes.length, 10);
     });
 
-    it.skip('returns a node that overlaps the start of the range');
-    it.skip('returns a node that overlaps the end of the range');
-    it.skip('returns a node that overlaps both the start and end of the range');
-    it.skip('does not return nodes before the range');
-    it.skip('does not return nodes after the range');
-    it.skip('includes scalar nodes that are children of sequences');
-    it.skip('returns nodes that straddle branches of the syntax tree');
-    it.skip('returns an empty array if no nodes are found');
-    it.skip('does not include child nodes of anchor reference nodes');
+    it('returns a node that overlaps the start of the range', () => {
+      const start = 130;
+      const nodes = getScalarNodesInRange(parsed.nodes, start, parsed.nodes.endPosition);
+      assert.equal(nodes[0].value, 'TopoJSON');
+      assert.isBelow(nodes[0].startPosition, start);
+      assert.isAbove(nodes[0].endPosition, start);
+    });
+
+    it('returns a node that overlaps the end of the range', () => {
+      const end = 130;
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, end);
+      const last = nodes.length - 1;
+      assert.equal(nodes[last].value, 'TopoJSON');
+      assert.isBelow(nodes[last].startPosition, end);
+      assert.isAbove(nodes[last].endPosition, end);
+    });
+
+    it('returns a node that overlaps both the start and end of the range', () => {
+      const start = 129;
+      const end = 130;
+      const nodes = getScalarNodesInRange(parsed.nodes, start, end);
+      assert.equal(nodes[0].value, 'TopoJSON');
+      assert.isBelow(nodes[0].startPosition, start);
+      assert.isAbove(nodes[0].endPosition, end);
+    });
+
+    it('does not return nodes before the range', () => {
+      const start = 250;
+      const nodes = getScalarNodesInRange(parsed.nodes, start, parsed.nodes.endPosition);
+      assert.isAbove(nodes.length, 0); // Maks sure there are nodes to test
+      nodes.forEach((node) => {
+        assert.isAbove(node.endPosition, start);
+      });
+    });
+
+    it('does not return nodes after the range', () => {
+      const end = 250;
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, end);
+      assert.isAbove(nodes.length, 0); // Maks sure there are nodes to test
+      nodes.forEach((node) => {
+        assert.isBelow(node.startPosition, end);
+      });
+    });
+
+    it('includes scalar nodes that are children of sequences', () => {
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, 90);
+      assert.equal(nodes[0].parent.kind, YAML_SEQUENCE);
+      assert.equal(nodes[1].parent.kind, YAML_SEQUENCE);
+      assert.equal(nodes[2].parent.kind, YAML_SEQUENCE);
+      assert.equal(nodes[0].value, 'components/globals.yaml');
+      assert.equal(nodes[1].value, 'styles/common.yaml');
+      assert.equal(nodes[2].value, 'layers/water.yaml');
+    });
+
+    it('returns nodes when the range straddles branches of the syntax tree', () => {
+      const start = 133;
+      const end = 286;
+      const nodes = getScalarNodesInRange(parsed.nodes, start, end);
+      assert.equal(nodes[0].value, 'https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson');
+      assert.equal(nodes[1].value, 'mapzen');
+    });
+
+    it('returns an empty array if no nodes are found', () => {
+      const nodes = getScalarNodesInRange(parsed.nodes, 0, 1);
+      assert.isArray(nodes);
+      assert.equal(nodes.length, 0);
+    });
+
+    it('returns an empty array if a null node is passed in', () => {
+      const nodes = getScalarNodesInRange(null, 0, 1000);
+      assert.isArray(nodes);
+      assert.equal(nodes.length, 0);
+    });
+
+    it('returns an empty array if range is out of bounds', () => {
+      const start = parsed.nodes.endPosition + 100;
+      const end = parsed.nodes.endPosition + 300;
+      const nodes = getScalarNodesInRange(parsed.nodes, start, end);
+      assert.isArray(nodes);
+      assert.equal(nodes.length, 0);
+    });
+
+    it.skip('does not include duplicate child nodes of anchor reference nodes');
   });
 
   describe('getKeyAddressForNode()', () => {
