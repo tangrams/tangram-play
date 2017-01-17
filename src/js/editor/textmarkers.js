@@ -65,6 +65,7 @@ export function getTextMarkerConstructors(nodes) {
       if (mark.matchAgainst === 'key') {
         const key = getKeyNameForNode(node);
         if (key) {
+          const address = getKeyAddressForNode(node);
           const check = (mark.matchPattern === key);
 
           // If a matching mark type is found, make a copy of it and store
@@ -72,6 +73,7 @@ export function getTextMarkerConstructors(nodes) {
           if (check) {
             const clone = Object.assign({}, mark);
             clone.key = key;
+            clone.address = address;
             clone.node = node;
             marks.push(clone);
             break;
@@ -98,7 +100,10 @@ export function getTextMarkerConstructors(nodes) {
   // - replace the node with the parent node
   const filteredMarks = marks.reduce((accumulator, mark) => {
     // Automatically pass through any marker not of type `color`
-    if (mark.type !== 'color') accumulator.push(mark);
+    if (mark.type !== 'color') {
+      accumulator.push(mark);
+      return accumulator;
+    }
 
     // Compare this mark's address with the last item on the accumulator
     if (accumulator.length === 0 || accumulator[accumulator.length - 1].address !== mark.address) {
