@@ -1,5 +1,6 @@
 import { reverse, reject } from 'lodash';
 import React from 'react';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import localforage from 'localforage';
 
@@ -25,7 +26,7 @@ function removeNonexistentGistFromLocalStorage(url) {
     });
 }
 
-export default class OpenGistModal extends React.Component {
+class OpenGistModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -69,7 +70,9 @@ export default class OpenGistModal extends React.Component {
   }
 
   onClickCancel() {
-    this.component.unmount();
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+    });
   }
 
   onClickConfirm() {
@@ -207,3 +210,9 @@ export default class OpenGistModal extends React.Component {
     );
   }
 }
+
+OpenGistModal.propTypes = {
+  dispatch: React.PropTypes.func,
+};
+
+export default connect()(OpenGistModal);

@@ -11,7 +11,6 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 import EventEmitter from './event-emitter';
-import store from '../store';
 
 import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
@@ -19,7 +18,6 @@ import AboutModal from '../modals/AboutModal';
 import SaveGistModal from '../modals/SaveGistModal'; // LEGACY.
 import SaveToCloudModal from '../modals/SaveToCloudModal';
 import OpenFromCloudModal from '../modals/OpenFromCloudModal';
-import OpenGistModal from '../modals/OpenGistModal';
 import OpenUrlModal from '../modals/OpenUrlModal';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { showErrorModal } from '../modals/ErrorModal';
@@ -29,7 +27,8 @@ import { openSignInWindow } from '../user/sign-in-window';
 import SignInButton from './SignInButton';
 
 // Redux
-import { SET_APP_STATE } from '../store/actions';
+import store from '../store';
+import { SET_APP_STATE, SHOW_MODAL } from '../store/actions';
 
 function clickNew() {
   newScene();
@@ -41,7 +40,10 @@ function clickOpenFile() {
 
 function clickOpenGist() {
   checkSaveStateThen(() => {
-    ReactDOM.render(<OpenGistModal />, document.getElementById('modal-container'));
+    store.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'OPEN_GIST_MODAL',
+    });
   });
 }
 
@@ -54,7 +56,7 @@ function clickOpenURL() {
 function clickOpenExample() {
   checkSaveStateThen(() => {
     store.dispatch({
-      type: 'SHOW_MODAL',
+      type: SHOW_MODAL,
       modalType: 'OPEN_EXAMPLE_MODAL',
     });
   });

@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 
 // Import all modals here
 import ExamplesModal from './ExamplesModal';
+import OpenGistModal from './OpenGistModal';
 
 const MODAL_COMPONENTS = {
   OPEN_EXAMPLE_MODAL: ExamplesModal,
+  OPEN_GIST_MODAL: OpenGistModal,
   /* other modals */
 };
 
