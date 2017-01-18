@@ -43,7 +43,6 @@ export default class App extends React.Component {
           <ShieldContainer />
           <FileDrop />
           <SignInOverlay />
-          <div id="modal-container" className="modal-container" />
           <ModalRoot />
 
           <ErrorsPanel />

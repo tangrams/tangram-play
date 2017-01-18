@@ -1,8 +1,7 @@
 /* OVERLAYS */
 
 /* Container for all overlays */
-.overlay-container,
-.modal-container {
+.overlay-container {
   position: fixed;
   left: 0;
   top: 0;

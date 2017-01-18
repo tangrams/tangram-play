@@ -1,11 +1,15 @@
 import { noop } from 'lodash';
 import React from 'react';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
 
-export default class ConfirmDialogModal extends React.Component {
+import store from '../store';
+import { SHOW_MODAL } from '../store/actions';
+
+class ConfirmDialogModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -27,12 +31,16 @@ export default class ConfirmDialogModal extends React.Component {
   }
 
   onClickCancel() {
-    this.component.unmount();
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+    });
     this.props.cancelCallback();
   }
 
   onClickConfirm() {
-    this.component.unmount();
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+    });
     this.props.confirmCallback();
   }
 
@@ -40,7 +48,6 @@ export default class ConfirmDialogModal extends React.Component {
     return (
       <Modal
         className="error-modal"
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
       >
         <p className="modal-text">
@@ -71,6 +78,8 @@ export default class ConfirmDialogModal extends React.Component {
 }
 
 ConfirmDialogModal.propTypes = {
+  dispatch: React.PropTypes.func,
+
   // Error message might be an Error object or a string
   message: React.PropTypes.string.isRequired,
   confirmCallback: React.PropTypes.func,
@@ -84,13 +93,10 @@ ConfirmDialogModal.defaultProps = {
   focusConfirm: true,
 };
 
-// For cached reference to element
-let modalContainerEl;
+export default connect()(ConfirmDialogModal);
 
 /**
- * A convenience function for displaying the ConfirmDialogModal. Right now this is
- * rendered into `modal-container` on each request. TODO: is there a better
- * way to do this?
+ * A convenience function for displaying the ConfirmDialogModal.
  *
  * @param {string} message - the message to display in the modal
  * @param {Function} confirmCallback - callback function to execute when the
@@ -101,16 +107,13 @@ let modalContainerEl;
  *          `cancelCallback` prop.
  */
 export function showConfirmDialogModal(message, confirmCallback, cancelCallback) {
-  if (!modalContainerEl || !modalContainerEl.nodeName) {
-    modalContainerEl = document.getElementById('modal-container');
-  }
-
-  ReactDOM.render(
-    <ConfirmDialogModal
-      message={message}
-      confirmCallback={confirmCallback}
-      cancelCallback={cancelCallback}
-    />,
-    modalContainerEl
-  );
+  store.dispatch({
+    type: SHOW_MODAL,
+    modalType: 'CONFIRM_DIALOG',
+    modalProps: {
+      message,
+      confirmCallback,
+      cancelCallback,
+    },
+  });
 }
