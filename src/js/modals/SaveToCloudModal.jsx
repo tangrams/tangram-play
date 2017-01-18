@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
@@ -21,7 +22,7 @@ const DEFAULT_VALUES = {
   sceneIsPublic: true,
 };
 
-export default class SaveToCloudModal extends React.Component {
+class SaveToCloudModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -40,6 +41,7 @@ export default class SaveToCloudModal extends React.Component {
     this.setReadyUI = this.setReadyUI.bind(this);
     this.handleSaveSuccess = this.handleSaveSuccess.bind(this);
     this.handleSaveError = this.handleSaveError.bind(this);
+    this.unmountSelf = this.unmountSelf.bind(this);
   }
 
   componentDidMount() {
@@ -108,7 +110,7 @@ export default class SaveToCloudModal extends React.Component {
   onClickCancel(event) {
     window.clearTimeout(this.timeout);
     this.resetInputs();
-    this.component.unmount();
+    this.unmountSelf();
   }
 
   setReadyUI() {
@@ -136,7 +138,7 @@ export default class SaveToCloudModal extends React.Component {
   // `data` is (currently) the object saved to `scenelist.json`
   handleSaveSuccess(data) {
     // Close the modal
-    this.component.unmount();
+    this.unmountSelf();
 
     // Mark as clean state in the editor
     editor.doc.markClean();
@@ -161,14 +163,18 @@ export default class SaveToCloudModal extends React.Component {
    */
   handleSaveError(error) {
     // Close the modal, if present
-    if (this.component) {
-      this.component.unmount();
-    }
+    this.unmountSelf();
     console.trace(error);
 
     const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 
     showErrorModal(errorMessage);
+  }
+
+  unmountSelf() {
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+    });
   }
 
   render() {
@@ -177,7 +183,6 @@ export default class SaveToCloudModal extends React.Component {
       <Modal
         className="modal-alt save-to-cloud-modal"
         disableEsc={this.state.thinking}
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
       >
@@ -244,3 +249,9 @@ export default class SaveToCloudModal extends React.Component {
     );
   }
 }
+
+SaveToCloudModal.propTypes = {
+  dispatch: React.PropTypes.func,
+};
+
+export default connect()(SaveToCloudModal);

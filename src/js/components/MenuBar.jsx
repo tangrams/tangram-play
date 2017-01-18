@@ -1,6 +1,5 @@
 import localforage from 'localforage';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Navbar from 'react-bootstrap/lib/Navbar';
@@ -14,11 +13,6 @@ import EventEmitter from './event-emitter';
 
 import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
-import AboutModal from '../modals/AboutModal';
-import SaveGistModal from '../modals/SaveGistModal'; // LEGACY.
-import SaveToCloudModal from '../modals/SaveToCloudModal';
-import OpenFromCloudModal from '../modals/OpenFromCloudModal';
-import OpenUrlModal from '../modals/OpenUrlModal';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { showErrorModal } from '../modals/ErrorModal';
 import { setGlobalIntrospection } from '../map/inspection';
@@ -42,14 +36,17 @@ function clickOpenGist() {
   checkSaveStateThen(() => {
     store.dispatch({
       type: SHOW_MODAL,
-      modalType: 'OPEN_GIST_MODAL',
+      modalType: 'OPEN_GIST',
     });
   });
 }
 
 function clickOpenURL() {
   checkSaveStateThen(() => {
-    ReactDOM.render(<OpenUrlModal />, document.getElementById('modal-container'));
+    store.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'OPEN_URL',
+    });
   });
 }
 
@@ -57,7 +54,7 @@ function clickOpenExample() {
   checkSaveStateThen(() => {
     store.dispatch({
       type: SHOW_MODAL,
-      modalType: 'OPEN_EXAMPLE_MODAL',
+      modalType: 'OPEN_EXAMPLE',
     });
   });
 }
@@ -67,7 +64,10 @@ function clickSaveFile() {
 }
 
 function clickSaveGist() {
-  ReactDOM.render(<SaveGistModal />, document.getElementById('modal-container'));
+  store.dispatch({
+    type: SHOW_MODAL,
+    modalType: 'SAVE_GIST',
+  });
 }
 
 function unsubscribeSaveToCloud() {
@@ -77,7 +77,10 @@ function unsubscribeSaveToCloud() {
 
 function showSaveToCloudModal() {
   unsubscribeSaveToCloud();
-  ReactDOM.render(<SaveToCloudModal />, document.getElementById('modal-container'));
+  store.dispatch({
+    type: SHOW_MODAL,
+    modalType: 'SAVE_TO_CLOUD',
+  });
 }
 
 function clickSaveToCloud() {
@@ -109,7 +112,10 @@ function unsubscribeOpenFromCloud() {
 function showOpenFromCloudModal() {
   unsubscribeOpenFromCloud();
   checkSaveStateThen(() => {
-    ReactDOM.render(<OpenFromCloudModal />, document.getElementById('modal-container'));
+    store.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'OPEN_FROM_CLOUD',
+    });
   });
 }
 
@@ -129,7 +135,10 @@ function clickOpenFromCloud() {
 }
 
 function clickAbout() {
-  ReactDOM.render(<AboutModal />, document.getElementById('modal-container'));
+  store.dispatch({
+    type: SHOW_MODAL,
+    modalType: 'ABOUT',
+  });
 }
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';

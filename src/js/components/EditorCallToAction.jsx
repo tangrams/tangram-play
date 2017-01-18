@@ -1,12 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import ExamplesModal from '../modals/ExamplesModal';
+
+// Redux
+import store from '../store';
+import { SHOW_MODAL } from '../store/actions';
 
 class EditorCallToAction extends React.PureComponent {
   // eslint-disable-next-line class-methods-use-this
   onClickExample() {
-    ReactDOM.render(<ExamplesModal />, document.getElementById('modal-container'));
+    store.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'OPEN_EXAMPLE',
+    });
   }
 
   render() {

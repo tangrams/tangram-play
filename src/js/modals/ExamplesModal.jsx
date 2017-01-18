@@ -83,7 +83,6 @@ class ExamplesModal extends React.Component {
     return (
       <Modal
         className="modal-alt example-modal"
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
       >

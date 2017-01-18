@@ -1,5 +1,6 @@
 import { reverse, sortBy } from 'lodash';
 import React from 'react';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 
 import Modal from './Modal';
@@ -8,7 +9,7 @@ import { showErrorModal } from './ErrorModal';
 import { fetchSceneList, deleteScene } from '../storage/mapzen';
 import { load } from '../tangram-play';
 
-export default class OpenFromCloudModal extends React.Component {
+class OpenFromCloudModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -32,7 +33,9 @@ export default class OpenFromCloudModal extends React.Component {
   }
 
   onClickCancel() {
-    this.component.unmount();
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+    });
   }
 
   onClickConfirm() {
@@ -163,7 +166,6 @@ export default class OpenFromCloudModal extends React.Component {
     return (
       <Modal
         className="modal-alt open-from-cloud-modal"
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickClose}
         confirmFunction={this.onClickConfirm}
       >
@@ -189,3 +191,9 @@ export default class OpenFromCloudModal extends React.Component {
     );
   }
 }
+
+OpenFromCloudModal.propTypes = {
+  dispatch: React.PropTypes.func,
+};
+
+export default connect()(OpenFromCloudModal);

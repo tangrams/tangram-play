@@ -2,12 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 // Import all modals here
+import AboutModal from './AboutModal';
 import ExamplesModal from './ExamplesModal';
-import OpenGistModal from './OpenGistModal';
+import OpenFromCloudModal from './OpenFromCloudModal';
+import OpenGistModal from './OpenGistModal'; // LEGACY.
+import OpenUrlModal from './OpenUrlModal';
+import SaveToCloudModal from './SaveToCloudModal';
+import SaveGistModal from './SaveGistModal'; // LEGACY.
 
 const MODAL_COMPONENTS = {
-  OPEN_EXAMPLE_MODAL: ExamplesModal,
-  OPEN_GIST_MODAL: OpenGistModal,
+  ABOUT: AboutModal,
+  OPEN_EXAMPLE: ExamplesModal,
+  OPEN_FROM_CLOUD: OpenFromCloudModal,
+  OPEN_GIST: OpenGistModal, // LEGACY.
+  OPEN_URL: OpenUrlModal,
+  SAVE_TO_CLOUD: SaveToCloudModal,
+  SAVE_GIST: SaveGistModal, // LEGACY.
   /* other modals */
 };
 
