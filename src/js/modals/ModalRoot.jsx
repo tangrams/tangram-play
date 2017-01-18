@@ -8,7 +8,9 @@ import OpenFromCloudModal from './OpenFromCloudModal';
 import OpenGistModal from './OpenGistModal'; // LEGACY.
 import OpenUrlModal from './OpenUrlModal';
 import SaveToCloudModal from './SaveToCloudModal';
+import SaveToCloudSuccessModal from './SaveToCloudSuccessModal';
 import SaveGistModal from './SaveGistModal'; // LEGACY.
+import SaveGistSuccessModal from './SaveGistSuccessModal'; // LEGACY.
 
 const MODAL_COMPONENTS = {
   ABOUT: AboutModal,
@@ -17,8 +19,9 @@ const MODAL_COMPONENTS = {
   OPEN_GIST: OpenGistModal, // LEGACY.
   OPEN_URL: OpenUrlModal,
   SAVE_TO_CLOUD: SaveToCloudModal,
+  SAVE_TO_CLOUD_SUCCESS: SaveToCloudSuccessModal,
   SAVE_GIST: SaveGistModal, // LEGACY.
-  /* other modals */
+  SAVE_GIST_SUCCESS: SaveGistSuccessModal, // LEGACY
 };
 
 const ModalRoot = ({ modalType, modalProps }) => {

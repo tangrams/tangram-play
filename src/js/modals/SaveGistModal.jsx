@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import localforage from 'localforage';
@@ -7,11 +6,13 @@ import localforage from 'localforage';
 import Modal from './Modal';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
-import SaveGistSuccessModal from './SaveGistSuccessModal';
 import { showErrorModal } from './ErrorModal';
 import { saveToGist } from '../storage/gist';
 import { editor } from '../editor/editor';
 import { replaceHistoryState } from '../tools/url-state';
+
+// Redux
+import { SHOW_MODAL } from '../store/actions';
 
 // Default values in UI
 const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
@@ -170,8 +171,13 @@ class SaveGistModal extends React.Component {
     replaceHistoryState({ scene: gist.url });
 
     // Show success modal
-    // TODO
-    ReactDOM.render(<SaveGistSuccessModal urlValue={gist.url} />, document.getElementById('modal-container'));
+    this.props.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'SAVE_GIST_SUCCESS',
+      modalProps: {
+        urlValue: gist.url,
+      },
+    });
   }
 
   /**

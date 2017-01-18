@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
 import Clipboard from 'clipboard';
@@ -6,7 +7,7 @@ import Clipboard from 'clipboard';
 import IconButton from '../components/IconButton';
 import Modal from './Modal';
 
-export default class SaveGistSuccessModal extends React.Component {
+class SaveGistSuccessModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -24,7 +25,9 @@ export default class SaveGistSuccessModal extends React.Component {
   }
 
   onClickConfirm(event) {
-    this.component.unmount();
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+    });
   }
 
   // Sets up clipboard.js functionality. Not a React component.
@@ -55,7 +58,6 @@ export default class SaveGistSuccessModal extends React.Component {
     return (
       <Modal
         className="save-to-cloud-success-modal"
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickConfirm}
       >
         <div className="modal-content">
@@ -95,3 +97,9 @@ export default class SaveGistSuccessModal extends React.Component {
 SaveGistSuccessModal.propTypes = {
   urlValue: React.PropTypes.string,
 };
+
+SaveGistSuccessModal.propTypes = {
+  dispatch: React.PropTypes.func,
+};
+
+export default connect()(SaveGistSuccessModal);
