@@ -7,6 +7,7 @@ import FileDrop from '../file/FileDrop';
 import SignInOverlay from './SignInOverlay';
 // import ColorPalette from './ColorPalette';
 import ErrorsPanel from './ErrorsPanel';
+import ModalRoot from '../modals/ModalRoot';
 
 import { initTangramPlay } from '../tangram-play';
 
@@ -43,6 +44,7 @@ export default class App extends React.Component {
           <FileDrop />
           <SignInOverlay />
           <div id="modal-container" className="modal-container" />
+          <ModalRoot />
 
           <ErrorsPanel />
         </div>

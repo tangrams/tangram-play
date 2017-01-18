@@ -53,6 +53,10 @@ export const TOGGLE_CAMERA_TOOLS = 'TOGGLE_CAMERA_TOOLS';
 export const ADD_ERROR = 'ADD_ERROR';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 
+/* modals */
+export const SHOW_MODAL = 'SHOW_MODAL';
+export const HIDE_MODAL = 'HIDE_MODAL';
+
 /* scene */
 export const OPEN_SCENE = 'OPEN_SCENE';
 export const CLOSE_SCENE = 'CLOSE_SCENE';

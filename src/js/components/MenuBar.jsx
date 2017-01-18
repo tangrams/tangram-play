@@ -11,10 +11,10 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 import EventEmitter from './event-emitter';
+import store from '../store';
 
 import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
-import ExamplesModal from '../modals/ExamplesModal';
 import AboutModal from '../modals/AboutModal';
 import SaveGistModal from '../modals/SaveGistModal'; // LEGACY.
 import SaveToCloudModal from '../modals/SaveToCloudModal';
@@ -53,7 +53,10 @@ function clickOpenURL() {
 
 function clickOpenExample() {
   checkSaveStateThen(() => {
-    ReactDOM.render(<ExamplesModal />, document.getElementById('modal-container'));
+    store.dispatch({
+      type: 'SHOW_MODAL',
+      modalType: 'OPEN_EXAMPLE_MODAL',
+    });
   });
 }
 
