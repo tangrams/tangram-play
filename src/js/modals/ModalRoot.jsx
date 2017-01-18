@@ -28,18 +28,19 @@ const MODAL_COMPONENTS = {
   SAVE_GIST_SUCCESS: SaveGistSuccessModal, // LEGACY
 };
 
-const ModalRoot = ({ modalType, modalProps }) => {
-  if (!modalType) {
-    return null;
-  }
+const ModalRoot = ({ stack }) => {
+  const modalComponents = stack.map(({ modalType, modalProps, key }) => {
+    if (!modalType) return null;
 
-  const SpecificModal = MODAL_COMPONENTS[modalType];
-  return <SpecificModal {...modalProps} />;
+    const SpecificModal = MODAL_COMPONENTS[modalType];
+    return <SpecificModal key={key} modalId={key} {...modalProps} />;
+  });
+
+  return <div className="modals-container">{modalComponents}</div>;
 };
 
 ModalRoot.propTypes = {
-  modalType: React.PropTypes.string,
-  modalProps: React.PropTypes.objectOf(React.PropTypes.any),
+  stack: React.PropTypes.arrayOf(React.PropTypes.object),
 };
 
 export default connect(
