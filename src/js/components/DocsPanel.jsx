@@ -286,7 +286,7 @@ class DocsPanel extends React.Component {
 
 DocsPanel.propTypes = {
   admin: React.PropTypes.bool,
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   height: React.PropTypes.number,
 };
 

@@ -64,7 +64,7 @@ class ErrorModal extends React.Component {
 }
 
 ErrorModal.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number,
 
   // Error message might be an Error object or a string

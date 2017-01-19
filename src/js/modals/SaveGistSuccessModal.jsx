@@ -100,7 +100,7 @@ SaveGistSuccessModal.propTypes = {
 };
 
 SaveGistSuccessModal.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number,
 };
 

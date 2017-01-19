@@ -213,7 +213,7 @@ class OpenGistModal extends React.Component {
 }
 
 OpenGistModal.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number,
 };
 

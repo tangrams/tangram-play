@@ -108,7 +108,7 @@ class OpenUrlModal extends React.Component {
 }
 
 OpenUrlModal.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number,
 };
 

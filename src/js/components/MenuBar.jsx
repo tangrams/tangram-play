@@ -357,7 +357,7 @@ class MenuBar extends React.Component {
 }
 
 MenuBar.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   mapzenAccount: React.PropTypes.bool,
   cameraToolsVisible: React.PropTypes.bool,
 };

@@ -80,7 +80,7 @@ class ConfirmDialogModal extends React.Component {
 }
 
 ConfirmDialogModal.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number,
 
   // Error message might be an Error object or a string

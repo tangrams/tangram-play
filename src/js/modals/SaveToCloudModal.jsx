@@ -255,7 +255,7 @@ class SaveToCloudModal extends React.Component {
 }
 
 SaveToCloudModal.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number,
 };
 

@@ -183,7 +183,7 @@ class Divider extends React.Component {
 }
 
 Divider.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   posX: React.PropTypes.number,
 };
 

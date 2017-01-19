@@ -227,7 +227,7 @@ class MapPanel extends React.Component {
 }
 
 MapPanel.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   disabled: React.PropTypes.bool,
   // Whether panel should be open or not
   open: React.PropTypes.bool,

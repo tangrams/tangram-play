@@ -194,7 +194,7 @@ class OpenFromCloudModal extends React.Component {
 }
 
 OpenFromCloudModal.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number,
 };
 

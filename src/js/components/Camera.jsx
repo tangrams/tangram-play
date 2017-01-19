@@ -131,7 +131,7 @@ class Camera extends React.Component {
 }
 
 Camera.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   isVisible: React.PropTypes.bool,
 };
 
