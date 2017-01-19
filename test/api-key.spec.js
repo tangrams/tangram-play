@@ -70,6 +70,90 @@ describe('API keys for Mapzen vector tiles', () => {
       assert.deepEqual(config, target);
     });
 
+    it('adds an API key when it is missing from a terrain (PNG) endpoint', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'Raster',
+            url: 'https://tile.mapzen.com/mapzen/terrain/v1/normal/{z}/{x}/{y}.png',
+          },
+        },
+      };
+
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params = {
+        api_key: TEST_API_KEY,
+      };
+
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
+
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
+    });
+
+    it('adds an API key when it is missing from a Terrarium terrain (PNG) endpoint', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'Raster',
+            url: 'https://tile.mapzen.com/mapzen/terrain/v1/terrarium/{z}/{x}/{y}.png',
+          },
+        },
+      };
+
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params = {
+        api_key: TEST_API_KEY,
+      };
+
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
+
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
+    });
+
+    it('adds an API key when it is missing from a GeoTIFF terrain (TIF) endpoint', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'Raster',
+            url: 'https://tile.mapzen.com/mapzen/terrain/v1/geotiff/{z}/{x}/{y}.tif',
+          },
+        },
+      };
+
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params = {
+        api_key: TEST_API_KEY,
+      };
+
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
+
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
+    });
+
+    it('adds an API key when it is missing from a Skadi (.hgt.gz) endpoint', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'Raster',
+            url: 'https://tile.mapzen.com/mapzen/terrain/v1/skadi/{N|S}{y}/{N|S}{y}{E|W}{x}.hgt.gz',
+          },
+        },
+      };
+
+      const target = JSON.parse(JSON.stringify(config));
+      target.sources.mapzen.url_params = {
+        api_key: TEST_API_KEY,
+      };
+
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
+
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
+    });
+
     it('does nothing if an API key is already present in the query string', () => {
       const config = {
         sources: {
