@@ -177,6 +177,7 @@ class SaveToCloudModal extends React.Component {
   unmountSelf() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
+      key: this.props.modalId,
     });
   }
 
@@ -255,6 +256,7 @@ class SaveToCloudModal extends React.Component {
 
 SaveToCloudModal.propTypes = {
   dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
 };
 
 export default connect()(SaveToCloudModal);

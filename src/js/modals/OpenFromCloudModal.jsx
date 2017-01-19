@@ -35,6 +35,7 @@ class OpenFromCloudModal extends React.Component {
   onClickCancel() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
+      key: this.props.modalId,
     });
   }
 
@@ -194,6 +195,7 @@ class OpenFromCloudModal extends React.Component {
 
 OpenFromCloudModal.propTypes = {
   dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
 };
 
 export default connect()(OpenFromCloudModal);

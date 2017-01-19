@@ -1,7 +1,7 @@
 /**
  * Modals
  */
-import { SHOW_MODAL, HIDE_MODAL } from '../actions';
+import { SHOW_MODAL, HIDE_MODAL, CLEAR_MODALS } from '../actions';
 import { uniqueInteger } from '../../tools/helpers';
 
 const initialState = {
@@ -21,7 +21,12 @@ const modals = (state = initialState, action) => {
 
       return { stack };
     }
-    case HIDE_MODAL:
+    // Hiding a modal removes its information from the modal stack.
+    case HIDE_MODAL: {
+      const stack = state.stack.slice(0).filter(modal => modal.key !== action.key);
+      return { stack };
+    }
+    case CLEAR_MODALS:
       return initialState;
     default:
       return state;

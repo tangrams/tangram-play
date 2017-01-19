@@ -28,6 +28,7 @@ class SaveToCloudSuccessModal extends React.Component {
   onClickConfirm(event) {
     this.props.dispatch({
       type: 'HIDE_MODAL',
+      key: this.props.modalId,
     });
   }
 
@@ -114,6 +115,7 @@ SaveToCloudSuccessModal.propTypes = {
 
 SaveToCloudSuccessModal.propTypes = {
   dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
 };
 
 export default connect()(SaveToCloudSuccessModal);

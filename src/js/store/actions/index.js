@@ -56,6 +56,7 @@ export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 /* modals */
 export const SHOW_MODAL = 'SHOW_MODAL';
 export const HIDE_MODAL = 'HIDE_MODAL';
+export const CLEAR_MODALS = 'CLEAR_MODALS';
 
 /* scene */
 export const OPEN_SCENE = 'OPEN_SCENE';

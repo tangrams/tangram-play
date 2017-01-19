@@ -16,6 +16,7 @@ class AboutModal extends React.PureComponent {
   onClickClose() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
+      key: this.props.modalId,
     });
   }
 
@@ -54,6 +55,7 @@ class AboutModal extends React.PureComponent {
 
 AboutModal.propTypes = {
   dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
 };
 
 export default connect()(AboutModal);
