@@ -24,6 +24,13 @@ import SignInButton from './SignInButton';
 import store from '../store';
 import { SET_APP_STATE, SHOW_MODAL } from '../store/actions';
 
+function showModal(type) {
+  store.dispatch({
+    type: SHOW_MODAL,
+    modalType: type,
+  });
+}
+
 function clickNew() {
   newScene();
 }
@@ -34,28 +41,19 @@ function clickOpenFile() {
 
 function clickOpenGist() {
   checkSaveStateThen(() => {
-    store.dispatch({
-      type: SHOW_MODAL,
-      modalType: 'OPEN_GIST',
-    });
+    showModal('OPEN_GIST');
   });
 }
 
 function clickOpenURL() {
   checkSaveStateThen(() => {
-    store.dispatch({
-      type: SHOW_MODAL,
-      modalType: 'OPEN_URL',
-    });
+    showModal('OPEN_URL');
   });
 }
 
 function clickOpenExample() {
   checkSaveStateThen(() => {
-    store.dispatch({
-      type: SHOW_MODAL,
-      modalType: 'OPEN_EXAMPLE',
-    });
+    showModal('OPEN_EXAMPLE');
   });
 }
 
@@ -64,10 +62,7 @@ function clickSaveFile() {
 }
 
 function clickSaveGist() {
-  store.dispatch({
-    type: SHOW_MODAL,
-    modalType: 'SAVE_GIST',
-  });
+  showModal('SAVE_GIST');
 }
 
 function unsubscribeSaveToCloud() {
@@ -77,10 +72,7 @@ function unsubscribeSaveToCloud() {
 
 function showSaveToCloudModal() {
   unsubscribeSaveToCloud();
-  store.dispatch({
-    type: SHOW_MODAL,
-    modalType: 'SAVE_TO_CLOUD',
-  });
+  showModal('SAVE_TO_CLOUD');
 }
 
 function clickSaveToCloud() {
@@ -112,10 +104,7 @@ function unsubscribeOpenFromCloud() {
 function showOpenFromCloudModal() {
   unsubscribeOpenFromCloud();
   checkSaveStateThen(() => {
-    store.dispatch({
-      type: SHOW_MODAL,
-      modalType: 'OPEN_FROM_CLOUD',
-    });
+    showModal('OPEN_FROM_CLOUD');
   });
 }
 
@@ -135,10 +124,7 @@ function clickOpenFromCloud() {
 }
 
 function clickAbout() {
-  store.dispatch({
-    type: SHOW_MODAL,
-    modalType: 'ABOUT',
-  });
+  showModal('ABOUT');
 }
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
