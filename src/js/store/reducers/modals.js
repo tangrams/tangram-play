@@ -5,7 +5,6 @@ import { SHOW_MODAL, HIDE_MODAL, CLEAR_MODALS } from '../actions';
 import { uniqueInteger } from '../../tools/helpers';
 
 const initialState = {
-  // TODO: allow a stack of modals
   stack: [],
 };
 
