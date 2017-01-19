@@ -16,6 +16,8 @@ describe('API keys for Mapzen vector tiles', () => {
         },
       };
 
+      // Makes a clone of the `config` object so we can re-use it for the
+      // comparison object.
       const target = JSON.parse(JSON.stringify(config));
       target.sources.mapzen.url_params = {
         api_key: TEST_API_KEY,
@@ -61,6 +63,58 @@ describe('API keys for Mapzen vector tiles', () => {
       target.sources.mapzen.url_params = {
         api_key: TEST_API_KEY,
       };
+
+      const result = injectAPIKey(config, TEST_API_KEY);
+
+      assert.deepEqual(result, target);
+    });
+
+    // This condition happens with Mapzen house styles (e.g. TRON), where the
+    // default API key value is an empty string.
+    it('adds an API key when the provided parameter is a global variable equal to an empty string', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+            url_params: { api_key: 'global.sdk_mapzen_api_key' },
+          },
+        },
+        global: {
+          sdk_mapzen_api_key: '',
+        },
+      };
+
+      // Makes a clone of the `config` object so we can re-use it for the
+      // comparison object.
+      const target = JSON.parse(JSON.stringify(config));
+      target.global.sdk_mapzen_api_key = TEST_API_KEY;
+
+      const result = injectAPIKey(config, TEST_API_KEY);
+
+      assert.deepEqual(result, target);
+    });
+
+    // This condition could happen with Mapzen house styles (e.g. TRON)
+    // according to docs: https://github.com/tangrams/cartography-docs/blob/3f4ceba477ad1463b856bfdeb3d2b7e59c68ba43/api-reference.md#sdk_api_key
+    it('adds an API key when the provided parameter is a global variable equal to `false`', () => {
+      const config = {
+        sources: {
+          mapzen: {
+            type: 'TopoJSON',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+            url_params: { api_key: 'global.sdk_mapzen_api_key' },
+          },
+        },
+        global: {
+          sdk_mapzen_api_key: false,
+        },
+      };
+
+      // Makes a clone of the `config` object so we can re-use it for the
+      // comparison object.
+      const target = JSON.parse(JSON.stringify(config));
+      target.global.sdk_mapzen_api_key = TEST_API_KEY;
 
       const result = injectAPIKey(config, TEST_API_KEY);
 
