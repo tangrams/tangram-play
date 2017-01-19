@@ -5,7 +5,6 @@ import map from './map';
 import modals from './modals';
 import scene from './scene';
 import settings from './settings';
-import shield from './shield';
 import user from './user';
 
 const reducers = combineReducers({
@@ -15,7 +14,6 @@ const reducers = combineReducers({
   modals,
   scene,
   settings,
-  shield,
   user,
 });
 

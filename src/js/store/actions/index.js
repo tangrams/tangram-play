@@ -80,8 +80,3 @@ export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
 
 /* map view */
 export const UPDATE_MAP_LABEL = 'UPDATE_MAP_LABEL';
-
-// Legacy assistance
-// If shield is only controlled by modal visibility, it should be be turned
-// on based on number of modals in a stack (todo)
-export const SET_SHIELD_VISIBILITY = 'SET_SHIELD_VISIBILITY';
