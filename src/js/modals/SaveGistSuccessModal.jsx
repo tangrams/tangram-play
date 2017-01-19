@@ -27,7 +27,7 @@ class SaveGistSuccessModal extends React.Component {
   onClickConfirm(event) {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
@@ -101,7 +101,7 @@ SaveGistSuccessModal.propTypes = {
 
 SaveGistSuccessModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number,
+  modalId: React.PropTypes.number.isRequired,
 };
 
 export default connect()(SaveGistSuccessModal);

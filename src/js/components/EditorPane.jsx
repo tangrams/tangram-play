@@ -67,6 +67,10 @@ EditorPane.propTypes = {
   dividerPositionX: React.PropTypes.number,
 };
 
+EditorPane.defaultProps = {
+  dividerPositionX: 0,
+};
+
 function mapStateToProps(state) {
   return {
     dividerPositionX: state.settings.dividerPositionX,

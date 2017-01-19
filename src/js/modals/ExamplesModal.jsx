@@ -22,7 +22,7 @@ class ExamplesModal extends React.Component {
   onClickCancel() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
@@ -112,7 +112,7 @@ class ExamplesModal extends React.Component {
 
 ExamplesModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number,
+  modalId: React.PropTypes.number.isRequired,
 };
 
 export default connect()(ExamplesModal);

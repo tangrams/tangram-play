@@ -138,10 +138,10 @@ class Editor extends React.PureComponent {
 }
 
 Editor.propTypes = {
-  sceneCounter: React.PropTypes.number,
+  sceneCounter: React.PropTypes.number.isRequired,
   activeFile: React.PropTypes.number,
   files: React.PropTypes.arrayOf(React.PropTypes.object),
-  fontSize: React.PropTypes.number,
+  fontSize: React.PropTypes.number.isRequired,
 };
 
 Editor.defaultProps = {

@@ -29,11 +29,11 @@ const MODAL_COMPONENTS = {
 };
 
 const ModalRoot = ({ stack }) => {
-  const modalComponents = stack.map(({ modalType, modalProps, key }) => {
+  const modalComponents = stack.map(({ modalType, modalProps, id }) => {
     if (!modalType) return null;
 
     const SpecificModal = MODAL_COMPONENTS[modalType];
-    return <SpecificModal key={key} modalId={key} {...modalProps} />;
+    return <SpecificModal key={id} modalId={id} {...modalProps} />;
   });
 
   return <div className="modals-container">{modalComponents}</div>;
@@ -41,6 +41,10 @@ const ModalRoot = ({ stack }) => {
 
 ModalRoot.propTypes = {
   stack: React.PropTypes.arrayOf(React.PropTypes.object),
+};
+
+ModalRoot.defaultProps = {
+  stack: [],
 };
 
 export default connect(

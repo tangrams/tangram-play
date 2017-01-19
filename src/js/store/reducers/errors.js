@@ -2,10 +2,7 @@
  * For errors and warnings reported by Tangram
  */
 import { uniqWith, isEqual } from 'lodash';
-import {
-  ADD_ERROR,
-  CLEAR_ERRORS,
-} from '../actions';
+import { ADD_ERROR, CLEAR_ERRORS } from '../actions';
 
 const initialState = {
   errors: [],

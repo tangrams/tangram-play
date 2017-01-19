@@ -81,6 +81,11 @@ EditorHiddenTooltip.propTypes = {
   showEditorHiddenTooltip: React.PropTypes.bool,
 };
 
+EditorHiddenTooltip.defaultProps = {
+  dividerPositionX: 0,
+  showEditorHiddenTooltip: false,
+};
+
 function mapStateToProps(state) {
   return {
     dividerPositionX: state.settings.dividerPositionX,

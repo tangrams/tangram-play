@@ -198,7 +198,7 @@ class SaveGistModal extends React.Component {
   unmountSelf() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
@@ -274,7 +274,7 @@ class SaveGistModal extends React.Component {
 
 SaveGistModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number,
+  modalId: React.PropTypes.number.isRequired,
 };
 
 export default connect()(SaveGistModal);
