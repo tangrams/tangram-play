@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { noop } from 'lodash';
-import store from '../store';
-import { SET_SHIELD_VISIBILITY } from '../store/actions';
 
 export default class Modal extends React.Component {
   constructor(props) {
@@ -15,22 +13,11 @@ export default class Modal extends React.Component {
   }
 
   componentDidMount() {
-    // Control visibility state of the Shield
-    store.dispatch({
-      type: SET_SHIELD_VISIBILITY,
-      visible: true,
-    });
-
     // Add listeners for keys
     window.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
-    store.dispatch({
-      type: SET_SHIELD_VISIBILITY,
-      visible: false,
-    });
-
     window.removeEventListener('keydown', this.onKeyDown, false);
   }
 

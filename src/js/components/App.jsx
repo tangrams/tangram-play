@@ -2,11 +2,13 @@ import React from 'react';
 import Map from './Map';
 import EditorPane from './EditorPane';
 import MenuBar from './MenuBar';
-import ShieldContainer from '../ui/Shield';
 import FileDrop from '../file/FileDrop';
 import SignInOverlay from './SignInOverlay';
 // import ColorPalette from './ColorPalette';
 import ErrorsPanel from './ErrorsPanel';
+// todo: combine
+import ModalShield from '../modals/ModalShield';
+import ModalRoot from '../modals/ModalRoot';
 
 import { initTangramPlay } from '../tangram-play';
 
@@ -39,10 +41,11 @@ export default class App extends React.Component {
         </div>
 
         <div className="overlay-container">
-          <ShieldContainer />
           <FileDrop />
           <SignInOverlay />
-          <div id="modal-container" className="modal-container" />
+
+          <ModalShield />
+          <ModalRoot />
 
           <ErrorsPanel />
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
@@ -6,7 +7,7 @@ import Icon from '../components/Icon';
 import { load } from '../tangram-play';
 import EXAMPLES_DATA from './examples.json';
 
-export default class ExamplesModal extends React.Component {
+class ExamplesModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -19,7 +20,10 @@ export default class ExamplesModal extends React.Component {
   }
 
   onClickCancel() {
-    this.component.unmount();
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+      key: this.props.modalId,
+    });
   }
 
   onClickConfirm() {
@@ -80,7 +84,6 @@ export default class ExamplesModal extends React.Component {
     return (
       <Modal
         className="modal-alt example-modal"
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
       >
@@ -106,3 +109,10 @@ export default class ExamplesModal extends React.Component {
     );
   }
 }
+
+ExamplesModal.propTypes = {
+  dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
+};
+
+export default connect()(ExamplesModal);

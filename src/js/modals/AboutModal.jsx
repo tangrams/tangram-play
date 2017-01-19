@@ -1,11 +1,12 @@
 import L from 'leaflet';
 import CodeMirror from 'codemirror';
 import React from 'react';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 
 import Modal from './Modal';
 
-export default class AboutModal extends React.PureComponent {
+class AboutModal extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -13,14 +14,16 @@ export default class AboutModal extends React.PureComponent {
   }
 
   onClickClose() {
-    this.component.unmount();
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+      key: this.props.modalId,
+    });
   }
 
   render() {
     return (
       <Modal
         className="about-modal"
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickClose}
       >
         <div className="modal-text modal-about-text">
@@ -49,3 +52,10 @@ export default class AboutModal extends React.PureComponent {
     );
   }
 }
+
+AboutModal.propTypes = {
+  dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
+};
+
+export default connect()(AboutModal);

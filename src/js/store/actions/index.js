@@ -53,6 +53,11 @@ export const TOGGLE_CAMERA_TOOLS = 'TOGGLE_CAMERA_TOOLS';
 export const ADD_ERROR = 'ADD_ERROR';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 
+/* modals */
+export const SHOW_MODAL = 'SHOW_MODAL';
+export const HIDE_MODAL = 'HIDE_MODAL';
+export const CLEAR_MODALS = 'CLEAR_MODALS';
+
 /* scene */
 export const OPEN_SCENE = 'OPEN_SCENE';
 export const CLOSE_SCENE = 'CLOSE_SCENE';
@@ -75,8 +80,3 @@ export const USER_SIGNED_OUT = 'USER_SIGNED_OUT';
 
 /* map view */
 export const UPDATE_MAP_LABEL = 'UPDATE_MAP_LABEL';
-
-// Legacy assistance
-// If shield is only controlled by modal visibility, it should be be turned
-// on based on number of modals in a stack (todo)
-export const SET_SHIELD_VISIBILITY = 'SET_SHIELD_VISIBILITY';

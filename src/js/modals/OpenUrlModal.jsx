@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
@@ -8,7 +9,7 @@ import { load } from '../tangram-play';
 
 let lastAttemptedUrlInput;
 
-export default class OpenUrlModal extends React.Component {
+class OpenUrlModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -56,9 +57,10 @@ export default class OpenUrlModal extends React.Component {
   }
 
   unmountSelf() {
-    if (this.component) {
-      this.component.unmount();
-    }
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+      key: this.props.modalId,
+    });
   }
 
   render() {
@@ -66,7 +68,6 @@ export default class OpenUrlModal extends React.Component {
       <Modal
         className="modal-alt open-url-modal"
         disableEsc={this.state.thinking}
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
       >
@@ -105,3 +106,10 @@ export default class OpenUrlModal extends React.Component {
     );
   }
 }
+
+OpenUrlModal.propTypes = {
+  dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
+};
+
+export default connect()(OpenUrlModal);

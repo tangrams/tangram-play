@@ -1,16 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import localforage from 'localforage';
 
 import Modal from './Modal';
 import Icon from '../components/Icon';
 import LoadingSpinner from './LoadingSpinner';
-import SaveGistSuccessModal from './SaveGistSuccessModal';
 import { showErrorModal } from './ErrorModal';
 import { saveToGist } from '../storage/gist';
 import { editor } from '../editor/editor';
 import { replaceHistoryState } from '../tools/url-state';
+
+// Redux
+import { SHOW_MODAL } from '../store/actions';
 
 // Default values in UI
 const DEFAULT_GIST_SCENE_NAME = 'Tangram scene';
@@ -20,7 +22,7 @@ const DEFAULT_GIST_DESCRIPTION = 'This is a Tangram scene, made with Tangram Pla
 const STORAGE_SAVED_GISTS = 'gists';
 const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
-export default class SaveGistModal extends React.Component {
+class SaveGistModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,6 +37,7 @@ export default class SaveGistModal extends React.Component {
     this.setReadyUI = this.setReadyUI.bind(this);
     this.handleSaveSuccess = this.handleSaveSuccess.bind(this);
     this.handleSaveError = this.handleSaveError.bind(this);
+    this.unmountSelf = this.unmountSelf.bind(this);
   }
 
   componentDidMount() {
@@ -98,7 +101,7 @@ export default class SaveGistModal extends React.Component {
   onClickCancel(event) {
     window.clearTimeout(this.timeout);
     this.resetInputs();
-    this.component.unmount();
+    this.unmountSelf();
   }
 
   setReadyUI() {
@@ -158,7 +161,7 @@ export default class SaveGistModal extends React.Component {
       });
 
     // Close the modal
-    this.component.unmount();
+    this.unmountSelf();
 
     // Mark as clean state in the editor
     editor.doc.markClean();
@@ -168,8 +171,13 @@ export default class SaveGistModal extends React.Component {
     replaceHistoryState({ scene: gist.url });
 
     // Show success modal
-    // TODO
-    ReactDOM.render(<SaveGistSuccessModal urlValue={gist.url} />, document.getElementById('modal-container'));
+    this.props.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'SAVE_GIST_SUCCESS',
+      modalProps: {
+        urlValue: gist.url,
+      },
+    });
   }
 
   /**
@@ -180,13 +188,18 @@ export default class SaveGistModal extends React.Component {
    */
   handleSaveError(error) {
     // Close the modal
-    if (this.component) {
-      this.component.unmount();
-    }
+    this.unmountSelf();
 
     const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
 
     showErrorModal(errorMessage);
+  }
+
+  unmountSelf() {
+    this.props.dispatch({
+      type: 'HIDE_MODAL',
+      key: this.props.modalId,
+    });
   }
 
   render() {
@@ -195,7 +208,6 @@ export default class SaveGistModal extends React.Component {
       <Modal
         className="modal-alt save-to-cloud-modal"
         disableEsc={this.state.thinking}
-        ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickCancel}
       >
         <div className="modal-text">
@@ -259,3 +271,10 @@ export default class SaveGistModal extends React.Component {
     );
   }
 }
+
+SaveGistModal.propTypes = {
+  dispatch: React.PropTypes.func,
+  modalId: React.PropTypes.number,
+};
+
+export default connect()(SaveGistModal);

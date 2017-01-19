@@ -2,7 +2,7 @@
 
 /* Container for all overlays */
 .overlay-container,
-.modal-container {
+.modals-container {
   position: fixed;
   left: 0;
   top: 0;
