@@ -19,11 +19,18 @@ const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\
  * compiled and manipulating that JS object directly is faster and less error
  * prone.
  *
+ * This mutates the original `config` object by necessity. Tangram does not
+ * expect it to be passed back in after it's modified. Instead, this function
+ * returns a boolean that indicates whether an API key was injected, which
+ * allows Tangram Play to further handle this condition.
+ *
  * @param {Object} config - Tangram scene config object
  * @param {string} apiKey - the API key to inject
- * @returns {Object} config - a scene config object with injected keys, if needed
+ * @returns {Boolean} didInjectKey - whether or not a key was injected
  */
 export function injectAPIKey(config, apiKey) {
+  let didInjectKey = false;
+
   Object.entries(config.sources).forEach((entry) => {
     const [key, value] = entry;
 
@@ -40,10 +47,11 @@ export function injectAPIKey(config, apiKey) {
       // Mutate the original on purpose.
       // eslint-disable-next-line no-param-reassign
       config.sources[key].url_params = params;
+      didInjectKey = true;
     }
   });
 
-  return config;
+  return didInjectKey;
 }
 
 /**

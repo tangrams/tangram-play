@@ -21,9 +21,10 @@ describe('API keys for Mapzen vector tiles', () => {
         api_key: TEST_API_KEY,
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
-      assert.deepEqual(result, target);
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
     });
 
     it('adds an API key when it is missing from GeoJSON endpoint', () => {
@@ -42,9 +43,10 @@ describe('API keys for Mapzen vector tiles', () => {
         api_key: TEST_API_KEY,
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
-      assert.deepEqual(result, target);
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
     });
 
     it('adds an API key when it is missing from MVT endpoint', () => {
@@ -62,9 +64,10 @@ describe('API keys for Mapzen vector tiles', () => {
         api_key: TEST_API_KEY,
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
-      assert.deepEqual(result, target);
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
     });
 
     it('does nothing if an API key is already present in the query string', () => {
@@ -77,10 +80,12 @@ describe('API keys for Mapzen vector tiles', () => {
         },
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const target = JSON.parse(JSON.stringify(config));
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
       // The result should not differ from the original config
-      assert.deepEqual(result, config);
+      assert.equal(didInjectKey, false);
+      assert.deepEqual(config, target);
     });
 
     it('does nothing if an API key is already present in the url_params object', () => {
@@ -96,10 +101,12 @@ describe('API keys for Mapzen vector tiles', () => {
         },
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const target = JSON.parse(JSON.stringify(config));
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
       // The result should not differ from the original config
-      assert.deepEqual(result, config);
+      assert.equal(didInjectKey, false);
+      assert.deepEqual(config, target);
     });
 
     it('does not overwrite other parameters in the url_params object', () => {
@@ -118,9 +125,10 @@ describe('API keys for Mapzen vector tiles', () => {
       const target = JSON.parse(JSON.stringify(config));
       target.sources.mapzen.url_params.api_key = TEST_API_KEY;
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
-      assert.deepEqual(result, target);
+      assert.equal(didInjectKey, true);
+      assert.deepEqual(config, target);
     });
 
     it('does nothing if the url extension is unfamiliar', () => {
@@ -133,10 +141,12 @@ describe('API keys for Mapzen vector tiles', () => {
         },
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const target = JSON.parse(JSON.stringify(config));
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
       // The result should not differ from the original config
-      assert.deepEqual(result, config);
+      assert.equal(didInjectKey, false);
+      assert.deepEqual(config, target);
     });
 
     it('does nothing if the tile source is a non-production service', () => {
@@ -150,10 +160,12 @@ describe('API keys for Mapzen vector tiles', () => {
         },
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const target = JSON.parse(JSON.stringify(config));
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
       // The result should not differ from the original config
-      assert.deepEqual(result, config);
+      assert.equal(didInjectKey, false);
+      assert.deepEqual(config, target);
     });
 
     it('does nothing if the tile source is a non-Mapzen service', () => {
@@ -167,10 +179,12 @@ describe('API keys for Mapzen vector tiles', () => {
         },
       };
 
-      const result = injectAPIKey(config, TEST_API_KEY);
+      const target = JSON.parse(JSON.stringify(config));
+      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
 
       // The result should not differ from the original config
-      assert.deepEqual(result, config);
+      assert.equal(didInjectKey, false);
+      assert.deepEqual(config, target);
     });
   });
 
