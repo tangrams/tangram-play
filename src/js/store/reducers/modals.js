@@ -22,7 +22,7 @@ const modals = (state = initialState, action) => {
     }
     // Hiding a modal removes its information from the modal stack.
     case HIDE_MODAL: {
-      const stack = state.stack.slice(0).filter(modal => modal.key !== action.key);
+      const stack = state.stack.slice(0).filter(modal => modal.id !== action.id);
       return { stack };
     }
     case CLEAR_MODALS:
