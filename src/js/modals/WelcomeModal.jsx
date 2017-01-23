@@ -21,15 +21,15 @@ class WelcomeModal extends React.PureComponent {
   render() {
     return (
       <Modal
-        className="about-modal"
+        className="welcome-modal"
         cancelFunction={this.onClickClose}
       >
-        <div className="modal-text modal-about-text">
+        <div className="modal-text modal-welcome-text">
           <h4>Welcome to Tangram Play!</h4>
+        </div>
 
-          <div className="modal-whats-new">
-            Hi
-          </div>
+        <div className="modal-well welcome-modal-changelog">
+          <iframe className="changelog-frame" src="./meta/changelog.html" />
         </div>
 
         <div className="modal-buttons">
