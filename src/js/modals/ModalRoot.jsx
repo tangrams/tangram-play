@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 // Import all modals here
 import AboutModal from './AboutModal';
+import WelcomeModal from './WelcomeModal';
 import ConfirmDialogModal from './ConfirmDialogModal';
 import ErrorModal from './ErrorModal';
 import ExamplesModal from './ExamplesModal';
@@ -16,6 +17,7 @@ import SaveGistSuccessModal from './SaveGistSuccessModal'; // LEGACY.
 
 const MODAL_COMPONENTS = {
   ABOUT: AboutModal,
+  WELCOME: WelcomeModal,
   CONFIRM_DIALOG: ConfirmDialogModal,
   ERROR: ErrorModal,
   OPEN_EXAMPLE: ExamplesModal,

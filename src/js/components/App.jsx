@@ -12,9 +12,19 @@ import ModalRoot from '../modals/ModalRoot';
 
 import { initTangramPlay } from '../tangram-play';
 
+// Redux
+import store from '../store';
+import { SHOW_MODAL } from '../store/actions';
+
 export default class App extends React.Component {
   componentDidMount() {
     initTangramPlay();
+
+    // TEMP: test welcome screen.
+    store.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'WELCOME',
+    });
   }
 
   shouldComponentUpdate() {

@@ -97,7 +97,7 @@ export default class Modal extends React.Component {
 }
 
 Modal.propTypes = {
-  children: React.PropTypes.node,
+  children: React.PropTypes.node.isRequired,
   className: React.PropTypes.string,
   disableEsc: React.PropTypes.bool,
   cancelFunction: React.PropTypes.func,
@@ -106,6 +106,7 @@ Modal.propTypes = {
 };
 
 Modal.defaultProps = {
+  className: '',
   disableEsc: false,
   cancelFunction: noop,
   confirmFunction: noop,
