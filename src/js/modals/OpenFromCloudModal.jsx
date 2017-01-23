@@ -130,7 +130,7 @@ class OpenFromCloudModal extends React.Component {
           onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
         >
           <div className="open-from-cloud-option-thumbnail">
-            <img src={item.thumbnail} role="presentation" />
+            <img src={item.thumbnail} alt="" />
           </div>
           <div className="open-from-cloud-option-info">
             <div className="open-from-cloud-option-name">

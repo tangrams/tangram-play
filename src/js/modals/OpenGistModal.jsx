@@ -160,7 +160,7 @@ class OpenGistModal extends React.Component {
             onDoubleClick={this.onClickConfirm}
           >
             <div className="open-from-cloud-option-thumbnail">
-              <img src={item.thumbnail} role="presentation" />
+              <img src={item.thumbnail} alt="" />
             </div>
             <div className="open-from-cloud-option-info">
               <div className="open-from-cloud-option-name">
