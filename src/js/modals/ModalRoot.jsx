@@ -31,12 +31,14 @@ const MODAL_COMPONENTS = {
 };
 
 const ModalRoot = ({ stack }) => {
-  const modalComponents = stack.map(({ modalType, modalProps, id }) => {
-    if (!modalType) return null;
+  // Sort modals by priority value -- highest is displayed on top.
+  const modalComponents = stack.sort((a, b) => a.priority - b.priority)
+    .map(({ modalType, modalProps, id }) => {
+      if (!modalType) return null;
 
-    const SpecificModal = MODAL_COMPONENTS[modalType];
-    return <SpecificModal key={id} modalId={id} {...modalProps} />;
-  });
+      const SpecificModal = MODAL_COMPONENTS[modalType];
+      return <SpecificModal key={id} modalId={id} {...modalProps} />;
+    });
 
   return <div className="modals-container">{modalComponents}</div>;
 };

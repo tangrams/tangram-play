@@ -14,6 +14,7 @@ const modals = (state = initialState, action) => {
       const newModal = {
         modalType: action.modalType,
         modalProps: action.modalProps || {},
+        priority: action.priority || 0,
         id: uniqueInteger(),
       };
       const stack = [...state.stack, newModal];

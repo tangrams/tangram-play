@@ -89,8 +89,10 @@ export default class Modal extends React.Component {
     }
 
     return (
-      <div className={classNames} ref={this.storeRefs}>
-        {this.props.children}
+      <div className="modal-container">
+        <div className={classNames} ref={this.storeRefs}>
+          {this.props.children}
+        </div>
       </div>
     );
   }

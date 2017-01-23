@@ -24,6 +24,7 @@ export default class App extends React.Component {
     store.dispatch({
       type: SHOW_MODAL,
       modalType: 'WELCOME',
+      priority: 100, // Display above error modals
     });
   }
 
