@@ -9,7 +9,26 @@ import { SET_PERSISTENCE, DISMISS_WELCOME_SCREEN, SET_RECENT_VERSION, ADD_RECENT
 
 const MAX_RECENT_SCENES = 10;
 
+/**
+ * Retrieves the starting position of the divider: a number value, in pixels,
+ * that the divider element's left edge should be offset from the left edge
+ * of the viewport.
+ *
+ * @returns {Number} x - the position to place the divider.
+ */
+function getDividerStartingPosition() {
+  if (window.innerWidth > 1024) {
+    return Math.floor(window.innerWidth * 0.6);
+  }
+
+  // If window.innerWidth <= 1024
+  return Math.floor(window.innerWidth / 2);
+}
+
 const initialState = {
+  // Position of the divider component.
+  dividerPositionX: getDividerStartingPosition(),
+
   // Set to `true` after a user has dismissed the welcome screen.
   welcomeScreenDismissed: false,
 

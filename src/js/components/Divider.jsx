@@ -28,25 +28,6 @@ function clampPosition(x) {
 }
 
 /**
- * Retrieves the starting position of the divider: a number value, in pixels,
- * that the divider element's left edge should be offset from the left edge
- * of the viewport.
- *
- * Restore it from memory, if saved from a previous session.
- * Otherwise, put it at a default position based on current viewport width.
- *
- * @returns {Number} x - the position to place the divider.
- */
-function getStartingPosition() {
-  if (window.innerWidth > 1024) {
-    return Math.floor(window.innerWidth * 0.6);
-  }
-
-  // If window.innerWidth <= 1024
-  return Math.floor(window.innerWidth / 2);
-}
-
-/**
  * Announces divider position to other components via EventEmitter.
  * Other components (Map and Editor) subscribe to this event so they can
  * resize themselves and respond accordingly.
@@ -184,11 +165,7 @@ class Divider extends React.Component {
 
 Divider.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  posX: React.PropTypes.number,
-};
-
-Divider.defaultProps = {
-  posX: getStartingPosition(),
+  posX: React.PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
