@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/lib/Button';
 
 import Modal from './Modal';
 
-class WelcomeModal extends React.PureComponent {
+class WhatsNewModal extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -21,20 +21,15 @@ class WelcomeModal extends React.PureComponent {
   render() {
     return (
       <Modal
-        className="welcome-modal"
+        className="whatsnew-modal"
         cancelFunction={this.onClickClose}
       >
-        <div className="modal-text modal-welcome-text">
-          <h4>Welcome to Tangram Play!</h4>
+        <div className="modal-text modal-whatsnew-text">
+          <h4>Welcome back!</h4>
+        </div>
 
-          <p>
-            Tangram Play is an editor for Tangram scenes. This is a public beta test. You will do awesome things with maps and also help us make a better Tangram editor for everyone too.
-          </p>
-
-          <ul>
-            <li><a href="">Get started with Tangram Play</a></li>
-            <li><a href="">Learn more about Tangram</a></li>
-          </ul>
+        <div className="modal-well whatsnew-modal-changelog">
+          <iframe className="changelog-frame" src="./meta/changelog.html" />
         </div>
 
         <div className="modal-buttons">
@@ -45,9 +40,9 @@ class WelcomeModal extends React.PureComponent {
   }
 }
 
-WelcomeModal.propTypes = {
+WhatsNewModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number.isRequired,
 };
 
-export default connect()(WelcomeModal);
+export default connect()(WhatsNewModal);

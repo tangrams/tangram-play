@@ -2,13 +2,17 @@
 
 .welcome-modal {
   width: 600px;
+}
+
+.whatsnew-modal {
+  width: 600px;
   /* Allow the height of this modal to expand on larger screens */
   height: calc(100% - 400px);
   min-height: 600px;
   max-height: 1200px;
 }
 
-.welcome-modal-changelog {
+.whatsnew-modal-changelog {
   /* Ensure this fits within a variable-height modal.
      TODO: Don't use a magic number */
   height: calc(100% - 94px);

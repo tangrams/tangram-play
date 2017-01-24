@@ -129,7 +129,7 @@ function clickAbout() {
 }
 
 function clickWhatsNew() {
-  showModal('WELCOME');
+  showModal('WHATS_NEW');
 }
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
