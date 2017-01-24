@@ -230,7 +230,7 @@ class MenuBar extends React.Component {
                   <Icon type="bt-folder" />Open a file
                 </MenuItem>
                 {(() => {
-                  if (this.props.mapzenAccount) {
+                  if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickOpenFromCloud}>
                         <Icon type="bt-cloud-download" />Open from your Mapzen account
@@ -273,7 +273,7 @@ class MenuBar extends React.Component {
                   <Icon type="bt-folder" />Save to your computer
                 </MenuItem>
                 {(() => {
-                  if (this.props.mapzenAccount) {
+                  if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickSaveToCloud}>
                         <Icon type="bt-cloud-upload" />Save to your Mapzen account
@@ -366,18 +366,18 @@ class MenuBar extends React.Component {
 
 MenuBar.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  mapzenAccount: React.PropTypes.bool,
+  isMapzenHosted: React.PropTypes.bool,
   cameraToolsVisible: React.PropTypes.bool,
 };
 
 MenuBar.defaultProps = {
-  mapzenAccount: false,
+  isMapzenHosted: false,
   cameraToolsVisible: false,
 };
 
 function mapStateToProps(state) {
   return {
-    mapzenAccount: state.user.admin || window.location.hostname === 'localhost' || false,
+    isMapzenHosted: state.system.mapzen || state.system.localhost,
     cameraToolsVisible: state.app.cameraToolsVisible,
   };
 }

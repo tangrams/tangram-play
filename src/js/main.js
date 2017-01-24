@@ -16,7 +16,13 @@ import App from './components/App';
 
 // Redux
 import store from './store';
-import { SET_PERSISTENCE, SET_SETTINGS, SET_APP_STATE } from './store/actions';
+import {
+  SET_PERSISTENCE,
+  SET_SETTINGS,
+  SET_APP_STATE,
+  SET_MAPZEN,
+  SET_LOCALHOST,
+} from './store/actions';
 
 // Miscellaneous
 import { migrateLocalStorageToForage } from './storage/migrate';
@@ -52,12 +58,18 @@ migrateLocalStorageToForage();
 
 const STORAGE_PERSISTENCE = 'persistent-state';
 
+// Mapzen host flags
+if (window.location.hostname.indexOf('mapzen.com') > 0) {
+  store.dispatch({ type: SET_MAPZEN });
+}
+
 // Localhost flags
 if (window.location.hostname === 'localhost') {
   store.dispatch({
     type: SET_APP_STATE,
     disableMultiFile: false,
   });
+  store.dispatch({ type: SET_LOCALHOST });
 }
 
 // Settings that are stored are populated in state before we mount the

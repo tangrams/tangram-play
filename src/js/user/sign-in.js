@@ -9,13 +9,6 @@ import { getURLSearchParam } from '../tools/url-state';
 const SIGN_IN_STATE_API_ENDPOINT = '/api/developer.json';
 const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
 
-// Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
-// Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
-// It is disabled on http and any other host.
-const isMapzenHosted = /^(dev.|www.)?mapzen.com$/.test(window.location.hostname);
-const signInEnabled = (isMapzenHosted && window.location.protocol === 'https:') ||
-  (getURLSearchParam('forceSignIn') === 'true' && window.location.hostname === 'localhost');
-
 // Set credentials option for window.fetch depending on host.
 // Cookies are sent for each request only if the origin matches on mapzen.com,
 // but are always included for local environments (this allows back-ends to
@@ -24,6 +17,18 @@ const signInCredentials = window.location.hostname === 'localhost' ? 'include' :
 const signInHost = window.location.hostname === 'localhost' ? config.MAPZEN_API.ORIGIN.DEVELOPMENT : '';
 
 let cachedSignInData;
+
+// Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
+// Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
+// It is disabled on http and any other host.
+function isMapzenHosted() {
+  return store.getState().system.mapzen;
+}
+
+function isSignInEnabled() {
+  return (isMapzenHosted() && window.location.protocol === 'https:') ||
+    (getURLSearchParam('forceSignIn') === 'true' && window.location.hostname === 'localhost');
+}
 
 function enableAdminFlags() {
   store.dispatch({
@@ -63,7 +68,7 @@ function disableAdminFlags() {
  * @todo Handle errors related to fetching API.
  */
 export function requestUserSignInState() {
-  if (signInEnabled) {
+  if (isSignInEnabled()) {
     return window.fetch(signInHost + SIGN_IN_STATE_API_ENDPOINT, { credentials: signInCredentials })
       .then((response) => {
         if (!response.ok) {
@@ -90,7 +95,7 @@ export function requestUserSignInState() {
 
         return data;
       });
-  } else if (isMapzenHosted && window.location.protocol === 'http:') {
+  } else if (isMapzenHosted() && window.location.protocol === 'http:') {
     return Promise.resolve({
       authDisabled: true,
     });

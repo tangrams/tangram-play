@@ -6,6 +6,7 @@ import modals from './modals';
 import persistence from './persistence';
 import scene from './scene';
 import settings from './settings';
+import system from './system';
 import user from './user';
 
 const reducers = combineReducers({
@@ -16,6 +17,7 @@ const reducers = combineReducers({
   persistence,
   scene,
   settings,
+  system,
   user,
 });
 
