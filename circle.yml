@@ -32,6 +32,12 @@ deployment:
     branch: master
     commands:
       - aws s3 sync $CIRCLE_ARTIFACTS $AWS_PROD_DESTINATION --delete
+  # For the moment, the `next` branch also auto-deploys to dev. Note this
+  # clobbers the `staging` branch. Remove if/when not needed.
+  next:
+    branch: next
+    commands:
+      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DEV_DESTINATION --delete
   staging:
     branch: staging
     commands:
