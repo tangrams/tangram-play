@@ -16,7 +16,7 @@ import App from './components/App';
 
 // Redux
 import store from './store';
-import { SET_SETTINGS, SET_APP_STATE } from './store/actions';
+import { SET_PERSISTENCE, SET_SETTINGS, SET_APP_STATE } from './store/actions';
 
 // Miscellaneous
 import { migrateLocalStorageToForage } from './storage/migrate';
@@ -50,7 +50,7 @@ localforage.config({
 // TODO: Remove when migration is deemed unnecessary
 migrateLocalStorageToForage();
 
-const STORAGE_SETTINGS = 'settings';
+const STORAGE_PERSISTENCE = 'persistent-state';
 
 // Localhost flags
 if (window.location.hostname === 'localhost') {
@@ -63,11 +63,15 @@ if (window.location.hostname === 'localhost') {
 // Settings that are stored are populated in state before we mount the
 // application, so that they are available to components immediately.
 // This is asynchronous, so
-localforage.getItem(STORAGE_SETTINGS)
-  .then((settings) => {
+localforage.getItem(STORAGE_PERSISTENCE)
+  .then((obj) => {
     store.dispatch({
       type: SET_SETTINGS,
-      ...settings,
+      ...obj.settings,
+    });
+    store.dispatch({
+      type: SET_PERSISTENCE,
+      ...obj.persistence,
     });
   })
   .catch(() => {
@@ -88,8 +92,6 @@ localforage.getItem(STORAGE_SETTINGS)
 // On unload, stash settings into local storage.
 window.addEventListener('beforeunload', () => {
   const settings = store.getState().settings;
-
-  if (settings) {
-    localforage.setItem(STORAGE_SETTINGS, settings);
-  }
+  const persistence = store.getState().persistence;
+  localforage.setItem(STORAGE_PERSISTENCE, { settings, persistence });
 });

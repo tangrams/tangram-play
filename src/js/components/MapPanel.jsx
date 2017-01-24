@@ -12,7 +12,7 @@ import { map } from '../map/map';
 import { showErrorModal } from '../modals/ErrorModal';
 
 // Redux
-import { SET_SETTINGS } from '../store/actions';
+import { SET_PERSISTENCE } from '../store/actions';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
@@ -166,7 +166,7 @@ class MapPanel extends React.Component {
 
     // Save the position in Redux
     this.props.dispatch({
-      type: SET_SETTINGS,
+      type: SET_PERSISTENCE,
       mapToolbarDisplay: value,
     });
   }
@@ -241,7 +241,7 @@ MapPanel.defaultProps = {
 function mapStateToProps(state) {
   return {
     disabled: state.app.disableMapToolbar,
-    open: state.settings.mapToolbarDisplay,
+    open: state.persistence.mapToolbarDisplay,
   };
 }
 

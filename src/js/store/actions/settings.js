@@ -1,9 +1,9 @@
 import store from '../index';
-import { SET_SETTINGS, EDITOR_INCREASE_FONT_SIZE, EDITOR_DECREASE_FONT_SIZE } from './index';
+import { SET_EDITOR_FONT_SIZE, EDITOR_INCREASE_FONT_SIZE, EDITOR_DECREASE_FONT_SIZE } from './index';
 
 export function setEditorFontSize(fontSize) {
   store.dispatch({
-    type: SET_SETTINGS,
+    type: SET_EDITOR_FONT_SIZE,
     editorFontSize: fontSize,
   });
 }

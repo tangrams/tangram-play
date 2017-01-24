@@ -5,7 +5,7 @@ import EventEmitter from './event-emitter';
 
 // Redux
 import store from '../store';
-import { SET_SETTINGS, SET_APP_STATE } from '../store/actions';
+import { SET_PERSISTENCE, SET_APP_STATE } from '../store/actions';
 
 // Constraints
 // A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
@@ -70,7 +70,7 @@ function broadcastDividerPosition(posX) {
  */
 export function setDividerPosition(posX) {
   store.dispatch({
-    type: SET_SETTINGS,
+    type: SET_PERSISTENCE,
     dividerPositionX: clampPosition(posX),
   });
 }
@@ -194,7 +194,7 @@ Divider.defaultProps = {
 function mapStateToProps(state) {
   return {
     // Make sure position is clamped before feeding into props
-    posX: clampPosition(state.settings.dividerPositionX),
+    posX: clampPosition(state.persistence.dividerPositionX),
   };
 }
 

@@ -73,7 +73,7 @@ EditorPane.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    dividerPositionX: state.settings.dividerPositionX,
+    dividerPositionX: state.persistence.dividerPositionX,
   };
 }
 

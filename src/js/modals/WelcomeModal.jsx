@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
-
 import Modal from './Modal';
+import { HIDE_MODAL, DISMISS_WELCOME_SCREEN } from '../store/actions';
 
 class WelcomeModal extends React.PureComponent {
   constructor(props) {
@@ -13,9 +13,11 @@ class WelcomeModal extends React.PureComponent {
 
   onClickClose() {
     this.props.dispatch({
-      type: 'HIDE_MODAL',
+      type: HIDE_MODAL,
       id: this.props.modalId,
     });
+
+    this.props.dispatch({ type: DISMISS_WELCOME_SCREEN });
   }
 
   render() {

@@ -11,21 +11,12 @@ import ModalShield from '../modals/ModalShield';
 import ModalRoot from '../modals/ModalRoot';
 
 import { initTangramPlay } from '../tangram-play';
-
-// Redux
-import store from '../store';
-import { SHOW_MODAL } from '../store/actions';
+import { showWelcomeScreen } from '../ui/welcome';
 
 export default class App extends React.Component {
   componentDidMount() {
     initTangramPlay();
-
-    // TEMP: test welcome screen.
-    store.dispatch({
-      type: SHOW_MODAL,
-      modalType: 'WELCOME',
-      priority: 100, // Display above error modals
-    });
+    showWelcomeScreen();
   }
 
   shouldComponentUpdate() {
