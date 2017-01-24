@@ -11,10 +11,12 @@ import ModalShield from '../modals/ModalShield';
 import ModalRoot from '../modals/ModalRoot';
 
 import { initTangramPlay } from '../tangram-play';
+import { showWelcomeScreen } from '../ui/welcome';
 
 export default class App extends React.Component {
   componentDidMount() {
     initTangramPlay();
+    showWelcomeScreen();
   }
 
   shouldComponentUpdate() {

@@ -44,6 +44,7 @@
 
 /* Menus and modals */
 @import '_menu-bar';
+@import '_modals.welcome';
 @import '_modals.examples';
 @import '_modals.open-from-cloud';
 

@@ -24,10 +24,11 @@ import SignInButton from './SignInButton';
 import store from '../store';
 import { SET_APP_STATE, SHOW_MODAL } from '../store/actions';
 
-function showModal(type) {
+function showModal(type, priority = 0) {
   store.dispatch({
     type: SHOW_MODAL,
     modalType: type,
+    priority,
   });
 }
 
@@ -125,6 +126,10 @@ function clickOpenFromCloud() {
 
 function clickAbout() {
   showModal('ABOUT');
+}
+
+function clickWhatsNew() {
+  showModal('WHATS_NEW');
 }
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
@@ -334,6 +339,9 @@ class MenuBar extends React.Component {
               >
                 <MenuItem onClick={clickAbout}>
                   <Icon type="bt-info-circle" />About
+                </MenuItem>
+                <MenuItem onClick={clickWhatsNew}>
+                  <Icon type="bt-gift" />What’s new?
                 </MenuItem>
                 <MenuItem href={documentationLink} target="_blank" rel="noopener noreferrer">
                   <Icon type="bt-book" />Documentation

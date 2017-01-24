@@ -12,7 +12,7 @@ import { editor, parsedYAMLDocument } from '../editor/editor';
 import { getKeyAddressForNode } from '../editor/yaml-ast';
 
 // Redux
-import { SET_SETTINGS } from '../store/actions';
+import { SET_PERSISTENCE } from '../store/actions';
 
 import TANGRAM from '../tangram-docs.json';
 
@@ -61,7 +61,7 @@ class DocsPanel extends React.Component {
     }
 
     this.props.dispatch({
-      type: SET_SETTINGS,
+      type: SET_PERSISTENCE,
       docsPanelHeight: delta,
     });
   }
@@ -84,7 +84,7 @@ class DocsPanel extends React.Component {
    */
   openPanel() {
     this.props.dispatch({
-      type: SET_SETTINGS,
+      type: SET_PERSISTENCE,
       docsPanelHeight: this.lastSavedHeight,
     });
   }
@@ -92,7 +92,7 @@ class DocsPanel extends React.Component {
   closePanel() {
     this.lastSavedHeight = this.props.height;
     this.props.dispatch({
-      type: SET_SETTINGS,
+      type: SET_PERSISTENCE,
       docsPanelHeight: 0,
     });
   }
@@ -298,7 +298,7 @@ DocsPanel.defaultProps = {
 function mapStateToProps(state) {
   return {
     admin: state.user.admin || false,
-    height: state.settings.docsPanelHeight,
+    height: state.persistence.docsPanelHeight,
   };
 }
 
