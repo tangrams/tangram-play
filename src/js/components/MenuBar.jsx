@@ -62,6 +62,10 @@ function clickSaveFile() {
   exportSceneFile();
 }
 
+function onClickShare() {
+  showErrorModal('We’re working on it!');
+}
+
 function unsubscribeSaveToCloud() {
   // eslint-disable-next-line no-use-before-define
   EventEmitter.unsubscribe('mapzen:sign_in', clickSaveToCloud);
@@ -216,7 +220,7 @@ class MenuBar extends React.Component {
                 id="open-dropdown"
               >
                 <MenuItem onClick={clickNew}>
-                  <Icon type="bt-folder" />New scene
+                  <Icon type="bt-file" />New blank scene
                 </MenuItem>
                 <MenuItem onClick={clickOpenExample}>
                   <Icon type="bt-map" />New scene from example…
@@ -304,7 +308,22 @@ class MenuBar extends React.Component {
               </NavDropdown>
             </OverlayTrigger>
 
-            {/* Introspection button */}
+            {/* Share button */}
+            <OverlayTrigger
+              rootClose
+              placement="bottom"
+              overlay={<Tooltip id="tooltip">Share your scene</Tooltip>}
+              delayShow={200}
+            >
+              <NavItem
+                eventKey="share"
+                onClick={onClickShare}
+              >
+                <Icon type="bt-external-link" />Share
+              </NavItem>
+            </OverlayTrigger>
+
+            {/* Camera button */}
             <OverlayTrigger
               rootClose
               placement="bottom"
