@@ -77,7 +77,7 @@ function clickSaveToCloud() {
   requestUserSignInState()
     .then((data) => {
       if (!data) {
-        showErrorModal('ERROR 12A: There was a problem signing you in. Please try again later.');
+        showErrorModal('ERROR 12A: Unable to sign you in since you’re not hosted on Mapzen.');
         return;
       }
 
@@ -108,6 +108,11 @@ function showOpenFromCloudModal() {
 function clickOpenFromCloud() {
   requestUserSignInState()
     .then((data) => {
+      if (!data) {
+        showErrorModal('ERROR 12B: Unable to sign you in since you’re not hosted on Mapzen.');
+        return;
+      }
+
       if (data.id) {
         showOpenFromCloudModal();
       } else if (data.authDisabled) {

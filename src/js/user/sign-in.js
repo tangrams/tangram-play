@@ -63,7 +63,7 @@ function disableAdminFlags() {
  * non-admins are `null` not `false`.
  *
  * @returns {Promise} - resolved value is contents of `/api/developer.json`
- *          or `null` if Tangrma Play is not hosted on a domain where this
+ *          or `null` if Tangram Play is not hosted on a domain where this
  *          API is available.
  * @todo Handle errors related to fetching API.
  */
