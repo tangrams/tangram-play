@@ -22,7 +22,7 @@ import SignInButton from './SignInButton';
 
 // Redux
 import store from '../store';
-import { SET_APP_STATE, SHOW_MODAL } from '../store/actions';
+import { SHOW_MODAL } from '../store/actions';
 
 function showModal(type, priority = 0) {
   store.dispatch({
@@ -153,7 +153,6 @@ class MenuBar extends React.Component {
       legacyGistMenu: false,
     };
 
-    this.onClickCamera = this.onClickCamera.bind(this);
     this.onClickInspect = this.onClickInspect.bind(this);
   }
 
@@ -170,14 +169,6 @@ class MenuBar extends React.Component {
           });
         }
       });
-  }
-
-  onClickCamera() {
-    // Toggle camera state
-    this.props.dispatch({
-      type: SET_APP_STATE,
-      cameraToolsVisible: !this.props.cameraToolsVisible,
-    });
   }
 
   onClickInspect() {
@@ -322,22 +313,6 @@ class MenuBar extends React.Component {
                 <Icon type="bt-external-link" />Share
               </NavItem>
             </OverlayTrigger>
-
-            {/* Camera button */}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">Show camera tools</Tooltip>}
-              delayShow={200}
-            >
-              <NavItem
-                eventKey="camera"
-                onClick={this.onClickCamera}
-                active={this.props.cameraToolsVisible}
-              >
-                <Icon type="bt-camera" />Camera
-              </NavItem>
-            </OverlayTrigger>
           </Nav>
 
           {/* Right menu section */}
@@ -400,20 +375,16 @@ class MenuBar extends React.Component {
 }
 
 MenuBar.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
   isMapzenHosted: React.PropTypes.bool,
-  cameraToolsVisible: React.PropTypes.bool,
 };
 
 MenuBar.defaultProps = {
   isMapzenHosted: false,
-  cameraToolsVisible: false,
 };
 
 function mapStateToProps(state) {
   return {
     isMapzenHosted: state.system.mapzen || state.system.localhost,
-    cameraToolsVisible: state.app.cameraToolsVisible,
   };
 }
 
