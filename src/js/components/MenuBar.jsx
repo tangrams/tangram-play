@@ -211,9 +211,17 @@ class MenuBar extends React.Component {
               overlay={<Tooltip id="tooltip">New scene</Tooltip>}
               delayShow={200}
             >
-              <NavItem eventKey="new" onClick={clickNew}>
-                <Icon type="bt-file" />New
-              </NavItem>
+              <NavDropdown
+                title={<span><Icon type="bt-file" />New</span>}
+                id="open-dropdown"
+              >
+                <MenuItem onClick={clickNew}>
+                  <Icon type="bt-folder" />New scene
+                </MenuItem>
+                <MenuItem onClick={clickOpenExample}>
+                  <Icon type="bt-map" />New scene from example…
+                </MenuItem>
+              </NavDropdown>
             </OverlayTrigger>
 
             {/* Open dropdown */}
@@ -228,13 +236,13 @@ class MenuBar extends React.Component {
                 id="open-dropdown"
               >
                 <MenuItem onClick={clickOpenFile}>
-                  <Icon type="bt-folder" />Open a file
+                  <Icon type="bt-folder" />Open a file…
                 </MenuItem>
                 {(() => {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickOpenFromCloud}>
-                        <Icon type="bt-cloud-download" />Open
+                        <Icon type="bt-cloud-download" />Open…
                         <div className="menu-item-note">Sign-in required</div>
                       </MenuItem>
                     );
@@ -252,10 +260,7 @@ class MenuBar extends React.Component {
                   return null;
                 })()}
                 <MenuItem onClick={clickOpenURL}>
-                  <Icon type="bt-link" />Open from URL
-                </MenuItem>
-                <MenuItem onClick={clickOpenExample}>
-                  <Icon type="bt-map" />Choose example
+                  <Icon type="bt-link" />Open from URL…
                 </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
@@ -289,7 +294,7 @@ class MenuBar extends React.Component {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickSaveToCloud}>
-                        <Icon type="bt-cloud-upload" />Save as...
+                        <Icon type="bt-cloud-upload" />Save as…
                         <div className="menu-item-note">Sign-in required</div>
                       </MenuItem>
                     );
