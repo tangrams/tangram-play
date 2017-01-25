@@ -29,7 +29,7 @@ class WhatsNewModal extends React.PureComponent {
         </div>
 
         <div className="modal-well whatsnew-modal-changelog">
-          <iframe className="changelog-frame" src="./meta/changelog.html" />
+          <iframe className="changelog-frame" src="./data/changelog.html" />
         </div>
 
         <div className="modal-buttons">
