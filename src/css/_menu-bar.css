@@ -56,7 +56,6 @@ nav {
   font-size: 13px;
   outline: none;
   line-height: var(--menu-bar-height);
-  height: var(--menu-bar-height);
   padding: 0 15px;
 
   &:hover {
@@ -114,6 +113,15 @@ nav {
     color: yellow;
     background-color: var(--ui-active-color);
   }
+}
+
+.menu-item-note {
+  padding-left: 23px;
+  font-size: 0.85em;
+  color: #ababab;
+  line-height: 1;
+  margin-top: -0.8em;
+  margin-bottom: 0.8em;
 }
 
 /* Small screens */

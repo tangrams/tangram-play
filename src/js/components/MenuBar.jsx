@@ -62,10 +62,6 @@ function clickSaveFile() {
   exportSceneFile();
 }
 
-function clickSaveGist() {
-  showModal('SAVE_GIST');
-}
-
 function unsubscribeSaveToCloud() {
   // eslint-disable-next-line no-use-before-define
   EventEmitter.unsubscribe('mapzen:sign_in', clickSaveToCloud);
@@ -233,7 +229,8 @@ class MenuBar extends React.Component {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickOpenFromCloud}>
-                        <Icon type="bt-cloud-download" />Open from your Mapzen account
+                        <Icon type="bt-cloud-download" />Open
+                        <div className="menu-item-note">Sign-in required</div>
                       </MenuItem>
                     );
                   }
@@ -243,7 +240,7 @@ class MenuBar extends React.Component {
                   if (this.state.legacyGistMenu) {
                     return (
                       <MenuItem onClick={clickOpenGist}>
-                        <Icon type="bt-code" />Open a saved Gist
+                        <Icon type="bt-code" />Open a saved Gist (Legacy)
                       </MenuItem>
                     );
                   }
@@ -270,21 +267,30 @@ class MenuBar extends React.Component {
                 id="save-dropdown"
               >
                 <MenuItem onClick={clickSaveFile}>
-                  <Icon type="bt-folder" />Save to your computer
+                  <Icon type="bt-download" />Download
                 </MenuItem>
                 {(() => {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickSaveToCloud}>
-                        <Icon type="bt-cloud-upload" />Save to your Mapzen account
+                        <Icon type="bt-cloud-upload" />Save
+                        <div className="menu-item-note">Sign-in required</div>
                       </MenuItem>
                     );
                   }
                   return null;
                 })()}
-                <MenuItem onClick={clickSaveGist}>
-                  <Icon type="bt-code" />Save to Gist
-                </MenuItem>
+                {(() => {
+                  if (this.props.isMapzenHosted) {
+                    return (
+                      <MenuItem onClick={clickSaveToCloud}>
+                        <Icon type="bt-cloud-upload" />Save as...
+                        <div className="menu-item-note">Sign-in required</div>
+                      </MenuItem>
+                    );
+                  }
+                  return null;
+                })()}
               </NavDropdown>
             </OverlayTrigger>
 
