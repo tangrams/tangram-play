@@ -105,5 +105,6 @@ localforage.getItem(STORAGE_PERSISTENCE)
 window.addEventListener('beforeunload', () => {
   const settings = store.getState().settings;
   const persistence = store.getState().persistence;
+  persistence.lastSessionTimestamp = new Date().toISOString();
   localforage.setItem(STORAGE_PERSISTENCE, { settings, persistence });
 });

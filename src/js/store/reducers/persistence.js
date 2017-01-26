@@ -38,6 +38,9 @@ const initialState = {
 
   // A list of recent scenes. WIP
   recentScenes: [],
+
+  // Recorded timestamp of the last time someone used this instance of Tangram Play
+  lastSessionTimestamp: null,
 };
 
 const app = (state = initialState, action) => {
