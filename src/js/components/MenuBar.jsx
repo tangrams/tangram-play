@@ -66,17 +66,17 @@ function onClickShare() {
   showErrorModal('We’re working on it!');
 }
 
-function unsubscribeSaveToCloud() {
+function unsubscribeSaveAsToCloud() {
   // eslint-disable-next-line no-use-before-define
-  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveToCloud);
+  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
 }
 
-function showSaveToCloudModal() {
-  unsubscribeSaveToCloud();
+function showSaveAsToCloudModal() {
+  unsubscribeSaveAsToCloud();
   showModal('SAVE_TO_CLOUD');
 }
 
-function clickSaveToCloud() {
+function clickSaveAsToCloud() {
   // showConfirmDialogModal('This feature is being renovated! Please come back later.');
   requestUserSignInState()
     .then((data) => {
@@ -86,15 +86,31 @@ function clickSaveToCloud() {
       }
 
       if (data.id) {
-        showSaveToCloudModal();
+        showSaveAsToCloudModal();
       } else if (data.authDisabled) {
         showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
       } else {
         const message = 'You are not signed in! Please sign in now.';
-        showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
-        EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
+        showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveAsToCloud);
+        EventEmitter.subscribe('mapzen:sign_in', clickSaveAsToCloud);
       }
     });
+}
+
+/**
+ * Check whether the scene is already saved to Mapzen and if so, confirm overwrite.
+ * Otherwise, use the Save As function.
+ */
+function clickSaveToCloud() {
+  const scene = store.getState().scene;
+  console.log(scene);
+  if (scene.saved && scene.saveLocation === 'MAPZEN' && scene.mapzenSceneData.id) {
+    // Check user sign in
+    // Check scene belongs to user
+    // Put file to scene
+  } else {
+    clickSaveAsToCloud();
+  }
 }
 
 function unsubscribeOpenFromCloud() {
@@ -288,7 +304,7 @@ class MenuBar extends React.Component {
                 {(() => {
                   if (this.props.isMapzenHosted) {
                     return (
-                      <MenuItem onClick={clickSaveToCloud}>
+                      <MenuItem onClick={clickSaveAsToCloud}>
                         <Icon type="bt-cloud-upload" />Save as…
                         <div className="menu-item-note">Sign-in required</div>
                       </MenuItem>
