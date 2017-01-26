@@ -67,7 +67,8 @@ function makeThumbnail() {
     // At this size, thumbnail image should clock in at around ~90kb
     // to ~120kb (unoptimized, but that's the limitations of our
     // thumbnail function)
-    .then(screenshot => createThumbnail(screenshot.blob, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, true, false));
+    .then(screenshot =>
+      createThumbnail(screenshot.blob, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, true, false));
 }
 
 /**

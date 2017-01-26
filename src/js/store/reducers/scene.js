@@ -8,6 +8,7 @@ import {
   MARK_FILE_CLEAN,
   MARK_FILE_DIRTY,
   STASH_DOCUMENT,
+  MAPZEN_SAVE_SCENE,
 } from '../actions';
 import { getBasePathFromUrl } from '../../tools/helpers';
 
@@ -32,6 +33,17 @@ const initialState = {
   // Indicates which of the files is the main scene file (usually the
   // first one)
   rootFileIndex: null,
+  // Whether the scene was saved somewhere.
+  saved: false,
+  // Where the scene was saved last. Valid values are "LOCAL" (for local file
+  // system), "MAPZEN" (for Mapzen scene API), "ANON_GIST" (for Anonymous
+  // Gist, legacy use only), or `null` if not previously saved. This variable
+  // should be *set* if a file is first loaded from each of those locations.
+  saveLocation: null,
+  // When saved, record a timestamp.
+  saveTimestamp: null,
+  // Mapzen API use only: store the scene data object.
+  mapzenSceneData: null,
 };
 
 /*
@@ -243,6 +255,15 @@ const scene = (state = initialState, action) => {
           },
           ...state.files.slice(action.index + 1),
         ],
+      };
+    // Records properties after a scene is saved in Mapzen Scenes API.
+    case MAPZEN_SAVE_SCENE:
+      return {
+        ...state,
+        saved: true,
+        saveLocation: 'MAPZEN',
+        saveTimestamp: action.data.updated_at,
+        mapzenSceneData: action.data,
       };
     default:
       return state;

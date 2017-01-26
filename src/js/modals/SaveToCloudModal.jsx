@@ -12,7 +12,7 @@ import { getRootFileName } from '../editor/io';
 import { replaceHistoryState } from '../tools/url-state';
 
 // Redux
-import { SHOW_MODAL } from '../store/actions';
+import { SHOW_MODAL, MAPZEN_SAVE_SCENE } from '../store/actions';
 
 // Default values in UI
 const DEFAULT_SCENE_NAME = 'Untitled scene';
@@ -131,18 +131,22 @@ class SaveToCloudModal extends React.Component {
     this.setState(DEFAULT_VALUES);
   }
 
-  // If successful, turn off wait state,
-  // mark as clean state in the editor,
-  // remember the success response,
-  // and display a helpful message
-  //
-  // `data` is (currently) the object saved to `scenelist.json`
+  /**
+   * If successful, turn off wait state, mark as clean state in the editor,
+   * remember the success response, and display a helpful message
+   */
   handleSaveSuccess(data) {
     // Close the modal
     this.unmountSelf();
 
     // Mark as clean state in the editor
     editor.doc.markClean();
+
+    // Store scene data
+    this.props.dispatch({
+      type: MAPZEN_SAVE_SCENE,
+      data,
+    });
 
     // Update the page URL. The scene parameter should
     // reflect the new scene URL.
