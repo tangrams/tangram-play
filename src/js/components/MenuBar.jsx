@@ -208,7 +208,7 @@ class MenuBar extends React.Component {
             >
               <NavDropdown
                 title={<span><Icon type="bt-file" />New</span>}
-                id="open-dropdown"
+                id="new-dropdown"
               >
                 <MenuItem onClick={clickNew}>
                   <Icon type="bt-file" />New blank scene
@@ -306,13 +306,20 @@ class MenuBar extends React.Component {
               overlay={<Tooltip id="tooltip">Share your scene</Tooltip>}
               delayShow={200}
             >
-              <NavItem
-                eventKey="share"
-                onClick={onClickShare}
+              <NavDropdown
+                title={<span><Icon type="bt-external-link" />Share</span>}
+                id="share-dropdown"
               >
-                <Icon type="bt-external-link" />Share
-              </NavItem>
+                <MenuItem onClick={onClickShare}>
+                  <Icon type="bt-link" />View hosted link
+                  <div className="menu-item-note">Sign-in required</div>
+                </MenuItem>
+                <MenuItem onClick={onClickShare}>
+                  <Icon type="bt-code" />Get embed code…
+                </MenuItem>
+              </NavDropdown>
             </OverlayTrigger>
+
           </Nav>
 
           {/* Right menu section */}
