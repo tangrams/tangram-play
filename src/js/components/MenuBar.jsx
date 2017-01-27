@@ -77,7 +77,6 @@ function showSaveAsToCloudModal() {
 }
 
 function clickSaveAsToCloud() {
-  // showConfirmDialogModal('This feature is being renovated! Please come back later.');
   requestUserSignInState()
     .then((data) => {
       if (!data) {
@@ -101,13 +100,39 @@ function clickSaveAsToCloud() {
  * Check whether the scene is already saved to Mapzen and if so, confirm overwrite.
  * Otherwise, use the Save As function.
  */
+function unsubscribeSaveToCloud() {
+  // eslint-disable-next-line no-use-before-define
+  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
+}
+
+function showConfirmSaveOverModal() {
+  unsubscribeSaveToCloud();
+  showModal('SAVE_EXISTING_TO_CLOUD');
+}
+
 function clickSaveToCloud() {
   const scene = store.getState().scene;
-  console.log(scene);
   if (scene.saved && scene.saveLocation === 'MAPZEN' && scene.mapzenSceneData.id) {
-    // Check user sign in
-    // Check scene belongs to user
-    // Put file to scene
+    // Duplicating some functionality from clickSaveAsToCloud()
+    // todo refactor
+    requestUserSignInState()
+      .then((data) => {
+        if (!data) {
+          showErrorModal('ERROR 12A: Unable to sign you in since you’re not hosted on Mapzen.');
+          return;
+        }
+
+        if (data.id) {
+          // TODO: Check scene belongs to user
+          showConfirmSaveOverModal();
+        } else if (data.authDisabled) {
+          showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
+        } else {
+          const message = 'You are not signed in! Please sign in now.';
+          showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
+          EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
+        }
+      });
   } else {
     clickSaveAsToCloud();
   }

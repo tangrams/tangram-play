@@ -187,7 +187,7 @@ class SaveToCloudModal extends React.Component {
 
   render() {
     return (
-      /* Modal disableEsc is true if we are waiting for a response */
+      /* Modal disableEsc is true if we are waiting for a server response */
       <Modal
         className="modal-alt save-to-cloud-modal"
         disableEsc={this.state.thinking}

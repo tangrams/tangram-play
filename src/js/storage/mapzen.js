@@ -115,6 +115,15 @@ export function fetchSceneList() {
     });
 }
 
+export function putFile(content, location, contentType = 'text/x-yaml') {
+  return window.fetch(location, {
+    method: 'PUT',
+    headers: { 'Content-Type': contentType },
+    body: content,
+    credentials: 'include',
+  });
+}
+
 export function saveToMapzenUserAccount(data) {
   const userId = getUserId();
 
@@ -141,24 +150,18 @@ export function saveToMapzenUserAccount(data) {
     })
     // The returned `sceneData` will contain the `id` and
     // `resources_url` needed to POST each of our scene resources.
+    // temp: to deal with this not needing url concatenation
+    .then(sceneData => putFile(content, sceneData.entrypoint_url)
+      .then((response) => {
+        // There may be errors
+        if (!response.ok) {
+          const message = `There was a problem saving your scene. Error code ${response.status}`;
+          throw new Error(message);
+        }
 
-  // temp: to deal with this not needing url concatenation
-  .then(sceneData => window.fetch(sceneData.entrypoint_url, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'text/x-yaml' },
-    body: content,
-    credentials: 'include',
-  })
-  .then((response) => {
-    // There may be errors
-    if (!response.ok) {
-      const message = `There was a problem saving your scene. Error code ${response.status}`;
-      throw new Error(message);
-    }
-
-    // Return original scene data to success handler.
-    return sceneData;
-  }));
+        // Return original scene data to success handler.
+        return sceneData;
+      }));
 }
 
 export function deleteScene(sceneId) {
