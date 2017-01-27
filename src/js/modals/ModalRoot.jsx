@@ -13,6 +13,7 @@ import OpenGistModal from './OpenGistModal'; // LEGACY.
 import OpenUrlModal from './OpenUrlModal';
 import SaveToCloudModal from './SaveToCloudModal';
 import SaveToCloudSuccessModal from './SaveToCloudSuccessModal';
+import SaveExistingToCloudModal from './SaveExistingToCloudModal';
 import SaveGistModal from './SaveGistModal'; // LEGACY.
 import SaveGistSuccessModal from './SaveGistSuccessModal'; // LEGACY.
 
@@ -28,6 +29,7 @@ const MODAL_COMPONENTS = {
   OPEN_URL: OpenUrlModal,
   SAVE_TO_CLOUD: SaveToCloudModal,
   SAVE_TO_CLOUD_SUCCESS: SaveToCloudSuccessModal,
+  SAVE_EXISTING_TO_CLOUD: SaveExistingToCloudModal,
   SAVE_GIST: SaveGistModal, // LEGACY.
   SAVE_GIST_SUCCESS: SaveGistSuccessModal, // LEGACY
 };
