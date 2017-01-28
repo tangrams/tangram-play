@@ -84,6 +84,7 @@ export const EDITOR_DECREASE_FONT_SIZE = 'EDITOR_DECREASE_FONT_SIZE';
 /* system */
 export const SET_MAPZEN = 'SET_MAPZEN';
 export const SET_LOCALHOST = 'SET_LOCALHOST';
+export const SET_SSL_ENABLED = 'SET_SSL_ENABLED';
 
 /* user */
 export const USER_SIGNED_IN = 'USER_SIGNED_IN';

@@ -22,6 +22,7 @@ import {
   SET_APP_STATE,
   SET_MAPZEN,
   SET_LOCALHOST,
+  SET_SSL_ENABLED,
 } from './store/actions';
 
 // Miscellaneous
@@ -70,6 +71,11 @@ if (window.location.hostname === 'localhost') {
     disableMultiFile: false,
   });
   store.dispatch({ type: SET_LOCALHOST });
+}
+
+// SSL protocol flag
+if (window.location.protocol === 'https:') {
+  store.dispatch({ type: SET_SSL_ENABLED });
 }
 
 // Settings that are stored are populated in state before we mount the

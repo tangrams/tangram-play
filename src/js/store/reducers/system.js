@@ -1,11 +1,13 @@
 import {
   SET_MAPZEN,
   SET_LOCALHOST,
+  SET_SSL_ENABLED,
 } from '../actions';
 
 const initialState = {
   mapzen: false,
   localhost: false,
+  ssl: false,
 };
 
 const settings = (state = initialState, action) => {
@@ -19,6 +21,11 @@ const settings = (state = initialState, action) => {
       return {
         ...state,
         localhost: true,
+      };
+    case SET_SSL_ENABLED:
+      return {
+        ...state,
+        ssl: true,
       };
     default:
       return state;

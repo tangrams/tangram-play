@@ -21,7 +21,7 @@ class SignInButton extends React.Component {
 
     this.state = {
       serverContacted: false,
-      authDisabled: false,
+      authDisabled: this.props.system.mapzen && !this.props.system.ssl,
     };
 
     this.onClickSignIn = this.onClickSignIn.bind(this);
@@ -63,7 +63,6 @@ class SignInButton extends React.Component {
       if (data) {
         this.setState({
           serverContacted: true,
-          authDisabled: Boolean(data.authDisabled) || false,
         });
       }
     });
@@ -151,6 +150,10 @@ SignInButton.propTypes = {
   nickname: React.PropTypes.string,
   avatar: React.PropTypes.string,
   admin: React.PropTypes.bool,
+  system: React.PropTypes.shape({
+    mapzen: React.PropTypes.bool,
+    ssl: React.PropTypes.bool,
+  }).isRequired,
 };
 
 SignInButton.defaultProps = {
@@ -164,6 +167,7 @@ function mapStateToProps(state) {
     nickname: state.user.nickname,
     avatar: state.user.avatar,
     admin: state.user.admin,
+    system: state.system,
   };
 }
 
