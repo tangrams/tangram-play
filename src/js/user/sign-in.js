@@ -21,13 +21,9 @@ let cachedSignInData;
 // Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
 // Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
 // It is disabled on http and any other host.
-function isMapzenHosted() {
-  return store.getState().system.mapzen;
-}
-
 function isSignInEnabled() {
-  return (isMapzenHosted() && window.location.protocol === 'https:') ||
-    (getURLSearchParam('forceSignIn') === 'true' && window.location.hostname === 'localhost');
+  const system = store.getState().system;
+  return (system.mapzen && system.ssl) || (system.localhost && getURLSearchParam('forceSignIn') === 'true');
 }
 
 function enableAdminFlags() {
@@ -80,17 +76,19 @@ export function requestUserSignInState() {
       .then((data) => {
         cachedSignInData = data;
 
-        store.dispatch({
-          type: USER_SIGNED_IN,
-          id: data.id,
-          nickname: data.nickname,
-          email: data.email,
-          avatar: data.avatar,
-          admin: data.admin,
-        });
+        if (Object.keys(data).length > 0) {
+          store.dispatch({
+            type: USER_SIGNED_IN,
+            id: data.id,
+            nickname: data.nickname,
+            email: data.email,
+            avatar: data.avatar,
+            admin: data.admin,
+          });
 
-        if (data.admin === true) {
-          enableAdminFlags();
+          if (data.admin === true) {
+            enableAdminFlags();
+          }
         }
 
         return data;
