@@ -224,6 +224,11 @@ class MenuBar extends React.Component {
   }
 
   render() {
+    let signInRequiredMsg = null;
+    if (this.props.userSignedIn === false) {
+      signInRequiredMsg = <div className="menu-item-note">Sign-in required</div>;
+    }
+
     return (
       <Navbar inverse className="menu-bar">
         {/* The brand section */}
@@ -279,7 +284,7 @@ class MenuBar extends React.Component {
                     return (
                       <MenuItem onClick={clickOpenFromCloud}>
                         <Icon type="bt-cloud-download" />Open…
-                        <div className="menu-item-note">Sign-in required</div>
+                        {signInRequiredMsg}
                       </MenuItem>
                     );
                   }
@@ -320,7 +325,7 @@ class MenuBar extends React.Component {
                     return (
                       <MenuItem onClick={clickSaveToCloud}>
                         <Icon type="bt-cloud-upload" />Save
-                        <div className="menu-item-note">Sign-in required</div>
+                        {signInRequiredMsg}
                       </MenuItem>
                     );
                   }
@@ -331,7 +336,7 @@ class MenuBar extends React.Component {
                     return (
                       <MenuItem onClick={clickSaveAsToCloud}>
                         <Icon type="bt-cloud-upload" />Save as…
-                        <div className="menu-item-note">Sign-in required</div>
+                        {signInRequiredMsg}
                       </MenuItem>
                     );
                   }
@@ -353,7 +358,6 @@ class MenuBar extends React.Component {
               >
                 <MenuItem onClick={onClickShare}>
                   <Icon type="bt-link" />View hosted link
-                  <div className="menu-item-note">Sign-in required</div>
                 </MenuItem>
                 <MenuItem onClick={onClickShare}>
                   <Icon type="bt-code" />Get embed code…
@@ -424,6 +428,7 @@ class MenuBar extends React.Component {
 
 MenuBar.propTypes = {
   isMapzenHosted: React.PropTypes.bool,
+  userSignedIn: React.PropTypes.bool.isRequired,
 };
 
 MenuBar.defaultProps = {
@@ -433,6 +438,7 @@ MenuBar.defaultProps = {
 function mapStateToProps(state) {
   return {
     isMapzenHosted: state.system.mapzen || state.system.localhost,
+    userSignedIn: state.user.signedIn,
   };
 }
 
