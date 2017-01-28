@@ -95,10 +95,6 @@ export function requestUserSignInState() {
 
         return data;
       });
-  } else if (isMapzenHosted() && window.location.protocol === 'http:') {
-    return Promise.resolve({
-      authDisabled: true,
-    });
   }
 
   // Returns a promise that resolves to `null` if Tangram Play is not

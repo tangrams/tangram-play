@@ -24,6 +24,21 @@ import SignInButton from './SignInButton';
 import store from '../store';
 import { SHOW_MODAL } from '../store/actions';
 
+function checkUserAuthAvailability() {
+  const system = store.getState().system;
+
+  if (!system.mapzen) {
+    showErrorModal('Unable to sign you in since you’re not hosted on Mapzen.');
+    return false;
+  }
+  if (system.mapzen && !system.ssl) {
+    showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
+    return false;
+  }
+
+  return true;
+}
+
 function showModal(type, priority = 0) {
   store.dispatch({
     type: SHOW_MODAL,
@@ -77,17 +92,17 @@ function showSaveAsToCloudModal() {
 }
 
 function clickSaveAsToCloud() {
+  if (checkUserAuthAvailability() === false) return;
+
   requestUserSignInState()
     .then((data) => {
       if (!data) {
-        showErrorModal('ERROR 12A: Unable to sign you in since you’re not hosted on Mapzen.');
+        showErrorModal('ERROR 12B: Unable to sign you in. The authentication service could not be reached.');
         return;
       }
 
       if (data.id) {
         showSaveAsToCloudModal();
-      } else if (data.authDisabled) {
-        showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
       } else {
         const message = 'You are not signed in! Please sign in now.';
         showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveAsToCloud);
@@ -115,18 +130,18 @@ function clickSaveToCloud() {
   if (scene.saved && scene.saveLocation === 'MAPZEN' && scene.mapzenSceneData.id) {
     // Duplicating some functionality from clickSaveAsToCloud()
     // todo refactor
+    if (checkUserAuthAvailability() === false) return;
+
     requestUserSignInState()
       .then((data) => {
         if (!data) {
-          showErrorModal('ERROR 12A: Unable to sign you in since you’re not hosted on Mapzen.');
+          showErrorModal('ERROR 12B: Unable to sign you in. The authentication service could not be reached.');
           return;
         }
 
         if (data.id) {
           // TODO: Check scene belongs to user
           showConfirmSaveOverModal();
-        } else if (data.authDisabled) {
-          showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
         } else {
           const message = 'You are not signed in! Please sign in now.';
           showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
@@ -151,17 +166,17 @@ function showOpenFromCloudModal() {
 }
 
 function clickOpenFromCloud() {
+  if (checkUserAuthAvailability() === false) return;
+
   requestUserSignInState()
     .then((data) => {
       if (!data) {
-        showErrorModal('ERROR 12B: Unable to sign you in since you’re not hosted on Mapzen.');
+        showErrorModal('ERROR 12B: Unable to sign you in. The authentication service could not be reached.');
         return;
       }
 
       if (data.id) {
         showOpenFromCloudModal();
-      } else if (data.authDisabled) {
-        showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
       } else {
         const message = 'You are not signed in! Please sign in now.';
         showConfirmDialogModal(message, openSignInWindow, unsubscribeOpenFromCloud);
@@ -225,8 +240,12 @@ class MenuBar extends React.Component {
 
   render() {
     let signInRequiredMsg = null;
-    if (this.props.userSignedIn === false) {
-      signInRequiredMsg = <div className="menu-item-note">Sign-in required</div>;
+    if (this.props.system.mapzen) {
+      if (!this.props.system.ssl) {
+        signInRequiredMsg = <div className="menu-item-note">Sign-in unavailable</div>;
+      } else if (this.props.userSignedIn === false) {
+        signInRequiredMsg = <div className="menu-item-note">Sign-in required</div>;
+      }
     }
 
     return (
@@ -429,6 +448,10 @@ class MenuBar extends React.Component {
 MenuBar.propTypes = {
   isMapzenHosted: React.PropTypes.bool,
   userSignedIn: React.PropTypes.bool.isRequired,
+  system: React.PropTypes.shape({
+    mapzen: React.PropTypes.bool,
+    ssl: React.PropTypes.bool,
+  }).isRequired,
 };
 
 MenuBar.defaultProps = {
@@ -439,6 +462,7 @@ function mapStateToProps(state) {
   return {
     isMapzenHosted: state.system.mapzen || state.system.localhost,
     userSignedIn: state.user.signedIn,
+    system: state.system,
   };
 }
 
