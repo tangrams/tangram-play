@@ -73,7 +73,7 @@ class SignInButton extends React.Component {
   //   >  You "log on" or "log out" of a operating system session.
   // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
   render() {
-    if (this.props.nickname) {
+    if (this.props.signedIn) {
       const ButtonContents = (
         <span>
           <img
@@ -114,10 +114,11 @@ class SignInButton extends React.Component {
           </NavDropdown>
         </OverlayTrigger>
       );
-    } else if (this.state.serverContacted && !this.props.nickname) {
+    } else if ((this.state.serverContacted && !this.props.signedIn) || this.state.authDisabled) {
       // Logged out state. Only display if server is contacted and has confirmed
       // no user is logged in. This is to prevent this button from having a
       // "Sign in" momentarily flash before the sign-in-state API is contacted.
+      // Also display if auth is disabled on non-SSL Mapzen host.
       let classNames = 'menu-sign-in';
       if (this.state.authDisabled) {
         classNames += ' menu-sign-in-disabled';
@@ -147,6 +148,7 @@ class SignInButton extends React.Component {
 }
 
 SignInButton.propTypes = {
+  signedIn: React.PropTypes.bool.isRequired,
   nickname: React.PropTypes.string,
   avatar: React.PropTypes.string,
   admin: React.PropTypes.bool,
@@ -157,13 +159,14 @@ SignInButton.propTypes = {
 };
 
 SignInButton.defaultProps = {
-  nickname: '',
+  nickname: 'Anonymous',
   avatar: '',
   admin: false,
 };
 
 function mapStateToProps(state) {
   return {
+    signedIn: state.user.signedIn,
     nickname: state.user.nickname,
     avatar: state.user.avatar,
     admin: state.user.admin,

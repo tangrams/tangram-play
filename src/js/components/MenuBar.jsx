@@ -375,9 +375,16 @@ class MenuBar extends React.Component {
                 title={<span><Icon type="bt-external-link" />Share</span>}
                 id="share-dropdown"
               >
-                <MenuItem onClick={onClickShare}>
-                  <Icon type="bt-link" />View hosted link
-                </MenuItem>
+                {(() => {
+                  if (this.props.isMapzenHosted) {
+                    return (
+                      <MenuItem onClick={onClickShare}>
+                        <Icon type="bt-link" />View hosted link
+                      </MenuItem>
+                    );
+                  }
+                  return null;
+                })()}
                 <MenuItem onClick={onClickShare}>
                   <Icon type="bt-code" />Get embed code…
                 </MenuItem>
@@ -460,7 +467,7 @@ MenuBar.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    isMapzenHosted: state.system.mapzen || state.system.localhost,
+    isMapzenHosted: state.system.mapzen,
     userSignedIn: state.user.signedIn,
     system: state.system,
   };
