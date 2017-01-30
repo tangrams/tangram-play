@@ -76,19 +76,21 @@ export function requestUserSignInState() {
       .then((data) => {
         cachedSignInData = data;
 
-        // Only dispatch if data does not match cache
-        if (Object.keys(data).length > 0 && data.id !== cachedSignInData.id) {
-          store.dispatch({
-            type: USER_SIGNED_IN,
-            id: data.id,
-            nickname: data.nickname,
-            email: data.email,
-            avatar: data.avatar,
-            admin: data.admin,
-          });
+        if (Object.keys(data).length > 0) {
+          // Only dispatch if data does not match cache, or cache not present.
+          if (!cachedSignInData || data.id !== cachedSignInData.id) {
+            store.dispatch({
+              type: USER_SIGNED_IN,
+              id: data.id,
+              nickname: data.nickname,
+              email: data.email,
+              avatar: data.avatar,
+              admin: data.admin,
+            });
 
-          if (data.admin === true) {
-            enableAdminFlags();
+            if (data.admin === true) {
+              enableAdminFlags();
+            }
           }
         }
 
