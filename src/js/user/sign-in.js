@@ -74,11 +74,12 @@ export function requestUserSignInState() {
         return response.json();
       })
       .then((data) => {
+        const previousUserData = cachedSignInData;
         cachedSignInData = data;
 
         if (Object.keys(data).length > 0) {
           // Only dispatch if data does not match cache, or cache not present.
-          if (!cachedSignInData || data.id !== cachedSignInData.id) {
+          if (!previousUserData || data.id !== previousUserData.id) {
             store.dispatch({
               type: USER_SIGNED_IN,
               id: data.id,
