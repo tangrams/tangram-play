@@ -106,7 +106,7 @@ class SaveExistingToCloudModal extends React.Component {
     return (
       /* Modal disableEsc is true if we are waiting for a server response */
       <Modal
-        className="modal-alt save-to-cloud-modal"
+        className="modal-alt save-existing-to-cloud-modal"
         disableEsc={this.state.thinking}
         cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
