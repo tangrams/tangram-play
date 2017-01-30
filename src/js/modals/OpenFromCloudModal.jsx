@@ -42,7 +42,10 @@ class OpenFromCloudModal extends React.Component {
   onClickConfirm() {
     if (this.state.selected) {
       this.onClickCancel(); // to close modal
-      load({ url: this.state.selected.entrypoint_url });
+      load({
+        url: this.state.selected.entrypoint_url,
+        data: this.state.selected,
+      });
     }
   }
 

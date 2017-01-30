@@ -127,8 +127,8 @@ const scene = (state = initialState, action) => {
         delete mutatedAction.type; // Prevent saving of `type` in store
 
         // Calculate originalBasePath if originalUrl is present
-        if (mutatedAction.originalUrl && !mutatedAction.originalBasePath) {
-          mutatedAction.originalBasePath = getBasePathFromUrl(mutatedAction.originalUrl);
+        if (action.originalUrl && !action.originalBasePath) {
+          mutatedAction.originalBasePath = getBasePathFromUrl(action.originalUrl);
         }
 
         return {
