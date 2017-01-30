@@ -101,6 +101,8 @@ class SaveExistingToCloudModal extends React.Component {
   }
 
   render() {
+    const scene = this.props.scene;
+
     return (
       /* Modal disableEsc is true if we are waiting for a server response */
       <Modal
@@ -114,9 +116,25 @@ class SaveExistingToCloudModal extends React.Component {
         </div>
 
         <div className="modal-content">
-          <p>
-            [TODO INFO ABOUT SCENE]
-          </p>
+          <div className="open-from-cloud-option">
+            <div className="open-from-cloud-option-thumbnail">
+              <img src={scene.thumbnail} alt="" />
+            </div>
+            <div className="open-from-cloud-option-info">
+              <div className="open-from-cloud-option-name">
+                {scene.name}
+              </div>
+              <div className="open-from-cloud-option-description">
+                {scene.description || 'No description provided.'}
+              </div>
+              <div className="open-from-cloud-option-date">
+                {/* Show the date this was saved.
+                    TODO: better formatting;
+                    maybe use moment.js */}
+                Saved on {new Date(scene.updated_at).toLocaleString()}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="modal-buttons">
