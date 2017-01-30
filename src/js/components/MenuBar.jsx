@@ -86,14 +86,10 @@ function unsubscribeSaveAsToCloud() {
   EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
 }
 
-function showSaveAsToCloudModal() {
-  unsubscribeSaveAsToCloud();
-  showModal('SAVE_TO_CLOUD');
-}
-
 function clickSaveAsToCloud() {
   if (checkUserAuthAvailability() === false) return;
 
+  unsubscribeSaveAsToCloud();
   requestUserSignInState()
     .then((data) => {
       if (!data) {
@@ -102,7 +98,7 @@ function clickSaveAsToCloud() {
       }
 
       if (data.id) {
-        showSaveAsToCloudModal();
+        showModal('SAVE_TO_CLOUD');
       } else {
         const message = 'You are not signed in! Please sign in now.';
         showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveAsToCloud);
@@ -120,11 +116,6 @@ function unsubscribeSaveToCloud() {
   EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
 }
 
-function showConfirmSaveOverModal() {
-  unsubscribeSaveToCloud();
-  showModal('SAVE_EXISTING_TO_CLOUD');
-}
-
 function clickSaveToCloud() {
   const scene = store.getState().scene;
   if (scene.saved && scene.saveLocation === 'MAPZEN' && scene.mapzenSceneData.id) {
@@ -132,6 +123,7 @@ function clickSaveToCloud() {
     // todo refactor
     if (checkUserAuthAvailability() === false) return;
 
+    unsubscribeSaveToCloud();
     requestUserSignInState()
       .then((data) => {
         if (!data) {
@@ -141,7 +133,7 @@ function clickSaveToCloud() {
 
         if (data.id) {
           // TODO: Check scene belongs to user
-          showConfirmSaveOverModal();
+          showModal('SAVE_EXISTING_TO_CLOUD');
         } else {
           const message = 'You are not signed in! Please sign in now.';
           showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
@@ -158,16 +150,10 @@ function unsubscribeOpenFromCloud() {
   EventEmitter.unsubscribe('mapzen:sign_in', clickOpenFromCloud);
 }
 
-function showOpenFromCloudModal() {
-  unsubscribeOpenFromCloud();
-  checkSaveStateThen(() => {
-    showModal('OPEN_FROM_CLOUD');
-  });
-}
-
 function clickOpenFromCloud() {
   if (checkUserAuthAvailability() === false) return;
 
+  unsubscribeOpenFromCloud();
   requestUserSignInState()
     .then((data) => {
       if (!data) {
@@ -176,7 +162,9 @@ function clickOpenFromCloud() {
       }
 
       if (data.id) {
-        showOpenFromCloudModal();
+        checkSaveStateThen(() => {
+          showModal('OPEN_FROM_CLOUD');
+        });
       } else {
         const message = 'You are not signed in! Please sign in now.';
         showConfirmDialogModal(message, openSignInWindow, unsubscribeOpenFromCloud);
