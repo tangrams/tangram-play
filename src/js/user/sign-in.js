@@ -76,7 +76,8 @@ export function requestUserSignInState() {
       .then((data) => {
         cachedSignInData = data;
 
-        if (Object.keys(data).length > 0) {
+        // Only dispatch if data does not match cache
+        if (Object.keys(data).length > 0 && data.id !== cachedSignInData.id) {
           store.dispatch({
             type: USER_SIGNED_IN,
             id: data.id,
