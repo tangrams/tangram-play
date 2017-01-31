@@ -11,6 +11,7 @@ import LoadingSpinner from './LoadingSpinner';
 import { showErrorModal } from './ErrorModal';
 import { editor, getEditorContent } from '../editor/editor';
 import { putFile, replaceThumbnail } from '../storage/mapzen';
+import { MAPZEN_SAVE_SCENE } from '../store/actions';
 
 const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
@@ -50,7 +51,6 @@ class SaveExistingToCloudModal extends React.Component {
     const overwriteThumbnail = replaceThumbnail(this.props.scene.id);
 
     // Create a new thumbnail
-
     Promise.all([overwriteThumbnail, overwriteFile])
       .then(this.handleSaveSuccess)
       .catch(this.handleSaveError);
@@ -80,6 +80,12 @@ class SaveExistingToCloudModal extends React.Component {
 
     // Mark as clean state in the editor
     editor.doc.markClean();
+
+    // Store updated scene data
+    this.props.dispatch({
+      type: MAPZEN_SAVE_SCENE,
+      data,
+    });
   }
 
   /**
