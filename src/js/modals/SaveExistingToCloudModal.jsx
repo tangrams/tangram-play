@@ -84,7 +84,7 @@ class SaveExistingToCloudModal extends React.Component {
     // Store updated scene data
     this.props.dispatch({
       type: MAPZEN_SAVE_SCENE,
-      data,
+      data: data[0],
     });
   }
 
