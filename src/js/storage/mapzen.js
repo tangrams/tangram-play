@@ -72,6 +72,26 @@ function makeThumbnail() {
 }
 
 /**
+ * Replaces a thumbnail image.
+ * TODO: refactor
+ */
+export function replaceThumbnail(sceneId) {
+  return makeThumbnail()
+    .then((screenshotData) => {
+      const userId = getUserId();
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thumbnail: screenshotData,
+        }),
+      };
+
+      return makeMapzenAPIRequest(`${userId}/${sceneId}`, requestOptions);
+    });
+}
+
+/**
  * Creates additional metadata information about the current scene.
  *
  * @params {Object} data - data passed to saveToMapzenUserAccount()

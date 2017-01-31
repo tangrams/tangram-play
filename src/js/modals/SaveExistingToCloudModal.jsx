@@ -10,7 +10,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 import { showErrorModal } from './ErrorModal';
 import { editor, getEditorContent } from '../editor/editor';
-import { putFile } from '../storage/mapzen';
+import { putFile, replaceThumbnail } from '../storage/mapzen';
 
 const SAVE_TIMEOUT = 20000; // ms before we assume saving is failure
 
@@ -46,7 +46,12 @@ class SaveExistingToCloudModal extends React.Component {
     const content = getEditorContent();
 
     // And it saves to the root entry point
-    putFile(content, this.props.scene.entrypoint_url)
+    const overwriteFile = putFile(content, this.props.scene.entrypoint_url);
+    const overwriteThumbnail = replaceThumbnail(this.props.scene.id);
+
+    // Create a new thumbnail
+
+    Promise.all([overwriteThumbnail, overwriteFile])
       .then(this.handleSaveSuccess)
       .catch(this.handleSaveError);
 
