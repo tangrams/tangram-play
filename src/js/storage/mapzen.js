@@ -88,13 +88,6 @@ export function replaceThumbnail(sceneId) {
       };
 
       return makeMapzenAPIRequest(`${userId}/${sceneId}`, requestOptions);
-    })
-    .then((response) => {
-      // There may be errors
-      if (!response.ok) {
-        throw new Error(response.status);
-      }
-      return response.json();
     });
 }
 
