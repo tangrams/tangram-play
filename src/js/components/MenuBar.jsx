@@ -182,7 +182,7 @@ function clickWhatsNew() {
 }
 
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
-const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
+const supportLink = 'https://github.com/tangrams/tangram-play/issues/';
 const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
 
 /**
@@ -422,11 +422,13 @@ class MenuBar extends React.Component {
                 <MenuItem href={documentationLink} target="_blank" rel="noopener noreferrer">
                   <Icon type="bt-book" />Documentation
                 </MenuItem>
-                <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
-                  <Icon type="bt-notebook" />Tutorial
-                </MenuItem>
-                <MenuItem href={feedbackLink} target="_blank" rel="noopener noreferrer">
-                  <Icon type="bt-comments" />Feedback
+                {/* // TEMP: hidden.
+                  <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
+                    <Icon type="bt-notebook" />Tutorial
+                  </MenuItem>
+                */}
+                <MenuItem href={supportLink} target="_blank" rel="noopener noreferrer">
+                  <Icon type="bt-comments" />Support
                 </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
