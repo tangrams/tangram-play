@@ -224,6 +224,7 @@ class SaveToCloudModal extends React.Component {
               onChange={this.onChangeSceneDescription}
             />
           </p>
+          {/*
           <p>
             <label htmlFor="save-scene-public">Public scene</label>
             <input
@@ -234,6 +235,7 @@ class SaveToCloudModal extends React.Component {
               onChange={this.onChangeScenePublic}
             />
           </p>
+          */}
         </div>
 
         <div className="modal-buttons">
