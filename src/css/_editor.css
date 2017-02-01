@@ -161,6 +161,15 @@
   color: var(--ui-unnamed-light-color);
 }
 
+.editor-save-state-notification {
+  color: var(--ui-unnamed-light-color);
+  margin-left: 0.75em;
+  align-self: center;
+  font-size: 12px;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
 .editor-collapse-button {
   position: absolute;
   top: 5px;

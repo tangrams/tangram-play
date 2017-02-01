@@ -8,6 +8,7 @@ import {
   MARK_FILE_CLEAN,
   MARK_FILE_DIRTY,
   STASH_DOCUMENT,
+  SAVE_SCENE,
   MAPZEN_SAVE_SCENE,
 } from '../actions';
 import { getBasePathFromUrl } from '../../tools/helpers';
@@ -256,7 +257,15 @@ const scene = (state = initialState, action) => {
           ...state.files.slice(action.index + 1),
         ],
       };
-    // Records properties after a scene is saved in Mapzen Scenes API.
+    case SAVE_SCENE:
+      return {
+        ...state,
+        saved: true,
+        saveLocation: action.location,
+        saveTimestamp: action.timestamp,
+        // Do not overwrite mapzenSceneData here.
+      };
+    // Only for scenes saved in Mapzen Scenes API.
     case MAPZEN_SAVE_SCENE:
       return {
         ...state,

@@ -73,6 +73,7 @@ export const SET_FILE_METADATA = 'SET_FILE_METADATA';
 export const MARK_FILE_CLEAN = 'MARK_FILE_CLEAN';
 export const MARK_FILE_DIRTY = 'MARK_FILE_DIRTY';
 export const STASH_DOCUMENT = 'STASH_DOCUMENT';
+export const SAVE_SCENE = 'SAVE_SCENE';
 export const MAPZEN_SAVE_SCENE = 'MAPZEN_SAVE_SCENE';
 
 /* settings */

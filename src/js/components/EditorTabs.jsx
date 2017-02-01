@@ -56,6 +56,16 @@ class EditorTabs extends React.PureComponent {
   }
 
   render() {
+    let saveStateMessage = '';
+
+    if (this.props.files.length) {
+      if (this.props.saved === false) {
+        saveStateMessage = 'You have unsaved changes.';
+      } else {
+        saveStateMessage = 'All changes saved.';
+      }
+    }
+
     return (
       <div className="editor-tabs">
         {this.props.files.map((item, i) => {
@@ -96,6 +106,10 @@ class EditorTabs extends React.PureComponent {
             </div>
           );
         })}
+
+        <div className="editor-save-state-notification">
+          {saveStateMessage}
+        </div>
       </div>
     );
   }
@@ -106,16 +120,19 @@ EditorTabs.propTypes = {
   activeTab: React.PropTypes.number,
   mainTab: React.PropTypes.number,
   files: React.PropTypes.arrayOf(React.PropTypes.object),
+  saved: React.PropTypes.bool.isRequired,
 
   // Injected by `mapDispatchToProps`
-  setActiveFile: React.PropTypes.func,
-  removeFile: React.PropTypes.func,
-  closeScene: React.PropTypes.func,
-  setFileMetadata: React.PropTypes.func,
-  stashDoc: React.PropTypes.func,
+  setActiveFile: React.PropTypes.func.isRequired,
+  removeFile: React.PropTypes.func.isRequired,
+  closeScene: React.PropTypes.func.isRequired,
+  setFileMetadata: React.PropTypes.func.isRequired,
+  stashDoc: React.PropTypes.func.isRequired,
 };
 
 EditorTabs.defaultProps = {
+  activeTab: 0,
+  mainTab: 0,
   files: [],
 };
 
@@ -124,6 +141,7 @@ function mapStateToProps(state) {
     activeTab: state.scene.activeFileIndex,
     mainTab: state.scene.rootFileIndex,
     files: state.scene.files,
+    saved: state.scene.saved,
   };
 }
 

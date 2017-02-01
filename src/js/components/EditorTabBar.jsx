@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import EditorTabs from './EditorTabs';
@@ -56,6 +57,7 @@ EditorTabBar.propTypes = {
 
 EditorTabBar.defaultProps = {
   disabled: false,
+  showEditorHiddenTooltip: noop,
 };
 
 function mapStateToProps(state) {
