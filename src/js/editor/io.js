@@ -10,7 +10,7 @@ import { load } from '../tangram-play';
 import { editor, getEditorContent } from './editor';
 import store from '../store';
 
-const NEW_SCENE_PATH = 'data/scenes/empty.yaml';
+const NEW_SCENE_PATH = 'data/scenes/blank.yaml';
 
 // TODO: this probably doesn't belong here.
 export function checkSaveStateThen(callback = noop) {
