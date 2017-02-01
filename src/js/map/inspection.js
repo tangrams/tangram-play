@@ -22,7 +22,6 @@ const POPUP_MARGIN = 12;
 const POPUP_OFFSET_Y = 44;
 
 let mountNode;
-
 let isPopupOpen = false;
 let currentPopupX;
 let currentPopupY;
@@ -110,7 +109,7 @@ class TangramInspectionHeader extends React.Component {
 TangramInspectionHeader.propTypes = {
   feature: React.PropTypes.shape({
     properties: React.PropTypes.object,
-  }),
+  }).isRequired,
 };
 
 class TangramInspectionHover extends React.Component {
@@ -162,7 +161,7 @@ TangramInspectionHover.propTypes = {
   selection: React.PropTypes.shape({
     feature: React.PropTypes.object,
     pixel: React.PropTypes.object,
-  }),
+  }).isRequired,
 };
 
 class TangramInspectionPopup extends React.Component {
@@ -345,7 +344,7 @@ class TangramInspectionPopup extends React.Component {
 TangramInspectionPopup.propTypes = {
   selection: React.PropTypes.shape({
     feature: React.PropTypes.object,
-  }),
+  }).isRequired,
 };
 
 /**
@@ -360,7 +359,7 @@ function showPopup(selection) {
     closeButton: false,
     closeOnClick: false,
     autoPanPadding: [POPUP_MARGIN, POPUP_MARGIN + POPUP_OFFSET_Y],
-    offset: [0, -6],
+    offset: [0, -5],
     className: 'map-inspection-popup',
   });
 
@@ -370,14 +369,9 @@ function showPopup(selection) {
   ReactDOM.render(<TangramInspectionPopup selection={selection} />, el);
 
   popup
-    .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
     .setContent(el)
+    .setLatLng({ lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng })
     .openOn(map);
-
-  // Provide an animation in. By itself, the translateZ doesn't mean anything.
-  // It's just a "transition from" point. Leaflet adds an animation class
-  // which we hook into to provide a Y-position transform from zero.
-  popup._container.style.transform = 'translateZ(100px)'; // eslint-disable-line no-underscore-dangle
 
   function onNewScene(event) {
     map.closePopup(popup);
@@ -385,20 +379,12 @@ function showPopup(selection) {
 
   function onPopupClose(event) {
     // Leaflet will be responsible for destroying the elements on close.
-
-    // Provide an animation out. Like the transition in, removing the transform
-    // style here just provides a "transition to" point. We use the Leaflet
-    // popup class to provide the Y-position transform.
-    const popupEl = event.popup._container; // eslint-disable-line no-underscore-dangle
-    popupEl.style.transform = null;
     isPopupOpen = false;
 
     // Clean up React DOM
-    // NOTE we should just something like ReactTransitionGroup to handle
-    // the appropriate timing after animation is over.
     window.setTimeout(() => {
       ReactDOM.unmountComponentAtNode(el);
-    }, 120);
+    }, 100);
 
     // Clean up events from the map listeners
     map.off('popupclose', onPopupClose);
