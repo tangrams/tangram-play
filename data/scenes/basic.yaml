@@ -1,4 +1,3 @@
-# authors: Patricio Gonzalez Vivo and Katie Kowalsky
 sources:
     mapzen:
         type: TopoJSON
