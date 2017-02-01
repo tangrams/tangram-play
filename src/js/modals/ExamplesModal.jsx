@@ -49,10 +49,10 @@ class ExamplesModal extends React.Component {
 
         // If the scene is selected, a special class is applied
         // to indicate that
-        let classString = 'example-option';
+        let classString = 'open-from-cloud-option';
 
         if (this.state.selected === scene.url) {
-          classString += ' example-selected';
+          classString += ' open-from-cloud-selected';
         }
 
         // Render a thumbnail container element
@@ -64,20 +64,30 @@ class ExamplesModal extends React.Component {
             onClick={() => { this.setState({ selected: scene.url }); }}
             onDoubleClick={this.onClickConfirm}
           >
-            <div className="example-option-name">{scene.name}</div>
-            <div className="example-thumbnail" style={thumbnailStyle} />
+            <div className="open-from-cloud-option-thumbnail">
+              <img className="example-thumbnail" style={thumbnailStyle} />
+            </div>
+            <div className="open-from-cloud-option-info">
+              <div className="open-from-cloud-option-name">
+                {scene.name}
+              </div>
+              <div className="open-from-cloud-option-description">
+                {scene.description || 'No description provided.'}
+              </div>
+            </div>
           </div>
         );
       });
 
       // Render the category container element
-      return (
-        <section key={categoryIndex}>
-          <h2 className="example-list-header">{category.category}</h2>
-          <hr />
-          {scenes}
-        </section>
-      );
+      // return (
+      //   <section key={categoryIndex}>
+      //     <h2 className="example-list-header">{category.category}</h2>
+      //     <hr />
+      //     {scenes}
+      //   </section>
+      // );
+      return <div key={categoryIndex}>{scenes}</div>;
     });
 
     // Render the entire modal
