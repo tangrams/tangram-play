@@ -24,7 +24,7 @@ import EventEmitter from './components/event-emitter';
 import store from './store';
 import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE, ADD_RECENT_SCENE } from './store/actions';
 
-const DEFAULT_SCENE = 'data/scenes/default.yaml';
+const DEFAULT_SCENE = 'data/scenes/basic.yaml';
 const STORAGE_LAST_EDITOR_STATE = 'last-scene';
 
 let initialScene = ''; // Stores initial scene file for embedded play.

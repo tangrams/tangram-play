@@ -4,8 +4,8 @@
     "scenes": [
       {
         "name": "Basic",
-        "thumb": "./data/scenes/thumbnails/default.png",
-        "url": "https://cdn.raw.githubusercontent.com/tangrams/tangram-play/c4ed9f61a69414aec1b8c6e67fc3d89d856eaa0a/data/scenes/basic.yaml",
+        "thumb": "./data/scenes/thumbnails/basic.png",
+        "url": "./data/scenes/basic.yaml",
         "description":"A simple starter map."
       },
       {

@@ -8,10 +8,6 @@
 
 /* eslint-disable quote-props */
 const IMAGE_SOURCES = {
-  'default': {
-    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/default.png',
-    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/default.yaml',
-  },
   'grain': {
     image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain.png',
     scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain.yaml',
