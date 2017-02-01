@@ -9,13 +9,6 @@ import { getURLSearchParam } from '../tools/url-state';
 const SIGN_IN_STATE_API_ENDPOINT = '/api/developer.json';
 const SIGN_OUT_API_ENDPOINT = '/api/developer/sign_out';
 
-// Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
-// Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
-// It is disabled on http and any other host.
-const isMapzenHosted = /^(dev.|www.)?mapzen.com$/.test(window.location.hostname);
-const signInEnabled = (isMapzenHosted && window.location.protocol === 'https:') ||
-  (getURLSearchParam('forceSignIn') === 'true' && window.location.hostname === 'localhost');
-
 // Set credentials option for window.fetch depending on host.
 // Cookies are sent for each request only if the origin matches on mapzen.com,
 // but are always included for local environments (this allows back-ends to
@@ -24,6 +17,14 @@ const signInCredentials = window.location.hostname === 'localhost' ? 'include' :
 const signInHost = window.location.hostname === 'localhost' ? config.MAPZEN_API.ORIGIN.DEVELOPMENT : '';
 
 let cachedSignInData;
+
+// Sign-in is enabled if the host matches https://mapzen.com/ or https://dev.mapzen.com/
+// Or if it is a localhost server (for local testing) and the query string ?forceSignIn=true
+// It is disabled on http and any other host.
+function isSignInEnabled() {
+  const system = store.getState().system;
+  return (system.mapzen && system.ssl) || (system.localhost && getURLSearchParam('forceSignIn') === 'true');
+}
 
 function enableAdminFlags() {
   store.dispatch({
@@ -58,12 +59,12 @@ function disableAdminFlags() {
  * non-admins are `null` not `false`.
  *
  * @returns {Promise} - resolved value is contents of `/api/developer.json`
- *          or `null` if Tangrma Play is not hosted on a domain where this
+ *          or `null` if Tangram Play is not hosted on a domain where this
  *          API is available.
  * @todo Handle errors related to fetching API.
  */
 export function requestUserSignInState() {
-  if (signInEnabled) {
+  if (isSignInEnabled()) {
     return window.fetch(signInHost + SIGN_IN_STATE_API_ENDPOINT, { credentials: signInCredentials })
       .then((response) => {
         if (!response.ok) {
@@ -73,27 +74,29 @@ export function requestUserSignInState() {
         return response.json();
       })
       .then((data) => {
+        const previousUserData = cachedSignInData;
         cachedSignInData = data;
 
-        store.dispatch({
-          type: USER_SIGNED_IN,
-          id: data.id,
-          nickname: data.nickname,
-          email: data.email,
-          avatar: data.avatar,
-          admin: data.admin,
-        });
+        if (Object.keys(data).length > 0) {
+          // Only dispatch if data does not match cache, or cache not present.
+          if (!previousUserData || data.id !== previousUserData.id) {
+            store.dispatch({
+              type: USER_SIGNED_IN,
+              id: data.id,
+              nickname: data.nickname,
+              email: data.email,
+              avatar: data.avatar,
+              admin: data.admin,
+            });
 
-        if (data.admin === true) {
-          enableAdminFlags();
+            if (data.admin === true) {
+              enableAdminFlags();
+            }
+          }
         }
 
         return data;
       });
-  } else if (isMapzenHosted && window.location.protocol === 'http:') {
-    return Promise.resolve({
-      authDisabled: true,
-    });
   }
 
   // Returns a promise that resolves to `null` if Tangram Play is not

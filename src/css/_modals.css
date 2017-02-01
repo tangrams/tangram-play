@@ -121,6 +121,21 @@
   }
 }
 
+.save-existing-to-cloud-modal {
+  width: 500px;
+
+  /* re-using this CSS from OpenFromCloudModal */
+  .open-from-cloud-option {
+    padding: 0;
+    cursor: auto;
+    user-select: auto;
+  }
+
+  .open-from-cloud-option:hover {
+    background-color: transparent;
+  }
+}
+
 .modal {
   position: relative;
 }

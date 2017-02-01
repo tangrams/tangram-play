@@ -53,6 +53,9 @@ IconButton.propTypes = {
 };
 
 IconButton.defaultProps = {
+  className: '',
   tooltipPlacement: 'bottom',
   buttonRef: function noop() {},
+  active: false,
+  tooltip: '',
 };

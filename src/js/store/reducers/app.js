@@ -1,7 +1,7 @@
 /**
  * Record various properties related to app state.
  */
-import { APP_INITIALIZED, SET_APP_STATE, ADD_RECENT_SCENE } from '../actions';
+import { APP_INITIALIZED, SET_APP_STATE } from '../actions';
 
 const initialState = {
   // Set to `true` after Tangram Play has initialized - ready and waiting to
@@ -31,30 +31,20 @@ const initialState = {
 const app = (state = initialState, action) => {
   switch (action.type) {
     case APP_INITIALIZED:
-      {
-        return {
-          ...state,
-          initialized: true,
-        };
-      }
+      return {
+        ...state,
+        initialized: true,
+      };
       // The settings is an object with an arbitrary set of properties.
       // The only property we don't want to copy is `type`, which is
       // only used in the reducer, here. Make sure we combine incoming
       // properties with existing properties.
-    case SET_APP_STATE:
-      {
-        const settingsObj = Object.assign({}, state, action);
-        delete settingsObj.type;
+    case SET_APP_STATE: {
+      const settingsObj = Object.assign({}, state, action);
+      delete settingsObj.type;
 
-        return { ...settingsObj };
-      }
-    case ADD_RECENT_SCENE:
-      {
-        return {
-          ...state,
-          recentScenes: [...state.recentScenes, action.scene],
-        };
-      }
+      return { ...settingsObj };
+    }
     default:
       return state;
   }

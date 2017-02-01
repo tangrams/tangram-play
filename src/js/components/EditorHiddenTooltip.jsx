@@ -76,14 +76,19 @@ class EditorHiddenTooltip extends React.Component {
 }
 
 EditorHiddenTooltip.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   dividerPositionX: React.PropTypes.number,
   showEditorHiddenTooltip: React.PropTypes.bool,
 };
 
+EditorHiddenTooltip.defaultProps = {
+  dividerPositionX: 0,
+  showEditorHiddenTooltip: false,
+};
+
 function mapStateToProps(state) {
   return {
-    dividerPositionX: state.settings.dividerPositionX,
+    dividerPositionX: state.persistence.dividerPositionX,
     showEditorHiddenTooltip: state.app.showEditorHiddenTooltip,
   };
 }

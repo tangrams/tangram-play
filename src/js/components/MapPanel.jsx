@@ -12,7 +12,7 @@ import { map } from '../map/map';
 import { showErrorModal } from '../modals/ErrorModal';
 
 // Redux
-import { SET_SETTINGS } from '../store/actions';
+import { SET_PERSISTENCE, SET_APP_STATE } from '../store/actions';
 
 /**
  * Represents the main map panel that user can toggle in and out of the leaflet
@@ -30,7 +30,8 @@ class MapPanel extends React.Component {
     };
 
     this.toggleMapPanel = this.toggleMapPanel.bind(this);
-    this.clickGeolocator = this.clickGeolocator.bind(this);
+    this.onClickGeolocator = this.onClickGeolocator.bind(this);
+    this.onClickCamera = this.onClickCamera.bind(this);
     this.onGeolocateSuccess = this.onGeolocateSuccess.bind(this);
   }
 
@@ -140,7 +141,7 @@ class MapPanel extends React.Component {
   /**
    * Fired when user clicks on geolocator button
    */
-  clickGeolocator() {
+  onClickGeolocator() {
     const geolocator = window.navigator.geolocation;
     const options = {
       enableHighAccuracy: true,
@@ -158,6 +159,14 @@ class MapPanel extends React.Component {
     this.setState({ geolocatorButton: 'bt-sync bt-spin active' });
   }
 
+  onClickCamera() {
+    // Toggle camera state
+    this.props.dispatch({
+      type: SET_APP_STATE,
+      cameraToolsVisible: !this.props.cameraToolsVisible,
+    });
+  }
+
   /**
    * Toggle the panel so it is visible or not visible
    */
@@ -166,7 +175,7 @@ class MapPanel extends React.Component {
 
     // Save the position in Redux
     this.props.dispatch({
-      type: SET_SETTINGS,
+      type: SET_PERSISTENCE,
       mapToolbarDisplay: value,
     });
   }
@@ -176,27 +185,37 @@ class MapPanel extends React.Component {
 
     return (
       <div className="map-panel">
-        {/* Map panel*/}
+        {/* Map panel */}
         <Panel collapsible expanded={this.props.open} className="map-panel-collapsible">
           <div className="map-panel-toolbar">
             <MapPanelZoom />
 
-            {/* Search buttons*/}
+            {/* Search buttons */}
             <div className="map-panel-search-bookmarks">
               <MapPanelLocationBar geolocateActive={this.state.geolocateActive} />
               <MapPanelBookmarks />
             </div>
 
-            {/* Locate me button*/}
+            {/* Locate me button */}
             <ButtonGroup className="buttons-locate">
               <IconButton
                 icon={this.state.geolocatorButton}
                 tooltip="Locate me"
-                onClick={this.clickGeolocator}
+                onClick={this.onClickGeolocator}
               />
             </ButtonGroup>
 
-            {/* Toggle map panel to show it*/}
+            {/* Camera tools */}
+            <ButtonGroup className="buttons-toggle">
+              <IconButton
+                icon="bt-camera"
+                tooltip="Toggle camera tools"
+                onClick={this.onClickCamera}
+                active={this.props.cameraToolsVisible}
+              />
+            </ButtonGroup>
+
+            {/* Toggle map panel to show it */}
             <ButtonGroup className="buttons-toggle">
               <IconButton
                 icon="bt-caret-up"
@@ -207,7 +226,7 @@ class MapPanel extends React.Component {
           </div>
         </Panel>
 
-        {/* Toggle map panel to show it*/}
+        {/* Toggle map panel to show it */}
         {(() => {
           if (!this.props.open) {
             return (
@@ -227,21 +246,24 @@ class MapPanel extends React.Component {
 }
 
 MapPanel.propTypes = {
-  dispatch: React.PropTypes.func,
+  dispatch: React.PropTypes.func.isRequired,
   disabled: React.PropTypes.bool,
   // Whether panel should be open or not
   open: React.PropTypes.bool,
+  cameraToolsVisible: React.PropTypes.bool,
 };
 
 MapPanel.defaultProps = {
   disabled: false,
   open: true,
+  cameraToolsVisible: false,
 };
 
 function mapStateToProps(state) {
   return {
     disabled: state.app.disableMapToolbar,
-    open: state.settings.mapToolbarDisplay,
+    open: state.persistence.mapToolbarDisplay,
+    cameraToolsVisible: state.app.cameraToolsVisible,
   };
 }
 

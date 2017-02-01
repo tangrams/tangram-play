@@ -89,15 +89,17 @@ export default class Modal extends React.Component {
     }
 
     return (
-      <div className={classNames} ref={this.storeRefs}>
-        {this.props.children}
+      <div className="modal-container">
+        <div className={classNames} ref={this.storeRefs}>
+          {this.props.children}
+        </div>
       </div>
     );
   }
 }
 
 Modal.propTypes = {
-  children: React.PropTypes.node,
+  children: React.PropTypes.node.isRequired,
   className: React.PropTypes.string,
   disableEsc: React.PropTypes.bool,
   cancelFunction: React.PropTypes.func,
@@ -106,6 +108,7 @@ Modal.propTypes = {
 };
 
 Modal.defaultProps = {
+  className: '',
   disableEsc: false,
   cancelFunction: noop,
   confirmFunction: noop,

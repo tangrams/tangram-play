@@ -51,7 +51,7 @@ EditorTabBar.propTypes = {
   disabled: React.PropTypes.bool,
 
   // Injected by `mapDispatchToProps`
-  showEditorHiddenTooltip: React.PropTypes.func,
+  showEditorHiddenTooltip: React.PropTypes.func.isRequired,
 };
 
 EditorTabBar.defaultProps = {

@@ -5,7 +5,7 @@ import EventEmitter from './event-emitter';
 
 // Redux
 import store from '../store';
-import { SET_SETTINGS, SET_APP_STATE } from '../store/actions';
+import { SET_PERSISTENCE, SET_APP_STATE } from '../store/actions';
 
 // Constraints
 // A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
@@ -25,25 +25,6 @@ function clampPosition(x) {
   const min = MAP_MINIMUM_WIDTH;
   const max = window.innerWidth - EDITOR_MINIMUM_WIDTH;
   return Math.min(Math.max(x, min), max);
-}
-
-/**
- * Retrieves the starting position of the divider: a number value, in pixels,
- * that the divider element's left edge should be offset from the left edge
- * of the viewport.
- *
- * Restore it from memory, if saved from a previous session.
- * Otherwise, put it at a default position based on current viewport width.
- *
- * @returns {Number} x - the position to place the divider.
- */
-function getStartingPosition() {
-  if (window.innerWidth > 1024) {
-    return Math.floor(window.innerWidth * 0.6);
-  }
-
-  // If window.innerWidth <= 1024
-  return Math.floor(window.innerWidth / 2);
 }
 
 /**
@@ -70,7 +51,7 @@ function broadcastDividerPosition(posX) {
  */
 export function setDividerPosition(posX) {
   store.dispatch({
-    type: SET_SETTINGS,
+    type: SET_PERSISTENCE,
     dividerPositionX: clampPosition(posX),
   });
 }
@@ -183,18 +164,14 @@ class Divider extends React.Component {
 }
 
 Divider.propTypes = {
-  dispatch: React.PropTypes.func,
-  posX: React.PropTypes.number,
-};
-
-Divider.defaultProps = {
-  posX: getStartingPosition(),
+  dispatch: React.PropTypes.func.isRequired,
+  posX: React.PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     // Make sure position is clamped before feeding into props
-    posX: clampPosition(state.settings.dividerPositionX),
+    posX: clampPosition(state.persistence.dividerPositionX),
   };
 }
 

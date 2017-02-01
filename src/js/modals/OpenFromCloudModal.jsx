@@ -35,14 +35,17 @@ class OpenFromCloudModal extends React.Component {
   onClickCancel() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
   onClickConfirm() {
     if (this.state.selected) {
       this.onClickCancel(); // to close modal
-      load({ url: this.state.selected.entrypoint_url });
+      load({
+        url: this.state.selected.entrypoint_url,
+        data: this.state.selected,
+      });
     }
   }
 
@@ -130,7 +133,7 @@ class OpenFromCloudModal extends React.Component {
           onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
         >
           <div className="open-from-cloud-option-thumbnail">
-            <img src={item.thumbnail} role="presentation" />
+            <img src={item.thumbnail} alt="" />
           </div>
           <div className="open-from-cloud-option-info">
             <div className="open-from-cloud-option-name">
@@ -194,8 +197,8 @@ class OpenFromCloudModal extends React.Component {
 }
 
 OpenFromCloudModal.propTypes = {
-  dispatch: React.PropTypes.func,
-  modalId: React.PropTypes.number,
+  dispatch: React.PropTypes.func.isRequired,
+  modalId: React.PropTypes.number.isRequired,
 };
 
 export default connect()(OpenFromCloudModal);

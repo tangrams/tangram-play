@@ -43,9 +43,6 @@ export const APP_INITIALIZED = 'APP_INITIALIZED';
 // Generic action for setting app state.
 export const SET_APP_STATE = 'SET_APP_STATE';
 
-// Add a scene to a list of recently opened scenes.
-export const ADD_RECENT_SCENE = 'ADD_RECENT_SCENE';
-
 // Toggle camera tools
 export const TOGGLE_CAMERA_TOOLS = 'TOGGLE_CAMERA_TOOLS';
 
@@ -58,6 +55,14 @@ export const SHOW_MODAL = 'SHOW_MODAL';
 export const HIDE_MODAL = 'HIDE_MODAL';
 export const CLEAR_MODALS = 'CLEAR_MODALS';
 
+/* persistence */
+export const SET_PERSISTENCE = 'SET_PERSISTENCE';
+export const DISMISS_WELCOME_SCREEN = 'DISMISS_WELCOME_SCREEN';
+export const SET_RECENT_VERSION = 'SET_RECENT_VERSION';
+
+// Add a scene to a list of recently opened scenes.
+export const ADD_RECENT_SCENE = 'ADD_RECENT_SCENE';
+
 /* scene */
 export const OPEN_SCENE = 'OPEN_SCENE';
 export const CLOSE_SCENE = 'CLOSE_SCENE';
@@ -68,11 +73,18 @@ export const SET_FILE_METADATA = 'SET_FILE_METADATA';
 export const MARK_FILE_CLEAN = 'MARK_FILE_CLEAN';
 export const MARK_FILE_DIRTY = 'MARK_FILE_DIRTY';
 export const STASH_DOCUMENT = 'STASH_DOCUMENT';
+export const MAPZEN_SAVE_SCENE = 'MAPZEN_SAVE_SCENE';
 
 /* settings */
 export const SET_SETTINGS = 'SET_SETTINGS';
+export const SET_EDITOR_FONT_SIZE = 'SET_EDITOR_FONT_SIZE';
 export const EDITOR_INCREASE_FONT_SIZE = 'EDITOR_INCREASE_FONT_SIZE';
 export const EDITOR_DECREASE_FONT_SIZE = 'EDITOR_DECREASE_FONT_SIZE';
+
+/* system */
+export const SET_MAPZEN = 'SET_MAPZEN';
+export const SET_LOCALHOST = 'SET_LOCALHOST';
+export const SET_SSL_ENABLED = 'SET_SSL_ENABLED';
 
 /* user */
 export const USER_SIGNED_IN = 'USER_SIGNED_IN';
