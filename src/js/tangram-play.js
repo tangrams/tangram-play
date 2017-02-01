@@ -80,7 +80,7 @@ function doLoadProcess(scene) {
 
 function onLoadError(error) {
   showErrorModal(error.message);
-  console.error(error.message); // eslint-disable-line no-console
+  // console.error(error.message); // eslint-disable-line no-console
   hideSceneLoadingIndicator();
 
   // TODO: editor should not be attached to this
