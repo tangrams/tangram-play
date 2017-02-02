@@ -181,9 +181,12 @@ function clickWhatsNew() {
   showModal('WHATS_NEW');
 }
 
+function clickSupport() {
+  showModal('SUPPORT');
+}
+
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
-const supportLink = 'https://github.com/tangrams/tangram-play/issues/';
-const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
+// const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
 
 /**
  * Represents the navbar for the application
@@ -427,7 +430,7 @@ class MenuBar extends React.Component {
                     <Icon type="bt-notebook" />Tutorial
                   </MenuItem>
                 */}
-                <MenuItem href={supportLink} target="_blank" rel="noopener noreferrer">
+                <MenuItem onClick={clickSupport}>
                   <Icon type="bt-comments" />Support
                 </MenuItem>
               </NavDropdown>

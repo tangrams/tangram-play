@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import AboutModal from './AboutModal';
 import WelcomeModal from './WelcomeModal';
 import WhatsNewModal from './WhatsNewModal';
+import SupportModal from './SupportModal';
 import ConfirmDialogModal from './ConfirmDialogModal';
 import ErrorModal from './ErrorModal';
 import ExamplesModal from './ExamplesModal';
@@ -21,6 +22,7 @@ const MODAL_COMPONENTS = {
   ABOUT: AboutModal,
   WELCOME: WelcomeModal,
   WHATS_NEW: WhatsNewModal,
+  SUPPORT: SupportModal,
   CONFIRM_DIALOG: ConfirmDialogModal,
   ERROR: ErrorModal,
   OPEN_EXAMPLE: ExamplesModal,
