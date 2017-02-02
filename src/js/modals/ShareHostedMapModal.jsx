@@ -115,7 +115,6 @@ ShareHostedMapModal.propTypes = {
   modalId: React.PropTypes.number.isRequired,
 };
 
-
 function mapStateToProps(state) {
   return {
     urlValue: state.scene.mapzenSceneData.entrypoint_url,

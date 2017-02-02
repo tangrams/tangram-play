@@ -18,17 +18,33 @@ class CodeSnippetModal extends React.PureComponent {
   }
 
   render() {
+    const url = (this.props.scene && this.props.scene.entrypoint_url) || '[YOUR SCENE FILE HERE]';
+    const hash = window.location.hash.slice(1).split('/');
+    const content = `var map = L.map('map');
+var layer = Tangram.leafletLayer({
+  scene: '${url}',
+  attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors'
+});
+layer.addTo(map);
+map.setView([${hash[1]}, ${hash[2]}], ${hash[0]});
+`;
+
     return (
       <Modal
         className="code-snippet-modal"
         cancelFunction={this.onClickClose}
       >
-        <div className="modal-text modal-code-snippet-text">
+        <div className="modal-text">
           <h4>Code snippet for Tangram</h4>
+
+          <p>
+            You can copy-paste this JavaScript code to use this scene file with Tangram.
+            To learn more, view the <a href="https://mapzen.com/documentation/tangram/" target="_blank" rel="noopener noreferrer">Tangram documentation</a>.
+          </p>
         </div>
 
-        <div className="modal-well code-snippet-modal-changelog">
-          [TODO]
+        <div className="modal-well code-snippet-textarea-container">
+          <textarea defaultValue={content} />
         </div>
 
         <div className="modal-buttons">
@@ -42,6 +58,21 @@ class CodeSnippetModal extends React.PureComponent {
 CodeSnippetModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number.isRequired,
+  scene: React.PropTypes.shape({
+    entrypoint_url: React.PropTypes.string,
+  }),
 };
 
-export default connect()(CodeSnippetModal);
+CodeSnippetModal.defaultProps = {
+  scene: {
+    entrypoint_url: '[YOUR SCENE FILE HERE]',
+  },
+};
+
+function mapStateToProps(state) {
+  return {
+    scene: state.scene.mapzenSceneData,
+  };
+}
+
+export default connect(mapStateToProps)(CodeSnippetModal);

@@ -139,3 +139,21 @@
 .modal {
   position: relative;
 }
+
+.code-snippet-modal {
+  width: 560px;
+}
+
+.code-snippet-textarea-container {
+  width: 500px;
+  height: 400px;
+
+  textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    font-family: 'Source Code Pro';
+    font-size: 1em;
+    padding: 1em;
+  }
+}
