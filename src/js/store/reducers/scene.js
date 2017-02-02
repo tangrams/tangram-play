@@ -137,6 +137,7 @@ const scene = (state = initialState, action) => {
         return {
           ...initialState,
           ...mutatedAction,
+          justOpened: true,
           counter: state.counter + 1,
           // Set the active file and root file to the first one in the
           // array unless otherwise specified. (e.g. if restoring state)

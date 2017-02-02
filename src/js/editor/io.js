@@ -9,6 +9,7 @@ import { showErrorModal } from '../modals/ErrorModal';
 import { load } from '../tangram-play';
 import { editor, getEditorContent } from './editor';
 import store from '../store';
+import { MARK_FILE_CLEAN, SAVE_SCENE } from '../store/actions';
 
 const NEW_SCENE_PATH = 'data/scenes/blank.yaml';
 
@@ -162,4 +163,15 @@ export function exportSceneFile() {
   // to prevent auto-prepending a Byte-Order Mark (BOM)
   saveAs(blob, filename, true);
   editor.doc.markClean();
+
+  // Marked "saved" state in UI
+  store.dispatch({
+    type: MARK_FILE_CLEAN,
+    fileIndex: 0, // TODO: replace with current file
+  });
+  store.dispatch({
+    type: SAVE_SCENE,
+    location: 'FILE',
+    timestamp: new Date().toISOString(),
+  });
 }

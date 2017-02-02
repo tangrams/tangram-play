@@ -66,8 +66,7 @@ class EditorTabs extends React.PureComponent {
     }
     if (dirtyTab) {
       saveStateMessage = 'You have unsaved changes.';
-    }
-    if (this.props.saved === true) {
+    } else if (!this.props.justOpened && this.props.saved === true) {
       saveStateMessage = 'All changes saved.';
     }
 
@@ -125,6 +124,7 @@ EditorTabs.propTypes = {
   activeTab: React.PropTypes.number,
   mainTab: React.PropTypes.number,
   files: React.PropTypes.arrayOf(React.PropTypes.object),
+  justOpened: React.PropTypes.bool.isRequired,
   saved: React.PropTypes.bool.isRequired,
 
   // Injected by `mapDispatchToProps`
@@ -146,6 +146,7 @@ function mapStateToProps(state) {
     activeTab: state.scene.activeFileIndex,
     mainTab: state.scene.rootFileIndex,
     files: state.scene.files,
+    justOpened: state.scene.justOpened,
     saved: state.scene.saved,
   };
 }
