@@ -173,7 +173,7 @@ function onClickShare() {
   const scene = store.getState().scene;
   if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
     // Show success modal
-    this.props.dispatch({
+    store.dispatch({
       type: SHOW_MODAL,
       modalType: 'SHARE_HOSTED_MAP',
     });
