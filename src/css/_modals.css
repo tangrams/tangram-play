@@ -73,14 +73,14 @@
   justify-content: center;
 }
 
-.modal-thinking {
+.loading-spinner {
   margin-right: 30px;
   line-height: 40px;
   color: var(--ui-subtext-color);
   opacity: 0;
   visibility: hidden;
 
-  &.modal-thinking-cap-on {
+  &.loading-spinner-on {
     opacity: 1;
     visibility: visible;
   }
