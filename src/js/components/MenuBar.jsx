@@ -77,10 +77,6 @@ function clickSaveFile() {
   exportSceneFile();
 }
 
-function onClickShare() {
-  showErrorModal('We’re working on it!');
-}
-
 function unsubscribeSaveAsToCloud() {
   // eslint-disable-next-line no-use-before-define
   EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
@@ -171,6 +167,25 @@ function clickOpenFromCloud() {
         EventEmitter.subscribe('mapzen:sign_in', clickOpenFromCloud);
       }
     });
+}
+
+function onClickShare() {
+  const scene = store.getState().scene;
+  if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
+    // Show success modal
+    this.props.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'SHARE_HOSTED_MAP',
+    });
+  } else {
+    showConfirmDialogModal('You can share a map hosted on Mapzen if you save your scene to your Mapzen account. Do you want to do this now?', () => {
+      clickSaveToCloud();
+    });
+  }
+}
+
+function onClickEmbed() {
+  showErrorModal('We’re working on it!');
 }
 
 function clickAbout() {
@@ -376,7 +391,7 @@ class MenuBar extends React.Component {
                   }
                   return null;
                 })()}
-                <MenuItem onClick={onClickShare}>
+                <MenuItem onClick={onClickEmbed}>
                   <Icon type="bt-code" />Get embed code…
                 </MenuItem>
               </NavDropdown>
