@@ -1,18 +1,25 @@
 [![CircleCI](https://img.shields.io/circleci/project/tangrams/tangram-play.svg?style=flat-square)](https://circleci.com/gh/tangrams/tangram-play/)
-[![David Dependencies](https://img.shields.io/david/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play)
-[![David devDependencies](https://img.shields.io/david/dev/tangrams/tangram-play.svg?style=flat-square)](https://david-dm.org/tangrams/tangram-play#info=devDependencies)
-
-# https://mapzen.com/tangram/play/
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/tangrams/tangram-chat)
 
 ![](data/imgs/screenshot.png)
 
 # Editor for Tangram scene files
 
-Tangram Play is an editor for Mapzen's [Tangram map-rendering library](https://github.com/tangrams/tangram) that makes it easy to build or modify Tangram scene files and see your changes right away. It runs entirely in your browser and can be accessed at https://mapzen.com/tangram/play/.
+Tangram Play is an interactive text editor for creating maps using Mapzen’s [Tangram](https://mapzen.com/products/tangram/). With Play, you can write and edit map styles in YAML and preview the changes live in the web browser. Start with one of Mapzen’s base maps or create your own style!
 
 Here is [a clip of Patricio's live demo](https://twitter.com/ajturner/status/652186516194762752/video/1) at [JS.Geo](http://www.jsgeo.com/) (October 2015) ([notes are here](https://github.com/mapzen/presentations/tree/master/08-2015-JSGEO)).
 
-This project is currently in active development (think public _beta_) and so functionality may change or break without prior notice. This doesn't mean you can't use it, but please keep this in mind and feel free to send feedback on [the issues tracker](https://github.com/tangrams/tangram-play/issues).
+## Support
+
+Learn more about using [Tangram](https://mapzen.com/documentation/tangram) and [Mapzen vector tiles](https://mapzen.com/documentation/vector-tiles/) in documentation.
+
+Having a problem with Tangram Play? Do you have feedback to share? Contact Mapzen Support by emailing [tangram@mapzen.com](mailto:tangram@mapzen.com).
+
+Tangram Play is still in active development and you can have a role in it! Add bugs or feature requests as an issue on the project’s [GitHub repository](https://github.com/tangrams/tangram-play/issues).
+
+## Contributing
+
+We welcome contributions from the community. For more information how to run Tangram Play in your local environment and get started, please see [CONTRIBUTING.md](https://github.com/tangrams/tangram-play/blob/master/CONTRIBUTING.md).
 
 ## Query string API
 
@@ -32,7 +39,3 @@ Sublime-like hotkeys
 * ```Alt``` + ```ArrowKeys```: move word by word
 * ```Shift``` + ```ArrowKeys```: Select character by character
 * ```Shift``` + ```Alt``` + ```ArrowKeys```: Select word by word
-
-## Contributing
-
-We welcome contributions from the community. For more information how to run Tangram Play in your local environment and get started, please see [CONTRIBUTING.md](https://github.com/tangrams/tangram-play/blob/master/CONTRIBUTING.md).
