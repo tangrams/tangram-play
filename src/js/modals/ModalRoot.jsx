@@ -13,10 +13,11 @@ import OpenFromCloudModal from './OpenFromCloudModal';
 import OpenGistModal from './OpenGistModal'; // LEGACY.
 import OpenUrlModal from './OpenUrlModal';
 import SaveToCloudModal from './SaveToCloudModal';
-import ShareHostedMapModal from './ShareHostedMapModal';
 import SaveExistingToCloudModal from './SaveExistingToCloudModal';
 import SaveGistModal from './SaveGistModal'; // LEGACY.
 import SaveGistSuccessModal from './SaveGistSuccessModal'; // LEGACY.
+import ShareHostedMapModal from './ShareHostedMapModal';
+import CodeSnippetModal from './CodeSnippetModal';
 
 const MODAL_COMPONENTS = {
   ABOUT: AboutModal,
@@ -34,6 +35,7 @@ const MODAL_COMPONENTS = {
   SAVE_GIST: SaveGistModal, // LEGACY.
   SAVE_GIST_SUCCESS: SaveGistSuccessModal, // LEGACY
   SHARE_HOSTED_MAP: ShareHostedMapModal,
+  SHOW_CODE_SNIPPET: CodeSnippetModal,
 };
 
 const ModalRoot = ({ stack }) => {

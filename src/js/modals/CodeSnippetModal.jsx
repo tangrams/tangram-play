@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 
-class WhatsNewModal extends React.PureComponent {
+class CodeSnippetModal extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -20,28 +20,28 @@ class WhatsNewModal extends React.PureComponent {
   render() {
     return (
       <Modal
-        className="whatsnew-modal"
+        className="code-snippet-modal"
         cancelFunction={this.onClickClose}
       >
-        <div className="modal-text modal-whatsnew-text">
-          <h4>What’s new!</h4>
+        <div className="modal-text modal-code-snippet-text">
+          <h4>Code snippet for Tangram</h4>
         </div>
 
-        <div className="modal-well whatsnew-modal-changelog">
-          <iframe className="changelog-frame" src="./data/changelog.html" />
+        <div className="modal-well code-snippet-modal-changelog">
+          [TODO]
         </div>
 
         <div className="modal-buttons">
-          <Button onClick={this.onClickClose} className="button-confirm">Continue</Button>
+          <Button onClick={this.onClickClose} className="button-confirm">Done</Button>
         </div>
       </Modal>
     );
   }
 }
 
-WhatsNewModal.propTypes = {
+CodeSnippetModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
   modalId: React.PropTypes.number.isRequired,
 };
 
-export default connect()(WhatsNewModal);
+export default connect()(CodeSnippetModal);

@@ -32,6 +32,7 @@
   background-color: var(--ui-component-color);
   color: var(--ui-component-text-color);
   font-weight: 300;
+  line-height: 1.4;
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -47,25 +48,24 @@
   }
 
   a {
-    color: #ad9361;
+    color: lightblue;;
     text-decoration: underline;
   }
 
   h1 {
     margin-top: 0;
-    font-size: 2em;
+    font-size: 1.65em;
+    padding-bottom: 0.25em;
+    border-bottom: 2px solid var(--ui-element-color);
   }
 
   h2 {
-    font-size: 1.65em;
-  }
-
-  h3 {
     font-size: 1.25em;
   }
 
-  article {
-    border-top: 3px solid gray;
+  article:not(:first-of-type) {
+    border-top: 3px solid var(--ui-active-color);
+    padding-top: 1em;
   }
 
   ul {

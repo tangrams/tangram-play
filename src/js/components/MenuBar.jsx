@@ -172,7 +172,6 @@ function clickOpenFromCloud() {
 function onClickShare() {
   const scene = store.getState().scene;
   if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
-    // Show success modal
     store.dispatch({
       type: SHOW_MODAL,
       modalType: 'SHARE_HOSTED_MAP',
@@ -185,7 +184,10 @@ function onClickShare() {
 }
 
 function onClickEmbed() {
-  showErrorModal('We’re working on it!');
+  store.dispatch({
+    type: SHOW_MODAL,
+    modalType: 'SHOW_CODE_SNIPPET',
+  });
 }
 
 function clickAbout() {
@@ -385,14 +387,14 @@ class MenuBar extends React.Component {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={onClickShare}>
-                        <Icon type="bt-link" />View hosted link
+                        <Icon type="bt-link" />Get sharable link to your map…
                       </MenuItem>
                     );
                   }
                   return null;
                 })()}
                 <MenuItem onClick={onClickEmbed}>
-                  <Icon type="bt-code" />Get embed code…
+                  <Icon type="bt-code" />Get code snippet…
                 </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
