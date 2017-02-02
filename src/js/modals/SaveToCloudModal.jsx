@@ -155,10 +155,7 @@ class SaveToCloudModal extends React.Component {
     // Show success modal
     this.props.dispatch({
       type: SHOW_MODAL,
-      modalType: 'SAVE_TO_CLOUD_SUCCESS',
-      modalProps: {
-        urlValue: data.entrypoint_url,
-      },
+      modalType: 'SHARE_HOSTED_MAP',
     });
   }
 
