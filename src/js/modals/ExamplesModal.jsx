@@ -60,12 +60,11 @@ class ExamplesModal extends React.Component {
           <div
             className={classString}
             key={index}
-            data-value={scene.url}
             onClick={() => { this.setState({ selected: scene.url }); }}
             onDoubleClick={this.onClickConfirm}
           >
             <div className="open-from-cloud-option-thumbnail">
-              <img className="example-thumbnail" style={thumbnailStyle} />
+              <img className="example-thumbnail" style={thumbnailStyle} alt="" />
             </div>
             <div className="open-from-cloud-option-info">
               <div className="open-from-cloud-option-name">

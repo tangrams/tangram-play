@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
+import SceneItem from './SceneItem';
 import LoadingSpinner from './LoadingSpinner';
 
 import { showErrorModal } from './ErrorModal';
@@ -97,10 +98,8 @@ class SaveExistingToCloudModal extends React.Component {
   handleSaveError(error) {
     // Close the modal, if present
     this.unmountSelf();
-    console.trace(error);
 
     const errorMessage = `Uh oh! We tried to save your scene but something went wrong. ${error.message}`;
-
     showErrorModal(errorMessage);
   }
 
@@ -127,25 +126,12 @@ class SaveExistingToCloudModal extends React.Component {
         </div>
 
         <div className="modal-content">
-          <div className="open-from-cloud-option">
-            <div className="open-from-cloud-option-thumbnail">
-              <img src={scene.thumbnail} alt="" />
-            </div>
-            <div className="open-from-cloud-option-info">
-              <div className="open-from-cloud-option-name">
-                {scene.name}
-              </div>
-              <div className="open-from-cloud-option-description">
-                {scene.description || 'No description provided.'}
-              </div>
-              <div className="open-from-cloud-option-date">
-                {/* Show the date this was saved.
-                    TODO: better formatting;
-                    maybe use moment.js */}
-                Saved on {new Date(scene.updated_at).toLocaleString()}
-              </div>
-            </div>
-          </div>
+          <SceneItem
+            thumbnail={scene.thumbnail}
+            name={scene.name}
+            description={scene.description}
+            date={scene.updated_at}
+          />
         </div>
 
         <div className="modal-buttons">
