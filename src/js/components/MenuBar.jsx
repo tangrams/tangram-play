@@ -118,7 +118,7 @@ function unsubscribeSaveToCloud() {
 
 function clickSaveToCloud() {
   const scene = store.getState().scene;
-  if (scene.saved && scene.saveLocation === 'MAPZEN' && scene.mapzenSceneData.id) {
+  if (scene.mapzenSceneData.id) {
     // Duplicating some functionality from clickSaveAsToCloud()
     // todo refactor
     if (checkUserAuthAvailability() === false) return;
