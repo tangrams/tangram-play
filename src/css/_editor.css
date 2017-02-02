@@ -109,9 +109,11 @@
   white-space: nowrap;
 }
 
+/* temp: remove while multiple tabs is not turned on
 .editor-tab-is-active .editor-tab-label {
   box-shadow: inset 0 2px 0 var(--ui-highlight-color);
 }
+*/
 
 .editor-tab-is-dirty {
   .editor-tab-dirty {
