@@ -20,7 +20,7 @@ class SupportModal extends React.PureComponent {
   render() {
     return (
       <Modal
-        className="support-modal"
+        className="modal-alt support-modal"
         cancelFunction={this.onClickClose}
       >
         <div className="modal-text">

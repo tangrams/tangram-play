@@ -67,25 +67,6 @@ h5 {
 h6 {
   font-size: 12px;
 }
-p {
-  margin: 0 0 10px;
-}
-
-.text-left {
-  text-align: left;
-}
-.text-right {
-  text-align: right;
-}
-.text-center {
-  text-align: center;
-}
-.text-justify {
-  text-align: justify;
-}
-.text-nowrap {
-  white-space: nowrap;
-}
 
 .container {
   padding-right: 15px;
