@@ -34,6 +34,8 @@ const initialState = {
   // Indicates which of the files is the main scene file (usually the
   // first one)
   rootFileIndex: null,
+  // Set to true when scene is first opened, turn to false when an edit is made.
+  justOpened: true,
   // Whether the scene was saved somewhere.
   saved: false,
   // Where the scene was saved last. Valid values are "LOCAL" (for local file
@@ -235,6 +237,7 @@ const scene = (state = initialState, action) => {
     case MARK_FILE_DIRTY:
       return {
         ...state,
+        justOpened: false,
         files: [
           ...state.files.slice(0, action.fileIndex),
           {
@@ -260,6 +263,7 @@ const scene = (state = initialState, action) => {
     case SAVE_SCENE:
       return {
         ...state,
+        justOpened: false,
         saved: true,
         saveLocation: action.location,
         saveTimestamp: action.timestamp,
@@ -269,6 +273,7 @@ const scene = (state = initialState, action) => {
     case MAPZEN_SAVE_SCENE:
       return {
         ...state,
+        justOpened: false,
         saved: true,
         saveLocation: 'MAPZEN',
         saveTimestamp: action.data.updated_at,
