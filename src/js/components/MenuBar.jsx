@@ -321,7 +321,7 @@ class MenuBar extends React.Component {
                   if (this.state.legacyGistMenu) {
                     return (
                       <MenuItem onClick={clickOpenGist}>
-                        <Icon type="bt-code" />Open scene from GitHub Gist (Legacy)
+                        <Icon type="bt-code" />Open scene from GitHub Gist (Legacy)…
                       </MenuItem>
                     );
                   }
@@ -351,7 +351,7 @@ class MenuBar extends React.Component {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickSaveToCloud}>
-                        <Icon type="bt-cloud-upload" />Save to Mapzen account
+                        <Icon type="bt-cloud-upload" />Save to Mapzen account…
                         {signInRequiredMsg}
                       </MenuItem>
                     );
