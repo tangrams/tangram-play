@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
+import Icon from '../components/Icon';
 import { HIDE_MODAL, DISMISS_WELCOME_SCREEN } from '../store/actions';
 
 class WelcomeModal extends React.PureComponent {
@@ -34,15 +36,24 @@ class WelcomeModal extends React.PureComponent {
         cancelFunction={this.onClickClose}
       >
         <div className="modal-text modal-welcome-text">
-          <h2>Welcome to the Tangram Play public beta test!</h2>
+          <h2>Welcome to Tangram Play!</h2>
 
           <p>
-            We are excited for the public beta release of Tangram Play, our GUI editor for designing maps in Tangram, our web map rendering software. Your use of Play in its beta stage will help shape it to be a useful tool for web map design.
+            We’re excited to release the public beta of Tangram Play, a text
+            editor for working with Tangram, our web map rendering library.
+            Your use of Play during this phase will help us improve our tools
+            for web map design.
           </p>
+
           <div className="call-to-action">
             <button onClick={this.onClickGetStarted}>Get started guide</button>
             <button onClick={this.onClickTangram}>Learn more about Tangram</button>
-            <button onClick={this.onClickClose}>Continue to Tangram Play</button>
+          </div>
+
+          <div className="modal-buttons">
+            <Button onClick={this.onClickClose} className="button-confirm">
+              <Icon type="bt-check" /> Continue
+            </Button>
           </div>
         </div>
       </Modal>
