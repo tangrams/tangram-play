@@ -287,7 +287,7 @@ class MenuBar extends React.Component {
                   <Icon type="bt-file" />New blank scene
                 </MenuItem>
                 <MenuItem onClick={clickOpenExample}>
-                  <Icon type="bt-map" />New scene from example…
+                  <Icon type="bt-map" />New from example…
                 </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
@@ -304,13 +304,13 @@ class MenuBar extends React.Component {
                 id="open-dropdown"
               >
                 <MenuItem onClick={clickOpenFile}>
-                  <Icon type="bt-folder" />Open a file…
+                  <Icon type="bt-folder" />Open scene…
                 </MenuItem>
                 {(() => {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickOpenFromCloud}>
-                        <Icon type="bt-cloud-download" />Open…
+                        <Icon type="bt-cloud-download" />Open scene from Mapzen account…
                         {signInRequiredMsg}
                       </MenuItem>
                     );
@@ -321,7 +321,7 @@ class MenuBar extends React.Component {
                   if (this.state.legacyGistMenu) {
                     return (
                       <MenuItem onClick={clickOpenGist}>
-                        <Icon type="bt-code" />Open a saved Gist (Legacy)
+                        <Icon type="bt-code" />Open scene from GitHub Gist (Legacy)
                       </MenuItem>
                     );
                   }
@@ -351,7 +351,7 @@ class MenuBar extends React.Component {
                   if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickSaveToCloud}>
-                        <Icon type="bt-cloud-upload" />Save
+                        <Icon type="bt-cloud-upload" />Save to Mapzen account
                         {signInRequiredMsg}
                       </MenuItem>
                     );
