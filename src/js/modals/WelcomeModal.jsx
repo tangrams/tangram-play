@@ -20,11 +20,11 @@ class WelcomeModal extends React.PureComponent {
   }
 
   onClickTangram() {
-    window.open('./docs/', '_blank');
+    window.open('https://mapzen.com/products/tangram/', '_blank');
   }
 
   onClickGetStarted() {
-    window.open('https://mapzen.com/products/tangram/', '_blank');
+    window.open('./docs/', '_blank');
   }
 
   render() {

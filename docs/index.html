@@ -4,35 +4,57 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tangram Play</title>
+  <title>Tangram Play interface walkthrough · Mapzen</title>
   <link rel="shortcut icon" href="/common/styleguide/images/favicon.ico">
-  <link type="text/css" rel="stylesheet" href="build/css/main.css">
+  <link rel="stylesheet" href="https://mapzen.com/common/styleguide/styles/styleguide.css">
+  <style>
+    .container {
+      padding-bottom: 3em;
+    }
+    p, ul, ol {
+      margin: 1em 0;
+    }
+  </style>
 </head>
 <body>
-<h1>Tangram Play interface walkthrough</h1>
-<p>Tangram Play is an interactive text editor for creating maps using Mapzen’s <a href="https://mapzen.com/products/tangram/" target="_blank">Tangram</a> rendering engine.
-With Play, you can write and edit map styles and preview the changes live in the web browser. This walkthrough showcases the main interface components and explains how to get started in Play.</p>
-<h2>Tangram Play's interface </h2>
-<img alt="annotated toolbars" href="./data/imgs/docs_toolbars.png" />
-<p>Tangram Play has two main interface components: the map preview and the editing pane. The map preview will show any changes made by writing in the editing pane on the fly.
-You can use the map toolbar to change the zoom level, search for a location to move the map, save a particular location, or take a screenshot of the map. The editing pane can be moved to the left or right by hovering on the bar dividing the map and editing pane and dragging with your mouse.
-The editing pane is where code is written in Tangram's syntax to control the map design. It has common features of a text editor, such as keyboard shortcuts (described below), collapsible sections, and line numbering. </p>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h1>Tangram Play interface walkthrough</h1>
 
-<h3>Data inspector</h3>
-You can inspect your data source in Mapzen by selecting the <i>inspect</i> tool on the main toolbar. When the inspect tool is selected, you can click on any map feature to find out the data source, its properties and the layers that are actively styling the feature.
-<img alt="inspect tool" href="./data/imgs/docs_inspect.png" />
+        <p>Tangram Play is an interactive text editor for creating maps using Mapzen’s <a href="https://mapzen.com/products/tangram/" target="_blank">Tangram</a> rendering engine.
+        With Play, you can write and edit map styles and preview the changes live in the web browser. This walkthrough showcases the main interface components and explains how to get started in Play.</p>
 
-<h3>Keyboard shortcuts</h3>
-<ul>
-<li><b>Ctrl + [number]:</b> Fold indentation level [number]</li>
-<li><b>Alt + F:</b> fold/unfold line</li>
-<li><b>Alt + P:</b> screenshot of the map</li>
-<li><b>Ctrl + F:</b> Search</li>
-<li><b>Ctrl + D:</b> Select next occurrence</li>
-<li><b>Alt + ArrowKeys:</b> move word by word</li>
-<li><b>Shift + ArrowKeys:</b> Select character by character</li>
-<li><b>Shift + Alt + ArrowKeys:</b> Select word by word</li>
-</ul>
+        <h2>Tangram Play's interface</h2>
 
+        <img alt="annotated toolbars" src="../data/imgs/docs_toolbars.png" style="width: 100%;" />
+
+        <p>Tangram Play has two main interface components: the map preview and the editing pane. The map preview will show any changes made by writing in the editing pane on the fly.
+        You can use the map toolbar to change the zoom level, search for a location to move the map, save a particular location, or take a screenshot of the map. The editing pane can be moved to the left or right by hovering on the bar dividing the map and editing pane and dragging with your mouse.
+        The editing pane is where code is written in Tangram's syntax to control the map design. It has common features of a text editor, such as keyboard shortcuts (described below), collapsible sections, and line numbering.</p>
+
+        <h3>Data inspector</h3>
+
+        <p>
+        You can inspect your data source in Mapzen by selecting the <i>inspect</i> tool on the main toolbar. When the inspect tool is selected, you can click on any map feature to find out the data source, its properties and the layers that are actively styling the feature.</p>
+
+        <img alt="inspect tool" src="../data/imgs/docs_inspect.png" style="width: 80%; margin: 0 auto; margin-bottom: 2em; display: inherit;" />
+
+        <h3>Keyboard shortcuts</h3>
+
+        <ul>
+          <li><b>Ctrl + [number]:</b> Fold indentation level [number]</li>
+          <li><b>Alt + F:</b> fold/unfold line</li>
+          <li><b>Alt + P:</b> screenshot of the map</li>
+          <li><b>Ctrl + F:</b> Search</li>
+          <li><b>Ctrl + D:</b> Select next occurrence</li>
+          <li><b>Alt + ArrowKeys:</b> move word by word</li>
+          <li><b>Shift + ArrowKeys:</b> Select character by character</li>
+          <li><b>Shift + Alt + ArrowKeys:</b> Select word by word</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="https://mapzen.com/common/styleguide/scripts/mapzen-styleguide.min.js"></script>
 </body>
 </html>
