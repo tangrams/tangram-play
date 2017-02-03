@@ -19,6 +19,14 @@ class WelcomeModal extends React.PureComponent {
     this.props.dispatch({ type: DISMISS_WELCOME_SCREEN });
   }
 
+  onClickTangram() {
+    window.open('./docs/', '_blank');
+  }
+
+  onClickGetStarted() {
+    window.open('https://mapzen.com/products/tangram/', '_blank');
+  }
+
   render() {
     return (
       <Modal
@@ -32,8 +40,8 @@ class WelcomeModal extends React.PureComponent {
             We are excited for the public beta release of Tangram Play, our GUI editor for designing maps in Tangram, our web map rendering software. Your use of Play in its beta stage will help shape it to be a useful tool for web map design.
           </p>
           <div className="call-to-action">
-            <button onClick={this.onClickExample}>Get started guide</button>
-            <button onClick={this.onClickExample}>Learn more about Tangram</button>
+            <button onClick={this.onClickGetStarted}>Get started guide</button>
+            <button onClick={this.onClickTangram}>Learn more about Tangram</button>
             <button onClick={this.onClickClose}>Continue to Tangram Play</button>
           </div>
         </div>
