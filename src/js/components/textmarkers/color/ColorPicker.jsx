@@ -42,16 +42,18 @@ export default class ColorPicker extends React.Component {
   }
 
   onChangeInputs(data) {
+    let color;
+
     // If data comes as RGBA object
     if ({}.hasOwnProperty.call(data, 'r')) {
-      const color = new Color({ r: data.r, g: data.g, b: data.b, a: data.a });
-      this.props.onChange(color);
-      this.setState({ hue: color.toHsv().h, alpha: data.a });
+      color = new Color({ r: data.r, g: data.g, b: data.b, a: data.a });
     } else {
       // Else if its a hex string
-      const color = new Color(data);
-      this.props.onChange(color);
+      color = new Color(data);
     }
+
+    this.props.onChange(color);
+    this.setState({ hue: color.getHsv().h, alpha: data.a });
   }
 
   render() {
@@ -106,6 +108,10 @@ export default class ColorPicker extends React.Component {
 }
 
 ColorPicker.propTypes = {
-  color: React.PropTypes.objectOf(React.PropTypes.any),
+  color: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
   onChange: React.PropTypes.func,
+};
+
+ColorPicker.defaultProps = {
+  onChange: function noop() {},
 };
