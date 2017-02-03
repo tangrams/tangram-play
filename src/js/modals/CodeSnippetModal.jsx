@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
+import Icon from '../components/Icon';
 
 class CodeSnippetModal extends React.PureComponent {
   constructor(props) {
@@ -31,7 +32,7 @@ map.setView([${hash[1]}, ${hash[2]}], ${hash[0]});
 
     return (
       <Modal
-        className="code-snippet-modal"
+        className="modal-alt code-snippet-modal"
         cancelFunction={this.onClickClose}
       >
         <div className="modal-text">
@@ -48,7 +49,9 @@ map.setView([${hash[1]}, ${hash[2]}], ${hash[0]});
         </div>
 
         <div className="modal-buttons">
-          <Button onClick={this.onClickClose} className="button-confirm">Done</Button>
+          <Button onClick={this.onClickClose} className="button-confirm">
+            <Icon type="bt-check" /> Done
+          </Button>
         </div>
       </Modal>
     );

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
+import Icon from '../components/Icon';
 
 class WhatsNewModal extends React.PureComponent {
   constructor(props) {
@@ -32,7 +33,9 @@ class WhatsNewModal extends React.PureComponent {
         </div>
 
         <div className="modal-buttons">
-          <Button onClick={this.onClickClose} className="button-confirm">Continue</Button>
+          <Button onClick={this.onClickClose} className="button-confirm">
+            <Icon type="bt-check" /> Continue
+          </Button>
         </div>
       </Modal>
     );

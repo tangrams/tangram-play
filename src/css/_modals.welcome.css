@@ -11,7 +11,22 @@
 
 .welcome-modal .call-to-action {
   padding-top: 0;
-  margin-top: -2em;
+  padding-bottom: 0;
+  margin-top: -1em;
+  overflow: hidden;
+  text-align: left;
+  display: flex;
+
+  button {
+    display: inline-block;
+    width: 50%;
+    height: 80px;
+    margin-top: 0 !important;
+  }
+
+  button:first-of-type {
+    margin-right: 1em;
+  }
 }
 
 .whatsnew-modal {
