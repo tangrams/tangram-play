@@ -39,7 +39,7 @@ map.setView([${hash[1]}, ${hash[2]}], ${hash[0]});
 
           <p>
             You can copy-paste this JavaScript code to use this scene file with Tangram.
-            To learn more, view the <a href="https://mapzen.com/documentation/tangram/" target="_blank" rel="noopener noreferrer">Tangram documentation</a>.
+            To learn more about usage, and view more sample code, take a look at <a href="https://mapzen.com/documentation/tangram/" target="_blank" rel="noopener noreferrer">Tangram documentation</a>.
           </p>
         </div>
 

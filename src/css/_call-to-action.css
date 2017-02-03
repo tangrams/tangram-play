@@ -5,16 +5,16 @@
   background-color: #26282e;
   border-radius: 3px;
   font-size: 1rem;
-  min-width: 350px;
+  min-width: 300px;
 
-  h2 {
-    margin-top: 0;
-    font-size: 1.8em;
-    font-weight: 200;
+  button:first-of-type {
+    margin-top: 2em;
   }
 
   button {
-    margin-top: 2em;
+    display: block;
+    margin: 0;
+    margin-top: 1em;
     width: 100%;
     padding: 1.5em;
     font-size: 1.1em;

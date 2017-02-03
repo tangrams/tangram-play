@@ -15,13 +15,6 @@
   pointer-events: auto;
   border: 1px solid var(--ui-border-color);
   border-radius: 2px;
-
-  h4 {
-    margin-top: 0;
-    margin-bottom: 1em;
-    font-weight: 400;
-    font-size: 1.25em;
-  }
 }
 
 /*
