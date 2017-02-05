@@ -6,7 +6,11 @@ import config from '../config';
 import { initCodeMirror } from './codemirror';
 import { ParsedYAMLDocument } from './yaml-ast';
 import { suppressAPIKeys } from './api-keys';
-import { addHighlightEventListeners, getAllHighlightedLines } from './highlight';
+import {
+  highlightOnEditorGutterClick,
+  highlightOnEditorChanges,
+  getAllHighlightedLines,
+} from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
 import { loadScene } from '../map/map';
 import { insertTextMarkersInViewport } from '../editor/textmarkers';
@@ -41,7 +45,8 @@ export function initEditor(el) {
   window.editor = editor;
 
   // Turn on highlighting module
-  addHighlightEventListeners();
+  editor.on('gutterClick', highlightOnEditorGutterClick);
+  editor.on('changes', highlightOnEditorChanges);
 }
 
 /**
@@ -159,7 +164,7 @@ export function updateLocalMemory() {
   scene.files[activeFile].isClean = doc.isClean();
   scene.files[activeFile].scrollInfo = editor.getScrollInfo();
   scene.files[activeFile].cursor = doc.getCursor();
-  scene.files[activeFile].highlightedLines = getAllHighlightedLines();
+  scene.files[activeFile].highlightedLines = getAllHighlightedLines(doc);
 
   // Currently CodeMirror buffers are stashed in store. This is not a good idea
   // because they are non-serializable (have circular references) so for the

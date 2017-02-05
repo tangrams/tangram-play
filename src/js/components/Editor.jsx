@@ -67,21 +67,23 @@ class Editor extends React.PureComponent {
             setEditorContent(doc, activeFile.readOnly);
           }
 
+          const doc = editor.getDoc();
+
           // Restore cursor state
           if (activeFile.cursor) {
-            editor.getDoc().setCursor(activeFile.cursor, {
+            doc.setCursor(activeFile.cursor, {
               scroll: false,
             });
           }
 
           // Restore selected areas, if any (supercedes cursor).
           if (activeFile.selections) {
-            editor.getDoc().setSelections(activeFile.selections);
+            doc.setSelections(activeFile.selections);
           }
 
           // Highlights lines, if provided.
           if (activeFile.highlightedLines) {
-            highlightRanges(activeFile.highlightedLines);
+            highlightRanges(doc, activeFile.highlightedLines);
           }
 
           // Restores the part of the document that was scrolled to, if provided.
