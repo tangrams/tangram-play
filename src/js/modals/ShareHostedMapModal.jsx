@@ -78,7 +78,7 @@ class ShareHostedMapModal extends React.Component {
               type="text"
               readOnly="true"
               ref={(ref) => { this.viewUrl = ref; }}
-              defaultValue={`https://dev.mapzen.com/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
+              defaultValue={`${window.location.origin}/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
             />
             <IconButton
               icon="bt-copy"
