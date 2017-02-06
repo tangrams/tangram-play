@@ -10,6 +10,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 import EventEmitter from './event-emitter';
+import { trackGAEvent } from '../tools/analytics';
 
 import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
@@ -195,6 +196,7 @@ function clickAbout() {
 }
 
 function clickWhatsNew() {
+  trackGAEvent('MenuBar', 'click', 'What’s New');
   showModal('WHATS_NEW');
 }
 
