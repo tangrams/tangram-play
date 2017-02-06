@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import localforage from 'localforage';
+import { trackGAEvent } from '../tools/analytics';
 
 const LOCAL_STORAGE_PREFIX = 'tangram-play-';
 let FORCE_MIGRATE = false;
@@ -47,6 +48,7 @@ function convertMapViewToObject() {
 
 function moveEverything() {
   const keyList = Object.keys(window.localStorage);
+  trackGAEvent('LocalStorage Migration', 'automatic');
   keyList.forEach((keyName, index) => {
     if (keyName.startsWith(LOCAL_STORAGE_PREFIX)) {
       // Strips prefix from keyname, e.g. `tangram-play-longitude`

@@ -28,7 +28,7 @@ class EditorTabs extends React.PureComponent {
       this.props.setFileMetadata(currentIndex, {
         cursor: currentDoc.getCursor(),
         scrollInfo: editor.getScrollInfo(),
-        highlightedLines: getAllHighlightedLines(),
+        highlightedLines: getAllHighlightedLines(currentDoc),
         selections: currentDoc.listSelections(),
       });
 

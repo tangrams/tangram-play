@@ -71,6 +71,10 @@ export default class ColorPickerInputFields extends React.PureComponent {
 }
 
 ColorPickerInputFields.propTypes = {
-  color: React.PropTypes.objectOf(React.PropTypes.any),
+  color: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
   onChange: React.PropTypes.func,
+};
+
+ColorPickerInputFields.defaultProps = {
+  onChange: function noop() {},
 };
