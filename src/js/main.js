@@ -60,7 +60,7 @@ migrateLocalStorageToForage();
 const STORAGE_PERSISTENCE = 'persistent-state';
 
 // Mapzen host flags
-if (window.location.hostname.indexOf('mapzen.com') > 0) {
+if (window.location.hostname.indexOf('mapzen.com') >= 0) {
   store.dispatch({ type: SET_MAPZEN });
 }
 
