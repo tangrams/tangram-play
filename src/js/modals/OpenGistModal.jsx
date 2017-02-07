@@ -72,7 +72,7 @@ class OpenGistModal extends React.Component {
   onClickCancel() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
@@ -160,7 +160,7 @@ class OpenGistModal extends React.Component {
             onDoubleClick={this.onClickConfirm}
           >
             <div className="open-from-cloud-option-thumbnail">
-              <img src={item.thumbnail} role="presentation" />
+              <img src={item.thumbnail} alt="" />
             </div>
             <div className="open-from-cloud-option-info">
               <div className="open-from-cloud-option-name">
@@ -213,8 +213,8 @@ class OpenGistModal extends React.Component {
 }
 
 OpenGistModal.propTypes = {
-  dispatch: React.PropTypes.func,
-  modalId: React.PropTypes.number,
+  dispatch: React.PropTypes.func.isRequired,
+  modalId: React.PropTypes.number.isRequired,
 };
 
 export default connect()(OpenGistModal);

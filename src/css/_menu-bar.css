@@ -56,7 +56,6 @@ nav {
   font-size: 13px;
   outline: none;
   line-height: var(--menu-bar-height);
-  height: var(--menu-bar-height);
   padding: 0 15px;
 
   &:hover {
@@ -116,6 +115,15 @@ nav {
   }
 }
 
+.menu-item-note {
+  padding-left: 23px;
+  font-size: 0.85em;
+  color: #ababab;
+  line-height: 1;
+  margin-top: -0.8em;
+  margin-bottom: 0.8em;
+}
+
 /* Small screens */
 /* Bootstrap hamburger */
 .navbar-toggle {
@@ -124,20 +132,24 @@ nav {
   margin-top: 5px;
   margin-bottom: 5px;
   margin-right: 5px !important;
-  padding: 7px 4px;
+  padding: 0;
+  width: 30px;
+  height: 30px;
 }
 
 .navbar-toggle .icon-bar {
   display: block;
   width: 16px;
   height: 1px;
+  margin: 0 auto;
+  background-color: var(--ui-component-text-color);
 }
 
 .navbar-toggle .icon-bar + .icon-bar {
   margin-top: 4px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 800px) {
   .navbar-toggle {
     display: none;
   }

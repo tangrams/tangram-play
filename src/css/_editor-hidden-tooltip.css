@@ -3,7 +3,7 @@
   min-width: 175px;
   top: 120px;
   right: 18px;
-  padding: 0.25em 0.75em;
+  padding: 0.8em;
   padding-right: 1em;
   border-radius: var(--ui-border-radius);
   background-color: var(--ui-tooltip-background-color);
@@ -30,8 +30,10 @@
 
 .editor-hidden-tooltip h5 {
   font-weight: bold;
+  font-size: 1em;
 }
 
 .editor-hidden-tooltip p {
   font-weight: 200;
+  margin-bottom: 0;
 }

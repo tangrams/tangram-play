@@ -10,6 +10,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 import EventEmitter from './event-emitter';
+import { trackGAEvent } from '../tools/analytics';
 
 import { checkSaveStateThen, openLocalFile, newScene, exportSceneFile } from '../editor/io';
 import MenuFullscreen from './MenuFullscreen';
@@ -22,12 +23,28 @@ import SignInButton from './SignInButton';
 
 // Redux
 import store from '../store';
-import { SET_APP_STATE, SHOW_MODAL } from '../store/actions';
+import { SHOW_MODAL } from '../store/actions';
 
-function showModal(type) {
+function checkUserAuthAvailability() {
+  const system = store.getState().system;
+
+  if (!system.mapzen) {
+    showErrorModal('Unable to sign you in since you’re not hosted on Mapzen.');
+    return false;
+  }
+  if (system.mapzen && !system.ssl) {
+    showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
+    return false;
+  }
+
+  return true;
+}
+
+function showModal(type, priority = 0) {
   store.dispatch({
     type: SHOW_MODAL,
     modalType: type,
+    priority,
   });
 }
 
@@ -61,39 +78,68 @@ function clickSaveFile() {
   exportSceneFile();
 }
 
-function clickSaveGist() {
-  showModal('SAVE_GIST');
-}
-
-function unsubscribeSaveToCloud() {
+function unsubscribeSaveAsToCloud() {
   // eslint-disable-next-line no-use-before-define
-  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveToCloud);
+  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
 }
 
-function showSaveToCloudModal() {
-  unsubscribeSaveToCloud();
-  showModal('SAVE_TO_CLOUD');
-}
+function clickSaveAsToCloud() {
+  if (checkUserAuthAvailability() === false) return;
 
-function clickSaveToCloud() {
-  // showConfirmDialogModal('This feature is being renovated! Please come back later.');
+  unsubscribeSaveAsToCloud();
   requestUserSignInState()
     .then((data) => {
       if (!data) {
-        showErrorModal('ERROR 12A: There was a problem signing you in. Please try again later.');
+        showErrorModal('ERROR 12B: Unable to sign you in. The authentication service could not be reached.');
         return;
       }
 
       if (data.id) {
-        showSaveToCloudModal();
-      } else if (data.authDisabled) {
-        showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
+        showModal('SAVE_TO_CLOUD');
       } else {
         const message = 'You are not signed in! Please sign in now.';
-        showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
-        EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
+        showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveAsToCloud);
+        EventEmitter.subscribe('mapzen:sign_in', clickSaveAsToCloud);
       }
     });
+}
+
+/**
+ * Check whether the scene is already saved to Mapzen and if so, confirm overwrite.
+ * Otherwise, use the Save As function.
+ */
+function unsubscribeSaveToCloud() {
+  // eslint-disable-next-line no-use-before-define
+  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
+}
+
+function clickSaveToCloud() {
+  const scene = store.getState().scene;
+  if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
+    // Duplicating some functionality from clickSaveAsToCloud()
+    // todo refactor
+    if (checkUserAuthAvailability() === false) return;
+
+    unsubscribeSaveToCloud();
+    requestUserSignInState()
+      .then((data) => {
+        if (!data) {
+          showErrorModal('ERROR 12B: Unable to sign you in. The authentication service could not be reached.');
+          return;
+        }
+
+        if (data.id) {
+          // TODO: Check scene belongs to user
+          showModal('SAVE_EXISTING_TO_CLOUD');
+        } else {
+          const message = 'You are not signed in! Please sign in now.';
+          showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
+          EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
+        }
+      });
+  } else {
+    clickSaveAsToCloud();
+  }
 }
 
 function unsubscribeOpenFromCloud() {
@@ -101,20 +147,21 @@ function unsubscribeOpenFromCloud() {
   EventEmitter.unsubscribe('mapzen:sign_in', clickOpenFromCloud);
 }
 
-function showOpenFromCloudModal() {
-  unsubscribeOpenFromCloud();
-  checkSaveStateThen(() => {
-    showModal('OPEN_FROM_CLOUD');
-  });
-}
-
 function clickOpenFromCloud() {
+  if (checkUserAuthAvailability() === false) return;
+
+  unsubscribeOpenFromCloud();
   requestUserSignInState()
     .then((data) => {
+      if (!data) {
+        showErrorModal('ERROR 12B: Unable to sign you in. The authentication service could not be reached.');
+        return;
+      }
+
       if (data.id) {
-        showOpenFromCloudModal();
-      } else if (data.authDisabled) {
-        showErrorModal('You must be signed in to use this feature, but signing in is unavailable on the HTTP protocol. Please switch to the more-secure HTTPS protocol to sign in to Mapzen.');
+        checkSaveStateThen(() => {
+          showModal('OPEN_FROM_CLOUD');
+        });
       } else {
         const message = 'You are not signed in! Please sign in now.';
         showConfirmDialogModal(message, openSignInWindow, unsubscribeOpenFromCloud);
@@ -123,13 +170,42 @@ function clickOpenFromCloud() {
     });
 }
 
+function onClickShare() {
+  const scene = store.getState().scene;
+  if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
+    store.dispatch({
+      type: SHOW_MODAL,
+      modalType: 'SHARE_HOSTED_MAP',
+    });
+  } else {
+    showConfirmDialogModal('You can share a map hosted on Mapzen if you save your scene to your Mapzen account. Do you want to do this now?', () => {
+      clickSaveToCloud();
+    });
+  }
+}
+
+function onClickEmbed() {
+  store.dispatch({
+    type: SHOW_MODAL,
+    modalType: 'SHOW_CODE_SNIPPET',
+  });
+}
+
 function clickAbout() {
   showModal('ABOUT');
 }
 
+function clickWhatsNew() {
+  trackGAEvent('MenuBar', 'click', 'What’s New');
+  showModal('WHATS_NEW');
+}
+
+function clickSupport() {
+  showModal('SUPPORT');
+}
+
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
-const feedbackLink = 'https://github.com/tangrams/tangram-play/issues/';
-const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
+// const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
 
 /**
  * Represents the navbar for the application
@@ -143,7 +219,6 @@ class MenuBar extends React.Component {
       legacyGistMenu: false,
     };
 
-    this.onClickCamera = this.onClickCamera.bind(this);
     this.onClickInspect = this.onClickInspect.bind(this);
   }
 
@@ -162,14 +237,6 @@ class MenuBar extends React.Component {
       });
   }
 
-  onClickCamera() {
-    // Toggle camera state
-    this.props.dispatch({
-      type: SET_APP_STATE,
-      cameraToolsVisible: !this.props.cameraToolsVisible,
-    });
-  }
-
   onClickInspect() {
     const isInspectActive = this.state.inspectActive;
     if (isInspectActive) {
@@ -182,6 +249,15 @@ class MenuBar extends React.Component {
   }
 
   render() {
+    let signInRequiredMsg = null;
+    if (this.props.system.mapzen) {
+      if (!this.props.system.ssl) {
+        signInRequiredMsg = <div className="menu-item-note">Sign-in unavailable</div>;
+      } else if (this.props.userSignedIn === false) {
+        signInRequiredMsg = <div className="menu-item-note">Sign-in required</div>;
+      }
+    }
+
     return (
       <Navbar inverse className="menu-bar">
         {/* The brand section */}
@@ -205,9 +281,17 @@ class MenuBar extends React.Component {
               overlay={<Tooltip id="tooltip">New scene</Tooltip>}
               delayShow={200}
             >
-              <NavItem eventKey="new" onClick={clickNew}>
-                <Icon type="bt-file" />New
-              </NavItem>
+              <NavDropdown
+                title={<span><Icon type="bt-file" />New</span>}
+                id="new-dropdown"
+              >
+                <MenuItem onClick={clickNew}>
+                  <Icon type="bt-file" />New blank scene
+                </MenuItem>
+                <MenuItem onClick={clickOpenExample}>
+                  <Icon type="bt-map" />New from example…
+                </MenuItem>
+              </NavDropdown>
             </OverlayTrigger>
 
             {/* Open dropdown */}
@@ -222,13 +306,14 @@ class MenuBar extends React.Component {
                 id="open-dropdown"
               >
                 <MenuItem onClick={clickOpenFile}>
-                  <Icon type="bt-folder" />Open a file
+                  <Icon type="bt-folder" />Open scene…
                 </MenuItem>
                 {(() => {
-                  if (this.props.mapzenAccount) {
+                  if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickOpenFromCloud}>
-                        <Icon type="bt-cloud-download" />Open from your Mapzen account
+                        <Icon type="bt-cloud-download" />Open scene from Mapzen account…
+                        {signInRequiredMsg}
                       </MenuItem>
                     );
                   }
@@ -238,17 +323,14 @@ class MenuBar extends React.Component {
                   if (this.state.legacyGistMenu) {
                     return (
                       <MenuItem onClick={clickOpenGist}>
-                        <Icon type="bt-code" />Open a saved Gist
+                        <Icon type="bt-code" />Open scene from GitHub Gist (Legacy)…
                       </MenuItem>
                     );
                   }
                   return null;
                 })()}
                 <MenuItem onClick={clickOpenURL}>
-                  <Icon type="bt-link" />Open from URL
-                </MenuItem>
-                <MenuItem onClick={clickOpenExample}>
-                  <Icon type="bt-map" />Choose example
+                  <Icon type="bt-link" />Open from URL…
                 </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
@@ -265,39 +347,60 @@ class MenuBar extends React.Component {
                 id="save-dropdown"
               >
                 <MenuItem onClick={clickSaveFile}>
-                  <Icon type="bt-folder" />Save to your computer
+                  <Icon type="bt-download" />Download
                 </MenuItem>
                 {(() => {
-                  if (this.props.mapzenAccount) {
+                  if (this.props.isMapzenHosted) {
                     return (
                       <MenuItem onClick={clickSaveToCloud}>
-                        <Icon type="bt-cloud-upload" />Save to your Mapzen account
+                        <Icon type="bt-cloud-upload" />Save to Mapzen account…
+                        {signInRequiredMsg}
                       </MenuItem>
                     );
                   }
                   return null;
                 })()}
-                <MenuItem onClick={clickSaveGist}>
-                  <Icon type="bt-code" />Save to Gist
+                {(() => {
+                  if (this.props.isMapzenHosted) {
+                    return (
+                      <MenuItem onClick={clickSaveAsToCloud}>
+                        <Icon type="bt-cloud-upload" />Save as…
+                        {signInRequiredMsg}
+                      </MenuItem>
+                    );
+                  }
+                  return null;
+                })()}
+              </NavDropdown>
+            </OverlayTrigger>
+
+            {/* Share button */}
+            <OverlayTrigger
+              rootClose
+              placement="bottom"
+              overlay={<Tooltip id="tooltip">Share your scene</Tooltip>}
+              delayShow={200}
+            >
+              <NavDropdown
+                title={<span><Icon type="bt-external-link" />Share</span>}
+                id="share-dropdown"
+              >
+                {(() => {
+                  if (this.props.isMapzenHosted) {
+                    return (
+                      <MenuItem onClick={onClickShare}>
+                        <Icon type="bt-link" />Get sharable link to your map…
+                      </MenuItem>
+                    );
+                  }
+                  return null;
+                })()}
+                <MenuItem onClick={onClickEmbed}>
+                  <Icon type="bt-code" />Get code snippet…
                 </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
 
-            {/* Introspection button */}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">Show camera tools</Tooltip>}
-              delayShow={200}
-            >
-              <NavItem
-                eventKey="camera"
-                onClick={this.onClickCamera}
-                active={this.props.cameraToolsVisible}
-              >
-                <Icon type="bt-camera" />Camera
-              </NavItem>
-            </OverlayTrigger>
           </Nav>
 
           {/* Right menu section */}
@@ -335,14 +438,19 @@ class MenuBar extends React.Component {
                 <MenuItem onClick={clickAbout}>
                   <Icon type="bt-info-circle" />About
                 </MenuItem>
+                <MenuItem onClick={clickWhatsNew}>
+                  <Icon type="bt-gift" />What’s new?
+                </MenuItem>
                 <MenuItem href={documentationLink} target="_blank" rel="noopener noreferrer">
                   <Icon type="bt-book" />Documentation
                 </MenuItem>
-                <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
-                  <Icon type="bt-notebook" />Tutorial
-                </MenuItem>
-                <MenuItem href={feedbackLink} target="_blank" rel="noopener noreferrer">
-                  <Icon type="bt-comments" />Feedback
+                {/* // TEMP: hidden.
+                  <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
+                    <Icon type="bt-notebook" />Tutorial
+                  </MenuItem>
+                */}
+                <MenuItem onClick={clickSupport}>
+                  <Icon type="bt-comments" />Support
                 </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
@@ -357,20 +465,23 @@ class MenuBar extends React.Component {
 }
 
 MenuBar.propTypes = {
-  dispatch: React.PropTypes.func,
-  mapzenAccount: React.PropTypes.bool,
-  cameraToolsVisible: React.PropTypes.bool,
+  isMapzenHosted: React.PropTypes.bool,
+  userSignedIn: React.PropTypes.bool.isRequired,
+  system: React.PropTypes.shape({
+    mapzen: React.PropTypes.bool,
+    ssl: React.PropTypes.bool,
+  }).isRequired,
 };
 
 MenuBar.defaultProps = {
-  mapzenAccount: false,
-  cameraToolsVisible: false,
+  isMapzenHosted: false,
 };
 
 function mapStateToProps(state) {
   return {
-    mapzenAccount: state.user.admin || window.location.hostname === 'localhost' || false,
-    cameraToolsVisible: state.app.cameraToolsVisible,
+    isMapzenHosted: state.system.mapzen,
+    userSignedIn: state.user.signedIn,
+    system: state.system,
   };
 }
 

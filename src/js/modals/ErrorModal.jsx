@@ -32,7 +32,7 @@ class ErrorModal extends React.Component {
   onClickClose() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
     // After unmounting, `componentWillUnmount()` is called and the
     // `confirmFunction()` will be executed.
@@ -64,8 +64,8 @@ class ErrorModal extends React.Component {
 }
 
 ErrorModal.propTypes = {
-  dispatch: React.PropTypes.func,
-  modalId: React.PropTypes.number,
+  dispatch: React.PropTypes.func.isRequired,
+  modalId: React.PropTypes.number.isRequired,
 
   // Error message might be an Error object or a string
   error: React.PropTypes.oneOfType([

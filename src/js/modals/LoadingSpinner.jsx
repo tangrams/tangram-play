@@ -1,26 +1,26 @@
 import React from 'react';
 import Icon from '../components/Icon';
 
-// This should be a stateless component. Whether or not this displays should
-// be set in parent component's state and passed via the `on` prop.
-
-export default class LoadingSpinner extends React.Component {
-  render() {
-    let className = 'modal-thinking';
-    if (this.props.on) {
-      className += ' modal-thinking-cap-on';
-    }
-
-    return (
-      <div className={className}>
-        <Icon type="bts bt-spinner bt-pulse" />
-        {this.props.msg || 'Working...'}
-      </div>
-    );
+export default function LoadingSpinner(props) {
+  let className = 'loading-spinner';
+  if (props.on) {
+    className += ' loading-spinner-on';
   }
+
+  return (
+    <div className={className}>
+      <Icon type="bts bt-spinner bt-pulse" />
+      {props.msg}
+    </div>
+  );
 }
 
 LoadingSpinner.propTypes = {
   on: React.PropTypes.bool,
   msg: React.PropTypes.string,
+};
+
+LoadingSpinner.defaultProps = {
+  on: false,
+  msg: 'Working...',
 };

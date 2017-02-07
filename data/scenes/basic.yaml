@@ -1,0 +1,56 @@
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+layers:
+    water:
+        data: { source: mapzen }
+        draw:
+            polygons:
+                order: 2
+                color: '#353535'
+    earth:
+        data: { source: mapzen }
+        draw:
+            polygons:
+                order: 1
+                color: '#555555'
+    landuse:
+        data: { source: mapzen }
+        draw:
+            polygons:
+                order: 3
+                color: '#666666'
+    roads:
+        data: { source: mapzen}
+        filter: { not: { kind: [rail, ferry] } }
+        draw:
+            lines:
+                order: 4
+                color: '#ffffff'
+                width: [[7,0.0px], [10, .5px], [15, .75px], [17, 5m]]
+        highway:
+            filter: { kind: highway }
+            draw:
+                lines:
+                    order: 5
+                    width: [[8,0px], [8,.25px], [11, 1.5px], [14, 2px], [16, 4px], [17, 10m]]
+            link:
+                filter: { is_link: true } # on- and off-ramps, etc
+                draw:
+                    lines:
+                        width: [[8,0px], [14, 3px], [16, 5px], [18, 10m]]
+                tunnel-link:
+                    filter: {is_tunnel: true, $zoom: {min: 13} }
+        tunnel:
+            filter: {is_tunnel: true }
+            draw:
+                roads:
+                    order: 6
+    buildings:
+        data: { source: mapzen }
+        draw:
+            polygons:
+                order: 7
+                color: '#999999'
+                extrude: true

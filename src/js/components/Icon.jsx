@@ -26,3 +26,8 @@ Icon.propTypes = {
   className: React.PropTypes.string,
   active: React.PropTypes.bool,
 };
+
+Icon.defaultProps = {
+  className: '',
+  active: false,
+};

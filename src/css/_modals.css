@@ -15,13 +15,6 @@
   pointer-events: auto;
   border: 1px solid var(--ui-border-color);
   border-radius: 2px;
-
-  h4 {
-    margin-top: 0;
-    margin-bottom: 1em;
-    font-weight: 400;
-    font-size: 1.25em;
-  }
 }
 
 /*
@@ -73,14 +66,14 @@
   justify-content: center;
 }
 
-.modal-thinking {
+.loading-spinner {
   margin-right: 30px;
   line-height: 40px;
   color: var(--ui-subtext-color);
   opacity: 0;
   visibility: hidden;
 
-  &.modal-thinking-cap-on {
+  &.loading-spinner-on {
     opacity: 1;
     visibility: visible;
   }
@@ -121,6 +114,39 @@
   }
 }
 
+.save-existing-to-cloud-modal {
+  width: 500px;
+
+  /* re-using this CSS from OpenFromCloudModal */
+  .open-from-cloud-option {
+    padding: 0;
+    cursor: auto;
+    user-select: auto;
+  }
+
+  .open-from-cloud-option:hover {
+    background-color: transparent;
+  }
+}
+
 .modal {
   position: relative;
+}
+
+.code-snippet-modal {
+  width: 560px;
+}
+
+.code-snippet-textarea-container {
+  width: 500px;
+  height: 400px;
+
+  textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    font-family: var(--editor-font-family);
+    font-size: 1em;
+    padding: 1em;
+  }
 }

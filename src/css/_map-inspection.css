@@ -216,8 +216,7 @@
 }
 
 .leaflet-fade-anim .leaflet-popup {
-  transition: opacity 120ms ease-out, transform 100ms ease-out;
-  transform: translateY(-20px) translateZ(100px);
+  transition: opacity 100ms ease-out;
 }
 
 /* Crosshair cursor is active when global introspection mode is on.

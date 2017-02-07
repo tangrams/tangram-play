@@ -28,7 +28,7 @@ class EditorTabs extends React.PureComponent {
       this.props.setFileMetadata(currentIndex, {
         cursor: currentDoc.getCursor(),
         scrollInfo: editor.getScrollInfo(),
-        highlightedLines: getAllHighlightedLines(),
+        highlightedLines: getAllHighlightedLines(currentDoc),
         selections: currentDoc.listSelections(),
       });
 
@@ -56,6 +56,20 @@ class EditorTabs extends React.PureComponent {
   }
 
   render() {
+    let saveStateMessage = '';
+
+    let dirtyTab = false;
+    for (let i = 0; i < this.props.files.length; i++) {
+      if (this.props.files[i].isClean === false) {
+        dirtyTab = true;
+      }
+    }
+    if (dirtyTab) {
+      saveStateMessage = 'You have unsaved changes.';
+    } else if (!this.props.justOpened && this.props.saved === true) {
+      saveStateMessage = 'All changes saved.';
+    }
+
     return (
       <div className="editor-tabs">
         {this.props.files.map((item, i) => {
@@ -96,6 +110,10 @@ class EditorTabs extends React.PureComponent {
             </div>
           );
         })}
+
+        <div className="editor-save-state-notification">
+          {saveStateMessage}
+        </div>
       </div>
     );
   }
@@ -106,16 +124,20 @@ EditorTabs.propTypes = {
   activeTab: React.PropTypes.number,
   mainTab: React.PropTypes.number,
   files: React.PropTypes.arrayOf(React.PropTypes.object),
+  justOpened: React.PropTypes.bool.isRequired,
+  saved: React.PropTypes.bool.isRequired,
 
   // Injected by `mapDispatchToProps`
-  setActiveFile: React.PropTypes.func,
-  removeFile: React.PropTypes.func,
-  closeScene: React.PropTypes.func,
-  setFileMetadata: React.PropTypes.func,
-  stashDoc: React.PropTypes.func,
+  setActiveFile: React.PropTypes.func.isRequired,
+  removeFile: React.PropTypes.func.isRequired,
+  closeScene: React.PropTypes.func.isRequired,
+  setFileMetadata: React.PropTypes.func.isRequired,
+  stashDoc: React.PropTypes.func.isRequired,
 };
 
 EditorTabs.defaultProps = {
+  activeTab: 0,
+  mainTab: 0,
   files: [],
 };
 
@@ -124,6 +146,8 @@ function mapStateToProps(state) {
     activeTab: state.scene.activeFileIndex,
     mainTab: state.scene.rootFileIndex,
     files: state.scene.files,
+    justOpened: state.scene.justOpened,
+    saved: state.scene.saved,
   };
 }
 

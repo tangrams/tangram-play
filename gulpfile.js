@@ -155,7 +155,8 @@ gulp.task('serve', ['build'], function () {
     },
     ui: {
       port: 8081
-    }
+    },
+    ghostMode: false
   });
 
   gulp.watch(paths.styles, ['css']);

@@ -5,13 +5,10 @@ export default class ColorPickerSaturation extends React.Component {
   constructor(props) {
     super(props);
 
-    const color = this.props.color.getHsv();
-
-    // Record this for pointer position
-    // Values are retrieved between 0-1 so scale them up to 0-100
+    // State records pointer position
     this.state = {
-      saturation: color.s * 100,
-      brightness: color.v * 100,
+      saturation: 0,
+      brightness: 0,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -19,6 +16,11 @@ export default class ColorPickerSaturation extends React.Component {
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.setBoundingBox = this.setBoundingBox.bind(this);
+    this.setPointerPosition = this.setPointerPosition.bind(this);
+  }
+
+  componentWillMount() {
+    this.setPointerPosition(this.props.color);
   }
 
   componentDidMount() {
@@ -27,6 +29,10 @@ export default class ColorPickerSaturation extends React.Component {
     this.setBoundingBox();
     this.width = this.boundingBox.width;
     this.height = this.boundingBox.height;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setPointerPosition(nextProps.color);
   }
 
   componentWillUnmount() {
@@ -98,6 +104,17 @@ export default class ColorPickerSaturation extends React.Component {
     this.boundingBox = this.container.getBoundingClientRect();
   }
 
+  setPointerPosition(color) {
+    const hsv = color.getHsv();
+
+    // Record this for pointer position
+    // Values are retrieved between 0-1 so scale them up to 0-100
+    this.setState({
+      saturation: hsv.s * 100,
+      brightness: hsv.v * 100,
+    });
+  }
+
   unbindEventListeners() {
     window.removeEventListener('mousemove', this.onChange);
     window.removeEventListener('mouseup', this.onMouseUp);
@@ -142,7 +159,11 @@ export default class ColorPickerSaturation extends React.Component {
 }
 
 ColorPickerSaturation.propTypes = {
-  hue: React.PropTypes.number,
-  color: React.PropTypes.objectOf(React.PropTypes.any),
+  hue: React.PropTypes.number.isRequired,
+  color: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
   onChange: React.PropTypes.func,
+};
+
+ColorPickerSaturation.defaultProps = {
+  onChange: function noop() {},
 };

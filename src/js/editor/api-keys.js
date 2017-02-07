@@ -7,8 +7,10 @@
  *
  * The URL_PATTERN handles the old vector.mapzen.com origin (until it is fully
  * deprecated) as well as the new v1 tile.mapzen.com endpoint.
+ *
+ * Extensions include both vector and raster tile services.
  */
-const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|:)+(topojson|geojson|mvt))/;
+const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\||:)+(topojson|geojson|mvt|png|tif|gz))/;
 
 /**
  * Parses a Tangram scene config object for sources that specify a Mapzen

@@ -109,9 +109,11 @@
   white-space: nowrap;
 }
 
+/* temp: remove while multiple tabs is not turned on
 .editor-tab-is-active .editor-tab-label {
   box-shadow: inset 0 2px 0 var(--ui-highlight-color);
 }
+*/
 
 .editor-tab-is-dirty {
   .editor-tab-dirty {
@@ -159,6 +161,15 @@
   position: relative;
   /* temp: use misc color because white is pretty bright */
   color: var(--ui-unnamed-light-color);
+}
+
+.editor-save-state-notification {
+  color: var(--ui-unnamed-light-color);
+  margin-left: 0.75em;
+  align-self: center;
+  font-size: 12px;
+  margin-top: 3px;
+  white-space: nowrap;
 }
 
 .editor-collapse-button {

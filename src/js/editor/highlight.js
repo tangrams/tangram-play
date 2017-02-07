@@ -1,4 +1,4 @@
-import { editor } from './editor';
+import { editor } from './editor'; // TODO: deprecate import from highlightNode()
 import { getPositionsForNode } from './yaml-ast';
 import { jumpToLine } from './codemirror/tools';
 import { replaceHistoryState } from '../tools/url-state';
@@ -37,11 +37,12 @@ function unhighlightLine(doc, line) {
  * line number has the highlight class attached to it. Note that other background
  * classes may exist (e.g. for active lines).
  *
+ * @param {CodeMirror Doc} doc - The document the line is in.
  * @param {Number} line - the line number to check.
  * @returns {Boolean}
  */
-function isLineHighlighted(line) {
-  const lineInfo = editor.lineInfo(line);
+function isLineHighlighted(doc, line) {
+  const lineInfo = doc.lineInfo(line);
 
   // .bgClass may be null
   if (!lineInfo.bgClass) {
@@ -61,7 +62,7 @@ function isLineHighlighted(line) {
  *          and `false` if a line was unhighlighted.
  */
 function toggleHighlightLine(doc, line) {
-  if (isLineHighlighted(line)) {
+  if (isLineHighlighted(doc, line)) {
     unhighlightLine(doc, line);
     return false;
   }
@@ -75,13 +76,13 @@ function toggleHighlightLine(doc, line) {
  * Accepts arguments in any order and it will still loop in the
  * correct direction.
  *
+ * @param {CodeMirror Doc} doc - The document the lines are in
  * @param {Number} from - Required. The line number to start
  *          highlighting from. Lines are zero-indexed.
  * @param {Number} to - Required. The line number to end
  *          highlighting on. Lines are zero-indexed.
  */
-function highlightLines(from, to) {
-  const doc = editor.getDoc();
+function highlightLines(doc, from, to) {
   let startLine = from;
   let endLine = to;
 
@@ -99,13 +100,13 @@ function highlightLines(from, to) {
  * Unhighlights all lines between a range of lines. Accepts
  * arguments in any order and it will still loop in the correct direction.
  *
+ * @param {CodeMirror Doc} doc - The document the lines are in
  * @param {Number} from - Required. The line number to start
  *          unhighlighting from. Lines are zero-indexed.
  * @param {Number} to - Required. The line number to end
  *          unhighlighting on. Lines are zero-indexed.
  */
-function unhighlightLines(from, to) {
-  const doc = editor.getDoc();
+function unhighlightLines(doc, from, to) {
   let startLine = from;
   let endLine = to;
 
@@ -120,6 +121,30 @@ function unhighlightLines(from, to) {
 }
 
 /**
+ * Highlights lines, given a range of line numbers in a string format like
+ * "a-b". A single line number would also work.
+ *
+ * @param {CodeMirror Doc} doc - Required. The document the lines are in
+ * @param {String} ranges - Required. A human-readable range of lines to highlight.
+ */
+function highlightRange(doc, range) {
+  const lineNumbers = range.split('-');
+
+  // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
+  // Just in case, the return value is clamped to a minimum value of 0.
+  const startLine = Math.max(Number(lineNumbers[0]) - 1, 0);
+  const endLine = Math.max(Number(lineNumbers[1]) - 1, 0);
+
+  // If a "range" is just a single number (`6` rather than `6-7`, say)
+  // then `endLine` will be NaN. In this case just highlight the one line.
+  if (Number.isNaN(endLine)) {
+    highlightLine(doc, startLine);
+  } else {
+    highlightLines(doc, startLine, endLine);
+  }
+}
+
+/**
  * Highlights lines, given a comma delimited set of line numbers or ranges of
  * line numbers. Expects a string that would have been formed with
  * getLineNumberString(). The following are valid strings:
@@ -127,47 +152,37 @@ function unhighlightLines(from, to) {
  *      '6'
  *      '6-10'
  *      '6-10,12-30'
- *      '6-10,12-30,45,60-12'
+ *      '6-10,12-30,45,60-72'
  *
  * Note that the ranges are assumed to be in sequential order, and line numbers
  * start from 1 instead of 0. The first linenumber or range will get jumped to.
  *
- * @param {String} lines - Required. A human-readable sequence of lines and
+ * @param {CodeMirror Doc} doc - The document the lines are in
+ * @param {String} ranges - Required. A human-readable sequence of lines and
  *          line ranges to highlight.
  */
-export function highlightRanges(lines) {
+export function highlightRanges(doc, lines) {
   const ranges = lines.split(',');
 
   for (let i = 0, j = ranges.length; i < j; i++) {
-    const lineNumbers = ranges[i].split('-');
+    highlightRange(doc, ranges[i]);
 
-    // Lines are zero-indexed in CodeMirror, so subtract 1 from it.
-    // Just in case, the return value is clamped to a minimum value of 0.
-    const startLine = Math.max(Number(lineNumbers[0]) - 1, 0);
-    let endLine = Math.max(Number(lineNumbers[1]) - 1, 0);
-
-    // If a "range" is just a single number (`6` rather than `6-7`, say)
-    // then `endLine` will be NaN. In this case we make `endLine` equal
-    // to `startLine` so we can properly highlight the "range".
-    if (Number.isNaN(endLine)) {
-      endLine = startLine;
-    }
-
-    // Only jump to the first range given.
+    // Jump to the first highlighted line in the given range of lines.
+    // Check that doc instance is associated with a CodeMirror editor.
     if (i === 0) {
-      jumpToLine(editor, startLine);
+      const cm = doc.getEditor();
+      const line = window.parseInt(ranges[i], 10);
+      if (cm && !Number.isNaN(line)) jumpToLine(cm, line);
     }
-
-    highlightLines(startLine, endLine);
   }
 }
 
 /**
  * Removes highlights from all lines in the document.
+ *
+ * @param {CodeMirror Doc} doc - The document the lines are in
  */
-function unhighlightAll() {
-  const doc = editor.getDoc();
-
+function unhighlightAll(doc) {
   for (let i = 0, j = doc.lineCount(); i <= j; i++) {
     unhighlightLine(doc, i);
   }
@@ -181,6 +196,8 @@ function unhighlightAll() {
  * [1, 2, 3, 5, 7, 9, 10, 11, 12, 14]  =>  ['1-3', '5', '7', '9-12', '14']
  * [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] => ['1-10']
  *
+ * @param {Array} - the array to convert
+ * @returns {Array} - consolidated array
  */
 function getLineNumberRanges(array) {
   const ranges = [];
@@ -207,6 +224,8 @@ function getLineNumberRanges(array) {
  * e.g. [2, 3, 4, 5, 10, 18, 19, 20]  =>  '2-5,10,18-20'
  * This is ideal for storing in URL strings.
  *
+ * @param {Array} - the array to convert
+ * @returns {string} - a list of ranges in string form
  */
 function getLineNumberString(array) {
   // Line number arrays are zero-indexed, so before converting to a string,
@@ -221,14 +240,15 @@ function getLineNumberString(array) {
  * This looks at the editor itself, so it's guaranteed to be the current state
  * of the editor.
  *
+ * @param {CodeMirror Doc} doc - The document the lines are in
  * @returns {String} linenumbers - in the format of '2-5,10,18-20', as
  *          returned by getLineNumberString() function
  */
-export function getAllHighlightedLines() {
+export function getAllHighlightedLines(doc) {
   const lineNumbers = [];
 
-  for (let i = 0, j = editor.getDoc().lineCount(); i < j; i++) {
-    if (isLineHighlighted(i)) {
+  for (let i = 0, j = doc.lineCount(); i < j; i++) {
+    if (isLineHighlighted(doc, i)) {
       lineNumbers.push(i);
     }
   }
@@ -242,9 +262,10 @@ export function getAllHighlightedLines() {
  * Updates the ?lines= query string to the currently highlighted lines in the
  * document.
  *
+ * @param {CodeMirror Doc} doc - The document the lines are in
  */
-export function updateLinesQueryString() {
-  const allHighlightedLines = getAllHighlightedLines();
+function updateLinesQueryString(doc) {
+  const allHighlightedLines = getAllHighlightedLines(doc);
   if (allHighlightedLines !== '') {
     replaceHistoryState({ lines: allHighlightedLines });
   } else {
@@ -267,61 +288,65 @@ export function highlightNode(node) {
 
   // First, remove all existing instances of the highlight class.
   // Then highlight the node's range and update query string.
-  unhighlightAll();
-  highlightLines(range.from.line, range.to.line);
-  updateLinesQueryString();
+  unhighlightAll(doc);
+  highlightLines(doc, range.from.line, range.to.line);
+  updateLinesQueryString(doc);
 
   // Reset
   anchorLine = undefined;
   targetLine = undefined;
 }
 
-function onEditorGutterClick(cm, line, gutter, event) {
-  // Do work when the click occurs for the left (or main) mouse button only
-  if (event.button !== 0) {
-    return;
-  }
+/**
+ *
+ * @param {CodeMirror} cm - the CodeMirror instance
+ * @param {Number} line - a 0-indexed line number
+ * @param {} gutter - not used
+ * @param {Event} event - the click event
+ */
+export function highlightOnEditorGutterClick(cm, line, gutter, event) {
+  // Bail early if the click is not the left (or main) mouse button only
+  if (event.button !== 0) return;
 
-  // Do work only on the line number target element
-  if (!event.target.classList.contains('CodeMirror-linenumber')) {
-    return;
-  }
+  // Bail early if click does not occur on the line number target element
+  if (!event.target.classList.contains('CodeMirror-linenumber')) return;
 
-  // The `line` parameter is a 0-indexed line number.
+  const doc = cm.getDoc();
 
   // The meta (command or control keys) will allow highlighting of
   // non-sequential lines.
   if (event.metaKey === true) {
-    const didHighlight = toggleHighlightLine(cm.getDoc(), line);
+    const didHighlight = toggleHighlightLine(doc, line);
     anchorLine = didHighlight ? line : undefined;
 
     // Reset
     targetLine = undefined;
-    // Shift keys will allow highlighting of multiple lines.
+
+  // Shift keys will allow highlighting of multiple lines.
   } else if (event.shiftKey === true && anchorLine !== undefined) {
     // Clears a previous range if it exists
     if (targetLine) {
-      unhighlightLines(anchorLine, targetLine);
+      unhighlightLines(doc, anchorLine, targetLine);
     }
 
     // Then highlight the desired range
-    highlightLines(anchorLine, line);
+    highlightLines(doc, anchorLine, line);
 
     // Remember state of how this happened
     targetLine = line;
-  } else {
-    // If shift key is not pressed or there is not a previously selected line
-    // (which you need to do the whole range) then select one line.
 
+  // If shift key is not pressed or there is not a previously selected line
+  // (which you need to do the whole range) then select one line.
+  } else {
     // Clear all existing highlights first
-    unhighlightAll();
+    unhighlightAll(doc);
 
     // If the clicked line is the same as the one before, reset
     if (line === anchorLine) {
       anchorLine = undefined;
     } else {
       // Otherwise, highlight that one line
-      highlightLine(cm.getDoc(), line);
+      highlightLine(doc, line);
       anchorLine = line;
     }
 
@@ -330,12 +355,12 @@ function onEditorGutterClick(cm, line, gutter, event) {
   }
 
   // Update the query string
-  updateLinesQueryString();
+  updateLinesQueryString(doc);
 }
 
 // Editor operations, such as cut, paste, delete, or inserts, can mutate
 // highlighted lines. This will make sure the query string remains updated.
-function onEditorChanges(cm, changes) {
+export function highlightOnEditorChanges(cm, changes) {
   // Small performance tweak: if there's just one change on one line,
   // don't bother updating the query string, which must check the highlight
   // state on all lines
@@ -343,11 +368,5 @@ function onEditorChanges(cm, changes) {
     return;
   }
 
-  updateLinesQueryString();
-}
-
-// Add handlers for these events to the editor.
-export function addHighlightEventListeners() {
-  editor.on('gutterClick', onEditorGutterClick);
-  editor.on('changes', onEditorChanges);
+  updateLinesQueryString(cm.getDoc());
 }

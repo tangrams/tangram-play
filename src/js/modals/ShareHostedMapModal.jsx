@@ -7,28 +7,28 @@ import Clipboard from 'clipboard';
 import IconButton from '../components/IconButton';
 import Modal from './Modal';
 
-class SaveToCloudSuccessModal extends React.Component {
+class ShareHostedMapModal extends React.Component {
   constructor(props) {
     super(props);
 
+    this.initClipboard = this.initClipboard.bind(this);
     this.onClickConfirm = this.onClickConfirm.bind(this);
     this.onClickViewUrl = this.onClickViewUrl.bind(this);
   }
 
   componentDidMount() {
-    this.setupClipboard();
+    this.initClipboard();
     this.viewUrl.select();
   }
 
   componentWillUnmount() {
-    // Clean up clipboard object
     this.clipboard.destroy();
   }
 
   onClickConfirm(event) {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
@@ -40,13 +40,12 @@ class SaveToCloudSuccessModal extends React.Component {
   }
 
   // Sets up clipboard.js functionality. Not a React component.
-  setupClipboard() {
+  initClipboard() {
+    /* eslint-disable no-console */
     // eslint-disable-next-line react/no-find-dom-node
     const clipboardButtonEl = ReactDOM.findDOMNode(this.clipboardButton);
 
-    // Initiate clipboard button
     this.clipboard = new Clipboard(clipboardButtonEl);
-
     this.clipboard.on('success', (e) => {
       console.info('Action:', e.action);
       console.info('Text:', e.text);
@@ -54,11 +53,11 @@ class SaveToCloudSuccessModal extends React.Component {
 
       e.clearSelection();
     });
-
     this.clipboard.on('error', (e) => {
       console.error('Action:', e.action);
       console.error('Trigger:', e.trigger);
     });
+    /* eslint-enable no-console */
   }
 
   render() {
@@ -67,12 +66,10 @@ class SaveToCloudSuccessModal extends React.Component {
         className="save-to-cloud-success-modal"
         cancelFunction={this.onClickConfirm}
       >
+        <h4>Share your scene!</h4>
         <div className="modal-content">
-          <h4>
-            Your scene has been saved!
-          </h4>
           <p>
-            Share your scene with the link below.
+            Copy the link below for later, or view it in your browser.
           </p>
 
           <div className="input-bar">
@@ -81,7 +78,7 @@ class SaveToCloudSuccessModal extends React.Component {
               type="text"
               readOnly="true"
               ref={(ref) => { this.viewUrl = ref; }}
-              defaultValue={`https://dev.mapzen.com/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
+              defaultValue={`${window.location.origin}/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
             />
             <IconButton
               icon="bt-copy"
@@ -109,13 +106,19 @@ class SaveToCloudSuccessModal extends React.Component {
   }
 }
 
-SaveToCloudSuccessModal.propTypes = {
-  urlValue: React.PropTypes.string,
+ShareHostedMapModal.propTypes = {
+  urlValue: React.PropTypes.string.isRequired,
 };
 
-SaveToCloudSuccessModal.propTypes = {
-  dispatch: React.PropTypes.func,
-  modalId: React.PropTypes.number,
+ShareHostedMapModal.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
+  modalId: React.PropTypes.number.isRequired,
 };
 
-export default connect()(SaveToCloudSuccessModal);
+function mapStateToProps(state) {
+  return {
+    urlValue: state.scene.mapzenSceneData.entrypoint_url,
+  };
+}
+
+export default connect(mapStateToProps)(ShareHostedMapModal);

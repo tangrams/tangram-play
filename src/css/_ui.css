@@ -5,6 +5,33 @@
   color: var(--ui-highlight-color);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 1em;
+  font-weight: 500;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+h2 {
+  font-size: 1.8em;
+  font-weight: 200;
+}
+
+h4 {
+  font-size: 1.25em;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
 /* Links ? */
 a,
 a:visited,

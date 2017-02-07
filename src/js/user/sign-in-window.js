@@ -2,14 +2,16 @@ import { showSignInOverlay, hideSignInOverlay } from '../components/SignInOverla
 import EventEmitter from '../components/event-emitter';
 
 /**
- * This modal loads mapzen.com's sign-in flow into an iframe, so it outsources
- * as much of it as possible out of Tangram Play. When the iframe source looks
- * like the user has successfully signed in / signed up, we toggle the state
- * on the sign-in window and the user log in state in the application.
- * Due to web security restrictions, this must be tested on mapzen.com and
- * should not be loaded in other contexts (e.g. localhost)
+ * Run Mapzen's sign-in flow in a popup window. Although it's cleaner to iframe
+ * into a modal, we tried this but new users are directed to GitHub auth, which
+ * cannot be iframed.
+ *
+ * Due to web security restrictions, sign-in flow can only work if Tangram Play
+ * is hosted on the same origin as the Mapzen developer platform, e.g mapzen.com,
+ * its staging server, or a local server running the platform in a separate
+ * Docker container.
  */
-const SIGN_IN_API_ENDPOINT = '/developers/sign_in';
+const SIGN_IN_API_ENDPOINT = '/developers/sign_in?popup=true';
 const SIGN_IN_HOSTNAME = window.location.hostname === 'localhost' ? 'http://localhost' : '';
 
 let signInWindow;
@@ -69,85 +71,6 @@ function cleanup() {
   window.clearInterval(pollWindowStateIntervalId);
 }
 
-/**
- * A super hacky experiment to restyle Mapzen's stock sign-in page just the way
- * we like it. There's no guarantee this works forever especially as DOM
- * elements, class selectors and styles may evolve over time.
- */
-function adjustSignInPageContent() {
-  const childDocument = signInWindow.document;
-
-  // Only do this once
-  if (childDocument.querySelector('#dev_login') &&
-    !childDocument.getElementById('tangram-play-signin-override-styles')) {
-    const newStyleEl = document.createElement('style');
-    const newStyleText = `
-            body {
-                margin-top: 0;
-                overflow: hidden;
-            }
-            h3 {
-                line-height: 1.4em;
-                margin-bottom: 20px;
-            }
-            body.hide-fixed-main-nav nav.navbar-fixed-top {
-                top: 0;
-            }
-            nav.navbar.navbar-default.navbar-fixed-top {
-                position: absolute;
-            }
-            .navbar-collapse.navbar-collapse.navbar-collapse {
-                display: none !important;
-            }
-            a.navbar-brand {
-                left: 50%;
-                position: absolute;
-                margin-left: -80px !important;
-                pointer-events: none;
-                user-select: none;
-                touch-action: none;
-            }
-            .headroom-extra-large {
-                margin-top: 20px;
-            }
-            footer {
-                display: none;
-            }
-            #dev_login.container {
-                position: absolute;
-                bottom: 0;
-                top: 60px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                left: 0;
-                width: 100%;
-                max-width: 100%;
-                padding-left: 3em;
-                padding-right: 3em;
-            }
-            @media (max-height: 500px) {
-                #dev_login.container {
-                    top: 50px;
-                    transform: scale(.80);
-                    padding-left: 1em;
-                    padding-right: 1em;
-                }
-            }
-            button.navbar-toggle {
-                display: none;
-            }
-        `;
-    newStyleEl.id = 'tangram-play-signin-override-styles';
-    newStyleEl.textContent = newStyleText;
-
-    childDocument.head.appendChild(newStyleEl);
-    childDocument.querySelector('#dev_login h1').textContent = 'Sign in to Mapzen';
-    childDocument.querySelector('#dev_login h3').textContent = 'You can save Tangram scenes to your Mapzen account and do other stuff good too'; // eslint-disable-line max-len
-  }
-}
-
 function pollWindowState() {
   if (!signInWindow || signInWindow.closed) {
     window.clearInterval(pollWindowStateIntervalId);
@@ -157,10 +80,6 @@ function pollWindowState() {
       // If it's exactly /developers, we're probably logged in now
       if (signInWindow.location.pathname === '/developers') {
         signInStateReady();
-      }
-      // Experimental: hack the view for developer pages.
-      if (signInWindow.location.pathname.indexOf('/developers/') === 0) {
-        adjustSignInPageContent();
       }
     } catch (e) {
       // Probably a security policy in the way; ignore
@@ -183,9 +102,6 @@ export function openSignInWindow() {
 
     // Show an overlay in the app window.
     showSignInOverlay();
-
-    // Experimental.
-    signInWindow.addEventListener('load', adjustSignInPageContent);
 
     // We can't add load or close event listeners to the new window (they
     // don't trigger) so instead we poll the window at a set interval

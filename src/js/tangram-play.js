@@ -24,7 +24,7 @@ import EventEmitter from './components/event-emitter';
 import store from './store';
 import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE, ADD_RECENT_SCENE } from './store/actions';
 
-const DEFAULT_SCENE = 'data/scenes/default.yaml';
+const DEFAULT_SCENE = 'data/scenes/basic.yaml';
 const STORAGE_LAST_EDITOR_STATE = 'last-scene';
 
 let initialScene = ''; // Stores initial scene file for embedded play.
@@ -39,7 +39,6 @@ function setSceneContentsInEditor(scene) {
   // Also remember the scene in list of recently opened scenes
   // This sends the entire scene object - TODO: clean it up a bit
   // TODO: Only store if the url is reachable?
-  // TODO: Persist across sessions
   store.dispatch({
     type: ADD_RECENT_SCENE,
     scene,
@@ -235,8 +234,11 @@ function determineScene() {
  * @param {Object} scene - an object containing one of two properties:
  *      scene.url - a URL path to load a scene from
  *      scene.contents - Tangram YAML as a text blob
- *      Do not pass in both! Currently `url` takes priority, but
- *      this is not guaranteed behaviour.
+ *      You should not pass in both! Currently `url` takes priority.
+ *
+ *      A third property `data` may be present if the scene comes from the
+ *      Mapzen Scenes API and it is an object containing scene metadata.
+ *
  * @returns {Promise} A promise which is resolved when a scene's
  *      contents has been fetched.
  */
@@ -253,12 +255,25 @@ export function load(scene) {
   // Either we are passed a url path, or scene file contents
   if (scene.url) {
     return makeSceneStateObjectFromUrl(scene.url)
+      .then((sceneState) => {
+        // Merge Mapzen Scene API data & return if present.
+        if (scene.data) {
+          return {
+            ...sceneState,
+            saved: true,
+            saveLocation: 'MAPZEN',
+            saveTimestamp: scene.data.updated_at,
+            mapzenSceneData: scene.data,
+          };
+        }
+
+        return sceneState;
+      })
       .then(doLoadProcess)
       .catch(onLoadError);
   } else if (scene.contents) {
-    // If scene contents are provided, no asynchronous work is
-    // performed here, but wrap this response in a Promise anyway
-    // so that the return object is always a thenable.
+    // If scene contents are provided, no asynchronous work is performed,
+    // but wrap this response in a Promise for a consistent return type.
     return new Promise((resolve) => {
       // Make a scene object from the contents
       // TODO: add more data to this.

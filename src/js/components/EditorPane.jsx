@@ -64,12 +64,12 @@ class EditorPane extends React.PureComponent {
 }
 
 EditorPane.propTypes = {
-  dividerPositionX: React.PropTypes.number,
+  dividerPositionX: React.PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    dividerPositionX: state.settings.dividerPositionX,
+    dividerPositionX: state.persistence.dividerPositionX,
   };
 }
 

@@ -5,6 +5,7 @@ import ColorMarker from '../components/textmarkers/color/ColorMarker';
 import DropdownMarker from '../components/textmarkers/DropdownMarker';
 // import VectorPicker from '../components/textmarkers/vector/VectorPicker';
 import BooleanMarker from '../components/textmarkers/BooleanMarker';
+import EventEmitter from '../components/event-emitter';
 import { editor, parsedYAMLDocument } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
 import {
@@ -369,14 +370,14 @@ function handleEditorChanges(cm, changes) {
 }
 
 /**
- * Handler function for the CodeMirror `scroll` event.
+ * Handler function for the CodeMirror `scroll` and `viewportChange` event.
  * As the different parts of the viewport come into view, insert editor marks
- * that may exist in the viewport.
+ * that may come into view.
  *
  * @param {CodeMirror} cm - instance of CodeMirror editor, automatically
- *          passed in by the editor.on('scroll') event listener.
+ *          passed in by CodeMirror's event listener.
  */
-function handleEditorScroll(cm) {
+function handleEditorViewportChange(cm) {
   const viewport = cm.getViewport();
   insertTextMarkers(cm, parsedYAMLDocument.nodes, viewport.from, viewport.to);
 }
@@ -395,6 +396,13 @@ export function initTextMarkers() {
   editor.on('changes', handleEditorChanges);
 
   // CodeMirror only parses lines inside of the current viewport.
-  // When we scroll, we start inserting marks on lines as they're parsed.
-  editor.on('scroll', handleEditorScroll);
+  // When we scroll or resize the editor, we insert new marks that appear
+  editor.on('scroll', handleEditorViewportChange);
+  // Don't use `viewportChange` - this also fires when a new scene is opened
+  // and content is replaced, which adds new markers on top of old ones - it's
+  // super buggy.
+  // editor.on('viewportChange', handleEditorViewportChange);
+  EventEmitter.subscribe('divider:reposition', () => {
+    handleEditorViewportChange(editor);
+  });
 }

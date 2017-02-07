@@ -8,6 +8,8 @@ import {
   MARK_FILE_CLEAN,
   MARK_FILE_DIRTY,
   STASH_DOCUMENT,
+  SAVE_SCENE,
+  MAPZEN_SAVE_SCENE,
 } from '../actions';
 import { getBasePathFromUrl } from '../../tools/helpers';
 
@@ -32,6 +34,19 @@ const initialState = {
   // Indicates which of the files is the main scene file (usually the
   // first one)
   rootFileIndex: null,
+  // Set to true when scene is first opened, turn to false when an edit is made.
+  justOpened: true,
+  // Whether the scene was saved somewhere.
+  saved: false,
+  // Where the scene was saved last. Valid values are "LOCAL" (for local file
+  // system), "MAPZEN" (for Mapzen scene API), "ANON_GIST" (for Anonymous
+  // Gist, legacy use only), or `null` if not previously saved. This variable
+  // should be *set* if a file is first loaded from each of those locations.
+  saveLocation: null,
+  // When saved, record a timestamp.
+  saveTimestamp: null,
+  // Mapzen API use only: store the scene data object.
+  mapzenSceneData: null,
 };
 
 /*
@@ -115,13 +130,14 @@ const scene = (state = initialState, action) => {
         delete mutatedAction.type; // Prevent saving of `type` in store
 
         // Calculate originalBasePath if originalUrl is present
-        if (mutatedAction.originalUrl && !mutatedAction.originalBasePath) {
-          mutatedAction.originalBasePath = getBasePathFromUrl(mutatedAction.originalUrl);
+        if (action.originalUrl && !action.originalBasePath) {
+          mutatedAction.originalBasePath = getBasePathFromUrl(action.originalUrl);
         }
 
         return {
           ...initialState,
           ...mutatedAction,
+          justOpened: true,
           counter: state.counter + 1,
           // Set the active file and root file to the first one in the
           // array unless otherwise specified. (e.g. if restoring state)
@@ -222,6 +238,7 @@ const scene = (state = initialState, action) => {
     case MARK_FILE_DIRTY:
       return {
         ...state,
+        justOpened: false,
         files: [
           ...state.files.slice(0, action.fileIndex),
           {
@@ -243,6 +260,25 @@ const scene = (state = initialState, action) => {
           },
           ...state.files.slice(action.index + 1),
         ],
+      };
+    case SAVE_SCENE:
+      return {
+        ...state,
+        justOpened: false,
+        saved: true,
+        saveLocation: action.location,
+        saveTimestamp: action.timestamp,
+        // Do not overwrite mapzenSceneData here.
+      };
+    // Only for scenes saved in Mapzen Scenes API.
+    case MAPZEN_SAVE_SCENE:
+      return {
+        ...state,
+        justOpened: false,
+        saved: true,
+        saveLocation: 'MAPZEN',
+        saveTimestamp: action.data.updated_at,
+        mapzenSceneData: action.data,
       };
     default:
       return state;

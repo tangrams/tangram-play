@@ -33,7 +33,7 @@ class ConfirmDialogModal extends React.Component {
   onClickCancel() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
     this.props.cancelCallback();
   }
@@ -41,7 +41,7 @@ class ConfirmDialogModal extends React.Component {
   onClickConfirm() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
     this.props.confirmCallback();
   }
@@ -80,8 +80,8 @@ class ConfirmDialogModal extends React.Component {
 }
 
 ConfirmDialogModal.propTypes = {
-  dispatch: React.PropTypes.func,
-  modalId: React.PropTypes.number,
+  dispatch: React.PropTypes.func.isRequired,
+  modalId: React.PropTypes.number.isRequired,
 
   // Error message might be an Error object or a string
   message: React.PropTypes.string.isRequired,

@@ -3,6 +3,7 @@ import CodeMirror from 'codemirror';
 import React from 'react';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
+import VERSION from '../version.json';
 
 import Modal from './Modal';
 
@@ -16,7 +17,7 @@ class AboutModal extends React.PureComponent {
   onClickClose() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
@@ -27,7 +28,11 @@ class AboutModal extends React.PureComponent {
         cancelFunction={this.onClickClose}
       >
         <div className="modal-text modal-about-text">
-          <h4>About Tangram Play (BETA)</h4>
+          <h4>About Tangram Play</h4>
+
+          <p>
+            Tangram Play (beta) v{VERSION.v}
+          </p>
 
           <p>
             {/* Get and display version numbers.
@@ -54,8 +59,8 @@ class AboutModal extends React.PureComponent {
 }
 
 AboutModal.propTypes = {
-  dispatch: React.PropTypes.func,
-  modalId: React.PropTypes.number,
+  dispatch: React.PropTypes.func.isRequired,
+  modalId: React.PropTypes.number.isRequired,
 };
 
 export default connect()(AboutModal);

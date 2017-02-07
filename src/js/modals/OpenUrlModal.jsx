@@ -59,7 +59,7 @@ class OpenUrlModal extends React.Component {
   unmountSelf() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
-      key: this.props.modalId,
+      id: this.props.modalId,
     });
   }
 
@@ -108,8 +108,8 @@ class OpenUrlModal extends React.Component {
 }
 
 OpenUrlModal.propTypes = {
-  dispatch: React.PropTypes.func,
-  modalId: React.PropTypes.number,
+  dispatch: React.PropTypes.func.isRequired,
+  modalId: React.PropTypes.number.isRequired,
 };
 
 export default connect()(OpenUrlModal);

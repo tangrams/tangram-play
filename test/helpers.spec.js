@@ -32,7 +32,7 @@ describe('Helpers', () => {
     });
 
     it('ignores urls that should be relative links', () => {
-      const test1 = 'data/scenes/empty.yaml';
+      const test1 = 'data/scenes/blank.yaml';
       const test2 = 'foo.yaml';
       const test3 = '/foo.yaml';
       const test4 = './foo.yaml';

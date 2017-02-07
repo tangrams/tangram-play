@@ -23,7 +23,7 @@ test:
   post:
     # For Precog.
     - NODE_ENV=production gulp build
-    - cp -R build data index.html embed $CIRCLE_ARTIFACTS
+    - cp -R build data index.html embed docs $CIRCLE_ARTIFACTS
 
 # For hosting on mapzen.com. Only deploy if tests pass. Compiled files are
 # rebuilt for a production environment.
@@ -32,6 +32,12 @@ deployment:
     branch: master
     commands:
       - aws s3 sync $CIRCLE_ARTIFACTS $AWS_PROD_DESTINATION --delete
+  # For the moment, the `next` branch also auto-deploys to dev. Note this
+  # clobbers the `staging` branch. Remove if/when not needed.
+  next:
+    branch: next
+    commands:
+      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DEV_DESTINATION --delete
   staging:
     branch: staging
     commands:
