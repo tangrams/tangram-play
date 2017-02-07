@@ -28,9 +28,11 @@
     <strong>Hey there!</strong> We think you’re on a mobile device, but the Tangram Play editor is best suited for desktop devices. You can close this message to continue or come back later from a desktop browser. <strong>Thanks for visiting!</strong>
   </div>
 
-  <script src="https://mapzen.com/tangram/0.11/tangram.min.js"></script>
+  <script id="tangram-lib"></script>
   <script id="js-app"></script>
   <script>
+    var TANGRAM_DEFAULT_LIB = 'https://mapzen.com/tangram/0.11/tangram.min.js';
+
     // Tangram Play is a huge app. For devices that cannot run it, we won't
     // bother downloading it.
     if (isMobile() === true) {
@@ -55,8 +57,29 @@
       document.getElementById('js-loader').style.visibility = 'visible';
     }
 
+    function parseQuery (qstr) {
+        var query = {};
+        var a = qstr.split('&');
+        for (var i in a) {
+            var b = a[i].split('=');
+            query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
+        }
+        return query;
+    }
+
     function loadApp() {
-      document.getElementById('js-app').src = 'build/js/main.js';
+      var tangram = document.getElementById('tangram-lib');
+      var query = parseQuery(window.location.search.slice(1));
+      var lib;
+      if (query.lib) {
+        if (query.lib.match(/^https?:\/\/(.*mapzen.com|localhost)(:[0-9]+)?\/.*tangram\.(min|debug)\.js$/)) {
+          lib = query.lib;
+        }
+      }
+      tangram.src = lib || TANGRAM_DEFAULT_LIB;
+      tangram.onload = function () {
+        document.getElementById('js-app').src = 'build/js/main.js';
+      }
     }
   </script>
 </body>
