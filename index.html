@@ -76,7 +76,7 @@
       if (query.lib && !lib) {
         console.error('Refusing to load Tangram from ' + query.lib + ': library must be hosted on *.mapzen.com or localhost');
       }
-      tangram.src = debug || lib || TANGRAM_DEFAULT_LIB;
+      tangram.src = lib || debug || TANGRAM_DEFAULT_LIB;
       tangram.onerror = function (error) {
         throw new URIError('Error loading Tangram library at ' + error.target.src + '.');
       }
