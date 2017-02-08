@@ -83,9 +83,9 @@
       }
       tangram.onload = function () {
         if (lib) {
-          console.log('Loading Tangram from', lib);
+          console.info('Loading Tangram from', lib);
         } else if (debug) {
-          console.log('Loading Tangram debug library:', TANGRAM_DEBUG_LIB);
+          console.info('Loading Tangram debug library:', TANGRAM_DEBUG_LIB);
         }
         document.getElementById('js-app').src = APP_SCRIPT_PATH;
       }

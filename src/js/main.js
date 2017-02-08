@@ -26,7 +26,7 @@ import {
 } from './store/actions';
 
 // Miscellaneous
-import { getQueryStringObject } from './tools/url-state';
+import { getURLSearchParam } from './tools/url-state';
 import { migrateLocalStorageToForage } from './storage/migrate';
 
 // Error tracking
@@ -61,7 +61,7 @@ migrateLocalStorageToForage();
 const STORAGE_PERSISTENCE = 'persistent-state';
 
 // Debug flags
-if (getQueryStringObject().debug === 'true') {
+if (getURLSearchParam('debug') === 'true') {
   store.dispatch({
     type: SET_APP_STATE,
     debug: true,

@@ -20,7 +20,7 @@ if (!window.URLSearchParams) {
  * It breaks down the query string, e.g. '?scene=foo.yaml'
  * into this: { scene: "foo.yaml" }
  *
- * @param {string} queryString - defaults to window.location.search
+ * @param {string} queryString - Optional. Defaults to window.location.search
  * @returns {Object} deserialized key-value pairs
  */
 export function getQueryStringObject(queryString = window.location.search) {
@@ -44,11 +44,12 @@ export function getQueryStringObject(queryString = window.location.search) {
 /**
  * Convenience function for returning a parameter from current query string.
  *
- * @param {string} param - search param to get
- * @returns {string} value - value, if present; otherwise returns `undefined`
+ * @param {string} param - Search param to get
+ * @param {string} queryString - Optional. Defaults to window.location.search
+ * @returns {string} value - value, if present; otherwise returns `null`
  */
-export function getURLSearchParam(param) {
-  const params = new window.URLSearchParams(window.location.search);
+export function getURLSearchParam(param, queryString = window.location.search) {
+  const params = new window.URLSearchParams(queryString);
   return params.get(param);
 }
 
@@ -62,10 +63,11 @@ export function getURLSearchParam(param) {
  *          To delete an existing query string, pass in a property whose value
  *          is `null`.
  *          Params are added or replaced; we do not append them.
- * @param {string} queryString - the query string to merge params into.
+ * @param {string} queryString - Optional. the query string to merge params
+ *          into. Defaults to window.location.search
  * @returns {string} newQueryString - a new query string.
  */
-function mergeParamObjectToQueryString(params = {}, queryString) {
+export function mergeParamObjectToQueryString(params = {}, queryString = window.location.search) {
   const searchParams = new window.URLSearchParams(queryString);
 
   Object.entries(params).forEach((param) => {
@@ -95,7 +97,7 @@ function mergeParamObjectToQueryString(params = {}, queryString) {
  */
 export function replaceHistoryState(params = {}) {
   const locationPrefix = window.location.pathname;
-  const queryString = mergeParamObjectToQueryString(params, window.location.search);
+  const queryString = mergeParamObjectToQueryString(params);
 
   // Browser security policies prevent manipulating history where the URL
   // includes 'http://localhost', even if it's the current origin. So we do
@@ -115,7 +117,7 @@ export function replaceHistoryState(params = {}) {
  */
 export function pushHistoryState(params = {}) {
   const locationPrefix = window.location.pathname;
-  const queryString = mergeParamObjectToQueryString(params);
+  const queryString = mergeParamObjectToQueryString(params, '');
 
   // See comment for similar line in `replaceHistoryState()`.
   window.history.pushState(params, null, locationPrefix + queryString + window.location.hash);

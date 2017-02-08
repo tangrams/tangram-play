@@ -18,7 +18,7 @@ import store from './store';
 import { SET_APP_STATE } from './store/actions';
 
 // Miscellaneous
-import { getQueryStringObject } from './tools/url-state';
+import { getURLSearchParam } from './tools/url-state';
 
 // Error tracking
 // Load this before all other modules. Only load when run in production.
@@ -39,7 +39,7 @@ if (document.domain.indexOf('mapzen.com') === 0) {
 // Set some application state variables that control the view in embedded mode
 store.dispatch({
   type: SET_APP_STATE,
-  debug: (getQueryStringObject().debug === 'true'),
+  debug: (getURLSearchParam('debug') === 'true'),
   isEmbedded: true,
   disableMapToolbar: true,
   disableMultiFile: true,
