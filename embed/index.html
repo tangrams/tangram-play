@@ -18,7 +18,48 @@
 </head>
 <body>
   <div id="root" class="embedded application-container"></div>
-  <script src='https://mapzen.com/tangram/0.11/tangram.min.js'></script>
-  <script src="../build/js/embedded.js"></script>
+  <script id="tangram-lib"></script>
+  <script id="js-app"></script>
+  <script>
+    var TANGRAM_DEFAULT_LIB = 'https://mapzen.com/tangram/0.11/tangram.min.js';
+    var TANGRAM_DEBUG_LIB = 'https://mapzen.com/tangram/0.11/tangram.debug.js';
+    var APP_SCRIPT_PATH = '../build/js/embedded.js';
+
+    /* Note: code is duplicated from index.html loader */
+
+    function parseQuery() {
+      var query = {};
+      window.location.search.slice(1).split('&').forEach(function (i) {
+        var b = i.split('=');
+        if (b[0].length === 0) return;
+        query[window.decodeURIComponent(b[0])] = window.decodeURIComponent(b[1]);
+      });
+      return query;
+    }
+
+    function loadApp() {
+      var tangram = document.getElementById('tangram-lib');
+      var query = parseQuery();
+      var debug = (query.debug) ? TANGRAM_DEBUG_LIB : null;
+      var lib = (query.lib && query.lib.match(/^https?:\/\/(.*mapzen.com|localhost)/)) ? query.lib : null;
+      if (query.lib && !lib) {
+        console.error('Refusing to load Tangram from ' + query.lib + ': library must be hosted on *.mapzen.com or localhost');
+      }
+      tangram.src = lib || debug || TANGRAM_DEFAULT_LIB;
+      tangram.onerror = function (error) {
+        throw new URIError('Error loading Tangram library at ' + error.target.src + '.');
+      }
+      tangram.onload = function () {
+        if (lib) {
+          console.log('Loading Tangram from', lib);
+        } else if (debug) {
+          console.log('Loading Tangram debug library:', TANGRAM_DEBUG_LIB);
+        }
+        document.getElementById('js-app').src = APP_SCRIPT_PATH;
+      }
+    }
+
+    loadApp();
+  </script>
 </body>
 </html>

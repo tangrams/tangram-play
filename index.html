@@ -33,6 +33,7 @@
   <script>
     var TANGRAM_DEFAULT_LIB = 'https://mapzen.com/tangram/0.11/tangram.min.js';
     var TANGRAM_DEBUG_LIB = 'https://mapzen.com/tangram/0.11/tangram.debug.js';
+    var APP_SCRIPT_PATH = 'build/js/main.js';
 
     // Tangram Play is a huge app. For devices that cannot run it, we won't
     // bother downloading it.
@@ -86,7 +87,7 @@
         } else if (debug) {
           console.log('Loading Tangram debug library:', TANGRAM_DEBUG_LIB);
         }
-        document.getElementById('js-app').src = 'build/js/main.js';
+        document.getElementById('js-app').src = APP_SCRIPT_PATH;
       }
     }
   </script>
