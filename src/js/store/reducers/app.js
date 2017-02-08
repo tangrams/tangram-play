@@ -9,6 +9,9 @@ const initialState = {
   // state shall be treated the same as a `false` value.
   initialized: false,
 
+  // Set to `true` for debug mode
+  debug: false,
+
   // Set to `true` while Tangram is loading and rendering a scene.
   tangramSceneLoading: false,
 
