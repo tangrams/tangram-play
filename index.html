@@ -81,8 +81,11 @@
         throw new URIError('Error loading Tangram library at ' + error.target.src + '.');
       }
       tangram.onload = function () {
-        if (debug) console.log('Loading Tangram debug library:', TANGRAM_DEBUG_LIB);
-        if (lib) console.log('Loading Tangram from', lib);
+        if (lib) {
+          console.log('Loading Tangram from', lib);
+        } else if (debug) {
+          console.log('Loading Tangram debug library:', TANGRAM_DEBUG_LIB);
+        }
         document.getElementById('js-app').src = 'build/js/main.js';
       }
     }
