@@ -32,6 +32,7 @@
   <script id="js-app"></script>
   <script>
     var TANGRAM_DEFAULT_LIB = 'https://mapzen.com/tangram/0.11/tangram.min.js';
+    var TANGRAM_DEBUG_LIB = 'https://mapzen.com/tangram/0.11/tangram.debug.js';
 
     // Tangram Play is a huge app. For devices that cannot run it, we won't
     // bother downloading it.
@@ -57,27 +58,31 @@
       document.getElementById('js-loader').style.visibility = 'visible';
     }
 
-    function parseQuery (qstr) {
-        var query = {};
-        var a = qstr.split('&');
-        for (var i in a) {
-            var b = a[i].split('=');
-            query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
-        }
-        return query;
+    function parseQuery() {
+      var query = {};
+      window.location.search.slice(1).split('&').forEach(function (i) {
+        var b = i.split('=');
+        if (b[0].length === 0) return;
+        query[window.decodeURIComponent(b[0])] = window.decodeURIComponent(b[1]);
+      });
+      return query;
     }
 
     function loadApp() {
       var tangram = document.getElementById('tangram-lib');
-      var query = parseQuery(window.location.search.slice(1));
-      var lib;
-      if (query.lib) {
-        if (query.lib.match(/^https?:\/\/(.*mapzen.com|localhost)(:[0-9]+)?\/.*tangram\.(min|debug)\.js$/)) {
-          lib = query.lib;
-        }
+      var query = parseQuery();
+      var debug = (query.debug) ? TANGRAM_DEBUG_LIB : null;
+      var lib = (query.lib && query.lib.match(/^https?:\/\/(.*mapzen.com|localhost)/)) ? query.lib : null;
+      if (query.lib && !lib) {
+        console.error('Refusing to load Tangram from ' + query.lib + ': library must be hosted on *.mapzen.com or localhost');
       }
-      tangram.src = lib || TANGRAM_DEFAULT_LIB;
+      tangram.src = debug || lib || TANGRAM_DEFAULT_LIB;
+      tangram.onerror = function (error) {
+        throw new URIError('Error loading Tangram library at ' + error.target.src + '.');
+      }
       tangram.onload = function () {
+        if (debug) console.log('Loading Tangram debug library:', TANGRAM_DEBUG_LIB);
+        if (lib) console.log('Loading Tangram from', lib);
         document.getElementById('js-app').src = 'build/js/main.js';
       }
     }
