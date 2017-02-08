@@ -26,6 +26,7 @@ import {
 } from './store/actions';
 
 // Miscellaneous
+import { getQueryStringObject } from './tools/url-state';
 import { migrateLocalStorageToForage } from './storage/migrate';
 
 // Error tracking
@@ -58,6 +59,14 @@ localforage.config({
 migrateLocalStorageToForage();
 
 const STORAGE_PERSISTENCE = 'persistent-state';
+
+// Debug flags
+if (getQueryStringObject().debug === 'true') {
+  store.dispatch({
+    type: SET_APP_STATE,
+    debug: true,
+  });
+}
 
 // Mapzen host flags
 if (window.location.hostname.indexOf('mapzen.com') >= 0) {
