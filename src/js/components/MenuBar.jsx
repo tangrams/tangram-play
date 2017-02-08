@@ -204,6 +204,7 @@ function clickSupport() {
   showModal('SUPPORT');
 }
 
+const getStartedLink = './docs';
 const documentationLink = 'https://mapzen.com/documentation/tangram/';
 // const tutorialLink = 'https://tangrams.github.io/tangram-tutorial/';
 
@@ -441,8 +442,11 @@ class MenuBar extends React.Component {
                 <MenuItem onClick={clickWhatsNew}>
                   <Icon type="bt-gift" />What’s new?
                 </MenuItem>
+                <MenuItem href={getStartedLink} target="_blank" rel="noopener noreferrer">
+                  <Icon type="bt-light-bulb" />Get started
+                </MenuItem>
                 <MenuItem href={documentationLink} target="_blank" rel="noopener noreferrer">
-                  <Icon type="bt-book" />Documentation
+                  <Icon type="bt-book" />Tangram documentation
                 </MenuItem>
                 {/* // TEMP: hidden.
                   <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
