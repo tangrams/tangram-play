@@ -13,7 +13,11 @@ import {
 } from './highlight';
 import { replaceHistoryState } from '../tools/url-state';
 import { loadScene } from '../map/map';
-import { insertTextMarkersInViewport } from '../editor/textmarkers';
+import {
+  clearTextMarkers,
+  insertTextMarkers,
+  insertTextMarkersInViewport,
+} from '../editor/textmarkers';
 
 import store from '../store';
 import { MARK_FILE_DIRTY, MARK_FILE_CLEAN } from '../store/actions';
@@ -47,6 +51,14 @@ export function initEditor(el) {
   // Turn on highlighting module
   editor.on('gutterClick', highlightOnEditorGutterClick);
   editor.on('changes', highlightOnEditorChanges);
+
+  // Folding code will remove text markers, and unfolding code adds them back.
+  editor.on('fold', (cm, from, to) => {
+    clearTextMarkers(cm, from.line, to.line);
+  });
+  editor.on('unfold', (cm, from, to) => {
+    insertTextMarkers(cm, parsedYAMLDocument.nodes, from.line, to.line);
+  });
 }
 
 /**
