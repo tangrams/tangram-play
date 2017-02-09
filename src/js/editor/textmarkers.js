@@ -379,7 +379,7 @@ function handleEditorChanges(cm, changes) {
  *          passed in by CodeMirror's event listener.
  */
 function handleEditorViewportChange(cm) {
-  insertTextMarkersInViewport(editor);
+  insertTextMarkersInViewport(cm);
 }
 
 /**
