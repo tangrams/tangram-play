@@ -55,6 +55,8 @@ export function initEditor(el) {
   // Folding code will remove text markers, and unfolding code adds them back.
   editor.on('fold', (cm, from, to) => {
     clearTextMarkers(cm, from.line, to.line);
+    // Adds text markers that might appear because new lines have "scrolled" into view
+    insertTextMarkersInViewport(cm);
   });
   editor.on('unfold', (cm, from, to) => {
     insertTextMarkers(cm, parsedYAMLDocument.nodes, from.line, to.line);

@@ -379,8 +379,7 @@ function handleEditorChanges(cm, changes) {
  *          passed in by CodeMirror's event listener.
  */
 function handleEditorViewportChange(cm) {
-  const viewport = cm.getViewport();
-  insertTextMarkers(cm, parsedYAMLDocument.nodes, viewport.from, viewport.to);
+  insertTextMarkersInViewport(editor);
 }
 
 /**
