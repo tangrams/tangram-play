@@ -57,7 +57,9 @@ function closeSignInWindow() {
 function signInStateReady() {
   EventEmitter.dispatch('mapzen:sign_in', {});
   closeSignInWindow();
-  hideSignInOverlay();
+  window.setTimeout(() => {
+    hideSignInOverlay();
+  }, 1600);
 
   // Returns focus to the original parent window.
   window.focus();

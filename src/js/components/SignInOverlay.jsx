@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from 'react-bootstrap/lib/Button';
 
 import EventEmitter from '../components/event-emitter';
 
@@ -10,6 +11,7 @@ export default class SignInOverlay extends React.Component {
       visible: false,
     };
 
+    this.onClickReturn = this.onClickReturn.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
   }
@@ -24,14 +26,17 @@ export default class SignInOverlay extends React.Component {
     });
   }
 
+  onClickReturn(event) {
+    EventEmitter.dispatch('mapzen:sign_in', {});
+    this.hide();
+  }
+
   show() {
     this.setState({ visible: true });
   }
 
   hide() {
-    window.setTimeout(() => {
-      this.setState({ visible: false });
-    }, 1600);
+    this.setState({ visible: false });
   }
 
   render() {
@@ -42,6 +47,9 @@ export default class SignInOverlay extends React.Component {
     return (
       <div className="shield sign-in-overlay" style={displayStyle}>
         <div className="sign-in-overlay-title">Waiting for you to sign in...</div>
+        <Button onClick={this.onClickReturn}>
+          Go back to Tangram Play
+        </Button>
       </div>
     );
   }

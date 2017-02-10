@@ -1,6 +1,11 @@
 .sign-in-overlay {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+.sign-in-overlay-title {
+  margin-bottom: 1em;
 }
