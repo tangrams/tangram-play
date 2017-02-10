@@ -59,7 +59,7 @@ function signInStateReady() {
   closeSignInWindow();
   window.setTimeout(() => {
     hideSignInOverlay();
-  }, 1600);
+  }, 800);
 
   // Returns focus to the original parent window.
   window.focus();
