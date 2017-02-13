@@ -20,8 +20,12 @@ const initialState = {
   // Set to `true` while Tangram is loading and rendering a scene.
   tangramSceneLoading: false,
 
-  // Set to `true` when sign-in overlay is displayed (waiting for user sign-in)
+  // When awaiting user sign-in
+  // Set `signInOverlay` to `true` when sign-in overlay is displayed
+  // Set `signInCallbackMethod` to a string value representing what to do after user signs in
+  // Reset this to null if sign-in is canceled or action is complete.
   signInOverlay: false,
+  signInCallbackMethod: null,
 
   recentScenes: [],
   showEditorHiddenTooltip: false,
@@ -65,6 +69,11 @@ const app = (state = initialState, action) => {
       return {
         ...state,
         signInOverlay: false,
+      };
+    case 'SET_SIGN_IN_CALLBACK_METHOD':
+      return {
+        ...state,
+        signInCallbackMethod: action.method,
       };
     default:
       return state;

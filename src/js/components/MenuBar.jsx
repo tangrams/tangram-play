@@ -78,15 +78,17 @@ function clickSaveFile() {
   exportSceneFile();
 }
 
-function unsubscribeSaveAsToCloud() {
-  // eslint-disable-next-line no-use-before-define
-  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
+function clearSignInCallbackMethod() {
+  store.dispatch({
+    type: 'SET_SIGN_IN_CALLBACK_METHOD',
+    method: null,
+  });
 }
 
 function clickSaveAsToCloud() {
   if (checkUserAuthAvailability() === false) return;
 
-  unsubscribeSaveAsToCloud();
+  clearSignInCallbackMethod();
   requestUserSignInState()
     .then((data) => {
       if (!data) {
@@ -98,8 +100,11 @@ function clickSaveAsToCloud() {
         showModal('SAVE_TO_CLOUD');
       } else {
         const message = 'You are not signed in! Please sign in now.';
-        showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveAsToCloud);
-        EventEmitter.subscribe('mapzen:sign_in', clickSaveAsToCloud);
+        showConfirmDialogModal(message, openSignInWindow, clearSignInCallbackMethod);
+        store.dispatch({
+          type: 'SET_SIGN_IN_CALLBACK_METHOD',
+          method: 'SAVE_TO_CLOUD',
+        });
       }
     });
 }
@@ -108,11 +113,6 @@ function clickSaveAsToCloud() {
  * Check whether the scene is already saved to Mapzen and if so, confirm overwrite.
  * Otherwise, use the Save As function.
  */
-function unsubscribeSaveToCloud() {
-  // eslint-disable-next-line no-use-before-define
-  EventEmitter.unsubscribe('mapzen:sign_in', clickSaveAsToCloud);
-}
-
 function clickSaveToCloud() {
   const scene = store.getState().scene;
   if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
@@ -120,7 +120,7 @@ function clickSaveToCloud() {
     // todo refactor
     if (checkUserAuthAvailability() === false) return;
 
-    unsubscribeSaveToCloud();
+    clearSignInCallbackMethod();
     requestUserSignInState()
       .then((data) => {
         if (!data) {
@@ -133,8 +133,11 @@ function clickSaveToCloud() {
           showModal('SAVE_EXISTING_TO_CLOUD');
         } else {
           const message = 'You are not signed in! Please sign in now.';
-          showConfirmDialogModal(message, openSignInWindow, unsubscribeSaveToCloud);
-          EventEmitter.subscribe('mapzen:sign_in', clickSaveToCloud);
+          showConfirmDialogModal(message, openSignInWindow, clearSignInCallbackMethod);
+          store.dispatch({
+            type: 'SET_SIGN_IN_CALLBACK_METHOD',
+            method: 'SAVE_EXISTING_TO_CLOUD',
+          });
         }
       });
   } else {
@@ -142,15 +145,10 @@ function clickSaveToCloud() {
   }
 }
 
-function unsubscribeOpenFromCloud() {
-  // eslint-disable-next-line no-use-before-define
-  EventEmitter.unsubscribe('mapzen:sign_in', clickOpenFromCloud);
-}
-
 function clickOpenFromCloud() {
   if (checkUserAuthAvailability() === false) return;
 
-  unsubscribeOpenFromCloud();
+  clearSignInCallbackMethod();
   requestUserSignInState()
     .then((data) => {
       if (!data) {
@@ -164,10 +162,31 @@ function clickOpenFromCloud() {
         });
       } else {
         const message = 'You are not signed in! Please sign in now.';
-        showConfirmDialogModal(message, openSignInWindow, unsubscribeOpenFromCloud);
-        EventEmitter.subscribe('mapzen:sign_in', clickOpenFromCloud);
+        showConfirmDialogModal(message, openSignInWindow, clearSignInCallbackMethod);
+        store.dispatch({
+          type: 'SET_SIGN_IN_CALLBACK_METHOD',
+          method: 'OPEN_FROM_CLOUD',
+        });
       }
     });
+}
+
+function doSignInCallbackMethod() {
+  const method = store.getState().app.signInCallbackMethod;
+
+  switch (method) {
+    case 'SAVE_TO_CLOUD':
+      clickSaveAsToCloud();
+      break;
+    case 'SAVE_EXISTING_TO_CLOUD':
+      clickSaveToCloud();
+      break;
+    case 'OPEN_FROM_CLOUD':
+      clickOpenFromCloud();
+      break;
+    default:
+      break;
+  }
 }
 
 function onClickShare() {
@@ -236,6 +255,10 @@ class MenuBar extends React.Component {
           });
         }
       });
+  }
+
+  componentDidMount() {
+    EventEmitter.subscribe('mapzen:sign_in', doSignInCallbackMethod);
   }
 
   onClickInspect() {
