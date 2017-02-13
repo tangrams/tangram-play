@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/lib/Button';
 
 import store from '../store';
 import { SHOW_SIGN_IN_OVERLAY, HIDE_SIGN_IN_OVERLAY } from '../store/actions';
-import EventEmitter from '../components/event-emitter';
+import { closeSignInWindow } from '../user/sign-in-window';
 
 // Externally called to turn this on.
 export function showSignInOverlay() {
@@ -22,13 +22,13 @@ class SignInOverlay extends React.Component {
     this.onClickReturn = this.onClickReturn.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-
-  }
-
   onClickReturn(event) {
-    EventEmitter.dispatch('mapzen:sign_in', {});
     hideSignInOverlay();
+    closeSignInWindow();
+    this.props.dispatch({
+      type: 'SET_SIGN_IN_CALLBACK_METHOD',
+      method: null,
+    });
   }
 
   render() {
@@ -48,6 +48,7 @@ class SignInOverlay extends React.Component {
 }
 
 SignInOverlay.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
   visible: React.PropTypes.bool,
 };
 

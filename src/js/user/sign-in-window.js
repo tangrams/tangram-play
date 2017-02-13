@@ -45,7 +45,7 @@ function popupCenter(url, title, w, h) {
  * Closing the sign-in window should automatically clean up after itself
  * due to the `close` event handler.
  */
-function closeSignInWindow() {
+export function closeSignInWindow() {
   if (signInWindow) {
     signInWindow.close();
   }
