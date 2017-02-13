@@ -1,7 +1,12 @@
 /**
  * Record various properties related to app state.
  */
-import { APP_INITIALIZED, SET_APP_STATE } from '../actions';
+import {
+  APP_INITIALIZED,
+  SET_APP_STATE,
+  SHOW_SIGN_IN_OVERLAY,
+  HIDE_SIGN_IN_OVERLAY,
+} from '../actions';
 
 const initialState = {
   // Set to `true` after Tangram Play has initialized - ready and waiting to
@@ -14,6 +19,9 @@ const initialState = {
 
   // Set to `true` while Tangram is loading and rendering a scene.
   tangramSceneLoading: false,
+
+  // Set to `true` when sign-in overlay is displayed (waiting for user sign-in)
+  signInOverlay: false,
 
   recentScenes: [],
   showEditorHiddenTooltip: false,
@@ -48,6 +56,16 @@ const app = (state = initialState, action) => {
 
       return { ...settingsObj };
     }
+    case SHOW_SIGN_IN_OVERLAY:
+      return {
+        ...state,
+        signInOverlay: true,
+      };
+    case HIDE_SIGN_IN_OVERLAY:
+      return {
+        ...state,
+        signInOverlay: false,
+      };
     default:
       return state;
   }
