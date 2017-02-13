@@ -33,7 +33,7 @@ export function parseVersionString(v) {
  *        testing.
  * @returns {Boolean}
  */
-export function isNewMinorVersion(currentVersion = VERSION, prevVersion) {
+export function isNewMinorVersion(currentVersion = VERSION.v, prevVersion) {
   const version = parseVersionString(currentVersion);
   let lastVersion;
   if (!prevVersion) {

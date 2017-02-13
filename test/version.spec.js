@@ -56,5 +56,14 @@ describe('Version tools', () => {
       assert.isFalse(bool2);
       assert.isFalse(bool3);
     });
+
+    it('reads version.json', () => {
+      const bool1 = isNewMinorVersion();
+      const bool2 = isNewMinorVersion(undefined, '0.4.9');
+      const bool3 = isNewMinorVersion(undefined, '999.0.0');
+      assert.isTrue(bool1);
+      assert.isTrue(bool2);
+      assert.isFalse(bool3);
+    });
   });
 });
