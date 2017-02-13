@@ -124,6 +124,7 @@ export function requestUserSignOut() {
     }
 
     store.dispatch({ type: USER_SIGNED_OUT });
+    cachedSignInData = undefined;
     disableAdminFlags();
   });
 }
