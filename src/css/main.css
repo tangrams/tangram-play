@@ -76,11 +76,11 @@
   --font-family: 'Roboto', sans-serif;
   --root-font-size: 14px;
   --editor-font-family: 'Source Code Pro', monospace;
-  --ui-editor-background-color: #1c1f24;
-  --ui-base-color: #26282e;
-  --ui-component-color: #303237;
-  --ui-element-color: #36383e;
-  --ui-active-color: #3d3f46;
+  --ui-editor-background-color: #1c1929;
+  --ui-base-color: #262233;
+  --ui-component-color: #302b3c;
+  --ui-element-color: #363243;
+  --ui-active-color: #3d3948;
   --ui-highlight-color: yellow;
   --ui-highlight-color-2: rgb(221, 221, 0);
   --ui-component-text-color: #eefafa;
