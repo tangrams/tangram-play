@@ -154,6 +154,18 @@ export function getRootFileName() {
   return scene.files[scene.rootFileIndex].filename || 'scene.yaml';
 }
 
+export function markSceneSaved(saveDispatch) {
+  editor.doc.markClean();
+
+  // Marked "saved" state in UI
+  store.dispatch({
+    type: MARK_FILE_CLEAN,
+    fileIndex: 0, // TODO: replace with current file
+  });
+
+  store.dispatch(saveDispatch);
+}
+
 export function exportSceneFile() {
   const typedArray = getEditorContent();
   const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
@@ -162,14 +174,8 @@ export function exportSceneFile() {
   // Use FileSaver implementation, pass `true` as third parameter
   // to prevent auto-prepending a Byte-Order Mark (BOM)
   saveAs(blob, filename, true);
-  editor.doc.markClean();
 
-  // Marked "saved" state in UI
-  store.dispatch({
-    type: MARK_FILE_CLEAN,
-    fileIndex: 0, // TODO: replace with current file
-  });
-  store.dispatch({
+  markSceneSaved({
     type: SAVE_SCENE,
     location: 'FILE',
     timestamp: new Date().toISOString(),
