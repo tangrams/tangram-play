@@ -7,8 +7,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 import { showErrorModal } from './ErrorModal';
 import { saveToMapzenUserAccount } from '../storage/mapzen';
-import { editor } from '../editor/editor';
-import { getRootFileName } from '../editor/io';
+import { getRootFileName, markSceneSaved } from '../editor/io';
 import { replaceHistoryState } from '../tools/url-state';
 
 // Redux
@@ -139,11 +138,7 @@ class SaveToCloudModal extends React.Component {
     // Close the modal
     this.unmountSelf();
 
-    // Mark as clean state in the editor
-    editor.doc.markClean();
-
-    // Store scene data
-    this.props.dispatch({
+    markSceneSaved({
       type: MAPZEN_SAVE_SCENE,
       data,
     });
