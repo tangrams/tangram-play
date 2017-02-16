@@ -1,0 +1,51 @@
+
+.code-snippet-modal {
+  width: 660px;
+}
+
+.code-snippet-textarea-container {
+  width: 600px;
+  height: 500px;
+  margin-bottom: 1em;
+
+  textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    font-family: var(--editor-font-family);
+    font-size: 1em;
+    padding: 1em;
+    white-space: nowrap;
+  }
+}
+
+/* TODO: Generalize tab stuff. these are for non-editor tabs */
+.code-snippet-tabs {
+  display: inline-block;
+  margin-left: 1px;
+}
+
+.code-snippet-tab {
+  display: inline-block;
+  padding: 0.65em 1em;
+  border-top-left-radius: var(--ui-border-radius);
+  border-top-right-radius: var(--ui-border-radius);
+  border: 1px solid gray;
+  border-bottom: 0;
+  margin-right: 3px;
+  cursor: pointer;
+  box-shadow: var(--ui-emboss-shadow);
+}
+
+.code-snippet-tab:hover {
+}
+
+.code-snippet-tab-selected {
+  color: var(--ui-highlight-color);
+}
+
+.code-snippet-tabs-right {
+  display: inline-block;
+  float: right;
+  line-height: 30px;
+}
