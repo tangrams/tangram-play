@@ -95,7 +95,7 @@ class CodeSnippetModal extends React.PureComponent {
     super(props);
 
     this.state = {
-      htmlToggle: 'true',
+      htmlToggle: true,
     };
 
     this.onClickClose = this.onClickClose.bind(this);
@@ -129,9 +129,10 @@ class CodeSnippetModal extends React.PureComponent {
   }
 
   render() {
-    const url = (this.props.scene && this.props.scene.entrypoint_url) || '[YOUR SCENE FILE HERE]';
+    const url = (this.props.scene && this.props.scene.entrypoint_url) || '[URL FOR YOUR SCENE FILE]';
     const view = getCurrentMapViewFromHash();
-    const snippetMaker = template(MAPZENJS_FULL_SNIPPET, TEMPLATE_SETTINGS);
+    const snippet = this.state.htmlToggle === true ? MAPZENJS_FULL_SNIPPET : MAPZENJS_JS_SNIPPET;
+    const snippetMaker = template(snippet, TEMPLATE_SETTINGS);
     const content = snippetMaker({
       scene: url,
       lat: view.lat,
@@ -148,7 +149,7 @@ class CodeSnippetModal extends React.PureComponent {
 
         <div className="code-snippet-selector">
           <div className="code-snippet-tabs">
-            <div className="code-snippet-tab">Mapzen.js</div>
+            <div className="code-snippet-tab code-snippet-tab-selected">Mapzen.js</div>
             <div className="code-snippet-tab">Leaflet/Tangram</div>
           </div>
           <div className="code-snippet-tabs-right">
@@ -163,12 +164,12 @@ class CodeSnippetModal extends React.PureComponent {
         </div>
 
         <div className="modal-well code-snippet-textarea-container">
+          {/* React wants a readOnly property on this textarea, but adding
+              it drops line breaks, for some reason! */}
           <textarea
-            defaultValue={content}
+            value={content}
             ref={(ref) => { this.textarea = ref; }}
             autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
             spellCheck="false"
           />
         </div>
