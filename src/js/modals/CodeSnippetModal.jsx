@@ -96,10 +96,12 @@ class CodeSnippetModal extends React.PureComponent {
 
     this.state = {
       htmlToggle: true,
+      activeTab: 1,
     };
 
     this.onClickClose = this.onClickClose.bind(this);
     this.onChangeHtmlToggle = this.onChangeHtmlToggle.bind(this);
+    this.setActiveTab = this.setActiveTab.bind(this);
   }
 
   componentDidMount() {
@@ -121,6 +123,10 @@ class CodeSnippetModal extends React.PureComponent {
     this.setState({ htmlToggle: event.target.checked });
   }
 
+  setActiveTab(id, event) {
+    this.setState({ activeTab: id });
+  }
+
   selectTextareaContent() {
     this.textarea.focus();
     this.textarea.select();
@@ -131,7 +137,14 @@ class CodeSnippetModal extends React.PureComponent {
   render() {
     const url = (this.props.scene && this.props.scene.entrypoint_url) || '[URL FOR YOUR SCENE FILE]';
     const view = getCurrentMapViewFromHash();
-    const snippet = this.state.htmlToggle === true ? MAPZENJS_FULL_SNIPPET : MAPZENJS_JS_SNIPPET;
+    let snippet;
+    if (this.state.activeTab === 1) {
+      snippet = this.state.htmlToggle === true ? MAPZENJS_FULL_SNIPPET : MAPZENJS_JS_SNIPPET;
+    }
+    if (this.state.activeTab === 2) {
+      snippet = this.state.htmlToggle === true ? SIMPLE_FULL_SNIPPET : SIMPLE_JS_SNIPPET;
+    }
+
     const snippetMaker = template(snippet, TEMPLATE_SETTINGS);
     const content = snippetMaker({
       scene: url,
@@ -139,6 +152,17 @@ class CodeSnippetModal extends React.PureComponent {
       lng: view.lng,
       zoom: view.zoom,
     });
+    let class1 = 'code-snippet-tab';
+    let class2 = 'code-snippet-tab';
+    let documentationText;
+    if (this.state.activeTab === 1) {
+      class1 += ' code-snippet-tab-selected';
+      documentationText = (<p><a href="https://mapzen.com/documentation/mapzen-js/" target="_blank" rel="noopener noreferrer">Learn more about using Mapzen.js</a>.</p>);
+    }
+    if (this.state.activeTab === 2) {
+      class2 += ' code-snippet-tab-selected';
+      documentationText = (<p><a href="https://mapzen.com/documentation/tangram/" target="_blank" rel="noopener noreferrer">Learn more about using Tangram</a>.</p>);
+    }
 
     return (
       <Modal
@@ -149,8 +173,12 @@ class CodeSnippetModal extends React.PureComponent {
 
         <div className="code-snippet-selector">
           <div className="code-snippet-tabs">
-            <div className="code-snippet-tab code-snippet-tab-selected">Mapzen.js</div>
-            <div className="code-snippet-tab">Leaflet/Tangram</div>
+            <div className={class1} onClick={(e) => { this.setActiveTab(1, e); }}>
+              Mapzen.js
+            </div>
+            <div className={class2} onClick={(e) => { this.setActiveTab(2, e); }}>
+              Leaflet/Tangram
+            </div>
           </div>
           <div className="code-snippet-tabs-right">
             <input
@@ -175,9 +203,7 @@ class CodeSnippetModal extends React.PureComponent {
         </div>
 
         <div className="modal-text">
-          <p>
-            <a href="https://mapzen.com/documentation/tangram/" target="_blank" rel="noopener noreferrer">Learn more about using Tangram</a>.
-          </p>
+          {documentationText}
         </div>
 
         <div className="modal-buttons">
