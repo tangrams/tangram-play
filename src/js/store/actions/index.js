@@ -43,6 +43,9 @@ export const APP_INITIALIZED = 'APP_INITIALIZED';
 // Generic action for setting app state.
 export const SET_APP_STATE = 'SET_APP_STATE';
 
+export const SHOW_SIGN_IN_OVERLAY = 'SHOW_SIGN_IN_OVERLAY';
+export const HIDE_SIGN_IN_OVERLAY = 'HIDE_SIGN_IN_OVERLAY';
+
 // Toggle camera tools
 export const TOGGLE_CAMERA_TOOLS = 'TOGGLE_CAMERA_TOOLS';
 
