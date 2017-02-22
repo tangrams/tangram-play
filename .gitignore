@@ -1,8 +1,8 @@
 .DS_Store
-www/styles/*.yaml
 
 # Compiled files
-build/
+public/scripts/
+public/stylesheets/
 
 # Cache
 browserify-cache.json

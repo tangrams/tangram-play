@@ -50,10 +50,12 @@ You can then run a local server manually. The app is a static site, and can be v
 
 After downloading this repository and running `npm install`, you can start a web server in its directory:
 
+    cd public
     python -m SimpleHTTPServer 8080
 
 If that doesn't work, try:
 
+    cd public
     python -m http.server 8080
 
 Then navigate to: [http://localhost:8080/][localhost]
@@ -85,7 +87,7 @@ You may have Tangram scene files locally and want to load them into a local buil
 
 ### Deployment process
 
-The `build/` directory is not committed to the source code. We use Circle.CI's configuration to compile all the files for deployment.
+The `public/scripts/` and `public/stylesheets` directories are not committed to the source code. We use Circle.CI's configuration to compile all the files for deployment.
 
 Circle.CI also runs tests and lints code. If the code fails to lint, or tests fail, Circle.CI will refuse to deploy that code.
 

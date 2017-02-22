@@ -8,8 +8,8 @@ module.exports = function (config) {
       // Source
       // 'src/js/**/*.js',
       // // Application
-      // 'build/css/main.css',
-      // 'index.html',
+      // 'public/stylesheets/main.css',
+      // 'public/index.html',
       // Test suites
       'test/**/*.js',
       'test/**/*.jsx'
