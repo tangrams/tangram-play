@@ -12,6 +12,17 @@
  */
 const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\||:)+(topojson|geojson|mvt|png|tif|gz))/;
 
+
+/**
+ * A basic check to see if an api key string looks like a valid key. Not *is* a
+ * valid key, just *looks like* one.
+ *
+ * @todo it's possible some legacy keys have 6 digits instead of 7; check with Evan
+ */
+function isValidMapzenApiKey(string) {
+  return (typeof string === 'string' && string.match(/[-a-z]+-[0-9a-zA-Z_-]{7}/));
+}
+
 /**
  * Parses a Tangram scene config object for sources that specify a Mapzen
  * vector tile service URL, and injects an API key if it does not have one.
@@ -35,11 +46,25 @@ export function injectAPIKey(config, apiKey) {
 
   Object.entries(config.sources).forEach((entry) => {
     const [key, value] = entry;
+    let valid = false;
 
     // Only operate on the URL if it's a Mapzen-hosted vector tile service
-    // and if it does not already have a url_params.api_key field
-    // and if it does not appear to contain a api_key param in the query string
-    if (value.url.match(URL_PATTERN) && !(value.url_params && value.url_params.api_key) && !value.url.match(/(\?|&)api_key=/)) {
+    if (!value.url.match(URL_PATTERN)) return;
+
+    // Check for valid API keys in the source.
+    // First, check theurl_params.api_key field
+    // Tangram.js compatibility note: Tangram >= v0.11.7 fires the `load`
+    // event after `global` property substitution, so we don't need to manually
+    // check global properties here.
+    if (value.url_params && value.url_params.api_key &&
+      isValidMapzenApiKey(value.url_params.api_key)) {
+      valid = true;
+    // Next, check if there is an api_key param in the query string
+    } else if (value.url.match(/(\?|&)api_key=[-a-z]+-[0-9a-zA-Z_-]{7}/)) {
+      valid = true;
+    }
+
+    if (!valid) {
       // Add a default API key as a url_params setting.
       // Preserve existing url_params if present.
       const params = Object.assign({}, config.sources[key].url_params, {
