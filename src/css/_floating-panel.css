@@ -19,7 +19,7 @@
 }
 
 .floating-panel-close {
-  height: 100%;
+  height: calc(100% - 1px);
   width: 20px;
   flex-basis: 20px;
   flex-shrink: 0;
@@ -30,6 +30,13 @@
   font-size: 13px;
   color: var(--ui-component-text-color);
   cursor: pointer;
+
+  /* Override button style */
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
 
   &:hover {
     color: var(--ui-highlight-color);
