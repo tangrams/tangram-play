@@ -28,7 +28,7 @@ const IMAGE_SOURCES = require('./sources');
 const THUMBNAIL_WIDTH = 245;
 const THUMBNAIL_HEIGHT = 60;
 const RETINA_MULTIPLIER = 2;
-const WRITE_PATH = '../../data/scenes/thumbnails';
+const WRITE_PATH = '../../public/data/scenes/thumbnails';
 
 for (let name in IMAGE_SOURCES) {
   const url = IMAGE_SOURCES[name].image;

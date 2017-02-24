@@ -11,7 +11,7 @@ const https = require('https');
 const fs = require('fs');
 
 const IMAGE_SOURCES = require('./sources');
-const WRITE_PATH = '../../data/scenes';
+const WRITE_PATH = '../../public/data/scenes';
 
 for (let name in IMAGE_SOURCES) {
   const url = IMAGE_SOURCES[name].scene;
