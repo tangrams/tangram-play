@@ -10,7 +10,6 @@ import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/acti
 import { initTextMarkers } from './editor/textmarkers';
 import { initSuggestions } from './editor/suggest';
 import { initContextSensitiveClickEvents } from './editor/imports';
-import { showApiKeyWarningIfNecessary } from './editor/io';
 import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import { showErrorModal } from './modals/ErrorModal';
@@ -39,10 +38,6 @@ function setSceneContentsInEditor(scene) {
 
   // Clear errors
   store.dispatch({ type: CLEAR_ERRORS });
-
-  if (store.getState().scene.saved === true) {
-    showApiKeyWarningIfNecessary();
-  }
 
   // Also remember the scene in list of recently opened scenes
   // This sends the entire scene object - TODO: clean it up a bit
