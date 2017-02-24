@@ -5,6 +5,8 @@
 
 # Editor for Tangram scene files
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/tangrams/tangram-play.svg)](https://greenkeeper.io/)
+
 Tangram Play is an interactive text editor for creating maps using Mapzen’s [Tangram](https://mapzen.com/products/tangram/). With Play, you can write and edit map styles in YAML and preview the changes live in the web browser. Start with one of Mapzen’s base maps or create your own style!
 
 Here is [a clip of Patricio's live demo](https://twitter.com/ajturner/status/652186516194762752/video/1) at [JS.Geo](http://www.jsgeo.com/) (October 2015) ([notes are here](https://github.com/mapzen/presentations/tree/master/08-2015-JSGEO)).
