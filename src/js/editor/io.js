@@ -155,13 +155,9 @@ export function getRootFileName() {
   return scene.files[scene.rootFileIndex].filename || 'scene.yaml';
 }
 
-function showApiKeyWarningIfNecessary() {
+export function showApiKeyWarningIfNecessary() {
   if (store.getState().app.mapzenAPIKeyInjected === true) {
-    addError({
-      type: 'warning', // {string} 'error' or 'warning'
-      message: 'This scene uses at least one Mapzen vector tile service without a Mapzen API key. Keyless requests will be disabled after March 1, 2017. Please add an API key as soon as possible.',
-      link: 'https://mapzen.com/blog/api-keys-required/',
-    });
+    addError('MAPZEN_API_KEY_MISSING');
   }
 }
 

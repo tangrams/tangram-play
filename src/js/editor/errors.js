@@ -9,6 +9,15 @@ import { ADD_ERROR, CLEAR_ERRORS } from '../store/actions';
 const lineWidgets = [];
 const blockErrors = new Set();
 
+const ERRORS = {
+  MAPZEN_API_KEY_MISSING: {
+    type: 'warning',
+    name: 'MAPZEN_API_KEY_MISSING',
+    message: 'This scene uses at least one Mapzen vector tile service without a Mapzen API key. Keyless requests will be disabled after March 1, 2017. Please add an API key as soon as possible.',
+    link: 'https://mapzen.com/blog/api-keys-required/',
+  },
+};
+
 /**
  * Creates DOM element to be injected into the editor and display as an error.
  *
@@ -95,19 +104,30 @@ export function clearAllErrors() {
 /**
  * Add a generic error.
  *
- * @param {Object} error - error object to add. It should be of the signature
+ * @param {Object|string} error - error object to add. It should be of the signature
  *          {
  *            type: 'error', // {string} 'error' or 'warning'
+ *            name: // {string} identifier of error. optional.
  *            message: // {string} The message to display
  *            link: // {string} a URL for a "learn more" link.
  *            line: // {number} A line number, if known.
  *          }
+ *          This can also be a string, e.g. "MAPZEN_API_KEY_MISSING" which
+ *          will look up the error object from a central `ERRORS` object.
  */
 export function addError(error) {
-  store.dispatch({
-    type: ADD_ERROR,
-    error,
-  });
+  let errorObj;
+  if (error instanceof Object) {
+    errorObj = error;
+  } else if (typeof error === 'string') {
+    errorObj = ERRORS[error];
+  }
+  if (errorObj) {
+    store.dispatch({
+      type: ADD_ERROR,
+      error: errorObj,
+    });
+  }
 }
 
 /**
