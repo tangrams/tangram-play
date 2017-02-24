@@ -62,7 +62,11 @@ class ErrorsPanel extends React.Component {
 
               let moreLink;
               if (error.link) {
-                moreLink = <a href={error.link} target="_blank" rel="noopener noreferrer">Learn more.</a>;
+                moreLink = (
+                  <a href={error.link} target="_blank" rel="noopener noreferrer">
+                    Learn more.
+                  </a>
+                );
               }
 
               return (
