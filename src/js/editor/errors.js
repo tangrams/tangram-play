@@ -13,7 +13,7 @@ const SCENE_ERRORS = {
   MAPZEN_API_KEY_MISSING: {
     type: 'warning',
     name: 'MAPZEN_API_KEY_MISSING',
-    message: 'This scene uses at least one Mapzen vector tile service without an API key. Keyless requests will be disabled after March 1, 2017. Please add an API key from your Mapzen developer account as soon as possible.',
+    message: 'This scene uses at least one Mapzen tile service without an API key. Keyless requests will be rejected after March 1, 2017. Please add an API key from your Mapzen developer account as soon as possible.',
     link: 'https://mapzen.com/blog/api-keys-required/',
   },
 };
