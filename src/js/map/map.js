@@ -10,6 +10,7 @@ import EventEmitter from '../components/event-emitter';
 import { hideSceneLoadingIndicator } from './actions';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { injectAPIKey } from '../editor/api-keys';
+import { addError } from '../editor/errors';
 
 // Redux
 import store from '../store';
@@ -67,6 +68,14 @@ function initTangram(pathToSceneFile, sceneBasePath) {
           type: SET_APP_STATE,
           mapzenAPIKeyInjected: true,
         });
+
+        if (store.getState().scene.saved === true) {
+          addError({
+            type: 'warning', // {string} 'error' or 'warning'
+            message: 'This scene uses at least one Mapzen vector tile service without a Mapzen API key. Keyless requests will be disabled after March 1, 2017. Please add an API key as soon as possible.',
+            link: 'https://mapzen.com/blog/api-keys-required/',
+          });
+        }
       } else if (didInjectKey === false && store.getState().app.mapzenAPIKeyInjected === true) {
         store.dispatch({
           type: SET_APP_STATE,

@@ -60,10 +60,16 @@ class ErrorsPanel extends React.Component {
                 displayText = `Unspecified ${error.type}.`;
               }
 
+              let moreLink;
+              if (error.link) {
+                moreLink = <a href={error.link} target="_blank" rel="noopener noreferrer">Learn more.</a>;
+              }
+
               return (
                 <p key={index}>
                   <span className={iconTypeClass} />
                   {displayText}
+                  {' '}{moreLink}
                 </p>
               );
             })}

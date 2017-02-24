@@ -99,6 +99,7 @@ export function clearAllErrors() {
  *          {
  *            type: 'error', // {string} 'error' or 'warning'
  *            message: // {string} The message to display
+ *            link: // {string} a URL for a "learn more" link.
  *            line: // {number} A line number, if known.
  *          }
  */
