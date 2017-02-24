@@ -66,11 +66,13 @@ class ErrorsPanel extends React.Component {
               }
 
               return (
-                <p key={index}>
-                  <span className={iconTypeClass} />
-                  {displayText}
-                  {' '}{moreLink}
-                </p>
+                <div key={index} className="errors-panel-item">
+                  <div className={iconTypeClass} />
+                  <div className="errors-panel-text">
+                    {displayText}
+                    {' '}{moreLink}
+                  </div>
+                </div>
               );
             })}
           </div>

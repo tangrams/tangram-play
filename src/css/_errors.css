@@ -43,7 +43,10 @@
   pointer-events: auto;
 
   .btm {
-    margin-right: 0.5em;
+    position: absolute;
+    width: 16px;
+    top: 1px;
+    text-align: center;
     font-weight: 600;
   }
 
@@ -64,13 +67,21 @@
   padding: 10px;
   user-select: auto;
 
-  p:last-of-type {
-    margin-bottom: 0;
-  }
-
   a {
     white-space: nowrap;
     color: lightblue;
     text-decoration: underline;
   }
+}
+
+.errors-panel-item {
+  position: relative;
+
+  &:not(:first-of-type) {
+    margin-top: 0.85em;
+  }
+}
+
+.errors-panel-text {
+  margin-left: 22px;
 }
