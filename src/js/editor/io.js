@@ -7,7 +7,7 @@ import { saveAs } from 'file-saver';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { showErrorModal } from '../modals/ErrorModal';
 import { load } from '../tangram-play';
-import { addError } from './errors';
+import { addError, removeError } from './errors';
 import { editor, getEditorContent } from './editor';
 import store from '../store';
 import { MARK_FILE_CLEAN, SAVE_SCENE } from '../store/actions';
@@ -159,6 +159,10 @@ export function showApiKeyWarningIfNecessary() {
   if (store.getState().app.mapzenAPIKeyInjected === true) {
     addError('MAPZEN_API_KEY_MISSING');
   }
+}
+
+export function removeApiKeyWarning() {
+  removeError('MAPZEN_API_KEY_MISSING');
 }
 
 export function markSceneSaved(saveDispatch) {
