@@ -1,8 +1,10 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import Map from './Map';
 import EditorPane from './EditorPane';
 import RefreshButton from './RefreshButton';
 
+import store from '../store';
 import { initTangramPlay } from '../tangram-play';
 
 /**
@@ -19,18 +21,20 @@ export default class AppEmbedded extends React.Component {
 
   render() {
     return (
-      <div className="workspace-container">
-        <div id="draggable-container">
-          <div id="draggable-container-child" />
-        </div>
+      <Provider store={store}>
+        <div className="workspace-container">
+          <div id="draggable-container">
+            <div id="draggable-container-child" />
+          </div>
 
-        <div>
-          <Map />
-          <EditorPane />
-        </div>
+          <div>
+            <Map />
+            <EditorPane />
+          </div>
 
-        <RefreshButton />
-      </div>
+          <RefreshButton />
+        </div>
+      </Provider>
     );
   }
 }

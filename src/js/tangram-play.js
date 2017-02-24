@@ -10,6 +10,7 @@ import { showSceneLoadingIndicator, hideSceneLoadingIndicator } from './map/acti
 import { initTextMarkers } from './editor/textmarkers';
 import { initSuggestions } from './editor/suggest';
 import { initContextSensitiveClickEvents } from './editor/imports';
+import { showApiKeyWarningIfNecessary } from './editor/io';
 import { initErrorsManager, clearAllErrors } from './editor/errors';
 import { initGlslPickers } from './components/glsl-pickers/glsl-pickers';
 import { showErrorModal } from './modals/ErrorModal';
@@ -22,7 +23,7 @@ import EventEmitter from './components/event-emitter';
 
 // Redux
 import store from './store';
-import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE, ADD_RECENT_SCENE } from './store/actions';
+import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE, CLEAR_ERRORS, ADD_RECENT_SCENE } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/basic.yaml';
 const STORAGE_LAST_EDITOR_STATE = 'last-scene';
@@ -35,6 +36,13 @@ function setSceneContentsInEditor(scene) {
     type: OPEN_SCENE,
     ...scene,
   });
+
+  // Clear errors
+  store.dispatch({ type: CLEAR_ERRORS });
+
+  if (store.getState().scene.saved === true) {
+    showApiKeyWarningIfNecessary();
+  }
 
   // Also remember the scene in list of recently opened scenes
   // This sends the entire scene object - TODO: clean it up a bit
@@ -282,6 +290,9 @@ export function load(scene) {
           filename: scene.filename,
           contents: scene.contents,
         }],
+        // TODO: Confirm this is always true when loaded as contents
+        saved: true,
+        saveLocation: 'FILE',
       };
       doLoadProcess(sceneState);
       resolve();

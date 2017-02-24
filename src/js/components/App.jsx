@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import Map from './Map';
 import EditorPane from './EditorPane';
 import MenuBar from './MenuBar';
@@ -12,6 +13,7 @@ import ModalRoot from '../modals/ModalRoot';
 
 import { initTangramPlay } from '../tangram-play';
 import { showWelcomeScreen } from '../ui/welcome';
+import store from '../store';
 
 export default class App extends React.Component {
   componentDidMount() {
@@ -25,33 +27,35 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <MenuBar />
+      <Provider store={store}>
+        <div>
+          <MenuBar />
 
-        <div className="workspace-container">
-          <div id="draggable-container">
-            <div id="draggable-container-child" />
+          <div className="workspace-container">
+            <div id="draggable-container">
+              <div id="draggable-container-child" />
+            </div>
+
+            <div>
+              <Map />
+              <EditorPane />
+            </div>
+
+            <div id="glsl-pickers" />
+            {/* <ColorPalette /> */}
           </div>
 
-          <div>
-            <Map />
-            <EditorPane />
+          <div className="overlay-container">
+            <FileDrop />
+            <SignInOverlay />
+
+            <ModalShield />
+            <ModalRoot />
+
+            <ErrorsPanel />
           </div>
-
-          <div id="glsl-pickers" />
-          {/* <ColorPalette /> */}
         </div>
-
-        <div className="overlay-container">
-          <FileDrop />
-          <SignInOverlay />
-
-          <ModalShield />
-          <ModalRoot />
-
-          <ErrorsPanel />
-        </div>
-      </div>
+      </Provider>
     );
   }
 }

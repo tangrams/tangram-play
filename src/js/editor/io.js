@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { showErrorModal } from '../modals/ErrorModal';
 import { load } from '../tangram-play';
+import { addError } from './errors';
 import { editor, getEditorContent } from './editor';
 import store from '../store';
 import { MARK_FILE_CLEAN, SAVE_SCENE } from '../store/actions';
@@ -154,6 +155,12 @@ export function getRootFileName() {
   return scene.files[scene.rootFileIndex].filename || 'scene.yaml';
 }
 
+export function showApiKeyWarningIfNecessary() {
+  if (store.getState().app.mapzenAPIKeyInjected === true) {
+    addError('MAPZEN_API_KEY_MISSING');
+  }
+}
+
 export function markSceneSaved(saveDispatch) {
   editor.doc.markClean();
 
@@ -164,6 +171,7 @@ export function markSceneSaved(saveDispatch) {
   });
 
   store.dispatch(saveDispatch);
+  showApiKeyWarningIfNecessary();
 }
 
 export function exportSceneFile() {

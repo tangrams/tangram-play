@@ -5,7 +5,6 @@ import 'whatwg-fetch';
 // React
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 
 // Libraries
 import Raven from 'raven-js';
@@ -108,11 +107,7 @@ localforage.getItem(STORAGE_PERSISTENCE)
   // or Redux state setting was successful.
   .then(() => {
     // Mount React components
-    ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
-      document.getElementById('root')
+    ReactDOM.render(React.createElement(App), document.getElementById('root')
     );
   });
 
