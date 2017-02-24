@@ -4,7 +4,7 @@ import { tangramLayer } from '../map/map';
 
 // Redux
 import store from '../store';
-import { ADD_ERROR, CLEAR_ERRORS } from '../store/actions';
+import { ADD_ERROR, REMOVE_ERROR, CLEAR_ERRORS } from '../store/actions';
 
 const lineWidgets = [];
 const blockErrors = new Set();
@@ -128,6 +128,21 @@ export function addError(error) {
       error: errorObj,
     });
   }
+}
+
+/**
+ * Remove an error matching `name`.
+ *
+ * @param {string} error - error to remove, matching the `name` property of
+ *          an error object.
+ */
+export function removeError(error) {
+  store.dispatch({
+    type: REMOVE_ERROR,
+    identity: {
+      name: error,
+    },
+  });
 }
 
 /**

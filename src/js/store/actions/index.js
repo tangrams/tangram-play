@@ -51,6 +51,7 @@ export const TOGGLE_CAMERA_TOOLS = 'TOGGLE_CAMERA_TOOLS';
 
 /* errors */
 export const ADD_ERROR = 'ADD_ERROR';
+export const REMOVE_ERROR = 'REMOVE_ERROR';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 
 /* modals */
