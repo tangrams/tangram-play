@@ -87,11 +87,11 @@ Map.propTypes = {
   app: React.PropTypes.shape({
     initialized: React.PropTypes.bool,
     mapNotLoaded: React.PropTypes.bool,
-  }),
+  }).isRequired,
   scene: React.PropTypes.shape({
     counter: React.PropTypes.number,
     files: React.PropTypes.array,
-  }),
+  }).isRequired,
 };
 
 function mapStateToProps(state) {

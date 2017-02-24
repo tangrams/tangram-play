@@ -224,5 +224,5 @@ export default class VectorPicker extends React.Component {
 
 VectorPicker.propTypes = {
   // Pass through object; types do not matter here.
-  marker: React.PropTypes.objectOf(React.PropTypes.any),
+  marker: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
 };

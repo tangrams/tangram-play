@@ -201,7 +201,7 @@ export function hint(cm, options) {
 
   // Node is null if unparseable. This needs to be handled better, because
   // you can still offer a suggestion before a node is completed.
-  if (!node) return;
+  if (!node) return '';
 
   if (node.kind === 0) {
     // Things we need to know to match address

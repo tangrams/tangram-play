@@ -35,12 +35,9 @@ class ExamplesModal extends React.Component {
 
   render() {
     // Create a <section> per category
-    const examples = EXAMPLES_DATA.map((category, categoryIndex) => {
+    const examples = EXAMPLES_DATA.map((category) => {
       // Create elements for each scene
-      const scenes = category.scenes.map((scene, sceneIndex) => {
-        // Unique index made by concatenating category and scene index
-        const index = `${String(categoryIndex)}.${String(sceneIndex)}`;
-
+      const scenes = category.scenes.map((scene) => {
         // Inline style to display thumbnail image
         const thumbnailStyle = {
           backgroundColor: 'rgba(255, 255, 255, 0.05)',
@@ -59,7 +56,7 @@ class ExamplesModal extends React.Component {
         return (
           <div
             className={classString}
-            key={index}
+            key={scene.url}
             onClick={() => { this.setState({ selected: scene.url }); }}
             onDoubleClick={this.onClickConfirm}
           >
@@ -80,13 +77,13 @@ class ExamplesModal extends React.Component {
 
       // Render the category container element
       // return (
-      //   <section key={categoryIndex}>
+      //   <section key={category.category}>
       //     <h2 className="example-list-header">{category.category}</h2>
       //     <hr />
       //     {scenes}
       //   </section>
       // );
-      return <div key={categoryIndex}>{scenes}</div>;
+      return <div key={category.category}>{scenes}</div>;
     });
 
     // Render the entire modal

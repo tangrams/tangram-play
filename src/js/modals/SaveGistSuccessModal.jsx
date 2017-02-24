@@ -96,11 +96,8 @@ class SaveGistSuccessModal extends React.Component {
 }
 
 SaveGistSuccessModal.propTypes = {
-  urlValue: React.PropTypes.string,
-};
-
-SaveGistSuccessModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
+  urlValue: React.PropTypes.string.isRequired,
   modalId: React.PropTypes.number.isRequired,
 };
 
