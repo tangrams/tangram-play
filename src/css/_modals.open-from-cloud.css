@@ -52,6 +52,7 @@
   line-height: 0; /* Removes baseline from image */
 
   img {
+    display: block; /* Force display of img tag without a `src` attribute in Firefox */
     width: 144px;
     height: 81px;
   }

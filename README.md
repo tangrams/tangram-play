@@ -1,7 +1,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/tangrams/tangram-play.svg?style=flat-square)](https://circleci.com/gh/tangrams/tangram-play/)
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square)](https://gitter.im/tangrams/tangram-chat)
 
-![](data/imgs/screenshot.png)
+![](meta/screenshot.png)
 
 # Editor for Tangram scene files
 

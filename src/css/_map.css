@@ -21,7 +21,7 @@
 }
 
 .map-view-not-loaded {
-  background-image: url('../../data/imgs/question.gif');
+  background-image: url('../data/imgs/question.gif');
   background-repeat: no-repeat;
   background-position: center center;
   background-color: var(--ui-base-color);

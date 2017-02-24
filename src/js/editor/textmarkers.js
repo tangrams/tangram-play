@@ -229,7 +229,8 @@ export function insertTextMarkers(cm, ast, fromLine, toLine) {
 
   for (const mark of marks) {
     const pos = doc.posFromIndex(mark.node.endPosition);
-    if (isTextMarkerAlreadyInDocument(doc, pos) === false) {
+    // Skip markers already present, or on folded lines
+    if (isTextMarkerAlreadyInDocument(doc, pos) === false && cm.isFolded(pos) !== true) {
       if (mark.type === 'link') {
         // This is a marked range, not a DOM node. Still apply this in read-only docs
         applySyntaxHighlighting(doc, mark.node);
@@ -271,7 +272,7 @@ export function insertTextMarkersInViewport(cm) {
  * @param {Number} toLine - Optional. The line number to look to. If not
  *          provided, just the fromLine is checked.
  */
-function getExistingTextMarkers(cm, fromLine, toLine = fromLine) {
+export function getExistingTextMarkers(cm, fromLine, toLine = fromLine) {
   const doc = cm.getDoc();
   let markers = [];
 
@@ -312,7 +313,7 @@ function getExistingTextMarkers(cm, fromLine, toLine = fromLine) {
  * @param {Number} toLine - Optional. The line number to clear to. If not
  *          provided, just the fromLine is checked.
  */
-function clearTextMarkers(cm, fromLine, toLine) {
+export function clearTextMarkers(cm, fromLine, toLine) {
   const markers = getExistingTextMarkers(cm, fromLine, toLine);
 
   // And remove them, if present.
@@ -378,8 +379,7 @@ function handleEditorChanges(cm, changes) {
  *          passed in by CodeMirror's event listener.
  */
 function handleEditorViewportChange(cm) {
-  const viewport = cm.getViewport();
-  insertTextMarkers(cm, parsedYAMLDocument.nodes, viewport.from, viewport.to);
+  insertTextMarkersInViewport(cm);
 }
 
 /**

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Changelog - Tangram Play</title>
+  <link type="text/css" rel="stylesheet" href="../stylesheets/main.css">
+</head>
+<body class="changelog">
+  <base target="_blank">
+  <article>
+    <h2>February 24, 2017</h2>
+
+    <h3>Mapzen platform update</h3>
+
+    <p>
+      <strong>Heads up! Mapzen is updating its vector tile service on March 1, 2017
+      to require an API key for access.</strong>
+      (See <a href="https://mapzen.com/blog/api-keys-required/" target="_blank">the blog</a>
+      for more information.)
+    </p>
+
+    <p>
+      If you save or open an existing scene file and we
+      see that you’re using a Mapzen tile service without an API key, we’ll
+      now provide a warning. Your scene files will continue to work in Tangram
+      Play, but if you plan to use the scene elsewhere, you’ll want
+      to add your own API key as soon as possible. (If you’re not using a
+      Mapzen vector tile service, you won’t be affected by this.)
+    </p>
+
+    <h3>Improvements</h3>
+
+    <ul>
+      <li>
+        We’ve overhauled the <strong>Get code snippet</strong> dialog box. Before,
+        it displayed a small snippet of JavaScript, but it wasn’t obvious that you
+        still needed Leaflet and Tangram to run it. Now, we also show the entire
+        HTML context for both Mapzen.js or Leaflet/Tangram so you can just copy
+        and paste the whole thing into an HTML file. However, if JavaScript-only
+        code is still your preference, you can toggle the HTML off too.
+      </li>
+    </ul>
+  </article>
+  <article>
+    <h2>February 14, 2017</h2>
+
+    <h3>Bug fixes</h3>
+
+    <ul>
+      <li>The editor would still say “You have unsaved changes” after saving a
+        scene to your Mapzen account. Whoops. We fixed it!</li>
+      <li>Thumbnails for example scene files are now displaying properly on Firefox.</li>
+    </ul>
+  </article>
+  <article>
+    <h2>February 13, 2017</h2>
+
+    <h3>Improvements!</h3>
+
+    <ul>
+      <li><strong>Mapzen platform improvement!</strong> Sign-in window now closes automatically
+        after you've signed in. If it doesn't, you should be seeing a button
+        that manually closes the popup window.</li>
+      <li>Added the “Get started” documentation as an option in the Help menu.</li>
+    </ul>
+
+    <h3>Bug fixes</h3>
+
+    <ul>
+      <li>Fixed a bug where editor text markers (such as color pickers) stuck
+        around after the line it's on has been folded out of sight.</li>
+      <li>Fixed a bug where these text markers would not appear when lines above
+        them are folded.</li>
+      <li>Fixed a bug where you wouldn’t be shown as signed in if you sign out
+        and then sign back in again in the same session.</li>
+    </ul>
+  </article>
+  <article>
+    <h2>February 7, 2017</h2>
+
+    <h3>Tangram Play is now in public beta!</h3>
+
+    <p>
+      We’re excited to release the public beta of Tangram Play, a text
+      editor for working with Tangram, our web map rendering library.
+      Your use of Play during this phase will help us improve our tools
+      for web map design.
+    </p>
+
+    <p>
+      If you're new here, find out more about Tangram Play on the
+      <a href="https://mapzen.com/blog/tangram-play-public-beta-launch">Mapzen</a> blog.
+      The <a href="./docs/">walkthrough</a> gives a brief explanation of the
+      interface, whether you’re creating from a blank slate or using one of our
+      Mapzen <a href="https://mapzen.com/products/maps/">basemaps</a>.
+
+    <p>
+      If you’ve been here before, welcome back! There's been a few changes to
+      the interface that we’ll describe below.
+    </p>
+
+    <h3>New features</h3>
+
+    <ul>
+      <li>
+        <strong>Save a scene to your Mapzen account!</strong> Now you can access
+        your scenes from anywhere. With this improvement, we’ve replaced the
+        ability to save to an anonymous GitHub Gist, but if you've saved an
+        anonymous Gist in the past, you can still load those, and save them
+        again to get it into your Mapzen account.
+      </li>
+      <li>
+        <strong>Share your scenes.</strong> Once you've saved your scene, we also
+        host it for you. Now there’s an easy way to share it with friends or
+        link it from your website or social media!
+      </li>
+    </ul>
+
+    <p>
+      Let us know what you think: Give your feedback by emailing us at
+      <a href="mailto:tangram@mapzen.com">tangram@mapzen.com</a>.
+    </p>
+  </article>
+</body>
+</html>

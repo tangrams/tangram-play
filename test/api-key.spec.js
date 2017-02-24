@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import { injectAPIKey, suppressAPIKeys } from '../src/js/editor/api-keys';
 
-const TEST_API_KEY = 'mapzen-123456';
-const TEST_SUPPRESSED_KEYS = [TEST_API_KEY, 'mapzen-abcdef', 'mapzen-123abc'];
+const TEST_API_KEY = 'mapzen-1234566';
+const TEST_SUPPRESSED_KEYS = [TEST_API_KEY, 'mapzen-abcdefg', 'mapzen-123abcd'];
 
 describe('API keys for Mapzen vector tiles', () => {
   describe('injects a missing API key', () => {
@@ -159,7 +159,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'TopoJSON',
-            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-f00bar',
+            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-f00bar1',
           },
         },
       };
@@ -179,7 +179,7 @@ describe('API keys for Mapzen vector tiles', () => {
             type: 'TopoJSON',
             url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
             url_params: {
-              api_key: 'vector-tiles-f00bar',
+              api_key: 'vector-tiles-f00bar1',
             },
           },
         },
@@ -275,30 +275,30 @@ describe('API keys for Mapzen vector tiles', () => {
   describe('suppresses Mapzen’s reserved API keys', () => {
     it('removes keys that match the suppressed API key list', () => {
       const snippet = `
-                sources:
-                    osm1:
-                        type: TopoJSON
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
-                    osm2:
-                        type: GeoJSON
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=${TEST_SUPPRESSED_KEYS[1]}
-                    osm3:
-                        type: MVT
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt?api_key=${TEST_SUPPRESSED_KEYS[2]}
-            `;
+        sources:
+          osm1:
+            type: TopoJSON
+            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
+          osm2:
+            type: GeoJSON
+            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=${TEST_SUPPRESSED_KEYS[1]}
+          osm3:
+            type: MVT
+            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt?api_key=${TEST_SUPPRESSED_KEYS[2]}
+      `;
 
       const target = `
-                sources:
-                    osm1:
-                        type: TopoJSON
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
-                    osm2:
-                        type: GeoJSON
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson
-                    osm3:
-                        type: MVT
-                        url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt
-            `;
+        sources:
+          osm1:
+            type: TopoJSON
+            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+          osm2:
+            type: GeoJSON
+            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson
+          osm3:
+            type: MVT
+            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt
+      `;
 
       const result = suppressAPIKeys(snippet, TEST_SUPPRESSED_KEYS);
 
@@ -307,24 +307,24 @@ describe('API keys for Mapzen vector tiles', () => {
 
     it('leaves keys alone that are not on the suppressed API key list', () => {
       const snippet = `
-                sources:
-                    osm1:
-                        type: TopoJSON
-                        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
-                    osm2:
-                        type: GeoJSON
-                        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=vector-tiles-f00bar
-            `;
+        sources:
+          osm1:
+            type: TopoJSON
+            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
+          osm2:
+            type: GeoJSON
+            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=vector-tiles-f00bar1
+      `;
 
       const target = `
-                sources:
-                    osm1:
-                        type: TopoJSON
-                        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
-                    osm2:
-                        type: GeoJSON
-                        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=vector-tiles-f00bar
-            `;
+        sources:
+          osm1:
+            type: TopoJSON
+            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+          osm2:
+            type: GeoJSON
+            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=vector-tiles-f00bar1
+      `;
 
       const result = suppressAPIKeys(snippet, TEST_SUPPRESSED_KEYS);
 
@@ -334,14 +334,14 @@ describe('API keys for Mapzen vector tiles', () => {
     it('leaves keys alone if the tile source is not hosted at vector.mapzen.com', () => {
       // Test snippet re-uses the suppressed keys
       const snippet = `
-                sources:
-                    osm1:
-                        type: TopoJSON
-                        url: https://dev.tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
-                    osm2:
-                        type: TopoJSON
-                        url: https://example.tileservice.com/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[1]}
-            `;
+        sources:
+          osm1:
+            type: TopoJSON
+            url: https://dev.tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
+          osm2:
+            type: TopoJSON
+            url: https://example.tileservice.com/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[1]}
+      `;
 
       const result = suppressAPIKeys(snippet, TEST_SUPPRESSED_KEYS);
 

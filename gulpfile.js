@@ -9,9 +9,17 @@ var sourcemaps = require('gulp-sourcemaps');
 var browserSync = require('browser-sync');
 
 var paths = {
-  styles: 'src/css/**/*.css',
-  scripts: 'src/js/**/*.{js,jsx,json}',
-  app: 'index.html'
+  styles: {
+    src: 'src/css/**/*.css',
+    entry: 'src/css/main.css',
+    dest: 'public/stylesheets'
+  },
+  scripts: {
+    src: 'src/js/**/*.{js,jsx,json}',
+    entry: ['src/js/main.js', 'src/js/embedded.js'],
+    dest: 'public/scripts'
+  },
+  app: 'public/index.html'
 };
 
 function handleErrors() {
@@ -48,12 +56,12 @@ gulp.task('css', function () {
     reporter()
   ];
 
-  return gulp.src('./src/css/main.css')
+  return gulp.src(paths.styles.entry)
     .on('error', handleErrors)
     .pipe(sourcemaps.init())
     .pipe(postcss(plugins))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./build/css'))
+    .pipe(gulp.dest(paths.styles.dest))
     // Since we generate sourcemaps, this causes browserSync.reload() to do
     // a full page reload because `.map` files are not found in the DOM. So we
     // pass the `match` option to only stream `.css` files to prevent injection
@@ -97,7 +105,7 @@ gulp.task('js', function () {
   // Only uglify for deployment/production build,
   // because this doubles build time locally!
   if (process.env.NODE_ENV === 'production') {
-    return gulp.src(['src/js/main.js', 'src/js/embedded.js'], {
+    return gulp.src(paths.scripts.entry, {
       read: false // no need to read files because browserify does.
     })
     // transform file objects using gulp-tap plugin
@@ -115,10 +123,10 @@ gulp.task('js', function () {
         .pipe(uglify())
         .on('error', gutil.log)
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./build/js'));
+    .pipe(gulp.dest(paths.scripts.dest));
   }
 
-  return gulp.src(['src/js/main.js', 'src/js/embedded.js'], {
+  return gulp.src(paths.scripts.entry, {
     read: false // no need to read files because browserify does.
   })
     // transform file objects using gulp-tap plugin
@@ -129,7 +137,7 @@ gulp.task('js', function () {
       file.contents = browserifyEnv(file.path, opts).bundle();
     }))
     .on('error', handleErrors)
-    .pipe(gulp.dest('./build/js'));
+    .pipe(gulp.dest(paths.scripts.dest));
 });
 
 // Create a task that ensures the `js` task is complete
@@ -141,8 +149,8 @@ gulp.task('build', ['css', 'js']);
 
 // Watch files, but do not run browsersync
 gulp.task('watch', ['build'], function () {
-  gulp.watch(paths.styles, ['css']);
-  gulp.watch(paths.scripts, ['js']);
+  gulp.watch(paths.styles.src, ['css']);
+  gulp.watch(paths.scripts.src, ['js']);
 });
 
 // Re-load the browser when a file changes
@@ -151,7 +159,7 @@ gulp.task('serve', ['build'], function () {
     port: 8080,
     open: false,
     server: {
-      baseDir: './'
+      baseDir: './public'
     },
     ui: {
       port: 8081
@@ -159,8 +167,8 @@ gulp.task('serve', ['build'], function () {
     ghostMode: false
   });
 
-  gulp.watch(paths.styles, ['css']);
-  gulp.watch(paths.scripts, ['js-watch']);
+  gulp.watch(paths.styles.src, ['css']);
+  gulp.watch(paths.scripts.src, ['js-watch']);
   gulp.watch(paths.app).on('change', browserSync.reload);
 });
 

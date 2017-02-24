@@ -5,7 +5,6 @@ import 'whatwg-fetch';
 // React
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 
 // Libraries
 import Raven from 'raven-js';
@@ -47,9 +46,4 @@ store.dispatch({
 });
 
 // Mount React components
-ReactDOM.render(
-  <Provider store={store}>
-    <AppEmbedded />
-  </Provider>,
-  document.getElementById('root')
-);
+ReactDOM.render(React.createElement(AppEmbedded), document.getElementById('root'));

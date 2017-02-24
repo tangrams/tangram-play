@@ -10,7 +10,8 @@ import SceneItem from './SceneItem';
 import LoadingSpinner from './LoadingSpinner';
 
 import { showErrorModal } from './ErrorModal';
-import { editor, getEditorContent } from '../editor/editor';
+import { getEditorContent } from '../editor/editor';
+import { markSceneSaved } from '../editor/io';
 import { putFile, replaceThumbnail } from '../storage/mapzen';
 import { MAPZEN_SAVE_SCENE } from '../store/actions';
 
@@ -79,11 +80,7 @@ class SaveExistingToCloudModal extends React.Component {
     // Close the modal
     this.unmountSelf();
 
-    // Mark as clean state in the editor
-    editor.doc.markClean();
-
-    // Store updated scene data
-    this.props.dispatch({
+    markSceneSaved({
       type: MAPZEN_SAVE_SCENE,
       data: data[0],
     });

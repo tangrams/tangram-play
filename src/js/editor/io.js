@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { showErrorModal } from '../modals/ErrorModal';
 import { load } from '../tangram-play';
+import { addError, removeError } from './errors';
 import { editor, getEditorContent } from './editor';
 import store from '../store';
 import { MARK_FILE_CLEAN, SAVE_SCENE } from '../store/actions';
@@ -154,6 +155,29 @@ export function getRootFileName() {
   return scene.files[scene.rootFileIndex].filename || 'scene.yaml';
 }
 
+export function showApiKeyWarningIfNecessary() {
+  if (store.getState().app.mapzenAPIKeyInjected === true) {
+    addError('MAPZEN_API_KEY_MISSING');
+  }
+}
+
+export function removeApiKeyWarning() {
+  removeError('MAPZEN_API_KEY_MISSING');
+}
+
+export function markSceneSaved(saveDispatch) {
+  editor.doc.markClean();
+
+  // Marked "saved" state in UI
+  store.dispatch({
+    type: MARK_FILE_CLEAN,
+    fileIndex: 0, // TODO: replace with current file
+  });
+
+  store.dispatch(saveDispatch);
+  showApiKeyWarningIfNecessary();
+}
+
 export function exportSceneFile() {
   const typedArray = getEditorContent();
   const blob = new Blob([typedArray], { type: 'text/plain;charset=utf-8' });
@@ -162,14 +186,8 @@ export function exportSceneFile() {
   // Use FileSaver implementation, pass `true` as third parameter
   // to prevent auto-prepending a Byte-Order Mark (BOM)
   saveAs(blob, filename, true);
-  editor.doc.markClean();
 
-  // Marked "saved" state in UI
-  store.dispatch({
-    type: MARK_FILE_CLEAN,
-    fileIndex: 0, // TODO: replace with current file
-  });
-  store.dispatch({
+  markSceneSaved({
     type: SAVE_SCENE,
     location: 'FILE',
     timestamp: new Date().toISOString(),

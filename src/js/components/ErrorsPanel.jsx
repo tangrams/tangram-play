@@ -44,7 +44,7 @@ class ErrorsPanel extends React.Component {
         <div className="errors-panel modal" style={displayStyle}>
           <div className="floating-panel-topbar">
             <div className="floating-panel-drag">Scene errors</div>
-            <div className="floating-panel-close" onClick={this.onClickClose}>×</div>
+            <button className="floating-panel-close" onClick={this.onClickClose}>×</button>
           </div>
           <div className="errors-panel-content">
             {this.props.errors.map((error, index) => {
@@ -60,11 +60,23 @@ class ErrorsPanel extends React.Component {
                 displayText = `Unspecified ${error.type}.`;
               }
 
+              let moreLink;
+              if (error.link) {
+                moreLink = (
+                  <a href={error.link} target="_blank" rel="noopener noreferrer">
+                    Learn more.
+                  </a>
+                );
+              }
+
               return (
-                <p key={index}>
-                  <span className={iconTypeClass} />
-                  {displayText}
-                </p>
+                <div key={index} className="errors-panel-item">
+                  <div className={iconTypeClass} />
+                  <div className="errors-panel-text">
+                    {displayText}
+                    {' '}{moreLink}
+                  </div>
+                </div>
               );
             })}
           </div>

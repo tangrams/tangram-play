@@ -50,10 +50,12 @@ You can then run a local server manually. The app is a static site, and can be v
 
 After downloading this repository and running `npm install`, you can start a web server in its directory:
 
+    cd public
     python -m SimpleHTTPServer 8080
 
 If that doesn't work, try:
 
+    cd public
     python -m http.server 8080
 
 Then navigate to: [http://localhost:8080/][localhost]
@@ -85,7 +87,7 @@ You may have Tangram scene files locally and want to load them into a local buil
 
 ### Deployment process
 
-The `build/` directory is not committed to the source code. We use Circle.CI's configuration to compile all the files for deployment.
+The `public/scripts/` and `public/stylesheets` directories are not committed to the source code. We use Circle.CI's configuration to compile all the files for deployment.
 
 Circle.CI also runs tests and lints code. If the code fails to lint, or tests fail, Circle.CI will refuse to deploy that code.
 
@@ -115,6 +117,32 @@ To run tests:
 [mocha]: https://mochajs.org/
 [chai]: http://chaijs.com/
 [sinon]: http://sinonjs.org/
+
+## Debugging within Tangram Play
+
+You may need access to debugging features for Tangram while using Tangram Play. To help you do this, two query string parameters are supported:
+
+Append `?debug=true` to the URL to load the `tangram.debug.js` version of the Tangram library that Tangram Play would normally be loading. The debug version of Tangram is unminified, which allows easier-to-follow stack traces and code examination. In addition, setting this flag turns out Tangram Play's debug mode internally (which currently does nothing, but can be used for debug features later). For instance:
+
+```
+https://mapzen.com/tangram/play/?debug=true
+```
+
+If you want to load an entirely different version of Tangram (including local test builds) use the parameter `?lib={url}`. The `{url}` must be a fully-qualified URL (no shorthand values exist) and the library must be hosted on either `localhost` or `mapzen.com` in order to prevent malicious URLs from loading arbitrary JavaScript sources from third-party hosts. Please note that some of Tangram Play's functionality depends on Tangram features that have been added over time (such as map feature inspection), and that older Tangram versions interacted with Leaflet in different ways (or required older versions of Leaflet), so older versions of Tangram may introduce other errors that Tangram Play is not designed to catch.
+
+**NOTE:** When loading local test builds from `localhost`, your browser may block content from insecure (non-SSL) protocols.
+
+```
+https://mapzen.com/tangram/play/?lib=https://mapzen.com/tangram/0.10/tangram.debug.js
+```
+
+You can use both query parameters at the same time. Specifying `lib={url}` will override the library loaded for `debug=true`, but will still turn on Tangram Play's internal debug flag. (And specifying `lib=` without `debug=true` will not turn on the debug flag.)
+
+```
+https://mapzen.com/tangram/play/?lib=https://mapzen.com/tangram/0.10/tangram.debug.js&debug=true
+```
+
+When a different library has been loaded in this way, a notice will be posted in the console. If a `lib={url}` is not hosted on `localhost` or `mapzen.com`, Tangram Play will post an error in the console and proceed to load the default Tangram library. Other errors (such as a 404 Not Found response) will cause Tangram Play to throw an error and stop loading.
 
 ## Editor settings
 

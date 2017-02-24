@@ -44,9 +44,10 @@
 
 /* Menus and modals */
 @import '_menu-bar';
-@import '_modals.welcome';
+@import '_modals.code-snippet';
 @import '_modals.examples';
 @import '_modals.open-from-cloud';
+@import '_modals.welcome';
 
 /* Other features */
 @import '_color-palette';
