@@ -72,9 +72,8 @@ button:disabled:hover {
 
 /* Icons on buttons */
 button > .btm {
-  margin-right: 0.75em;
-  font-size: 0.8em;
-  font-weight: 600;
+  margin-right: 0.5em;
+  margin-left: 0.15em;
 }
 
 button:disabled > .btm {
@@ -84,9 +83,13 @@ button:disabled > .btm {
 /* Any icon of confirm button is green */
 .button-confirm > .btm {
   color: green;
+  font-weight: 600;
+  font-size: 0.9em;
 }
 
 /* Any icon of cancel button is red */
 .button-cancel > .btm {
   color: red;
+  font-weight: 600;
+  font-size: 0.9em;
 }

@@ -1,6 +1,8 @@
 import { template } from 'lodash';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import Clipboard from 'clipboard';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
@@ -105,6 +107,7 @@ class CodeSnippetModal extends React.PureComponent {
   }
 
   componentDidMount() {
+    this.setupClipboard();
     this.selectTextareaContent();
   }
 
@@ -132,6 +135,30 @@ class CodeSnippetModal extends React.PureComponent {
     this.textarea.select();
     // Prevent scrolling to bottom of textarea after select
     this.textarea.scrollTop = 0;
+  }
+
+  // Sets up clipboard.js functionality. Not a React component.
+  setupClipboard() {
+    // eslint-disable-next-line react/no-find-dom-node
+    const clipboardButtonEl = ReactDOM.findDOMNode(this.clipboardButton);
+
+    // Initiate clipboard button
+    this.clipboard = new Clipboard(clipboardButtonEl);
+
+    this.clipboard.on('success', (e) => {
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+
+      e.clearSelection();
+    });
+
+    this.clipboard.on('error', (e) => {
+      console.error('Action:', e.action);
+      console.error('Trigger:', e.trigger);
+    });
+
+    clipboardButtonEl.focus();
   }
 
   render() {
@@ -197,6 +224,7 @@ class CodeSnippetModal extends React.PureComponent {
           <textarea
             value={content}
             ref={(ref) => { this.textarea = ref; }}
+            id="code-snippet-textarea"
             autoComplete="off"
             spellCheck="false"
           />
@@ -207,6 +235,10 @@ class CodeSnippetModal extends React.PureComponent {
         </div>
 
         <div className="modal-buttons">
+          <Button data-clipboard-target="#code-snippet-textarea" ref={(ref) => { this.clipboardButton = ref; }}>
+            <Icon type="bt-copy" /> Copy to clipboard
+          </Button>
+
           <Button onClick={this.onClickClose} className="button-confirm">
             <Icon type="bt-check" /> Done
           </Button>
