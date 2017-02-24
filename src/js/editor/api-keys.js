@@ -12,7 +12,6 @@
  */
 const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\||:)+(topojson|geojson|mvt|png|tif|gz))/;
 
-
 /**
  * A basic check to see if an api key string looks like a valid key. Not *is* a
  * valid key, just *looks like* one.

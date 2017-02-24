@@ -22,7 +22,7 @@ import EventEmitter from './components/event-emitter';
 
 // Redux
 import store from './store';
-import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE, ADD_RECENT_SCENE } from './store/actions';
+import { APP_INITIALIZED, SET_APP_STATE, OPEN_SCENE, CLEAR_ERRORS, ADD_RECENT_SCENE } from './store/actions';
 
 const DEFAULT_SCENE = 'data/scenes/basic.yaml';
 const STORAGE_LAST_EDITOR_STATE = 'last-scene';
@@ -35,6 +35,9 @@ function setSceneContentsInEditor(scene) {
     type: OPEN_SCENE,
     ...scene,
   });
+
+  // Clear erorrs
+  store.dispatch({ type: CLEAR_ERRORS });
 
   // Also remember the scene in list of recently opened scenes
   // This sends the entire scene object - TODO: clean it up a bit

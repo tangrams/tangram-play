@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver';
 import { showConfirmDialogModal } from '../modals/ConfirmDialogModal';
 import { showErrorModal } from '../modals/ErrorModal';
 import { load } from '../tangram-play';
+import { addError } from './errors';
 import { editor, getEditorContent } from './editor';
 import store from '../store';
 import { MARK_FILE_CLEAN, SAVE_SCENE } from '../store/actions';
@@ -154,6 +155,16 @@ export function getRootFileName() {
   return scene.files[scene.rootFileIndex].filename || 'scene.yaml';
 }
 
+function showApiKeyWarningIfNecessary() {
+  if (store.getState().app.mapzenAPIKeyInjected === true) {
+    addError({
+      type: 'warning', // {string} 'error' or 'warning'
+      message: 'This scene uses at least one Mapzen vector tile service without a Mapzen API key. Keyless requests will be disabled after March 1, 2017. Please add an API key as soon as possible.',
+      link: 'https://mapzen.com/blog/api-keys-required/',
+    });
+  }
+}
+
 export function markSceneSaved(saveDispatch) {
   editor.doc.markClean();
 
@@ -164,6 +175,7 @@ export function markSceneSaved(saveDispatch) {
   });
 
   store.dispatch(saveDispatch);
+  showApiKeyWarningIfNecessary();
 }
 
 export function exportSceneFile() {
