@@ -45,7 +45,7 @@ const INDENT_UNIT = 4;
 
 /**
  * Sets up a series of CodeMirror rulers. Depends on addon `display/rulers.js`.
- * See documetation: https://codemirror.net/doc/manual.html#addon_rulers
+ * See documentation: https://codemirror.net/doc/manual.html#addon_rulers
  *
  * CodeMirror's `rulers` option expects an array of objects where the
  * `column` property is the column at which to add a ruler. There does not
@@ -69,13 +69,50 @@ function createRulersOption(indentSize = INDENT_UNIT, amount = 10) {
 }
 
 /**
+ * Set up better line wrapping for CodeMirror. Wrapped lines are based on the
+ * indentation of the current line. See this demo:
+ *      https://codemirror.net/demo/indentwrap.html
+ * Modified slightly to provide an additional hanging indent that is based
+ * off of the document's indentUnit setting. This mimics how wrapping behaves
+ * in Sublime Text.
+ *
+ * @param {CodeMirror} cm - an instance of the CodeMirror editor.
+ */
+function setupLineWrapping(cm) {
+  // eslint-disable-next-line no-shadow
+  cm.on('renderLine', (cm, line, el) => {
+    const indentUnit = cm.getOption('indentUnit');
+    const charWidth = cm.defaultCharWidth();
+    const columns = CodeMirror.countColumn(line.text, null, indentUnit);
+    const offset = (columns + indentUnit) * charWidth;
+    const basePadding = 4; // Magic number: it is CodeMirror's default value.
+
+    /* eslint-disable no-param-reassign */
+    el.style.textIndent = `-${offset}px`;
+    el.style.paddingLeft = `${basePadding + offset}px`;
+    /* eslint-enable no-param-reassign */
+  });
+  cm.refresh();
+}
+
+/**
  * Initializes CodeMirror.
  *
  * @public
+ * @param {HTMLElement} el - the element to use as the CodeMirror editor.
+ * @param {function} initCallback - function to call after CodeMirror initializes.
  * @returns {CodeMirror} an instance of the CodeMirror editor.
  */
-export function initCodeMirror(el) {
-  const cm = new CodeMirror(el, {
+export function initCodeMirror(el, initCallback) {
+  CodeMirror.defineInitHook((cm) => {
+    setupLineWrapping(cm);
+
+    if (initCallback) {
+      initCallback(cm);
+    }
+  });
+
+  return new CodeMirror(el, {
     mode: 'text/x-yaml-tangram',
     theme: 'tangram',
     indentUnit: INDENT_UNIT,
@@ -97,27 +134,4 @@ export function initCodeMirror(el) {
     matchBrackets: true,
     autoCloseBrackets: true,
   });
-
-  // Better line wrapping. Wrapped lines are based on the indentation
-  // of the current line. See this demo:
-  //      https://codemirror.net/demo/indentwrap.html
-  // Modified slightly to provide an additional hanging indent that is based
-  // off of the document's indentUnit setting. This mimics how wrapping behaves
-  // in Sublime Text.
-  // eslint-disable-next-line no-shadow
-  cm.on('renderLine', (cm, line, el) => {
-    const indentUnit = cm.getOption('indentUnit');
-    const charWidth = cm.defaultCharWidth();
-    const columns = CodeMirror.countColumn(line.text, null, indentUnit);
-    const offset = (columns + indentUnit) * charWidth;
-    const basePadding = 4; // Magic number: it is CodeMirror's default value.
-
-    /* eslint-disable no-param-reassign */
-    el.style.textIndent = `-${offset}px`;
-    el.style.paddingLeft = `${basePadding + offset}px`;
-    /* eslint-enable no-param-reassign */
-  });
-  cm.refresh();
-
-  return cm;
 }

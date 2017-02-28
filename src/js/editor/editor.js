@@ -35,32 +35,44 @@ export let parsedYAMLDocument;
 let localMemorySaveTimer;
 
 /**
+ * Callback function passed to CodeMirror to run after it is initialized. Here,
+ * We attach several event listeners that tie into Tangram Play functionality.
+ *
+ * @param {CodeMirror} cm - an instance of an initialized CodeMirror editor,
+  *           provided by CodeMirror's `defineInitHook`.
+ */
+function initEditorCallback(cm) {
+  /* eslint-disable no-shadow */
+  // Turn on highlighting module
+  cm.on('gutterClick', highlightOnEditorGutterClick);
+  cm.on('changes', highlightOnEditorChanges);
+
+  // Folding code will remove text markers, and unfolding code adds them back.
+  cm.on('fold', (cm, from, to) => {
+    clearTextMarkers(cm, from.line, to.line);
+    // Adds text markers that might appear because new lines have "scrolled" into view
+    insertTextMarkersInViewport(cm);
+  });
+  cm.on('unfold', (cm, from, to) => {
+    insertTextMarkers(cm, parsedYAMLDocument.nodes, from.line, to.line);
+  });
+
+  /* eslint-enable no-shadow */
+}
+
+/**
  * Imported by the <Editor> React component, to be called when it mounts.
  * It is here (instead of importing `initCodeMirror()` directly) so that this
  * module can continue to export the `editor` reference to the CodeMirror
  * instance. This may change in the future if this is confusing.
  *
- * @param {Node} el - reference to the editor's container DOM node.
+ * @param {HTMLElement} el - reference to the editor's container DOM node.
  */
 export function initEditor(el) {
-  editor = initCodeMirror(el);
+  editor = initCodeMirror(el, initEditorCallback);
 
   // Debug
   window.editor = editor;
-
-  // Turn on highlighting module
-  editor.on('gutterClick', highlightOnEditorGutterClick);
-  editor.on('changes', highlightOnEditorChanges);
-
-  // Folding code will remove text markers, and unfolding code adds them back.
-  editor.on('fold', (cm, from, to) => {
-    clearTextMarkers(cm, from.line, to.line);
-    // Adds text markers that might appear because new lines have "scrolled" into view
-    insertTextMarkersInViewport(cm);
-  });
-  editor.on('unfold', (cm, from, to) => {
-    insertTextMarkers(cm, parsedYAMLDocument.nodes, from.line, to.line);
-  });
 }
 
 /**
