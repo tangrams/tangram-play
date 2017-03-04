@@ -15,6 +15,9 @@ dependencies:
   cache_directories:
     - ~/.yarn-cache
   override:
+    # update yarn.lock due to updates in package.json via GreenKeeper
+    - yarn upgrade
+    # then install
     - yarn install
 
 test:
