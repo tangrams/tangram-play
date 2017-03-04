@@ -120,7 +120,7 @@
     "three": "0.84.0",
     "tinycolor2": "1.4.1",
     "url-search-params": "0.6.1",
-    "whatwg-fetch": "2.0.2",
+    "whatwg-fetch": "2.0.3",
     "yaml-ast-parser": "0.0.31"
   },
   "browserify-shim": {
