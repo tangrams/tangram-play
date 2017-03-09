@@ -282,16 +282,18 @@ class MenuBar extends React.Component {
         signInRequiredMsg = <div className="menu-item-note">Sign-in required</div>;
       }
     }
+    // <span className="brand">
+    //   Tangram Play
+    //   <span className="brand-tag">BETA</span>
+    // </span>
 
     return (
       <Navbar inverse className="menu-bar">
         {/* The brand section */}
         <Navbar.Header>
           <Navbar.Brand>
-            <span className="brand">
-              Tangram Play
-              <span className="brand-tag">BETA</span>
-            </span>
+            <img src="data/imgs/logo.svg" />
+            <span className="brand-tag">BETA</span>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
