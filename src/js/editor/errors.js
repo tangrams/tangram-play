@@ -1,5 +1,5 @@
-import { editor, parsedYAMLDocument } from './editor';
-import { getPositionsForNode } from './yaml-ast';
+import { editor } from './editor';
+import { getPositionsForNode, getNodeAtKeyAddress } from './yaml-ast';
 import { tangramLayer } from '../map/map';
 
 // Redux
@@ -217,8 +217,9 @@ function handleShaderErrorWithBlock(error, errorObj) {
   if (blockErrors.has(JSON.stringify(block))) return;
 
   const address = `styles:${style}:shaders:blocks:${block.name}`;
-  const node = parsedYAMLDocument.getNodeAtKeyAddress(address);
-  const pos = getPositionsForNode(node, editor.getDoc());
+  const doc = editor.getDoc();
+  const node = getNodeAtKeyAddress(doc.yamlNodes, address);
+  const pos = getPositionsForNode(node, doc);
 
   const data = {
     type: 'warning',

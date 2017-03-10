@@ -6,7 +6,7 @@ import DropdownMarker from '../components/textmarkers/DropdownMarker';
 // import VectorPicker from '../components/textmarkers/vector/VectorPicker';
 import BooleanMarker from '../components/textmarkers/BooleanMarker';
 import EventEmitter from '../components/event-emitter';
-import { editor, parsedYAMLDocument } from './editor';
+import { editor } from './editor';
 import { indexesFromLineRange } from './codemirror/tools';
 import {
   getScalarNodesInRange,
@@ -252,7 +252,7 @@ export function insertTextMarkers(cm, ast, fromLine, toLine) {
  */
 export function insertTextMarkersInViewport(cm) {
   const viewport = cm.getViewport();
-  insertTextMarkers(cm, parsedYAMLDocument.nodes, viewport.from, viewport.to);
+  insertTextMarkers(cm, cm.getDoc().yamlNodes, viewport.from, viewport.to);
 }
 
 /**
@@ -331,11 +331,6 @@ export function clearTextMarkers(cm, fromLine, toLine) {
  *          editor content.
  */
 function handleEditorChanges(cm, changes) {
-  // This should be handled by the main editor change handler, but since these
-  // are both triggered by events, it's possible this executes first, so we have
-  // to force regeneration anyway. TODO: fix this
-  parsedYAMLDocument.regenerate(cm.getDoc().getValue());
-
   for (const change of changes) {
     // Each change object specifies a range of lines
     const fromLine = change.from.line;
@@ -366,7 +361,7 @@ function handleEditorChanges(cm, changes) {
       clearTextMarkers(cm, fromLine, toLine);
     }
 
-    insertTextMarkers(cm, parsedYAMLDocument.nodes, fromLine, toLine);
+    insertTextMarkers(cm, cm.getDoc().yamlNodes, fromLine, toLine);
   }
 }
 

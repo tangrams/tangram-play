@@ -1,4 +1,3 @@
-import YAMLParser from 'yaml-ast-parser';
 import { addressFromKeyStack, keyStackFromAddress } from './codemirror/yaml-tangram';
 
 /*
@@ -45,19 +44,6 @@ export const YAML_SEQUENCE = 3;
 export const YAML_ANCHOR_REF = 4;
 // export const YAML_INCLUDE_REF = 5;
 
-function parseYAML(content) {
-  // Run all the content through the AST parser and store it here.
-  // Timing of safeLoad: about 0.5-1.5ms for a small file, could be 20ms+ for a 6000 line Cinnabar.
-  // `parsedYAML` will be undefined if content is blank (e.g. empty string)
-  const parsedYAML = YAMLParser.safeLoad(content);
-
-  if (parsedYAML && parsedYAML.errors.length > 0) {
-    // TODO: Handle errors?
-  }
-
-  return parsedYAML;
-}
-
 /**
  * Given a parsed syntax tree of YAML, and a position index, return
  * the deepest node that contains that position. Returns `null` if not found.
@@ -86,7 +72,7 @@ function parseYAML(content) {
  * @param {Number} index - a position index
  * @returns {Object} a node, or null if not found
  */
-function getNodeAtIndex(ast, index) {
+export function getNodeAtIndex(ast, index) {
   function searchNodes(node, idx) {
     if (!node) return null;
 
@@ -147,7 +133,7 @@ function getNodeAtIndex(ast, index) {
  * @param {string} address - an address that looks like "this:string:example"
  * @returns {Object} a node
  */
-function getNodeAtKeyAddress(ast, address) {
+export function getNodeAtKeyAddress(ast, address) {
   function searchNodes(node, stack) {
     // Nodes can be a null value. See documentation for `getNodeAtIndex()`.
     if (!node) return null;
@@ -450,27 +436,4 @@ export function getValuesFromSequenceNode(node) {
   });
 
   return items;
-}
-
-export class ParsedYAMLDocument {
-  constructor(content) {
-    this.nodes = {};
-    this.regenerate(content);
-  }
-
-  regenerate(content) {
-    this.nodes = parseYAML(content) || {};
-  }
-
-  getNodeAtIndex(index) {
-    return getNodeAtIndex(this.nodes, index);
-  }
-
-  getNodeAtKeyAddress(address) {
-    return getNodeAtKeyAddress(this.nodes, address);
-  }
-
-  getScalarNodesInRange(fromIndex, toIndex) {
-    return getScalarNodesInRange(this.nodes, fromIndex, toIndex);
-  }
 }

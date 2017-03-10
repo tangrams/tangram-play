@@ -35,6 +35,9 @@ import 'codemirror/keymap/sublime';
 import './codemirror/yaml-tangram';
 import './codemirror/hint-tangram';
 
+// Import YAML abstract syntax tree parsing plugin
+import './codemirror/yaml-parser';
+
 // Import custom keymap with additional Tangram Play functionality
 import { getExtraKeyMap } from './keymap';
 
