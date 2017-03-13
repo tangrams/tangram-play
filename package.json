@@ -45,7 +45,7 @@
     }
   ],
   "devDependencies": {
-    "autoprefixer": "6.7.6",
+    "autoprefixer": "6.7.7",
     "babel-preset-es2015": "6.24.0",
     "babel-preset-react": "6.22.0",
     "babelify": "7.3.0",
@@ -71,7 +71,7 @@
     "gulp-postcss": "6.3.0",
     "gulp-sourcemaps": "latest",
     "gulp-tap": "0.1.3",
-    "gulp-uglify": "2.0.1",
+    "gulp-uglify": "2.1.0",
     "gulp-util": "3.0.8",
     "imagemin": "5.2.2",
     "imagemin-gifsicle": "5.1.0",
@@ -107,7 +107,7 @@
     "leaflet": "1.0.3",
     "localforage": "1.4.3",
     "lodash": "4.17.4",
-    "raven-js": "3.12.0",
+    "raven-js": "3.12.1",
     "react": "15.4.2",
     "react-addons-test-utils": "15.4.2",
     "react-autosuggest": "latest",
