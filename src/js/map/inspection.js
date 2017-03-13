@@ -6,7 +6,8 @@ import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { map, tangramLayer } from './map';
-import { parsedYAMLDocument } from '../editor/editor';
+import { editor } from '../editor/editor';
+import { getNodeAtKeyAddress } from '../editor/yaml-ast';
 import { highlightNode } from '../editor/highlight';
 import EventEmitter from '../components/event-emitter';
 
@@ -176,7 +177,7 @@ class TangramInspectionPopup extends React.Component {
   // eslint-disable-next-line class-methods-use-this
   onClickSourceName(event) {
     const name = event.currentTarget.dataset.sourceName;
-    const node = parsedYAMLDocument.getNodeAtKeyAddress(`sources:${name}`);
+    const node = getNodeAtKeyAddress(editor.getDoc().yamlNodes, `sources:${name}`);
     highlightNode(node);
   }
 
@@ -211,7 +212,7 @@ class TangramInspectionPopup extends React.Component {
     event.target.classList.add('map-inspection-selected');
 
     // Highlight the block & jump to line.
-    const node = parsedYAMLDocument.getNodeAtKeyAddress(event.currentTarget.dataset.nodeAddress);
+    const node = getNodeAtKeyAddress(editor.getDoc().yamlNodes, event.currentTarget.dataset.nodeAddress);
     highlightNode(node);
   }
 
@@ -307,7 +308,7 @@ class TangramInspectionPopup extends React.Component {
           <div className="map-inspection-layers-container" ref={(el) => { this.layersEl = el; }}>
             {layers.map((item) => {
               const address = `layers:${item}`;
-              const node = parsedYAMLDocument.getNodeAtKeyAddress(address);
+              const node = getNodeAtKeyAddress(editor.getDoc().yamlNodes, address);
 
               if (node) {
                 return (

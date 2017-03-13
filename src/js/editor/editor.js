@@ -4,7 +4,7 @@ import localforage from 'localforage';
 
 import config from '../config';
 import { initCodeMirror } from './codemirror';
-import { ParsedYAMLDocument } from './yaml-ast';
+import { getNodeAtIndex } from './yaml-ast';
 import { suppressAPIKeys } from './api-keys';
 import {
   highlightOnEditorGutterClick,
@@ -28,7 +28,6 @@ const EDITOR_REFRESH_THROTTLE = 20;
 // Export an instantiated CodeMirror instance
 /* eslint-disable import/no-mutable-exports */
 export let editor;
-export let parsedYAMLDocument;
 /* eslint-enable import/no-mutable-exports */
 
 // Timeout for saving things in memory
@@ -54,7 +53,7 @@ function initEditorCallback(cm) {
     insertTextMarkersInViewport(cm);
   });
   cm.on('unfold', (cm, from, to) => {
-    insertTextMarkers(cm, parsedYAMLDocument.nodes, from.line, to.line);
+    insertTextMarkers(cm, cm.getDoc().yamlNodes, from.line, to.line);
   });
 
   /* eslint-enable no-shadow */
@@ -132,13 +131,6 @@ export function setEditorContent(doc, readOnly = false) {
   // Swap current content in CodeMirror document with the provided Doc instance.
   editor.swapDoc(doc);
   editor.setOption('readOnly', readOnly);
-
-  // Parse the document
-  const content = doc.getValue();
-  parsedYAMLDocument = new ParsedYAMLDocument(content);
-
-  // Debug access
-  window.parsedYAMLDocument = parsedYAMLDocument;
 
   // Once the document is swapped in, add text markers back in
   insertTextMarkersInViewport(editor);
@@ -218,8 +210,6 @@ export function watchEditorForChanges(cm, changes) {
   const isClean = doc.isClean();
   const previousCleanState = store.getState().scene.files[0].isClean; // TODO: replace with current file
 
-  parsedYAMLDocument.regenerate(content);
-
   // Update all the properties of the active file in local memory.
   // Localforage is async so it cannot be relied on to do this on the
   // window.beforeunload event; there is no guarantee the transaction is
@@ -278,7 +268,7 @@ export function setCodeMirrorValue(marker, value) {
   // a { from, to } object like the documentation says? maybe if it's a text range?
   const index = doc.indexFromPos(pos);
   // Rely on the latest parsed condition
-  const node = parsedYAMLDocument.getNodeAtIndex(index);
+  const node = getNodeAtIndex(doc.yamlNodes, index);
   const from = doc.posFromIndex(node.startPosition);
   const to = doc.posFromIndex(node.endPosition);
   doc.replaceRange(value, from, to, origin);
