@@ -71,7 +71,7 @@
     "gulp-postcss": "6.3.0",
     "gulp-sourcemaps": "latest",
     "gulp-tap": "0.1.3",
-    "gulp-uglify": "2.0.1",
+    "gulp-uglify": "2.1.0",
     "gulp-util": "3.0.8",
     "imagemin": "5.2.2",
     "imagemin-gifsicle": "5.1.0",
