@@ -6,15 +6,6 @@
  * replaceState). Do not modify window.location or window.history on your own!
  */
 
-// The URLSearchParams polyfill cannot be imported because its author does
-// not believe it is proper to do it in this way. No matter: we will use a
-// `require` and attach it globally if not present in the current environment.
-const URLSearchParams = require('url-search-params');
-
-if (!window.URLSearchParams) {
-  window.URLSearchParams = URLSearchParams;
-}
-
 /**
  * Gets a deserialized object from the current window's URL.
  * It breaks down the query string, e.g. '?scene=foo.yaml'
