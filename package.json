@@ -79,7 +79,7 @@
     "karma": "1.4.1",
     "karma-browserify": "5.1.1",
     "karma-mocha": "1.3.0",
-    "karma-mocha-reporter": "2.2.2",
+    "karma-mocha-reporter": "2.2.3",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-sinon": "1.0.5",
     "loose-envify": "1.3.1",
