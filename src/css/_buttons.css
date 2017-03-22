@@ -5,7 +5,7 @@ button {
   padding: 0.8em 0.75em;
   font-family: var(--font-family);
   font-weight: 200;
-  font-size: 0.9rem;
+  font-size: var(--root-font-size);
   color: var(--ui-component-text-color);
   background-color: var(--ui-element-color);
   box-shadow: var(--ui-emboss-shadow);
@@ -32,7 +32,7 @@ button {
   .btm {
     padding-right: 0;
     margin: 0;
-    font-size: 0.9em;
+    font-size: var(--root-font-size);
     font-weight: 200;
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: auto;
@@ -84,7 +84,7 @@ button:disabled > .btm {
 .button-confirm > .btm {
   color: green;
   font-weight: 600;
-  font-size: 0.9em;
+  font-size: var(--root-font-size);
 }
 
 /* Any icon of cancel button is red */

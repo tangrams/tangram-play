@@ -26,26 +26,34 @@ nav {
   border-bottom: 1px solid #1a1c1f;
 }
 
+.navbar-header {
+  background-color: #00a;
+  color: white;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+
 .brand {
   position: relative;
-  padding: 8px 12px 12px 15px;
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--ui-component-text-color);
+  padding: 4px 3px 5px;
+  font-size: var(--root-font-size);
+  font-weight: 600;
+  color: white;
   z-index: 1; /* This just needs to be any number to be properly sorted in its stacking context */
+  cursor: default;
 }
 
 .brand-tag {
-  position: absolute;
-  left: 15px;
-  top: 20px;
-  font-size: 9px;
-  color: var(--ui-highlight-color);
 }
 
 .menu-bar .btm {
+  display: none;
   padding-right: 8px;
   font-size: 15px;
+}
+
+.menu-bar .caret {
+  display: none;
 }
 
 .menu-bar a {
@@ -53,49 +61,44 @@ nav {
   display: block;
   color: var(--ui-component-text-color);
   font-weight: 200;
-  font-size: 13px;
+  font-size: var(--root-font-size);
   outline: none;
-  line-height: var(--menu-bar-height);
-  padding: 0 15px;
+  line-height: 18px;
+  padding: 4px 6px;
+}
 
-  &:hover {
-    color: yellow;
-    background-color: var(--ui-element-color);
-  }
+.menu-item-underline {
+  text-decoration: underline;
 }
 
 .menu-bar li.active a {
-  color: var(--ui-highlight-color);
+  color: white;
+  background-color: #00a;
 }
 
-.menu-bar li.active i {
-  font-weight: 900;
-}
+.dropdown-menu li:hover {
+  background-color: #00a;
 
-.menu-bar .dropdown-menu li {
-  border-top: 1px solid var(--ui-element-color);
-
-  &:hover {
-    background-color: var(--ui-active-color);
+  a {
+    color: white;
   }
 }
 
 .dropdown-menu {
-  padding: 0;
-  min-width: 200px;
+  padding: 2px;
   background-color: var(--ui-component-color);
   margin-top: 0;
-  margin-left: -1px;
-  border-bottom-left-radius: var(--ui-border-radius);
-  border-bottom-right-radius: var(--ui-border-radius);
-  border: var(--ui-border);
-  border-top: 0;
+  border-top: 1px solid #c3c7cb;
+  border-left: 1px solid #c3c7cb;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #868a8e;
   overflow: hidden;
 }
 
 .menu-bar .dropdown-menu a {
-  padding: 3px 14px;
-  line-height: 36px;
+  padding: 0 22px;
+  line-height: 17px;
 }
 
 .dropdown-menu {
@@ -110,8 +113,8 @@ nav {
   z-index: var(--z10-dropdown-button);
 
   > a {
-    color: yellow;
-    background-color: var(--ui-active-color);
+    color: white;
+    background-color: #00a;
   }
 }
 

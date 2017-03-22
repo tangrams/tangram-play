@@ -1,8 +1,5 @@
 import React from 'react';
 import NavItem from 'react-bootstrap/lib/NavItem';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Icon from './Icon';
 
 import {
   isFullscreenEnabled,
@@ -51,20 +48,13 @@ export default class MenuFullscreen extends React.Component {
     if (!isFullscreenEnabled()) return null;
 
     return (
-      <OverlayTrigger
-        rootClose
-        placement="bottom"
-        overlay={<Tooltip id="tooltip">View fullscreen</Tooltip>}
-        delayShow={200}
+      <NavItem
+        eventKey="new"
+        onClick={this.onClickFullscreen}
+        active={this.state.fullscreenActive}
       >
-        <NavItem
-          eventKey="new"
-          onClick={this.onClickFullscreen}
-          active={this.state.fullscreenActive}
-        >
-          <Icon type="bt-maximize" />Fullscreen
-        </NavItem>
-      </OverlayTrigger>
+        <span className="menu-item-underline">F</span>ullscreen
+      </NavItem>
     );
   }
 }

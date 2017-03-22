@@ -16,7 +16,7 @@
 
 /* Layout, generic elements */
 @import '_application';
-@import '_typography';
+/* @import '_typography'; */
 @import '_ui';
 @import '_workspace';
 @import '_overlay';
@@ -70,25 +70,43 @@
 
 /* VARIABLES */
 
+@font-face {
+  font-family: 'MS Sans Serif';
+  src: url('../data/fonts/ms-sans-serif/MS Sans Serif.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MS Sans Serif';
+  src: url('../data/fonts/ms-sans-serif-bold/MS Sans Serif Bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+body {
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
 :root {
-  /* Uses Roboto if available, and falls back to system fonts otherwise */
-  --font-family: 'Roboto', sans-serif;
-  --root-font-size: 14px;
-  --editor-font-family: 'Source Code Pro', monospace;
+  --font-family: 'MS Sans Serif', sans-serif;
+  --root-font-size: 11px;
+  --editor-font-family: 'Courier New', monospace;
   --ui-editor-background-color: #1c1f24;
-  --ui-base-color: #26282e;
-  --ui-component-color: #303237;
+  --ui-base-color: #c3c7cb; /* win95 default background color */
+  --ui-component-color: #c3c7cb;
   --ui-element-color: #36383e;
   --ui-active-color: #3d3f46;
   --ui-highlight-color: yellow;
   --ui-highlight-color-2: rgb(221, 221, 0);
-  --ui-component-text-color: #eefafa;
+  --ui-component-text-color: #000;
   --ui-link-text-color: #e1eeee;
   --ui-subtext-color: #c0c6c6;
   --ui-unnamed-light-color: #999ca0;
   --ui-border-color: #1a1c1f;
   --ui-border: 1px solid var(--ui-border-color);
-  --ui-border-radius: 3px;
+  --ui-border-radius: 0;
   --ui-well-color: #4d515a;
   --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
   --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
@@ -98,7 +116,7 @@
   --ui-warning-color: #fc0;
 
   /* LAYOUT */
-  --menu-bar-height: 40px;
+  --menu-bar-height: 20px;
   --divider-width: 10px;
 
   /* Z-INDEX SCALE */

@@ -6,8 +6,6 @@ import Navbar from 'react-bootstrap/lib/Navbar';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import Nav from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Icon from './Icon';
 import EventEmitter from './event-emitter';
 import { trackGAEvent } from '../tools/analytics';
@@ -288,8 +286,7 @@ class MenuBar extends React.Component {
         <Navbar.Header>
           <Navbar.Brand>
             <span className="brand">
-              Tangram Play
-              <span className="brand-tag">BETA</span>
+              Tangram Work (BETA)
             </span>
           </Navbar.Brand>
           <Navbar.Toggle />
@@ -299,188 +296,143 @@ class MenuBar extends React.Component {
           {/* Left menu section */}
           <Nav pullLeft>
             {/* New button*/}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">New scene</Tooltip>}
-              delayShow={200}
+            <NavDropdown
+              title={<span><span className="menu-item-underline">N</span>ew</span>}
+              id="new-dropdown"
             >
-              <NavDropdown
-                title={<span><Icon type="bt-file" />New</span>}
-                id="new-dropdown"
-              >
-                <MenuItem onClick={clickNew}>
-                  <Icon type="bt-file" />New blank scene
-                </MenuItem>
-                <MenuItem onClick={clickOpenExample}>
-                  <Icon type="bt-map" />New from example…
-                </MenuItem>
-              </NavDropdown>
-            </OverlayTrigger>
+              <MenuItem onClick={clickNew}>
+                New blank scene
+              </MenuItem>
+              <MenuItem onClick={clickOpenExample}>
+                New from example…
+              </MenuItem>
+            </NavDropdown>
 
             {/* Open dropdown */}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">Open scene</Tooltip>}
-              delayShow={200}
+
+            <NavDropdown
+              title={<span><span className="menu-item-underline">O</span>pen</span>}
+              id="open-dropdown"
             >
-              <NavDropdown
-                title={<span><Icon type="bt-upload" />Open</span>}
-                id="open-dropdown"
-              >
-                <MenuItem onClick={clickOpenFile}>
-                  <Icon type="bt-folder" />Open scene…
-                </MenuItem>
-                {(() => {
-                  if (this.props.isMapzenHosted) {
-                    return (
-                      <MenuItem onClick={clickOpenFromCloud}>
-                        <Icon type="bt-cloud-download" />Open scene from Mapzen account…
-                        {signInRequiredMsg}
-                      </MenuItem>
-                    );
-                  }
-                  return null;
-                })()}
-                {(() => {
-                  if (this.state.legacyGistMenu) {
-                    return (
-                      <MenuItem onClick={clickOpenGist}>
-                        <Icon type="bt-code" />Open scene from GitHub Gist (Legacy)…
-                      </MenuItem>
-                    );
-                  }
-                  return null;
-                })()}
-                <MenuItem onClick={clickOpenURL}>
-                  <Icon type="bt-link" />Open from URL…
-                </MenuItem>
-              </NavDropdown>
-            </OverlayTrigger>
+              <MenuItem onClick={clickOpenFile}>
+                Open scene…
+              </MenuItem>
+              {(() => {
+                if (this.props.isMapzenHosted) {
+                  return (
+                    <MenuItem onClick={clickOpenFromCloud}>
+                      Open scene from Mapzen account…
+                      {signInRequiredMsg}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })()}
+              {(() => {
+                if (this.state.legacyGistMenu) {
+                  return (
+                    <MenuItem onClick={clickOpenGist}>
+                      Open scene from GitHub Gist (Legacy)…
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })()}
+              <MenuItem onClick={clickOpenURL}>
+                Open from URL…
+              </MenuItem>
+            </NavDropdown>
 
             {/* Save dropdown */}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">Save scene</Tooltip>}
-              delayShow={200}
+            <NavDropdown
+              title={<span><span className="menu-item-underline">S</span>ave</span>}
+              id="save-dropdown"
             >
-              <NavDropdown
-                title={<span><Icon type="bt-download" />Save</span>}
-                id="save-dropdown"
-              >
-                <MenuItem onClick={clickSaveFile}>
-                  <Icon type="bt-download" />Download
-                </MenuItem>
-                {(() => {
-                  if (this.props.isMapzenHosted) {
-                    return (
-                      <MenuItem onClick={clickSaveToCloud}>
-                        <Icon type="bt-cloud-upload" />Save to Mapzen account…
-                        {signInRequiredMsg}
-                      </MenuItem>
-                    );
-                  }
-                  return null;
-                })()}
-                {(() => {
-                  if (this.props.isMapzenHosted) {
-                    return (
-                      <MenuItem onClick={clickSaveAsToCloud}>
-                        <Icon type="bt-cloud-upload" />Save as…
-                        {signInRequiredMsg}
-                      </MenuItem>
-                    );
-                  }
-                  return null;
-                })()}
-              </NavDropdown>
-            </OverlayTrigger>
+              <MenuItem onClick={clickSaveFile}>
+                Download
+              </MenuItem>
+              {(() => {
+                if (this.props.isMapzenHosted) {
+                  return (
+                    <MenuItem onClick={clickSaveToCloud}>
+                      Save to Mapzen account…
+                      {signInRequiredMsg}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })()}
+              {(() => {
+                if (this.props.isMapzenHosted) {
+                  return (
+                    <MenuItem onClick={clickSaveAsToCloud}>
+                      Save as…
+                      {signInRequiredMsg}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })()}
+            </NavDropdown>
 
             {/* Share button */}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">Share your scene</Tooltip>}
-              delayShow={200}
+            <NavDropdown
+              title={<span>Sh<span className="menu-item-underline">a</span>re</span>}
+              id="share-dropdown"
             >
-              <NavDropdown
-                title={<span><Icon type="bt-external-link" />Share</span>}
-                id="share-dropdown"
-              >
-                {(() => {
-                  if (this.props.isMapzenHosted) {
-                    return (
-                      <MenuItem onClick={onClickShare}>
-                        <Icon type="bt-link" />Get sharable link to your map…
-                      </MenuItem>
-                    );
-                  }
-                  return null;
-                })()}
-                <MenuItem onClick={onClickEmbed}>
-                  <Icon type="bt-code" />Get code snippet…
-                </MenuItem>
-              </NavDropdown>
-            </OverlayTrigger>
+              {(() => {
+                if (this.props.isMapzenHosted) {
+                  return (
+                    <MenuItem onClick={onClickShare}>
+                      Get sharable link to your map…
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })()}
+              <MenuItem onClick={onClickEmbed}>
+                Get code snippet…
+              </MenuItem>
+            </NavDropdown>
 
-          </Nav>
-
-          {/* Right menu section */}
-          <Nav pullRight>
             {/* Introspection button */}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">Toggle inspect mode</Tooltip>}
-              delayShow={200}
+            <NavItem
+              eventKey="inspect"
+              onClick={this.onClickInspect}
+              active={this.state.inspectActive}
             >
-              <NavItem
-                eventKey="inspect"
-                onClick={this.onClickInspect}
-                active={this.state.inspectActive}
-              >
-                <Icon type="bt-magic" />Inspect
-              </NavItem>
-            </OverlayTrigger>
+              <span className="menu-item-underline">I</span>nspect
+            </NavItem>
 
             {/* Fullscreen button */}
             <MenuFullscreen />
 
             {/* Help dropdown */}
-            <OverlayTrigger
-              rootClose
-              placement="bottom"
-              overlay={<Tooltip id="tooltip">Documentation and help</Tooltip>}
-              delayShow={200}
+            <NavDropdown
+              title={<span><span className="menu-item-underline">H</span>elp</span>}
+              id="help-dropdown"
             >
-              <NavDropdown
-                title={<span><Icon type="bt-question-circle" />Help</span>}
-                id="help-dropdown"
-              >
-                <MenuItem onClick={clickAbout}>
-                  <Icon type="bt-info-circle" />About
+              <MenuItem onClick={clickAbout}>
+                About
+              </MenuItem>
+              <MenuItem onClick={clickWhatsNew}>
+                What’s new?
+              </MenuItem>
+              <MenuItem href={getStartedLink} target="_blank" rel="noopener noreferrer">
+                Get started
+              </MenuItem>
+              <MenuItem href={documentationLink} target="_blank" rel="noopener noreferrer">
+                Tangram documentation
+              </MenuItem>
+              {/* // TEMP: hidden.
+                <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
+                  <Icon type="bt-notebook" />Tutorial
                 </MenuItem>
-                <MenuItem onClick={clickWhatsNew}>
-                  <Icon type="bt-gift" />What’s new?
-                </MenuItem>
-                <MenuItem href={getStartedLink} target="_blank" rel="noopener noreferrer">
-                  <Icon type="bt-light-bulb" />Get started
-                </MenuItem>
-                <MenuItem href={documentationLink} target="_blank" rel="noopener noreferrer">
-                  <Icon type="bt-book" />Tangram documentation
-                </MenuItem>
-                {/* // TEMP: hidden.
-                  <MenuItem href={tutorialLink} target="_blank" rel="noopener noreferrer">
-                    <Icon type="bt-notebook" />Tutorial
-                  </MenuItem>
-                */}
-                <MenuItem onClick={clickSupport}>
-                  <Icon type="bt-comments" />Support
-                </MenuItem>
-              </NavDropdown>
-            </OverlayTrigger>
+              */}
+              <MenuItem onClick={clickSupport}>
+                Support
+              </MenuItem>
+            </NavDropdown>
 
             {/* Sign in */}
             <SignInButton />

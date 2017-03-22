@@ -3,18 +3,23 @@
 .modal {
   display: block; /* Default display mode */
   width: 400px;
-  padding: 30px;
+  padding: 1px;
   font-family: var(--font-family);
   font-weight: 200;
   font-size: 1rem;
   text-align: center;
   color: var(--ui-component-text-color);
   background-color: var(--ui-base-color);
-  box-shadow: var(--ui-modal-shadow), var(--ui-emboss-shadow);
+  /*box-shadow: var(--ui-modal-shadow), var(--ui-emboss-shadow);*/
   z-index: var(--z01-modal);
   pointer-events: auto;
-  border: 1px solid var(--ui-border-color);
-  border-radius: 2px;
+  /*border: 1px solid var(--ui-border-color);*/
+  /*border-radius: 2px;*/
+  border-top: 1px solid #c3c7cb;
+  border-left: 1px solid #c3c7cb;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #868a8e;
 }
 
 /*
@@ -31,6 +36,15 @@
   .modal-buttons {
     justify-content: flex-end;
   }
+}
+
+.modal h4 {
+  background-color: #00a;
+  color: white;
+  padding: 4px 3px 5px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: default;
 }
 
 .modal-text {
@@ -92,7 +106,7 @@
   margin-right: 40px;
 
   p {
-    font-size: 12px;
+    font-size: var(--root-font-size);
     margin-top: 16px;
     margin-bottom: 0;
     user-select: auto;
