@@ -1,6 +1,12 @@
 import { assert } from 'chai';
 import { getQueryStringObject, getURLSearchParam, mergeParamObjectToQueryString } from '../src/js/tools/url-state';
 
+const URLSearchParams = require('url-search-params'); // Polyfill for test environment
+/* eslint-disable import/first */
+if (!window.URLSearchParams) {
+  window.URLSearchParams = URLSearchParams;
+}
+
 describe('URL query parameters management', () => {
   describe('getQueryStringObject()', () => {
     it('returns an empty object when page has no search params', () => {

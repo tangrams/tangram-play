@@ -18,7 +18,7 @@ export function getQueryStringObject(queryString = window.location.search) {
   const params = new window.URLSearchParams(queryString);
   const object = {};
 
-  for (const param of params) {
+  for (const param of params.entries()) {
     const [key, value] = param;
 
     // Do not assign if key is a blank string or
