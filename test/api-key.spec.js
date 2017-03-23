@@ -1,10 +1,52 @@
 import { assert } from 'chai';
-import { injectAPIKey, suppressAPIKeys } from '../src/js/editor/api-keys';
+import { isValidMapzenApiKey, injectAPIKey, suppressAPIKeys } from '../src/js/editor/api-keys';
 
-const TEST_API_KEY = 'mapzen-1234566';
+const TEST_API_KEY = 'mapzen-1234567';
 const TEST_SUPPRESSED_KEYS = [TEST_API_KEY, 'mapzen-abcdefg', 'mapzen-123abcd'];
 
 describe('API keys for Mapzen vector tiles', () => {
+  describe('isValidMapzenApiKey()', () => {
+    it('is valid for a 5-character alphanumeric suffix', () => {
+      const result = isValidMapzenApiKey('mapzen-1a345');
+      assert.equal(result, true);
+    });
+
+    it('is valid for a 6-character alphanumeric suffix', () => {
+      const result = isValidMapzenApiKey('mapzen-1a3456');
+      assert.equal(result, true);
+    });
+
+    it('is valid for a 7-character alphanumeric suffix', () => {
+      const result = isValidMapzenApiKey('mapzen-1a34567');
+      assert.equal(result, true);
+    });
+
+    it('is invalid for a 8-character alphanumeric suffix', () => {
+      const result = isValidMapzenApiKey('mapzen-1a345678');
+      assert.equal(result, false);
+    });
+
+    it('is invalid for a 4-character alphanumeric suffix', () => {
+      const result = isValidMapzenApiKey('mapzen-1a34');
+      assert.equal(result, false);
+    });
+
+    it('is valid for a 7-character alphanumeric suffix with a dash', () => {
+      const result = isValidMapzenApiKey('mapzen-1a3-b67');
+      assert.equal(result, true);
+    });
+
+    it('is valid for a 7-character alphanumeric suffix with an underscore', () => {
+      const result = isValidMapzenApiKey('mapzen-_a34b67');
+      assert.equal(result, true);
+    });
+
+    it('is valid for a legacy prefix with a dash', () => {
+      const result = isValidMapzenApiKey('vector-tiles-1a34567');
+      assert.equal(result, true);
+    });
+  });
+
   describe('injects a missing API key', () => {
     it('adds an API key when it is missing from TopoJSON endpoint', () => {
       const config = {
