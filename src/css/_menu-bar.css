@@ -11,10 +11,14 @@ nav {
 
 .menu-bar {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  top: 3px;
+  left: 3px;
+  right: 3px;
   z-index: var(--z07-menu);
+}
+
+.menu-bar * {
+  cursor: default;
 }
 
 .menu-bar .container {
@@ -23,7 +27,6 @@ nav {
   padding-right: 0;
   width: 100%;
   background-color: var(--ui-base-color);
-  border-bottom: 1px solid #1a1c1f;
 }
 
 .navbar-header {
@@ -35,7 +38,7 @@ nav {
 
 .brand {
   position: relative;
-  padding: 4px 3px 5px;
+  padding: 0 3px;
   font-size: var(--root-font-size);
   font-weight: 600;
   color: white;
@@ -43,7 +46,8 @@ nav {
   cursor: default;
 }
 
-.brand-tag {
+.menu-bar ul {
+  margin-top: 1px;
 }
 
 .menu-bar .btm {
@@ -64,7 +68,7 @@ nav {
   font-size: var(--root-font-size);
   outline: none;
   line-height: 18px;
-  padding: 4px 6px;
+  padding: 0 6px;
 }
 
 .menu-item-underline {
@@ -158,7 +162,8 @@ nav {
   }
 }
 
-.navbar-collapse {
+.navbar-collapse,
+.navbar-default {
   position: relative;
   background-color: var(--ui-base-color);
 }

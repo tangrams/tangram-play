@@ -27,11 +27,10 @@ class AboutModal extends React.PureComponent {
         className="about-modal"
         cancelFunction={this.onClickClose}
       >
+        <h4>About Tangram Work</h4>
         <div className="modal-text modal-about-text">
-          <h4>About Tangram Play</h4>
-
           <p>
-            Tangram Play (beta) v{VERSION.v}
+            Tangram Work (beta) v{VERSION.v}
           </p>
 
           <p>

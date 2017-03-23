@@ -8,7 +8,7 @@ import {
 const MINIMUM_FONT_SIZE = 8;
 
 const initialState = {
-  editorFontSize: 14,
+  editorFontSize: 12,
 };
 
 const settings = (state = initialState, action) => {

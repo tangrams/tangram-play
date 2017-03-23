@@ -9,11 +9,13 @@ let mainWindow;
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    title: 'Tangram Work (BETA)',
     width: 800,
     height: 600,
     minWidth: 640,
     minHeight: 480,
     frame: false,
+    hasShadow: false, // macosx
   });
 
   // and load the index.html of the app.

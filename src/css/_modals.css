@@ -3,7 +3,7 @@
 .modal {
   display: block; /* Default display mode */
   width: 400px;
-  padding: 1px;
+  padding: 28px 7px 8px;
   font-family: var(--font-family);
   font-weight: 200;
   font-size: 1rem;
@@ -42,9 +42,14 @@
   background-color: #00a;
   color: white;
   padding: 4px 3px 5px;
-  font-size: 11px;
+  font-size: var(--root-font-size);
   font-weight: 600;
   cursor: default;
+  width: calc(100% - 4px);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  text-align: left;
 }
 
 .modal-text {
@@ -55,6 +60,7 @@
 
   a {
     text-decoration: underline;
+    color: blue;
   }
 }
 
@@ -68,8 +74,11 @@
 }
 
 .modal-well {
-  border: var(--ui-border);
-  box-shadow: var(--ui-well-shadow);
+  border-top: 1px solid #868a8e;
+  border-left: 1px solid #868a8e;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #c3c7cb;
 }
 
 .modal-buttons {

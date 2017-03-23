@@ -34,7 +34,7 @@
 .divider-affordance,
 .divider-affordance::after,
 .divider-affordance::before {
-  display: inline-block;
+  display: none;
   position: absolute;
   width: 4px;
   height: 4px;

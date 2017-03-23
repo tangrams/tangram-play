@@ -43,5 +43,6 @@ a:active {
 hr {
   margin-top: 20px;
   margin-bottom: 20px;
-  border: 1px solid var(--ui-element-color);
+  border-top: 1px solid #868a8e;
+  border-bottom: 1px solid white;
 }

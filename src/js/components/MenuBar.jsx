@@ -6,7 +6,6 @@ import Navbar from 'react-bootstrap/lib/Navbar';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import Nav from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
-import Icon from './Icon';
 import EventEmitter from './event-emitter';
 import { trackGAEvent } from '../tools/analytics';
 
@@ -289,10 +288,9 @@ class MenuBar extends React.Component {
               Tangram Work (BETA)
             </span>
           </Navbar.Brand>
-          <Navbar.Toggle />
         </Navbar.Header>
 
-        <Navbar.Collapse>
+        <Navbar>
           {/* Left menu section */}
           <Nav pullLeft>
             {/* New button*/}
@@ -437,7 +435,7 @@ class MenuBar extends React.Component {
             {/* Sign in */}
             <SignInButton />
           </Nav>
-        </Navbar.Collapse>
+        </Navbar>
       </Navbar>
     );
   }

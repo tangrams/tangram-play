@@ -46,15 +46,17 @@
 
 .changelog-frame {
   border: 0;
-  width: 100%;
-  height: 100%;
+  margin-left: 1px;
+  margin-top: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
 }
 
 .changelog {
   overflow-x: hidden;
   overflow-y: auto;
   padding: 1em;
-  background-color: var(--ui-component-color);
+  background-color: white;
   color: var(--ui-component-text-color);
   font-weight: 300;
   line-height: 1.4;
@@ -73,23 +75,26 @@
   }
 
   a {
-    color: lightblue;
+    color: blue;
     text-decoration: underline;
   }
 
   h2 {
     margin-top: 0;
-    font-size: 1.65em;
+    font-size: var(--root-font-size);
+    font-weight: 600;
     padding-bottom: 0.25em;
-    border-bottom: 2px solid var(--ui-element-color);
+    border-bottom: 1px solid black;
   }
 
   h3 {
-    font-size: 1.25em;
+    font-size: var(--root-font-size);
+    font-weight: 600;
   }
 
   article:not(:first-of-type) {
-    border-top: 3px solid var(--ui-active-color);
+    border-top: 1px solid #868a8e;
+    box-shadow: 1px 0 0 0 white;
     padding-top: 1em;
   }
 

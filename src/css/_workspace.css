@@ -2,13 +2,11 @@
 
 .workspace-container {
   position: fixed;
-  top: var(--menu-bar-height);
-  left: 0;
-  /* Setting absolute right position instead of width: 100% improves resizing
-     performance when dragging the left edge of window */
-  right: 0;
-  bottom: 0;
-  background-color: var(--ui-editor-background-color); /* Background color during loading */
+  top: calc(39px + 4px);
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  background-color: var(--ui-base-color); /* Background color during loading */
 }
 
 #draggable-container {

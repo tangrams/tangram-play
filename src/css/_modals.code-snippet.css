@@ -13,7 +13,7 @@
     height: 100%;
     resize: none;
     font-family: var(--editor-font-family);
-    font-size: 1em;
+    font-size: 12px;
     padding: 1em;
     white-space: nowrap;
   }

@@ -1,7 +1,7 @@
 /* EDITOR */
 
 :root {
-  --editor-tab-height: 38px;
+  --editor-tab-height: 28px;
 }
 
 .editor-pane {
@@ -47,7 +47,7 @@
   /* This should grow to take up all available vertical space */
   flex-grow: 1;
   /* Easier to adjust font size from this element */
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -65,27 +65,29 @@
   border-bottom: 1px solid var(--ui-border-color);
   border-top: 1px solid var(--ui-border-color);
   height: var(--editor-tab-height);
-  background-color: var(--ui-editor-background-color);
+  background-color: var(--ui-base-color);
 }
 
 .editor-tab {
   position: relative;
   color: var(--ui-component-text-color);
-  font-size: 12px;
-  cursor: pointer;
-  border: 1px solid var(--ui-border-color);
+  font-size: var(--root-font-size);
+  cursor: default;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid black;
   border-bottom: 0;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  background-color: var(--ui-editor-background-color);
-  box-shadow: inset 0 0 0 1px var(--ui-component-color);
+  background-color: var(--ui-base-color);
+  box-shadow: inset -1px 0 0 0 #868a8e;
   overflow: hidden;
 
   /* Tabs shrink when its parent container is narrow. Sizing is adjusted
      to account for absolutely-positioned children throwing off its layout */
   flex-basis: 160px;
   flex-shrink: 1;
-  height: calc(100% + 2px);
+  height: 20px;
   min-width: 60px;
 }
 
@@ -102,7 +104,7 @@
 .editor-tab-label {
   position: absolute; /* Allows tab to shrink smaller than content box */
   overflow: hidden;
-  padding: 8px 24px 8px 10px;
+  padding: 4px 8px;
   width: 100%;
   text-overflow: ellipsis;
   display: inline-block;
@@ -237,8 +239,8 @@
 }
 
 .cm-s-tangram.CodeMirror {
-  color: #e1e1e1;
-  background-color: var(--ui-base-color);
+  color: black;
+  background-color: white;
 }
 
 .cm-s-tangram .CodeMirror-selected {
@@ -265,7 +267,7 @@
 }
 
 .cm-s-tangram .cm-keyword {
-  color: #c792ea;
+  color: purple;
 }
 
 .cm-s-tangram .cm-builtin {
@@ -273,11 +275,11 @@
 }
 
 .cm-s-tangram .cm-atom {
-  color: #ff5370;
+  color: red;
 }
 
 .cm-s-tangram .cm-number {
-  color: #f77669;
+  color: orange;
 }
 
 .cm-s-tangram .cm-def {
@@ -310,7 +312,7 @@
 }
 
 .cm-s-tangram .cm-string {
-  color: #c3e88d;
+  color: green;
 }
 
 .cm-s-tangram .cm-string-2 {
@@ -460,7 +462,7 @@
 
 /* Styles external links - imports, for example. */
 .cm-tangram-link {
-  border-bottom: 1px solid lightblue;
-  color: lightblue;
+  border-bottom: 1px solid blue;
+  color: blue;
   cursor: pointer;
 }

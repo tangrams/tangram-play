@@ -3,7 +3,7 @@
 .map-panel {
   position: relative;
   z-index: var(--z04-map-toolbar);
-  font-size: 1rem;
+  font-size: var(--root-font-size);
 }
 
 /* Style for map panel button to show it */
@@ -21,7 +21,7 @@
 
 .map-panel-collapsible {
   color: var(--ui-component-text-color);
-  background-color: var(--ui-editor-background-color);
+  background-color: var(--ui-component-color);
 
   .panel-body {
     padding: 4px;
@@ -52,7 +52,6 @@
 .map-panel-zoom {
   width: 36px;
   margin-right: 4px;
-  font-size: 0.75em;
   text-align: center;
   line-height: 32px;
   flex: 0 0 auto;
