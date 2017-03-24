@@ -2,25 +2,37 @@
 
 .floating-panel-topbar {
   display: flex;
-  background-color: var(--ui-component-color);
-  height: 20px;
+  background-color: #00a;
+  height: 18px;
   justify-content: flex-end;
   user-select: none;
+  color: white;
+  margin-left: 2px;
+  margin-top: 2px;
+  width: calc(100% - 4px);
+  cursor: default;
 }
 
 .floating-panel-drag {
   display: flex;
   flex-grow: 1;
-  padding-left: 1em;
-  font-size: 0.8em;
+  padding-left: 3px;
   text-align: left;
   align-items: center;
-  cursor: move;
+  font-weight: bold;
 }
 
 .floating-panel-close {
-  height: calc(100% - 1px);
-  width: 20px;
+  width: 14px;
+  min-width: auto !important;
+  height: 12px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  box-shadow: inset -1px -1px 0 0 #868a8e;
+  margin-top: 2px;
+  margin-right: 3px;
   flex-basis: 20px;
   flex-shrink: 0;
   display: flex;
@@ -29,21 +41,8 @@
   text-align: center;
   font-size: 13px;
   color: var(--ui-component-text-color);
-  cursor: pointer;
 
   /* Override button style */
   padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  box-shadow: none;
-
-  &:hover {
-    color: var(--ui-highlight-color);
-    background-color: var(--ui-active-color);
-  }
-}
-
-.modal-content {
-  margin-top: 0;
+  background-color: var(--ui-base-color);
 }

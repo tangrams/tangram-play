@@ -1,16 +1,22 @@
 button {
-  margin: 0 0.4em;
-  border: var(--ui-border);
-  border-radius: var(--ui-border-radius);
-  padding: 0.8em 0.75em;
+  margin: 0;
+  margin-right: 6px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid #868a8e;
+  border-bottom: 1px solid #868a8e;
   font-family: var(--font-family);
-  font-weight: 200;
   font-size: var(--root-font-size);
-  color: var(--ui-component-text-color);
-  background-color: var(--ui-element-color);
-  box-shadow: var(--ui-emboss-shadow);
+  color: black;
+  background-color: var(--ui-base-color);
+  box-shadow: 1px 0 0 0 black, 0 1px 0 0 black, 1px 1px 0 0 black;
   cursor: pointer;
   user-select: none;
+}
+
+button:not(.button-icon) {
+  padding: 4px;
+  min-width: 72px;
 }
 
 /* Buttons that are only icons */
@@ -20,22 +26,19 @@ button {
   margin: 0;
 
   /* Default size. Can be overridden by other classes to fit UI. */
-  width: 30px;
-  height: 30px;
+  width: 21px;
+  height: 20px;
 
   /* Override focus style */
   &:focus {
-    border: var(--ui-border);
-    outline: none;
+    outline: 1px dotted black;
+    outline-offset: -4px;
   }
 
   .btm {
     padding-right: 0;
     margin: 0;
     font-size: var(--root-font-size);
-    font-weight: 200;
-    -webkit-font-smoothing: subpixel-antialiased;
-    -moz-osx-font-smoothing: auto;
   }
 }
 
@@ -47,15 +50,11 @@ button:first-of-type {
   margin-left: 0;
 }
 
-button:hover {
-  background-color: var(--ui-active-color);
-  color: var(--ui-highlight-color);
-}
-
 button:focus {
-  outline: none;
-  border: 1px solid var(--ui-highlight-color);
-  background-color: var(--ui-active-color);
+  outline: 1px dotted black;
+  outline-offset: -4px;
+  border: 1px solid black;
+  box-shadow: 1px 0 0 0 black, 0 1px 0 0 black, 1px 1px 0 0 black, inset 1px 1px 0 0 white, inset -1px -1px 0 0 #868a8e;
 }
 
 button:disabled {
@@ -64,14 +63,9 @@ button:disabled {
   cursor: default;
 }
 
-button:disabled:hover {
-  border: var(--ui-border);
-  background-color: rgba(0, 0, 0, 0.1);
-  color: gray;
-}
-
 /* Icons on buttons */
 button > .btm {
+  display: none;
   margin-right: 0.5em;
   margin-left: 0.15em;
 }

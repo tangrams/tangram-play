@@ -68,22 +68,26 @@
   margin-top: 20px;
 }
 
+.widget-modal .modal-content {
+  margin-top: 0;
+}
 /* used in save-to modals */
 .modal-content p {
   margin-top: 1em;
 }
 
 .modal-well {
-  border-top: 1px solid #868a8e;
-  border-left: 1px solid #868a8e;
-  border-right: 1px solid #fff;
-  border-bottom: 1px solid #fff;
-  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #c3c7cb;
+  margin-top: 1px;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
 }
 
 .modal-buttons {
   width: 100%;
-  margin-top: 24px;
+  margin-top: 8px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;

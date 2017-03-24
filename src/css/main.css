@@ -103,7 +103,7 @@ body {
   --ui-component-text-color: #000;
   --ui-link-text-color: #e1eeee;
   --ui-subtext-color: #c0c6c6;
-  --ui-unnamed-light-color: #999ca0;
+  --ui-unnamed-light-color: gray;
   --ui-border-color: #1a1c1f;
   --ui-border: 1px solid var(--ui-border-color);
   --ui-border-radius: 0;

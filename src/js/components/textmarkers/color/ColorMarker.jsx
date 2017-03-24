@@ -205,6 +205,7 @@ export default class ColorMarker extends React.Component {
           height={this.height}
           show={this.state.displayColorPicker}
           onClickClose={this.onClickClose}
+          title='Color Picker'
         >
           <ColorPicker color={this.state.color} onChange={this.onChange} />
         </FloatingPanel>

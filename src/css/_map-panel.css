@@ -36,8 +36,8 @@
 
 /* Style for all map panel buttons */
 .map-panel button {
-  height: 32px;
-  width: 32px;
+  height: 20px;
+  width: 21px;
 }
 
 .map-panel .btn-group {
