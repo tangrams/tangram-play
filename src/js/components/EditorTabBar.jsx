@@ -36,12 +36,7 @@ class EditorTabBar extends React.PureComponent {
     return (
       <div className="editor-tab-bar">
         <EditorTabs />
-        <IconButton
-          className="editor-collapse-button"
-          icon="bt-caret-right"
-          tooltip="Hide editor"
-          onClick={this.onClickHideEditor}
-        />
+
       </div>
     );
   }

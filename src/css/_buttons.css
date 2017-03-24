@@ -57,10 +57,21 @@ button:focus {
   box-shadow: 1px 0 0 0 black, 0 1px 0 0 black, 1px 1px 0 0 black, inset 1px 1px 0 0 white, inset -1px -1px 0 0 #868a8e;
 }
 
+button:active {
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-bottom: 1px solid #868a8e;
+  border-right: 1px solid #868a8e;
+  box-shadow: inset 1px 1px 0 0 #868a8e, 1px 1px 0 0 black, 1px 0 0 0 black, 0 1px 0 0 black;
+  padding-top: 5px;
+  padding-left: 6px;
+  padding-bottom: 3px;
+}
+
 button:disabled {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: gray;
+  color: #868a8e;
   cursor: default;
+  text-shadow: 1px 1px 0 white;
 }
 
 /* Icons on buttons */

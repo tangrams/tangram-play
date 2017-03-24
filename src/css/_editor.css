@@ -63,7 +63,6 @@
   padding-right: 36px; /* Space for collapse button */
   user-select: none;
   border-bottom: 1px solid var(--ui-border-color);
-  border-top: 1px solid var(--ui-border-color);
   height: var(--editor-tab-height);
   background-color: var(--ui-base-color);
 }
@@ -93,7 +92,6 @@
 
 .editor-tab-is-active {
   background-color: var(--ui-base-color);
-  box-shadow: var(--ui-emboss-shadow);
 }
 
 .editor-tab-close,
@@ -245,13 +243,14 @@
 }
 
 .cm-s-tangram .CodeMirror-selected {
-  background: #61616140;
+  background: #00a;
+  color: white;
 }
 
 .cm-s-tangram .CodeMirror-gutters {
-  color: var(--ui-component-text-color);
-  background-color: #24262a; /* subtly darker than base */
-  border-right: 1px solid #34363a;
+  color: var(--ui-unnamed-light-color);
+  background-color: white;
+  border-right: 1px solid lightgray;
 }
 
 .cm-s-tangram .CodeMirror-linenumber {
@@ -260,43 +259,50 @@
   padding: 0 0.2em 0 0.4em;
   min-width: 1.2em;
   color: var(--ui-unnamed-light-color);
-  font-weight: 200;
 }
 
 .cm-s-tangram .CodeMirror-cursor {
-  border-left: 1px solid white;
+  border-left: 1px solid black;
 }
 
 .cm-s-tangram .cm-keyword {
   color: purple;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-builtin {
   color: #80cbc4;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-atom {
   color: red;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-number {
   color: orange;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-def {
   color: #8da6ce;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-variable {
+  font-weight: bold;
   color: #80b0ff;
 }
 
 .cm-s-tangram .cm-property {
   color: #ff5370;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-qualifier {
   color: #690;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-operator {
@@ -310,14 +316,17 @@
 
 .cm-s-tangram .cm-meta {
   color: #999;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-string {
   color: green;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-string-2 {
   color: #ffcb6b;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-tab {
@@ -326,34 +335,41 @@
 
 .cm-s-tangram .cm-tag {
   color: #997643;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-attribute {
   color: #d6bb6d;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-header {
   color: #ff6400;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-hr {
   color: #aeaeae;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-link {
   color: #ad9361;
   font-style: italic;
   text-decoration: none;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-variable-2,
 .cm-s-tangram .cm-tag {
   color: #690;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-variable-3,
 .cm-s-tangram .cm-def {
   color: #c792ea;
+  font-weight: bold;
 }
 
 .cm-s-tangram .cm-error {
@@ -369,20 +385,21 @@
 }
 
 .cm-s-tangram .CodeMirror-activeline-background {
-  background: var(--ui-component-color);
+  background: #f0f0f0;
 }
 
 .CodeMirror-activeline-gutter.CodeMirror-gutter-background {
-  background: var(--ui-component-color);
+  background: #f0f0f0;
 }
 
 .CodeMirror-activeline-gutter .CodeMirror-linenumber {
-  color: var(--ui-highlight-color);
+  font-weight: bold;
 }
 
 .cm-s-tangram .CodeMirror-matchingbracket {
-  outline: 1px solid #a8abaa;
+  outline: 1px dotted black;
   color: #fcd812;
+  font-weight: bold;
 }
 
 .CodeMirror-foldmarker {
@@ -416,6 +433,7 @@
     /* A background color with alpha=1 overlaps the selection highlight
        This makes the selection visible through the highlighted line */
     background-color: rgba(255, 255, 255, 0.05); /* var(--ui-active-color); */
+    font-weight: bold;
   }
   /*
   &.CodeMirror-linebackground.CodeMirror-activeline-background {
@@ -423,7 +441,8 @@
   */
 
   &.CodeMirror-gutter-background:not(.CodeMirror-activeline-gutter) {
-    background-color: var(--ui-element-color);
+    background-color: gray;
+    font-weight: bold;
   }
 
   .CodeMirror-linenumber {
@@ -431,34 +450,23 @@
   }
 
   &.CodeMirror-activeline-gutter .CodeMirror-linenumber {
-    color: var(--ui-highlight-color);
+    color: var(--ui-unnamed-light-color);
   }
 }
 
 /* Line numbers are clickable for highlighting */
 .CodeMirror-linenumber {
   cursor: pointer;
-
-  &:hover {
-    color: white;
-  }
 }
 
 /* CodeMirror search dialog */
 .CodeMirror-dialog {
-  padding-left: 24px;
-  padding-top: 0.9em;
-  padding-bottom: 0.9em;
+  padding-left: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   font-family: var(--font-family);
-  font-size: 0.8rem;
+  font-size: var(--root-font-size);
   border-bottom: 1px solid var(--ui-element-color);
-
-  input {
-    height: 2.5em;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    font-size: 1em;
-  }
 }
 
 /* Styles external links - imports, for example. */

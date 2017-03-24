@@ -1,3 +1,4 @@
 .leaflet-container {
-  background-color: #222;
+  background-color: white;
+  font: 11px/1.5 'MS Sans Serif', sans-serif;
 }

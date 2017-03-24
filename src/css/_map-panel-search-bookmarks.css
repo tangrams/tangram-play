@@ -11,7 +11,7 @@
 }
 
 .map-panel .btm.active {
-  color: yellow;
+  color: black;
 }
 
 .map-search {
@@ -31,9 +31,8 @@
 .map-search-latlng {
   display: flex;
   align-items: center;
-  height: 30px;
+  height: 20px;
   font-size: var(--root-font-size);
-  font-weight: 200;
   color: var(--ui-unnamed-light-color);
   white-space: nowrap;
   padding-left: 6px;
@@ -43,7 +42,7 @@
 
 .map-search button {
   min-width: 32px;
-  height: 30px;
+  height: 20px;
   /* Buttons in this box need to override the styling */
   border: none;
   background-color: transparent !important;
@@ -59,12 +58,12 @@
 .react-autosuggest__container {
   flex-grow: 1;
   border-bottom: 1px solid transparent;
-  height: 30px;
+  height: 20px;
   min-width: 150px;
 
   input {
     width: 100%;
-    height: 25px;
+    height: 16px;
     font-family: var(--font-family); /* input does not inherit font-family */
     font-size: var(--root-font-size);
     background-color: transparent;
@@ -87,33 +86,26 @@
   position: absolute; /* Allow list to float separately from input element */
   left: 0;
   width: calc(100% + 2px); /* hack */
-  font-size: 12px;
-  font-weight: 200;
-  background-color: var(--ui-component-color);
+  font-size: var(--root-font-size);
+  background-color: white;
   margin: 0;
   white-space: nowrap;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
   overflow: hidden;
   margin-left: -1px; /* position hack */
+  margin-top: 3px;
 
   ul {
     margin: 0;
-    border: 1px solid #1a1c1f;
-    border-top: 0;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border: 1px solid black;
     overflow: hidden;
   }
 
   li {
-    border-top: 1px solid var(--ui-active-color);
     cursor: pointer;
-    line-height: 1.4;
   }
 
   li:hover {
-    background-color: var(--ui-active-color);
+    background-color: #00a;
   }
 }
 
@@ -122,25 +114,33 @@
   padding: 0;
 }
 
+.react-autosuggest__suggestion--highlighted {
+  background-color: #00a;
+  color: white;
+  outline: 1px dotted yellow;
+}
+
 .react-autosuggest__suggestion--focused {
-  background-color: var(--ui-active-color);
+  background-color: #00a;
+  color: white !important;
+  outline: 1px dotted yellow;
+  outline-offset: 1px;
 }
 
 .react-autosuggest__suggestions-container strong {
-  color: yellow;
-  font-weight: 200;
+  font-weight: 600;
 }
 
 .react-autosuggest__suggestions-container i.btm,
 .bookmark-dropdown-icon i.btm {
+  display: none;
   font-size: 10px;
   padding-right: 10px;
   font-weight: 900;
 }
 
 .map-search-suggestion-item {
-  padding: 9px;
-  padding-left: 0; /* Space for icon */
+  padding: 2px;
 
   /* Prevent super-long labels from breaking layout */
   text-overflow: ellipsis;
@@ -161,7 +161,7 @@
 
 .dropdown-menu.dropdown-menu-right {
   background-color: var(--ui-component-color);
-  font-size: 12px;
+  font-size: var(--root-font-size);
   margin: 0;
   padding: 0;
 

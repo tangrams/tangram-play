@@ -52,6 +52,7 @@ class ConfirmDialogModal extends React.Component {
         className="error-modal"
         cancelFunction={this.onClickCancel}
       >
+        <h4>Confirm</h4>
         <p className="modal-text">
           {this.props.message}
         </p>

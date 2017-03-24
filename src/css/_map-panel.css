@@ -15,7 +15,6 @@
 
 /* Style for map panel */
 .map-panel .panel {
-  border-bottom: var(--ui-border);
   z-index: var(--z07-menu);
 }
 
@@ -24,8 +23,7 @@
   background-color: var(--ui-component-color);
 
   .panel-body {
-    padding: 4px;
-    padding-top: 6px;
+    padding-right: 2px;
   }
 
   .map-panel-toolbar {
@@ -41,7 +39,7 @@
 }
 
 .map-panel .btn-group {
-  margin-left: 2px;
+  margin-left: 3px;
 }
 
 /* Style for button groups */
@@ -51,15 +49,22 @@
 
 .map-panel-zoom {
   width: 36px;
-  margin-right: 4px;
   text-align: center;
-  line-height: 32px;
+  line-height: 20px;
   flex: 0 0 auto;
+  border-top: 1px solid #868a8e;
+  border-left: 1px solid #868a8e;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+  margin-right: 2px;
+  margin-left: 1px;
 }
 
 .buttons-plusminus {
   display: flex;
   flex: 0 0 auto;
+  margin-right: 2px;
+  margin-left: 0;
 
   .btm {
     font-size: 0.8em; /* slightly smaller */

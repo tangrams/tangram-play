@@ -73,7 +73,9 @@ class Map extends React.Component {
           }
           return null;
         })()}
-        <div className="map-view" id="map" />
+        <div className="map-win95-container">
+          <div className="map-view" id="map" />
+        </div>
         <Camera />
         <SceneLoading />
         <MapPanel />

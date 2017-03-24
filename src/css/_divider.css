@@ -12,17 +12,17 @@
   cursor: col-resize;
   user-select: none;
   transform: translate(0, 0) !important; /* Override react-draggable transform */
-  border-right: var(--ui-border);
+  /*border-right: var(--ui-border);
   border-left: 1px solid var(--ui-editor-background-color); /* slightly lighter for 3dness */
-  box-shadow: var(--ui-emboss-shadow);
+  /*box-shadow: var(--ui-emboss-shadow);*/
 }
 
 .divider:hover {
-  background-color: var(--ui-active-color);
+
 }
 
 .divider.divider-is-dragging {
-  background-color: var(--ui-active-color);
+
 
   .divider-affordance,
   .divider-affordance::after,

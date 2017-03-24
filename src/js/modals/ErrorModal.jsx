@@ -44,6 +44,7 @@ class ErrorModal extends React.Component {
         className="error-modal"
         cancelFunction={this.onClickClose}
       >
+        <h4>Error</h4>
         <p className="modal-text">
           {this.props.error.message || this.props.error}
         </p>

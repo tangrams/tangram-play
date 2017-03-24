@@ -34,6 +34,7 @@ nav {
   color: white;
   -webkit-user-select: none;
   -webkit-app-region: drag;
+  height: 18px;
 }
 
 .brand {
@@ -44,6 +45,17 @@ nav {
   color: white;
   z-index: 1; /* This just needs to be any number to be properly sorted in its stacking context */
   cursor: default;
+  padding-left: 21px;
+}
+
+.navbar-brand {
+  line-height: 18px;
+}
+
+.navbar-brand img {
+  position: absolute;
+  top: 1px;
+  left: 2px;
 }
 
 .menu-bar ul {
@@ -91,7 +103,7 @@ nav {
 .dropdown-menu {
   padding: 2px;
   background-color: var(--ui-component-color);
-  margin-top: 0;
+  margin-top: 0 !important;
   border-top: 1px solid #c3c7cb;
   border-left: 1px solid #c3c7cb;
   border-right: 1px solid #000;

@@ -49,7 +49,7 @@
 
 .camera-info {
   margin-top: 1em;
-  font-size: 0.8em;
+  font-size: var(--root-font-size);
 }
 
 /* Animation to indicate that recording is currently happening */

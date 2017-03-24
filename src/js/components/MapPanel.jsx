@@ -214,15 +214,6 @@ class MapPanel extends React.Component {
                 active={this.props.cameraToolsVisible}
               />
             </ButtonGroup>
-
-            {/* Toggle map panel to show it */}
-            <ButtonGroup className="buttons-toggle">
-              <IconButton
-                icon="bt-caret-up"
-                tooltip="Toggle map toolbar"
-                onClick={this.toggleMapPanel}
-              />
-            </ButtonGroup>
           </div>
         </Panel>
 

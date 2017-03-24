@@ -1345,9 +1345,6 @@ tbody.collapse.in {
 .navbar-brand:focus {
   text-decoration: none;
 }
-.navbar-brand > img {
-  display: block;
-}
 
 .navbar-nav {
   margin: 7.5px -15px;
