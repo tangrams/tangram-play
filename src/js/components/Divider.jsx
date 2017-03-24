@@ -11,7 +11,7 @@ import { SET_PERSISTENCE, SET_APP_STATE } from '../store/actions';
 // A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
 // space for the divider to still exist.
 const EDITOR_MINIMUM_WIDTH = 80; // integer, in pixels
-const MAP_MINIMUM_WIDTH = 130; // integer, in pixels
+const MAP_MINIMUM_WIDTH = 450; // integer, in pixels
 
 /**
  * Clamps the position to a value to make sure that the map and editor are

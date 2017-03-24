@@ -1,12 +1,15 @@
 
 .code-snippet-modal {
-  width: 660px;
+  width: 500px;
 }
 
 .code-snippet-textarea-container {
-  width: 600px;
-  height: 500px;
+  width: 486px;
+  height: 340px;
   margin-bottom: 1em;
+  margin-top: -3px;
+  position: relative;
+  z-index: 2;
 
   textarea {
     width: 100%;
@@ -16,6 +19,17 @@
     font-size: 12px;
     padding: 1em;
     white-space: nowrap;
+    border: 0;
+    /*margin-top: -2px;*/
+
+    &:focus {
+      outline: none;
+    }
+
+    &::selection {
+      background: #00a;
+      color: white;
+    }
   }
 }
 
@@ -26,30 +40,34 @@
 
 .code-snippet-tab {
   display: inline-block;
-  padding: 0.65em 1em;
-  border: 1px solid var(--ui-border-color);
+  color: var(--ui-component-text-color);
+  font-size: var(--root-font-size);
+  cursor: default;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid black;
   border-bottom: 0;
-  border-top-left-radius: var(--ui-border-radius);
-  border-top-right-radius: var(--ui-border-radius);
-  margin-right: 3px;
-  margin-bottom: -1px;
-  cursor: pointer;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
   background-color: var(--ui-base-color);
-  box-shadow: inset 0 1px 2px 0 var(--ui-component-color);
-}
-
-.code-snippet-tab:hover {
-  color: var(--ui-highlight-color);
+  box-shadow: inset -1px 0 0 0 #868a8e;
+  overflow: hidden;
+  height: 28px;
+  line-height: 28px;
+  padding-left: 8px;
+  padding-right: 6px;
+  position: relative;
+  top: 2px;
+  margin-right: -3px;
 }
 
 .code-snippet-tab-selected {
-  color: var(--ui-highlight-color);
-  background-color: var(--ui-element-color);
-  box-shadow: var(--ui-emboss-shadow);
+  top: 0;
+  z-index: 1;
 }
 
 .code-snippet-tabs-right {
   display: inline-block;
   float: right;
-  line-height: 30px;
+  line-height: 28px;
 }

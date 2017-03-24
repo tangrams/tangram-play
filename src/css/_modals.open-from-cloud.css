@@ -1,16 +1,19 @@
 .open-from-cloud-modal {
-  width: 600px;
-  height: 600px;
+  width: 420px;
+  /* Allow the height of this modal to expand on larger screens */
+  height: calc(100% - 600px);
+  min-height: 380px;
+  max-height: 800px;
 }
 
 .open-from-cloud-list {
   /* Ensure this fits within a variable-height modal.
      TODO: Don't use a magic number */
-  height: calc(100% - 94px);
+  height: calc(100% - 32px);
   padding: 10px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: var(--ui-component-color);
+  background-color: white;
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -75,7 +78,7 @@
 
 .open-from-cloud-option-date {
   font-size: var(--root-font-size);
-  color: var(--ui-subtext-color);
+  color: gray;
   /* Breathing room in case description gets too close to where the date output is. */
   margin-top: 0.5em;
 }

@@ -22,10 +22,6 @@
   color: var(--ui-component-text-color);
   background-color: var(--ui-component-color);
 
-  .panel-body {
-    padding-right: 2px;
-  }
-
   .map-panel-toolbar {
     display: flex;
     align-items: center;
@@ -50,7 +46,7 @@
 .map-panel-zoom {
   width: 36px;
   text-align: center;
-  line-height: 20px;
+  line-height: 19px;
   flex: 0 0 auto;
   border-top: 1px solid #868a8e;
   border-left: 1px solid #868a8e;
@@ -58,6 +54,10 @@
   border-bottom: 1px solid white;
   margin-right: 2px;
   margin-left: 1px;
+}
+
+.map-panel-zoomin {
+  margin-right: 1px;
 }
 
 .buttons-plusminus {
@@ -73,8 +73,10 @@
 
 .buttons-locate {
   flex: 0 0 auto;
+  margin-top: -1px;
 }
 
 .buttons-toggle {
   flex: 0 0 auto;
+  margin-top: -1px;
 }

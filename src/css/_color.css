@@ -31,8 +31,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: var(--ui-border-radius);
-  border: 1px solid var(--ui-border-color);
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
 }
 
 /* ColorPicker.jsx */
@@ -40,8 +43,6 @@
 .colorpicker-container {
   width: 230px;
   box-sizing: initial;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
-  background-color: var(--ui-element-color);
 }
 
 .colorpicker-controls {
@@ -57,14 +58,22 @@
 .colorpicker-slider-hue {
   position: relative;
   height: 10px;
-  overflow: hidden;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
 }
 
 .colorpicker-slider-alpha {
   position: relative;
   height: 10px;
   margin-top: 4px;
-  overflow: hidden;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
 }
 
 .colorpicker-active-color {
@@ -81,13 +90,18 @@
   left: 0;
   right: 0;
   bottom: 0;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
 }
 
 /* ColorPickerInputFields.jsx */
 
 .colorpicker-input-fields {
   display: flex;
-  padding: 0 10px 6px;
+  padding: 0 9px 6px;
 }
 
 .colorpicker-input-single {
@@ -108,17 +122,16 @@
 .colorpicker-input-fields input {
   width: 100%;
   padding: 4px 2px;
-  border: var(--ui-border);
-  border-radius: var(--ui-border-radius);
-  box-shadow: var(--ui-well-shadow);
   outline: none;
-  background-color: var(--ui-well-color);
+  background-color: white;
   text-align: center;
+  font-size: var(--root-font-size);
   color: var(--ui-component-text-color);
-
-  &:focus {
-    border: 1px solid var(--ui-highlight-color);
-  }
+  border-top: 1px solid #868a8e;
+  border-left: 1px solid #868a8e;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #c3c7cb;
 }
 
 .colorpicker-input-fields span {
@@ -126,7 +139,7 @@
   margin-top: 4px;
   font-size: 11px;
   text-transform: uppercase;
-  color: var(--ui-subtext-color);
+  color: black;
 }
 
 /* ColorPickerSaturation.jsx  */
@@ -136,6 +149,13 @@
   width: 100%;
   height: 165px;
   overflow: hidden;
+  margin: 3px;
+  width: calc(100% - 6px);
+  border-top: 1px solid #868a8e;
+  border-left: 1px solid #868a8e;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #c3c7cb;
 }
 
 .colorpicker-saturation-white {

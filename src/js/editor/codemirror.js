@@ -27,6 +27,7 @@ import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/addon/display/rulers';
 import 'codemirror/addon/display/panel';
 import 'codemirror/addon/selection/active-line';
+import 'codemirror/addon/selection/mark-selection';
 
 // Import Codemirror keymap
 import 'codemirror/keymap/sublime';
@@ -136,5 +137,6 @@ export function initCodeMirror(el, initCallback) {
     showTrailingSpace: true,
     matchBrackets: true,
     autoCloseBrackets: true,
+    styleSelectedText: true,
   });
 }

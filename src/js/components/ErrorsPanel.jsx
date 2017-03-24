@@ -44,7 +44,7 @@ class ErrorsPanel extends React.Component {
         <div className="errors-panel modal" style={displayStyle}>
           <div className="floating-panel-topbar">
             <div className="floating-panel-drag">Scene errors</div>
-            <button className="floating-panel-close" onClick={this.onClickClose}>×</button>
+            <button className="floating-panel-close" onClick={this.onClickClose} />
           </div>
           <div className="errors-panel-content">
             {this.props.errors.map((error, index) => {

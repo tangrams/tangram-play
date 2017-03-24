@@ -1,7 +1,7 @@
 /* EDITOR */
 
 :root {
-  --editor-tab-height: 28px;
+  --editor-tab-height: 26px;
 }
 
 .editor-pane {
@@ -9,6 +9,7 @@
   right: 0;
   width: 50%;
   height: 100%;
+  z-index: 500;
 }
 
 .editor-container {
@@ -49,6 +50,14 @@
   /* Easier to adjust font size from this element */
   font-size: 12px;
   line-height: 1.4;
+  margin-left: 1px;
+  margin-bottom: 2px;
+  margin-right: 2px;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
 }
 
 .editor-tab-bar {
@@ -58,11 +67,11 @@
 .editor-tabs {
   display: flex;
   align-items: baseline;
-  padding-left: 5px;
-  padding-top: 5px;
+  /*padding-left: 5px;*/
+  /*padding-top: 5px;*/
   padding-right: 36px; /* Space for collapse button */
   user-select: none;
-  border-bottom: 1px solid var(--ui-border-color);
+
   height: var(--editor-tab-height);
   background-color: var(--ui-base-color);
 }
@@ -86,7 +95,7 @@
      to account for absolutely-positioned children throwing off its layout */
   flex-basis: 160px;
   flex-shrink: 1;
-  height: 20px;
+  height: 26px;
   min-width: 60px;
 }
 
@@ -126,7 +135,8 @@
 }
 
 .editor-tab-dirty {
-  color: var(--ui-highlight-color);
+  color: blue;
+  font-size: 6px;
 }
 
 .editor-tab-dirty,
@@ -137,7 +147,7 @@
   top: 0;
   width: 20px;
   text-align: center;
-  line-height: 30px;
+  line-height: 24px;
 }
 
 .editor-tab:not(.editor-tab-is-main):hover .editor-tab-close {
@@ -168,7 +178,7 @@
   margin-left: 8px;
   align-self: center;
   font-size: 11px;
-  margin-top: 3px;
+  margin-top: 2px;
   white-space: nowrap;
   cursor: default;
 }
@@ -404,10 +414,11 @@
 
 .CodeMirror-foldmarker {
   font-family: var(--editor-font-family);
-  color: yellow;
+  color: blue;
+  font-weight: bold;
   margin-left: 0.5em;
   text-shadow: none;
-  font-size: 1em;
+  font-size: var(--root-font-size);
 }
 
 .CodeMirror-foldgutter {
@@ -474,4 +485,8 @@
   border-bottom: 1px solid blue;
   color: blue;
   cursor: pointer;
+}
+
+.CodeMirror-selectedtext {
+  color: white;
 }

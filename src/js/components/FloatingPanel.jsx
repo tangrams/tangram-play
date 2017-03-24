@@ -87,7 +87,7 @@ export default class FloatingPanel extends React.Component {
       >
         <div className="floating-panel-topbar">
           <div className="floating-panel-drag">{this.props.title}</div>
-          <button className="floating-panel-close" onClick={this.props.onClickClose}>×</button>
+          <button className="floating-panel-close" onClick={this.props.onClickClose} />
         </div>
         {this.props.children}
       </Modal>

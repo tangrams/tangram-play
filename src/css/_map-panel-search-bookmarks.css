@@ -31,7 +31,7 @@
 .map-search-latlng {
   display: flex;
   align-items: center;
-  height: 20px;
+  height: 19px;
   font-size: var(--root-font-size);
   color: var(--ui-unnamed-light-color);
   white-space: nowrap;
@@ -42,7 +42,7 @@
 
 .map-search button {
   min-width: 32px;
-  height: 20px;
+  height: 19px;
   /* Buttons in this box need to override the styling */
   border: none;
   background-color: transparent !important;
@@ -58,7 +58,7 @@
 .react-autosuggest__container {
   flex-grow: 1;
   border-bottom: 1px solid transparent;
-  height: 20px;
+  height: 19px;
   min-width: 150px;
 
   input {

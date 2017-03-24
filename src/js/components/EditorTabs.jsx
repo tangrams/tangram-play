@@ -105,7 +105,7 @@ class EditorTabs extends React.PureComponent {
                 {fileIcon}
                 {item.filename || 'untitled'}
               </div>
-              <div className="editor-tab-dirty">○</div>
+              <div className="editor-tab-dirty">⬤</div>
               {closeButtonEl}
             </div>
           );

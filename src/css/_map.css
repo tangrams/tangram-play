@@ -7,7 +7,7 @@
   top: 0;
   height: 100%;
   width: 50%; /* Starting position; this is overridden by scripts */
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 .map-win95-container {

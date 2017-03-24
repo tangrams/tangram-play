@@ -84,7 +84,6 @@ label + input {
 }
 
 label {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--ui-subtext-color);
+  font-size: var(--root-font-size);
+  color: black;
 }

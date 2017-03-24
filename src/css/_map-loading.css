@@ -5,7 +5,7 @@
   height: 10px;
   width: 100%;
   left: 0;
-  bottom: -10px;
+  bottom: -14px;
   transition: 80ms bottom ease-out;
   animation: barberpole 1s linear infinite;
   background-size: 30px 30px;

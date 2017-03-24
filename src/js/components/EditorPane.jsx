@@ -49,7 +49,7 @@ class EditorPane extends React.PureComponent {
     // is still updating, so the DOM node has not appeared as a ref.
     if (!this.el) return;
 
-    this.el.style.width = `${window.innerWidth - event.posX}px`;
+    this.el.style.width = `${window.innerWidth - event.posX - 9}px`;
   }
 
   render() {

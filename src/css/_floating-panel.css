@@ -22,27 +22,56 @@
   font-weight: bold;
 }
 
-.floating-panel-close {
-  width: 14px;
+.floating-panel-close,
+.win95-window-minimize,
+.win95-window-maximize {
+  width: 16px;
   min-width: auto !important;
-  height: 12px;
+  height: 14px;
   border-top: 1px solid white;
   border-left: 1px solid white;
   border-right: 1px solid black;
   border-bottom: 1px solid black;
   box-shadow: inset -1px -1px 0 0 #868a8e;
   margin-top: 2px;
-  margin-right: 3px;
-  flex-basis: 20px;
+  margin-right: 2px !important;
+  /*flex-basis: 20px;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 13px;
+  font-size: 13px;*/
   color: var(--ui-component-text-color);
+  background-image: url('../data/imgs/button_close.png');
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+  padding: 0;
+  background-size: 9px;
+  cursor: default;
 
   /* Override button style */
-  padding: 0;
   background-color: var(--ui-base-color);
+
+  &:active {
+    background-position: 3px 2px;
+  }
+
+  &:focus {
+    outline: none;
+    outline-offset: -2px;
+  }
+
+  &:active {
+    margin-top: 1px;
+  }
+}
+
+.win95-window-maximize {
+  background-image: url('../data/imgs/button_maximize.png');
+}
+
+.win95-window-minimize {
+  background-image: url('../data/imgs/button_minimize.png');
+  margin-right: 0 !important;
 }

@@ -269,6 +269,25 @@ class MenuBar extends React.Component {
     }
   }
 
+  onClickMinimize() {
+    const win = remote.getCurrentWindow();
+    win.minimize();
+  }
+
+  onClickMaximize() {
+    const win = remote.getCurrentWindow();
+    if (!win.isMaximized()) {
+      win.maximize();
+    } else {
+      win.unmaximize();
+    }
+  }
+
+  onClickClose() {
+    const win = remote.getCurrentWindow();
+    win.close();
+  }
+
   render() {
     let signInRequiredMsg = null;
     if (this.props.system.mapzen) {
@@ -289,6 +308,11 @@ class MenuBar extends React.Component {
               Tangram Work (BETA)
             </span>
           </Navbar.Brand>
+          <div className="win95-window-controls" style={{ float: "right" }}>
+            <button className="win95-window-minimize" onClick={this.onClickMinimize} />
+            <button className="win95-window-maximize" onClick={this.onClickMaximize} />
+            <button className="floating-panel-close" onClick={this.onClickClose} />
+          </div>
         </Navbar.Header>
 
         <Navbar>
