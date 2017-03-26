@@ -144,6 +144,7 @@ function makeSceneStateObjectFromUrl(url) {
     .then((sceneUrl) => {
       sceneState.originalUrl = sceneUrl;
       sceneState.files = [{
+        key: sceneUrl,
         filename: getFilenameFromUrl(sceneUrl),
       }];
       // for dev server, we need to pass credentials to load anything
