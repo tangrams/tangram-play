@@ -157,7 +157,7 @@ class DocsPanel extends React.Component {
 
     if (node.children !== undefined) {
       list = node.children.map((value, i) => (
-        <Row key={i} className="child-row">
+        <Row key={value.name} className="child-row">
           <Row>
             <Col sm={2} className="capitalize">name:</Col>
             <Col
@@ -240,14 +240,14 @@ class DocsPanel extends React.Component {
                     const list = Object.keys(result).map((value, i) => {
                       if (value === 'children') {
                         return (
-                          <Row key={i} className="toolbar-content-row">
+                          <Row key={value} className="toolbar-content-row">
                             <Col sm={2} className="capitalize">{value}:</Col>
                             <Col sm={10}>{this.renderChildren(result)}</Col>
                           </Row>
                         );
                       } else if (value === 'parent') {
                         return (
-                          <Row key={i} className="toolbar-content-row">
+                          <Row key={value} className="toolbar-content-row">
                             <Col sm={2} className="capitalize">{value}:</Col>
                             <Col sm={10}>{this.renderParent(result)}</Col>
                           </Row>
@@ -255,7 +255,7 @@ class DocsPanel extends React.Component {
                       }
 
                       return (
-                        <Row key={i} className="toolbar-content-row">
+                        <Row key={value} className="toolbar-content-row">
                           <Col sm={2} className="capitalize">{value}:</Col>
                           <Col sm={10}><code>{result[value]}</code></Col>
                         </Row>
