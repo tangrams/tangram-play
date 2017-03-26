@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+// NOTE: array index is safe here because the data is never recomputed or changed.
 import React from 'react';
 import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
