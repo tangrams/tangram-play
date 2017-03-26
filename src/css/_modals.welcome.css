@@ -93,6 +93,19 @@
     padding-top: 1em;
   }
 
+  img {
+    width: 100%;
+  }
+
+  .changelog-image {
+    background-size: cover;
+    background-position: center center;
+    height: 200px;
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
   ul {
     padding-left: 2em;
   }
