@@ -119,7 +119,7 @@
     "redux": "3.6.0",
     "three": "0.84.0",
     "tinycolor2": "1.4.1",
-    "url-search-params": "0.7.0",
+    "url-search-params-polyfill": "1.1.0",
     "whatwg-fetch": "2.0.3",
     "yaml-ast-parser": "0.0.31"
   },

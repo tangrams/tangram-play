@@ -1,12 +1,7 @@
 // Polyfills
 import 'babel-polyfill';
 import 'whatwg-fetch';
-
-const URLSearchParams = require('url-search-params');
-/* eslint-disable import/first */
-if (!window.URLSearchParams) {
-  window.URLSearchParams = URLSearchParams;
-}
+import 'url-search-params-polyfill';
 
 // React
 import React from 'react';

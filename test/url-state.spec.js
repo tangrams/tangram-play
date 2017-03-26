@@ -1,7 +1,7 @@
+import 'url-search-params-polyfill'; // Polyfill for test environment
 import { assert } from 'chai';
 import { getQueryStringObject, getURLSearchParam, mergeParamObjectToQueryString } from '../src/js/tools/url-state';
 
-const URLSearchParams = require('url-search-params'); // Polyfill for test environment
 /* eslint-disable import/first */
 if (!window.URLSearchParams) {
   window.URLSearchParams = URLSearchParams;
