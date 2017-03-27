@@ -14,13 +14,13 @@ import EventEmitter from '../components/event-emitter';
 // Magic numbers
 // TODO: don't hardcode
 // Vertical offset (positive direction moves tooltip upwards) of tooltip from mouse cursor
-const TOOLTIP_OFFSET_Y = 24;
+const TOOLTIP_OFFSET_Y = 0;
 
 // If the map pans to fit the popup in the viewport, add this much margin around it
 const POPUP_MARGIN = 12;
 
 // Additional Y margin above the popup to account for the map panel height
-const POPUP_OFFSET_Y = 44;
+const POPUP_OFFSET_Y = 0;
 
 let mountNode;
 let isPopupOpen = false;
@@ -336,7 +336,7 @@ class TangramInspectionPopup extends React.Component {
             })}
           </div>
         </div>
-        <div className="map-inspection-close" onClick={this.onClickClose}>×</div>
+        <div className="map-inspection-close" onClick={this.onClickClose}></div>
       </div>
     );
   }

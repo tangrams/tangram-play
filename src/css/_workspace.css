@@ -2,7 +2,7 @@
 
 .workspace-container {
   position: fixed;
-  top: calc(39px + 4px);
+  top: calc(39px + 8px);
   left: 3px;
   right: 3px;
   bottom: 3px;

@@ -30,6 +30,14 @@
   user-select: none;
 }
 
+.modal.error-modal {
+  padding: 35px 13px 11px;
+  background-image: url('../data/imgs/win95_alert_dialog.png');
+  background-repeat: no-repeat;
+  background-position-x: 12px;
+  background-position-y: 32px;
+}
+
 .modal-alt {
   text-align: left;
 
@@ -63,6 +71,13 @@
     text-decoration: underline;
     color: blue;
   }
+}
+
+.error-modal .modal-text {
+  margin-left: 45px;
+  text-align: left;
+  min-height: 30px;
+  margin-bottom: 6px;
 }
 
 .modal-content {

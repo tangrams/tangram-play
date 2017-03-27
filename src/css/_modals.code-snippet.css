@@ -70,4 +70,12 @@
   display: inline-block;
   float: right;
   line-height: 28px;
+  position: relative;
+}
+
+/* adjust position of checkbox after apperance: none applied */
+#code-snippet-html-toggle {
+  position: absolute;
+  top: 5px;
+  left: -20px;
 }

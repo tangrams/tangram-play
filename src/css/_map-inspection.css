@@ -5,11 +5,11 @@
   background-color: var(--ui-tooltip-background-color);
   font-family: var(--font-family);
   font-weight: 200;
-  font-size: 0.8rem;
-  color: var(--ui-component-text-color);
-  z-index: var(--z04-map-inspection);
+  font-size: var(--root-font-size);
+  color: white;
   min-width: 85px;
   line-height: 1; /* Overrides leaflet */
+  z-index: 9999;
 
   /* Pointer tip */
   &::after {
@@ -51,8 +51,7 @@
 }
 
 .map-inspection-header-label {
-  font-weight: 400;
-  font-size: 1.25em;
+  font-weight: bold;
 }
 
 .map-inspection-header-sublabel {
@@ -61,12 +60,10 @@
 
 .map-inspection-label {
   padding: 0.5em 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.75em;
-  font-weight: 400;
-  text-transform: uppercase;
-  color: var(--ui-subtext-color);
-  background-color: var(--ui-base-color);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+  color: white;
   user-select: none;
   cursor: default;
   line-height: 1.4;
@@ -77,12 +74,11 @@
 }
 
 .map-inspection-source-item-label {
-  font-size: 0.75em;
-  font-weight: 400;
-  text-transform: uppercase;
+  font-weight: bold;
   color: var(--ui-subtext-color);
   vertical-align: middle;
   width: 60px;
+  text-transform: lowercase;
 }
 
 .map-inspection-properties-table-wrapper {
@@ -132,7 +128,7 @@
     padding-right: 12px;
   }
 }
-
+/*
 .map-inspection-close {
   display: block;
   position: absolute;
@@ -148,7 +144,47 @@
   &:hover {
     color: var(--ui-highlight-color);
   }
+}*/
+
+.map-inspection-close {
+  display: block;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 16px;
+  min-width: auto !important;
+  height: 14px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  box-shadow: inset -1px -1px 0 0 #868a8e;
+  margin-top: 2px;
+  margin-right: 2px !important;
+  background-image: url('../data/imgs/button_close.png');
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+  padding: 0;
+  background-size: 9px;
+  cursor: default;
+
+  /* Override button style */
+  background-color: var(--ui-base-color);
+
+  &:active {
+    background-position: 3px 2px;
+  }
+
+  &:focus {
+    outline: none;
+    outline-offset: -2px;
+  }
+
+  &:active {
+    margin-top: 1px;
+  }
 }
+
 
 .map-inspection-layers-container {
   width: 100%;

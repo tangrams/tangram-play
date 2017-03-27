@@ -57,7 +57,26 @@
 }
 
 .map-panel-zoomin {
-  margin-right: 1px;
+  margin-right: 2px;
+  background-image: url('../data/imgs/zoom_in.png');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+
+  &:active {
+    background-position: 3px 2px;
+  }
+}
+
+.map-panel-zoomout {
+  background-image: url('../data/imgs/zoom_out.png');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+
+  &:active {
+    background-position: 3px 2px;
+  }
 }
 
 .buttons-plusminus {
@@ -71,12 +90,48 @@
   }
 }
 
+.buttons-plusminus::after {
+  content: '';
+  margin-left: 5px;
+  border-right: 1px solid #868a8e;
+  box-shadow: 1px 0 0 0 white;
+  height: 20px;
+  display: block;
+  width: 1px;
+}
+
+.map-panel-bookmark-button {
+  background-image: url('../data/imgs/win95_open_folder.png');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+
+  &:active {
+    background-position: 3px 2px;
+  }
+}
+
 .buttons-locate {
   flex: 0 0 auto;
   margin-top: -1px;
 }
 
+.buttons-locate button {
+  background-image: url('../data/imgs/win95_home.png');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 1px 0px;
+  &:active {
+    background-position: 2px 1px;
+  }
+}
+
 .buttons-toggle {
   flex: 0 0 auto;
   margin-top: -1px;
+}
+
+.buttons-locate.btn-group {
+  margin-left: 1px;
+  margin-right: 3px;
 }

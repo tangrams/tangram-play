@@ -8,7 +8,7 @@
   right: 0;
   bottom: 0;
   z-index: var(--z01-filedrop);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: transparent;
   cursor: copy;
   user-select: none;
   pointer-events: auto;
@@ -30,11 +30,13 @@
 }
 
 .filedrop-icon {
+  display: none;
   font-size: 14em;
 }
 
 .filedrop-label {
   margin-top: 1.5em;
+  display: none;
   font-family: var(--font-family);
   font-weight: 200;
   font-size: 2.5em;

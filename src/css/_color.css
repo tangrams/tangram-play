@@ -76,6 +76,21 @@
   box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
 }
 
+.colorpicker-slider-hue > div > div > div > div,
+.colorpicker-slider-alpha > div > div > div > div {
+  width: 6px !important;
+  height: 13px !important;
+  margin-top: -3px !important;
+  margin-left: -1px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid #868a8e;
+  border-bottom: 1px solid #868a8e;
+  border-radius: 0 !important;
+  background-color: var(--ui-base-color) !important;
+  box-shadow: 1px 0 0 0 black, 0 1px 0 0 black, 1px 1px 0 0 black !important;
+}
+
 .colorpicker-active-color {
   width: 24px;
   height: 24px;

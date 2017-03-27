@@ -11,9 +11,11 @@
      Note that this also creates a gap between side arrow so do not use them. */
   margin-left: 0.5em;
   margin-right: 0.5em;
-  padding: 2px;
+  padding: 2px 1px 1px 2px;
+  line-height: 12px;
   border-radius: var(--ui-border-radius);
   font-size: var(--root-font-size);
   color: black;
-  background-color: yellow;
+  background-color: #ffc;
+  border: 1px solid black;
 }

@@ -87,3 +87,33 @@ label {
   font-size: var(--root-font-size);
   color: black;
 }
+
+input[type=checkbox] {
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  background: white;
+  margin-right: 4px;
+}
+
+input[type=checkbox]:focus,
+input[type=checkbox]:active {
+  outline: 1px dotted black;
+}
+
+input[type=checkbox]:checked::after {
+  content: '';
+  display: block;
+  background-image: url('../data/imgs/win95_checkmark.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 9px;
+  color: black;
+  width: 9px;
+  height: 9px;
+}

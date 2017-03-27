@@ -123,7 +123,7 @@ export function initCodeMirror(el, initCallback) {
     rulers: createRulersOption(),
     keyMap: 'sublime',
     extraKeys: getExtraKeyMap(),
-    lineWrapping: true,
+    lineWrapping: false,
     lineNumbers: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     foldGutter: {

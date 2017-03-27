@@ -28,9 +28,6 @@ a {
   overflow: visible;
   clip: auto;
 }
-[role="button"] {
-  cursor: pointer;
-}
 
 .container {
   padding-right: 15px;

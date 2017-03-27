@@ -5,11 +5,11 @@ button {
   border-left: 1px solid white;
   border-right: 1px solid #868a8e;
   border-bottom: 1px solid #868a8e;
+  box-shadow: 1px 0 0 0 black, 0 1px 0 0 black, 1px 1px 0 0 black;
+  background-color: var(--ui-base-color);
   font-family: var(--font-family);
   font-size: var(--root-font-size);
   color: black;
-  background-color: var(--ui-base-color);
-  box-shadow: 1px 0 0 0 black, 0 1px 0 0 black, 1px 1px 0 0 black;
   cursor: default;
   user-select: none;
 }
@@ -31,8 +31,7 @@ button:not(.button-icon) {
 
   /* Override focus style */
   &:focus {
-    outline: 1px dotted black;
-    outline-offset: -4px;
+    outline: none;
   }
 
   .btm {
@@ -50,7 +49,7 @@ button:first-of-type {
   margin-left: 0;
 }
 
-button:focus {
+button:not(.button-icon):not(.win95-window-maximize):not(.win95-window-minimize):not(.floating-panel-close):focus {
   outline: 1px dotted black;
   outline-offset: -4px;
   border: 1px solid black;

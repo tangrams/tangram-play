@@ -228,23 +228,34 @@
   pointer-events: auto !important;
 
   &::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
   }
 
   &::-webkit-scrollbar-track {
-    background-color: var(--ui-element-color);
+    background-image: url('../data/imgs/win95_scrollbar_bg.png');
+    background-size: 2px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #b9b9bd;
+    background-color: #c3c7cb;
+    border-top: 1px solid #c3c7cb;
+    border-left: 1px solid #c3c7cb;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    box-shadow: inset 1px 1px 0 0 white, inset -1px -1px 0 0 #868a8e;
+    z-index: 1;
   }
 }
 
 .CodeMirror-scrollbar-filler {
-  background-color: var(--ui-element-color);
-  width: 12px;
-  height: 12px;
+  background-color: #c3c7cb;
+  width: 16px;
+  height: 16px;
+  background-image: url('../data/imgs/win95_drag_corner.png');
+  background-size: 16px;
+  background-position: bottom right;
+  background-repeat: no-repeat;
 }
 
 .cm-s-tangram.CodeMirror {

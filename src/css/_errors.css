@@ -51,11 +51,21 @@
   }
 
   .bt-exclamation-triangle {
-    color: var(--ui-error-color);
+    background-image: url('../data/imgs/win95_error.png');
+    width: 43px;
+    height: 32px;
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: center top;
   }
 
   .bt-exclamation-circle {
-    color: var(--ui-warning-color);
+    background-image: url('../data/imgs/win95_alert_dialog.png');
+    width: 43px;
+    height: 32px;
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: center top;
   }
 }
 
@@ -64,24 +74,29 @@
   width: 100%;
   height: calc(100% - 20px);
   overflow: auto;
-  padding: 7px 6px;
+  padding: 11px 13px;
   user-select: auto;
 
   a {
     white-space: nowrap;
-    color: lightblue;
+    color: blue;
     text-decoration: underline;
   }
 }
 
 .errors-panel-item {
   position: relative;
+  min-height: 32px;
 
   &:not(:first-of-type) {
     margin-top: 0.85em;
   }
+
+  .btm::before {
+    display: none;
+  }
 }
 
 .errors-panel-text {
-  margin-left: 22px;
+  margin-left: 57px;
 }

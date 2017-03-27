@@ -1,7 +1,7 @@
 /* MODALS · WHAT'S NEW? */
 
 .welcome-modal {
-  width: 600px;
+  width: 420px;
 }
 
 .modal-welcome-text p {
@@ -30,17 +30,17 @@
 }
 
 .whatsnew-modal {
-  width: 600px;
+  width: 420px;
   /* Allow the height of this modal to expand on larger screens */
-  height: calc(100% - 400px);
-  min-height: 600px;
-  max-height: 1200px;
+  height: calc(100% - 600px);
+  min-height: 380px;
+  max-height: 800px;
 }
 
 .whatsnew-modal-changelog {
   /* Ensure this fits within a variable-height modal.
      TODO: Don't use a magic number */
-  height: calc(100% - 94px);
+  height: calc(100% - 46px);
   box-sizing: border-box;
 }
 

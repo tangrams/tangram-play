@@ -49,11 +49,13 @@
 
 .textmarker-boolean {
   box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--ui-border-radius);
-  width: 1em;
-  height: 1em;
-  cursor: pointer;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #c3c7cb;
+  border-bottom: 1px solid #c3c7cb;
+  box-shadow: -1px -1px 0 #868a8e, -1px 0 0 #868a8e, 0 -1px 0 0 #868a8e, 1px 0 0 #fff, 1px 1px 0 #fff, 0 1px 0 #fff;
+  width: 11px;
+  height: 11px;
   margin-top: -0.15em;
   display: flex;
   overflow: hidden;
@@ -68,21 +70,31 @@
   outline: none;
   margin-top: -0.15em;
   cursor: pointer;
+  appearance: none;
 }
 
 .textmarker-boolean input[type=checkbox]::after {
-  content: '\2717';
-  color: white;
+  content: '';
+  color: black;
   visibility: visible;
   display: flex;
   text-align: center;
   justify-content: center;
-  background-color: var(--ui-element-color);
+  background-color: white;
+  width: 9px;
+  height: 9px;
 }
 
 .textmarker-boolean input[type=checkbox]:checked::after {
-  content: '\2713';
-  color: white;
+  content: '';
+  display: block;
+  background-image: url('../data/imgs/win95_checkmark.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 9px;
+  color: black;
+  width: 9px;
+  height: 9px;
 }
 
 /* Dropdown selector */
