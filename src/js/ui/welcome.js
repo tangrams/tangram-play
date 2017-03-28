@@ -12,7 +12,7 @@ export function showWelcomeScreen() {
   if (persistence.welcomeScreenDismissed !== true) {
     store.dispatch({
       type: SHOW_MODAL,
-      modalType: 'WELCOME',
+      modalType: 'WHATS_NEW',
       priority: 100, // Display above error modals
     });
   } else if (isNewMinorVersion() === true) {
