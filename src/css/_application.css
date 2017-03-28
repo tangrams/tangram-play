@@ -147,3 +147,111 @@ body {
     transform: rotate(360deg);
   }
 }
+
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background-image: url('../data/imgs/win95_scrollbar_bg.png');
+  background-size: 2px;
+
+  &:active {
+    background-image: url('../data/imgs/win95_scrollbar_bg_active.png');
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c3c7cb;
+  border-top: 1px solid #c3c7cb;
+  border-left: 1px solid #c3c7cb;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  box-shadow: inset 1px 1px 0 0 white, inset -1px -1px 0 0 #868a8e;
+  z-index: 1;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #c3c7cb;
+}
+
+::-webkit-resizer {
+  background-color: #c3c7cb;
+  width: 16px;
+  height: 16px;
+  background-image: url('../data/imgs/win95_drag_corner.png');
+  background-size: 16px;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+}
+
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button {
+  display: block;
+  background-color: #c3c7cb;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid #c3c7cb;
+  border-left: 1px solid #c3c7cb;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  box-shadow: inset 1px 1px 0 0 white, inset -1px -1px 0 0 #868a8e;
+
+  &:horizontal:decrement {
+    background-image: url('../data/imgs/win95_arrow_left.png');
+    background-size: 11px;
+    background-position: 2px 1px;
+    background-repeat: no-repeat;
+
+    &:active {
+      background-position: 3px 2px;
+    }
+  }
+
+  &:horizontal:increment {
+    background-image: url('../data/imgs/win95_arrow_right.png');
+    background-size: 11px;
+    background-position: 2px 1px;
+    background-repeat: no-repeat;
+
+    &:active {
+      background-position: 3px 2px;
+    }
+  }
+
+  &:vertical:decrement {
+    background-image: url('../data/imgs/win95_arrow_up.png');
+    background-size: 11px;
+    background-position: 1px 2px;
+    background-repeat: no-repeat;
+
+    &:active {
+      background-position: 2px 3px;
+    }
+  }
+
+  &:vertical:increment {
+    background-image: url('../data/imgs/win95_arrow_down.png');
+    background-size: 11px;
+    background-position: 1px 2px;
+    background-repeat: no-repeat;
+
+    &:active {
+      background-position: 2px 3px;
+    }
+  }
+
+  &:horizontal:increment:start { display: none; }
+  &:horizontal:decrement:end { display: none; }
+  &:vertical:increment:start { display: none; }
+  &:vertical:decrement:end { display: none; }
+
+  &:active {
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-bottom: 1px solid #868a8e;
+    border-right: 1px solid #868a8e;
+    box-shadow: inset 1px 1px 0 0 #868a8e, 1px 1px 0 0 black, 1px 0 0 0 black, 0 1px 0 0 black;
+  }
+}

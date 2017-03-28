@@ -33,11 +33,38 @@
   width: 40px;
   height: 40px;
   margin-left: 10px;
+
+  &:active {
+    padding-bottom: 0;
+  }
+}
+
+.camera-screenshot-button {
+  background-image: url('../data/imgs/win95_camera.png');
+  background-size: 29px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.camera-close-button {
+  background-image: url('../data/imgs/win95_close.png');
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.camera-close-button[disabled] {
+  background-image: url('../data/imgs/win95_close_disabled.png');
 }
 
 .camera-record-button {
   width: 40px;
   height: 40px;
+
+  background-image: url('../data/imgs/win95_record.png');
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: center center;
 
   .btm {
     font-weight: 800;
@@ -55,9 +82,10 @@
 /* Animation to indicate that recording is currently happening */
 .camera-is-recording {
   .camera-record-button {
-    animation-name: pulse;
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
+    background-image: url('../data/imgs/win95_stop.png');
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
 }
 

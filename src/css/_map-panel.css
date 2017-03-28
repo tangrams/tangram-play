@@ -126,6 +126,16 @@
   }
 }
 
+.buttons-toggle:last-child .button-icon {
+  background-image: url('../data/imgs/win95_camera_16.png');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+  &:active {
+    background-position: 3px 2px;
+  }
+}
+
 .buttons-toggle {
   flex: 0 0 auto;
   margin-top: -1px;

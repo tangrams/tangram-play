@@ -114,13 +114,18 @@
   font-size: 100%;
   font-weight: 400;
   outline: none;
-  background-color: #5e6064;
+  background-color: #c3c7cb;
   color: white;
   border: 0;
-  height: 1.2em;
-  width: 1em; /* Remove width to get full dropdown to appear */
-  border-radius: 4px;
+  height: 17px;
+  width: 12px;
+  border-radius: 0;
   padding-left: 16px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  box-shadow: inset -1px -1px 0 0 #868a8e;
 }
 
 .textmarker-dropdown option {
@@ -133,9 +138,9 @@ select {
   outline: none;
   border: 0;
   width: 100%;
-  background: #fff url('../data/imgs/arrow_down.png') no-repeat;
-  background-size: 16px;
-  background-position: left center;
+  background: #fff url('../data/imgs/win95_arrow_down.png') no-repeat;
+  background-size: 11px;
+  background-position: center center;
 }
 
 /* Vector picker */
