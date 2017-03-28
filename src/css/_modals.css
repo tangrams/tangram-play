@@ -132,11 +132,19 @@
 
 .about-modal {
   padding-bottom: 16px;
+
+  .modal-buttons {
+    margin-top: 24px;
+  }
 }
 
 .modal-about-text {
-  margin-left: 40px;
-  margin-right: 40px;
+  margin-left: 30px;
+  margin-right: 30px;
+
+  p:first-child {
+    font-weight: bold;
+  }
 
   p {
     font-size: var(--root-font-size);

@@ -72,6 +72,8 @@ input[type=url] {
 
 input {
   outline: none;
+  font-family: var(--font-family);
+  font-size: var(--root-font-size);
 }
 
 input::selection {
@@ -101,11 +103,6 @@ input[type=checkbox] {
   margin-right: 4px;
 }
 
-input[type=checkbox]:focus,
-input[type=checkbox]:active {
-  outline: 1px dotted black;
-}
-
 input[type=checkbox]:checked::after {
   content: '';
   display: block;
@@ -116,4 +113,10 @@ input[type=checkbox]:checked::after {
   color: black;
   width: 9px;
   height: 9px;
+}
+
+input:focus + label,
+input:active + label {
+  outline: 1px dotted black;
+  outline-offset: 1px;
 }
