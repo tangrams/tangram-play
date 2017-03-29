@@ -310,7 +310,7 @@ class MenuBar extends React.Component {
         <Navbar.Header>
           <Navbar.Brand>
             <span className="brand">
-              <img src="./data/imgs/picture_icon.png" width="16" height="16" />
+              <img src="./data/imgs/picture_icon.png" width="16" height="16" onDoubleClick={this.onClickClose} />
               Tangram Work (BETA)
             </span>
           </Navbar.Brand>

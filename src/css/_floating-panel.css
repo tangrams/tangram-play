@@ -25,6 +25,7 @@
 .floating-panel-close,
 .win95-window-minimize,
 .win95-window-maximize {
+  -webkit-app-region: no-drag;
   width: 16px;
   min-width: auto !important;
   height: 14px;
