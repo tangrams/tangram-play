@@ -22,6 +22,12 @@ import SignInButton from './SignInButton';
 import store from '../store';
 import { SHOW_MODAL } from '../store/actions';
 
+// window.require() is for electron env, don't conflict with browserify require()
+let remote;
+if (window.require) {
+  remote = window.require('electron').remote;
+}
+
 function checkUserAuthAvailability() {
   const system = store.getState().system;
 
