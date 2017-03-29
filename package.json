@@ -1,5 +1,6 @@
 {
   "name": "tangram-play",
+  "productName": "Tangram Work",
   "version": "0.7.0",
   "description": "GUI editor for Tangram",
   "main": "main.js",
