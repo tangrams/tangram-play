@@ -89,7 +89,8 @@ body {
   -webkit-font-smoothing: none;
 }
 
-img {
+/* div for background images */
+img, div {
   image-rendering: auto;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
@@ -177,4 +178,15 @@ img {
   --z09-context-menu: var(--z09);
   --z10-dropdown-button: var(--z10);
   --z10-mobile-message: var(--z10);
+}
+
+.globey {
+  position: absolute;
+  left: 30px;
+  bottom: 30px;
+  pointer-events: none;
+
+  img {
+    width: 128px;
+  }
 }

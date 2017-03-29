@@ -10,6 +10,7 @@ import ErrorsPanel from './ErrorsPanel';
 // todo: combine
 import ModalShield from '../modals/ModalShield';
 import ModalRoot from '../modals/ModalRoot';
+import Globey from './Globey';
 
 import { initTangramPlay } from '../tangram-play';
 import { showWelcomeScreen } from '../ui/welcome';
@@ -53,6 +54,7 @@ export default class App extends React.Component {
             <ModalRoot />
 
             <ErrorsPanel />
+            <Globey />
           </div>
         </div>
       </Provider>
