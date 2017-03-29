@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
 const url = require('url');
 require('electron-debug')({ enabled: true });
@@ -34,6 +34,17 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  // For links that open in a new window, use the system's default browser instead
+  // we do this because we've removed the window frame from the app
+  const handleRedirect = (e, toUrl) => {
+    if (toUrl !== mainWindow.webContents.getURL()) {
+      e.preventDefault();
+      shell.openExternal(toUrl);
+    }
+  };
+
+  mainWindow.webContents.on('new-window', handleRedirect);
 }
 
 // This method will be called when Electron has finished
