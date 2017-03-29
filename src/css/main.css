@@ -190,3 +190,11 @@ img, div {
     width: 128px;
   }
 }
+
+.globey-speech-bubble {
+  background-image: url('../data/imgs/globey_speech_bubble.png');
+  background-repeat: no-repeat;
+  height: 242px;
+  width: 192px;
+  padding: 10px 9px;
+}
