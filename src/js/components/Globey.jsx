@@ -73,7 +73,7 @@ export default class Globey extends React.Component {
             </div>
           </div>
           <div className="globey-image">
-            <img src="./data/imgs/globey.png" />
+            <img src="./data/imgs/globey.gif" />
           </div>
         </div>
       </Draggable>
