@@ -32,10 +32,15 @@
 
 .modal.error-modal {
   padding: 35px 13px 11px;
-  background-image: url('../data/imgs/win95_alert_dialog.png');
+  background-image: url('../data/imgs/win95_error.png');
   background-repeat: no-repeat;
   background-position-x: 12px;
   background-position-y: 32px;
+  background-size: 32px;
+}
+
+.modal.confirm-modal {
+  background-image: url('../data/imgs/win95_alert_dialog.png');
 }
 
 .modal-alt {

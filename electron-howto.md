@@ -12,3 +12,7 @@ DEBUG=electron-packager electron-packager ./ "Tangram Work" --icon="app_icon" --
 
 
 important: https://github.com/electron/electron/issues/7300
+
+## limitations
+
+- geolocation requires a google api key for the app

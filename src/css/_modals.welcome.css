@@ -61,6 +61,10 @@
   font-weight: 300;
   line-height: 1.4;
 
+  img, div {
+    image-rendering: auto;
+  }
+
   &::-webkit-scrollbar {
     width: 16px;
     height: 16px;

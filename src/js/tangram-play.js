@@ -58,7 +58,7 @@ function doLoadProcess(scene) {
   function globeyTimer() {
     window.setTimeout(() => {
       EventEmitter.dispatch('show_globey');
-    }, 2000);
+    }, 1500);
     editor.off('cursorActivity', globeyTimer);
   }
 

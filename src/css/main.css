@@ -202,4 +202,25 @@ img, div {
   height: 242px;
   width: 192px;
   padding: 10px 9px;
+  position: relative;
+}
+
+.globey-nav {
+  position: absolute;
+  bottom: 35px;
+  width: calc(100% - 20px);
+}
+
+.globey-button,
+.globey-button:focus,
+.globey-button:active {
+  background-color: #ffc;
+  border: 1px solid #868a8e !important;
+  box-shadow: none !important;
+  border-radius: 5px;
+  pointer-events: auto;
+}
+
+.globey-button-right {
+  float: right;
 }
