@@ -55,6 +55,13 @@ function doLoadProcess(scene) {
 
   setSceneContentsInEditor(scene);
 
+  function globeyTimer() {
+    window.setTimeout(() => {
+      EventEmitter.dispatch('show_globey');
+    }, 2000);
+    editor.off('cursorActivity', globeyTimer);
+  }
+
   // Update history
   // Don't push a new history state if we are loading a scene from the
   // initial load of Tangram Play.
@@ -65,6 +72,8 @@ function doLoadProcess(scene) {
   } else {
     // Okay, we are initialized now.
     store.dispatch({ type: APP_INITIALIZED });
+
+    editor.on('cursorActivity', globeyTimer);
   }
 
   // Reset map-not-loaded state
