@@ -6,15 +6,21 @@ import EventEmitter from './event-emitter';
 const INITIAL_MESSAGE = 'Hi there! I\'m Globey, your mapping assistant. Welcome to the brand new Tangram Work! I\'m here to provide useful suggestions.';
 const RETURN_MESSAGES = [
   'Do you need any more help?',
-  'I see you are looking at Los Angeles. Did you know that it is to the east of Las Vegas?',
+  'Did you know Los Angeles is to the east of Las Vegas?',
   'Its-a me! Globey!',
   'Mercator is my favorite projection!',
-  'It looks like you are making a web map, wow!'
+  'It looks like you are making a web map, wow!',
+  'Are you sure you don\'t need help? I'm here for you.',
+  'Maps are hard!',
+  'Oh, I wouldn\'t do that if I were you.'
+  'Daisy, Daisy, \n give your me your answer do.\n I\'m half crazy, \n all for the love of you.'
 ];
 const MESSAGES = [
   'Did you know?',
   'You can\'t make an omelette without breaking an egg!',
-  'This web mapping stuff sure is neat!'
+  'This web mapping stuff sure is neat!',
+  'The earth is not quite a sphere.',
+  'Don\'t get lat/lon confused with lon/lat!',
 ];
 
 export default class Globey extends React.Component {
