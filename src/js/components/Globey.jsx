@@ -8,10 +8,13 @@ const RETURN_MESSAGES = [
   'Do you need any more help?',
   'I see you are looking at Los Angeles. Did you know that it is to the east of Las Vegas?',
   'Its-a me! Globey!',
+  'Mercator is my favorite projection!',
+  'It looks like you are making a web map, wow!'
 ];
 const MESSAGES = [
   'Did you know?',
   'You can\'t make an omelette without breaking an egg!',
+  'This web mapping stuff sure is neat!'
 ];
 
 export default class Globey extends React.Component {
