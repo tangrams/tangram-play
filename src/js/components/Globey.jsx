@@ -10,10 +10,10 @@ const RETURN_MESSAGES = [
   'Its-a me! Globey!',
   'Mercator is my favorite projection!',
   'It looks like you are making a web map, wow!',
-  'Are you sure you don\'t need help? I'm here for you.',
+  'Are you sure you don\'t need help? I\'m here for you.',
   'Maps are hard!',
-  'Oh, I wouldn\'t do that if I were you.'
-  'Daisy, Daisy, \n give your me your answer do.\n I\'m half crazy, \n all for the love of you.'
+  'Oh, I wouldn\'t do that if I were you.',
+  'Daisy, Daisy, \n give your me your answer do.\n I\'m half crazy, \n all for the love of you.',
 ];
 const MESSAGES = [
   'Did you know?',

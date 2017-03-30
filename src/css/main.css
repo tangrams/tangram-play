@@ -189,6 +189,8 @@ img, div {
   img {
     width: 128px;
     pointer-events: none;
+    left: 26px;
+    position: relative;
   }
 }
 
@@ -199,7 +201,7 @@ img, div {
 .globey-speech-bubble {
   background-image: url('../data/imgs/globey_speech_bubble.png');
   background-repeat: no-repeat;
-  height: 242px;
+  height: 136px;
   width: 192px;
   padding: 10px 9px;
   position: relative;
