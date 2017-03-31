@@ -1,4 +1,4 @@
-import { isNewMinorVersion, recordCurrentVersion } from '../tools/version';
+import { isNewMinorVersion, announceAnyway, recordCurrentVersion } from '../tools/version';
 
 // Redux
 import store from '../store';
@@ -9,13 +9,13 @@ export function showWelcomeScreen() {
 
   if (!persistence) return;
 
-  if (persistence.welcomeScreenDismissed !== true) {
+  if (persistence.welcomeScreenDismissed === false) {
     store.dispatch({
       type: SHOW_MODAL,
       modalType: 'WELCOME',
       priority: 100, // Display above error modals
     });
-  } else if (isNewMinorVersion() === true) {
+  } else if (isNewMinorVersion() === true || announceAnyway() === true) {
     store.dispatch({
       type: SHOW_MODAL,
       modalType: 'WHATS_NEW',
