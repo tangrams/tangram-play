@@ -13,6 +13,10 @@ const RETURN_MESSAGES = [
   'Maps are hard!',
   'Oh, I wouldn\'t do that if I were you.',
   'Daisy, Daisy, \n give your me your answer do.\n I\'m half crazy, \n all for the love of you.',
+  'What do maps and fish have in common? Both have scales.',
+  'Why do paper maps never win poker games? Because they always fold.',
+  'What kind of maps do spiders make? A web map.',
+  'Why did the dot go to college? Because it wanted to be a graduated symbol.'
 ];
 const MESSAGES = [
   'Did you know?',
@@ -27,7 +31,7 @@ const MESSAGES = [
   'About 71 percent of the Earth\'s surface is covered in water! That must mean a lot of map tiles are just water!',
   'Am I helping you yet?',
   'Don\'t worry if you don\'t understand everything right away!',
-  'You can change the projection by writing some shader code!',
+  'You can change the projection by writing some shader code!'
 ];
 
 export default class Globey extends React.Component {
