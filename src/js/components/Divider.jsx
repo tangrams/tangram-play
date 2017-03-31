@@ -138,7 +138,7 @@ class Divider extends React.Component {
   onResizeWindow() {
     const currentPosX = this.dividerEl.getBoundingClientRect().left;
     const clampedPosX = clampPosition(currentPosX);
-    broadcastDividerPosition(clampedPosX);
+    broadcastDividerPosition(clampedPosX - 6);
   }
 
   render() {
