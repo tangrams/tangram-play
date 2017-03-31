@@ -96,14 +96,6 @@
     width: 8px;
     height: 8px;
   }
-
-  &::-webkit-scrollbar-track {
-    background-color: var(--ui-component-color);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #b9b9bd;
-  }
 }
 
 .map-inspection-properties-table {

@@ -22,19 +22,6 @@
   overflow-y: auto;
   background-color: var(--ui-component-color);
 
-  &::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: var(--ui-element-color);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #b9b9bd;
-  }
-
   .example-list-header {
     padding: 0 var(--example-modal-option-padding);
     margin-top: 15px;

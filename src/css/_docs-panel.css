@@ -108,15 +108,6 @@
   overflow-x: hidden;
 }
 
-.docs-panel-toolbar-content .container::-webkit-scrollbar {
-  background-color: #2e3033;
-  width: 12px;
-}
-
-.docs-panel-toolbar-content .container::-webkit-scrollbar-thumb {
-  background-color: #b9b9bd;
-}
-
 /* Toolbar buttons */
 
 .docs-panel-toolbar-toggle {
