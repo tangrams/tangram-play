@@ -6,7 +6,6 @@ import EventEmitter from './event-emitter';
 const INITIAL_MESSAGE = 'Hi there! I\'m Globey, your mapping assistant. Welcome to the brand new Tangram Work! I\'m here to provide useful suggestions.';
 const RETURN_MESSAGES = [
   'Do you need any more help?',
-  'Did you know Los Angeles is to the east of Las Vegas?',
   'Its-a me! Globey!',
   'Mercator is my favorite projection!',
   'It looks like you are making a web map, wow!',
@@ -21,6 +20,14 @@ const MESSAGES = [
   'This web mapping stuff sure is neat!',
   'The earth is not quite a sphere.',
   'Don\'t get lat/lon confused with lon/lat!',
+  'Curved labels are new!',
+  'Did you know Los Angeles is to the east of Las Vegas?',
+  'There are a lot of lakes in Canada!',
+  'Africa is the only continent that is in all four hemispheres, and also the only continent to have land on the prime meridian and the equator.',
+  'About 71 percent of the Earth\'s surface is covered in water! That must mean a lot of map tiles are just water!',
+  'Am I helping you yet?',
+  'Don\'t worry if you don\'t understand everything right away!',
+  'You can change the projection by writing some shader code!',
 ];
 
 export default class Globey extends React.Component {
@@ -31,6 +38,8 @@ export default class Globey extends React.Component {
       show: false,
       message: INITIAL_MESSAGE,
     };
+
+    this.previousMessage = -1;
 
     this.dismiss = this.dismiss.bind(this);
     this.nextMessage = this.nextMessage.bind(this);
@@ -43,7 +52,12 @@ export default class Globey extends React.Component {
 
   nextMessage() {
     const pick = Math.floor(Math.random() * MESSAGES.length);
-    this.setState({ message: MESSAGES[pick] });
+    if (this.previousMessage === pick) {
+      this.nextMessage();
+    } else {
+      this.previousMessage = pick;
+      this.setState({ message: MESSAGES[pick] });
+    }
   }
 
   dismiss() {
