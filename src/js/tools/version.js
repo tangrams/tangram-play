@@ -48,22 +48,6 @@ export function isNewMinorVersion(currentVersion = VERSION.v, prevVersion) {
 }
 
 /**
- * Returns true if current application version string is one that we want to
- * announce anyway (hard coded)
- *
- * @param {string} currentVersion - the current version. Defaults to app version
- *        stored in VERSION. Set this parameter for testing.
- * @returns {Boolean}
- */
-export function announceAnyway(currentVersion = VERSION.v) {
-  const persistence = store.getState().persistence;
-  const lastVersionString = persistence.mostRecentVersion || '0.0.0';
-
-  if (currentVersion === '0.7.1' && currentVersion !== lastVersionString) return true;
-  return false;
-}
-
-/**
  * Records the current application version in persistent session settings.
  *
  * @returns {undefined}

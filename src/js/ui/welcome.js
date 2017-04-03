@@ -1,4 +1,4 @@
-import { isNewMinorVersion, announceAnyway, recordCurrentVersion } from '../tools/version';
+import { isNewMinorVersion, recordCurrentVersion } from '../tools/version';
 
 // Redux
 import store from '../store';
@@ -15,7 +15,7 @@ export function showWelcomeScreen() {
       modalType: 'WELCOME',
       priority: 100, // Display above error modals
     });
-  } else if (isNewMinorVersion() === true || announceAnyway() === true) {
+  } else if (isNewMinorVersion() === true) {
     store.dispatch({
       type: SHOW_MODAL,
       modalType: 'WHATS_NEW',
