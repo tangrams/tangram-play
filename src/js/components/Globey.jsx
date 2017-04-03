@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
 import { showGlobey } from '../store/actions/app';
 
-const INITIAL_MESSAGE = 'Hi there! I\'m Globey, your mapping assistant. Welcome to the brand new Tangram Work! I\'m here to provide useful suggestions.';
+const INITIAL_MESSAGE = 'Hi there! I\'m Globey, your mapping assistant. Welcome to Tangram Play! I\'m here to provide useful suggestions.';
 const RETURN_MESSAGES = [
   'Do you need any more help?',
   'Its-a me! Globey!',
