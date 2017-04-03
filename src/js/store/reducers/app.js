@@ -41,6 +41,9 @@ const initialState = {
 
   // Whether editor should display the tab bar. This is view-only.
   showEditorTabBar: true,
+
+  // Easter egg.
+  globey: false,
 };
 
 const app = (state = initialState, action) => {

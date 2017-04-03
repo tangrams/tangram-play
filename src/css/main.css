@@ -54,6 +54,7 @@
 @import '_docs-panel';
 @import '_filedrop';
 @import '_errors';
+@import '_globey';
 @import '_sandbox';
 @import '_sign-in-overlay';
 @import '_call-to-action';

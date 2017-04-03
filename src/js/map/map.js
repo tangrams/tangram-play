@@ -11,6 +11,7 @@ import { hideSceneLoadingIndicator } from './actions';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { injectAPIKey } from '../editor/api-keys';
 import { showApiKeyWarningIfNecessary, removeApiKeyWarning } from '../editor/io';
+import { showGlobey } from '../store/actions/app';
 
 // Redux
 import store from '../store';
@@ -78,6 +79,13 @@ function initTangram(pathToSceneFile, sceneBasePath) {
           mapzenAPIKeyInjected: false,
         });
         removeApiKeyWarning();
+      }
+
+      // Easter egg check
+      if (event.config.globey && event.config.globey === true && store.getState().app.globey === false) {
+        store.dispatch(showGlobey(true));
+      } else if ((!event.config.globey || event.config.globey !== true) && store.getState().app.globey === true) {
+        store.dispatch(showGlobey(false));
       }
 
       EventEmitter.dispatch('tangram:sceneupdate', event);
