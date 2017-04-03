@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
-import { showGlobey } from '../store/actions/app';
 
 const INITIAL_MESSAGE = 'Hi there! I\'m Globey, your mapping assistant. Welcome to Tangram Play! I\'m here to provide useful suggestions.';
 const RETURN_MESSAGES = [
@@ -39,13 +38,24 @@ class Globey extends React.Component {
     super(props);
 
     this.state = {
+      dismissed: false,
       message: INITIAL_MESSAGE,
     };
 
     this.previousMessage = -1;
+    this.timer = null;
 
     this.dismiss = this.dismiss.bind(this);
+    this.reappear = this.reappear.bind(this);
     this.nextMessage = this.nextMessage.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.active === false && this.props.active === true) {
+      // Reset state
+      window.clearTimeout(this.timer);
+      this.setState({ dismissed: false, message: INITIAL_MESSAGE });
+    }
   }
 
   nextMessage() {
@@ -59,17 +69,20 @@ class Globey extends React.Component {
   }
 
   dismiss() {
-    this.props.dispatch(showGlobey(false));
+    this.setState({ dismissed: true });
+    this.timer = window.setTimeout(this.reappear, 8000);
+  }
 
-    window.setTimeout(() => {
-      const pick = Math.floor(Math.random() * RETURN_MESSAGES.length);
-      this.props.dispatch(showGlobey(true));
-      this.setState({ message: RETURN_MESSAGES[pick] });
-    }, 8000);
+  reappear() {
+    const pick = Math.floor(Math.random() * RETURN_MESSAGES.length);
+    this.setState({ dismissed: false, message: RETURN_MESSAGES[pick] });
   }
 
   render() {
-    if (this.props.show === false) return null;
+    if (this.props.active === false ||
+      (this.props.active === true && this.state.dismissed === true)) {
+      return null;
+    }
 
     return (
       <Draggable
@@ -100,17 +113,16 @@ class Globey extends React.Component {
 }
 
 Globey.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  show: React.PropTypes.bool.isRequired,
+  active: React.PropTypes.bool.isRequired,
 };
 
 Globey.defaultProps = {
-  show: false,
+  active: false,
 };
 
 function mapStateToProps(state) {
   return {
-    show: state.app.globey,
+    active: state.app.globey,
   };
 }
 
