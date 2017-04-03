@@ -5,6 +5,7 @@
   pointer-events: none;
   font-family: 'MS Sans Serif', system;
   font-size: 11px;
+  /* stylelint-disable-next-line property-no-unknown */
   font-smooth: never;
   -webkit-font-smoothing: none;
 
