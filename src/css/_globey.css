@@ -8,6 +8,7 @@
   /* stylelint-disable-next-line property-no-unknown */
   font-smooth: never;
   -webkit-font-smoothing: none;
+  z-index: -1; /* Exist underneath other overlays */
 
   img {
     width: 128px;
