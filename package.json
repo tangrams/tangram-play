@@ -1,5 +1,6 @@
 {
   "name": "tangram-play",
+  "productName": "Tangram Play",
   "version": "0.7.2",
   "description": "GUI editor for Tangram",
   "main": "index.js",
@@ -15,7 +16,8 @@
     "postinstall": "gulp build",
     "examples": "npm run examples:scenes && npm run examples:thumbnails",
     "examples:scenes": "node meta/example-scenes/cache-scenes.js",
-    "examples:thumbnails": "node meta/example-scenes/cache-thumbnails.js"
+    "examples:thumbnails": "node meta/example-scenes/cache-thumbnails.js",
+    "app": "electron ./electron.js"
   },
   "repository": {
     "type": "git",
@@ -44,6 +46,9 @@
       "email": "irene@mapzen.com"
     }
   ],
+  "peerDependencies": {
+    "electron": "1.6.2"
+  },
   "devDependencies": {
     "autoprefixer": "6.7.7",
     "babel-preset-es2015": "6.24.0",
