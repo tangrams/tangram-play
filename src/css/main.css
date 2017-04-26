@@ -76,12 +76,33 @@
   --font-family: 'Roboto', sans-serif;
   --root-font-size: 14px;
   --editor-font-family: 'Source Code Pro', monospace;
+
+  /* Mapzen UI color palette. Not all of this is used; some is reference */
+  --mz-darkpurple-1: #1e0e33;
+  --mz-darkpurple-2: #2c1e3f;
+  --mz-darkpurple-3: #635378;
+  --mz-darkpurple-4: #ad9cc2;
+  --mz-scarlet-1: #ff4947;
+  --mz-scarlet-2: #ff7b7b;
+  --mz-scarlet-3: #fcdbdb;
+  --mz-pink-1: #f9a293;
+  --mz-pink-2: #f7beb4;
+  --mz-pink-3: #fbe6e3;
+  --mz-purple-1: #7f2de3;
+  --mz-purple-2: #985fdd;
+  --mz-purple-3: #bda2dd;
+  --mz-black: #191919;
+  --mz-darkgray: #444;
+  --mz-mediumgray: #666;
+  --mz-lightgray: #f8f8f8;
+
+  /* UI color palette. */
   --ui-editor-background-color: #1c1929;
   --ui-base-color: #262233;
   --ui-component-color: #302b3c;
   --ui-element-color: #363243;
   --ui-active-color: #3d3948;
-  --ui-highlight-color: #ff4947;
+  --ui-highlight-color: var(--mz-pink-3);
   --ui-highlight-color-2: rgb(221, 221, 0);
   --ui-component-text-color: #eefafa;
   --ui-link-text-color: #e1eeee;
@@ -91,10 +112,10 @@
   --ui-border: 1px solid var(--ui-border-color);
   --ui-border-radius: 3px;
   --ui-well-color: #4d515a;
-  --ui-well-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
+  --ui-well-shadow: inset 0 1px 1px rgba(25, 25, 25, 0.12);
   --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
-  --ui-modal-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.25);
-  --ui-tooltip-background-color: rgba(0, 2, 6, 0.85);
+  --ui-modal-shadow: 0 0 6px 2px rgba(25, 25, 25, 0.25);
+  --ui-tooltip-background-color: rgba(25, 25, 25, 0.85);
   --ui-error-color: #be1a20;
   --ui-warning-color: #fc0;
 

@@ -47,9 +47,9 @@ nav {
 .brand-tag {
   position: absolute;
   left: 39px;
-  top: 21px;
+  top: 22px;
   font-size: 9px;
-  color: var(--ui-highlight-color);
+  color: var(--mz-scarlet-1);
   z-index: 1;
 }
 
@@ -69,13 +69,20 @@ nav {
   padding: 0 15px;
 
   &:hover {
-    color: yellow;
-    background-color: var(--ui-element-color);
+    color: var(--ui-highlight-color);
   }
 }
 
-.menu-bar li.active a {
-  color: var(--ui-highlight-color);
+.menu-bar li:hover {
+  background-color: var(--ui-element-color);
+}
+
+.menu-bar li.active {
+  background-color: var(--mz-scarlet-2);
+}
+
+.menu-bar li.active:hover {
+  background-color: var(--mz-scarlet-2);
 }
 
 .menu-bar li.active i {
@@ -120,7 +127,7 @@ nav {
   z-index: var(--z10-dropdown-button);
 
   > a {
-    color: yellow;
+    color: var(--ui-highlight-color);
     background-color: var(--ui-active-color);
   }
 }
