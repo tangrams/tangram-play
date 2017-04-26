@@ -234,8 +234,8 @@
 
 .cm-s-tangram .CodeMirror-gutters {
   color: var(--ui-component-text-color);
-  background-color: #24262a; /* subtly darker than base */
-  border-right: 1px solid #34363a;
+  background-color: #242031; /* subtly darker than base */
+  border-right: 1px solid #343041;
 }
 
 .cm-s-tangram .CodeMirror-linenumber {

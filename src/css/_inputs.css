@@ -1,22 +1,25 @@
 /* Inputs */
+:root {
+  --input-placeholder-text-color: #9591a2;
+}
+
+::-webkit-input-placeholder {
+  color: var(--input-placeholder-text-color);
+}
+
+:-moz-placeholder {
+  color: var(--input-placeholder-text-color);
+}
+
+::-moz-placeholder {
+  color: var(--input-placeholder-text-color);
+}
+
+:-ms-input-placeholder {
+  color: var(--input-placeholder-text-color);
+}
 
 .map-toolbar {
-  ::-webkit-input-placeholder {
-    color: #909195;
-  }
-
-  :-moz-placeholder {
-    color: #909195;
-  }
-
-  ::-moz-placeholder {
-    color: #909195;
-  }
-
-  :-ms-input-placeholder {
-    color: #909195;
-  }
-
   /* Much dislike Black Tie's pick of font smoothing */
   .btm {
     -webkit-font-smoothing: subpixel-antialiased;

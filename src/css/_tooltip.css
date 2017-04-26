@@ -5,6 +5,22 @@
   transform: translateX(-3px);
 }
 
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: var(--ui-tooltip-background-color);
+}
+
+.tooltip.top .tooltip-arrow {
+  border-top-color: var(--ui-tooltip-background-color);
+}
+
+.tooltip.left .tooltip-arrow {
+  border-left-color: var(--ui-tooltip-background-color);
+}
+
+.tooltip.right .tooltip-arrow {
+  border-right-color: var(--ui-tooltip-background-color);
+}
+
 .tooltip-inner {
   /* Margins create room between edge of a tooltip and edge of the screen.
      Note that this also creates a gap between side arrow so do not use them. */
@@ -12,7 +28,8 @@
   margin-right: 0.5em;
   padding: 0.5em 0.75em;
   border-radius: var(--ui-border-radius);
-  font-size: 0.75rem;
-  font-weight: 200;
-  color: var(--ui-highlight-color);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--ui-tooltip-text-color);
+  background-color: var(--ui-tooltip-background-color);
 }

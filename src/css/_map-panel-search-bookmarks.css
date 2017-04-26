@@ -11,7 +11,7 @@
 }
 
 .map-panel .btm.active {
-  color: yellow;
+  color: var(--ui-highlight-color);
 }
 
 .map-search {
@@ -126,7 +126,7 @@
 }
 
 .react-autosuggest__suggestions-container strong {
-  color: yellow;
+  color: var(--mz-pink-1);
   font-weight: 200;
 }
 
