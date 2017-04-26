@@ -69,19 +69,16 @@ nav {
   padding: 0 15px;
 
   &:hover {
+    background-color: var(--ui-element-color);
     color: var(--ui-highlight-color);
   }
-}
-
-.menu-bar li:hover {
-  background-color: var(--ui-element-color);
 }
 
 .menu-bar li.active {
   background-color: var(--mz-scarlet-2);
 }
 
-.menu-bar li.active:hover {
+.menu-bar li.active a:hover {
   background-color: var(--mz-scarlet-2);
 }
 
@@ -184,8 +181,8 @@ nav {
     border-radius: 3px;
     border: 1px solid #540101;
     padding: 0 0.75em; /* Override */
-    background-color: #7a0000;
-    color: #f1f1f1;
+    background-color: var(--mz-scarlet-1);
+    color: var(--mz-lightgray);
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
     height: 32px; /* Override */
     line-height: 32px; /* Override */
@@ -193,8 +190,7 @@ nav {
 
   /* hover style override */
   a[role='button']:hover {
-    background-color: #8d0000;
-    color: white;
+    background-color: var(--mz-scarlet-1);
   }
 
   /* disabled state */
