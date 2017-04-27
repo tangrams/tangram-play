@@ -1,3 +1,5 @@
+// Don't let ESLint complain if electron isn't installed locally.
+// eslint-disable-next-line import/no-unresolved
 const { app, BrowserWindow, shell, Menu } = require('electron');
 const path = require('path');
 const url = require('url');
