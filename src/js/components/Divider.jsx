@@ -5,7 +5,7 @@ import EventEmitter from './event-emitter';
 
 // Redux
 import store from '../store';
-import { SET_PERSISTENCE, SET_APP_STATE } from '../store/actions';
+import { SET_PERSISTENCE } from '../store/actions';
 
 // Constraints
 // A small `EDITOR_MINIMUM_WIDTH` allows it to be minimized but preserve enough
@@ -164,7 +164,7 @@ class Divider extends React.Component {
 }
 
 Divider.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
+  // dispatch: React.PropTypes.func.isRequired,
   posX: React.PropTypes.number.isRequired,
 };
 

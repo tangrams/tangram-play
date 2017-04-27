@@ -48,12 +48,6 @@ class SaveToCloudModal extends React.Component {
     this.setReadyUI();
   }
 
-  componentWillReceiveProps(nextState, nextProps) {
-    if (nextProps.visible === true) {
-      this.setReadyUI();
-    }
-  }
-
   componentWillUnmount() {
     window.clearTimeout(this.timeout);
   }
