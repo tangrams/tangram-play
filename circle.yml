@@ -2,7 +2,7 @@ machine:
   pre:
     - mkdir ~/.yarn-cache
   node:
-    version: 6.9.1
+    version: 6.10.2
   environment:
     NODE_ENV: test
 
