@@ -125,6 +125,10 @@
   background-color: var(--ui-active-color);
 }
 
+.react-autosuggest__suggestion--highlighted {
+  background-color: var(--ui-active-color);
+}
+
 .react-autosuggest__suggestions-container strong {
   color: var(--mz-pink-1);
   font-weight: 200;
