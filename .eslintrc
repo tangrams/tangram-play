@@ -37,6 +37,7 @@
     // Warnings for things that are not easily fixable now
     "react/jsx-filename-extension": "warn",
     "react/prefer-stateless-function": "warn",
+    "react/no-array-index-key": "warn",
     "import/prefer-default-export": "warn",
 
     // This is disallowed for good reasons, but unfortunately too much of our
