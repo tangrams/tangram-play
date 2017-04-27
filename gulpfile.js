@@ -1,49 +1,46 @@
-/* eslint-disable */
-// Eslint is not set up to deal with non-module files right now.
-'use strict';
+/* eslint-disable global-require */
+// Allow require() to exist only in specific tasks if they are only used once.
+const gulp = require('gulp');
+const gutil = require('gulp-util');
+const notify = require('gulp-notify');
+const sourcemaps = require('gulp-sourcemaps');
+const browserSync = require('browser-sync');
 
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var notify = require('gulp-notify');
-var sourcemaps = require('gulp-sourcemaps');
-var browserSync = require('browser-sync');
-
-var paths = {
+const paths = {
   styles: {
     src: 'src/css/**/*.css',
     entry: 'src/css/main.css',
-    dest: 'public/stylesheets'
+    dest: 'public/stylesheets',
   },
   scripts: {
     src: 'src/js/**/*.{js,jsx,json}',
     entry: ['src/js/main.js', 'src/js/embedded.js'],
-    dest: 'public/scripts'
+    dest: 'public/scripts',
   },
-  app: 'public/index.html'
+  app: 'public/index.html',
 };
 
-function handleErrors() {
-  var args = Array.prototype.slice.call(arguments);
+function handleErrors(...args) {
   notify.onError({
     title: 'Tangram Play · Compile Error',
     message: '<%= error.message %>',
-    sound: 'Sosumi' // Mac OSX alert sound
+    sound: 'Sosumi', // Mac OSX alert sound
   }).apply(this, args);
   this.emit('end'); // Keep gulp from hanging on this task
 }
 
 // Build stylesheets
-gulp.task('css', function () {
-  var postcss = require('gulp-postcss');
-  var autoprefixer = require('autoprefixer');
-  var cssimport = require('postcss-import');
-  var nested = require('postcss-nested');
-  var customProperties = require('postcss-custom-properties');
-  var colorHexAlpha = require('postcss-color-hex-alpha');
-  var csswring = require('csswring');
-  var reporter = require('postcss-reporter');
+gulp.task('css', () => {
+  const postcss = require('gulp-postcss');
+  const autoprefixer = require('autoprefixer');
+  const cssimport = require('postcss-import');
+  const nested = require('postcss-nested');
+  const customProperties = require('postcss-custom-properties');
+  const colorHexAlpha = require('postcss-color-hex-alpha');
+  const csswring = require('csswring');
+  const reporter = require('postcss-reporter');
 
-  var plugins = [
+  const plugins = [
     cssimport,
     nested,
     customProperties(),
@@ -53,7 +50,7 @@ gulp.task('css', function () {
     // delete the hack, it means turn it into real CSS. Which is not
     // what we want!
     csswring({ removeAllComments: true, preserveHacks: true }),
-    reporter()
+    reporter(),
   ];
 
   return gulp.src(paths.styles.entry)
@@ -70,31 +67,31 @@ gulp.task('css', function () {
 });
 
 // Build Javascripts
-gulp.task('js', function () {
-  var browserify = require('browserify');
-  var browserifyInc = require('browserify-incremental');
-  var shim = require('browserify-shim');
-  var babelify = require('babelify');
-  var buffer = require('vinyl-buffer');
-  var uglify = require('gulp-uglify');
-  var envify = require('loose-envify');
-  var tap = require('gulp-tap');
+gulp.task('js', () => {
+  const browserify = require('browserify');
+  const browserifyInc = require('browserify-incremental');
+  const shim = require('browserify-shim');
+  const babelify = require('babelify');
+  const buffer = require('vinyl-buffer');
+  const uglify = require('gulp-uglify');
+  const envify = require('loose-envify');
+  const tap = require('gulp-tap');
 
-  var opts = {
+  const opts = {
     debug: true,
     extensions: ['.jsx'],
     transform: [
       babelify,
       shim,
-      envify
+      envify,
     ],
     // Option for browserify-incremental
-    cacheFile: './browserify-cache.json'
+    cacheFile: './browserify-cache.json',
   };
 
   // Set which browserify type to use for different environments.
   // In development, we use incremental browserify so rebuilds are faster.
-  var browserifyEnv = browserifyInc;
+  let browserifyEnv = browserifyInc;
 
   // In production, we use normal browserify because loose-envify only works
   // for normal browserify - not for incremental browserify.
@@ -106,13 +103,14 @@ gulp.task('js', function () {
   // because this doubles build time locally!
   if (process.env.NODE_ENV === 'production') {
     return gulp.src(paths.scripts.entry, {
-      read: false // no need to read files because browserify does.
+      read: false, // no need to read files because browserify does.
     })
     // transform file objects using gulp-tap plugin
-    .pipe(tap(function (file) {
-      gutil.log('bundling ' + file.path);
+    .pipe(tap((file) => {
+      gutil.log(`bundling ${file.path}`);
 
       // replace file contents with browserify's bundle stream
+      // eslint-disable-next-line no-param-reassign
       file.contents = browserifyEnv(file.path, opts).bundle();
     }))
     // transform streaming contents into buffer contents (because
@@ -127,13 +125,14 @@ gulp.task('js', function () {
   }
 
   return gulp.src(paths.scripts.entry, {
-    read: false // no need to read files because browserify does.
+    read: false, // no need to read files because browserify does.
   })
     // transform file objects using gulp-tap plugin
-    .pipe(tap(function (file) {
-      gutil.log('bundling ' + file.path);
+    .pipe(tap((file) => {
+      gutil.log(`bundling ${file.path}`);
 
-        // replace file contents with browserify's bundle stream
+      // replace file contents with browserify's bundle stream
+      // eslint-disable-next-line no-param-reassign
       file.contents = browserifyEnv(file.path, opts).bundle();
     }))
     .on('error', handleErrors)
@@ -148,23 +147,23 @@ gulp.task('js-watch', ['js'], browserSync.reload);
 gulp.task('build', ['css', 'js']);
 
 // Watch files, but do not run browsersync
-gulp.task('watch', ['build'], function () {
+gulp.task('watch', ['build'], () => {
   gulp.watch(paths.styles.src, ['css']);
   gulp.watch(paths.scripts.src, ['js']);
 });
 
 // Re-load the browser when a file changes
-gulp.task('serve', ['build'], function () {
+gulp.task('serve', ['build'], () => {
   browserSync.init({
     port: 8080,
     open: false,
     server: {
-      baseDir: './public'
+      baseDir: './public',
     },
     ui: {
-      port: 8081
+      port: 8081,
     },
-    ghostMode: false
+    ghostMode: false,
   });
 
   gulp.watch(paths.styles.src, ['css']);
