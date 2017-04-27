@@ -24,10 +24,7 @@ export default class DraggableModal extends React.PureComponent {
   }
 }
 
-/**
- * Prop validation required by React
- */
 DraggableModal.propTypes = {
-  x: React.PropTypes.number,
-  y: React.PropTypes.number,
+  x: React.PropTypes.number.isRequired,
+  y: React.PropTypes.number.isRequired,
 };

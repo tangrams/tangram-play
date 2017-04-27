@@ -1,0 +1,75 @@
+.globey {
+  position: absolute;
+  left: 30px;
+  bottom: 30px;
+  pointer-events: none;
+  font-family: 'MS Sans Serif', system;
+  font-size: 11px;
+  /* stylelint-disable-next-line property-no-unknown */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+  z-index: -1; /* Exist underneath other overlays */
+
+  img {
+    width: 128px;
+    pointer-events: none;
+  }
+}
+
+.globey-image {
+  position: relative;
+  left: 26px;
+  width: 128px;
+  height: 128px;
+  pointer-events: auto;
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.globey-speech-bubble {
+  background-image: url('../data/imgs/globey_speech_bubble.png');
+  background-repeat: no-repeat;
+  height: 136px;
+  width: 192px;
+  padding: 10px 9px;
+  position: relative;
+  font-size: 11px;
+}
+
+.globey-nav {
+  position: absolute;
+  bottom: 35px;
+  width: calc(100% - 20px);
+}
+
+.globey-button,
+.globey-button:focus,
+.globey-button:hover,
+.globey-button:active {
+  background-color: #ffc;
+  border: 1px solid #868a8e;
+  box-shadow: none;
+  border-radius: 5px;
+  pointer-events: auto;
+  font-family: 'MS Sans Serif', system;
+  font-size: 11px;
+  color: black;
+  padding: 4px;
+  min-width: 72px;
+}
+
+.globey-button:focus {
+  outline: 1px dotted black;
+  outline-offset: -4px;
+}
+
+.globey-button:active {
+  padding-top: 5px;
+  padding-left: 6px;
+  padding-bottom: 3px;
+}
+
+.globey-button-right {
+  float: right;
+}

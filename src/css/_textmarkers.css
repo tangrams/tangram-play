@@ -121,7 +121,7 @@ select {
   outline: none;
   border: 0;
   width: 100%;
-  background: #fff url('../../data/imgs/arrow_down.png') no-repeat;
+  background: #fff url('../data/imgs/arrow_down.png') no-repeat;
   background-size: 16px;
   background-position: left center;
 }

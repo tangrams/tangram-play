@@ -130,13 +130,6 @@ class CodeSnippetModal extends React.PureComponent {
     this.setState({ activeTab: id });
   }
 
-  selectTextareaContent() {
-    this.textarea.focus();
-    this.textarea.select();
-    // Prevent scrolling to bottom of textarea after select
-    this.textarea.scrollTop = 0;
-  }
-
   // Sets up clipboard.js functionality. Not a React component.
   setupClipboard() {
     // eslint-disable-next-line react/no-find-dom-node
@@ -159,6 +152,13 @@ class CodeSnippetModal extends React.PureComponent {
     });
 
     clipboardButtonEl.focus();
+  }
+
+  selectTextareaContent() {
+    this.textarea.focus();
+    this.textarea.select();
+    // Prevent scrolling to bottom of textarea after select
+    this.textarea.scrollTop = 0;
   }
 
   render() {

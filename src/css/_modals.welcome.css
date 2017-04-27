@@ -59,19 +59,6 @@
   font-weight: 300;
   line-height: 1.4;
 
-  &::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: var(--ui-element-color);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #b9b9bd;
-  }
-
   a {
     color: lightblue;
     text-decoration: underline;
@@ -91,6 +78,19 @@
   article:not(:first-of-type) {
     border-top: 3px solid var(--ui-active-color);
     padding-top: 1em;
+  }
+
+  img {
+    width: 100%;
+  }
+
+  .changelog-image {
+    background-size: cover;
+    background-position: center center;
+    height: 200px;
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
   }
 
   ul {

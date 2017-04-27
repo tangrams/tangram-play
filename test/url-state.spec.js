@@ -1,5 +1,11 @@
+import 'url-search-params-polyfill'; // Polyfill for test environment
 import { assert } from 'chai';
 import { getQueryStringObject, getURLSearchParam, mergeParamObjectToQueryString } from '../src/js/tools/url-state';
+
+/* eslint-disable import/first */
+if (!window.URLSearchParams) {
+  window.URLSearchParams = URLSearchParams;
+}
 
 describe('URL query parameters management', () => {
   describe('getQueryStringObject()', () => {

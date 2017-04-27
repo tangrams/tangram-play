@@ -1,2 +1,16 @@
 /* TYPOGRAPHY */
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,700,300|Source+Code+Pro:400,200,600');
+
+@font-face {
+  font-family: 'MS Sans Serif';
+  src: url('../data/fonts/ms-sans-serif/MS Sans Serif.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MS Sans Serif';
+  src: url('../data/fonts/ms-sans-serif-bold/MS Sans Serif Bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}

@@ -137,11 +137,11 @@ export default class DropdownMarker extends React.Component {
 DropdownMarker.propTypes = {
   marker: React.PropTypes.shape({
     find: React.PropTypes.func,
-  }),
-  keyName: React.PropTypes.string,
+  }).isRequired,
+  keyName: React.PropTypes.string.isRequired,
   options: React.PropTypes.arrayOf(React.PropTypes.string),
-  source: React.PropTypes.string,
-  initialValue: React.PropTypes.string,
+  source: React.PropTypes.string.isRequired,
+  initialValue: React.PropTypes.string.isRequired,
 };
 
 DropdownMarker.defaultProps = {

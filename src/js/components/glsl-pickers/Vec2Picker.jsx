@@ -263,13 +263,13 @@ export default class Vec2Picker extends React.Component {
 }
 
 Vec2Picker.propTypes = {
-  display: React.PropTypes.bool,
+  display: React.PropTypes.bool.isRequired,
   cursor: React.PropTypes.shape({
     line: React.PropTypes.number,
-  }),
+  }).isRequired,
   match: React.PropTypes.shape({
     start: React.PropTypes.number,
     end: React.PropTypes.number,
-  }),
-  value: React.PropTypes.string,
+  }).isRequired,
+  value: React.PropTypes.string.isRequired,
 };

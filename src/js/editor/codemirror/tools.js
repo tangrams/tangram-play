@@ -1,6 +1,5 @@
 import { countLeadingSpaces } from '../../tools/helpers';
-import { parsedYAMLDocument } from '../../editor/editor';
-import { getNodeLevel } from '../../editor/yaml-ast';
+import { getNodeLevel, getNodeAtIndex } from '../../editor/yaml-ast';
 
 // Navigation functions for CodeMirror
 // ===============================================================================
@@ -57,9 +56,7 @@ export function foldByLevel(cm, level) {
     const spaces = countLeadingSpaces(text);
     const pos = { line, ch: spaces };
     const index = doc.indexFromPos(pos);
-
-    // Depends on the parsed YAML interface - is this too side-effecty?
-    const node = parsedYAMLDocument.getNodeAtIndex(index);
+    const node = getNodeAtIndex(doc.yamlNodes, index);
     const compareLevel = getNodeLevel(node);
 
     if (compareLevel >= level) {

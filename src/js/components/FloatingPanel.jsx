@@ -86,7 +86,7 @@ export default class FloatingPanel extends React.Component {
         y={this.state.y}
       >
         <div className="floating-panel-topbar">
-          <div className="floating-panel-drag" />
+          <div className="floating-panel-drag">{this.props.title}</div>
           <button className="floating-panel-close" onClick={this.props.onClickClose}>×</button>
         </div>
         {this.props.children}
@@ -103,8 +103,10 @@ FloatingPanel.propTypes = {
   show: React.PropTypes.bool.isRequired,
   onClickClose: React.PropTypes.func,
   children: React.PropTypes.node.isRequired,
+  title: React.PropTypes.string.isRequired,
 };
 
 FloatingPanel.defaultProps = {
   onClickClose: function noop() {},
+  title: '',
 };

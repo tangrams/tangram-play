@@ -526,5 +526,5 @@ MapPanelLocationBar.propTypes = {
   geolocateActive: React.PropTypes.shape({
     active: React.PropTypes.bool,
     latlng: React.PropTypes.object,
-  }),
+  }).isRequired,
 };

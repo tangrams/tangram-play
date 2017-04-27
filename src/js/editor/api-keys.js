@@ -14,12 +14,17 @@ const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\
 
 /**
  * A basic check to see if an api key string looks like a valid key. Not *is* a
- * valid key, just *looks like* one.
+ * valid key, just *looks like* one. Note: legacy API keys may have 5 or 6
+ * character suffixes, and may have a dash or underscore. New keys will always
+ * have a 7-character suffix.
  *
- * @todo it's possible some legacy keys have 6 digits instead of 7; check with Evan
+ * Exported only for testing. Do not use in production code.
+ *
+ * @param {string} - the api key to check
+ * @returns {Boolean}
  */
-function isValidMapzenApiKey(string) {
-  return (typeof string === 'string' && string.match(/[-a-z]+-[0-9a-zA-Z_-]{7}/));
+export function isValidMapzenApiKey(string) {
+  return Boolean(typeof string === 'string' && string.match(/^[-a-z]+-[0-9a-zA-Z_-]{5,7}$/));
 }
 
 /**

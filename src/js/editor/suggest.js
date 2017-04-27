@@ -2,9 +2,9 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 import TANGRAM_API from '../tangram-api.json';
-import { editor, parsedYAMLDocument } from './editor';
+import { editor } from './editor';
 import { getIndexAtCursor } from './codemirror/tools';
-import { getNodeLevel, getKeyAddressForNode, getKeyNameForNode } from './yaml-ast';
+import { getNodeLevel, getNodeAtIndex, getKeyAddressForNode, getKeyNameForNode } from './yaml-ast';
 import { getCompiledValueByAddress } from '../editor/codemirror/yaml-tangram';
 import { tangramLayer } from '../map/map';
 import EventEmitter from '../components/event-emitter';
@@ -133,7 +133,7 @@ export function initSuggestions() {
 
     // Get the node at the current cursor location
     const doc = editor.getDoc();
-    const node = parsedYAMLDocument.getNodeAtIndex(getIndexAtCursor(doc));
+    const node = getNodeAtIndex(doc.yamlNodes, getIndexAtCursor(doc));
 
     // Bail if there is no YAML node.
     if (!node) return;
@@ -195,13 +195,13 @@ export function hint(cm, options) {
   const doc = cm.getDoc();
   const cursor = doc.getCursor();
   const cursorIndex = doc.indexFromPos(cursor); // -> Number
-  const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
+  const node = getNodeAtIndex(doc.yamlNodes, cursorIndex);
   let list = [];
   let isKey = false;
 
   // Node is null if unparseable. This needs to be handled better, because
   // you can still offer a suggestion before a node is completed.
-  if (!node) return;
+  if (!node) return '';
 
   if (node.kind === 0) {
     // Things we need to know to match address

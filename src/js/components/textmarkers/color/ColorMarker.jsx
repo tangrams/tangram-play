@@ -216,7 +216,7 @@ export default class ColorMarker extends React.Component {
 ColorMarker.propTypes = {
   marker: React.PropTypes.shape({
     find: React.PropTypes.func,
-  }),
+  }).isRequired,
   // The value may be a string, or an array of string values.
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
@@ -226,12 +226,12 @@ ColorMarker.propTypes = {
   shader: React.PropTypes.bool,
   cursor: React.PropTypes.shape({
     line: React.PropTypes.number,
-  }),
+  }).isRequired,
   match: React.PropTypes.shape({
     start: React.PropTypes.number,
     end: React.PropTypes.number,
-  }),
-  vec: React.PropTypes.string,
+  }).isRequired,
+  vec: React.PropTypes.string.isRequired,
 };
 
 ColorMarker.defaultProps = {

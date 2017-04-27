@@ -284,16 +284,16 @@ export default class NumberPicker extends React.Component {
 }
 
 NumberPicker.propTypes = {
-  display: React.PropTypes.bool,
+  display: React.PropTypes.bool.isRequired,
   cursor: React.PropTypes.shape({
     line: React.PropTypes.number,
-  }),
+  }).isRequired,
   match: React.PropTypes.shape({
     start: React.PropTypes.number,
     end: React.PropTypes.number,
-  }),
+  }).isRequired,
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
     React.PropTypes.number,
-  ]),
+  ]).isRequired,
 };

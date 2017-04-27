@@ -9,7 +9,7 @@ export function showWelcomeScreen() {
 
   if (!persistence) return;
 
-  if (persistence.welcomeScreenDismissed !== true) {
+  if (persistence.welcomeScreenDismissed === false) {
     store.dispatch({
       type: SHOW_MODAL,
       modalType: 'WELCOME',

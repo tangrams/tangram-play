@@ -1,6 +1,7 @@
 // Polyfills
 import 'babel-polyfill';
 import 'whatwg-fetch';
+import 'url-search-params-polyfill';
 
 // React
 import React from 'react';
@@ -27,6 +28,12 @@ import {
 // Miscellaneous
 import { getURLSearchParam } from './tools/url-state';
 import { migrateLocalStorageToForage } from './storage/migrate';
+
+// For Electron: allow fetch() of file:// protocol.
+if (window.process && window.process.versions.electron && window.require) {
+  const { webFrame } = window.require('electron');
+  webFrame.registerURLSchemeAsPrivileged('file');
+}
 
 // Error tracking
 // Load this before all other modules. Only load when run in production.

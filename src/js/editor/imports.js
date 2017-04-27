@@ -1,8 +1,8 @@
-import { editor, parsedYAMLDocument } from './editor';
+import { editor } from './editor';
 import { clickIsAtCursorPosition } from './codemirror/tools';
 import { isAbsoluteUrl, splitUrlIntoFilenameAndBasePath } from '../tools/helpers';
 import { addError } from './errors';
-import { getKeyAddressForNode } from './yaml-ast';
+import { getKeyAddressForNode, getNodeAtIndex } from './yaml-ast';
 
 // Redux
 import store from '../store';
@@ -141,7 +141,7 @@ export function initContextSensitiveClickEvents() {
 
     const cursor = doc.getCursor();
     const cursorIndex = doc.indexFromPos(cursor); // -> Number
-    const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
+    const node = getNodeAtIndex(doc.yamlNodes, cursorIndex);
     const isImportBlock = isImportValue(node);
 
     if (isImportBlock) {

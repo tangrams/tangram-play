@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+// NOTE: array index is safe here because the data is never recomputed or changed.
 import React from 'react';
 import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
@@ -8,8 +10,8 @@ import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
 import IconButton from './IconButton';
 import EventEmitter from './event-emitter';
-import { editor, parsedYAMLDocument } from '../editor/editor';
-import { getKeyAddressForNode } from '../editor/yaml-ast';
+import { editor } from '../editor/editor';
+import { getKeyAddressForNode, getNodeAtIndex } from '../editor/yaml-ast';
 
 // Redux
 import { SET_PERSISTENCE } from '../store/actions';
@@ -74,7 +76,7 @@ class DocsPanel extends React.Component {
     const doc = cm.getDoc();
     const cursor = doc.getCursor();
     const cursorIndex = doc.indexFromPos(cursor); // -> Number
-    const node = parsedYAMLDocument.getNodeAtIndex(cursorIndex);
+    const node = getNodeAtIndex(doc.yamlNodes, cursorIndex);
     const address = getKeyAddressForNode(node);
     this.setState({ display: this.findMatch(address, true) });
   }
