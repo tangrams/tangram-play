@@ -76,7 +76,9 @@ function createWindow() {
       submenu: [
         {
           label: 'Learn More',
-          click() { require('electron').shell.openExternal('https://mapzen.com/documentation/tangram'); },
+          click() {
+            shell.openExternal('https://mapzen.com/documentation/tangram');
+          },
         },
       ],
     },

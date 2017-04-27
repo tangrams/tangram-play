@@ -1,6 +1,4 @@
-'use strict';
-
-module.exports = function (config) {
+module.exports = function setKarmaConfig(config) {
   config.set({
     basePath: '',
     frameworks: ['browserify', 'mocha', 'sinon'],
@@ -12,13 +10,12 @@ module.exports = function (config) {
       // 'public/index.html',
       // Test suites
       'test/**/*.js',
-      'test/**/*.jsx'
+      'test/**/*.jsx',
     ],
 
     exclude: [],
     preprocessors: {
-      // 'src/js/**/*.js': ['browserify'],
-      'test/**/*.{js,jsx}': ['browserify']
+      'test/**/*.{js,jsx}': ['browserify'],
     },
 
     browserify: {
@@ -26,17 +23,17 @@ module.exports = function (config) {
       extensions: ['.jsx'],
       transform: [
         ['babelify', { presets: ['es2015', 'react'] }],
-        'brfs'
+        'brfs',
       ],
       // Configuration required for enzyme to work; see
       // http://airbnb.io/enzyme/docs/guides/browserify.html
-      configure: function (bundle) {
-        bundle.on('prebundle', function () {
+      configure(bundle) {
+        bundle.on('prebundle', () => {
           bundle.external('react/addons');
           bundle.external('react/lib/ReactContext');
           bundle.external('react/lib/ExecutionEnvironment');
         });
-      }
+      },
     },
 
     plugins: [
@@ -44,7 +41,7 @@ module.exports = function (config) {
       'karma-sinon',
       'karma-phantomjs-launcher',
       'karma-mocha-reporter',
-      'karma-browserify'
+      'karma-browserify',
     ],
     reporters: ['mocha'],
 
@@ -55,6 +52,6 @@ module.exports = function (config) {
     autoWatch: false,
     browsers: ['PhantomJS'],
 
-    singleRun: true
+    singleRun: true,
   });
 };
