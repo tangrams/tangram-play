@@ -46,6 +46,10 @@
       "email": "irene@mapzen.com"
     }
   ],
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=4.0.0"
+  },
   "peerDependencies": {
     "electron": "1.6.2"
   },
