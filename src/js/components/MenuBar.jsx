@@ -292,7 +292,7 @@ class MenuBar extends React.Component {
         {/* The brand section */}
         <Navbar.Header>
           <Navbar.Brand>
-            <img src="data/imgs/logo.svg" />
+            <img src="data/imgs/logo.svg" alt="Tangram Play" />
             <span className="brand-tag">BETA</span>
           </Navbar.Brand>
           <Navbar.Toggle />
