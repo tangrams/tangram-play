@@ -291,8 +291,9 @@ class MenuBar extends React.Component {
       <Navbar inverse className="menu-bar">
         {/* The brand section */}
         <Navbar.Header>
+          <img src="data/imgs/pretend_logo.png" alt="" className="pretend-logo" />
           <Navbar.Brand>
-            <img src="data/imgs/logo.svg" alt="Tangram Play" />
+            <img src="data/imgs/logo2.svg" alt="Tangram Play" />
             <span className="brand-tag">BETA</span>
           </Navbar.Brand>
           <Navbar.Toggle />

@@ -9,6 +9,10 @@ nav {
   height: var(--menu-bar-height);
 }
 
+.navbar-brand {
+  margin-left: -6px; /* temp */
+}
+
 .navbar-brand img {
   z-index: 1;
   height: calc(var(--menu-bar-height) - 2px);
@@ -44,9 +48,18 @@ nav {
   z-index: 1; /* This just needs to be any number to be properly sorted in its stacking context */
 }
 
+/* temp */
+.pretend-logo {
+  position: absolute;
+  top: 8px;
+  left: 11px;
+  width: 14px;
+  z-index: 1;
+}
+
 .brand-tag {
   position: absolute;
-  left: 39px;
+  left: 34px;
   top: 22px;
   font-size: 9px;
   color: var(--mz-scarlet-1);
