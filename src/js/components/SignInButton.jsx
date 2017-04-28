@@ -47,6 +47,7 @@ class SignInButton extends React.Component {
    * Signs out of mapzen.com. Check state of editor first to make sure that
    * the user is ready to navigate away.
    */
+  // eslint-disable-next-line class-methods-use-this
   onClickSignOut(event) {
     checkSaveStateThen(() => {
       requestUserSignOut()
@@ -73,21 +74,36 @@ class SignInButton extends React.Component {
   //   >  You "log on" or "log out" of a operating system session.
   // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
   render() {
+    function getUserDisplayName(nickname, email) {
+      if (nickname) return nickname;
+      if (email) return email.split('@')[0];
+      return 'Anonymous';
+    }
+
+    function getAvatarComponent(imageUrl, displayName) {
+      if (imageUrl) {
+        return (<img
+          src={imageUrl}
+          className="avatar"
+          alt={displayName}
+        />);
+      }
+
+      return <div className="avatar avatar-blank" />;
+    }
+
     if (this.props.signedIn) {
+      const displayName = getUserDisplayName(this.props.nickname, this.props.email);
+      const AvatarImage = getAvatarComponent(this.props.avatar, displayName);
+      const AdminStar = (this.props.admin === true) ?
+        <span className="avatar-admin-star">★</span> :
+        null;
+
       const ButtonContents = (
         <span>
-          <img
-            src={this.props.avatar}
-            className="sign-in-avatar"
-            alt={this.props.nickname}
-          />
-          {this.props.nickname}
-          {(() => {
-            if (this.props.admin === true) {
-              return (<span className="sign-in-admin-star">★</span>);
-            }
-            return null;
-          })()}
+          {AvatarImage}
+          {displayName}
+          {AdminStar}
         </span>
       );
 
@@ -150,6 +166,7 @@ class SignInButton extends React.Component {
 SignInButton.propTypes = {
   signedIn: React.PropTypes.bool.isRequired,
   nickname: React.PropTypes.string,
+  email: React.PropTypes.string,
   avatar: React.PropTypes.string,
   admin: React.PropTypes.bool,
   system: React.PropTypes.shape({
@@ -159,7 +176,8 @@ SignInButton.propTypes = {
 };
 
 SignInButton.defaultProps = {
-  nickname: 'Anonymous',
+  nickname: '',
+  email: '',
   avatar: '',
   admin: false,
 };
@@ -168,6 +186,7 @@ function mapStateToProps(state) {
   return {
     signedIn: state.user.signedIn,
     nickname: state.user.nickname,
+    email: state.user.email,
     avatar: state.user.avatar,
     admin: state.user.admin,
     system: state.system,
