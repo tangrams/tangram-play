@@ -1,0 +1,107 @@
+/* VARIABLES */
+:root {
+  /* Uses Roboto if available, and falls back to system fonts otherwise */
+  --font-family: 'Roboto', sans-serif;
+  --root-font-size: 14px;
+  --editor-font-family: 'Source Code Pro', monospace;
+
+  /* Mapzen UI color palette. Not all of this is used; some is reference */
+  --mz-darkpurple-1: #1e0e33;
+  --mz-darkpurple-2: #2c1e3f;
+  --mz-darkpurple-3: #635378;
+  --mz-darkpurple-4: #ad9cc2;
+  --mz-scarlet-1: #ff4947;
+  --mz-scarlet-2: #ff7b7b;
+  --mz-scarlet-3: #fcdbdb;
+  --mz-pink-1: #f9a293;
+  --mz-pink-2: #f7beb4;
+  --mz-pink-3: #fbe6e3;
+  --mz-purple-1: #7f2de3;
+  --mz-purple-2: #985fdd;
+  --mz-purple-3: #bda2dd;
+  --mz-black: #191919;
+  --mz-darkgray: #444;
+  --mz-mediumgray: #666;
+  --mz-lightgray: #f8f8f8;
+
+  /* UI color palette. */
+  --ui-editor-background-color: #1c1929;
+  --ui-base-color: #262233;
+  --ui-component-color: #302b3c;
+  --ui-element-color: #363243;
+  --ui-active-color: #3d3948;
+  --ui-highlight-color: var(--mz-pink-3);
+  --ui-highlight-color-2: rgb(221, 221, 0);
+  --ui-component-text-color: white;
+  --ui-link-text-color: var(--mz-purple-3);
+  --ui-subtext-color: #c0c6c6;
+  --ui-unnamed-light-color: #999ca0;
+  --ui-border-color: #1a1c1f;
+  --ui-border: 1px solid var(--ui-border-color);
+  --ui-border-radius: 3px;
+  --ui-well-color: #555162;
+  --ui-well-shadow: inset 0 1px 1px rgba(25, 25, 25, 0.12);
+  --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  --ui-modal-shadow: 0 0 6px 2px rgba(25, 25, 25, 0.25);
+  --ui-tooltip-background-color: white;
+  --ui-tooltip-text-color: var(--mz-darkpurple-1);
+  --ui-error-color: #be1a20;
+  --ui-warning-color: #fc0;
+
+  /* LAYOUT */
+  --menu-bar-height: 40px;
+  --divider-width: 10px;
+
+  /* Z-INDEX SCALE */
+  --z01: 100;
+  --z02: 200;
+  --z03: 300;
+  --z04: 410; /* Leaflet overlays are at 400. Our z-level of 4 has higher priority than the map. */
+  --z05: 500;
+  --z06: 600;
+  --z07: 800; /* Leaflet markers at 600, popups at 700. */
+  --z08: 1000;
+  --z09: 1100;
+  --z10: 1200;
+
+  /**
+   *  Z-INDEX COMPONENTS
+   *  Variables are assigned to scale, above.
+   *  These are kept here so you can quickly ascertain
+   *  the hierarchy of elements.
+   *  They are also named with the scale position so that
+   *  when they are referenced in other CSS files, their
+   *  z-scale position is also obvious at a glance.
+   *  Please note, the z-index scale does not defeat limitations
+   *  imposed by stacking contexts.
+   */
+  /* 01: Anything that needs to be on a z-index > 0 || auto */
+  /* Sometimes an element only needs z01 within its own stacking context */
+  --z01-colorpalette: var(--z01);
+  --z01-filedrop: var(--z01);
+  --z01-modal: var(--z01);
+  --z01-sandbox: var(--z01);
+  --z01-divider: var(--z01);
+
+  /* 04: Anything that should display on top of Leaflet overlays */
+  --z04-map-toolbar: var(--z04);
+  --z04-map-inspection: var(--z04);
+  --z04-map-loading: var(--z04);
+  --z04-camera: var(--z04);
+
+  /* 05: Above all map UI, below all other UI */
+  --z05-map-not-loaded: var(--z05);
+
+  /* 07: Anything that should display on top of all Leaflet elements */
+  --z07-menu: var(--z07);
+
+  /* 08: Overlays */
+  --z08-overlay: var(--z08);
+
+  /* 09-10: Anything that demands absolutely the highest priority */
+  --z09-pickers: var(--z09);
+  --z09-tooltip: var(--z09);
+  --z09-context-menu: var(--z09);
+  --z10-dropdown-button: var(--z10);
+  --z10-mobile-message: var(--z10);
+}
