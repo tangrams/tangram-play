@@ -105,7 +105,7 @@
   --ui-highlight-color: var(--mz-pink-3);
   --ui-highlight-color-2: rgb(221, 221, 0);
   --ui-component-text-color: white;
-  --ui-link-text-color: #e1eeee;
+  --ui-link-text-color: var(--mz-purple-3);
   --ui-subtext-color: #c0c6c6;
   --ui-unnamed-light-color: #999ca0;
   --ui-border-color: #1a1c1f;
@@ -116,7 +116,7 @@
   --ui-emboss-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
   --ui-modal-shadow: 0 0 6px 2px rgba(25, 25, 25, 0.25);
   --ui-tooltip-background-color: white;
-  --ui-tooltip-text-color: var(--mz-purple-1);
+  --ui-tooltip-text-color: var(--mz-darkpurple-1);
   --ui-error-color: #be1a20;
   --ui-warning-color: #fc0;
 

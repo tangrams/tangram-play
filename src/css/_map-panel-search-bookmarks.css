@@ -228,3 +228,7 @@
     margin: 0;
   }
 }
+
+.bt-star.icon-active {
+  font-weight: 600;
+}

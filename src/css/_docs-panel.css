@@ -68,8 +68,7 @@
 
 .docs-panel-collapsible {
   color: var(--ui-component-text-color);
-  /* background-color: var(--ui-component-color); */
-  background-color: #2e3033;
+  background-color: var(--ui-component-color);
   transform: translate(0, 0) !important; /* This is to prevent React Draggable from changing panel position */
 
   /* Ease in and out of doc panel */

@@ -1,5 +1,5 @@
 /* Works with Black Tie icons */
 .icon-active {
-  color: yellow !important;
+  color: var(--mz-purple-3) !important;
   font-weight: 700;
 }

@@ -49,7 +49,6 @@ button:first-of-type {
 
 button:hover {
   background-color: var(--ui-active-color);
-  color: var(--ui-highlight-color);
 }
 
 button:focus {
