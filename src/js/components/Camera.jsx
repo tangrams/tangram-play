@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import IconButton from './IconButton';
 import { takeScreenshot } from '../map/screenshot';
@@ -131,8 +132,8 @@ class Camera extends React.Component {
 }
 
 Camera.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  isVisible: React.PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
+  isVisible: PropTypes.bool,
 };
 
 Camera.defaultProps = {

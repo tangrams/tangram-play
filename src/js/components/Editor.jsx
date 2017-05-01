@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EventEmitter from './event-emitter';
 import EditorTabBar from './EditorTabBar';
@@ -140,10 +141,10 @@ class Editor extends React.PureComponent {
 }
 
 Editor.propTypes = {
-  sceneCounter: React.PropTypes.number.isRequired,
-  activeFile: React.PropTypes.number,
-  files: React.PropTypes.arrayOf(React.PropTypes.object),
-  fontSize: React.PropTypes.number.isRequired,
+  sceneCounter: PropTypes.number.isRequired,
+  activeFile: PropTypes.number,
+  files: PropTypes.arrayOf(PropTypes.object),
+  fontSize: PropTypes.number.isRequired,
 };
 
 Editor.defaultProps = {

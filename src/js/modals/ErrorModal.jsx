@@ -1,7 +1,8 @@
 import { noop } from 'lodash';
 import React from 'react';
-import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
@@ -64,15 +65,15 @@ class ErrorModal extends React.Component {
 }
 
 ErrorModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  modalId: PropTypes.number.isRequired,
 
   // Error message might be an Error object or a string
-  error: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.instanceOf(Error),
+  error: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(Error),
   ]).isRequired,
-  confirmFunction: React.PropTypes.func,
+  confirmFunction: PropTypes.func,
 };
 
 ErrorModal.defaultProps = {

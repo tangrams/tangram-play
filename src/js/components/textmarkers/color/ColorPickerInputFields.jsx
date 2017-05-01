@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 // Class essentially taken from 'react-color' https://github.com/casesandberg/react-color/blob/master/src/components/sketched/SketchFields.js
 
 import React from 'react';
@@ -71,8 +72,8 @@ export default class ColorPickerInputFields extends React.PureComponent {
 }
 
 ColorPickerInputFields.propTypes = {
-  color: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
-  onChange: React.PropTypes.func,
+  color: PropTypes.objectOf(PropTypes.any).isRequired,
+  onChange: PropTypes.func,
 };
 
 ColorPickerInputFields.defaultProps = {

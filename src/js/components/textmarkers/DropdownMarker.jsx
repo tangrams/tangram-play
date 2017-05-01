@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
@@ -135,13 +136,13 @@ export default class DropdownMarker extends React.Component {
 }
 
 DropdownMarker.propTypes = {
-  marker: React.PropTypes.shape({
-    find: React.PropTypes.func,
+  marker: PropTypes.shape({
+    find: PropTypes.func,
   }).isRequired,
-  keyName: React.PropTypes.string.isRequired,
-  options: React.PropTypes.arrayOf(React.PropTypes.string),
-  source: React.PropTypes.string.isRequired,
-  initialValue: React.PropTypes.string.isRequired,
+  keyName: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string),
+  source: PropTypes.string.isRequired,
+  initialValue: PropTypes.string.isRequired,
 };
 
 DropdownMarker.defaultProps = {

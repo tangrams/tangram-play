@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Represents an icon that receives a 'type' prop indicating how it should look
@@ -22,9 +23,9 @@ export default function Icon(props) {
 }
 
 Icon.propTypes = {
-  type: React.PropTypes.string.isRequired,
-  className: React.PropTypes.string,
-  active: React.PropTypes.bool,
+  type: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  active: PropTypes.bool,
 };
 
 Icon.defaultProps = {

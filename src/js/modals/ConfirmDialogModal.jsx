@@ -1,7 +1,8 @@
 import { noop } from 'lodash';
 import React from 'react';
-import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
@@ -80,14 +81,14 @@ class ConfirmDialogModal extends React.Component {
 }
 
 ConfirmDialogModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  modalId: PropTypes.number.isRequired,
 
   // Error message might be an Error object or a string
-  message: React.PropTypes.string.isRequired,
-  confirmCallback: React.PropTypes.func,
-  cancelCallback: React.PropTypes.func,
-  focusConfirm: React.PropTypes.bool,
+  message: PropTypes.string.isRequired,
+  confirmCallback: PropTypes.func,
+  cancelCallback: PropTypes.func,
+  focusConfirm: PropTypes.bool,
 };
 
 ConfirmDialogModal.defaultProps = {

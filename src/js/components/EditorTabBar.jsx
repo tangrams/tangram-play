@@ -1,5 +1,6 @@
 import { noop } from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EditorTabs from './EditorTabs';
 import IconButton from './IconButton';
@@ -49,10 +50,10 @@ class EditorTabBar extends React.PureComponent {
 
 EditorTabBar.propTypes = {
   // Injected by `mapStateToProps`
-  disabled: React.PropTypes.bool,
+  disabled: PropTypes.bool,
 
   // Injected by `mapDispatchToProps`
-  showEditorHiddenTooltip: React.PropTypes.func.isRequired,
+  showEditorHiddenTooltip: PropTypes.func.isRequired,
 };
 
 EditorTabBar.defaultProps = {

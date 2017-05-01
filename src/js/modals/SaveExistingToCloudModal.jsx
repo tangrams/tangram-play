@@ -2,6 +2,7 @@
  * Confirmation dialog box for saving over a existing scene to the Mapzen Scene API.
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
@@ -154,11 +155,11 @@ class SaveExistingToCloudModal extends React.Component {
 }
 
 SaveExistingToCloudModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number.isRequired,
-  scene: React.PropTypes.shape({
-    id: React.PropTypes.number,
-    entrypoint_url: React.PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  modalId: PropTypes.number.isRequired,
+  scene: PropTypes.shape({
+    id: PropTypes.number,
+    entrypoint_url: PropTypes.string,
   }).isRequired,
 };
 

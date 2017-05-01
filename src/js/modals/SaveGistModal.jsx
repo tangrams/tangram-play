@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import localforage from 'localforage';
@@ -267,8 +268,8 @@ class SaveGistModal extends React.Component {
 }
 
 SaveGistModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  modalId: PropTypes.number.isRequired,
 };
 
 export default connect()(SaveGistModal);

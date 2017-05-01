@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * If username is not provided, infer one from e-mail address. If no e-mail
@@ -52,11 +53,11 @@ export default function UserAvatar(props) {
 }
 
 UserAvatar.propTypes = {
-  user: React.PropTypes.shape({
-    nickname: React.PropTypes.string,
-    email: React.PropTypes.string,
-    avatar: React.PropTypes.string,
-    admin: React.PropTypes.bool,
+  user: PropTypes.shape({
+    nickname: PropTypes.string,
+    email: PropTypes.string,
+    avatar: PropTypes.string,
+    admin: PropTypes.bool,
   }).isRequired,
 };
 

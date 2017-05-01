@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class SceneItem extends React.Component {
   render() {
@@ -27,10 +28,10 @@ export default class SceneItem extends React.Component {
 }
 
 SceneItem.propTypes = {
-  thumbnail: React.PropTypes.string.isRequired,
-  name: React.PropTypes.string.isRequired,
-  description: React.PropTypes.string,
-  date: React.PropTypes.string,
+  thumbnail: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  date: PropTypes.string,
 };
 
 SceneItem.defaultProps = {

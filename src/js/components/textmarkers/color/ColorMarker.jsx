@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -214,24 +215,24 @@ export default class ColorMarker extends React.Component {
 }
 
 ColorMarker.propTypes = {
-  marker: React.PropTypes.shape({
-    find: React.PropTypes.func,
+  marker: PropTypes.shape({
+    find: PropTypes.func,
   }).isRequired,
   // The value may be a string, or an array of string values.
-  value: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.arrayOf(React.PropTypes.string),
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
   ]).isRequired,
   // These props are only used for GLSL pickers within the shader blocks
-  shader: React.PropTypes.bool,
-  cursor: React.PropTypes.shape({
-    line: React.PropTypes.number,
+  shader: PropTypes.bool,
+  cursor: PropTypes.shape({
+    line: PropTypes.number,
   }).isRequired,
-  match: React.PropTypes.shape({
-    start: React.PropTypes.number,
-    end: React.PropTypes.number,
+  match: PropTypes.shape({
+    start: PropTypes.number,
+    end: PropTypes.number,
   }).isRequired,
-  vec: React.PropTypes.string.isRequired,
+  vec: PropTypes.string.isRequired,
 };
 
 ColorMarker.defaultProps = {

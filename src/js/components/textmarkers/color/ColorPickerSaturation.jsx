@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 // Component borrowed & modified from https://github.com/casesandberg/react-color/blob/master/src/components/common/Saturation.js
 import React from 'react';
 
@@ -159,9 +160,9 @@ export default class ColorPickerSaturation extends React.Component {
 }
 
 ColorPickerSaturation.propTypes = {
-  hue: React.PropTypes.number.isRequired,
-  color: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
-  onChange: React.PropTypes.func,
+  hue: PropTypes.number.isRequired,
+  color: PropTypes.objectOf(PropTypes.any).isRequired,
+  onChange: PropTypes.func,
 };
 
 ColorPickerSaturation.defaultProps = {

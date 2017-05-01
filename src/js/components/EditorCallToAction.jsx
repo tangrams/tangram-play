@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // Redux
@@ -48,8 +49,8 @@ class EditorCallToAction extends React.PureComponent {
 }
 
 EditorCallToAction.propTypes = {
-  appInitialized: React.PropTypes.bool,
-  files: React.PropTypes.arrayOf(React.PropTypes.object),
+  appInitialized: PropTypes.bool,
+  files: PropTypes.arrayOf(PropTypes.object),
 };
 
 EditorCallToAction.defaultProps = {

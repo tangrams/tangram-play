@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/lib/Button';
@@ -96,9 +97,9 @@ class SaveGistSuccessModal extends React.Component {
 }
 
 SaveGistSuccessModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  urlValue: React.PropTypes.string.isRequired,
-  modalId: React.PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  urlValue: PropTypes.string.isRequired,
+  modalId: PropTypes.number.isRequired,
 };
 
 export default connect()(SaveGistSuccessModal);

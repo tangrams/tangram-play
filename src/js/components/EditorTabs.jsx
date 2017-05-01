@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Icon from './Icon';
 import {
@@ -121,18 +122,18 @@ class EditorTabs extends React.PureComponent {
 
 EditorTabs.propTypes = {
   // Injected by `mapStateToProps`
-  activeTab: React.PropTypes.number,
-  mainTab: React.PropTypes.number,
-  files: React.PropTypes.arrayOf(React.PropTypes.object),
-  justOpened: React.PropTypes.bool.isRequired,
-  saved: React.PropTypes.bool.isRequired,
+  activeTab: PropTypes.number,
+  mainTab: PropTypes.number,
+  files: PropTypes.arrayOf(PropTypes.object),
+  justOpened: PropTypes.bool.isRequired,
+  saved: PropTypes.bool.isRequired,
 
   // Injected by `mapDispatchToProps`
-  setActiveFile: React.PropTypes.func.isRequired,
-  removeFile: React.PropTypes.func.isRequired,
-  closeScene: React.PropTypes.func.isRequired,
-  setFileMetadata: React.PropTypes.func.isRequired,
-  stashDoc: React.PropTypes.func.isRequired,
+  setActiveFile: PropTypes.func.isRequired,
+  removeFile: PropTypes.func.isRequired,
+  closeScene: PropTypes.func.isRequired,
+  setFileMetadata: PropTypes.func.isRequired,
+  stashDoc: PropTypes.func.isRequired,
 };
 
 EditorTabs.defaultProps = {

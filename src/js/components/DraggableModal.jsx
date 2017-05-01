@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 import ModalDialog from 'react-bootstrap/lib/ModalDialog';
 
@@ -25,6 +26,6 @@ export default class DraggableModal extends React.PureComponent {
 }
 
 DraggableModal.propTypes = {
-  x: React.PropTypes.number.isRequired,
-  y: React.PropTypes.number.isRequired,
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
 };
