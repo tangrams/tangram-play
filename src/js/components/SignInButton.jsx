@@ -6,6 +6,7 @@ import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Icon from './Icon';
+import UserAvatar from './UserAvatar';
 
 import EventEmitter from './event-emitter';
 import { showErrorModal } from '../modals/ErrorModal';
@@ -74,41 +75,13 @@ class SignInButton extends React.Component {
   //   >  You "log on" or "log out" of a operating system session.
   // https://github.com/mapzen/styleguide/blob/master/src/site/guides/common-terms-and-conventions.md
   render() {
-    function getUserDisplayName(nickname, email) {
-      if (nickname) return nickname;
-      if (email) return email.split('@')[0];
-      return 'Anonymous';
-    }
+    const user = this.props.user;
 
-    function getAvatarComponent(imageUrl, displayName) {
-      if (imageUrl) {
-        return (<img
-          src={imageUrl}
-          className="avatar"
-          alt={displayName}
-        />);
-      }
-
-      return <div className="avatar avatar-blank" />;
-    }
-
-    if (this.props.signedIn) {
-      const displayName = getUserDisplayName(this.props.nickname, this.props.email);
-      const AvatarImage = getAvatarComponent(this.props.avatar, displayName);
-      const AdminStar = (this.props.admin === true) ?
-        <span className="avatar-admin-star">★</span> :
-        null;
-
-      const ButtonContents = (
-        <span>
-          {AvatarImage}
-          {displayName}
-          {AdminStar}
-        </span>
-      );
+    if (user.signedIn) {
+      const ButtonContents = <UserAvatar user={user} />;
 
       let tooltipContents = 'This is you!';
-      if (this.props.admin === true) {
+      if (user.admin === true) {
         tooltipContents = '★ You are an admin.';
       }
 
@@ -130,7 +103,7 @@ class SignInButton extends React.Component {
           </NavDropdown>
         </OverlayTrigger>
       );
-    } else if ((this.state.serverContacted && !this.props.signedIn) || this.state.authDisabled) {
+    } else if ((this.state.serverContacted && !user.signedIn) || this.state.authDisabled) {
       // Logged out state. Only display if server is contacted and has confirmed
       // no user is logged in. This is to prevent this button from having a
       // "Sign in" momentarily flash before the sign-in-state API is contacted.
@@ -164,11 +137,13 @@ class SignInButton extends React.Component {
 }
 
 SignInButton.propTypes = {
-  signedIn: React.PropTypes.bool.isRequired,
-  nickname: React.PropTypes.string,
-  email: React.PropTypes.string,
-  avatar: React.PropTypes.string,
-  admin: React.PropTypes.bool,
+  user: React.PropTypes.shape({
+    signedIn: React.PropTypes.bool.isRequired,
+    nickname: React.PropTypes.string,
+    email: React.PropTypes.string,
+    avatar: React.PropTypes.string,
+    admin: React.PropTypes.bool,
+  }),
   system: React.PropTypes.shape({
     mapzen: React.PropTypes.bool,
     ssl: React.PropTypes.bool,
@@ -176,19 +151,15 @@ SignInButton.propTypes = {
 };
 
 SignInButton.defaultProps = {
-  nickname: '',
-  email: '',
-  avatar: '',
-  admin: false,
+  user: {
+    signedIn: false,
+    admin: false,
+  },
 };
 
 function mapStateToProps(state) {
   return {
-    signedIn: state.user.signedIn,
-    nickname: state.user.nickname,
-    email: state.user.email,
-    avatar: state.user.avatar,
-    admin: state.user.admin,
+    user: state.user,
     system: state.system,
   };
 }
