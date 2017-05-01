@@ -8,7 +8,7 @@ import React from 'react';
  * @param {string} email - User e-mail address (if available)
  * @return {string}
  */
-function getUserDisplayName(nickname, email) {
+function getDisplayName(nickname, email) {
   if (nickname) return nickname;
   if (email) return email.split('@')[0];
   return 'Anonymous';
@@ -18,14 +18,14 @@ function getUserDisplayName(nickname, email) {
  * Returns an <img> component if an image url is provided, or an empty <div>
  * if there is no image url.
  *
- * @param {string} imageUrl - absolute URL to image
+ * @param {string} url - absolute URL to image
  * @return {React.Component}
  */
-function getAvatarImage(imageUrl) {
-  if (imageUrl) {
+function getImageElement(url) {
+  if (url) {
     // Alt text is blank because the display name will also be displayed by the image.
     return (<img
-      src={imageUrl}
+      src={url}
       className="avatar"
       alt=""
     />);
@@ -36,17 +36,17 @@ function getAvatarImage(imageUrl) {
 
 export default function UserAvatar(props) {
   const user = props.user;
-  const displayName = getUserDisplayName(user.nickname, user.email);
-  const AvatarImage = getAvatarImage(user.avatar);
-  const AdminStar = (user.admin === true) ?
+  const displayName = getDisplayName(user.nickname, user.email);
+  const imageElement = getImageElement(user.avatar);
+  const adminStarElement = (user.admin === true) ?
     <span className="avatar-admin-star">★</span> :
     null;
 
   return (
     <span>
-      {AvatarImage}
+      {imageElement}
       {displayName}
-      {AdminStar}
+      {adminStarElement}
     </span>
   );
 }
