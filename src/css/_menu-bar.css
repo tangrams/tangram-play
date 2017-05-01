@@ -205,7 +205,7 @@ nav {
   }
 }
 
-.sign-in-avatar {
+.avatar {
   display: inline-block;
   margin-right: 0.5em;
   margin-top: -3px;
@@ -215,7 +215,13 @@ nav {
   vertical-align: middle;
 }
 
-.sign-in-admin-star {
+.avatar-blank {
+  border: 1px solid white;
+  width: 18px;
+  height: 18px;
+}
+
+.avatar-admin-star {
   position: relative;
   margin-left: 0.15em;
   color: lightgoldenrodyellow;
