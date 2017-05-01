@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import FloatingPanel from '../FloatingPanel';
 
 import { getDevicePixelRatio } from '../../tools/helpers';
@@ -284,16 +285,16 @@ export default class NumberPicker extends React.Component {
 }
 
 NumberPicker.propTypes = {
-  display: React.PropTypes.bool.isRequired,
-  cursor: React.PropTypes.shape({
-    line: React.PropTypes.number,
+  display: PropTypes.bool.isRequired,
+  cursor: PropTypes.shape({
+    line: PropTypes.number,
   }).isRequired,
-  match: React.PropTypes.shape({
-    start: React.PropTypes.number,
-    end: React.PropTypes.number,
+  match: PropTypes.shape({
+    start: PropTypes.number,
+    end: PropTypes.number,
   }).isRequired,
-  value: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.number,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
   ]).isRequired,
 };

@@ -1,6 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Clipboard from 'clipboard';
 
@@ -107,12 +108,12 @@ class ShareHostedMapModal extends React.Component {
 }
 
 ShareHostedMapModal.propTypes = {
-  urlValue: React.PropTypes.string.isRequired,
+  urlValue: PropTypes.string.isRequired,
 };
 
 ShareHostedMapModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  modalId: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {

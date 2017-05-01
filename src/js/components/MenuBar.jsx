@@ -1,5 +1,6 @@
 import localforage from 'localforage';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Navbar from 'react-bootstrap/lib/Navbar';
@@ -492,11 +493,11 @@ class MenuBar extends React.Component {
 }
 
 MenuBar.propTypes = {
-  isMapzenHosted: React.PropTypes.bool,
-  userSignedIn: React.PropTypes.bool.isRequired,
-  system: React.PropTypes.shape({
-    mapzen: React.PropTypes.bool,
-    ssl: React.PropTypes.bool,
+  isMapzenHosted: PropTypes.bool,
+  userSignedIn: PropTypes.bool.isRequired,
+  system: PropTypes.shape({
+    mapzen: PropTypes.bool,
+    ssl: PropTypes.bool,
   }).isRequired,
 };
 

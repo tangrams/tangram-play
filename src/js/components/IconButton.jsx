@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 // Test: not using the React-Bootstrap <Button> component
@@ -44,12 +45,12 @@ export default function IconButton(props) {
 }
 
 IconButton.propTypes = {
-  className: React.PropTypes.string,
-  icon: React.PropTypes.string.isRequired,
-  active: React.PropTypes.bool,
-  tooltip: React.PropTypes.string,
-  tooltipPlacement: React.PropTypes.string,
-  buttonRef: React.PropTypes.func,
+  className: PropTypes.string,
+  icon: PropTypes.string.isRequired,
+  active: PropTypes.bool,
+  tooltip: PropTypes.string,
+  tooltipPlacement: PropTypes.string,
+  buttonRef: PropTypes.func,
 };
 
 IconButton.defaultProps = {

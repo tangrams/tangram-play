@@ -1,6 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 // NOTE: array index is safe here because the data is never recomputed or changed.
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
 import Panel from 'react-bootstrap/lib/Panel';
@@ -287,9 +288,9 @@ class DocsPanel extends React.Component {
 }
 
 DocsPanel.propTypes = {
-  admin: React.PropTypes.bool,
-  dispatch: React.PropTypes.func.isRequired,
-  height: React.PropTypes.number,
+  admin: PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
+  height: PropTypes.number,
 };
 
 DocsPanel.defaultProps = {

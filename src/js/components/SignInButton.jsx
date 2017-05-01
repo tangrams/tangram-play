@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
@@ -137,16 +138,16 @@ class SignInButton extends React.Component {
 }
 
 SignInButton.propTypes = {
-  user: React.PropTypes.shape({
-    signedIn: React.PropTypes.bool.isRequired,
-    nickname: React.PropTypes.string,
-    email: React.PropTypes.string,
-    avatar: React.PropTypes.string,
-    admin: React.PropTypes.bool,
+  user: PropTypes.shape({
+    signedIn: PropTypes.bool.isRequired,
+    nickname: PropTypes.string,
+    email: PropTypes.string,
+    avatar: PropTypes.string,
+    admin: PropTypes.bool,
   }),
-  system: React.PropTypes.shape({
-    mapzen: React.PropTypes.bool,
-    ssl: React.PropTypes.bool,
+  system: PropTypes.shape({
+    mapzen: PropTypes.bool,
+    ssl: PropTypes.bool,
   }).isRequired,
 };
 

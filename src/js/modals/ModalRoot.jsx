@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // Import all modals here
@@ -52,7 +53,7 @@ const ModalRoot = ({ stack }) => {
 };
 
 ModalRoot.propTypes = {
-  stack: React.PropTypes.arrayOf(React.PropTypes.object),
+  stack: PropTypes.arrayOf(PropTypes.object),
 };
 
 ModalRoot.defaultProps = {

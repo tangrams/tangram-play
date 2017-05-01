@@ -15,7 +15,7 @@ dependencies:
   cache_directories:
     - ~/.yarn-cache
   override:
-    - yarn install
+    - yarn install --ignore-optional
 
 test:
   override:

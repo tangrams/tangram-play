@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Checkbox from 'react-bootstrap/lib/Checkbox';
 import { setCodeMirrorValue } from '../../editor/editor';
@@ -42,8 +43,8 @@ export default class BooleanMarker extends React.Component {
 }
 
 BooleanMarker.propTypes = {
-  marker: React.PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-  value: React.PropTypes.string.isRequired,
+  marker: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  value: PropTypes.string.isRequired,
 };
 
 BooleanMarker.defaultProps = {

@@ -3,6 +3,7 @@
  * This just creates a panel to display all of them.
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
 
@@ -87,7 +88,7 @@ class ErrorsPanel extends React.Component {
 }
 
 ErrorsPanel.propTypes = {
-  errors: React.PropTypes.arrayOf(React.PropTypes.object),
+  errors: PropTypes.arrayOf(PropTypes.object),
 };
 
 ErrorsPanel.defaultProps = {

@@ -1,4 +1,5 @@
 import THREE from 'three';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import FloatingPanel from '../../FloatingPanel';
@@ -224,5 +225,5 @@ export default class VectorPicker extends React.Component {
 
 VectorPicker.propTypes = {
   // Pass through object; types do not matter here.
-  marker: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
+  marker: PropTypes.objectOf(PropTypes.any).isRequired,
 };

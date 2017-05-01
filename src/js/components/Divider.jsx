@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 import { connect } from 'react-redux';
 import EventEmitter from './event-emitter';
@@ -165,7 +166,7 @@ class Divider extends React.Component {
 
 Divider.propTypes = {
   // dispatch: React.PropTypes.func.isRequired,
-  posX: React.PropTypes.number.isRequired,
+  posX: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {

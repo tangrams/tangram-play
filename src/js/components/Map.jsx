@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EventEmitter from './event-emitter';
 import MapPanel from './MapPanel';
@@ -84,13 +85,13 @@ class Map extends React.Component {
 }
 
 Map.propTypes = {
-  app: React.PropTypes.shape({
-    initialized: React.PropTypes.bool,
-    mapNotLoaded: React.PropTypes.bool,
+  app: PropTypes.shape({
+    initialized: PropTypes.bool,
+    mapNotLoaded: PropTypes.bool,
   }).isRequired,
-  scene: React.PropTypes.shape({
-    counter: React.PropTypes.number,
-    files: React.PropTypes.array,
+  scene: PropTypes.shape({
+    counter: PropTypes.number,
+    files: PropTypes.array,
   }).isRequired,
 };
 

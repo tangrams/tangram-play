@@ -1,6 +1,7 @@
 import { template } from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Clipboard from 'clipboard';
 import Button from 'react-bootstrap/lib/Button';
@@ -249,10 +250,10 @@ class CodeSnippetModal extends React.PureComponent {
 }
 
 CodeSnippetModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number.isRequired,
-  scene: React.PropTypes.shape({
-    entrypoint_url: React.PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  modalId: PropTypes.number.isRequired,
+  scene: PropTypes.shape({
+    entrypoint_url: PropTypes.string,
   }),
 };
 

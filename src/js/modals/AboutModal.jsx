@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import CodeMirror from 'codemirror';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import VERSION from '../version.json';
@@ -59,8 +60,8 @@ class AboutModal extends React.PureComponent {
 }
 
 AboutModal.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  modalId: React.PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  modalId: PropTypes.number.isRequired,
 };
 
 export default connect()(AboutModal);

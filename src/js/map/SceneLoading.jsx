@@ -4,6 +4,7 @@
  * event callback, or on Tangram error.
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 function SceneLoading(props) {
@@ -16,7 +17,7 @@ function SceneLoading(props) {
 }
 
 SceneLoading.propTypes = {
-  loading: React.PropTypes.bool,
+  loading: PropTypes.bool,
 };
 
 SceneLoading.defaultProps = {

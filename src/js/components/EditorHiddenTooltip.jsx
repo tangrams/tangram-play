@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // Redux
@@ -76,9 +77,9 @@ class EditorHiddenTooltip extends React.Component {
 }
 
 EditorHiddenTooltip.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  dividerPositionX: React.PropTypes.number,
-  showEditorHiddenTooltip: React.PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
+  dividerPositionX: PropTypes.number,
+  showEditorHiddenTooltip: PropTypes.bool,
 };
 
 EditorHiddenTooltip.defaultProps = {

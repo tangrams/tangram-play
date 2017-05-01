@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 
@@ -48,8 +49,8 @@ class SignInOverlay extends React.Component {
 }
 
 SignInOverlay.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  visible: React.PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
+  visible: PropTypes.bool,
 };
 
 SignInOverlay.defaultProps = {

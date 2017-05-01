@@ -7,6 +7,7 @@
  * the child <Editor> component.
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EventEmitter from './event-emitter';
 import Editor from './Editor';
@@ -64,7 +65,7 @@ class EditorPane extends React.PureComponent {
 }
 
 EditorPane.propTypes = {
-  dividerPositionX: React.PropTypes.number.isRequired,
+  dividerPositionX: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {

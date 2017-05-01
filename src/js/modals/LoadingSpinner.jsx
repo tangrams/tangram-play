@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '../components/Icon';
 
 export default function LoadingSpinner(props) {
@@ -16,8 +17,8 @@ export default function LoadingSpinner(props) {
 }
 
 LoadingSpinner.propTypes = {
-  on: React.PropTypes.bool,
-  msg: React.PropTypes.string,
+  on: PropTypes.bool,
+  msg: PropTypes.string,
 };
 
 LoadingSpinner.defaultProps = {

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 
 export default class Modal extends React.Component {
@@ -99,12 +100,12 @@ export default class Modal extends React.Component {
 }
 
 Modal.propTypes = {
-  children: React.PropTypes.node.isRequired,
-  className: React.PropTypes.string,
-  disableEsc: React.PropTypes.bool,
-  cancelFunction: React.PropTypes.func,
-  confirmFunction: React.PropTypes.func,
-  setRef: React.PropTypes.func,
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  disableEsc: PropTypes.bool,
+  cancelFunction: PropTypes.func,
+  confirmFunction: PropTypes.func,
+  setRef: PropTypes.func,
 };
 
 Modal.defaultProps = {

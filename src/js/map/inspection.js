@@ -5,6 +5,7 @@ import { upperFirst } from 'lodash';
 import L from 'leaflet';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import { map, tangramLayer } from './map';
 import { editor } from '../editor/editor';
 import { getNodeAtKeyAddress } from '../editor/yaml-ast';
@@ -108,8 +109,8 @@ class TangramInspectionHeader extends React.Component {
 }
 
 TangramInspectionHeader.propTypes = {
-  feature: React.PropTypes.shape({
-    properties: React.PropTypes.object,
+  feature: PropTypes.shape({
+    properties: PropTypes.object,
   }).isRequired,
 };
 
@@ -159,9 +160,9 @@ class TangramInspectionHover extends React.Component {
 }
 
 TangramInspectionHover.propTypes = {
-  selection: React.PropTypes.shape({
-    feature: React.PropTypes.object,
-    pixel: React.PropTypes.object,
+  selection: PropTypes.shape({
+    feature: PropTypes.object,
+    pixel: PropTypes.object,
   }).isRequired,
 };
 
@@ -343,8 +344,8 @@ class TangramInspectionPopup extends React.Component {
 }
 
 TangramInspectionPopup.propTypes = {
-  selection: React.PropTypes.shape({
-    feature: React.PropTypes.object,
+  selection: PropTypes.shape({
+    feature: PropTypes.object,
   }).isRequired,
 };
 

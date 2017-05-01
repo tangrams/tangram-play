@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/lib/Modal';
 import DraggableModal from './DraggableModal';
 
@@ -96,14 +97,14 @@ export default class FloatingPanel extends React.Component {
 }
 
 FloatingPanel.propTypes = {
-  x: React.PropTypes.number.isRequired,
-  y: React.PropTypes.number.isRequired,
-  height: React.PropTypes.number.isRequired,
-  width: React.PropTypes.number.isRequired,
-  show: React.PropTypes.bool.isRequired,
-  onClickClose: React.PropTypes.func,
-  children: React.PropTypes.node.isRequired,
-  title: React.PropTypes.string.isRequired,
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  show: PropTypes.bool.isRequired,
+  onClickClose: PropTypes.func,
+  children: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 FloatingPanel.defaultProps = {

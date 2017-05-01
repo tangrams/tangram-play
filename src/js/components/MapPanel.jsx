@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Panel from 'react-bootstrap/lib/Panel';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
@@ -246,11 +247,11 @@ class MapPanel extends React.Component {
 }
 
 MapPanel.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  disabled: React.PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   // Whether panel should be open or not
-  open: React.PropTypes.bool,
-  cameraToolsVisible: React.PropTypes.bool,
+  open: PropTypes.bool,
+  cameraToolsVisible: PropTypes.bool,
 };
 
 MapPanel.defaultProps = {

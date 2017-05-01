@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Draggable from 'react-draggable';
 
@@ -113,7 +114,7 @@ class Globey extends React.Component {
 }
 
 Globey.propTypes = {
-  active: React.PropTypes.bool.isRequired,
+  active: PropTypes.bool.isRequired,
 };
 
 Globey.defaultProps = {

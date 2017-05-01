@@ -1,6 +1,7 @@
 /* eslint-disable react/sort-comp */
 import { throttle } from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
 import Autosuggest from 'react-autosuggest';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import IconButton from './IconButton';
@@ -523,8 +524,8 @@ export default class MapPanelLocationBar extends React.Component {
 }
 
 MapPanelLocationBar.propTypes = {
-  geolocateActive: React.PropTypes.shape({
-    active: React.PropTypes.bool,
-    latlng: React.PropTypes.object,
+  geolocateActive: PropTypes.shape({
+    active: PropTypes.bool,
+    latlng: PropTypes.object,
   }).isRequired,
 };

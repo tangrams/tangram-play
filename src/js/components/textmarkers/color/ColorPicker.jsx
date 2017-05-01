@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 // Class essentially taken from 'react-color': https://github.com/casesandberg/react-color/blob/master/src/components/sketched/Sketch.js
 import React from 'react';
 import { Hue, Alpha, Checkboard } from 'react-color/lib/components/common';
@@ -108,8 +109,8 @@ export default class ColorPicker extends React.Component {
 }
 
 ColorPicker.propTypes = {
-  color: React.PropTypes.objectOf(React.PropTypes.any).isRequired,
-  onChange: React.PropTypes.func,
+  color: PropTypes.objectOf(PropTypes.any).isRequired,
+  onChange: PropTypes.func,
 };
 
 ColorPicker.defaultProps = {

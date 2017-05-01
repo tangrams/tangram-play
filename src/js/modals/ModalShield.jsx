@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 function ModalShield(props) {
@@ -10,7 +11,7 @@ function ModalShield(props) {
 }
 
 ModalShield.propTypes = {
-  stack: React.PropTypes.arrayOf(React.PropTypes.any),
+  stack: PropTypes.arrayOf(PropTypes.any),
 };
 
 ModalShield.defaultProps = {
