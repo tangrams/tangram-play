@@ -118,7 +118,6 @@
     "lodash": "4.17.4",
     "raven-js": "3.14.2",
     "react": "15.5.4",
-    "react-addons-test-utils": "15.5.1",
     "react-autosuggest": "latest",
     "react-bootstrap": "0.31.0",
     "react-color": "2.11.7",
