@@ -247,12 +247,27 @@ export function getScalarNodesInRange(ast, fromIndex, toIndex, includeRefs = fal
           found = findNodes(item, start, end, found);
         }
         break;
-      // If `includeRefs` is `true`, add to the array if its value is a scalar.
+      // If `includeRefs` is `true`, add to the array if its value is a scalar or
+      // sequence of scalar values.
       case YAML_ANCHOR_REF:
         // `node.value` is `undefined` if a reference anchor refers to some
         // value that does not exist.
-        if (includeRefs && node.value && node.value.kind === YAML_SCALAR) {
-          found.push(node);
+        if (includeRefs && node.value) {
+          if (node.value.kind === YAML_SCALAR) {
+            found.push(node);
+          } else if (node.value.kind === YAML_SEQUENCE) {
+            const items = node.value.items;
+            let allScalar = true;
+            for (let i = 0, j = items.length; i < j; i++) {
+              if (items[i].kind !== YAML_SCALAR) {
+                allScalar = false;
+                break;
+              }
+            }
+            if (allScalar === true) {
+              found.push(node);
+            }
+          }
         }
         break;
       // Catch-all for unhandled node types: return accrued array as-is

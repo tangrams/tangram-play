@@ -177,12 +177,7 @@ function createAndRenderTextMarker(doc, node, mark) {
       // A color value may be a string or an array of values.
       const value = sourceNode.value || getValuesFromSequenceNode(sourceNode);
 
-      markerEl = (
-        <ColorMarker
-          marker={marker}
-          value={value}
-        />
-      );
+      markerEl = <ColorMarker marker={marker} value={value} />;
       break;
     }
     case 'string':
