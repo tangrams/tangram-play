@@ -37,7 +37,6 @@ function findAnchorRefParents(ast) {
         break;
       case YAML.Kind.SEQ:
         attachReferencesProperty(node);
-        // See if index falls in any of the sequence items
         for (let i = 0, j = node.items.length; i < j; i++) {
           const item = node.items[i];
 

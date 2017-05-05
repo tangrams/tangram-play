@@ -120,7 +120,7 @@ describe('YAML abstract syntax tree parser', () => {
     });
 
     it('returns all scalar nodes in document (including anchor references)', () => {
-      const nodes = getScalarNodesInRange(parsed.nodes, 0, parsed.nodes.endPosition, true);
+      const nodes = getScalarNodesInRange(parsed, 0, parsed.endPosition, true);
       assert.equal(nodes.length, 11);
     });
 
