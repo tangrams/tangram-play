@@ -1,11 +1,6 @@
 import { assert } from 'chai';
 import YAML from 'yaml-ast-parser';
 import {
-  YAML_SCALAR,
-  YAML_MAPPING,
-  // YAML_MAP,
-  YAML_SEQUENCE,
-  YAML_ANCHOR_REF,
   getScalarNodesInRange,
   getKeyAddressForNode,
   getKeyNameForNode,
@@ -52,29 +47,29 @@ describe('YAML abstract syntax tree parser', () => {
   describe('getNodeAtIndex()', () => {
     it('returns a mapping node', () => {
       const node = getNodeAtIndex(parsed, 1);
-      assert.equal(node.kind, YAML_MAPPING);
+      assert.equal(node.kind, YAML.Kind.MAPPING);
     });
 
     it('returns a sequence node', () => {
       const node = getNodeAtIndex(parsed, 13);
-      assert.equal(node.kind, YAML_SEQUENCE);
+      assert.equal(node.kind, YAML.Kind.SEQ);
     });
 
     it('returns a scalar node of a mapping parent node', () => {
       const node = getNodeAtIndex(parsed, 200);
-      assert.equal(node.kind, YAML_SCALAR);
-      assert.equal(node.parent.kind, YAML_MAPPING);
+      assert.equal(node.kind, YAML.Kind.SCALAR);
+      assert.equal(node.parent.kind, YAML.Kind.MAPPING);
     });
 
     it('returns a scalar node of a sequence parent node', () => {
       const node = getNodeAtIndex(parsed, 50);
-      assert.equal(node.kind, YAML_SCALAR);
-      assert.equal(node.parent.kind, YAML_SEQUENCE);
+      assert.equal(node.kind, YAML.Kind.SCALAR);
+      assert.equal(node.parent.kind, YAML.Kind.SEQ);
     });
 
     it('returns an anchor reference node', () => {
       const node = getNodeAtIndex(parsed, 517);
-      assert.equal(node.kind, YAML_ANCHOR_REF);
+      assert.equal(node.kind, YAML.Kind.ANCHOR_REF);
     });
 
     it('returns null if index does not correspond to a node', () => {
@@ -91,19 +86,19 @@ describe('YAML abstract syntax tree parser', () => {
   describe('getNodeAtKeyAddress()', () => {
     it('returns the mapping node for an address whose value is scalar', () => {
       const node = getNodeAtKeyAddress(parsed, 'sources:mapzen:url');
-      assert.equal(node.kind, YAML_MAPPING);
+      assert.equal(node.kind, YAML.Kind.MAPPING);
       assert.equal(node.key.value, 'url');
     });
 
     it('returns the mapping node for an address whose value is another map', () => {
       const node = getNodeAtKeyAddress(parsed, 'layers:earth');
-      assert.equal(node.kind, YAML_MAPPING);
+      assert.equal(node.kind, YAML.Kind.MAPPING);
       assert.equal(node.key.value, 'earth');
     });
 
     it('returns the mapping node for an address whose value is a sequence', () => {
       const node = getNodeAtKeyAddress(parsed, 'import');
-      assert.equal(node.kind, YAML_MAPPING);
+      assert.equal(node.kind, YAML.Kind.MAPPING);
       assert.equal(node.key.value, 'import');
     });
 
@@ -175,9 +170,9 @@ describe('YAML abstract syntax tree parser', () => {
 
     it('includes scalar nodes that are children of sequences', () => {
       const nodes = getScalarNodesInRange(parsed, 0, 90);
-      assert.equal(nodes[0].parent.kind, YAML_SEQUENCE);
-      assert.equal(nodes[1].parent.kind, YAML_SEQUENCE);
-      assert.equal(nodes[2].parent.kind, YAML_SEQUENCE);
+      assert.equal(nodes[0].parent.kind, YAML.Kind.SEQ);
+      assert.equal(nodes[1].parent.kind, YAML.Kind.SEQ);
+      assert.equal(nodes[2].parent.kind, YAML.Kind.SEQ);
       assert.equal(nodes[0].value, 'components/globals.yaml');
       assert.equal(nodes[1].value, 'styles/common.yaml');
       assert.equal(nodes[2].value, 'layers/water.yaml');

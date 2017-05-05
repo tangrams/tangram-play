@@ -1,31 +1,32 @@
+import YAML from 'yaml-ast-parser';
 import { addressFromKeyStack, keyStackFromAddress } from './codemirror/yaml-tangram';
 
 /*
 YAML node kinds are assigned a number by YAMLParser.
 
-SCALAR (type 0)
+SCALAR (type 0) - YAML.Kind.SCALAR
 This is the simplest node type. Its most important property is `value`, which
 is a string. It has no other child nodes. Its parent may be a MAPPING or a
 SEQUENCE node.
 
-MAPPING (type 1)
+MAPPING (type 1) - YAML.Kind.MAPPING
 This is a key-value pair. It contains a `key` property as well as a `value`
 property. Values are child nodes and can be a SCALAR, MAP, or a SEQUENCE node.
 Its parent node is a MAP.
 
-MAP (type 2)
+MAP (type 2) - YAML.Kind.MAP
 Similarly named to MAPPING, it is a related concept. The best way to think
 about this is that MAPS are collections of MAPPINGS. It does not have a `value`
 property but rather a `mappings` property which is an array of MAP nodes. Its
 parent is usually a MAPPING. At the top level of a Tangram YAML document, the
 root node (which has no parents) should be a MAP.
 
-SEQUENCE (type 3)
+SEQUENCE (type 3) - YAML.Kind.SEQ
 This node is an array of items. It does not have a `value` property but rather
 an `items` array of one or more YAML nodes. In Tangram YAML, child nodes are
 usually SCALARS.
 
-ANCHOR REFERENCE (type 4)
+ANCHOR REFERENCE (type 4) YAML.Kind.ANCHOR_REF
 This node is a reference to a previously defined anchor. (An anchor must already
 be defined earlier in a YAML document before it can be referenced by a later
 node.)  This node will have a `referencesAnchor` property, and its `value`
@@ -34,15 +35,9 @@ end position), so it's very easy to find again. Nodes that define an anchor
 will have an additional `anchorId` property (which will match `referencesAnchor`).
 Nodes that can have anchors include scalars, maps, and sequences.
 
-There is another node kind called INCLUDE_REF, but I don't know what that is
-and how it should be used.
+There is another node kind called YAML.Kind.INCLUDE_REF, but I don't know what
+that is and how it should be used.
 */
-export const YAML_SCALAR = 0;
-export const YAML_MAPPING = 1;
-export const YAML_MAP = 2;
-export const YAML_SEQUENCE = 3;
-export const YAML_ANCHOR_REF = 4;
-// export const YAML_INCLUDE_REF = 5;
 
 /**
  * Given a parsed syntax tree of YAML, and a position index, return
@@ -82,11 +77,11 @@ export function getNodeAtIndex(ast, index) {
 
     switch (node.kind) {
       // A scalar node has no further depth; return as is.
-      case YAML_SCALAR:
+      case YAML.Kind.SCALAR:
         return node;
-      case YAML_MAPPING:
+      case YAML.Kind.MAPPING:
         return searchNodes(node.value, idx);
-      case YAML_MAP:
+      case YAML.Kind.MAP:
         // Find the first node in node.mappings that contains idx and
         // continue searching
         for (let i = 0, j = node.mappings.length; i < j; i++) {
@@ -98,7 +93,7 @@ export function getNodeAtIndex(ast, index) {
           }
         }
         return null;
-      case YAML_SEQUENCE:
+      case YAML.Kind.SEQ:
         // See if index falls in any of the sequence items
         for (let i = 0, j = node.items.length; i < j; i++) {
           const item = node.items[i];
@@ -141,11 +136,11 @@ export function getNodeAtKeyAddress(ast, address) {
     switch (node.kind) {
       // A scalar node has no further depth; return its parent node, which
       // includes its key.
-      case YAML_SCALAR:
+      case YAML.Kind.SCALAR:
         return node.parent;
-      case YAML_MAPPING:
+      case YAML.Kind.MAPPING:
         return searchNodes(node.value, stack);
-      case YAML_MAP:
+      case YAML.Kind.MAP:
         // Find the first node in node.mappings that contains stack[0].
         // If found, remove from stack and continue searching with remainder
         // of the stack.
@@ -170,7 +165,7 @@ export function getNodeAtKeyAddress(ast, address) {
         return null;
       // A sequence node has no further depth (in Tangram YAML anyway);
       // return its parent node, which includes its key.
-      case YAML_SEQUENCE:
+      case YAML.Kind.SEQ:
         return node.parent;
       default:
         return null;
@@ -214,52 +209,52 @@ export function getScalarNodesInRange(ast, fromIndex, toIndex, includeRefs = fal
 
     switch (node.kind) {
       // A scalar node has no further depth; return as is.
-      case YAML_SCALAR:
+      case YAML.Kind.SCALAR:
         found.push(node);
         break;
-      case YAML_MAPPING:
+      case YAML.Kind.MAPPING:
         found = findNodes(node.value, start, end, initial);
         break;
-      case YAML_MAP:
+      case YAML.Kind.MAP:
         for (let i = 0, j = node.mappings.length; i < j; i++) {
           const mapping = node.mappings[i];
 
           // Can be null if document has errors
-          if (!mapping) continue; // eslint-disable-line no-continue
+          if (mapping) {
+            // Stop searching in mappings when we hit a node that lies outside range
+            if (node.endPosition < start || node.startPosition > end) break;
 
-          // Stop searching in mappings when we hit a node that lies outside range
-          if (node.endPosition < start || node.startPosition > end) break;
-
-          found = findNodes(mapping.value, start, end, found);
+            found = findNodes(mapping.value, start, end, found);
+          }
         }
         break;
-      case YAML_SEQUENCE:
+      case YAML.Kind.SEQ:
         // See if index falls in any of the sequence items
         for (let i = 0, j = node.items.length; i < j; i++) {
           const item = node.items[i];
 
           // Can be null if document has errors
-          if (!item) continue; // eslint-disable-line no-continue
+          if (item) {
+            // Stop searching in items when we hit a node that lies outside range
+            if (node.endPosition < start || node.startPosition > end) break;
 
-          // Stop searching in items when we hit a node that lies outside range
-          if (node.endPosition < start || node.startPosition > end) break;
-
-          found = findNodes(item, start, end, found);
+            found = findNodes(item, start, end, found);
+          }
         }
         break;
       // If `includeRefs` is `true`, add to the array if its value is a scalar or
       // sequence of scalar values.
-      case YAML_ANCHOR_REF:
+      case YAML.Kind.ANCHOR_REF:
         // `node.value` is `undefined` if a reference anchor refers to some
         // value that does not exist.
         if (includeRefs && node.value) {
-          if (node.value.kind === YAML_SCALAR) {
+          if (node.value.kind === YAML.Kind.SCALAR) {
             found.push(node);
-          } else if (node.value.kind === YAML_SEQUENCE) {
+          } else if (node.value.kind === YAML.Kind.SEQ) {
             const items = node.value.items;
             let allScalar = true;
             for (let i = 0, j = items.length; i < j; i++) {
-              if (items[i].kind !== YAML_SCALAR) {
+              if (items[i].kind !== YAML.Kind.SCALAR) {
                 allScalar = false;
                 break;
               }
@@ -295,7 +290,7 @@ export function getKeyAddressForNode(node) {
 
     // Add key's value to the current key stack.
     // Only accept scalar values for keys
-    if (currentNode.key && currentNode.key.kind === YAML_SCALAR) {
+    if (currentNode.key && currentNode.key.kind === YAML.Kind.SCALAR) {
       stack.push(currentNode.key.value);
     }
 
@@ -326,7 +321,7 @@ export function getKeyNameForNode(node) {
     if (!currentNode) return null;
 
     // If this node has a key, and it is a scalar value, return it
-    if (currentNode.key && currentNode.key.kind === YAML_SCALAR) {
+    if (currentNode.key && currentNode.key.kind === YAML.Kind.SCALAR) {
       return currentNode.key.value;
     }
 
@@ -382,7 +377,7 @@ export function getNodeLevel(node) {
     let returnLevel = level;
 
     // For each mapping the level stack is increased by one
-    if (currentNode.kind === YAML_MAPPING) {
+    if (currentNode.kind === YAML.Kind.MAPPING) {
       returnLevel += 1;
     }
 
@@ -452,11 +447,11 @@ export function getKeyValueOfNode(node) {
  * @returns {Array} values - array of scalar values.
  */
 export function getValuesFromSequenceNode(node) {
-  if (node.kind !== YAML_SEQUENCE) return [];
+  if (node.kind !== YAML.Kind.SEQ) return [];
 
   const items = [];
   node.items.forEach((item) => {
-    if (item.kind === YAML_SCALAR) {
+    if (item.kind === YAML.Kind.SCALAR) {
       items.push(item.value);
     }
   });
