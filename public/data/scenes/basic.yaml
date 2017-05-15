@@ -45,7 +45,7 @@ layers:
         tunnel:
             filter: {is_tunnel: true }
             draw:
-                roads:
+                lines:
                     order: 6
     buildings:
         data: { source: mapzen }
