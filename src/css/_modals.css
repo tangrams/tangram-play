@@ -23,6 +23,7 @@
 */
 .modal:not(.error-modal) {
   user-select: none;
+  cursor: default;
 }
 
 .modal-alt {
@@ -95,7 +96,10 @@
     font-size: 12px;
     margin-top: 16px;
     margin-bottom: 0;
+
+    /* Reset text selection state so that text is copy-pastable */
     user-select: auto;
+    cursor: auto;
   }
 }
 
