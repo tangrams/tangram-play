@@ -190,7 +190,7 @@ class OpenGistModal extends React.Component {
       <Modal
         className="modal-alt open-scene-modal"
         ref={(ref) => { this.component = ref; }}
-        cancelFunction={this.onClickClose}
+        cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
       >
         <h4>Open a previously saved Gist</h4>

@@ -38,15 +38,6 @@ export default class Modal extends React.Component {
   }
 
   /**
-   * Unmounts this component. Can be called by parent components using a ref.
-   *
-   * @public
-   */
-  unmount() {
-    ReactDOM.unmountComponentAtNode(this.el.parentNode);
-  }
-
-  /**
    * Stores reference to this modal's DOM node locally, and sends to parent
    * component if a callback function is provided.
    */
@@ -76,9 +67,6 @@ export default class Modal extends React.Component {
 
     if (this.props.cancelFunction !== noop) {
       this.props.cancelFunction(event);
-    } else {
-      // Without a cancel function handler, just unmount
-      this.unmount();
     }
   }
 

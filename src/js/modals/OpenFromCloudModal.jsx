@@ -174,7 +174,7 @@ class OpenFromCloudModal extends React.Component {
     return (
       <Modal
         className="modal-alt open-scene-modal"
-        cancelFunction={this.onClickClose}
+        cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
       >
         <h4>Open a saved scene from your Mapzen account</h4>
