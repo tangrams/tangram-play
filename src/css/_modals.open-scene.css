@@ -1,9 +1,9 @@
-.open-from-cloud-modal {
+.open-scene-modal {
   width: 600px;
   height: 600px;
 }
 
-.open-from-cloud-list {
+.open-scene-list {
   /* Ensure this fits within a variable-height modal.
      TODO: Don't use a magic number */
   height: calc(100% - 94px);
@@ -13,7 +13,7 @@
   background-color: var(--ui-component-color);
 }
 
-.open-from-cloud-option {
+.open-scene-option {
   display: flex;
   flex-direction: row;
   padding: 10px;
@@ -24,20 +24,20 @@
   }
 
   &:focus {
-    outline: none; /* Use .open-from-cloud-selected for focus state */
+    outline: none; /* Use .open-scene-selected for focus state */
   }
 
-  &.open-from-cloud-selected {
+  &.open-scene-selected {
     background-color: var(--ui-active-color);
   }
 
-  &.open-from-cloud-deleting {
+  &.open-scene-deleting {
     background-color: transparent;
   }
 }
 
 /* We need a container element for the image so we can highlight, see below */
-.open-from-cloud-option-thumbnail {
+.open-scene-option-thumbnail {
   position: relative;
   margin-right: 10px;
   line-height: 0; /* Removes baseline from image */
@@ -49,14 +49,14 @@
   }
 }
 
-.open-from-cloud-selected:not(.open-from-cloud-deleting) {
-  .open-from-cloud-option-name {
+.open-scene-selected:not(.open-scene-deleting) {
+  .open-scene-option-name {
     color: var(--ui-highlight-color);
   }
 }
 
 /* box-shadow is overlapped by the image, so a pseudo element puts it in the right place */
-.open-from-cloud-selected:not(.open-from-cloud-deleting) .open-from-cloud-option-thumbnail::after {
+.open-scene-selected:not(.open-scene-deleting) .open-scene-option-thumbnail::after {
   position: absolute;
   display: block;
   content: '';
@@ -68,49 +68,49 @@
   box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
 }
 
-.open-from-cloud-option-info {
+.open-scene-option-info {
   flex-grow: 1;
   margin-right: 10px;
   display: flex;
   flex-direction: column;
 }
 
-.open-from-cloud-option-name {
+.open-scene-option-name {
   line-height: 24px;
   font-size: 1.1em;
 }
 
-.open-from-cloud-option-description {
+.open-scene-option-description {
   line-height: 1.4;
   flex-grow: 1;
   color: var(--ui-subtext-color);
 }
 
-.open-from-cloud-option-date {
+.open-scene-option-date {
   font-size: 0.8em;
   color: var(--ui-subtext-color);
   /* Breathing room in case description gets too close to where the date output is. */
   margin-top: 0.5em;
 }
 
-.open-from-cloud-deleting {
+.open-scene-deleting {
   cursor: default;
 
-  .open-from-cloud-option-name,
-  .open-from-cloud-option-description,
-  .open-from-cloud-option-date {
+  .open-scene-option-name,
+  .open-scene-option-description,
+  .open-scene-option-date {
     color: gray;
   }
 
-  .open-from-cloud-option-thumbnail {
+  .open-scene-option-thumbnail {
     opacity: 0.35;
   }
 }
 
-.open-from-cloud-option-tasks {
+.open-scene-option-tasks {
   visibility: hidden;
 }
 
-.open-from-cloud-option:hover .open-from-cloud-option-tasks {
+.open-scene-option:hover .open-scene-option-tasks {
   visibility: visible;
 }

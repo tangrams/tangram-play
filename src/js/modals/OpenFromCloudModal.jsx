@@ -111,15 +111,15 @@ class OpenFromCloudModal extends React.Component {
 
     let sceneList = scenes.map((item, index) => {
       // If the scene is selected, a special class is applied later to it
-      let classString = 'open-from-cloud-option';
+      let classString = 'open-scene-option';
       let deleteButtonText = 'Delete';
 
       if (this.state.selected && this.state.selected.id === item.id) {
-        classString += ' open-from-cloud-selected';
+        classString += ' open-scene-selected';
       }
 
       if (this.state.beingDeleted && this.state.beingDeleted === item.id) {
-        classString += ' open-from-cloud-deleting';
+        classString += ' open-scene-deleting';
         deleteButtonText = 'Deleting...';
       }
 
@@ -136,24 +136,24 @@ class OpenFromCloudModal extends React.Component {
           onClick={(e) => { this.onClickSceneItem(e, item); }}
           onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
         >
-          <div className="open-from-cloud-option-thumbnail">
+          <div className="open-scene-option-thumbnail">
             <img src={item.thumbnail} alt="" />
           </div>
-          <div className="open-from-cloud-option-info">
-            <div className="open-from-cloud-option-name">
+          <div className="open-scene-option-info">
+            <div className="open-scene-option-name">
               {item.name}
             </div>
-            <div className="open-from-cloud-option-description">
+            <div className="open-scene-option-description">
               {item.description || 'No description provided.'}
             </div>
-            <div className="open-from-cloud-option-date">
+            <div className="open-scene-option-date">
               {/* Show the date this was saved.
                   TODO: better formatting;
                   maybe use moment.js */}
               Saved on {new Date(item.updated_at).toLocaleString()}
             </div>
           </div>
-          <div className="open-from-cloud-option-tasks">
+          <div className="open-scene-option-tasks">
             <button
               onClick={(e) => { this.onClickDeleteScene(e, item.id); }}
               disabled={this.state.beingDeleted !== null}
@@ -173,13 +173,13 @@ class OpenFromCloudModal extends React.Component {
     // Render the entire modal
     return (
       <Modal
-        className="modal-alt open-from-cloud-modal"
+        className="modal-alt open-scene-modal"
         cancelFunction={this.onClickClose}
         confirmFunction={this.onClickConfirm}
       >
         <h4>Open a saved scene from your Mapzen account</h4>
 
-        <div className="modal-content modal-well open-from-cloud-list">
+        <div className="modal-content modal-well open-scene-list">
           {sceneList}
         </div>
 

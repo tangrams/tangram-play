@@ -118,13 +118,13 @@
   width: 500px;
 
   /* re-using this CSS from OpenFromCloudModal */
-  .open-from-cloud-option {
+  .open-scene-option {
     padding: 0;
     cursor: auto;
     user-select: auto;
   }
 
-  .open-from-cloud-option:hover {
+  .open-scene-option:hover {
     background-color: transparent;
   }
 }

@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 
 export default function SceneItem(props) {
   return (
-    <div className="open-from-cloud-option">
-      <div className="open-from-cloud-option-thumbnail">
+    <div className="open-scene-option">
+      <div className="open-scene-option-thumbnail">
         <img src={props.thumbnail} alt="" />
       </div>
-      <div className="open-from-cloud-option-info">
-        <div className="open-from-cloud-option-name">
+      <div className="open-scene-option-info">
+        <div className="open-scene-option-name">
           {props.name}
         </div>
-        <div className="open-from-cloud-option-description">
+        <div className="open-scene-option-description">
           {props.description}
         </div>
-        <div className="open-from-cloud-option-date">
+        <div className="open-scene-option-date">
           {/* Show the date this was saved.
               TODO: better formatting;
               maybe use moment.js */}

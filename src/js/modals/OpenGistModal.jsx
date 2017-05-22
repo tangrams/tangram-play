@@ -133,7 +133,7 @@ class OpenGistModal extends React.Component {
     } else {
       gistList = gists.map((item, index) => {
         // If the scene is selected, a special class is applied later to it
-        let classString = 'open-from-cloud-option';
+        let classString = 'open-scene-option';
 
         // TODO: Do not hardcode.
         const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
@@ -146,7 +146,7 @@ class OpenGistModal extends React.Component {
         }
 
         if (this.state.selected === item.url) {
-          classString += ' open-from-cloud-selected';
+          classString += ' open-scene-selected';
         }
 
         // TODO:
@@ -163,17 +163,17 @@ class OpenGistModal extends React.Component {
             onClick={() => { this.setState({ selected: item.url }); }}
             onDoubleClick={this.onClickConfirm}
           >
-            <div className="open-from-cloud-option-thumbnail">
+            <div className="open-scene-option-thumbnail">
               <img src={item.thumbnail} alt="" />
             </div>
-            <div className="open-from-cloud-option-info">
-              <div className="open-from-cloud-option-name">
+            <div className="open-scene-option-info">
+              <div className="open-scene-option-name">
                 {item.name}
               </div>
-              <div className="open-from-cloud-option-description">
+              <div className="open-scene-option-description">
                 {item.description}
               </div>
-              <div className="open-from-cloud-option-date">
+              <div className="open-scene-option-date">
                 {/* Show the date this was saved.
                     TODO: better formatting;
                     maybe use moment.js */}
@@ -188,14 +188,14 @@ class OpenGistModal extends React.Component {
     // Render the entire modal
     return (
       <Modal
-        className="modal-alt open-from-cloud-modal"
+        className="modal-alt open-scene-modal"
         ref={(ref) => { this.component = ref; }}
         cancelFunction={this.onClickClose}
         confirmFunction={this.onClickConfirm}
       >
         <h4>Open a previously saved Gist</h4>
 
-        <div className="modal-content modal-well open-from-cloud-list">
+        <div className="modal-content modal-well open-scene-list">
           {gistList}
         </div>
 

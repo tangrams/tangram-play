@@ -47,10 +47,10 @@ class ExamplesModal extends React.Component {
 
         // If the scene is selected, a special class is applied
         // to indicate that
-        let classString = 'open-from-cloud-option';
+        let classString = 'open-scene-option';
 
         if (this.state.selected === scene.url) {
-          classString += ' open-from-cloud-selected';
+          classString += ' open-scene-selected';
         }
 
         // Render a thumbnail container element
@@ -64,14 +64,14 @@ class ExamplesModal extends React.Component {
             onClick={() => { this.setState({ selected: scene.url }); }}
             onDoubleClick={this.onClickConfirm}
           >
-            <div className="open-from-cloud-option-thumbnail">
+            <div className="open-scene-option-thumbnail">
               <img className="example-thumbnail" style={thumbnailStyle} alt="" />
             </div>
-            <div className="open-from-cloud-option-info">
-              <div className="open-from-cloud-option-name">
+            <div className="open-scene-option-info">
+              <div className="open-scene-option-name">
                 {scene.name}
               </div>
-              <div className="open-from-cloud-option-description">
+              <div className="open-scene-option-description">
                 {scene.description || 'No description provided.'}
               </div>
             </div>
