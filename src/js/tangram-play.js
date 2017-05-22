@@ -46,6 +46,14 @@ function setSceneContentsInEditor(scene) {
     type: ADD_RECENT_SCENE,
     scene,
   });
+
+  // Set the title of the page if scene name is present
+  const name = store.getState().scene.name;
+  if (name) {
+    document.title = `${name} · Tangram Play`;
+  } else {
+    document.title = 'Tangram Play';
+  }
 }
 
 // `scene` is the state object matching the Redux state signature.
