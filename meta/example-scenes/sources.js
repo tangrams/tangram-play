@@ -8,6 +8,10 @@
 
 /* eslint-disable quote-props */
 const IMAGE_SOURCES = {
+  'basic': {
+    image: './meta/example-scenes/basic.png',
+    scene: null,
+  },
   'grain': {
     image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain.png',
     scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/grain.yaml',
@@ -38,6 +42,15 @@ const IMAGE_SOURCES = {
     image: 'https://s3.amazonaws.com/static-prod.mapzen.com/resources/maps-page-hero/walkabout-style.png',
     scene: null,
   },
+  'bubble-wrap': {
+    image: 'https://mapzen.com/resources/maps-page-hero/bubble-wrap-style.png',
+    scene: null,
+  },
+  'tron': {
+    image: 'https://mapzen.com/resources/maps-page-hero/tron-style.gif',
+    scene: null,
+    forcePNG: true, // Special case: force this to be a 1-frame png
+  },
   // End house styles
   'gotham': {
     image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/gotham.png',
@@ -48,10 +61,10 @@ const IMAGE_SOURCES = {
     scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/blueprint.yaml',
   },
   // Deprecated for Tron v2 house style
-  // 'tron': {
-  //   image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/tron.png',
-  //   scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/tron.yaml',
-  // },
+  'tron-legacy': {
+    image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/tron.png',
+    scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/tron.yaml',
+  },
   'matrix': {
     image: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/matrix.png',
     scene: 'https://cdn.rawgit.com/tangrams/tangram-sandbox/9c98400c05803b075fae04213d5adbb33a2e6b64/styles/matrix.yaml',
