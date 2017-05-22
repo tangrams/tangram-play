@@ -93,7 +93,7 @@ class ExamplesModal extends React.Component {
     // Render the entire modal
     return (
       <Modal
-        className="modal-alt example-modal"
+        className="modal-alt open-scene-modal"
         cancelFunction={this.onClickCancel}
         confirmFunction={this.onClickConfirm}
       >

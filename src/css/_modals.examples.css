@@ -4,14 +4,6 @@
   --example-modal-option-padding: 4px;
 }
 
-.example-modal {
-  width: 600px;
-  /* Allow the height of this modal to expand on larger screens */
-  height: calc(100% - 400px);
-  min-height: 600px;
-  max-height: 1200px;
-}
-
 .example-list {
   /* Ensure this fits within a variable-height modal.
      TODO: Don't use a magic number */
