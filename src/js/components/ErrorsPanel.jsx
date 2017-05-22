@@ -47,39 +47,41 @@ class ErrorsPanel extends React.Component {
             <div className="floating-panel-drag">Scene errors</div>
             <button className="floating-panel-close" onClick={this.onClickClose}>×</button>
           </div>
-          <div className="errors-panel-content">
-            {this.props.errors.map((error, index) => {
-              let iconTypeClass;
-              if (error.type === 'error') {
-                iconTypeClass = 'btm bt-exclamation-triangle';
-              } else if (error.type === 'warning') {
-                iconTypeClass = 'btm bt-exclamation-circle';
-              }
+          <div className="errors-panel-viewport">
+            <div className="errors-panel-content">
+              {this.props.errors.map((error, index) => {
+                let iconTypeClass;
+                if (error.type === 'error') {
+                  iconTypeClass = 'btm bt-exclamation-triangle';
+                } else if (error.type === 'warning') {
+                  iconTypeClass = 'btm bt-exclamation-circle';
+                }
 
-              let displayText = error.message;
-              if (!displayText || displayText.length === 0) {
-                displayText = `Unspecified ${error.type}.`;
-              }
+                let displayText = error.message;
+                if (!displayText || displayText.length === 0) {
+                  displayText = `Unspecified ${error.type}.`;
+                }
 
-              let moreLink;
-              if (error.link) {
-                moreLink = (
-                  <a href={error.link} target="_blank" rel="noopener noreferrer">
-                    Learn more.
-                  </a>
-                );
-              }
+                let moreLink;
+                if (error.link) {
+                  moreLink = (
+                    <a href={error.link} target="_blank" rel="noopener noreferrer">
+                      Learn more.
+                    </a>
+                  );
+                }
 
-              return (
-                <div key={index} className="errors-panel-item">
-                  <div className={iconTypeClass} />
-                  <div className="errors-panel-text">
-                    {displayText}
-                    {' '}{moreLink}
+                return (
+                  <div key={index} className="errors-panel-item">
+                    <div className={iconTypeClass} />
+                    <div className="errors-panel-text">
+                      {displayText}
+                      {' '}{moreLink}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </Draggable>

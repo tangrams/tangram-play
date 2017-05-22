@@ -39,7 +39,7 @@
   left: 20px;
   bottom: 20px;
   width: 400px;
-  max-height: 400px; /* Prevent it from getting out of hand if something generated tons of errors */
+  overflow: hidden;
   pointer-events: auto;
 
   .btm {
@@ -59,11 +59,14 @@
   }
 }
 
-.errors-panel-content {
+.errors-panel-viewport {
   position: relative;
   width: 100%;
-  height: calc(100% - 20px);
+  max-height: 400px; /* Prevent it from getting out of hand if something generated tons of errors */
   overflow: auto;
+}
+
+.errors-panel-content {
   padding: 10px;
   user-select: auto;
 
