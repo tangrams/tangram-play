@@ -99,7 +99,7 @@ class ExamplesModal extends React.Component {
       >
         <h4>Choose an example to open</h4>
 
-        <div className="modal-content modal-well example-list">
+        <div className="modal-content modal-well open-scene-list">
           {examples}
         </div>
 

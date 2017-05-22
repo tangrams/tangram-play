@@ -45,7 +45,6 @@
 /* Menus and modals */
 @import '_menu-bar';
 @import '_modals.code-snippet';
-@import '_modals.examples';
 @import '_modals.open-scene';
 @import '_modals.welcome';
 
