@@ -97,7 +97,9 @@ Create a new topic branch for the feature or patch you are committing, either on
 
 Please wait for Circle.CI to run its tests and report that all tests are passing. Additionally, there may be other comments from other contributors. Contributors should also have access to [Precog](https://github.com/mapzen/precog), which enables previews of the code without needing to build and preview locally. Once approved, the branch will be merged into the codebase, and the topic branch will be deleted if it is in this repository.
 
-Whenever code is committed or merged to the `master` branch, it will immediately kick off a build to the live site, located at https://mapzen.com/tangram/play/. Therefore, it is important that all pull requests must be vetted by at least one of the main contributors before being approved!
+### Deployment
+
+See [Release/Deployment plan](https://github.com/tangrams/tangram-play/wiki#release--deployment-plan) in the wiki.
 
 ## Frameworks
 
