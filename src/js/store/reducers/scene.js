@@ -275,6 +275,8 @@ const scene = (state = initialState, action) => {
       return {
         ...state,
         justOpened: false,
+        name: action.data.name,
+        description: action.data.description,
         saved: true,
         saveLocation: 'MAPZEN',
         saveTimestamp: action.data.updated_at,
