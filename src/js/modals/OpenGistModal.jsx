@@ -155,8 +155,11 @@ class OpenGistModal extends React.Component {
         return (
           <div
             className={classString}
-            key={index}
+            role="menuitem"
+            tabIndex={0}
+            key={item.url}
             data-url={item.url}
+            onFocus={(e) => { this.setState({ selected: item.url }); }}
             onClick={() => { this.setState({ selected: item.url }); }}
             onDoubleClick={this.onClickConfirm}
           >
