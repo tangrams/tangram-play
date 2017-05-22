@@ -2,7 +2,7 @@ import CodeMirror from 'codemirror';
 import YAML from 'yaml-ast-parser';
 
 // EXPERIMENTAL: extend YAML so anchor references know what their parents are.
-function findAnchorRefParents(ast) {
+export function findAnchorRefParents(ast) {
   // Any YAML node can have an anchor ID (which is a value prefaced with `&id`).
   // If so, the node gets an array to keep track of referenced nodes. If an
   // anchor is created, but no nodes reference it, an empty references array
