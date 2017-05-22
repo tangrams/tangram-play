@@ -129,7 +129,10 @@ class OpenFromCloudModal extends React.Component {
       return (
         <div
           className={classString}
+          role="menuitem"
+          tabIndex={0}
           key={item.id}
+          onFocus={(e) => { this.onClickSceneItem(e, item); }}
           onClick={(e) => { this.onClickSceneItem(e, item); }}
           onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
         >

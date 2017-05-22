@@ -57,7 +57,10 @@ class ExamplesModal extends React.Component {
         return (
           <div
             className={classString}
+            role="menuitem"
+            tabIndex={0}
             key={scene.url}
+            onFocus={(e) => { this.setState({ selected: scene.url }); }}
             onClick={() => { this.setState({ selected: scene.url }); }}
             onDoubleClick={this.onClickConfirm}
           >

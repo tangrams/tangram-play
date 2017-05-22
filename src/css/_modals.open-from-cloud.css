@@ -23,6 +23,10 @@
     background-color: var(--ui-active-color);
   }
 
+  &:focus {
+    outline: none; /* Use .open-from-cloud-selected for focus state */
+  }
+
   &.open-from-cloud-selected {
     background-color: var(--ui-active-color);
   }
