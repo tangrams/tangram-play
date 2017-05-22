@@ -44,7 +44,7 @@ class AboutModal extends React.PureComponent {
             <br />CodeMirror <span className="about-cm-version">{`v${CodeMirror.version}`}</span>
           </p>
           <p>
-            Made with 💖 by <a href="https://mapzen.com/" target="_blank" rel="noopener noreferrer">Mapzen</a>.
+            Made with <span role="img" aria-label="heart">💖</span> by <a href="https://mapzen.com/" target="_blank" rel="noopener noreferrer">Mapzen</a>.
           </p>
           <p>
             <a href="https://github.com/tangrams/tangram-play" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
