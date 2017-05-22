@@ -116,7 +116,7 @@ function clickSaveAsToCloud() {
  */
 function clickSaveToCloud() {
   const scene = store.getState().scene;
-  if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
+  if (scene.saveLocation === 'MAPZEN' && scene.sourceData && scene.sourceData.id) {
     // Duplicating some functionality from clickSaveAsToCloud()
     // todo refactor
     if (checkUserAuthAvailability() === false) return;
@@ -192,7 +192,7 @@ function doSignInCallbackMethod() {
 
 function onClickShare() {
   const scene = store.getState().scene;
-  if (scene.mapzenSceneData && scene.mapzenSceneData.id) {
+  if (scene.saveLocation === 'MAPZEN' && scene.sourceData && scene.sourceData.id) {
     store.dispatch({
       type: SHOW_MODAL,
       modalType: 'SHARE_HOSTED_MAP',

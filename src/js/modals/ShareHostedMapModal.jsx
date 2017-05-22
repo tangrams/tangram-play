@@ -118,7 +118,7 @@ ShareHostedMapModal.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    urlValue: state.scene.mapzenSceneData.entrypoint_url,
+    urlValue: state.scene.sourceData.entrypoint_url,
   };
 }
 

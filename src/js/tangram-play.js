@@ -259,14 +259,14 @@ export function load(scene) {
   if (scene.url) {
     return makeSceneStateObjectFromUrl(scene.url)
       .then((sceneState) => {
-        // Merge Mapzen Scene API data & return if present.
+        // Merge scene data & return if present.
         if (scene.data) {
           return {
             ...sceneState,
             saved: true,
-            saveLocation: 'MAPZEN',
+            saveLocation: scene.source || 'UNKNOWN',
             saveTimestamp: scene.data.updated_at,
-            mapzenSceneData: scene.data,
+            sourceData: scene.data,
           };
         }
 

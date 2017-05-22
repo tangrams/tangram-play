@@ -45,6 +45,7 @@ class OpenFromCloudModal extends React.Component {
       load({
         url: this.state.selected.entrypoint_url,
         data: this.state.selected,
+        source: 'MAPZEN',
       });
     }
   }

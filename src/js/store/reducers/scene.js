@@ -45,8 +45,9 @@ const initialState = {
   saveLocation: null,
   // When saved, record a timestamp.
   saveTimestamp: null,
-  // Mapzen API use only: store the scene data object.
-  mapzenSceneData: null,
+  // Store the scene data object, if any. This can be Mapzen Scene API, Gist (legacy),
+  // and other. This is a raw data object.
+  sourceData: null,
 };
 
 /*
@@ -268,7 +269,7 @@ const scene = (state = initialState, action) => {
         saved: true,
         saveLocation: action.location,
         saveTimestamp: action.timestamp,
-        // Do not overwrite mapzenSceneData here.
+        // Do not overwrite data here.
       };
     // Only for scenes saved in Mapzen Scenes API.
     case MAPZEN_SAVE_SCENE:
@@ -280,7 +281,7 @@ const scene = (state = initialState, action) => {
         saved: true,
         saveLocation: 'MAPZEN',
         saveTimestamp: action.data.updated_at,
-        mapzenSceneData: action.data,
+        sourceData: action.data,
       };
     default:
       return state;

@@ -30,7 +30,11 @@ class ExamplesModal extends React.Component {
   onClickConfirm() {
     if (this.state.selected) {
       this.onClickCancel(); // to close modal
-      load({ url: this.state.selected });
+      load({
+        url: this.state.selected.url,
+        data: this.state.selected,
+        source: 'EXAMPLES',
+      });
     }
   }
 
@@ -43,7 +47,7 @@ class ExamplesModal extends React.Component {
         // to indicate that
         let classString = 'open-scene-option';
 
-        if (this.state.selected === scene.url) {
+        if (this.state.selected && this.state.selected.url === scene.url) {
           classString += ' open-scene-selected';
         }
 
@@ -54,8 +58,8 @@ class ExamplesModal extends React.Component {
             role="menuitem"
             tabIndex={0}
             key={scene.url}
-            onFocus={(e) => { this.setState({ selected: scene.url }); }}
-            onClick={() => { this.setState({ selected: scene.url }); }}
+            onFocus={(e) => { this.setState({ selected: scene }); }}
+            onClick={() => { this.setState({ selected: scene }); }}
             onDoubleClick={this.onClickConfirm}
           >
             <div className="open-scene-option-thumbnail">

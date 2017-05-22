@@ -165,7 +165,7 @@ SaveExistingToCloudModal.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    scene: state.scene.mapzenSceneData,
+    scene: state.scene.sourceData,
   };
 }
 

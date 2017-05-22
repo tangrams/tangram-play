@@ -46,12 +46,16 @@ class OpenGistModal extends React.Component {
     if (this.state.selected) {
       this.onClickCancel(); // to close modal
 
-      getSceneURLFromGistAPI(this.state.selected)
+      getSceneURLFromGistAPI(this.state.selected.url)
         .then((url) => {
-          load({ url });
+          load({
+            url,
+            data: this.state.selected,
+            source: 'GIST',
+          });
         })
         .catch((error) => {
-          this.handleError(error, this.state.selected);
+          this.handleError(error, this.state.selected.url);
         });
     }
   }
@@ -110,7 +114,7 @@ class OpenGistModal extends React.Component {
           item.description = 'No description provided.';
         }
 
-        if (this.state.selected === item.url) {
+        if (this.state.selected && this.state.selected.url === item.url) {
           classString += ' open-scene-selected';
         }
 
@@ -124,8 +128,8 @@ class OpenGistModal extends React.Component {
             tabIndex={0}
             key={item.url}
             data-url={item.url}
-            onFocus={(e) => { this.setState({ selected: item.url }); }}
-            onClick={() => { this.setState({ selected: item.url }); }}
+            onFocus={(e) => { this.setState({ selected: item }); }}
+            onClick={() => { this.setState({ selected: item }); }}
             onDoubleClick={this.onClickConfirm}
           >
             <div className="open-scene-option-thumbnail">
