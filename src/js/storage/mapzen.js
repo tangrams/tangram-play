@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { reverse, sortBy } from 'lodash';
 
 import { getEditorContent } from '../editor/editor';
 import { map } from '../map/map';
@@ -131,7 +132,9 @@ export function fetchSceneList() {
       }
 
       // Returns with array of scenes (or empty array if no scenes).
-      return scenes;
+      // Sort the scene list by the most recent up top
+      // Note this mutates the original array.
+      return reverse(sortBy(scenes, 'updated_at'));
     });
 }
 

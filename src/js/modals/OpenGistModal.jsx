@@ -1,31 +1,14 @@
-import { reverse, reject } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
-import localforage from 'localforage';
 
 import Modal from './Modal';
 import Icon from '../components/Icon';
 import { showErrorModal } from './ErrorModal';
 import { load } from '../tangram-play';
 import { getSceneURLFromGistAPI } from '../tools/gist-url';
-
-const STORAGE_SAVED_GISTS = 'gists';
-
-/**
- * Utility function for removing gists that match a url string.
- *
- * @param {string} url - the Gist to remove
- */
-function removeNonexistentGistFromLocalStorage(url) {
-  localforage.getItem(STORAGE_SAVED_GISTS)
-    .then((gists) => {
-      // Filter the unfound gist URL from the gist list
-      const data = reject(gists, item => url === item.url);
-      localforage.setItem(STORAGE_SAVED_GISTS, data);
-    });
-}
+import { getGists, removeNonexistentGistFromLocalStorage } from '../storage/gist';
 
 class OpenGistModal extends React.Component {
   constructor(props) {
@@ -42,32 +25,14 @@ class OpenGistModal extends React.Component {
   }
 
   componentWillMount() {
-    // Always load new set of saved Gists from memory each
-    // time this modal is opened, in case it has changed
-    // during use
-    // Gists are currently stored via localforage
-    localforage.getItem(STORAGE_SAVED_GISTS)
-      .then((gists) => {
-        if (Array.isArray(gists)) {
-          // NOTE:
-          // string-only gists urls are migrated anyway;
-          // we'll skip these for now, filter them out
-          const data = reject(gists, item => typeof item === 'string');
-
-          // Reverse-sort the gists; most recent will display up top
-          // Note this mutates the original array.
-          reverse(data);
-
-          this.setState({
-            loaded: true,
-            gists: data,
-          });
-        } else {
-          this.setState({
-            loaded: true,
-          });
-        }
+    // Always load new set of saved Gists from memory each time this modal is
+    // opened, in case it has changed during use
+    getGists().then((gists = []) => {
+      this.setState({
+        loaded: true,
+        gists,
       });
+    });
   }
 
   onClickCancel() {

@@ -1,4 +1,3 @@
-import { reverse, sortBy } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,8 +6,8 @@ import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import Icon from '../components/Icon';
 import { showErrorModal } from './ErrorModal';
-import { fetchSceneList, deleteScene } from '../storage/mapzen';
 import { load } from '../tangram-play';
+import { fetchSceneList, deleteScene } from '../storage/mapzen';
 
 class OpenFromCloudModal extends React.Component {
   constructor(props) {
@@ -82,11 +81,7 @@ class OpenFromCloudModal extends React.Component {
     // Always load new set of saved scenes from the cloud each
     // time this modal is opened, in case it has changed
     fetchSceneList()
-      .then((sceneList) => {
-        // Sort the scene list by the most recent up top
-        // Note this mutates the original array.
-        const scenes = reverse(sortBy(sceneList, 'updated_at'));
-
+      .then((scenes = []) => {
         this.setState({
           loaded: true,
           scenes,

@@ -1,4 +1,6 @@
 import L from 'leaflet';
+import localforage from 'localforage';
+import { reverse, reject } from 'lodash';
 
 import { getEditorContent } from '../editor/editor';
 import { map } from '../map/map';
@@ -8,8 +10,34 @@ import { getScreenshotData } from '../map/screenshot';
 import { createThumbnail } from '../tools/thumbnail';
 import { getCachedUserSignInData } from '../user/sign-in';
 
+const STORAGE_SAVED_GISTS = 'gists';
 const THUMBNAIL_WIDTH = 144;
 const THUMBNAIL_HEIGHT = 81;
+
+/**
+ * Get gists from localstorage
+ *
+ * @return {Promise} - result of reading from localforage
+ */
+export function getGists() {
+  return localforage.getItem(STORAGE_SAVED_GISTS)
+    .then((gists) => {
+      if (Array.isArray(gists)) {
+        // NOTE:
+        // string-only gists urls are migrated anyway;
+        // we'll skip these for now, filter them out
+        const data = reject(gists, item => typeof item === 'string');
+
+        // Reverse-sort the gists; most recent will display up top
+        // Note this mutates the original array.
+        reverse(data);
+
+        return gists;
+      }
+
+      return [];
+    });
+}
 
 export function saveToGist(data, successCallback, errorCallback) {
   const { sceneName, description, isPublic } = data;
@@ -104,5 +132,19 @@ export function saveToGist(data, successCallback, errorCallback) {
       }).catch((error) => {
         errorCallback(error);
       });
+    });
+}
+
+/**
+ * Utility function for removing gists that match a url string.
+ *
+ * @param {string} url - the Gist to remove
+ */
+export function removeNonexistentGistFromLocalStorage(url) {
+  localforage.getItem(STORAGE_SAVED_GISTS)
+    .then((gists) => {
+      // Filter the unfound gist URL from the gist list
+      const data = reject(gists, item => url === item.url);
+      localforage.setItem(STORAGE_SAVED_GISTS, data);
     });
 }
