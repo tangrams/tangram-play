@@ -39,12 +39,6 @@ class ExamplesModal extends React.Component {
     const examples = EXAMPLES_DATA.map((category) => {
       // Create elements for each scene
       const scenes = category.scenes.map((scene) => {
-        // Inline style to display thumbnail image
-        const thumbnailStyle = {
-          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-          backgroundImage: `url(${scene.thumb})`,
-        };
-
         // If the scene is selected, a special class is applied
         // to indicate that
         let classString = 'open-scene-option';
@@ -65,7 +59,7 @@ class ExamplesModal extends React.Component {
             onDoubleClick={this.onClickConfirm}
           >
             <div className="open-scene-option-thumbnail">
-              <img className="example-thumbnail" style={thumbnailStyle} alt="" />
+              <img src={scene.thumb} alt="" />
             </div>
             <div className="open-scene-option-info">
               <div className="open-scene-option-name">

@@ -68,19 +68,6 @@
   }
 }
 
-/* Custom style for example thumbnails, which are currently done differently */
-.example-thumbnail {
-  width: 100%;
-  height: 60px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-
-  .example-selected & {
-    box-shadow: inset 0 0 0 1px var(--ui-highlight-color);
-  }
-}
-
 .open-scene-selected:not(.open-scene-deleting) {
   .open-scene-option-name {
     color: var(--ui-highlight-color);
