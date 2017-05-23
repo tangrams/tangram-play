@@ -15,7 +15,7 @@ class SceneSelectModal extends React.Component {
       loaded: false,
       selected: null,
       scenes: props.scenes, // May replace with result from sceneLoader()
-      beingDeleted: false,
+      beingDeleted: null,
     };
 
     this.onClickCancel = this.onClickCancel.bind(this);
@@ -97,8 +97,13 @@ class SceneSelectModal extends React.Component {
     let sceneList = scenes.map((item, index) => {
       let classString = '';
 
-      if (this.state.selected && this.state.selected.url === item.url) {
-        classString = 'open-scene-selected';
+      // TODO: standardize id vs url for identifiers from data sources.
+      if (this.state.selected) {
+        if (this.state.selected.id && this.state.selected.id === item.id) {
+          classString = 'open-scene-selected';
+        } else if (this.state.selected.url && this.state.selected.url === item.url) {
+          classString = 'open-scene-selected';
+        }
       }
 
       let deleteButtonText = 'Delete';
