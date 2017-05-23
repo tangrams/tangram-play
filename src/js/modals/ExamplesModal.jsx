@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
+import SceneItem from './SceneItem';
 import Icon from '../components/Icon';
 
 import { load } from '../tangram-play';
@@ -45,13 +46,11 @@ class ExamplesModal extends React.Component {
       const scenes = category.scenes.map((scene) => {
         // If the scene is selected, a special class is applied
         // to indicate that
-        let classString = 'open-scene-option';
-
+        let classString = '';
         if (this.state.selected && this.state.selected.url === scene.url) {
-          classString += ' open-scene-selected';
+          classString = 'open-scene-selected';
         }
 
-        // Render a thumbnail container element
         return (
           <div
             className={classString}
@@ -62,17 +61,11 @@ class ExamplesModal extends React.Component {
             onClick={() => { this.setState({ selected: scene }); }}
             onDoubleClick={this.onClickConfirm}
           >
-            <div className="open-scene-option-thumbnail">
-              <img src={scene.thumb} alt="" />
-            </div>
-            <div className="open-scene-option-info">
-              <div className="open-scene-option-name">
-                {scene.name}
-              </div>
-              <div className="open-scene-option-description">
-                {scene.description || 'No description provided.'}
-              </div>
-            </div>
+            <SceneItem
+              thumbnail={scene.thumb}
+              name={scene.name}
+              description={scene.description}
+            />
           </div>
         );
       });
