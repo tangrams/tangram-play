@@ -46,14 +46,6 @@ function setSceneContentsInEditor(scene) {
     type: ADD_RECENT_SCENE,
     scene,
   });
-
-  // Set the title of the page if scene name is present
-  const name = store.getState().scene.name;
-  if (name) {
-    document.title = `${name} · Tangram Play`;
-  } else {
-    document.title = 'Tangram Play';
-  }
 }
 
 // `scene` is the state object matching the Redux state signature.
@@ -314,6 +306,19 @@ export function initTangramPlay() {
       load({ url: e.state.scene });
     }
   };
+
+  // Redux store observers
+  store.subscribe(() => {
+    const state = store.getState();
+
+    // Set the title of the page if scene name is present
+    const name = state.scene.name;
+    if (name) {
+      document.title = `${name} · Tangram Play`;
+    } else {
+      document.title = 'Tangram Play';
+    }
+  });
 
   showSceneLoadingIndicator();
 
