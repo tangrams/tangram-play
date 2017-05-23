@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 
 import Modal from './Modal';
+import SceneItem from './SceneItem';
 import Icon from '../components/Icon';
 import { showErrorModal } from './ErrorModal';
 import { load } from '../tangram-play';
@@ -107,7 +108,7 @@ class OpenFromCloudModal extends React.Component {
 
     let sceneList = scenes.map((item, index) => {
       // If the scene is selected, a special class is applied later to it
-      let classString = 'open-scene-option';
+      let classString = '';
       let deleteButtonText = 'Delete';
 
       if (this.state.selected && this.state.selected.id === item.id) {
@@ -119,9 +120,6 @@ class OpenFromCloudModal extends React.Component {
         deleteButtonText = 'Deleting...';
       }
 
-      // TODO:
-      // There is actually a lot more info stored than is currently being
-      // displayed. We have date, user, public or not, and map view.
       return (
         <div
           className={classString}
@@ -132,31 +130,19 @@ class OpenFromCloudModal extends React.Component {
           onClick={(e) => { this.onClickSceneItem(e, item); }}
           onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
         >
-          <div className="open-scene-option-thumbnail">
-            <img src={item.thumbnail} alt="" />
-          </div>
-          <div className="open-scene-option-info">
-            <div className="open-scene-option-name">
-              {item.name}
-            </div>
-            <div className="open-scene-option-description">
-              {item.description || 'No description provided.'}
-            </div>
-            <div className="open-scene-option-date">
-              {/* Show the date this was saved.
-                  TODO: better formatting;
-                  maybe use moment.js */}
-              Saved on {new Date(item.updated_at).toLocaleString()}
-            </div>
-          </div>
-          <div className="open-scene-option-tasks">
+          <SceneItem
+            thumbnail={item.thumbnail}
+            name={item.name}
+            description={item.description}
+            date={item.updated_at}
+          >
             <button
               onClick={(e) => { this.onClickDeleteScene(e, item.id); }}
               disabled={this.state.beingDeleted !== null}
             >
               {deleteButtonText}
             </button>
-          </div>
+          </SceneItem>
         </div>
       );
     });

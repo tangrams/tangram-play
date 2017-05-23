@@ -11,6 +11,12 @@ export default function SceneItem(props) {
     </div>
   ) : null;
 
+  const children = (props.children) ? (
+    <div className="open-scene-option-tasks">
+      {props.children}
+    </div>
+  ) : null;
+
   return (
     <div className="open-scene-option">
       <div className="open-scene-option-thumbnail">
@@ -25,6 +31,7 @@ export default function SceneItem(props) {
         </div>
         {date}
       </div>
+      {children}
     </div>
   );
 }
@@ -34,9 +41,11 @@ SceneItem.propTypes = {
   name: PropTypes.string.isRequired,
   description: PropTypes.string,
   date: PropTypes.string,
+  children: PropTypes.node,
 };
 
 SceneItem.defaultProps = {
   description: 'No description provided.',
   date: '',
+  children: null,
 };
