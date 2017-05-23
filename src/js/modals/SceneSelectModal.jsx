@@ -20,6 +20,26 @@ class SceneSelectModal extends React.Component {
     this.onClickConfirm = this.onClickConfirm.bind(this);
   }
 
+  /**
+   * If component is not provided with scenes, call props.sceneLoader function
+   * to populate it.
+   */
+  componentWillMount() {
+    if (this.props.scenes.length === 0) {
+      this.props.sceneLoader()
+        .then((scenes) => {
+          this.setState({
+            loaded: true,
+            scenes,
+          });
+        });
+      // Handle errors
+    } else {
+      // If scenes are provided; set state.loaded to true immediately.
+      this.setState({ loaded: true });
+    }
+  }
+
   onClickCancel() {
     this.props.dispatch({
       type: 'HIDE_MODAL',
@@ -39,7 +59,7 @@ class SceneSelectModal extends React.Component {
   render() {
     const scenes = this.state.scenes;
 
-    const sceneList = scenes.map((item, index) => {
+    let sceneList = scenes.map((item, index) => {
       let classString = '';
 
       if (this.state.selected && this.state.selected.url === item.url) {
@@ -57,13 +77,19 @@ class SceneSelectModal extends React.Component {
           onDoubleClick={this.onClickConfirm}
         >
           <SceneItem
-            thumbnail={item.thumb}
+            thumbnail={item.thumb || item.thumbnail}
             name={item.name}
             description={item.description}
+            date={item.created_at || null}
           />
         </div>
       );
     });
+
+    // If, after parsing scenes, nothing is there, display message.
+    if (this.state.loaded === true && sceneList.length === 0) {
+      sceneList = this.props.emptyListMessage;
+    }
 
     // Render the entire modal
     return (
@@ -98,7 +124,8 @@ class SceneSelectModal extends React.Component {
 SceneSelectModal.propTypes = {
   dispatch: PropTypes.func.isRequired,
   modalId: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  emptyListMessage: PropTypes.string,
   scenes: PropTypes.arrayOf(PropTypes.object),
   sceneLoader: PropTypes.func,
   confirmHandler: PropTypes.func.isRequired,
@@ -107,6 +134,8 @@ SceneSelectModal.propTypes = {
 
 SceneSelectModal.defaultProps = {
   scenes: [],
+  title: 'Select a scene',
+  emptyListMessage: 'No scenes.',
   sceneLoader() {}, // No-op
   cancelHandler() {}, // No-op
 };
