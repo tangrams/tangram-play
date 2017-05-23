@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Modal from './Modal';
 import SceneItem from './SceneItem';
 import Icon from '../components/Icon';
+import { showErrorModal } from './ErrorModal';
 
 class SceneSelectModal extends React.Component {
   constructor(props) {
@@ -14,10 +15,14 @@ class SceneSelectModal extends React.Component {
       loaded: false,
       selected: null,
       scenes: props.scenes, // May replace with result from sceneLoader()
+      beingDeleted: false,
     };
 
     this.onClickCancel = this.onClickCancel.bind(this);
     this.onClickConfirm = this.onClickConfirm.bind(this);
+    this.onClickSceneItem = this.onClickSceneItem.bind(this);
+    this.onDoubleClickSceneItem = this.onDoubleClickSceneItem.bind(this);
+    this.onClickDeleteScene = this.onClickDeleteScene.bind(this);
   }
 
   /**
@@ -38,6 +43,36 @@ class SceneSelectModal extends React.Component {
       // If scenes are provided; set state.loaded to true immediately.
       this.setState({ loaded: true });
     }
+  }
+
+  onClickSceneItem(event, item) {
+    if (this.state.beingDeleted !== item.id) {
+      this.setState({ selected: item });
+    }
+  }
+
+  onDoubleClickSceneItem(event, item) {
+    if (this.state.beingDeleted !== item.id) {
+      this.onClickConfirm();
+    }
+  }
+
+  onClickDeleteScene(event, sceneId) {
+    event.stopPropagation();
+
+    this.setState({
+      beingDeleted: sceneId,
+      selected: null, // Prevent the deleted scene from being selected
+    });
+
+    this.props.deleteHandler(sceneId)
+      .then(() => {
+        this.setState({ beingDeleted: null });
+        this.props.sceneLoader();
+      })
+      .catch((error) => {
+        showErrorModal('Could not delete the scene.');
+      });
   }
 
   onClickCancel() {
@@ -66,22 +101,40 @@ class SceneSelectModal extends React.Component {
         classString = 'open-scene-selected';
       }
 
+      let deleteButtonText = 'Delete';
+
+      if (this.state.beingDeleted && this.state.beingDeleted === item.id) {
+        classString += ' open-scene-deleting';
+        deleteButtonText = 'Deleting...';
+      }
+
+      const deleteButton = (this.props.allowDelete) ? (
+        <button
+          onClick={(e) => { this.onClickDeleteScene(e, item.id); }}
+          disabled={this.state.beingDeleted !== null}
+        >
+          {deleteButtonText}
+        </button>
+      ) : null;
+
       return (
         <div
           className={classString}
           role="menuitem"
           tabIndex={0}
           key={item.url}
-          onFocus={(e) => { this.setState({ selected: item }); }}
-          onClick={() => { this.setState({ selected: item }); }}
-          onDoubleClick={this.onClickConfirm}
+          onFocus={(e) => { this.onClickSceneItem(e, item); }}
+          onClick={(e) => { this.onClickSceneItem(e, item); }}
+          onDoubleClick={(e) => { this.onDoubleClickSceneItem(e, item); }}
         >
           <SceneItem
             thumbnail={item.thumb || item.thumbnail}
             name={item.name}
             description={item.description}
-            date={item.created_at || null}
-          />
+            date={item.updated_at || item.created_at || null}
+          >
+            {deleteButton}
+          </SceneItem>
         </div>
       );
     });
@@ -130,6 +183,8 @@ SceneSelectModal.propTypes = {
   sceneLoader: PropTypes.func,
   confirmHandler: PropTypes.func.isRequired,
   cancelHandler: PropTypes.func,
+  deleteHandler: PropTypes.func,
+  allowDelete: PropTypes.bool,
 };
 
 SceneSelectModal.defaultProps = {
@@ -138,6 +193,8 @@ SceneSelectModal.defaultProps = {
   emptyListMessage: 'No scenes.',
   sceneLoader() {}, // No-op
   cancelHandler() {}, // No-op
+  deleteHandler() {}, // No-op
+  allowDelete: false,
 };
 
 export default connect()(SceneSelectModal);
