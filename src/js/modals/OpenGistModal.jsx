@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Button from 'react-bootstrap/lib/Button';
 
 import Modal from './Modal';
+import SceneItem from './SceneItem';
 import Icon from '../components/Icon';
 import { showErrorModal } from './ErrorModal';
 import { load } from '../tangram-play';
@@ -101,21 +102,16 @@ class OpenGistModal extends React.Component {
       gistList = 'No gists have been saved!';
     } else {
       gistList = gists.map((item, index) => {
-        // If the scene is selected, a special class is applied later to it
-        let classString = 'open-scene-option';
-
         // TODO: Do not hardcode.
         const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
 
         if (item.description) {
           item.description = item.description.replace(descPlaceholder, '');
         }
-        if (!item.description || item.description.length === 0) {
-          item.description = 'No description provided.';
-        }
 
+        let classString = '';
         if (this.state.selected && this.state.selected.url === item.url) {
-          classString += ' open-scene-selected';
+          classString = 'open-scene-selected';
         }
 
         // TODO:
@@ -132,23 +128,12 @@ class OpenGistModal extends React.Component {
             onClick={() => { this.setState({ selected: item }); }}
             onDoubleClick={this.onClickConfirm}
           >
-            <div className="open-scene-option-thumbnail">
-              <img src={item.thumbnail} alt="" />
-            </div>
-            <div className="open-scene-option-info">
-              <div className="open-scene-option-name">
-                {item.name}
-              </div>
-              <div className="open-scene-option-description">
-                {item.description}
-              </div>
-              <div className="open-scene-option-date">
-                {/* Show the date this was saved.
-                    TODO: better formatting;
-                    maybe use moment.js */}
-                Saved on {new Date(item.created_at).toLocaleString()}
-              </div>
-            </div>
+            <SceneItem
+              thumbnail={item.thumbnail}
+              name={item.name}
+              description={item.description}
+              date={item.created_at}
+            />
           </div>
         );
       });
