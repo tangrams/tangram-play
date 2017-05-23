@@ -5,8 +5,7 @@ export default function SceneItem(props) {
   const date = (props.date) ? (
     <div className="open-scene-option-date">
       {/* Show the date this was saved.
-          TODO: better formatting;
-          maybe use moment.js */}
+          TODO: better formatting; maybe use moment.js */}
       Saved on {new Date(props.date).toLocaleString()}
     </div>
   ) : null;

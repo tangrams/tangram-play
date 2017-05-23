@@ -32,7 +32,16 @@ export function getGists() {
         // Note this mutates the original array.
         reverse(data);
 
-        return gists;
+        // Strip out placeholder descriptions
+        const placeholder = '[This is a Tangram scene, made with Tangram Play.]';
+        const processed = data.map((item) => {
+          if (item.description) {
+            item.description = item.description.replace(placeholder, '');
+          }
+          return item;
+        });
+
+        return processed;
       }
 
       return [];

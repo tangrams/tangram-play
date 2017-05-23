@@ -107,7 +107,6 @@ class OpenFromCloudModal extends React.Component {
     const noScenesMsg = 'No scenes have been saved!';
 
     let sceneList = scenes.map((item, index) => {
-      // If the scene is selected, a special class is applied later to it
       let classString = '';
       let deleteButtonText = 'Delete';
 

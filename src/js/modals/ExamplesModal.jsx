@@ -14,6 +14,7 @@ class ExamplesModal extends React.Component {
     super(props);
 
     this.state = {
+      scenes: EXAMPLES_DATA[0].scenes,
       selected: null,
     };
 
@@ -40,45 +41,32 @@ class ExamplesModal extends React.Component {
   }
 
   render() {
-    // Create a <section> per category
-    const examples = EXAMPLES_DATA.map((category) => {
-      // Create elements for each scene
-      const scenes = category.scenes.map((scene) => {
-        // If the scene is selected, a special class is applied
-        // to indicate that
-        let classString = '';
-        if (this.state.selected && this.state.selected.url === scene.url) {
-          classString = 'open-scene-selected';
-        }
+    const scenes = this.state.scenes;
 
-        return (
-          <div
-            className={classString}
-            role="menuitem"
-            tabIndex={0}
-            key={scene.url}
-            onFocus={(e) => { this.setState({ selected: scene }); }}
-            onClick={() => { this.setState({ selected: scene }); }}
-            onDoubleClick={this.onClickConfirm}
-          >
-            <SceneItem
-              thumbnail={scene.thumb}
-              name={scene.name}
-              description={scene.description}
-            />
-          </div>
-        );
-      });
+    const sceneList = scenes.map((item, index) => {
+      let classString = '';
 
-      // Render the category container element
-      // return (
-      //   <section key={category.category}>
-      //     <h2 className="example-list-header">{category.category}</h2>
-      //     <hr />
-      //     {scenes}
-      //   </section>
-      // );
-      return <div key={category.category}>{scenes}</div>;
+      if (this.state.selected && this.state.selected.url === item.url) {
+        classString = 'open-scene-selected';
+      }
+
+      return (
+        <div
+          className={classString}
+          role="menuitem"
+          tabIndex={0}
+          key={item.url}
+          onFocus={(e) => { this.setState({ selected: item }); }}
+          onClick={() => { this.setState({ selected: item }); }}
+          onDoubleClick={this.onClickConfirm}
+        >
+          <SceneItem
+            thumbnail={item.thumb}
+            name={item.name}
+            description={item.description}
+          />
+        </div>
+      );
     });
 
     // Render the entire modal
@@ -91,7 +79,7 @@ class ExamplesModal extends React.Component {
         <h4>Choose an example to open</h4>
 
         <div className="modal-content modal-well open-scene-list">
-          {examples}
+          {sceneList}
         </div>
 
         <div className="modal-buttons">

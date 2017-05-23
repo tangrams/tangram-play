@@ -96,27 +96,18 @@ class OpenGistModal extends React.Component {
   render() {
     const gists = this.state.gists;
 
-    let gistList;
+    let sceneList;
 
     if (this.state.loaded === true && gists.length === 0) {
-      gistList = 'No gists have been saved!';
+      sceneList = 'No gists have been saved!';
     } else {
-      gistList = gists.map((item, index) => {
-        // TODO: Do not hardcode.
-        const descPlaceholder = '[This is a Tangram scene, made with Tangram Play.]';
-
-        if (item.description) {
-          item.description = item.description.replace(descPlaceholder, '');
-        }
-
+      sceneList = gists.map((item, index) => {
         let classString = '';
+
         if (this.state.selected && this.state.selected.url === item.url) {
           classString = 'open-scene-selected';
         }
 
-        // TODO:
-        // There is actually a lot more info stored than is currently being
-        // displayed. We have date, user, public gist or not, and map view.
         return (
           <div
             className={classString}
@@ -150,7 +141,7 @@ class OpenGistModal extends React.Component {
         <h4>Open a previously saved Gist</h4>
 
         <div className="modal-content modal-well open-scene-list">
-          {gistList}
+          {sceneList}
         </div>
 
         <div className="modal-buttons">
