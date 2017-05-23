@@ -9,8 +9,8 @@ function confirmHandler(selected) {
   if (!selected) return;
 
   load({
-    url: this.state.selected.entrypoint_url,
-    data: this.state.selected,
+    url: selected.entrypoint_url,
+    data: selected,
     source: 'MAPZEN',
   });
 }

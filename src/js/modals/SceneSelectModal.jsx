@@ -67,8 +67,13 @@ class SceneSelectModal extends React.Component {
 
     this.props.deleteHandler(sceneId)
       .then(() => {
-        this.setState({ beingDeleted: null });
-        this.props.sceneLoader();
+        this.props.sceneLoader()
+          .then((scenes) => {
+            this.setState({
+              beingDeleted: null,
+              scenes,
+            });
+          });
       })
       .catch((error) => {
         showErrorModal('Could not delete the scene.');
