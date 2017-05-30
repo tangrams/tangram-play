@@ -82,11 +82,7 @@ function initTangram(pathToSceneFile, sceneBasePath) {
       }
 
       // Easter egg check
-      if (event.config.globey && event.config.globey === true && store.getState().app.globey === false) {
-        store.dispatch(showGlobey(true));
-      } else if ((!event.config.globey || event.config.globey !== true) && store.getState().app.globey === true) {
-        store.dispatch(showGlobey(false));
-      }
+      store.dispatch(showGlobey(event.config.globey && event.config.globey === true));
 
       EventEmitter.dispatch('tangram:sceneupdate', event);
     },
