@@ -11,11 +11,10 @@ import { hideSceneLoadingIndicator } from './actions';
 import { handleInspectionHoverEvent, handleInspectionClickEvent } from './inspection';
 import { injectAPIKey } from '../editor/api-keys';
 import { showApiKeyWarningIfNecessary, removeApiKeyWarning } from '../editor/io';
-import { showGlobey } from '../store/actions/app';
+import { mapzenAPIKeyInjected, showGlobey } from '../store/actions/app';
 
 // Redux
 import store from '../store';
-import { SET_APP_STATE } from '../store/actions';
 
 // We need to manually set the image path when Leaflet is bundled.
 // See https://github.com/Leaflet/Leaflet/issues/766
@@ -65,19 +64,13 @@ function initTangram(pathToSceneFile, sceneBasePath) {
       // Record in state whether a key was injected. This can be used to prompt
       // users to sign up for a key.
       if (didInjectKey === true) {
-        store.dispatch({
-          type: SET_APP_STATE,
-          mapzenAPIKeyInjected: true,
-        });
+        store.dispatch(mapzenAPIKeyInjected(true));
 
         if (store.getState().scene.saved === true) {
           showApiKeyWarningIfNecessary();
         }
       } else if (didInjectKey === false && store.getState().app.mapzenAPIKeyInjected === true) {
-        store.dispatch({
-          type: SET_APP_STATE,
-          mapzenAPIKeyInjected: false,
-        });
+        store.dispatch(mapzenAPIKeyInjected(false));
         removeApiKeyWarning();
       }
 

@@ -1,23 +1,17 @@
 // Redux
 import store from '../store';
-import { SET_APP_STATE } from '../store/actions';
+import { tangramSceneLoading } from '../store/actions/app';
 
 /**
  * Shows the scene loading indicator.
  */
 export function showSceneLoadingIndicator() {
-  store.dispatch({
-    type: SET_APP_STATE,
-    tangramSceneLoading: true,
-  });
+  store.dispatch(tangramSceneLoading(true));
 }
 
 /**
  * Hide the scene loading indicator.
  */
 export function hideSceneLoadingIndicator() {
-  store.dispatch({
-    type: SET_APP_STATE,
-    tangramSceneLoading: false,
-  });
+  store.dispatch(tangramSceneLoading(false));
 }
