@@ -1,28 +1,23 @@
 machine:
-  pre:
-    - mkdir ~/.yarn-cache
   node:
-    version: 6.10.2
+    version: 8.1.0
   environment:
     NODE_ENV: test
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
-  pre:
-    - curl -o- -L https://yarnpkg.com/install.sh | bash
-    # Gulp must be installed in the global environment.
-    - yarn global add gulp-cli
-    - yarn global add aws-cli
-  cache_directories:
-    - ~/.yarn-cache
+  # Yarn is pre-installed on CircleCI Ubuntu 14.04 image.
   override:
     - yarn install --ignore-optional
+  cache_directories:
+    - ~/.cache/yarn
 
 test:
   override:
     - yarn test
   post:
     # For Precog.
-    - NODE_ENV=production gulp build
+    - NODE_ENV=production npm run build
     - cp -r public/* $CIRCLE_ARTIFACTS
 
 # For hosting on mapzen.com. Only deploy if tests pass. Compiled files are
