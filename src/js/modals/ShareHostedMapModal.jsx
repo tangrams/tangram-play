@@ -9,9 +9,9 @@ import IconButton from '../components/IconButton';
 import Modal from './Modal';
 
 function SplitUrlValue(urlValue) {
-    let str = urlValue.split('/scenes/');
-    let apiSceneId = str[1].split('/resources')[0];
-    return apiSceneId;
+  const str = urlValue.split('/scenes/');
+  const apiSceneId = str[1].split('/resources')[0];
+  return apiSceneId;
 }
 
 class ShareHostedMapModal extends React.Component {
