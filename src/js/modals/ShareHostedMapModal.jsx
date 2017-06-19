@@ -8,6 +8,13 @@ import Clipboard from 'clipboard';
 import IconButton from '../components/IconButton';
 import Modal from './Modal';
 
+function SplitUrlValue(urlValue) {
+    var str = urlValue.split('/scenes/');
+    var str2 = str[1].split('/resources');
+    var apiSceneId = str2[0];
+    return apiSceneId;
+}
+
 class ShareHostedMapModal extends React.Component {
   constructor(props) {
     super(props);
@@ -60,7 +67,6 @@ class ShareHostedMapModal extends React.Component {
     });
     /* eslint-enable no-console */
   }
-
   render() {
     return (
       <Modal
@@ -79,7 +85,7 @@ class ShareHostedMapModal extends React.Component {
               type="text"
               readOnly="true"
               ref={(ref) => { this.viewUrl = ref; }}
-              defaultValue={`${window.location.origin}/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
+              defaultValue={`${window.location.origin}/tangram/view/?scene=${splitUrlValue(this.props.urlValue)}${window.location.hash}`}
             />
             <IconButton
               icon="bt-copy"
