@@ -79,7 +79,7 @@ class ShareHostedMapModal extends React.Component {
               type="text"
               readOnly="true"
               ref={(ref) => { this.viewUrl = ref; }}
-              defaultValue={`${window.location.origin}/tangram/view/?scene=${this.props.urlValue}${window.location.hash}`}
+              defaultValue={`${window.location.origin}/tangram/view/?scene=${splitUrlValue(this.props.urlValue)}${window.location.hash}`}
             />
             <IconButton
               icon="bt-copy"
@@ -120,6 +120,14 @@ function mapStateToProps(state) {
   return {
     urlValue: state.scene.sourceData.entrypoint_url,
   };
+}
+
+//splitUrlValue(this.props.urlValue) results in api/scene id #
+function splitUrlValue(urlValue) {
+  var str = urlValue.split('/scenes/')
+  var str2 = str[1].split('/resources')
+  var apiSceneId = str2[0]
+  return apiSceneId
 }
 
 export default connect(mapStateToProps)(ShareHostedMapModal);
