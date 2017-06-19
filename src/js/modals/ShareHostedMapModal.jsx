@@ -8,6 +8,13 @@ import Clipboard from 'clipboard';
 import IconButton from '../components/IconButton';
 import Modal from './Modal';
 
+function SplitUrlValue(urlValue) {
+    var str = urlValue.split('/scenes/');
+    var str2 = str[1].split('/resources');
+    var apiSceneId = str2[0];
+    return apiSceneId;
+}
+
 class ShareHostedMapModal extends React.Component {
   constructor(props) {
     super(props);
@@ -60,14 +67,6 @@ class ShareHostedMapModal extends React.Component {
     });
     /* eslint-enable no-console */
   }
-  //splitUrlValue(this.props.urlValue) results in api/scene id #
-  splitUrlValue(urlValue) {
-    var str = urlValue.split('/scenes/');
-    var str2 = str[1].split('/resources');
-    var apiSceneId = str2[0];
-    return apiSceneId;
-  }
-  
   render() {
     return (
       <Modal
