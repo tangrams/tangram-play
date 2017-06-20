@@ -85,7 +85,7 @@ class ShareHostedMapModal extends React.Component {
               type="text"
               readOnly="true"
               ref={(ref) => { this.viewUrl = ref; }}
-              defaultValue={`${window.location.origin}/tangram/view/?api=${SplitUrlValue(this.props.urlValue)}${window.location.hash}`}
+              defaultValue={`${window.location.origin}/tangram/view/?api=${splitUrlValue(this.props.urlValue)}${window.location.hash}`}
             />
             <IconButton
               icon="bt-copy"
