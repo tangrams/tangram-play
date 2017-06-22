@@ -142,27 +142,27 @@ export default class MapPanelLocationBar extends React.Component {
     // Need to add an event listener to detect keydown on ENTER. Why? Because the react Autosuggest
     // currently closes the panel upon 'Enter'
     // Where that happens is here: https://github.com/moroshko/react-autosuggest/blob/master/src/Autosuggest.js
-    const inputDIV = this.autosuggestBar.input;
+    const inputEl = this.autosuggestBar.input;
 
-    inputDIV.addEventListener('keydown', (e) => {
+    inputEl.addEventListener('keydown', (e) => {
       // If the key user pressed is Enter
       if (e.key === 'Enter') {
         // Find out whether the input div has an 'aria-activedescentant' property
         // This property tells us whether the user is actually selecting a result
         // from the list of suggestions
-        const activeSuggestion = inputDIV.hasAttribute('aria-activedescendant'); // A boolean
+        const isActiveSuggestion = inputEl.hasAttribute('aria-activedescendant'); // A boolean
 
         // Also find out whether the panel is open or not
-        let dropdownExpanded = inputDIV.getAttribute('aria-expanded'); // But this is a string
-        dropdownExpanded = (dropdownExpanded === 'true'); // Now its a boolean
+        // Cast a string value to Boolean
+        const isDropdownExpanded = Boolean(inputEl.getAttribute('aria-expanded'));
 
         // If the user is pressing Enter after a list of search results are
         // displayed, the dropdown should close
-        if (!activeSuggestion && dropdownExpanded && this.shouldCloseDropdownNextEnter) {
-          inputDIV.blur();
-          inputDIV.select();
+        if (!isActiveSuggestion && isDropdownExpanded && this.shouldCloseDropdownNextEnter) {
+          inputEl.blur();
+          inputEl.select();
           this.shouldCloseDropdownNextEnter = false;
-        } else if (!activeSuggestion && dropdownExpanded) {
+        } else if (!isActiveSuggestion && isDropdownExpanded) {
           // Only if the user is pressing enter on the main search bar
           // (NOT a suggestion) do we prevent the default Enter event from bubbling
           // Aria has to be expanded as well
@@ -170,15 +170,15 @@ export default class MapPanelLocationBar extends React.Component {
           this.shouldCloseDropdownNextEnter = true;
           e.preventDefault();
           e.stopPropagation();
-        } else if (!dropdownExpanded) {
+        } else if (!isDropdownExpanded) {
           // If aria es closed and user presses enter, then aria should open
           this.search(this.state.value);
           e.preventDefault();
           e.stopPropagation();
 
           this.shouldCloseDropdownNextEnter = true;
-          inputDIV.blur();
-          inputDIV.focus();
+          inputEl.blur();
+          inputEl.focus();
         }
       }
     });
