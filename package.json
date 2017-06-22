@@ -65,7 +65,7 @@
     "chai-as-promised": "7.0.0",
     "csswring": "6.0.0",
     "enzyme": "2.8.2",
-    "eslint": "4.0.0",
+    "eslint": "3.19.0",
     "eslint-config-airbnb": "15.0.1",
     "eslint-config-airbnb-base": "11.2.0",
     "eslint-plugin-import": "2.3.0",
