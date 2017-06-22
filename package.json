@@ -1,7 +1,7 @@
 {
   "name": "tangram-play",
   "productName": "Tangram Play",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "GUI editor for Tangram",
   "main": "index.js",
   "private": true,
