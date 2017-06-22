@@ -110,10 +110,6 @@
     cursor: pointer;
     line-height: 1.4;
   }
-
-  li:hover {
-    background-color: var(--ui-active-color);
-  }
 }
 
 .react-autosuggest__suggestions-list {
@@ -121,7 +117,7 @@
   padding: 0;
 }
 
-.react-autosuggest__suggestion--focused {
+.react-autosuggest__suggestion--highlighted {
   background-color: var(--ui-active-color);
 }
 

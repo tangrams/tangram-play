@@ -422,7 +422,7 @@ export default class MapPanelLocationBar extends React.Component {
    * @param suggestion - particular item from autocomplete result list to style
    */
   // eslint-disable-next-line class-methods-use-this
-  renderSuggestion(suggestion, { query }) {
+  renderSuggestion(suggestion, { query, isHighlighted }) {
     const label = suggestion.properties.label;
 
     // Highlight the input query
