@@ -62,7 +62,7 @@
     "browserify-incremental": "3.1.1",
     "browserify-shim": "3.8.14",
     "chai": "4.0.2",
-    "chai-as-promised": "7.0.0",
+    "chai-as-promised": "6.0.0",
     "csswring": "6.0.0",
     "enzyme": "2.8.2",
     "eslint": "3.19.0",
