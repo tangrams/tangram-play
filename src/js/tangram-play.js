@@ -203,6 +203,24 @@ function determineScene() {
   // If there is a query, use it
   const query = getQueryStringObject();
 
+  if (query.api) {
+    const url = `https://mapzen.com/api/scenes/${query.api}`;
+    return fetch(url)
+      .then(response => response.json())
+      .then((response) => {
+        // if (data.name) {
+        //   document.title = `${data.name} · Tangram Play`;
+        // }
+        // return makeSceneStateObjectFromUrl(data.entrypoint_url);
+        const data = response;
+        return load({ // eslint-disable-line no-use-before-define
+          url: data.entrypoint_url,
+          data,
+          source: 'MAPZEN',
+        });
+      });
+  }
+
   if (query.scene) {
     return makeSceneStateObjectFromUrl(query.scene)
       .then((sceneState) => {
