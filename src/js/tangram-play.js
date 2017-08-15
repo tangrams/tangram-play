@@ -203,7 +203,9 @@ function determineScene() {
   // If there is a query, use it
   const query = getQueryStringObject();
 
+  // NOTE: this is a hack
   if (query.api) {
+    // TODO: don't hardcode API domain/path
     const url = `https://mapzen.com/api/scenes/${query.api}`;
     return fetch(url)
       .then(response => response.json())
@@ -218,6 +220,7 @@ function determineScene() {
           data,
           source: 'MAPZEN',
         });
+        // NOTE: this ignores highlighted lines
       });
   }
 
