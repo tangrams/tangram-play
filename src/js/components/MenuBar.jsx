@@ -79,6 +79,10 @@ function clickSaveFile() {
   exportSceneFile();
 }
 
+function clickSaveGist() {
+  showModal('SAVE_GIST');
+}
+
 function clearSignInCallbackMethod() {
   store.dispatch({
     type: 'SET_SIGN_IN_CALLBACK_METHOD',
@@ -237,7 +241,7 @@ class MenuBar extends React.Component {
 
     this.state = {
       inspectActive: false, // Represents whether inspect mode is on / off
-      legacyGistMenu: false,
+      legacyGistMenu: true,
     };
 
     this.onClickInspect = this.onClickInspect.bind(this);
@@ -247,15 +251,15 @@ class MenuBar extends React.Component {
   componentWillMount() {
     // Only display "Open a gist" if user has saved gists. This is a
     // legacy feature. It will be completely removed in the future.
-    const STORAGE_SAVED_GISTS = 'gists';
-    localforage.getItem(STORAGE_SAVED_GISTS)
-      .then((gists) => {
-        if (Array.isArray(gists)) {
-          this.setState({
-            legacyGistMenu: true,
-          });
-        }
-      });
+    // const STORAGE_SAVED_GISTS = 'gists';
+    // localforage.getItem(STORAGE_SAVED_GISTS)
+    //   .then((gists) => {
+    //     if (Array.isArray(gists)) {
+    //       this.setState({
+    //         legacyGistMenu: true,
+    //       });
+    //     }
+    //   });
   }
 
   componentDidMount() {
@@ -348,7 +352,7 @@ class MenuBar extends React.Component {
                   if (this.state.legacyGistMenu) {
                     return (
                       <MenuItem onClick={clickOpenGist}>
-                        <Icon type="bt-code" />Open scene from GitHub Gist (Legacy)…
+                        <Icon type="bt-code" />Open scene from GitHub Gist…
                       </MenuItem>
                     );
                   }
@@ -396,6 +400,9 @@ class MenuBar extends React.Component {
                   }
                   return null;
                 })()}
+                <MenuItem onClick={clickSaveGist}>
+                  <Icon type="bt-code" />Save to Gist
+                </MenuItem>
               </NavDropdown>
             </OverlayTrigger>
 
