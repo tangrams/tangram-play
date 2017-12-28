@@ -15,10 +15,6 @@ dependencies:
 test:
   override:
     - yarn test
-  post:
-    # For Precog.
-    - NODE_ENV=production npm run build
-    - cp -r public/* $CIRCLE_ARTIFACTS
 
 # For hosting on mapzen.com. Only deploy if tests pass. Compiled files are
 # rebuilt for a production environment.
