@@ -18,20 +18,20 @@ test:
 
 # For hosting on mapzen.com. Only deploy if tests pass. Compiled files are
 # rebuilt for a production environment.
-deployment:
-  # Production environment will only deploy when a release is tagged in the
-  # correct format (semantic version, e.g. release-v0.5.0)
-  production:
-    tag: /release-v[0-9]+\.[0-9]+\.[0-9]+/
-    commands:
-      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_PROD_DESTINATION --delete
-  # The latest `master` branch will auto-deploy to dev. Unstable "test" code
-  # should go on `staging` and will also deploy to dev.
-  next:
-    branch: master
-    commands:
-      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DEV_DESTINATION --delete
-  staging:
-    branch: staging
-    commands:
-      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DEV_DESTINATION --delete
+#deployment:
+#  # Production environment will only deploy when a release is tagged in the
+#  # correct format (semantic version, e.g. release-v0.5.0)
+#  production:
+#    tag: /release-v[0-9]+\.[0-9]+\.[0-9]+/
+#    commands:
+#      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_PROD_DESTINATION --delete
+#  # The latest `master` branch will auto-deploy to dev. Unstable "test" code
+#  # should go on `staging` and will also deploy to dev.
+#  next:
+#    branch: master
+#    commands:
+#      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DEV_DESTINATION --delete
+#  staging:
+#    branch: staging
+#    commands:
+#      - aws s3 sync $CIRCLE_ARTIFACTS $AWS_DEV_DESTINATION --delete
