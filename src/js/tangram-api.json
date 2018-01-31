@@ -393,7 +393,7 @@
         "add",
         "multiply",
         "overlay",
-        "inlay"
+        "inlay",
         "translucent"
       ],
       "defaultValue": "none"
