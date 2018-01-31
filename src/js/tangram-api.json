@@ -394,6 +394,7 @@
         "multiply",
         "overlay",
         "inlay"
+        "translucent"
       ],
       "defaultValue": "none"
     },
