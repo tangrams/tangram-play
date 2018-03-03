@@ -10,11 +10,11 @@ const lineWidgets = [];
 const blockErrors = new Set();
 
 const SCENE_ERRORS = {
-  MAPZEN_API_KEY_MISSING: {
+  API_KEY_MISSING: {
     type: 'warning',
-    name: 'MAPZEN_API_KEY_MISSING',
-    message: 'This scene uses at least one Mapzen tile service without an API key. Keyless requests will be rejected after March 1, 2017. Please add an API key from your Mapzen developer account as soon as possible.',
-    link: 'https://mapzen.com/blog/api-keys-required/',
+    name: 'API_KEY_MISSING',
+    message: 'This scene uses at least one Nextzen tile service without an API key. Please add an API key from your Nextzen developer account as soon as possible.',
+    link: 'https://developers.nextzen.org/',
   },
 };
 
@@ -112,7 +112,7 @@ export function clearAllErrors() {
  *            link: // {string} a URL for a "learn more" link.
  *            line: // {number} A line number, if known.
  *          }
- *          This can also be a string, e.g. "MAPZEN_API_KEY_MISSING" which
+ *          This can also be a string, e.g. "API_KEY_MISSING" which
  *          will look up the error object from a central `SCENE_ERRORS` object.
  */
 export function addError(error) {
