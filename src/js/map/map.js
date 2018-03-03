@@ -67,16 +67,16 @@ function initTangram(pathToSceneFile, sceneBasePath) {
       if (didInjectKey === true) {
         store.dispatch({
           type: SET_APP_STATE,
-          nextzenAPIKeyInjected: true,
+          apiKeyInjected: true,
         });
 
         if (store.getState().scene.saved === true) {
           showApiKeyWarningIfNecessary();
         }
-      } else if (didInjectKey === false && store.getState().app.nextzenAPIKeyInjected === true) {
+      } else if (didInjectKey === false && store.getState().app.apiKeyInjected === true) {
         store.dispatch({
           type: SET_APP_STATE,
-          nextzenAPIKeyInjected: false,
+          apiKeyInjected: false,
         });
         removeApiKeyWarning();
       }
