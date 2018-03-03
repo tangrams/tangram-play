@@ -317,7 +317,7 @@ export default class MapPanelLocationBar extends React.Component {
     const lat = latlng.lat;
     const lng = latlng.lng;
     // eslint-disable-next-line max-len
-    const endpoint = `https://${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
+    const endpoint = `https://${config.SEARCH.HOST}/v1/reverse?point.lat=${lat}&point.lon=${lng}&size=1&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
     return window.fetch(endpoint)
       .then(response => response.json())
@@ -355,7 +355,7 @@ export default class MapPanelLocationBar extends React.Component {
   autocomplete(query) {
     const center = map.getCenter();
     // eslint-disable-next-line max-len
-    const endpoint = `https://${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
+    const endpoint = `https://${config.SEARCH.HOST}/v1/autocomplete?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
     this.makeRequest(endpoint);
   }
@@ -367,7 +367,7 @@ export default class MapPanelLocationBar extends React.Component {
   search(query) {
     const center = map.getCenter();
     // eslint-disable-next-line max-len
-    const endpoint = `https://${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.MAPZEN_API_KEY}`;
+    const endpoint = `https://${config.SEARCH.HOST}/v1/search?text=${query}&focus.point.lat=${center.lat}&focus.point.lon=${center.lng}&layers=coarse&api_key=${config.SEARCH.API_KEY}`;
 
     this.makeRequest(endpoint);
   }

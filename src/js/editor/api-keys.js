@@ -1,37 +1,19 @@
 /**
- * Mapzen vector tile service API key
+ * Nextzen vector tile service API key
  *
- * Scene files that use Mapzen's vector tile service, but do not have API keys,
+ * Scene files that use Nexzen's vector tile service, but do not have API keys,
  * should have an API key injected so that they can still be properly rendered
  * by Tangram. This default key should always be masked and not seen by the end user.
  *
- * The URL_PATTERN handles the old vector.mapzen.com origin (until it is fully
- * deprecated) as well as the new v1 tile.mapzen.com endpoint.
- *
  * Extensions include both vector and raster tile services.
  */
-const URL_PATTERN = /((https?:)?\/\/(vector|tile).mapzen.com([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\||:)+(topojson|geojson|mvt|png|tif|gz))/;
+const URL_PATTERN = /((https?:)?\/\/tiles?.nextzen.org([a-z]|[A-Z]|[0-9]|\/|\{|\}|\.|\||:)+(topojson|geojson|mvt|png|tif|gz))/;
 
 /**
- * A basic check to see if an api key string looks like a valid key. Not *is* a
- * valid key, just *looks like* one. Note: legacy API keys may have 5 or 6
- * character suffixes, and may have a dash or underscore. New keys will always
- * have a 7-character suffix.
- *
- * Exported only for testing. Do not use in production code.
- *
- * @param {string} - the api key to check
- * @returns {Boolean}
- */
-export function isValidMapzenApiKey(string) {
-  return Boolean(typeof string === 'string' && string.match(/^[-a-z]+-[0-9a-zA-Z_-]{5,7}$/));
-}
-
-/**
- * Parses a Tangram scene config object for sources that specify a Mapzen
+ * Parses a Tangram scene config object for sources that specify a Nextzen
  * vector tile service URL, and injects an API key if it does not have one.
  * Do not inject an API key if the vector tile service is not hosted at
- * vector.mapzen.com or tile.mapzen.com. This is better than parsing the
+ * nextzen.org. This is better than parsing the
  * string content of the file because the config object has already been
  * compiled and manipulating that JS object directly is faster and less error
  * prone.
@@ -56,12 +38,11 @@ export function injectAPIKey(config, apiKey) {
     if (!value.url.match(URL_PATTERN)) return;
 
     // Check for valid API keys in the source.
-    // First, check theurl_params.api_key field
+    // First, check the url_params.api_key field
     // Tangram.js compatibility note: Tangram >= v0.11.7 fires the `load`
     // event after `global` property substitution, so we don't need to manually
     // check global properties here.
-    if (value.url_params && value.url_params.api_key &&
-      isValidMapzenApiKey(value.url_params.api_key)) {
+    if (value.url_params && value.url_params.api_key) {
       valid = true;
     // Next, check if there is an api_key param in the query string
     } else if (value.url.match(/(\?|&)api_key=[-a-z]+-[0-9a-zA-Z_-]{7}/)) {

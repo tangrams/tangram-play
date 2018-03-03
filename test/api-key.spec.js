@@ -1,59 +1,16 @@
 import { assert } from 'chai';
-import { isValidMapzenApiKey, injectAPIKey, suppressAPIKeys } from '../src/js/editor/api-keys';
+import { injectAPIKey } from '../src/js/editor/api-keys';
 
 const TEST_API_KEY = 'mapzen-1234567';
-const TEST_SUPPRESSED_KEYS = [TEST_API_KEY, 'mapzen-abcdefg', 'mapzen-123abcd'];
 
-describe('API keys for Mapzen vector tiles', () => {
-  describe('isValidMapzenApiKey()', () => {
-    it('is valid for a 5-character alphanumeric suffix', () => {
-      const result = isValidMapzenApiKey('mapzen-1a345');
-      assert.equal(result, true);
-    });
-
-    it('is valid for a 6-character alphanumeric suffix', () => {
-      const result = isValidMapzenApiKey('mapzen-1a3456');
-      assert.equal(result, true);
-    });
-
-    it('is valid for a 7-character alphanumeric suffix', () => {
-      const result = isValidMapzenApiKey('mapzen-1a34567');
-      assert.equal(result, true);
-    });
-
-    it('is invalid for a 8-character alphanumeric suffix', () => {
-      const result = isValidMapzenApiKey('mapzen-1a345678');
-      assert.equal(result, false);
-    });
-
-    it('is invalid for a 4-character alphanumeric suffix', () => {
-      const result = isValidMapzenApiKey('mapzen-1a34');
-      assert.equal(result, false);
-    });
-
-    it('is valid for a 7-character alphanumeric suffix with a dash', () => {
-      const result = isValidMapzenApiKey('mapzen-1a3-b67');
-      assert.equal(result, true);
-    });
-
-    it('is valid for a 7-character alphanumeric suffix with an underscore', () => {
-      const result = isValidMapzenApiKey('mapzen-_a34b67');
-      assert.equal(result, true);
-    });
-
-    it('is valid for a legacy prefix with a dash', () => {
-      const result = isValidMapzenApiKey('vector-tiles-1a34567');
-      assert.equal(result, true);
-    });
-  });
-
+describe('API keys for vector tiles', () => {
   describe('injects a missing API key', () => {
     it('adds an API key when it is missing from TopoJSON endpoint', () => {
       const config = {
         sources: {
           mapzen: {
             type: 'TopoJSON',
-            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+            url: '//tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.topojson',
           },
         },
       };
@@ -75,7 +32,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'GeoJSON',
-            url: 'https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson',
+            url: 'https://tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.geojson',
           },
         },
       };
@@ -96,7 +53,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'MVT',
-            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt',
+            url: '//tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.mvt',
           },
         },
       };
@@ -117,7 +74,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'Raster',
-            url: 'https://tile.mapzen.com/mapzen/terrain/v1/normal/{z}/{x}/{y}.png',
+            url: 'https://tile.nextzen.org/tilezen/terrain/v1/normal/{z}/{x}/{y}.png',
           },
         },
       };
@@ -138,7 +95,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'Raster',
-            url: 'https://tile.mapzen.com/mapzen/terrain/v1/terrarium/{z}/{x}/{y}.png',
+            url: 'https://tile.nextzen.org/tilezen/terrain/v1/terrarium/{z}/{x}/{y}.png',
           },
         },
       };
@@ -159,7 +116,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'Raster',
-            url: 'https://tile.mapzen.com/mapzen/terrain/v1/geotiff/{z}/{x}/{y}.tif',
+            url: 'https://tile.nextzen.org/tilezen/terrain/v1/geotiff/{z}/{x}/{y}.tif',
           },
         },
       };
@@ -180,7 +137,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'Raster',
-            url: 'https://tile.mapzen.com/mapzen/terrain/v1/skadi/{N|S}{y}/{N|S}{y}{E|W}{x}.hgt.gz',
+            url: 'https://tile.nextzen.org/tilezen/terrain/v1/skadi/{N|S}{y}/{N|S}{y}{E|W}{x}.hgt.gz',
           },
         },
       };
@@ -201,7 +158,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'TopoJSON',
-            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-f00bar1',
+            url: '//tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-f00bar1',
           },
         },
       };
@@ -219,7 +176,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'TopoJSON',
-            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+            url: '//tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.topojson',
             url_params: {
               api_key: 'vector-tiles-f00bar1',
             },
@@ -240,7 +197,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'TopoJSON',
-            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
+            url: '//tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.topojson',
             url_params: {
               foo: 'bar',
             },
@@ -262,7 +219,7 @@ describe('API keys for Mapzen vector tiles', () => {
         sources: {
           mapzen: {
             type: 'vtm',
-            url: '//tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.vtm',
+            url: '//tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.vtm',
           },
         },
       };
@@ -275,26 +232,7 @@ describe('API keys for Mapzen vector tiles', () => {
       assert.deepEqual(config, target);
     });
 
-    it('does nothing if the tile source is a non-production service', () => {
-      // This config also uses https:// instead of protocol-relative url
-      const config = {
-        sources: {
-          mapzen: {
-            type: 'TopoJSON',
-            url: 'https://dev.tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson',
-          },
-        },
-      };
-
-      const target = JSON.parse(JSON.stringify(config));
-      const didInjectKey = injectAPIKey(config, TEST_API_KEY);
-
-      // The result should not differ from the original config
-      assert.equal(didInjectKey, false);
-      assert.deepEqual(config, target);
-    });
-
-    it('does nothing if the tile source is a non-Mapzen service', () => {
+    it('does nothing if the tile source is a non-Nextzen service', () => {
       // This config also uses https:// instead of protocol-relative url
       const config = {
         sources: {
@@ -312,88 +250,5 @@ describe('API keys for Mapzen vector tiles', () => {
       assert.equal(didInjectKey, false);
       assert.deepEqual(config, target);
     });
-  });
-
-  describe('suppresses Mapzen’s reserved API keys', () => {
-    it('removes keys that match the suppressed API key list', () => {
-      const snippet = `
-        sources:
-          osm1:
-            type: TopoJSON
-            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
-          osm2:
-            type: GeoJSON
-            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=${TEST_SUPPRESSED_KEYS[1]}
-          osm3:
-            type: MVT
-            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt?api_key=${TEST_SUPPRESSED_KEYS[2]}
-      `;
-
-      const target = `
-        sources:
-          osm1:
-            type: TopoJSON
-            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
-          osm2:
-            type: GeoJSON
-            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson
-          osm3:
-            type: MVT
-            url: //tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt
-      `;
-
-      const result = suppressAPIKeys(snippet, TEST_SUPPRESSED_KEYS);
-
-      assert.strictEqual(result, target);
-    });
-
-    it('leaves keys alone that are not on the suppressed API key list', () => {
-      const snippet = `
-        sources:
-          osm1:
-            type: TopoJSON
-            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
-          osm2:
-            type: GeoJSON
-            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=vector-tiles-f00bar1
-      `;
-
-      const target = `
-        sources:
-          osm1:
-            type: TopoJSON
-            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
-          osm2:
-            type: GeoJSON
-            url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.geojson?api_key=vector-tiles-f00bar1
-      `;
-
-      const result = suppressAPIKeys(snippet, TEST_SUPPRESSED_KEYS);
-
-      assert.strictEqual(result, target);
-    });
-
-    it('leaves keys alone if the tile source is not hosted at vector.mapzen.com', () => {
-      // Test snippet re-uses the suppressed keys
-      const snippet = `
-        sources:
-          osm1:
-            type: TopoJSON
-            url: https://dev.tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[0]}
-          osm2:
-            type: TopoJSON
-            url: https://example.tileservice.com/{z}/{x}/{y}.topojson?api_key=${TEST_SUPPRESSED_KEYS[1]}
-      `;
-
-      const result = suppressAPIKeys(snippet, TEST_SUPPRESSED_KEYS);
-
-      // The result should not differ from the original snippet
-      assert.strictEqual(result, snippet);
-    });
-
-    // Future
-    it('removes keys from inline YAML url');
-    it('removes keys when the url is resolved from a global property');
-    it('removes keys when the url is resolved from a YAML variable');
   });
 });
