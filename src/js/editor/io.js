@@ -156,13 +156,13 @@ export function getRootFileName() {
 }
 
 export function showApiKeyWarningIfNecessary() {
-  if (store.getState().app.mapzenAPIKeyInjected === true) {
-    addError('MAPZEN_API_KEY_MISSING');
+  if (store.getState().app.apiKeyInjected === true) {
+    addError('API_KEY_MISSING');
   }
 }
 
 export function removeApiKeyWarning() {
-  removeError('MAPZEN_API_KEY_MISSING');
+  removeError('API_KEY_MISSING');
 }
 
 export function markSceneSaved(saveDispatch) {
