@@ -18,7 +18,8 @@ const config = {
     },
   },
   SEARCH: {
-    HOST: 'search.mapzen.com',
+    HOST: 'api.geocode.earth',
+    API_KEY: 'ge-3d066b6b1c398181',
   },
 };
 
