@@ -60,23 +60,23 @@ function initTangram(pathToSceneFile, sceneBasePath) {
       // config object directly and will not be returned. Tangram does not expect
       // the object to be passed back, and will render with the mutated object.
       // eslint-disable-next-line no-param-reassign
-      const didInjectKey = injectAPIKey(event.config, config.MAPZEN_API_KEY);
+      const didInjectKey = injectAPIKey(event.config, config.NEXTZEN_API_KEY);
 
       // Record in state whether a key was injected. This can be used to prompt
       // users to sign up for a key.
       if (didInjectKey === true) {
         store.dispatch({
           type: SET_APP_STATE,
-          mapzenAPIKeyInjected: true,
+          nextzenAPIKeyInjected: true,
         });
 
         if (store.getState().scene.saved === true) {
           showApiKeyWarningIfNecessary();
         }
-      } else if (didInjectKey === false && store.getState().app.mapzenAPIKeyInjected === true) {
+      } else if (didInjectKey === false && store.getState().app.nextzenAPIKeyInjected === true) {
         store.dispatch({
           type: SET_APP_STATE,
-          mapzenAPIKeyInjected: false,
+          nextzenAPIKeyInjected: false,
         });
         removeApiKeyWarning();
       }
