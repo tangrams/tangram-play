@@ -1,4 +1,6 @@
 const config = {
+  // Nextzen key used exclusively by Tangram Play
+  NEXTZEN_API_KEY: 'mHPUxCSaRgiJERj1lLDLew',
   // Unified API key used exclusively by Tangram Play
   // This key is owned by Mapzen
   MAPZEN_API_KEY: 'mapzen-D8mmijp',
