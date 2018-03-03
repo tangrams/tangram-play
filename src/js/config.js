@@ -13,7 +13,7 @@ const config = {
   TILES: {
     API_KEYS: {
       SUPPRESSED: [
-        'mHPUxCSaRgiJERj1lLDLew' // Matches NEXTZEN_API_KEY
+        'mHPUxCSaRgiJERj1lLDLew', // Matches NEXTZEN_API_KEY
       ],
     },
   },
