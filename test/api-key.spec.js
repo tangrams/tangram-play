@@ -251,5 +251,4 @@ describe('API keys for vector tiles', () => {
       assert.deepEqual(config, target);
     });
   });
-
 });
