@@ -5,6 +5,7 @@ const gutil = require('gulp-util');
 const notify = require('gulp-notify');
 const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync');
+
 const server = browserSync.create();
 
 const paths = {
@@ -141,8 +142,9 @@ gulp.task('js', () => {
 });
 
 // https://github.com/gulpjs/gulp/blob/4.0/docs/recipes/minimal-browsersync-setup-with-gulp4.md
-function reload() {
+function reload(done) {
   server.reload();
+  done();
 }
 
 // Build files, do not watch
@@ -171,7 +173,7 @@ function initServer() {
   gulp.watch(paths.styles.src, gulp.series('css'));
   gulp.watch(paths.scripts.src, gulp.series('js', reload));
   gulp.watch(paths.app).on('change', reload);
-};
+}
 
 // build and serve
 gulp.task('serve', gulp.series('build', initServer));
