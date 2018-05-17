@@ -5,6 +5,7 @@ const gutil = require('gulp-util');
 const notify = require('gulp-notify');
 const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync');
+const server = browserSync.create();
 
 const paths = {
   styles: {
@@ -139,22 +140,23 @@ gulp.task('js', () => {
     .pipe(gulp.dest(paths.scripts.dest));
 });
 
-// Create a task that ensures the `js` task is complete
-// before reloading browsers
-gulp.task('js-watch', ['js'], browserSync.reload);
+// https://github.com/gulpjs/gulp/blob/4.0/docs/recipes/minimal-browsersync-setup-with-gulp4.md
+function reload() {
+  server.reload();
+}
 
 // Build files, do not watch
-gulp.task('build', ['css', 'js']);
+gulp.task('build', gulp.parallel('css', 'js'));
 
 // Watch files, but do not run browsersync
-gulp.task('watch', ['build'], () => {
-  gulp.watch(paths.styles.src, ['css']);
-  gulp.watch(paths.scripts.src, ['js']);
-});
+gulp.task('watch', gulp.series('build', watch = () => {
+  gulp.watch(paths.styles.src, gulp.series('css'));
+  gulp.watch(paths.scripts.src, gulp.series('js'));
+}));
 
 // Re-load the browser when a file changes
-gulp.task('serve', ['build'], () => {
-  browserSync.init({
+function initServer() {
+  server.init({
     port: 8080,
     open: false,
     server: {
@@ -166,10 +168,13 @@ gulp.task('serve', ['build'], () => {
     ghostMode: false,
   });
 
-  gulp.watch(paths.styles.src, ['css']);
-  gulp.watch(paths.scripts.src, ['js-watch']);
-  gulp.watch(paths.app).on('change', browserSync.reload);
-});
+  gulp.watch(paths.styles.src, gulp.series('css'));
+  gulp.watch(paths.scripts.src, gulp.series('js', reload));
+  gulp.watch(paths.app).on('change', reload);
+};
+
+// build and serve
+gulp.task('serve', gulp.series('build', initServer));
 
 // The default task (called when you run `gulp` from cli)
-gulp.task('default', ['serve']);
+gulp.task('default', gulp.series('serve'));
