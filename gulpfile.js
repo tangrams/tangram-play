@@ -150,11 +150,12 @@ function reload(done) {
 // Build files, do not watch
 gulp.task('build', gulp.parallel('css', 'js'));
 
-// Watch files, but do not run browsersync
-gulp.task('watch', gulp.series('build', watch = () => {
+function watching() {
   gulp.watch(paths.styles.src, gulp.series('css'));
   gulp.watch(paths.scripts.src, gulp.series('js'));
-}));
+}
+// Watch files, but do not run browsersync
+gulp.task('watch', gulp.series('build', watching));
 
 // Re-load the browser when a file changes
 function initServer() {
