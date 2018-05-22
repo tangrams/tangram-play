@@ -144,7 +144,9 @@ gulp.task('js', () => {
 // https://github.com/gulpjs/gulp/blob/4.0/docs/recipes/minimal-browsersync-setup-with-gulp4.md
 function reload(done) {
   server.reload();
-  done();
+  if (typeof done === 'function') {
+    done();
+  }
 }
 
 // Build files, do not watch
