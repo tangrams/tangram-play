@@ -1,28 +1,29 @@
 sources:
-    mapzen:
+    nextzen:
         type: TopoJSON
-        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url: https://tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.topojson
+
 layers:
     water:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 2
                 color: '#353535'
     earth:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 1
                 color: '#555555'
     landuse:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 3
                 color: '#666666'
     roads:
-        data: { source: mapzen}
+        data: { source: nextzen}
         filter: { not: { kind: [rail, ferry] } }
         draw:
             lines:
@@ -48,7 +49,7 @@ layers:
                 lines:
                     order: 6
     buildings:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 7
