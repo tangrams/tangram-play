@@ -1,17 +1,17 @@
 sources:
-    mapzen:
+    nextzen:
         type: TopoJSON
-        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url: https://tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.topojson
 
 layers:
     earth:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 0
                 color: grey
     water:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 1

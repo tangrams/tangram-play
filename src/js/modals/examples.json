@@ -11,31 +11,25 @@
       {
         "name": "Refill",
         "thumb": "./data/scenes/thumbnails/refill.png",
-        "url": "https://mapzen.com/carto/refill-style/refill-style.yaml",
+        "url": "https://www.nextzen.org/carto/refill-style/refill-style.yaml",
         "description":"A light, minimalist map style designed for data visualization overlays."
       },
       {
         "name": "Cinnabar",
         "thumb": "./data/scenes/thumbnails/cinnabar.png",
-        "url": "https://mapzen.com/carto/cinnabar-style/cinnabar-style.yaml",
+        "url": "https://www.nextzen.org/carto/cinnabar-style/cinnabar-style.yaml",
         "description":"A classic web map style for general mapping applications."
-      },
-      {
-        "name": "Zinc",
-        "thumb": "./data/scenes/thumbnails/zinc.png",
-        "url": "https://mapzen.com/carto/zinc-style/zinc-style.yaml",
-        "description":"A dark, minimalist style that helps bright data overlays stand out."
       },
       {
         "name": "Bubble Wrap",
         "thumb": "./data/scenes/thumbnails/bubble-wrap.png",
-        "url": "https://mapzen.com/carto/bubble-wrap-style/bubble-wrap.yaml",
+        "url": "https://raw.githubusercontent.com/tangrams/bubble-wrap/gh-pages/bubble-wrap-style.yaml",
         "description":"A full-featured wayfinding style loaded with helpful icons for points of interest."
       },
       {
         "name": "Walkabout",
         "thumb": "./data/scenes/thumbnails/walkabout.png",
-        "url": "https://mapzen.com/carto/walkabout-style/walkabout-style.yaml",
+        "url": "https://raw.githubusercontent.com/tangrams/walkabout-style/gh-pages/walkabout-style.yaml",
         "description":"An outdoor style is perfect for hiking or getting out and about, with mountains, ski trails, biking paths, and transit stops."
       },
       {
