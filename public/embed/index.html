@@ -41,7 +41,7 @@
       var tangram = document.getElementById('tangram-lib');
       var query = parseQuery();
       var debug = (query.debug) ? TANGRAM_DEBUG_LIB : null;
-      var lib = (query.lib && query.lib.match(/^https?:\/\/(unpkg.com\/tangram|rawgit.com\/tangrams|localhost)/)) ? query.lib : null;
+      var lib = (query.lib && query.lib.match(/^https?:\/\/(unpkg.com\/tangram|[a-zA-Z0-9-]*tangram.netlify.com|rawgit.com\/tangrams|localhost)/)) ? query.lib : null;
       if (query.lib && !lib) {
         console.error('Refusing to load Tangram from ' + query.lib + ': library must be hosted at unpkg.com/tangram, rawgit.com/tangrams, or localhost');
       }
