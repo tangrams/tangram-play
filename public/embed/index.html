@@ -45,6 +45,9 @@
       if (query.lib && !lib) {
         console.error('Refusing to load Tangram from ' + query.lib + ': library must be hosted at unpkg.com/tangram, rawgit.com/tangrams, or localhost');
       }
+      if (lib && lib.slice(lib.lastIndexOf('.')+1) === 'mjs') {
+          tangram.type = 'module';
+      }
       tangram.src = lib || debug || TANGRAM_DEFAULT_LIB;
       tangram.onerror = function (error) {
         throw new URIError('Error loading Tangram library at ' + error.target.src + '.');
