@@ -63,12 +63,12 @@ const SIMPLE_FULL_SNIPPET = `<!DOCTYPE html>
   <body>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.4/dist/leaflet.js"></script>
-    <script src="https://mapzen.com/tangram/tangram.min.js"></script>
+    <script src="https://unpkg.com/tangram/dist/tangram.min.js"></script>
     <script>
       var map = L.map('map');
       var layer = Tangram.leafletLayer({
         scene: '{{ scene }}',
-        attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors'
+        attribution: '<a href="https://github.com/tangrams/tangram" target="_blank">Tangram</a> | <a href="https://www.nextzen.org/" target="_blank">Nextzen</a> | &copy; OSM contributors'
       });
       layer.addTo(map);
       map.setView([{{ lat }}, {{ lng }}], {{ zoom }});
