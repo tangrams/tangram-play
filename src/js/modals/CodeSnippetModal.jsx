@@ -54,7 +54,7 @@ const SIMPLE_FULL_SNIPPET = `<!DOCTYPE html>
   <head>
     <title>My Web Map</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4/dist/leaflet.css" />
     <style>
       html, body { margin: 0; padding: 0; }
       #map { height: 100%; width: 100%; position: absolute; }
@@ -62,7 +62,7 @@ const SIMPLE_FULL_SNIPPET = `<!DOCTYPE html>
   </head>
   <body>
     <div id="map"></div>
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.4/dist/leaflet.js"></script>
     <script src="https://mapzen.com/tangram/tangram.min.js"></script>
     <script>
       var map = L.map('map');
