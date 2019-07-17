@@ -1,8 +1,8 @@
 .DS_Store
 
 # Compiled files
-public/scripts/
-public/stylesheets/
+#public/scripts/
+#public/stylesheets/
 
 # Cache
 browserify-cache.json
