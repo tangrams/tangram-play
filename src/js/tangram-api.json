@@ -300,6 +300,11 @@
       ]
     },
     {
+      "address":"^global:(\\w)+_color$",
+      "type":"color",
+      "defaultValue": "[0.,0.,0.,1.]"
+    },
+    {
       "key": "ambient",
       "type": "color",
       "defaultValue": "[0., 0., 0.]"
