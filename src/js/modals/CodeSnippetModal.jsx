@@ -20,6 +20,7 @@ const MAPZENJS_FULL_SNIPPET = `<!DOCTYPE html>
   <head>
     <title>My Web Map</title>
     <meta charset="utf-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="stylesheet" href="https://mapzen.com/js/mapzen.css" />
     <script src="https://mapzen.com/js/mapzen.min.js"></script>
     <style>
@@ -36,6 +37,10 @@ const MAPZENJS_FULL_SNIPPET = `<!DOCTYPE html>
         tangramOptions: {
           scene: '{{ scene }}'
         }
+      });
+      L.control.scale().addTo(map);
+      L.Mapzen.hash({
+        map: map
       });
     </script>
   </body>
